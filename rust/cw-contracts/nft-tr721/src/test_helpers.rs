@@ -1,8 +1,9 @@
-use cosmwasm_std::{Addr, Attribute, Uint128};
+use cosmwasm_std::{Addr, Attribute, HexBinary, Uint128};
 use cw2981_royalties::{Metadata, Trait};
+use rs_merkle::{Hasher, MerkleTree};
 use sylvia::cw_multi_test::AppResponse;
 
-use crate::contract::{MintInfo, WhitelistMintInfo};
+use crate::{contract::{MintInfo, WhitelistMintInfo}, hasher::TrKeccak256};
 
 pub const MERKLE_ROOT: &str = "0110bb1a773c10cce02033f0594eda56df7b9ca30137520327b804107b252001";
 pub const WHITELIST_USER: &str = "whitelist_user";
@@ -64,7 +65,8 @@ pub fn get_default_nfts() -> Vec<Metadata> {
 
 pub fn get_default_whitelist_mint_info() -> WhitelistMintInfo {
     WhitelistMintInfo {
-        addresses: vec![WHITELIST_USER.to_string()],
+        // addresses: vec![WHITELIST_USER.to_string()],
+        merkle_root: "".to_string(),
         unit_price: Uint128::new(1),
         denom: "denom".to_string(),
         limit_per_address: 2,
@@ -72,6 +74,23 @@ pub fn get_default_whitelist_mint_info() -> WhitelistMintInfo {
         start_time: DEFAULT_BLOCK_TIME,
         end_time: DEFAULT_BLOCK_TIME,
     }
+}
+
+pub fn get_merkle_tree(leaf_values: Vec<&str>) -> MerkleTree::<TrKeccak256> {
+    let leaves: Vec<[u8; 32]> = leaf_values
+        .iter()
+        .map(|x| TrKeccak256::hash(x.as_bytes()))
+        .collect();
+    MerkleTree::<TrKeccak256>::from_leaves(&leaves)
+}
+
+pub fn get_merkle_tree_info(leaf_values: Vec<&str>, needed_leaf_indice: usize) -> (String, String) {
+    let tree = get_merkle_tree(leaf_values);
+    let root_hex = HexBinary::from(tree.root().unwrap()).to_string();
+    let proof = tree.proof(&vec![needed_leaf_indice]);
+    let proof_hex = HexBinary::from(proof.to_bytes().to_owned()).to_string();
+
+    (root_hex, proof_hex)
 }
 
 pub fn get_default_whitelist_mint_infos() -> Vec<WhitelistMintInfo> {

@@ -293,7 +293,11 @@ impl Tr721 {
     }
 
     #[msg(exec)]
-    pub fn request_mint(&self, ctx: ExecCtx) -> Result<Response, ContractError> {
+    pub fn request_mint(
+        &self,
+        ctx: ExecCtx,
+        whitelist_proof: Option<WhitelistProof>,
+    ) -> Result<Response, ContractError> {
         // Check conditions:
         let mint_info = self.mint_info.load(ctx.deps.storage)?;
         let now = ctx.env.block.time.seconds();
@@ -312,19 +316,47 @@ impl Tr721 {
         // - is address in whitelist
         let mut current_whitelist: Option<WhitelistMintInfo> = None;
         let mut current_period: Option<u32> = None;
-        for item in self
-            .whitelist_mint_infos
-            .range(ctx.deps.storage, None, None, Order::Ascending)
-        {
-            let (period, whitelist) = item?;
 
-            if now >= whitelist.start_time
-                && now < whitelist.end_time
-                && whitelist.addresses.contains(&sender)
+        // If merkle proof is sent then we check if sender is in whitelist and is there related whitelist period
+        if whitelist_proof.is_some() {
+            for item in
+                self.whitelist_mint_infos
+                    .range(ctx.deps.storage, None, None, Order::Ascending)
             {
-                current_whitelist = Some(whitelist);
-                current_period = Some(period);
-                break;
+                let (period, whitelist) = item?;
+
+                if now >= whitelist.start_time && now < whitelist.end_time {
+                    let wp = whitelist_proof.to_owned().unwrap();
+
+                    // Verify if sender is in whitelist addresses
+                    let proof_hex = HexBinary::from_hex(&wp.merkle_proof).unwrap().to_vec();
+                    let proof_from_hex =
+                        MerkleProof::<TrKeccak256>::try_from(proof_hex.to_owned()).unwrap();
+
+                    let root_hex = whitelist.to_owned().merkle_root;
+                    let root_from_hex: [u8; 32] = HexBinary::from_hex(root_hex.as_str())
+                        .unwrap()
+                        .to_vec()
+                        .try_into()
+                        .unwrap();
+
+                    let leaf_indices = vec![wp.address_indice.try_into().unwrap()];
+                    let leaf_hashes = vec![TrKeccak256::hash(sender.as_bytes())];
+                    let total_leaves_count: usize = whitelist.addresses_count.try_into().unwrap();
+
+                    let is_verified = proof_from_hex.verify(
+                        root_from_hex,
+                        &leaf_indices,
+                        &leaf_hashes,
+                        total_leaves_count,
+                    );
+
+                    if is_verified {
+                        current_whitelist = Some(whitelist);
+                        current_period = Some(period);
+                        break;
+                    }
+                }
             }
         }
 
@@ -717,9 +749,15 @@ pub struct ContractVersion {
 }
 
 #[cw_serde]
+pub struct WhitelistProof {
+    pub merkle_proof: String,
+    pub address_indice: u32,
+}
+
+#[cw_serde]
 #[derive(Default)]
 pub struct WhitelistMintInfo {
-    pub addresses: Vec<String>,
+    pub merkle_root: String,
     pub unit_price: Uint128,
     pub denom: String,
     pub limit_per_address: u32,

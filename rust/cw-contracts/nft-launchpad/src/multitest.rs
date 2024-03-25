@@ -10,7 +10,7 @@ use nft_tr721::contract::{sv::multitest_utils::CodeId as NftTr721CodeId, Whiteli
 
 fn get_default_collection() -> Collection {
     let whitelist_mint_infos = vec![WhitelistMintInfo {
-        addresses: vec![],
+        merkle_root: "merkle_root".to_string(),
         unit_price: Uint128::new(10),
         denom: "denom".to_string(),
         limit_per_address: 2,

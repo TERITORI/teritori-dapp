@@ -129,98 +129,76 @@ pub struct Trait {
     #[prost(string, tag="3")]
     pub value: ::prost::alloc::string::String,
 }
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Collection {
-    /// Collection info ----------------------------
-    #[prost(string, tag="1")]
-    pub name: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
-    pub desc: ::prost::alloc::string::String,
-    #[prost(string, tag="3")]
-    pub symbol: ::prost::alloc::string::String,
-    #[prost(string, tag="4")]
-    pub cover_img_uri: ::prost::alloc::string::String,
-    #[prost(string, tag="5")]
-    pub target_network: ::prost::alloc::string::String,
-    #[prost(string, tag="6")]
-    pub external_link: ::prost::alloc::string::String,
-    /// Collection details ----------------------------
-    #[prost(string, tag="7")]
-    pub website_link: ::prost::alloc::string::String,
-    #[prost(string, tag="8")]
-    pub twitter_profile: ::prost::alloc::string::String,
-    #[prost(uint64, tag="9")]
-    pub twitter_followers_count: u64,
-    #[prost(string, tag="10")]
-    pub contact_discord_name: ::prost::alloc::string::String,
-    #[prost(string, tag="11")]
-    pub contact_email: ::prost::alloc::string::String,
-    #[prost(bool, tag="12")]
-    pub is_project_derivative: bool,
-    #[prost(string, tag="13")]
-    pub project_type: ::prost::alloc::string::String,
-    #[prost(string, tag="14")]
-    pub project_desc: ::prost::alloc::string::String,
-    #[prost(bool, tag="15")]
-    pub is_applied_previously: bool,
-    /// Team info --------------------------------------
-    #[prost(string, tag="16")]
-    pub team_desc: ::prost::alloc::string::String,
-    #[prost(string, tag="17")]
-    pub team_link: ::prost::alloc::string::String,
-    #[prost(string, tag="18")]
-    pub partners: ::prost::alloc::string::String,
-    #[prost(string, tag="19")]
-    pub investment_desc: ::prost::alloc::string::String,
-    #[prost(string, tag="20")]
-    pub investment_link: ::prost::alloc::string::String,
-    #[prost(string, tag="21")]
-    pub whitepaper_link: ::prost::alloc::string::String,
-    #[prost(string, tag="22")]
-    pub roadmap_link: ::prost::alloc::string::String,
-    /// Additional info ----------------------------
-    #[prost(string, tag="23")]
-    pub artwork_desc: ::prost::alloc::string::String,
-    #[prost(bool, tag="24")]
-    pub is_ready_for_mint: bool,
-    #[prost(uint32, tag="25")]
-    pub expected_supply: u32,
-    #[prost(uint64, tag="26")]
-    pub expected_public_mint_price: u64,
-    #[prost(uint64, tag="27")]
-    pub expected_mint_date: u64,
-    #[prost(uint64, tag="28")]
-    pub escrow_mint_proceeds_period: u64,
-    #[prost(bool, tag="29")]
-    pub is_dox: bool,
-    #[prost(uint32, tag="30")]
-    pub dao_whitelist_count: u32,
-    /// Minting details ----------------------------
-    #[prost(uint32, tag="31")]
-    pub tokens_count: u32,
-    #[prost(uint64, tag="32")]
-    pub unit_price: u64,
-    #[prost(uint32, tag="33")]
-    pub limit_per_address: u32,
-    #[prost(uint64, tag="34")]
-    pub start_time: u64,
-    // Whitelist minting --------------------------
-    // repeated WhitelistMinting whitelist_mintings = 35;
+// message ProjectInfo {
+//    // Collection info ----------------------------
+//    string name = 1;
+//    string desc = 2;
+//    string symbol = 3;
+//    string cover_img_uri = 4;
+//    string target_network = 5;
+//    string external_link = 6;
 
-    /// Royalty --------------------------
-    #[prost(string, tag="35")]
-    pub royalty_address: ::prost::alloc::string::String,
-    #[prost(uint32, tag="36")]
-    pub royalty_percentage: u32,
-    /// Extend info --------------------------
-    #[prost(string, tag="37")]
-    pub base_token_uri: ::prost::alloc::string::String,
-    #[prost(string, tag="38")]
-    pub merkle_root: ::prost::alloc::string::String,
-    #[prost(string, tag="39")]
-    pub deployed_address: ::prost::alloc::string::String,
-}
+//    // Collection details ----------------------------
+//    string website_link = 7;
+
+//    string twitter_profile = 8;
+//    uint64 twitter_followers_count = 9;
+
+//    string contact_discord_name = 10;
+//    string contact_email = 11;
+
+//    bool is_project_derivative = 12;
+
+//    string project_type = 13;
+//    string project_desc = 14;
+
+//    bool is_applied_previously = 15;
+
+//    // Team info --------------------------------------
+//    string team_desc = 16;
+//    string team_link = 17;
+
+//    string partners = 18;
+
+//    string investment_desc = 19;
+//    string investment_link = 20;
+
+//    string whitepaper_link = 21;
+//    string roadmap_link = 22;
+
+//    // Additional info ----------------------------
+//    string artwork_desc = 23;
+
+//    bool is_ready_for_mint = 24;
+
+//    uint32 expected_supply = 25;
+//    uint64 expected_public_mint_price = 26;
+//    uint64 expected_mint_date = 27;
+
+//    uint64 escrow_mint_proceeds_period = 28;
+//    bool is_dox = 29;
+
+//    uint32 dao_whitelist_count = 30;
+
+//    // Minting details ----------------------------
+//    uint32 tokens_count = 31;
+//    uint64 unit_price = 32;
+//    uint32 limit_per_address = 33;
+//    uint64 start_time = 34;
+
+//    // Whitelist minting --------------------------
+//    // repeated WhitelistMinting whitelist_mintings = 35;
+
+//    // Royalty --------------------------
+//    string royalty_address = 35;
+//    uint32 royalty_percentage = 36;
+
+//    // Extend info --------------------------
+//    string base_token_uri = 37;
+//    string merkle_root = 38;
+//    string deployed_address = 39;
+// }
+
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct WhitelistMintInfo {
