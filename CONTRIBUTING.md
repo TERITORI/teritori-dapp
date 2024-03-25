@@ -230,11 +230,11 @@ interface CurrencyAmount {
 ```
 The `networkId` and `denom` fields uniquely identify this currency across the known universe, the network id reference the network hosting this currency, the denom is a network-specific id uniquely identifying the currency within this network. You can get more info about the currency by calling helpers from the [networks package](packages/networks). Some currencies might be currencies bridged from other networks and will be a chain of references.
 
-The `atomics` field is a bigint storing the number of atomic fractions of currency this `CurrencyAmount` represents? To properly display it to end users you need to known the number of decimals of the currency which can be fetched using utilities from the [networks package](packages/networks)
+Currencies use a [fixed-point](https://en.wikipedia.org/wiki/Fixed-point_arithmetic) representation. The `atomics` field is a big integer storing the number of atomic fractions of currency this `CurrencyAmount` represents. It has no meaning without the number of decimals of this currency. For example the atomic fraction of Bitcoin is the satoshi, 0.00000001 BTC because the BTC has 8 decimals. So to properly display a currency to end users you need to known the number of decimals of the currency which can be fetched using utilities from the [networks package](packages/networks).
 
-To do mathematical operations on amounts you should NOT convert them to `number` or `float`, you should instead use a big integer library like [BigInt](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/BigInt), [Long](https://www.npmjs.com/package/long) or golang's [math/big.Int](https://pkg.go.dev/math/big).
+To do mathematical operations on amounts you should NOT convert them to `number` or `float`, you should instead use a big integer library ([BigInt](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/BigInt), [Long](https://www.npmjs.com/package/long), [golang's math/big.Int](https://pkg.go.dev/math/big)) or a fixed-point decimal library like [@cosmjs/math.Decimal](https://cosmos.github.io/cosmjs/latest/math/classes/Decimal.html).
 
-To display a currency amount, uou should use the util `prettyPrice` in most of the cases.
+To display a currency amount, you should use the util `prettyPrice` in most of the cases.
 
 ### Cross-platform 
 
