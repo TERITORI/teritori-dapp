@@ -122,13 +122,59 @@ We plan to transition from Cosmos SDK to [Gno](https://docs.gno.land/) for the b
 
 ## Patterns
 
-### CI
+### Continuous Integration (CI)
 
-TODO: explain why the CI is here, how merge queue works, merge requirements, when to add new ci tasks
+- Our project uses a CI pipeline to automatically build, test, and validate every pull request. This helps to ensure that all changes integrate smoothly and do not introduce new issues.
+
+- When you submit a PR, the CI pipeline will automatically run. You can see the status of the CI checks at the bottom of your PR. If the checks fail, click on the "Details" link to see the logs and identify what went wrong.
+
+- Before asking for reviews, make sure that your PR passes all CI checks.
+
+- If your PR is failing the CI checks, review the logs, fix the issues, and push your changes. The CI pipeline will run again with the updated code.
+
+- If you are having trouble understanding why a CI check is failing, feel free to ask for help in the PR comments.
+
+- Do not merge PRs that are failing CI checks. If a PR is urgent and you believe the failure is not related to your changes, discuss this with the team before proceeding.
+
+Remember, the purpose of the CI pipeline is to help us maintain a high standard of quality for our code. It's not a hurdle to overcome, but a tool to help us.
 
 ### Deployments
 
-TODO: explain how backend and apps (web, mobile and desktop) are deployed
+#### Frontend
+
+We use [Netlify](https://www.netlify.com/) for deploying our frontend applications. When a pull request is merged into the main branch, a new build is triggered on Netlify. 
+
+Here are the steps to follow:
+
+1. Push your changes to your branch and create a pull request.
+2. Once your pull request is approved and merged into the main branch, Netlify will automatically start the build and deployment process.
+3. You can monitor the progress of the build in the Netlify dashboard.
+4. Once the build is complete, your changes will be live on the site.
+
+Netlify provides a public preview for all pull requests. Netlify automatically post and maintains a comment with link to the preview in the pull request.
+
+#### Backend
+
+Our backend services are deployed on [Kubernetes](https://kubernetes.io/) clusters, which are hosted on [Scaleway](https://www.scaleway.com/). Due to the complexity of our backend, the deployment process is manual.
+
+Here are the steps to follow:
+
+1. Push your changes to your branch and create a pull request.
+2. Once your pull request is approved and merged into the main branch, a new Docker image is built and pushed to our Docker registry.
+3. A team member with the appropriate permissions will manually trigger a Kubernetes deployment, which pulls the new Docker image from the registry and updates the running services in our Kubernetes cluster.
+
+#### Blockchain
+
+Our project uses a blockchain for decentralized governance. The deployment of the blockchain nodes is decided via on-chain governance. This means that changes to the blockchain, including updates and deployments, are proposed and voted on by the community of token holders. 
+
+Once a proposal is approved, it's up to the validators to apply the changes as they see fit. Validators are responsible for running the blockchain nodes and applying the approved changes. This process ensures that the control of the blockchain remains decentralized and in the hands of the community.
+
+Here are the steps to follow:
+
+1. A proposal for a change is submitted on the blockchain.
+2. Token holders vote on the proposal.
+3. If the proposal is approved, validators are notified of the change.
+4. Each validator is then responsible for applying the change to their own node.
 
 ### Multi-chain
 
