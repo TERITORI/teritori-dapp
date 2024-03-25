@@ -23,11 +23,11 @@ import { TextInputOutsideLabel } from "../../../inputs/TextInputOutsideLabel";
 import { useDebounce } from "@/hooks/useDebounce";
 
 interface TAddressSearchProps {
-  addressPlaceHolder: any;
-  address: any;
-  setAddress: any;
-  setLocationSelected: any;
-  setAddressPlaceHolder: any;
+  addressPlaceHolder: string;
+  address: string;
+  setAddress: (val: string) => void;
+  setLocationSelected: (newLocationSelected: [number, number]) => void;
+  setAddressPlaceHolder: (val: string) => void;
 }
 
 export const AddressSearch: React.FC<TAddressSearchProps> = ({
