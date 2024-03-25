@@ -47,12 +47,14 @@ TODO
 
 #### Language: Typescript
 
-We use a strict [Typescript](https://github.com/pmndrs/zustand) configuration and try to enforce type-safety. Typescript very easily allows to bypass it's type-safety mechanism so it requires some discipline from the developer.
+We use a strict [Typescript](https://www.typescriptlang.org/docs/handbook/intro.html) configuration and try to enforce type-safety. Typescript very easily allows to bypass it's type-safety mechanism so it requires some discipline from the developer.
 
 #### Framework: Expo
 
 We use [the Expo framework](https://docs.expo.dev/) to support Web, Android, iOS, Windows, Macos and Linux with the same codebase.
 This uses [react-native](https://reactnative.dev/docs/getting-started) to support mobile and [react-native-web](https://necolas.github.io/react-native-web/docs/) for web. The desktop build uses electron and react-native-web.
+
+If you are coming from React and you work with the web dev server, it's important to understand that using html components (eg `<div>`) and styles will work because the react-native-web renderer allows it but it won't work with native renderers (iOS, Android and native desktop). So please check the expo api reference to make sure you are using things that are truly cross-platform.
 
 #### Data fetching: react-query
 
@@ -65,17 +67,45 @@ We use [redux](https://redux-toolkit.js.org/) for global app state, it supports 
 
 ### Backend
 
-#### Language: golang
+#### Decentralized services: Cosmos SDK
 
-We use golang to write the backend services, it's not a strict rule but if you have the choice, use golang.
+The main service for the Teritori chain is the Teritori blockchain daemon, [teritorid](https://github.com/TERITORI/teritori-chain).
+But a lot of features we're developing are cross-chain compatible and use common [Cosmos SDK](https://docs.cosmos.network/) APIs.
+Cosmos blockchain are configurable and you can see the list of modules for the Teritori chain [here](https://github.com/TERITORI/teritori-chain/blob/v2.0.6/app/app.go#L210-L238) for example.
 
-#### Decentralized service: teritorid
+You can find the main Cosmos API documentation [here](https://docs.cosmos.network/api).
 
-The main service is the Teritori blockchain daemon, [teritorid](https://github.com/TERITORI/teritori-chain).
+Cosmos provides a native way for inter-blockchain communication called [IBC](https://cosmos.network/ibc/). It allows to transfer currencies between chains and more complex cross-chain behavior, for example swapping funds on Osmosis from a DAO on Teritori while keeping funds sovereignty by the DAO.
 
-#### Protocol for centralized services: GRPC
+#### Smart contracts: CosmWASM
+
+Smart-contracts are programs that run on blockchains.
+
+The smart-contracts on teritori chain and most cosmos chains are using [cosmwasm](https://book.cosmwasm.com/) and thus [rust](https://www.rust-lang.org/) as programing language.
+
+We recommend to use the [sylvia framework](https://cosmwasm.github.io/sylvia-book/index.html) to write your cosmwasm contracts as it heavily reduces boilerplate, making the code easier to maintain and read. It also provides better testing utilities.
+
+#### Indexer: golang + postgres + substreams
+
+Some chain data need to be aggregated and indexed to allow for performant queries. For example the marketplace stats that is aggregating the trade amounts for a month or indexing all nfts for an user so we can efficiently show the owned nfts of an user.
+The cosmos-targeted indexer uses a custom golang daemon and the native cosmos apis to query for transactions in order and index them.
+The evm-targeted indexer (supporting ethereum and polygon for now) uses the [substreams](https://substreams.streamingfast.io/) firehose api and we intend to use substream for cosmos too.
+
+#### Extra services: golang
+
+We have additional services to serve custom aggregates that are not provided by the chain and some off-chain features (eg private user data).
+We recommend [golang](https://go.dev/doc/) to write additional services, it's not a strict rule but golang is a good middle ground between performance and ease-of-use with a strong focus on maintainability.
+The Cosmos SDK itself is written in golang.
+
+#### Protocol for extra services: GRPC
 
 We use [GRPC](https://grpc.io/) as communication protocol for the centralized APIs. The models and endpoints definition are written in [protobuf](https://protobuf.dev/), this allows to generate types, servers and clients in any language. The definition are in the [api folder](api). The backend servers in the [go/pkg folder](go/pkg). The clients in the [js/packages/api folder](js/packages/api).
+
+The Cosmos SDK is also using protobuf for it's endpoints definition but with custom encodings and extra layers on top of it.
+
+#### Future: Gno
+
+We plan to transition from Cosmos SDK to [Gno](https://docs.gno.land/) for the blockchain nodes and smart-contracts framework
 
 ## Patterns
 
