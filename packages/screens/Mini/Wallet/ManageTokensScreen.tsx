@@ -27,7 +27,7 @@ export const ManageTokensScreen: ScreenFC<"MiniManageTokens"> = ({
   );
 
   return (
-    <BlurScreenContainer title="Manage Tokens">
+    <BlurScreenContainer title="Manage Tokens" noScrollView>
       <View
         style={{
           paddingHorizontal: layout.spacing_x2,

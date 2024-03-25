@@ -29,6 +29,7 @@ type Props = {
   onGoBack?: () => void;
   background?: string | "transparent";
   customHeader?: ReactNode;
+  noScrollView?: boolean;
 };
 
 export const BlurScreenContainer = ({
@@ -37,6 +38,7 @@ export const BlurScreenContainer = ({
   onGoBack,
   background = "transparent",
   customHeader,
+  noScrollView,
 }: Props) => {
   const { width: windowWidth } = useWindowDimensions();
   const navigation = useAppNavigation();
@@ -82,6 +84,22 @@ export const BlurScreenContainer = ({
     const { locationY } = evt.nativeEvent;
     return locationY > 0 && locationY < 100;
   };
+
+  const WrapperComponent = noScrollView ? View : ScrollView;
+  const wrapperComponentProps = noScrollView
+    ? {
+        style: {
+          backgroundColor: background,
+          flex: 1,
+        },
+      }
+    : {
+        scrollEnabled: false,
+        contentContainerStyle: {
+          backgroundColor: background,
+          flex: 1,
+        },
+      };
 
   return (
     <SafeAreaView
@@ -172,15 +190,9 @@ export const BlurScreenContainer = ({
           </View>
         )}
 
-        <ScrollView
-          scrollEnabled={false}
-          contentContainerStyle={{
-            backgroundColor: background,
-            flex: 1,
-          }}
-        >
+        <WrapperComponent {...wrapperComponentProps}>
           {children}
-        </ScrollView>
+        </WrapperComponent>
       </Animated.View>
     </SafeAreaView>
   );
