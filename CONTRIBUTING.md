@@ -188,7 +188,7 @@ It's important to understand the implications of that and not hardcode `tori` ev
 
 We define network-related constants in the [networks package](packages/networks) and generate code from it for go programs. You should get all network information from this packages and add any new network-related information there.
 
-The application user can disabled and enable networks since there is 200 cosmos networks supported and having them all enabled on first use would be overwelming.
+The application user can disable and enable networks since there is 200 cosmos networks supported and having them all enabled on first use would be overwelming.
 You can get the list of enabled networks in react components with the `useEnabledNetworks` hook. You can get the list of all supported networks from anywhere using the `allNetworks` variables from the `networks` package
  
 We currently have a global concept called `selected network`, it is a value stored in the redux store and correspond to the value in the dropdown at the top-right of the web app. It's important to use it only in top-level components and pass down a network in components since a component could be used for multiple networks in the same page (think about a page displaying NFTs owned that come from different networks). When you pass network information, you need to think if it's the correct network for the code; for example you shouldn't use the selected network to generically fetch informations about an user but instead the network of this user.
