@@ -39,7 +39,7 @@ You can deny the review if the PR does not pass CI
 
 ## Technology overview
 
-### Web2 to Web3
+### Web2 vs Web3
 
 #### Technical Infrastructure 🏗️
 
