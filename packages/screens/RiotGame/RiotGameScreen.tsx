@@ -35,11 +35,11 @@ export const RiotGameScreen = () => {
     let client = mustGetLauchpadClient(networkId);
     let whitelists: WhitelistMintInfo[] = [
       {
-        addresses: ["address1"],
+        addresses: ["addr1", "addr2", "addr3", "addr4", "add5"],
         unitPrice: 1_000_000,
         denom: 'utori',
         limitPerAddress: 2,
-        addressesCount: 1,
+        addressesCount: 5,
         startTime: Date.now(),
         endTime: Date.now(),
       },
