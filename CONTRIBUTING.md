@@ -242,7 +242,8 @@ If your frontend code requires platform-specific sections, you can use [platform
 - `Foo.native.ts(x)` for native code
 - `Foo.web.ts(x)` for web and electron code
 - `Foo.ts(x)` as fallback for other platforms
-We recommend specifying interface outside of the platform-specific files to and make the platform-specific files conform to those interfaces to ensure type-safety.
+  
+We recommend specifying interfaces outside of the platform-specific files and make the platform-specific files conform to those interfaces to ensure type-safety.
 
 You can also use a [dynamic Platform switch](https://reactnative.dev/docs/platform-specific-code#platform-module) but it's better to use platform-specific files in most cases so the platform-specific code is not bundled on unsupported platforms.
 
@@ -250,7 +251,7 @@ You can also use a [dynamic Platform switch](https://reactnative.dev/docs/platfo
 
 All user/client-generated data must be [validated](https://owasp.org/www-project-proactive-controls/v3/en/c5-validate-inputs) by trusted procedures before storage (for example within smart-contracts or backend code).
 
-In some places, this is not possible, for example when supporting generic nft metadata, fetching data from an api or parsing a json file, in this case the data must be validated after retrieval and before consumption, with libraries like [zod](https://zod.dev/) or [golang's json decoder](https://pkg.go.dev/encoding/json) and strict type definitions.
+In some places, this is not possible, for example when supporting generic nft metadata, fetching data from an api or parsing a json file. In this case the data must be validated after retrieval and before consumption, with libraries like [zod](https://zod.dev/) or [golang's json decoder](https://pkg.go.dev/encoding/json) and strict type definitions.
 
 ### Type-safety and linting
 
@@ -260,7 +261,7 @@ Linters are tools that automatically enforce code-styling and prevent bad practi
 
 We should strive to setup static analysis routines to automatically detect issues that come up repeadetly during reviews to save everyone's time.
 
-Code generation replicatbility and sync must be checked by the CI.
+Code generation replicability and sync must be checked by the CI.
 
 ### Implement an UI
 
