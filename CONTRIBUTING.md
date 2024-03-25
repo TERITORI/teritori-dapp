@@ -132,7 +132,7 @@ We plan to transition from Cosmos SDK to [Gno](https://docs.gno.land/) for the b
 
 - If your PR is failing the CI checks, review the logs, fix the issues, and push your changes. The CI pipeline will run again with the updated code.
 
-- If you are having trouble understanding why a CI check is failing, feel free to ask for help in the PR comments.
+- If you are having trouble understanding why a CI check is failing, feel free to ask for help.
 
 - Do not merge PRs that are failing CI checks. If a PR is urgent and you believe the failure is not related to your changes, discuss this with the team before proceeding.
 
@@ -140,9 +140,9 @@ Remember, the purpose of the CI pipeline is to help us maintain a high standard 
 
 ### Deployments
 
-#### Frontend
+#### Applications
 
-We use [Netlify](https://www.netlify.com/) for deploying our frontend applications. When a pull request is merged into the main branch, a new build is triggered on Netlify. 
+We use [Netlify](https://www.netlify.com/) for deploying our web frontend applications. When a pull request is merged into the main branch, a new build is triggered on Netlify. 
 
 Here are the steps to follow:
 
@@ -152,6 +152,10 @@ Here are the steps to follow:
 4. Once the build is complete, your changes will be live on the site.
 
 Netlify provides a public preview for all pull requests. Netlify automatically post and maintains a comment with link to the preview in the pull request.
+
+The mobile build of main branch are automatically deployed to [Apple's Testflight](https://developer.apple.com/testflight/) and [Google's Play Console](https://play.google.com/console/about/internal-testing/)
+
+Desktop builds are pushed as GitHub artifacts but not deployed on app stores yet. See at the bottom of [this page](https://github.com/TERITORI/teritori-dapp/actions/runs/8421277983) for example.
 
 #### Backend
 
@@ -171,18 +175,27 @@ Once a proposal is approved, it's up to the validators to apply the changes as t
 
 Here are the steps to follow:
 
-1. A proposal for a change is submitted on the blockchain.
+1. A proposal for a change is submitted on the blockchain. See [this proposal](https://app.teritori.com/governance/38) for example.
 2. Token holders vote on the proposal.
 3. If the proposal is approved, validators are notified of the change.
-4. Each validator is then responsible for applying the change to their own node.
+4. Each validator is then responsible for applying the change to their own node at the correct time.
 
-### Multi-chain
+### Multi-networks (multi-chains)
 
-TODO: talk about networks, how to use them, network object ids, talk about the chain registry and how it's integrated into networks
+The Teritori dApp is a multi-networks app. Meaning it can be used with multiple blockchains and web3 stacks. We use the term `Network` because the underlying distributed ledger technology could be something else than a blockchain.
+
+It's important to understand the implications of that and not hardcode `tori` everywhere. Even when we only talk avout Teritori, there is currently two official Teritori chains, the Teritori mainnet, with chain id `teritori-1` and the Teritori testnet with chain id `teritori-test-6` and it's important to support both in all code.
+
+We define network-related constants in the [networks package](packages/networks) and generate code from it for go programs. You should get all network information from this packages and add any new network-related information there.
+
+The application user can disabled and enable networks since there is 200 cosmos networks supported and having them all enabled on first use would be overwelming.
+You can get the list of enabled networks in react components with the `useEnabledNetworks` hook. You can get the list of all supported networks from anywhere using the `allNetworks` variables from the `networks` package
+ 
+We currently have a global concept called `selected network`, it is a value stored in the redux store and correspond to the value in the dropdown at the top-right of the web app. It's important to use it only in top-level components and pass down a network in components since a component could be used for multiple networks in the same page (think about a page displaying NFTs owned that come from different networks). When you pass network information, you need to think if it's the correct network for the code; for example you shouldn't use the selected network to generically fetch informations about an user but instead the network of this user.
 
 ### Network features
 
-TODO: explain what is a network feature, when and how to add a new one
+TODO: explain network features, why we have that concept, how to use them and how to define them
 
 ### IPFS
 
