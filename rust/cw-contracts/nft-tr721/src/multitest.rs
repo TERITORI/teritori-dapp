@@ -501,8 +501,6 @@ fn full_flow() {
         let proof_hex = HexBinary::from(proof_bytes.to_owned()).to_string();
         let proof_bytes_from_hex = HexBinary::from_hex(&proof_hex).unwrap().to_vec();
 
-        // panic!("proof_bytes: {:?}, proof_bytes_from_hex: {:?}", proof_bytes, proof_bytes_from_hex);
-
         let proof = MerkleProof::<TrKeccak256>::try_from(proof_bytes_from_hex.to_owned()).unwrap();
 
         let is_ok = proof.verify(merkle_root, &leaf_indices, leaf_hashes, leaves.len());

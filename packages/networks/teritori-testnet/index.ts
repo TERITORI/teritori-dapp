@@ -12,7 +12,7 @@ const premiumFeedFeature: CosmWasmPremiumFeed = {
   mintDenom: "utori",
 };
 
-const launchpadContractAddress: "tori164jjtp4c032arq30dzpgn2uujwavm777ug7we5evlvf0c26007jqetqdv3";
+const launchpadContractAddress = "tori164jjtp4c032arq30dzpgn2uujwavm777ug7we5evlvf0c26007jqetqdv3";
 
 const riotContractAddressGen0 =
   "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc";

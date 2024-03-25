@@ -3,10 +3,11 @@ package merkletree
 import (
 	"bytes"
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"hash"
 	"math/big"
+
+	"github.com/pkg/errors"
 
 	"golang.org/x/crypto/sha3"
 )
@@ -188,4 +189,18 @@ func (m *MerkleTree) GetHexRoot() string {
 
 func (m *MerkleTree) GetHexRootWithoutPrefix() string {
 	return m.GetHexRoot()[2:]
+}
+
+func (m *MerkleTree) GetHexProofWithoutPrefix(content Content) ([]string, error) {
+	proof, err := m.GetHexProof(content)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get prefixed hex proof")
+	}
+
+	var proofWithoutPrefix []string
+	for _, item := range proof {
+		proofWithoutPrefix = append(proofWithoutPrefix, item[2:])
+	}
+
+	return proofWithoutPrefix, nil
 }

@@ -4,7 +4,7 @@ package launchpad.v1;
 option go_package = "./launchpadpb";
 
 service LaunchpadService {
-  rpc UpdateCollectionMetadatas(UpdateCollectionMetadatasRequest) returns (UpdateCollectionMetadatasResponse);
+  rpc UpdateTokensMetadatas(UpdateTokensMetadatasRequest) returns (UpdateTokensMetadatasResponse);
   rpc CalculateCollectionMerkleRoot(CalculateCollectionMerkleRootRequest) returns (CalculateCollectionMerkleRootResponse);
   rpc UpdateCollectionWhitelists(UpdateCollectionWhitelistsRequest) returns(UpdateCollectionWhitelistsResponse);
 
@@ -12,14 +12,14 @@ service LaunchpadService {
   rpc WhitelistedAddressMerkleInfo(WhitelistedAddressMerkleInfoRequest) returns (WhitelistedAddressMerkleInfoResponse);
 }
 
-message UpdateCollectionMetadatasRequest {
+message UpdateTokensMetadatasRequest {
   string sender = 1;
   string network_id = 2;
   uint32 project_id = 3;
   repeated Metadata metadatas = 4;
 }
 
-message UpdateCollectionMetadatasResponse {
+message UpdateTokensMetadatasResponse {
   string merkle_root = 1;
 }
 

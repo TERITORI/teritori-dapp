@@ -6,14 +6,14 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "launchpad.v1";
 
-export interface UpdateCollectionMetadatasRequest {
+export interface UpdateTokensMetadatasRequest {
   sender: string;
   networkId: string;
   projectId: number;
   metadatas: Metadata[];
 }
 
-export interface UpdateCollectionMetadatasResponse {
+export interface UpdateTokensMetadatasResponse {
   merkleRoot: string;
 }
 
@@ -142,12 +142,12 @@ export interface WhitelistMintInfo {
   endTime: number;
 }
 
-function createBaseUpdateCollectionMetadatasRequest(): UpdateCollectionMetadatasRequest {
+function createBaseUpdateTokensMetadatasRequest(): UpdateTokensMetadatasRequest {
   return { sender: "", networkId: "", projectId: 0, metadatas: [] };
 }
 
-export const UpdateCollectionMetadatasRequest = {
-  encode(message: UpdateCollectionMetadatasRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const UpdateTokensMetadatasRequest = {
+  encode(message: UpdateTokensMetadatasRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.sender !== "") {
       writer.uint32(10).string(message.sender);
     }
@@ -163,10 +163,10 @@ export const UpdateCollectionMetadatasRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateCollectionMetadatasRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateTokensMetadatasRequest {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUpdateCollectionMetadatasRequest();
+    const message = createBaseUpdateTokensMetadatasRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -207,7 +207,7 @@ export const UpdateCollectionMetadatasRequest = {
     return message;
   },
 
-  fromJSON(object: any): UpdateCollectionMetadatasRequest {
+  fromJSON(object: any): UpdateTokensMetadatasRequest {
     return {
       sender: isSet(object.sender) ? globalThis.String(object.sender) : "",
       networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
@@ -218,7 +218,7 @@ export const UpdateCollectionMetadatasRequest = {
     };
   },
 
-  toJSON(message: UpdateCollectionMetadatasRequest): unknown {
+  toJSON(message: UpdateTokensMetadatasRequest): unknown {
     const obj: any = {};
     if (message.sender !== "") {
       obj.sender = message.sender;
@@ -235,15 +235,11 @@ export const UpdateCollectionMetadatasRequest = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<UpdateCollectionMetadatasRequest>, I>>(
-    base?: I,
-  ): UpdateCollectionMetadatasRequest {
-    return UpdateCollectionMetadatasRequest.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<UpdateTokensMetadatasRequest>, I>>(base?: I): UpdateTokensMetadatasRequest {
+    return UpdateTokensMetadatasRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<UpdateCollectionMetadatasRequest>, I>>(
-    object: I,
-  ): UpdateCollectionMetadatasRequest {
-    const message = createBaseUpdateCollectionMetadatasRequest();
+  fromPartial<I extends Exact<DeepPartial<UpdateTokensMetadatasRequest>, I>>(object: I): UpdateTokensMetadatasRequest {
+    const message = createBaseUpdateTokensMetadatasRequest();
     message.sender = object.sender ?? "";
     message.networkId = object.networkId ?? "";
     message.projectId = object.projectId ?? 0;
@@ -252,22 +248,22 @@ export const UpdateCollectionMetadatasRequest = {
   },
 };
 
-function createBaseUpdateCollectionMetadatasResponse(): UpdateCollectionMetadatasResponse {
+function createBaseUpdateTokensMetadatasResponse(): UpdateTokensMetadatasResponse {
   return { merkleRoot: "" };
 }
 
-export const UpdateCollectionMetadatasResponse = {
-  encode(message: UpdateCollectionMetadatasResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const UpdateTokensMetadatasResponse = {
+  encode(message: UpdateTokensMetadatasResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.merkleRoot !== "") {
       writer.uint32(10).string(message.merkleRoot);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateCollectionMetadatasResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateTokensMetadatasResponse {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUpdateCollectionMetadatasResponse();
+    const message = createBaseUpdateTokensMetadatasResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -287,11 +283,11 @@ export const UpdateCollectionMetadatasResponse = {
     return message;
   },
 
-  fromJSON(object: any): UpdateCollectionMetadatasResponse {
+  fromJSON(object: any): UpdateTokensMetadatasResponse {
     return { merkleRoot: isSet(object.merkleRoot) ? globalThis.String(object.merkleRoot) : "" };
   },
 
-  toJSON(message: UpdateCollectionMetadatasResponse): unknown {
+  toJSON(message: UpdateTokensMetadatasResponse): unknown {
     const obj: any = {};
     if (message.merkleRoot !== "") {
       obj.merkleRoot = message.merkleRoot;
@@ -299,15 +295,13 @@ export const UpdateCollectionMetadatasResponse = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<UpdateCollectionMetadatasResponse>, I>>(
-    base?: I,
-  ): UpdateCollectionMetadatasResponse {
-    return UpdateCollectionMetadatasResponse.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<UpdateTokensMetadatasResponse>, I>>(base?: I): UpdateTokensMetadatasResponse {
+    return UpdateTokensMetadatasResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<UpdateCollectionMetadatasResponse>, I>>(
+  fromPartial<I extends Exact<DeepPartial<UpdateTokensMetadatasResponse>, I>>(
     object: I,
-  ): UpdateCollectionMetadatasResponse {
-    const message = createBaseUpdateCollectionMetadatasResponse();
+  ): UpdateTokensMetadatasResponse {
+    const message = createBaseUpdateTokensMetadatasResponse();
     message.merkleRoot = object.merkleRoot ?? "";
     return message;
   },
@@ -2168,10 +2162,10 @@ export const WhitelistMintInfo = {
 };
 
 export interface LaunchpadService {
-  UpdateCollectionMetadatas(
-    request: DeepPartial<UpdateCollectionMetadatasRequest>,
+  UpdateTokensMetadatas(
+    request: DeepPartial<UpdateTokensMetadatasRequest>,
     metadata?: grpc.Metadata,
-  ): Promise<UpdateCollectionMetadatasResponse>;
+  ): Promise<UpdateTokensMetadatasResponse>;
   CalculateCollectionMerkleRoot(
     request: DeepPartial<CalculateCollectionMerkleRootRequest>,
     metadata?: grpc.Metadata,
@@ -2192,20 +2186,20 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
 
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.UpdateCollectionMetadatas = this.UpdateCollectionMetadatas.bind(this);
+    this.UpdateTokensMetadatas = this.UpdateTokensMetadatas.bind(this);
     this.CalculateCollectionMerkleRoot = this.CalculateCollectionMerkleRoot.bind(this);
     this.UpdateCollectionWhitelists = this.UpdateCollectionWhitelists.bind(this);
     this.TokenMetadata = this.TokenMetadata.bind(this);
     this.WhitelistedAddressMerkleInfo = this.WhitelistedAddressMerkleInfo.bind(this);
   }
 
-  UpdateCollectionMetadatas(
-    request: DeepPartial<UpdateCollectionMetadatasRequest>,
+  UpdateTokensMetadatas(
+    request: DeepPartial<UpdateTokensMetadatasRequest>,
     metadata?: grpc.Metadata,
-  ): Promise<UpdateCollectionMetadatasResponse> {
+  ): Promise<UpdateTokensMetadatasResponse> {
     return this.rpc.unary(
-      LaunchpadServiceUpdateCollectionMetadatasDesc,
-      UpdateCollectionMetadatasRequest.fromPartial(request),
+      LaunchpadServiceUpdateTokensMetadatasDesc,
+      UpdateTokensMetadatasRequest.fromPartial(request),
       metadata,
     );
   }
@@ -2250,19 +2244,19 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
 
 export const LaunchpadServiceDesc = { serviceName: "launchpad.v1.LaunchpadService" };
 
-export const LaunchpadServiceUpdateCollectionMetadatasDesc: UnaryMethodDefinitionish = {
-  methodName: "UpdateCollectionMetadatas",
+export const LaunchpadServiceUpdateTokensMetadatasDesc: UnaryMethodDefinitionish = {
+  methodName: "UpdateTokensMetadatas",
   service: LaunchpadServiceDesc,
   requestStream: false,
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return UpdateCollectionMetadatasRequest.encode(this).finish();
+      return UpdateTokensMetadatasRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = UpdateCollectionMetadatasResponse.decode(data);
+      const value = UpdateTokensMetadatasResponse.decode(data);
       return {
         ...value,
         toObject() {
