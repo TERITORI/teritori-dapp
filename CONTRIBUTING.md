@@ -198,19 +198,43 @@ We currently have a global concept called `selected network`, it is a value stor
 
 ### Network features
 
-TODO: explain network features, why we have that concept, how to use them and how to define them
+Each network has a specific feature-set, Teritori has, among other things, a social feed and an nft marketplace. Osmosis has a swap. Stargaze has a nft marketplace, etc..
+
+We represent this with `NetworkFeature`s. Those are defined in the [networks package](packages/networks).
+
+When you implement a new feature you should add a `NetworkFeature` definition and add an instance of it to the definition of networks you intend to support with it.
 
 ### IPFS
 
-TODO: explain how to pin and retrieve files, ipfs:// uris vs cid, link to OptimizedImage, etc...
+We use [IPFS](https://docs.ipfs.tech/install/) to store large objects due to the blockchain gas costs.
+An IPFS file is referenced by it's [CID](https://docs.ipfs.tech/concepts/content-addressing/).
+
+To reference a remote file in persisted data, we use an uri with the format `ipfs://<CID>`. This allows to disambiguate links and support other web3 data providers like [arweave](https://www.arweave.org/) in the future without hacky heuristics.
+
+The highest data quality available must be uploaded. It will then be downsized for efficient serving by a [resizing proxy](#image-proxy)
 
 ### Developer mode
 
-TODO: explain how and why to use developer mode gating
+In order to keep PRs atomic, we might need to merge a partially implemented feature, if you can't hide the feature with a gating based on testnets NetworkFeature definitions, we have a redux value called `developer mode` that is disabled by default and can be enabled by other developers working on in-progess features.
 
 ### Handling currencies
 
-TODO: talk about how an amount is defined, how it should be handled, displayed, etc...
+A currency amount is referenced by 3 values
+
+```typescript
+interface CurrencyAmount {
+  networkId: string
+  denom: string
+  atomics: string
+}
+```
+The `networkId` and `denom` fields uniquely identify this currency across the known universe, the network id reference the network hosting this currency, the denom is a network-specific id uniquely identifying the currency within this network. You can get more info about the currency by calling helpers from the [networks package](packages/networks). Some currencies might be currencies bridged from other networks and will be a chain of references.
+
+The `atomics` field is a bigint storing the number of atomic fractions of currency this `CurrencyAmount` represents? To properly display it to end users you need to known the number of decimals of the currency which can be fetched using utilities from the [networks package](packages/networks)
+
+To do mathematical operations on amounts you should NOT convert them to `number` or `float`, you should instead use a big integer library like [BigInt](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/BigInt), [Long](https://www.npmjs.com/package/long) or golang's [math/big.Int](https://pkg.go.dev/math/big).
+
+To display a currency amount, uou should use the util `prettyPrice` in most of the cases.
 
 ### Cross-platform 
 
