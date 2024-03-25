@@ -25,6 +25,7 @@ sylvia = { workspace = true }
 prost = { workspace = true }
 apipb = { workspace = true }
 sha3 = "0.10.8"
+cw-multi-test = "0.20.0"
 
 [dev-dependencies]
 cw-multi-test = "0.20.0"

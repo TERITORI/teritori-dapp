@@ -1,7 +1,7 @@
 use cosmwasm_std::{Addr, Attribute, HexBinary, Uint128};
 use cw2981_royalties::{Metadata, Trait};
 use rs_merkle::{Hasher, MerkleTree};
-use sylvia::cw_multi_test::AppResponse;
+use cw_multi_test::AppResponse;
 
 use crate::{contract::{MintInfo, WhitelistMintInfo}, hasher::TrKeccak256};
 

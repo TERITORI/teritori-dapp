@@ -7,52 +7,145 @@
     "title": "InstantiateMsg",
     "type": "object",
     "required": [
-      "msg"
+      "admin",
+      "launchpad_contract",
+      "mint_info",
+      "minter",
+      "name",
+      "symbol",
+      "whitelist_mint_infos"
     ],
     "properties": {
-      "msg": {
-        "$ref": "#/definitions/Tr721InstantiateMsg"
+      "admin": {
+        "type": "string"
+      },
+      "launchpad_contract": {
+        "type": "string"
+      },
+      "mint_info": {
+        "$ref": "#/definitions/MintInfo"
+      },
+      "minter": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "symbol": {
+        "type": "string"
+      },
+      "whitelist_mint_infos": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/WhitelistMintInfo"
+        }
       }
     },
     "definitions": {
-      "Config": {
+      "Addr": {
+        "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
+        "type": "string"
+      },
+      "MintInfo": {
         "type": "object",
         "required": [
+          "denom",
+          "limit_per_address",
           "merkle_root",
-          "total_supply"
+          "start_time",
+          "tokens_count",
+          "unit_price"
         ],
         "properties": {
-          "merkle_root": {
+          "denom": {
             "type": "string"
           },
-          "total_supply": {
+          "limit_per_address": {
             "type": "integer",
             "format": "uint32",
             "minimum": 0.0
+          },
+          "merkle_root": {
+            "type": "string"
+          },
+          "royalty_address": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Addr"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "royalty_percentage": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint8",
+            "minimum": 0.0
+          },
+          "start_time": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "tokens_count": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "unit_price": {
+            "$ref": "#/definitions/Uint128"
           }
         },
         "additionalProperties": false
       },
-      "Tr721InstantiateMsg": {
+      "Uint128": {
+        "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+        "type": "string"
+      },
+      "WhitelistMintInfo": {
         "type": "object",
         "required": [
-          "config",
-          "minter",
-          "name",
-          "symbol"
+          "addresses_count",
+          "denom",
+          "end_time",
+          "limit_per_address",
+          "merkle_root",
+          "start_time",
+          "unit_price"
         ],
         "properties": {
-          "config": {
-            "$ref": "#/definitions/Config"
+          "addresses_count": {
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0.0
           },
-          "minter": {
+          "denom": {
             "type": "string"
           },
-          "name": {
+          "end_time": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "limit_per_address": {
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0.0
+          },
+          "merkle_root": {
             "type": "string"
           },
-          "symbol": {
-            "type": "string"
+          "start_time": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "unit_price": {
+            "$ref": "#/definitions/Uint128"
           }
         },
         "additionalProperties": false
@@ -266,11 +359,69 @@
       {
         "type": "object",
         "required": [
+          "update_mint_info"
+        ],
+        "properties": {
+          "update_mint_info": {
+            "type": "object",
+            "required": [
+              "mint_info"
+            ],
+            "properties": {
+              "mint_info": {
+                "$ref": "#/definitions/MintInfo"
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "update_whitelist_mint_info"
+        ],
+        "properties": {
+          "update_whitelist_mint_info": {
+            "type": "object",
+            "required": [
+              "whitelist_id",
+              "whitelist_mint_info"
+            ],
+            "properties": {
+              "whitelist_id": {
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "whitelist_mint_info": {
+                "$ref": "#/definitions/WhitelistMintInfo"
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
           "request_mint"
         ],
         "properties": {
           "request_mint": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+              "whitelist_proof": {
+                "anyOf": [
+                  {
+                    "$ref": "#/definitions/WhitelistProof"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
           }
         },
         "additionalProperties": false
@@ -305,6 +456,10 @@
       }
     ],
     "definitions": {
+      "Addr": {
+        "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
+        "type": "string"
+      },
       "Binary": {
         "description": "Binary is a wrapper around Vec<u8> to add base64 de/serialization with serde. It also adds some helper methods to help encode inline.\n\nThis is only needed as serde-json-{core,wasm} has a horrible encoding for Vec<u8>. See also <https://github.com/CosmWasm/cosmwasm/blob/main/docs/MESSAGE_TYPES.md>.",
         "type": "string"
@@ -435,6 +590,62 @@
         },
         "additionalProperties": false
       },
+      "MintInfo": {
+        "type": "object",
+        "required": [
+          "denom",
+          "limit_per_address",
+          "merkle_root",
+          "start_time",
+          "tokens_count",
+          "unit_price"
+        ],
+        "properties": {
+          "denom": {
+            "type": "string"
+          },
+          "limit_per_address": {
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0.0
+          },
+          "merkle_root": {
+            "type": "string"
+          },
+          "royalty_address": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Addr"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "royalty_percentage": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint8",
+            "minimum": 0.0
+          },
+          "start_time": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "tokens_count": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "unit_price": {
+            "$ref": "#/definitions/Uint128"
+          }
+        },
+        "additionalProperties": false
+      },
       "Timestamp": {
         "description": "A point in time in nanosecond precision.\n\nThis type can represent times from 1970-01-01T00:00:00Z to 2554-07-21T23:34:33Z.\n\n## Examples\n\n``` # use cosmwasm_std::Timestamp; let ts = Timestamp::from_nanos(1_000_000_202); assert_eq!(ts.nanos(), 1_000_000_202); assert_eq!(ts.seconds(), 1); assert_eq!(ts.subsec_nanos(), 202);\n\nlet ts = ts.plus_seconds(2); assert_eq!(ts.nanos(), 3_000_000_202); assert_eq!(ts.seconds(), 3); assert_eq!(ts.subsec_nanos(), 202); ```",
         "allOf": [
@@ -465,9 +676,75 @@
         },
         "additionalProperties": false
       },
+      "Uint128": {
+        "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+        "type": "string"
+      },
       "Uint64": {
         "description": "A thin wrapper around u64 that is using strings for JSON encoding/decoding, such that the full u64 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u64` to get the value out:\n\n``` # use cosmwasm_std::Uint64; let a = Uint64::from(42u64); assert_eq!(a.u64(), 42);\n\nlet b = Uint64::from(70u32); assert_eq!(b.u64(), 70); ```",
         "type": "string"
+      },
+      "WhitelistMintInfo": {
+        "type": "object",
+        "required": [
+          "addresses_count",
+          "denom",
+          "end_time",
+          "limit_per_address",
+          "merkle_root",
+          "start_time",
+          "unit_price"
+        ],
+        "properties": {
+          "addresses_count": {
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0.0
+          },
+          "denom": {
+            "type": "string"
+          },
+          "end_time": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "limit_per_address": {
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0.0
+          },
+          "merkle_root": {
+            "type": "string"
+          },
+          "start_time": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
+          "unit_price": {
+            "$ref": "#/definitions/Uint128"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WhitelistProof": {
+        "type": "object",
+        "required": [
+          "address_indice",
+          "merkle_proof"
+        ],
+        "properties": {
+          "address_indice": {
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0.0
+          },
+          "merkle_proof": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
       }
     }
   },
@@ -475,6 +752,88 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "QueryMsg",
     "oneOf": [
+      {
+        "type": "object",
+        "required": [
+          "total_minted"
+        ],
+        "properties": {
+          "total_minted": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "minted_count_by_user"
+        ],
+        "properties": {
+          "minted_count_by_user": {
+            "type": "object",
+            "required": [
+              "user"
+            ],
+            "properties": {
+              "user": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "whitelist_minted_count_by_user"
+        ],
+        "properties": {
+          "whitelist_minted_count_by_user": {
+            "type": "object",
+            "required": [
+              "period",
+              "user"
+            ],
+            "properties": {
+              "period": {
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "user": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "mint_info"
+        ],
+        "properties": {
+          "mint_info": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "whitelist_mint_infos"
+        ],
+        "properties": {
+          "whitelist_mint_infos": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      },
       {
         "type": "object",
         "required": [
@@ -1677,6 +2036,43 @@
               "additionalProperties": false
             },
             {
+              "description": "A Stargate message encoded the same way as a protobuf [Any](https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/any.proto). This is the same structure as messages in `TxBody` from [ADR-020](https://github.com/cosmos/cosmos-sdk/blob/master/docs/architecture/adr-020-protobuf-transaction-encoding.md)",
+              "type": "object",
+              "required": [
+                "stargate"
+              ],
+              "properties": {
+                "stargate": {
+                  "type": "object",
+                  "required": [
+                    "type_url",
+                    "value"
+                  ],
+                  "properties": {
+                    "type_url": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "$ref": "#/definitions/Binary"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "ibc"
+              ],
+              "properties": {
+                "ibc": {
+                  "$ref": "#/definitions/IbcMsg"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
               "type": "object",
               "required": [
                 "wasm"
@@ -1687,8 +2083,24 @@
                 }
               },
               "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "gov"
+              ],
+              "properties": {
+                "gov": {
+                  "$ref": "#/definitions/GovMsg"
+                }
+              },
+              "additionalProperties": false
             }
           ]
+        },
+        "Decimal": {
+          "description": "A fixed-point decimal value with 18 fractional digits, i.e. Decimal(1_000_000_000_000_000_000) == 1.0\n\nThe greatest possible value that can be represented is 340282366920938463463.374607431768211455 (which is (2^128 - 1) / 10^18)",
+          "type": "string"
         },
         "DistributionMsg": {
           "description": "The message types of the distribution module.\n\nSee https://github.com/cosmos/cosmos-sdk/blob/v0.42.4/proto/cosmos/distribution/v1beta1/tx.proto",
@@ -1761,6 +2173,226 @@
             "type": {
               "description": "The event type. This is renamed to \"ty\" because \"type\" is reserved in Rust. This sucks, we know.",
               "type": "string"
+            }
+          }
+        },
+        "GovMsg": {
+          "description": "This message type allows the contract interact with the [x/gov] module in order to cast votes.\n\n[x/gov]: https://github.com/cosmos/cosmos-sdk/tree/v0.45.12/x/gov\n\n## Examples\n\nCast a simple vote:\n\n``` # use cosmwasm_std::{ #     HexBinary, #     Storage, Api, Querier, DepsMut, Deps, entry_point, Env, StdError, MessageInfo, #     Response, QueryResponse, # }; # type ExecuteMsg = (); use cosmwasm_std::{GovMsg, VoteOption};\n\n#[entry_point] pub fn execute( deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg, ) -> Result<Response, StdError> { // ... Ok(Response::new().add_message(GovMsg::Vote { proposal_id: 4, vote: VoteOption::Yes, })) } ```\n\nCast a weighted vote:\n\n``` # use cosmwasm_std::{ #     HexBinary, #     Storage, Api, Querier, DepsMut, Deps, entry_point, Env, StdError, MessageInfo, #     Response, QueryResponse, # }; # type ExecuteMsg = (); # #[cfg(feature = \"cosmwasm_1_2\")] use cosmwasm_std::{Decimal, GovMsg, VoteOption, WeightedVoteOption};\n\n# #[cfg(feature = \"cosmwasm_1_2\")] #[entry_point] pub fn execute( deps: DepsMut, env: Env, info: MessageInfo, msg: ExecuteMsg, ) -> Result<Response, StdError> { // ... Ok(Response::new().add_message(GovMsg::VoteWeighted { proposal_id: 4, options: vec![ WeightedVoteOption { option: VoteOption::Yes, weight: Decimal::percent(65), }, WeightedVoteOption { option: VoteOption::Abstain, weight: Decimal::percent(35), }, ], })) } ```",
+          "oneOf": [
+            {
+              "description": "This maps directly to [MsgVote](https://github.com/cosmos/cosmos-sdk/blob/v0.42.5/proto/cosmos/gov/v1beta1/tx.proto#L46-L56) in the Cosmos SDK with voter set to the contract address.",
+              "type": "object",
+              "required": [
+                "vote"
+              ],
+              "properties": {
+                "vote": {
+                  "type": "object",
+                  "required": [
+                    "proposal_id",
+                    "vote"
+                  ],
+                  "properties": {
+                    "proposal_id": {
+                      "type": "integer",
+                      "format": "uint64",
+                      "minimum": 0.0
+                    },
+                    "vote": {
+                      "description": "The vote option.\n\nThis should be called \"option\" for consistency with Cosmos SDK. Sorry for that. See <https://github.com/CosmWasm/cosmwasm/issues/1571>.",
+                      "allOf": [
+                        {
+                          "$ref": "#/definitions/VoteOption"
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "description": "This maps directly to [MsgVoteWeighted](https://github.com/cosmos/cosmos-sdk/blob/v0.45.8/proto/cosmos/gov/v1beta1/tx.proto#L66-L78) in the Cosmos SDK with voter set to the contract address.",
+              "type": "object",
+              "required": [
+                "vote_weighted"
+              ],
+              "properties": {
+                "vote_weighted": {
+                  "type": "object",
+                  "required": [
+                    "options",
+                    "proposal_id"
+                  ],
+                  "properties": {
+                    "options": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/WeightedVoteOption"
+                      }
+                    },
+                    "proposal_id": {
+                      "type": "integer",
+                      "format": "uint64",
+                      "minimum": 0.0
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "IbcMsg": {
+          "description": "These are messages in the IBC lifecycle. Only usable by IBC-enabled contracts (contracts that directly speak the IBC protocol via 6 entry points)",
+          "oneOf": [
+            {
+              "description": "Sends bank tokens owned by the contract to the given address on another chain. The channel must already be established between the ibctransfer module on this chain and a matching module on the remote chain. We cannot select the port_id, this is whatever the local chain has bound the ibctransfer module to.",
+              "type": "object",
+              "required": [
+                "transfer"
+              ],
+              "properties": {
+                "transfer": {
+                  "type": "object",
+                  "required": [
+                    "amount",
+                    "channel_id",
+                    "timeout",
+                    "to_address"
+                  ],
+                  "properties": {
+                    "amount": {
+                      "description": "packet data only supports one coin https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/ibc/applications/transfer/v1/transfer.proto#L11-L20",
+                      "allOf": [
+                        {
+                          "$ref": "#/definitions/Coin"
+                        }
+                      ]
+                    },
+                    "channel_id": {
+                      "description": "existing channel to send the tokens over",
+                      "type": "string"
+                    },
+                    "timeout": {
+                      "description": "when packet times out, measured on remote chain",
+                      "allOf": [
+                        {
+                          "$ref": "#/definitions/IbcTimeout"
+                        }
+                      ]
+                    },
+                    "to_address": {
+                      "description": "address on the remote chain to receive these tokens",
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "description": "Sends an IBC packet with given data over the existing channel. Data should be encoded in a format defined by the channel version, and the module on the other side should know how to parse this.",
+              "type": "object",
+              "required": [
+                "send_packet"
+              ],
+              "properties": {
+                "send_packet": {
+                  "type": "object",
+                  "required": [
+                    "channel_id",
+                    "data",
+                    "timeout"
+                  ],
+                  "properties": {
+                    "channel_id": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/definitions/Binary"
+                    },
+                    "timeout": {
+                      "description": "when packet times out, measured on remote chain",
+                      "allOf": [
+                        {
+                          "$ref": "#/definitions/IbcTimeout"
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "description": "This will close an existing channel that is owned by this contract. Port is auto-assigned to the contract's IBC port",
+              "type": "object",
+              "required": [
+                "close_channel"
+              ],
+              "properties": {
+                "close_channel": {
+                  "type": "object",
+                  "required": [
+                    "channel_id"
+                  ],
+                  "properties": {
+                    "channel_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "IbcTimeout": {
+          "description": "In IBC each package must set at least one type of timeout: the timestamp or the block height. Using this rather complex enum instead of two timeout fields we ensure that at least one timeout is set.",
+          "type": "object",
+          "properties": {
+            "block": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/IbcTimeoutBlock"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "timestamp": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Timestamp"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "IbcTimeoutBlock": {
+          "description": "IBCTimeoutHeight Height is a monotonically increasing data type that can be compared against another Height for the purposes of updating and freezing clients. Ordering is (revision_number, timeout_height)",
+          "type": "object",
+          "required": [
+            "height",
+            "revision"
+          ],
+          "properties": {
+            "height": {
+              "description": "block height after which the packet times out. the height within the given revision",
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
+            },
+            "revision": {
+              "description": "the version that the client is currently on (e.g. after resetting the chain this could increment 1 as height drops to 0)",
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
             }
           }
         },
@@ -1913,9 +2545,30 @@
             }
           }
         },
+        "Timestamp": {
+          "description": "A point in time in nanosecond precision.\n\nThis type can represent times from 1970-01-01T00:00:00Z to 2554-07-21T23:34:33Z.\n\n## Examples\n\n``` # use cosmwasm_std::Timestamp; let ts = Timestamp::from_nanos(1_000_000_202); assert_eq!(ts.nanos(), 1_000_000_202); assert_eq!(ts.seconds(), 1); assert_eq!(ts.subsec_nanos(), 202);\n\nlet ts = ts.plus_seconds(2); assert_eq!(ts.nanos(), 3_000_000_202); assert_eq!(ts.seconds(), 3); assert_eq!(ts.subsec_nanos(), 202); ```",
+          "allOf": [
+            {
+              "$ref": "#/definitions/Uint64"
+            }
+          ]
+        },
         "Uint128": {
           "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
           "type": "string"
+        },
+        "Uint64": {
+          "description": "A thin wrapper around u64 that is using strings for JSON encoding/decoding, such that the full u64 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u64` to get the value out:\n\n``` # use cosmwasm_std::Uint64; let a = Uint64::from(42u64); assert_eq!(a.u64(), 42);\n\nlet b = Uint64::from(70u32); assert_eq!(b.u64(), 70); ```",
+          "type": "string"
+        },
+        "VoteOption": {
+          "type": "string",
+          "enum": [
+            "yes",
+            "no",
+            "abstain",
+            "no_with_veto"
+          ]
         },
         "WasmMsg": {
           "description": "The message types of the wasm module.\n\nSee https://github.com/CosmWasm/wasmd/blob/v0.14.0/x/wasm/internal/types/tx.proto",
@@ -2145,6 +2798,21 @@
               "additionalProperties": false
             }
           ]
+        },
+        "WeightedVoteOption": {
+          "type": "object",
+          "required": [
+            "option",
+            "weight"
+          ],
+          "properties": {
+            "option": {
+              "$ref": "#/definitions/VoteOption"
+            },
+            "weight": {
+              "$ref": "#/definitions/Decimal"
+            }
+          }
         }
       }
     },
@@ -2152,6 +2820,81 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "String",
       "type": "string"
+    },
+    "mint_info": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "MintInfo",
+      "type": "object",
+      "required": [
+        "denom",
+        "limit_per_address",
+        "merkle_root",
+        "start_time",
+        "tokens_count",
+        "unit_price"
+      ],
+      "properties": {
+        "denom": {
+          "type": "string"
+        },
+        "limit_per_address": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "merkle_root": {
+          "type": "string"
+        },
+        "royalty_address": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Addr"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "royalty_percentage": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint8",
+          "minimum": 0.0
+        },
+        "start_time": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "tokens_count": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "unit_price": {
+          "$ref": "#/definitions/Uint128"
+        }
+      },
+      "additionalProperties": false,
+      "definitions": {
+        "Addr": {
+          "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
+          "type": "string"
+        },
+        "Uint128": {
+          "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+          "type": "string"
+        }
+      }
+    },
+    "minted_count_by_user": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "uint32",
+      "type": "integer",
+      "format": "uint32",
+      "minimum": 0.0
     },
     "minter": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -2664,6 +3407,78 @@
         }
       },
       "additionalProperties": false
+    },
+    "total_minted": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "uint64",
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    },
+    "whitelist_mint_infos": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Array_of_WhitelistMintInfo",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/WhitelistMintInfo"
+      },
+      "definitions": {
+        "Uint128": {
+          "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+          "type": "string"
+        },
+        "WhitelistMintInfo": {
+          "type": "object",
+          "required": [
+            "addresses_count",
+            "denom",
+            "end_time",
+            "limit_per_address",
+            "merkle_root",
+            "start_time",
+            "unit_price"
+          ],
+          "properties": {
+            "addresses_count": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0.0
+            },
+            "denom": {
+              "type": "string"
+            },
+            "end_time": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
+            },
+            "limit_per_address": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0.0
+            },
+            "merkle_root": {
+              "type": "string"
+            },
+            "start_time": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
+            },
+            "unit_price": {
+              "$ref": "#/definitions/Uint128"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "whitelist_minted_count_by_user": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "uint32",
+      "type": "integer",
+      "format": "uint32",
+      "minimum": 0.0
     }
   }
 }

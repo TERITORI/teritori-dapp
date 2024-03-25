@@ -4,19 +4,36 @@
 * and run the @cosmwasm/ts-codegen generate command to regenerate this file.
 */
 
+export type Addr = string;
+export type Uint128 = string;
 export interface InstantiateMsg {
-  msg: Tr721InstantiateMsg;
-  [k: string]: unknown;
-}
-export interface Tr721InstantiateMsg {
-  config: Config;
+  admin: string;
+  launchpad_contract: string;
+  mint_info: MintInfo;
   minter: string;
   name: string;
   symbol: string;
+  whitelist_mint_infos: WhitelistMintInfo[];
+  [k: string]: unknown;
 }
-export interface Config {
+export interface MintInfo {
+  denom: string;
+  limit_per_address: number;
   merkle_root: string;
-  total_supply: number;
+  royalty_address?: Addr | null;
+  royalty_percentage?: number | null;
+  start_time: number;
+  tokens_count: number;
+  unit_price: Uint128;
+}
+export interface WhitelistMintInfo {
+  addresses_count: number;
+  denom: string;
+  end_time: number;
+  limit_per_address: number;
+  merkle_root: string;
+  start_time: number;
+  unit_price: Uint128;
 }
 export type ExecuteMsg = {
   transfer_nft: {
@@ -64,7 +81,19 @@ export type ExecuteMsg = {
     [k: string]: unknown;
   };
 } | {
+  update_mint_info: {
+    mint_info: MintInfo;
+    [k: string]: unknown;
+  };
+} | {
+  update_whitelist_mint_info: {
+    whitelist_id: number;
+    whitelist_mint_info: WhitelistMintInfo;
+    [k: string]: unknown;
+  };
+} | {
   request_mint: {
+    whitelist_proof?: WhitelistProof | null;
     [k: string]: unknown;
   };
 } | {
@@ -84,7 +113,7 @@ export type Expiration = {
   never: {};
 };
 export type Timestamp = Uint64;
-export type Uint64 = string;
+export type Uint64 = number;
 export interface Metadata {
   animation_url?: string | null;
   attributes?: Trait[] | null;
@@ -103,7 +132,34 @@ export interface Trait {
   trait_type: string;
   value: string;
 }
+export interface WhitelistProof {
+  address_indice: number;
+  merkle_proof: string;
+}
 export type QueryMsg = {
+  total_minted: {
+    [k: string]: unknown;
+  };
+} | {
+  minted_count_by_user: {
+    user: string;
+    [k: string]: unknown;
+  };
+} | {
+  whitelist_minted_count_by_user: {
+    period: number;
+    user: string;
+    [k: string]: unknown;
+  };
+} | {
+  mint_info: {
+    [k: string]: unknown;
+  };
+} | {
+  whitelist_mint_infos: {
+    [k: string]: unknown;
+  };
+} | {
   minter: {
     [k: string]: unknown;
   };
@@ -200,7 +256,6 @@ export type QueryMsg = {
     [k: string]: unknown;
   };
 };
-export type Uint128 = string;
 export interface AllNftInfoResponseForNullable_Metadata {
   access: OwnerOfResponse;
   info: NftInfoResponseForNullable_Metadata;
@@ -249,7 +304,17 @@ export type CosmosMsgForEmpty = {
 } | {
   distribution: DistributionMsg;
 } | {
+  stargate: {
+    type_url: string;
+    value: Binary;
+    [k: string]: unknown;
+  };
+} | {
+  ibc: IbcMsg;
+} | {
   wasm: WasmMsg;
+} | {
+  gov: GovMsg;
 };
 export type BankMsg = {
   send: {
@@ -291,6 +356,27 @@ export type DistributionMsg = {
 } | {
   withdraw_delegator_reward: {
     validator: string;
+    [k: string]: unknown;
+  };
+};
+export type IbcMsg = {
+  transfer: {
+    amount: Coin;
+    channel_id: string;
+    timeout: IbcTimeout;
+    to_address: string;
+    [k: string]: unknown;
+  };
+} | {
+  send_packet: {
+    channel_id: string;
+    data: Binary;
+    timeout: IbcTimeout;
+    [k: string]: unknown;
+  };
+} | {
+  close_channel: {
+    channel_id: string;
     [k: string]: unknown;
   };
 };
@@ -339,6 +425,21 @@ export type WasmMsg = {
     [k: string]: unknown;
   };
 };
+export type GovMsg = {
+  vote: {
+    proposal_id: number;
+    vote: VoteOption;
+    [k: string]: unknown;
+  };
+} | {
+  vote_weighted: {
+    options: WeightedVoteOption[];
+    proposal_id: number;
+    [k: string]: unknown;
+  };
+};
+export type VoteOption = "yes" | "no" | "abstain" | "no_with_veto";
+export type Decimal = string;
 export type ReplyOn = "always" | "error" | "success" | "never";
 export interface ResponseForEmpty {
   attributes: Attribute[];
@@ -372,7 +473,23 @@ export interface Coin {
 export interface Empty {
   [k: string]: unknown;
 }
+export interface IbcTimeout {
+  block?: IbcTimeoutBlock | null;
+  timestamp?: Timestamp | null;
+  [k: string]: unknown;
+}
+export interface IbcTimeoutBlock {
+  height: number;
+  revision: number;
+  [k: string]: unknown;
+}
+export interface WeightedVoteOption {
+  option: VoteOption;
+  weight: Decimal;
+  [k: string]: unknown;
+}
 export type String = string;
+export type Uint32 = number;
 export interface MinterResponse {
   minter?: string | null;
 }
@@ -382,7 +499,6 @@ export interface NumTokensResponse {
 export interface OperatorResponse {
   approval: Approval;
 }
-export type Addr = string;
 export interface OwnershipForAddr {
   owner?: Addr | null;
   pending_expiry?: Expiration | null;
@@ -392,3 +508,4 @@ export interface RoyaltiesInfoResponse {
   address: string;
   royalty_amount: Uint128;
 }
+export type ArrayOfWhitelistMintInfo = WhitelistMintInfo[];
