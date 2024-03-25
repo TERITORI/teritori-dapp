@@ -6,6 +6,7 @@ type LaunchpadProject struct {
 	NetworkID string `gorm:"primaryKey"`
 	ProjectID uint32 `gorm:"primaryKey"`
 
+	MerkleRoot     string
 	CollectionName string
 }
 

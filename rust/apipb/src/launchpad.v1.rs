@@ -1,7 +1,7 @@
 // @generated
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UpdateCollectionMetadatasRequest {
+pub struct UpdateTokensMetadatasRequest {
     #[prost(string, tag="1")]
     pub sender: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
@@ -13,7 +13,7 @@ pub struct UpdateCollectionMetadatasRequest {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UpdateCollectionMetadatasResponse {
+pub struct UpdateTokensMetadatasResponse {
     #[prost(string, tag="1")]
     pub merkle_root: ::prost::alloc::string::String,
 }

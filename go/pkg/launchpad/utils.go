@@ -2,7 +2,6 @@ package launchpad
 
 import (
 	"bytes"
-	"encoding/hex"
 	"fmt"
 
 	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
@@ -69,8 +68,6 @@ func (m *Metadata) proto_encode() ([]byte, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to proto_encode metadata to proto")
 	}
-
-	fmt.Println(hex.EncodeToString(bytes))
 
 	return bytes, nil
 }
