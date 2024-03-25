@@ -238,19 +238,48 @@ To display a currency amount, you should use the util `prettyPrice` in most of t
 
 ### Cross-platform 
 
-TODO: talk about the proper ways to make platform-specific code and common pitfalls coming from web-only
+If your frontend code requires platform-specific sections, you can use [platform-specific files](https://reactnative.dev/docs/platform-specific-code#native-specific-extensions-ie-sharing-code-with-nodejs-and-web).
+- `Foo.native.ts(x)` for native code
+- `Foo.web.ts(x)` for web and electron code
+- `Foo.ts(x)` as fallback for other platforms
+  
+We recommend specifying interfaces outside of the platform-specific files and make the platform-specific files conform to those interfaces to ensure type-safety.
+
+You can also use a [dynamic Platform switch](https://reactnative.dev/docs/platform-specific-code#platform-module) but it's better to use platform-specific files in most cases so the platform-specific code is not bundled on unsupported platforms.
 
 ### Handling client-provided data
 
-TODO: why and how all user-generated stuff must be validated
+All user/client-generated data must be [validated](https://owasp.org/www-project-proactive-controls/v3/en/c5-validate-inputs) by trusted procedures before storage (for example within smart-contracts or backend code).
+
+In some places, this is not possible, for example when supporting generic nft metadata, fetching data from an api or parsing a json file. In this case the data must be validated after retrieval and before consumption, with libraries like [zod](https://zod.dev/) or [golang's json decoder](https://pkg.go.dev/encoding/json) and strict type definitions.
 
 ### Type-safety and linting
 
-TODO: explain the importance of type-safety and linters, why ignore rules are bad and in what cases you can use them
+[Type-safety](https://en.wikipedia.org/wiki/Type_safety) heavily reduces the chances of bugs and regressions during maintenance. Avoid `any`s and bypassing type-checkers.
+
+Linters are tools that automatically enforce code-styling and prevent bad practices. Avoid bypassing the rules. If a rule need to be bypassed often, the architecture of the code need change or the rule should be disabled.
+
+We should strive to setup static analysis routines to automatically detect issues that come up repeadetly during reviews to save everyone's time.
+
+Code generation replicability and sync must be checked by the CI.
 
 ### Implement an UI
 
-TODO: explain how to properly take a figma and turn it into code
+When tasked to turn a Figma UI into code, you have to keep in mind to:
+
+- Make it responsive
+  
+  A responsive UI (User Interface) refers to a design approach where a website or application's layout adjusts smoothly across different screen sizes and device types. This ensures that content is easily readable and navigable, providing an optimal user experience regardless of the device used to access it. The key aim of a responsive UI is to eliminate the need for different designs for each device type, allowing for a single, unified interface that dynamically adapts to various display characteristics such as resolution, screen size, and orientation. This adaptability is achieved through flexible and fluid layouts that use proportion-based grids, flexible images, and window size queries, among other techniques, to respond to the user's environment.
+
+  You might have the design only in a specific resolution, you should take into account all possible screen sizes and try to adapt it. You can have a back-and-forth with the designer and other team members if you're not sure how to proceed.
+
+- Don't blindly implement everything
+
+  Some components might already exist in a slightly different version, if you see the same kind of data used elsewhere on the app make sure the designer is aware that he added a duplicate and work towards unification, we strive to have a consistent UI.
+
+  The designer might not be aware of the real data shapes. If the data shapes do not match the UI (for example the UI has a single input when the data can be a list), sync with the designer to adapt.
+
+  The designer might not be aware of the actual flows required to make a particular action (for example signing a transaction, or validating data), make sure the result has a good UX and work with the designer if it's not the case.
 
 ### Nested scroll
 
