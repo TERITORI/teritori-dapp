@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StdFee } from "@cosmjs/amino";
-import { InstantiateMsg, Config, ExecuteMsg, Timestamp, Uint64, Addr, Collection, QueryMsg } from "./NftLaunchpad.types";
+import { InstantiateMsg, Config, ExecuteMsg, Addr, Uint128, Collection, WhitelistMintInfo, QueryMsg } from "./NftLaunchpad.types";
 export interface NftLaunchpadReadOnlyInterface {
   contractAddress: string;
   getCollectionById: ({

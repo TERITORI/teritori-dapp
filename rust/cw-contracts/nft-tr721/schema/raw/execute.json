@@ -205,11 +205,69 @@
     {
       "type": "object",
       "required": [
+        "update_mint_info"
+      ],
+      "properties": {
+        "update_mint_info": {
+          "type": "object",
+          "required": [
+            "mint_info"
+          ],
+          "properties": {
+            "mint_info": {
+              "$ref": "#/definitions/MintInfo"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "update_whitelist_mint_info"
+      ],
+      "properties": {
+        "update_whitelist_mint_info": {
+          "type": "object",
+          "required": [
+            "whitelist_id",
+            "whitelist_mint_info"
+          ],
+          "properties": {
+            "whitelist_id": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0.0
+            },
+            "whitelist_mint_info": {
+              "$ref": "#/definitions/WhitelistMintInfo"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
         "request_mint"
       ],
       "properties": {
         "request_mint": {
-          "type": "object"
+          "type": "object",
+          "properties": {
+            "whitelist_proof": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/WhitelistProof"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
         }
       },
       "additionalProperties": false
@@ -244,6 +302,10 @@
     }
   ],
   "definitions": {
+    "Addr": {
+      "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
+      "type": "string"
+    },
     "Binary": {
       "description": "Binary is a wrapper around Vec<u8> to add base64 de/serialization with serde. It also adds some helper methods to help encode inline.\n\nThis is only needed as serde-json-{core,wasm} has a horrible encoding for Vec<u8>. See also <https://github.com/CosmWasm/cosmwasm/blob/main/docs/MESSAGE_TYPES.md>.",
       "type": "string"
@@ -374,6 +436,62 @@
       },
       "additionalProperties": false
     },
+    "MintInfo": {
+      "type": "object",
+      "required": [
+        "denom",
+        "limit_per_address",
+        "merkle_root",
+        "start_time",
+        "tokens_count",
+        "unit_price"
+      ],
+      "properties": {
+        "denom": {
+          "type": "string"
+        },
+        "limit_per_address": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "merkle_root": {
+          "type": "string"
+        },
+        "royalty_address": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Addr"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "royalty_percentage": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint8",
+          "minimum": 0.0
+        },
+        "start_time": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "tokens_count": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "unit_price": {
+          "$ref": "#/definitions/Uint128"
+        }
+      },
+      "additionalProperties": false
+    },
     "Timestamp": {
       "description": "A point in time in nanosecond precision.\n\nThis type can represent times from 1970-01-01T00:00:00Z to 2554-07-21T23:34:33Z.\n\n## Examples\n\n``` # use cosmwasm_std::Timestamp; let ts = Timestamp::from_nanos(1_000_000_202); assert_eq!(ts.nanos(), 1_000_000_202); assert_eq!(ts.seconds(), 1); assert_eq!(ts.subsec_nanos(), 202);\n\nlet ts = ts.plus_seconds(2); assert_eq!(ts.nanos(), 3_000_000_202); assert_eq!(ts.seconds(), 3); assert_eq!(ts.subsec_nanos(), 202); ```",
       "allOf": [
@@ -404,9 +522,75 @@
       },
       "additionalProperties": false
     },
+    "Uint128": {
+      "description": "A thin wrapper around u128 that is using strings for JSON encoding/decoding, such that the full u128 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u128` to get the value out:\n\n``` # use cosmwasm_std::Uint128; let a = Uint128::from(123u128); assert_eq!(a.u128(), 123);\n\nlet b = Uint128::from(42u64); assert_eq!(b.u128(), 42);\n\nlet c = Uint128::from(70u32); assert_eq!(c.u128(), 70); ```",
+      "type": "string"
+    },
     "Uint64": {
       "description": "A thin wrapper around u64 that is using strings for JSON encoding/decoding, such that the full u64 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u64` to get the value out:\n\n``` # use cosmwasm_std::Uint64; let a = Uint64::from(42u64); assert_eq!(a.u64(), 42);\n\nlet b = Uint64::from(70u32); assert_eq!(b.u64(), 70); ```",
       "type": "string"
+    },
+    "WhitelistMintInfo": {
+      "type": "object",
+      "required": [
+        "addresses_count",
+        "denom",
+        "end_time",
+        "limit_per_address",
+        "merkle_root",
+        "start_time",
+        "unit_price"
+      ],
+      "properties": {
+        "addresses_count": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "denom": {
+          "type": "string"
+        },
+        "end_time": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "limit_per_address": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "merkle_root": {
+          "type": "string"
+        },
+        "start_time": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "unit_price": {
+          "$ref": "#/definitions/Uint128"
+        }
+      },
+      "additionalProperties": false
+    },
+    "WhitelistProof": {
+      "type": "object",
+      "required": [
+        "address_indice",
+        "merkle_proof"
+      ],
+      "properties": {
+        "address_indice": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "merkle_proof": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     }
   }
 }

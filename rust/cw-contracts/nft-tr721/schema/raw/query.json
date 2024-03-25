@@ -5,6 +5,88 @@
     {
       "type": "object",
       "required": [
+        "total_minted"
+      ],
+      "properties": {
+        "total_minted": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "minted_count_by_user"
+      ],
+      "properties": {
+        "minted_count_by_user": {
+          "type": "object",
+          "required": [
+            "user"
+          ],
+          "properties": {
+            "user": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "whitelist_minted_count_by_user"
+      ],
+      "properties": {
+        "whitelist_minted_count_by_user": {
+          "type": "object",
+          "required": [
+            "period",
+            "user"
+          ],
+          "properties": {
+            "period": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0.0
+            },
+            "user": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "mint_info"
+      ],
+      "properties": {
+        "mint_info": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "whitelist_mint_infos"
+      ],
+      "properties": {
+        "whitelist_mint_infos": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
         "minter"
       ],
       "properties": {
