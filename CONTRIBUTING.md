@@ -14,6 +14,9 @@ For all tasks, create a PR as soon as possible to make other mates aware of your
 
 ### Creating a PR
 
+- Make sure the branch name is lowercase, git will automatically lowercase the branch name is some environment and branch names with uppercase characters are a pain to manage.
+- We recommend NOT to use the `/` character in branch names since it's the syntax for specifying a remote branch with `<remote>/<branch>` like `origin/main` and can be confusing
+- We recommend working with the [git cli](https://git-scm.com/docs/git) and not github tools except to review diffs.
 - Make sure the PR's title follows [the conventional commits standard](https://www.conventionalcommits.org/en/v1.0.0/) as it will be used as the squashed commit title on main
 - Make sure your are assigned to the PR, this helps you to know [which PRs require your attention](https://github.com/TERITORI/teritori-dapp/pulls?q=is%3Apr+is%3Aopen+assignee%3A%40me)
 - Try to keep the PR [atomic](https://fagnerbrack.com/one-pull-request-one-concern-e84a27dfe9f1), it will be merged faster and benefit all your mates
