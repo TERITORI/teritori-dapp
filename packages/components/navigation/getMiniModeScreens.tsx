@@ -53,6 +53,8 @@ import SendingToriScreen from "@/screens/Mini/Wallet/SendingToriScreen";
 import TransactionDetailScreen from "@/screens/Mini/Wallet/TransactionDetailScreen";
 import { CreatePasswordWallet } from "@/screens/Wallet/Screens/CreatePasswordWallet";
 import { CreateWalletScreen } from "@/screens/Wallet/Screens/CreateWalletScreen";
+import { BrowserDetail } from "@/screens/WebView/BrowserDetail";
+import { BrowserScreen, SearchWebViewScreen } from "@/screens/WebView/BrowserScreen";
 import { selectIsChatActivated } from "@/store/slices/message";
 import { RootStackParamList } from "@/utils/navigation";
 
@@ -77,7 +79,7 @@ const MainTab = () => {
       })}
       initialRouteName={isChatActivated ? "MiniChats" : "MiniFeeds"}
     >
-      <Tab.Screen
+      {/* <Tab.Screen
         name="MiniChats"
         options={{ header: () => null, title: "Chats" }}
         component={MiniChatScreen}
@@ -91,6 +93,11 @@ const MainTab = () => {
         name="MiniWallets"
         options={{ header: () => null, title: "Wallets" }}
         component={MiniWalletScreen}
+      /> */}
+      <Tab.Screen
+        name="Browser"
+        options={{ header: () => null, title: "Browser" }}
+        component={BrowserScreen}
       />
     </Tab.Navigator>
   );
@@ -445,6 +452,14 @@ export const getMiniModeScreens = () => {
       <Stack.Screen
         name="MiniGroupActions"
         component={GroupActionScreen}
+        options={{
+          header: () => null,
+          title: "",
+        }}
+      />
+      <Stack.Screen
+        name="BrowserDetail"
+        component={BrowserDetail}
         options={{
           header: () => null,
           title: "",
