@@ -86,7 +86,11 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
           />
         </SafeAreaView>
       ) : (
-        <BlurScreenContainer title="About Teritori" onGoBack={onClose}>
+        <BlurScreenContainer
+          title="About Teritori"
+          onGoBack={onClose}
+          noScrollView
+        >
           <View
             style={{
               width: "100%",

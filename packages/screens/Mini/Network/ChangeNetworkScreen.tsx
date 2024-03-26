@@ -44,7 +44,11 @@ export default function ChangeNetworkScreen({
   ];
 
   return (
-    <BlurScreenContainer title="Change Network" onGoBack={goBackTo}>
+    <BlurScreenContainer
+      title="Change Network"
+      onGoBack={goBackTo}
+      noScrollView
+    >
       {!addresses.length ? (
         <BrandText
           style={[
