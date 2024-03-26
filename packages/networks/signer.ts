@@ -113,9 +113,14 @@ export const getKeplrSigningCosmWasmClient = async (
   if (!gasPrice) {
     throw new Error("gas price not found");
   }
-  if (Platform.OS !== "web") {
+
+  if (Platform.OS === "web") {
+    // @ts-expect-error TODO: fix types
+    return window.CosmWasmClient;
+  } else {
     const wallet = await getNativeWallet(network.addressPrefix, 1); // todo make multi wallet
 
+    console.log("wallet", wallet);
     return SigningCosmWasmClient.connectWithSigner(
       network.rpcEndpoint,
       wallet,
@@ -125,9 +130,9 @@ export const getKeplrSigningCosmWasmClient = async (
     );
   }
 
-  const signer = await getKeplrSigner(networkId);
+  // const signer = await getKeplrSigner(networkId);
 
-  return SigningCosmWasmClient.connectWithSigner(network.rpcEndpoint, signer, {
-    gasPrice,
-  });
+  // return SigningCosmWasmClient.connectWithSigner(network.rpcEndpoint, signer, {
+  //   gasPrice,
+  // });
 };

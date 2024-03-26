@@ -66,6 +66,7 @@ const HideBackButtonNavigationPath: RouteName[] = [
   "MiniChats",
   "MiniFeeds",
   "MiniWallets",
+  "Explorer",
 ];
 
 export default function DefaultAppBar({ title }: DefaultAppBarProps) {

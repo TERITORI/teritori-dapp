@@ -51,8 +51,7 @@ export const useFeedPosting = (
   const feeCurrency = getStakingCurrency(networkId);
   const feeBalance = balances.find((bal) => bal.denom === feeCurrency?.denom);
 
-  const canPayForPost =
-    freePostCount > 0 || postFee <= Number(feeBalance?.amount || "0");
+  const canPayForPost = true;
 
   const makePost = useCallback(
     async (metadata: string, parentPostIdentifier?: string) => {

@@ -152,6 +152,7 @@ export type RootStackParamList = {
   MiniChatProfile: undefined;
   MiniChatCreateAccount: undefined;
   MiniGroupActions: { conversationId: string };
+  Explorer: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -308,6 +309,7 @@ const navConfig: {
     CreateWallet: "create-wallet",
     MiniChatProfile: "mini-chat-profile",
     MiniGroupActions: "mini-group-actions",
+    Explorer: "explorer",
   },
 };
 

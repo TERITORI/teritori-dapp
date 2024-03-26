@@ -25,6 +25,7 @@ import { ConnectLedgerScreen } from "@/screens/Mini/ConnectLedger/ConnectLedgerS
 import { ConversationScreeen } from "@/screens/Mini/Conversation/ConversationScreen";
 import GroupActionScreen from "@/screens/Mini/Conversation/GroupActionScreen";
 import { DAppStoreScreen } from "@/screens/Mini/DAppStore/DAppStoreScreen";
+import { ExplorerScreen } from "@/screens/Mini/Explorer/ExplorerScreen";
 import MiniCreatePostScreen from "@/screens/Mini/Feed/MiniCreatePostScreen";
 import { MiniFeedScreen } from "@/screens/Mini/Feed/MiniFeedScreen";
 import ChangeNetworkScreen from "@/screens/Mini/Network/ChangeNetworkScreen";
@@ -86,6 +87,11 @@ const MainTab = () => {
         name="MiniFeeds"
         options={{ header: () => null, title: "Feed" }}
         component={MiniFeedScreen}
+      />
+      <Tab.Screen
+        name="Explorer"
+        options={{ header: () => null, title: "Explorer" }}
+        component={ExplorerScreen}
       />
       <Tab.Screen
         name="MiniWallets"
