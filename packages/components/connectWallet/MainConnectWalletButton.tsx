@@ -17,7 +17,9 @@ export const MainConnectWalletButton: React.FC<{
       <PrimaryButton
         size={size}
         text="Connect wallet"
-        onPress={() => setIsConnectWalletVisible(true)}
+        onPress={() => {
+          setIsConnectWalletVisible(true);
+        }}
       />
       <ConnectWalletModal
         forceNetworkFeature={forceNetworkFeature}
