@@ -36,12 +36,6 @@ For all tasks, create a PR as soon as possible to make other mates aware of your
 
   If there are changes in code used at other places, test for regressions in affected features
 
-- Test
-  
-  Check that the feature works or the bug is fixed
-
-  If there is changes in code used at other places, test for regressions in affected features
-
 If the PR is not atomic enough and makes reviewing hard, you can ask the author to split it
 
 You can deny the review if the PR does not pass CI
