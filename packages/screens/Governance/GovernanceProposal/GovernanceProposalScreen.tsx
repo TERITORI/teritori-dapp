@@ -1,5 +1,5 @@
 import moment from "moment";
-import React from "react";
+import React, { useEffect } from "react";
 import { View } from "react-native";
 
 import { GovernanceDescription } from "./GovernanceDescription/GovernanceDescription";
@@ -24,6 +24,13 @@ export const GovernanceProposalScreen: ScreenFC<"GovernanceProposal"> = ({
   const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
   const proposal = useGetProposal(selectedNetworkId, id);
+  const headerTitle =
+    "#" + proposal?.proposal_id + " " + proposal?.content.title;
+  useEffect(() => {
+    navigation.setOptions({
+      title: `Teritori - Governance : ${headerTitle || ""}`,
+    });
+  }, [navigation, id, headerTitle]);
 
   return (
     <ScreenContainer
