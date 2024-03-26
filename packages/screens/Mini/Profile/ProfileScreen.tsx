@@ -88,6 +88,11 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
     });
   };
 
+  // disable multiple wallet creation, remove to re enable multiple
+  if (wallets.length !== 0) {
+    delete profileScreens[0];
+  }
+
   return (
     <BlurScreenContainer
       noScrollView

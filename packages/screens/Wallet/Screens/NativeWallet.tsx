@@ -12,6 +12,7 @@ import { BrandText } from "@/components/BrandText";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
 import { CustomButton } from "@/components/buttons/CustomButton";
 import { SpacerColumn } from "@/components/spacer";
+import { useAppMode } from "@/hooks/useAppMode";
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 import { ScreenFC } from "@/utils/navigation";
 import { fontSemibold12 } from "@/utils/style/fonts";
@@ -19,6 +20,7 @@ import { layout } from "@/utils/style/layout";
 
 const NativeWallet: ScreenFC<"NativeWallet"> = () => {
   const nativeWallet = useSelectedNativeWallet();
+  const [appMode] = useAppMode();
 
   return (
     <WalletContainer>
@@ -43,12 +45,17 @@ const NativeWallet: ScreenFC<"NativeWallet"> = () => {
             alignItems: "center",
           }}
         >
-          <CustomButton
-            title="Create Wallet"
-            onPress={(_, navigation) => {
-              navigation.navigate("CreateWallet");
-            }}
-          />
+          {
+            // disable multiple wallet creation, remove to re enable multiple
+            !nativeWallet && (
+              <CustomButton
+                title="Create Wallet"
+                onPress={(_, navigation) => {
+                  navigation.navigate("CreateWallet");
+                }}
+              />
+            )
+          }
           {nativeWallet && (
             <CustomButton
               title="Continue"
@@ -56,20 +63,29 @@ const NativeWallet: ScreenFC<"NativeWallet"> = () => {
                 marginVertical: layout.spacing_x2,
               }}
               onPress={(_, navigation) => {
-                navigation.navigate("MiniTabs", { screen: "MiniChats" });
+                if (appMode === "mini") {
+                  navigation.navigate("MiniWallets");
+                } else {
+                  navigation.navigate("WalletManager");
+                }
               }}
             />
           )}
           <SpacerColumn size={1.5} />
           <View style={{ flexDirection: "row", gap: layout.spacing_x1_5 }}>
-            <CustomButton
-              onPress={(_, navigation) => {
-                navigation.navigate("ImportWallet");
-              }}
-              title="Import Wallet"
-              style={{ flex: 1 }}
-              type="outline"
-            />
+            {
+              // disable multiple wallet creation, remove to re enable multiple
+              !nativeWallet && (
+                <CustomButton
+                  onPress={(_, navigation) => {
+                    navigation.navigate("ImportWallet");
+                  }}
+                  title="Import Wallet"
+                  style={{ flex: 1 }}
+                  type="outline"
+                />
+              )
+            }
             {/* Hiding connect ledger option until it is ready for implementation */}
             {/* <CustomButton
               isDisabled={Platform.OS !== "web"}
