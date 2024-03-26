@@ -4,14 +4,15 @@ import { View } from "react-native";
 import { useSelector } from "react-redux";
 
 import addSVG from "../../../../assets/icons/add-circle-outline.svg";
-import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import MiniTextInput from "../components/MiniTextInput";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 import { BrandText } from "@/components/BrandText";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
 import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { addEntry, selectAllAddressBook } from "@/store/slices/wallets";
 import { useAppDispatch } from "@/store/store";
@@ -21,6 +22,7 @@ import { fontMedium15 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 const AddAddressBookScreen: ScreenFC<"AddAddressBook"> = ({ navigation }) => {
+  const { setToast } = useFeedbacks();
   const goBackTo = () =>
     navigation.replace("AddressBook", { back: "AddAddressBook" });
   const dispatch = useAppDispatch();
@@ -96,10 +98,20 @@ const AddAddressBookScreen: ScreenFC<"AddAddressBook"> = ({ navigation }) => {
                 );
                 navigation.navigate("AddressBook", { back: "AddAddressBook" });
               } catch (e) {
-                alert(`Invalid address ${e} ${address}`); // TODO: make a better UI FIXME
+                setToast({
+                  message: `Invalid address ${e} ${address}`,
+                  duration: 5000,
+                  mode: "mini",
+                  type: "error",
+                });
               }
             } else {
-              console.log("Please fill in all fields");
+              setToast({
+                message: `Please fill in all fields`,
+                duration: 3000,
+                mode: "mini",
+                type: "error",
+              });
             }
           }}
           title="Add"

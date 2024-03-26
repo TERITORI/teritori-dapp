@@ -256,6 +256,7 @@ const ItemTotal: React.FC<{
 };
 
 const Footer: React.FC<{ items: any[] }> = ({ items }) => {
+  const { setToast } = useFeedbacks();
   const wallet = useSelectedWallet();
   const dispatch = useAppDispatch();
 
@@ -263,7 +264,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
   const { setToastError, setLoadingFullScreen, setToastSuccess } =
     useFeedbacks();
 
-  const balances = useBalances(wallet?.networkId, wallet?.address);
+  const { balances } = useBalances(wallet?.networkId, wallet?.address);
   const hasEnoughMoney = selectedNFTData.every((nft) => {
     const balance =
       balances.find((bal) => bal.denom === nft.denom)?.amount || "0";
@@ -283,7 +284,12 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
         const [network, , tokenId] = parseNftId(nft.id);
 
         if (nft.networkId !== "teritori" || !network) {
-          alert(`${nft.networkId} multi-buy is not supported`);
+          setToast({
+            title: `${nft.networkId} multi-buy is not supported`,
+            duration: 5000,
+            mode: "normal",
+            type: "error",
+          });
           return;
         }
 
@@ -348,13 +354,22 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
       dispatch,
       selectedNFTData,
       setLoadingFullScreen,
+      setToast,
       setToastError,
       setToastSuccess,
     ],
   );
 
   const onBuyButtonPress = async () => {
-    if (!wallet) return alert("no wallet");
+    if (!wallet) {
+      setToast({
+        title: `Wallet is not connected`,
+        duration: 5000,
+        mode: "normal",
+        type: "error",
+      });
+      return;
+    }
     await cosmosMultiBuy(wallet);
   };
 

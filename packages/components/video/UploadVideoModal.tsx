@@ -2,11 +2,13 @@ import { ResizeMode, Video } from "expo-av";
 import React, { FC, useState } from "react";
 import {
   ImageStyle,
+  Platform,
   TextStyle,
   TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 import { useSelector } from "react-redux";
 
 import Add from "../../../assets/icons/add-primary.svg";
@@ -41,11 +43,13 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { FileUploader } from "../fileUploader";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { FeedPostingProgressBar } from "../loaders/FeedPostingProgressBar";
+import { SelectAudioVideo } from "../mini/SelectAudioVideo";
+import { SelectPicture } from "../mini/SelectPicture";
 import ModalBase from "../modals/ModalBase";
 import { FeedFeeText } from "../socialFeed/FeedFeeText";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
-import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
+import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
 
 const UPLOAD_VIDEO_MODAL_WIDTH = 590;
 const THUMBNAIL_SIZE = 198;
@@ -185,33 +189,88 @@ export const UploadVideoModal: FC<{
       onClose={onClose}
       width={UPLOAD_VIDEO_MODAL_WIDTH}
     >
-      <View style={inputBoxStyle}>
-        <FileUploader
-          onUpload={(files) => setLocalImageFile(files[0])}
-          mimeTypes={IMAGE_MIME_TYPES}
-          maxUpload={1}
-          setIsLoading={setIsUploadLoading}
+      <KeyboardAwareScrollView>
+        <View
+          style={
+            Platform.OS === "web"
+              ? inputBoxStyle
+              : {
+                  flexDirection: "column",
+                  gap: layout.spacing_x2_5,
+                }
+          }
         >
-          {({ onPress }) => (
-            <CustomPressable
-              onHoverOut={() => setThumbnailContainerHovered(false)}
-              onHoverIn={() => setThumbnailContainerHovered(true)}
-              style={[
-                {
-                  width: THUMBNAIL_SIZE,
-                  height: THUMBNAIL_SIZE,
-                },
-                isLoading && { opacity: 0.5 },
-              ]}
-              onPress={onPress}
-              disabled={isLoading}
+          {Platform.OS === "web" ? (
+            <FileUploader
+              onUpload={(files) => setLocalImageFile(files[0])}
+              mimeTypes={IMAGE_MIME_TYPES}
+              maxUpload={1}
+              setIsLoading={setIsUploadLoading}
             >
+              {({ onPress }) => (
+                <CustomPressable
+                  onHoverOut={() => setThumbnailContainerHovered(false)}
+                  onHoverIn={() => setThumbnailContainerHovered(true)}
+                  style={[
+                    {
+                      width: THUMBNAIL_SIZE,
+                      height: THUMBNAIL_SIZE,
+                    },
+                    isLoading && { opacity: 0.5 },
+                  ]}
+                  onPress={onPress}
+                  disabled={isLoading}
+                >
+                  {localImageFile?.url ? (
+                    <>
+                      <DeleteButton
+                        disabled={isLoading}
+                        onPress={() => setLocalImageFile(undefined)}
+                        style={{ top: 12, right: 12 }}
+                      />
+                      <OptimizedImage
+                        sourceURI={localImageFile?.url}
+                        style={imgStyle}
+                        width={THUMBNAIL_SIZE}
+                        height={THUMBNAIL_SIZE}
+                      />
+                    </>
+                  ) : (
+                    <View
+                      style={[
+                        {
+                          borderRadius: layout.spacing_x1,
+                          borderWidth: 1,
+                          borderColor: neutral33,
+                          height: "100%",
+                          alignItems: "center",
+                          justifyContent: "flex-end",
+                        },
+                        isThumbnailContainerHovered && {
+                          borderColor: secondaryColor,
+                        },
+                      ]}
+                    >
+                      <View style={uploadButtonStyle}>
+                        <SVG source={Img} width={16} height={16} />
+                        <SpacerRow size={1} />
+                        <BrandText style={fontSemibold14}>
+                          Video Thumbnail
+                        </BrandText>
+                      </View>
+                    </View>
+                  )}
+                </CustomPressable>
+              )}
+            </FileUploader>
+          ) : (
+            <View>
               {localImageFile?.url ? (
-                <>
+                <View style={{ alignItems: "center" }}>
                   <DeleteButton
                     disabled={isLoading}
                     onPress={() => setLocalImageFile(undefined)}
-                    style={{ top: 12, right: 12 }}
+                    style={{ top: 3, right: 12 }}
                   />
                   <OptimizedImage
                     sourceURI={localImageFile?.url}
@@ -219,157 +278,176 @@ export const UploadVideoModal: FC<{
                     width={THUMBNAIL_SIZE}
                     height={THUMBNAIL_SIZE}
                   />
-                </>
-              ) : (
-                <View
-                  style={[
-                    {
-                      borderRadius: layout.spacing_x1,
-                      borderWidth: 1,
-                      borderColor: neutral33,
-                      height: "100%",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                    },
-                    isThumbnailContainerHovered && {
-                      borderColor: secondaryColor,
-                    },
-                  ]}
-                >
-                  <View style={uploadButtonStyle}>
-                    <SVG source={Img} width={16} height={16} />
-                    <SpacerRow size={1} />
-                    <BrandText style={fontSemibold14}>
-                      Video Thumbnail
-                    </BrandText>
-                  </View>
                 </View>
+              ) : (
+                <SelectPicture
+                  onSelectFile={(files) => setLocalImageFile(files[0])}
+                  files={localImageFile ? [localImageFile] : []}
+                  squareSelector
+                  squareSelectorOptions={{
+                    placeholder: "Video Thumbnail",
+                    height: THUMBNAIL_SIZE,
+                  }}
+                />
               )}
-            </CustomPressable>
+            </View>
           )}
-        </FileUploader>
-        <View style={textBoxStyle}>
-          <TextInputCustom
-            rules={{ required: true }}
-            noBrokenCorners
-            variant="labelOutside"
-            onChangeText={(text) => setTitle(text)}
-            label="Video title"
-            name="videoTitle"
-            disabled={isLoading}
-            style={isLoading && { opacity: 0.5 }}
-          />
-          <SpacerColumn size={2.5} />
-
-          <TextInputCustom
-            multiline
-            noBrokenCorners
-            variant="labelOutside"
-            onChangeText={(text) => setDescription(text)}
-            label="Video description"
-            name="videoDescription"
-            disabled={isLoading}
-            style={isLoading && { opacity: 0.5 }}
-          />
-        </View>
-      </View>
-
-      <SpacerColumn size={2.5} />
-      {localVideoFile?.url ? (
-        <View>
-          <DeleteButton
-            disabled={isLoading}
-            onPress={() => setLocalVideoFile(undefined)}
-            style={[{ top: 12, right: 12 }, isLoading && { opacity: 0.5 }]}
-          />
-          <Video
-            source={{
-              uri: web3ToWeb2URI(localVideoFile.url),
-            }}
-            resizeMode={ResizeMode.COVER}
-            useNativeControls
-            style={{
-              width: "100%",
-              height: VIDEO_HEIGHT,
-              marginTop: layout.spacing_x2,
-              marginBottom: layout.spacing_x2,
-            }}
-            videoStyle={{
-              width: "100%",
-            }}
-          />
-        </View>
-      ) : (
-        <FileUploader
-          onUpload={(files) => setLocalVideoFile(files[0])}
-          style={uploadButtonStyle}
-          mimeTypes={VIDEO_MIME_TYPES}
-          setIsLoading={setIsUploadLoading}
-        >
-          {({ onPress }) => (
-            <TouchableOpacity
-              style={[buttonContainerStyle, isLoading && { opacity: 0.5 }]}
-              onPress={onPress}
+          <View style={textBoxStyle}>
+            <TextInputCustom
+              rules={{ required: true }}
+              noBrokenCorners
+              variant="labelOutside"
+              onChangeText={(text) => setTitle(text)}
+              label="Video title"
+              name="videoTitle"
               disabled={isLoading}
-            >
-              <SVG source={Add} width={20} height={20} stroke={primaryColor} />
-              <SpacerRow size={1} />
-              <BrandText style={buttonTextStyle}>Add video</BrandText>
-            </TouchableOpacity>
-          )}
-        </FileUploader>
-      )}
-      <SpacerColumn size={2.5} />
+              style={isLoading && { opacity: 0.5 }}
+            />
+            <SpacerColumn size={2.5} />
 
-      <BrandText
-        style={[
-          fontSemibold14,
-          {
-            color: neutral77,
-          },
-        ]}
-      >
-        Provide 2k video for highest video quality.
-      </BrandText>
-      <SpacerColumn size={2.5} />
+            <TextInputCustom
+              multiline
+              noBrokenCorners
+              variant="labelOutside"
+              onChangeText={(text) => setDescription(text)}
+              label="Video description"
+              name="videoDescription"
+              disabled={isLoading}
+              style={isLoading && { opacity: 0.5 }}
+            />
+          </View>
+        </View>
 
-      <View style={divideLineStyle} />
+        <SpacerColumn size={2.5} />
+        {localVideoFile?.url ? (
+          <View>
+            <DeleteButton
+              disabled={isLoading}
+              onPress={() => setLocalVideoFile(undefined)}
+              style={[{ top: 12, right: 12 }, isLoading && { opacity: 0.5 }]}
+            />
+            <Video
+              source={{
+                uri: web3ToWeb2URI(localVideoFile.url),
+              }}
+              resizeMode={ResizeMode.COVER}
+              useNativeControls
+              style={{
+                width: "100%",
+                height: VIDEO_HEIGHT - 100,
+                marginTop: layout.spacing_x2,
+                marginBottom: layout.spacing_x2,
+              }}
+              videoStyle={{
+                width: "100%",
+              }}
+            />
+          </View>
+        ) : (
+          <View>
+            {Platform.OS !== "web" ? (
+              <SelectAudioVideo
+                onSelectFile={(files) => setLocalVideoFile(files[0])}
+                files={localVideoFile ? [localVideoFile] : []}
+                type="video"
+                title={
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      borderColor: neutral33,
+                      borderWidth: 1,
+                      borderRadius: layout.borderRadius,
+                      paddingVertical: layout.spacing_x2,
+                    }}
+                  >
+                    <BrandText style={[fontSemibold14]}>+ Add Video</BrandText>
+                  </View>
+                }
+              />
+            ) : (
+              <FileUploader
+                onUpload={(files) => setLocalVideoFile(files[0])}
+                style={uploadButtonStyle}
+                mimeTypes={VIDEO_MIME_TYPES}
+                setIsLoading={setIsUploadLoading}
+              >
+                {({ onPress }) => (
+                  <TouchableOpacity
+                    style={[
+                      buttonContainerStyle,
+                      isLoading && { opacity: 0.5 },
+                    ]}
+                    onPress={onPress}
+                    disabled={isLoading}
+                  >
+                    <SVG
+                      source={Add}
+                      width={20}
+                      height={20}
+                      stroke={primaryColor}
+                    />
+                    <SpacerRow size={1} />
+                    <BrandText style={buttonTextStyle}>Add video</BrandText>
+                  </TouchableOpacity>
+                )}
+              </FileUploader>
+            )}
+          </View>
+        )}
+        <SpacerColumn size={2.5} />
 
-      <FeedFeeText
-        networkId={selectedNetwork?.id}
-        userId={selectedWallet?.userId}
-        category={postCategory}
-        style={{ marginTop: layout.spacing_x2 }}
-      />
-
-      <View style={footerStyle}>
-        <BrandText style={footerTextStyle} numberOfLines={2}>
-          By uploading, you confirm that your video complies with our Terms of
-          Use.
+        <BrandText
+          style={[
+            fontSemibold14,
+            {
+              color: neutral77,
+            },
+          ]}
+        >
+          Provide 2k video for highest video quality.
         </BrandText>
-        <PrimaryButton
-          text="Upload"
-          disabled={
-            !localVideoFile?.url || !title || isLoading || !canPayForPost
-          }
-          size="SM"
-          onPress={onPressUpload}
-          isLoading={isLoading}
-          loader
-        />
-      </View>
+        <SpacerColumn size={2.5} />
 
-      {step.id !== "UNDEFINED" && isProgressBarShown && (
-        <>
-          <View style={divideLineStyle} />
-          <SpacerColumn size={2} />
-          <FeedPostingProgressBar
-            step={step}
-            ipfsUploadProgress={ipfsUploadProgress}
+        <View style={divideLineStyle} />
+
+        <FeedFeeText
+          networkId={selectedNetwork?.id}
+          userId={selectedWallet?.userId}
+          category={postCategory}
+          style={{ marginTop: layout.spacing_x2 }}
+        />
+
+        <View style={footerStyle}>
+          <BrandText style={footerTextStyle} numberOfLines={2}>
+            By uploading, you confirm that your video complies with our Terms of
+            Use.
+          </BrandText>
+          <PrimaryButton
+            text="Upload"
+            disabled={
+              !localVideoFile?.url || !title || isLoading || !canPayForPost
+            }
+            size="SM"
+            onPress={onPressUpload}
+            isLoading={isLoading}
+            loader
           />
-          <SpacerColumn size={2} />
-        </>
-      )}
+        </View>
+
+        {step.id !== "UNDEFINED" && isProgressBarShown && (
+          <>
+            <View style={divideLineStyle} />
+            <SpacerColumn size={2} />
+            <FeedPostingProgressBar
+              step={step}
+              ipfsUploadProgress={ipfsUploadProgress}
+            />
+            <SpacerColumn size={2} />
+          </>
+        )}
+        {Platform.OS !== "web" ? <SpacerColumn size={20} /> : null}
+      </KeyboardAwareScrollView>
     </ModalBase>
   );
 };
@@ -415,7 +493,7 @@ const inputBoxStyle: ViewStyle = {
   justifyContent: "space-between",
 };
 const textBoxStyle: ViewStyle = {
-  width: 332,
+  width: Platform.OS === "web" ? 332 : "100%",
 };
 const uploadButtonStyle: ViewStyle = {
   flexDirection: "row",

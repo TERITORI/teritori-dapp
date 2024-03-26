@@ -10,10 +10,6 @@ import { layout } from "@/utils/style/layout";
 
 const settingScreens: { title: string; navigateTo: RouteName }[] = [
   {
-    title: "Connected Apps",
-    navigateTo: "MiniSettings",
-  },
-  {
     title: "Address Book",
     navigateTo: "AddressBook",
   },

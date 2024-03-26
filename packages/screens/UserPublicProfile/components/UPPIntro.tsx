@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Linking, useWindowDimensions, View } from "react-native";
+import { Linking, Platform, useWindowDimensions, View } from "react-native";
 
 import { PremiumSubscriptionModal } from "./modals/PremiumSubscriptionModal";
 import { SubscriptionSetupModal } from "./modals/SubscriptionSetupModal";
@@ -36,11 +36,10 @@ import { DEFAULT_NAME } from "@/utils/social-feed";
 import {
   neutral00,
   neutral55,
-  neutral77,
   secondaryColor,
   yellowPremium,
 } from "@/utils/style/colors";
-import { fontBold16, fontMedium14, fontSemibold14 } from "@/utils/style/fonts";
+import { fontBold16, fontMedium14 } from "@/utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
 
@@ -103,7 +102,7 @@ export const UPPIntro: React.FC<{
             alignItems: "center",
             position: "absolute",
             bottom: 14,
-            right: 14,
+            right: Platform.OS === "web" ? 14 : 34,
           }}
         >
           {!!metadata?.external_url && (
@@ -139,12 +138,16 @@ export const UPPIntro: React.FC<{
             }
           />
           {/* This Share button link works only on web */}
-          <SocialButtonSecondary
-            style={socialButtonStyle}
-            iconSvg={shareSVG}
-            text="Share"
-            onPress={() => copyToClipboard(window.location.href, "URL copied")}
-          />
+          {Platform.OS === "web" && (
+            <SocialButtonSecondary
+              style={socialButtonStyle}
+              iconSvg={shareSVG}
+              text="Share"
+              onPress={() =>
+                copyToClipboard(window.location.href, "URL copied")
+              }
+            />
+          )}
         </View>
 
         <View
@@ -234,6 +237,13 @@ export const UPPIntro: React.FC<{
                 size="M"
                 backgroundColor={neutral00}
                 disabled
+                style={{
+                  width: Platform.OS === "web" ? "auto" : 170,
+                  marginRight:
+                    Platform.OS === "web"
+                      ? layout.spacing_x3
+                      : layout.spacing_x4_5,
+                }}
               />
             </>
           )}
@@ -257,9 +267,10 @@ export const UPPIntro: React.FC<{
           justifyContent: "space-between",
           alignItems: "center",
           marginTop: 100,
+          marginBottom: layout.spacing_x1,
         }}
       >
-        <View style={{ marginBottom: layout.spacing_x1 }}>
+        <View>
           {/* Pseudo and bio */}
           {metadata?.tokenId ? (
             <>
@@ -292,40 +303,11 @@ export const UPPIntro: React.FC<{
           </BrandText>
         </View>
         {/* Stats and public address */}
-        <LegacyTertiaryBox mainContainerStyle={{ padding: 16 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginBottom: 16,
-              width: "100%",
-            }}
-          >
-            <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-              Coming Soon
-            </BrandText>
-            <BrandText style={[fontSemibold14]}>21.5k</BrandText>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginBottom: 16,
-              width: "100%",
-            }}
-          >
-            <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-              Coming Soon
-            </BrandText>
-            <BrandText style={[fontSemibold14]}>36</BrandText>
-          </View>
-
-          <CopyToClipboardSecondary
-            displayedText={tinyAddress(userAddress, 19)}
-            text={userAddress}
-            networkIcon={network?.id}
-          />
-        </LegacyTertiaryBox>
+        <CopyToClipboardSecondary
+          displayedText={tinyAddress(userAddress, 19)}
+          text={userAddress}
+          networkIcon={network?.id}
+        />
       </View>
     </>
   );

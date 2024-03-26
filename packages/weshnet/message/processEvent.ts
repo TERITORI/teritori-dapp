@@ -1,5 +1,6 @@
 import { GroupMessageEvent } from "../../api/weshnet/protocoltypes";
 import {
+  removeConversationById,
   selectConversationById,
   setMessage,
   updateConversationById,
@@ -15,6 +16,8 @@ import {
 import { weshConfig } from "../config";
 import { getConversationName } from "../messageHelpers";
 import { decodeJSON, stringFromBytes } from "../utils";
+
+import { setNotificationRequest } from "@/store/slices/notification";
 
 export const processMessage = async (
   data: GroupMessageEvent,
@@ -51,9 +54,9 @@ export const processMessage = async (
           updateConversationById({
             id: groupPk,
             name: message?.payload?.metadata?.groupName,
+            members: [message?.payload?.metadata?.contact],
           }),
         );
-
         break;
       }
       case "group-invite": {
@@ -77,6 +80,18 @@ export const processMessage = async (
               data: message,
             }),
           );
+
+          if (!isSender) {
+            store.dispatch(
+              setNotificationRequest({
+                id: groupPk,
+                name: message?.payload?.metadata?.groupName,
+                type: "group-invite",
+                timestamp: message?.timestamp,
+                isRead: false,
+              }),
+            );
+          }
         }
 
         break;
@@ -84,11 +99,11 @@ export const processMessage = async (
       case "group-join": {
         if (conversation) {
           const newMember: ContactRequest[] = [];
+          const oldMembers = conversation.members.map((member) => member.id);
 
           if (
             message?.payload?.metadata?.contact?.id &&
-            stringFromBytes(weshConfig.config?.accountPk) !==
-              message?.payload?.metadata?.contact?.id
+            !oldMembers.includes(message?.payload?.metadata?.contact?.id)
           ) {
             newMember.push(message?.payload?.metadata?.contact);
           }
@@ -110,6 +125,42 @@ export const processMessage = async (
 
         break;
       }
+      case "group-leave": {
+        if (conversation) {
+          const oldMembers = conversation.members;
+          const memberId = message?.senderId;
+
+          const updatedMembers = oldMembers.map((member) => {
+            if (member.id !== memberId) {
+              return member;
+            }
+            return {
+              ...member,
+              hasLeft: true,
+            };
+          });
+          if (isSender) {
+            store.dispatch(removeConversationById({ id: conversation.id }));
+          } else {
+            store.dispatch(
+              updateConversationById({
+                id: groupPk,
+                name: message?.payload?.metadata?.groupName,
+                members: updatedMembers,
+              }),
+            );
+
+            store.dispatch(
+              setMessage({
+                groupPk,
+                data: message,
+              }),
+            );
+          }
+        }
+
+        break;
+      }
       case "read": {
         const data: Partial<Conversation> = {};
         const lastReadId = message?.payload?.metadata?.lastReadId;
@@ -126,6 +177,7 @@ export const processMessage = async (
             ...data,
           }),
         );
+
         break;
       }
       default: {

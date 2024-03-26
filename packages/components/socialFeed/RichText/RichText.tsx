@@ -14,6 +14,7 @@ import {
 import { RichTextProps } from "./RichText.type";
 import { ActionsContainer } from "./Toolbar/ActionsContainer";
 import { ToolbarContainer } from "./Toolbar/ToolbarContainer";
+import { fixLinkOnHTMLString } from "./utils";
 import { useAppMode } from "../../../hooks/useAppMode";
 import { SOCIAL_FEED_BREAKPOINT_M } from "../../../utils/style/layout";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
@@ -34,28 +35,35 @@ export const RichText: React.FC<RichTextProps> = ({
   const [initialHeight, setInitialHeight] = useState(windowHeight);
 
   const handleHeightChange = useCallback((height: number) => {
-    setInitialHeight(height * 2);
+    setInitialHeight(height);
   }, []);
 
   return (
     <View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1, minHeight: initialHeight }}
+        style={{ flex: 1, height: initialHeight }}
       >
         <RichEditor
-          initialContentHTML={initialValue}
+          initialContentHTML={fixLinkOnHTMLString(initialValue)}
           ref={richText}
           onChange={onChange}
           onBlur={onBlur}
           onHeightChange={handleHeightChange}
-          containerStyle={{ minHeight: initialHeight }}
+          containerStyle={{
+            minHeight: initialHeight,
+          }}
           editorStyle={
             appMode === "mini"
               ? {
                   backgroundColor: "#000",
                   color: "#fff",
                   caretColor: "#fff",
+                  cssText: `
+                   a, a:active, a:focus {
+                      color: rgb(22, 187, 255);                     
+                    }
+                  `,
                 }
               : {}
           }

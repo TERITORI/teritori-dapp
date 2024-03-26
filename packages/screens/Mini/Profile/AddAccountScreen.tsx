@@ -25,16 +25,12 @@ export const AddAccountScreen: ScreenFC<"MiniAddAccount"> = ({
           title="Create new account"
           subtitle="Generate a new account"
         />
-        <SettingMenuItem
-          navigateTo="ImportWallet"
-          title="Import private key"
-          subtitle="Import private key"
-        />
-        <SettingMenuItem
+        {/* Hiding connect ledger option until it is ready for implementation */}
+        {/* <SettingMenuItem
           navigateTo="MiniAddAccount"
           title="Connect Ledger"
           subtitle="Add a Ledger account"
-        />
+        /> */}
       </View>
     </BlurScreenContainer>
   );

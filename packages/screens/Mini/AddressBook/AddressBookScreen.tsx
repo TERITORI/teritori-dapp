@@ -20,7 +20,7 @@ const AddressBookScreen: ScreenFC<"AddressBook"> = ({ navigation }) => {
   const addresses = useSelector(selectAllAddressBook);
 
   return (
-    <BlurScreenContainer title="Address Book" onGoBack={goBackTo}>
+    <BlurScreenContainer title="Address Book" onGoBack={goBackTo} noScrollView>
       <View style={{ paddingHorizontal: layout.spacing_x2, flex: 1 }}>
         {!addresses.length ? (
           <BrandText
