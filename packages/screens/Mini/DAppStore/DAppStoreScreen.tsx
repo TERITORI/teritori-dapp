@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList, useWindowDimensions, View } from "react-native";
+import { FlatList, Platform, useWindowDimensions, View } from "react-native";
 
 import { DAppStoreMenuItem } from "./component/DAppStoreMenuItems";
 import { DAppsList } from "./component/DAppsList";
@@ -20,7 +20,7 @@ import { layout } from "@/utils/style/layout";
 
 export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
   const [enableEditingDApps, setEnableEditingDApps] = useState(false);
-  const { height: windowHeight } = useWindowDimensions();
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const toggleEnableEditingDApps = () => setEnableEditingDApps((prev) => !prev);
 
   return (
@@ -32,8 +32,10 @@ export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
           <View
             style={{
               paddingHorizontal: layout.spacing_x2,
-              minHeight: windowHeight - 170,
-              flex: 1,
+              minHeight:
+                Platform.OS === "android"
+                  ? windowHeight - 100
+                  : windowHeight - 210,
               justifyContent: "flex-end",
             }}
           >
@@ -55,12 +57,13 @@ export const DAppStoreScreen: ScreenFC<"MiniDAppStore"> = ({ navigation }) => {
         <CustomPressable
           onPress={toggleEnableEditingDApps}
           style={{
-            width: "100%",
             backgroundColor: blueDefault,
             paddingVertical: layout.spacing_x1_5,
             borderRadius: 100,
             position: "absolute",
-            bottom: 50,
+            bottom: 20,
+            width: windowWidth - 20,
+            alignSelf: "center",
           }}
         >
           <BrandText style={[fontSemibold15, { textAlign: "center" }]}>

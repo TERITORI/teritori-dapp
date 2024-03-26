@@ -162,7 +162,7 @@ export const BlurScreenContainer = ({
                 <SVG source={chevronSVG} height={24} width={24} />
               </CustomPressable>
             )}
-            <BrandText style={[fontSemibold18, { lineHeight: 0 }]}>
+            <BrandText style={[fontSemibold18, { lineHeight: 22 }]}>
               {title || "Settings"}
             </BrandText>
 
