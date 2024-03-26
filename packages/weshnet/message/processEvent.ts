@@ -17,6 +17,8 @@ import { weshConfig } from "../config";
 import { getConversationName } from "../messageHelpers";
 import { decodeJSON, stringFromBytes } from "../utils";
 
+import { setNotificationRequest } from "@/store/slices/notification";
+
 export const processMessage = async (
   data: GroupMessageEvent,
   groupPk: string,
@@ -78,6 +80,18 @@ export const processMessage = async (
               data: message,
             }),
           );
+
+          if (!isSender) {
+            store.dispatch(
+              setNotificationRequest({
+                id: groupPk,
+                name: message?.payload?.metadata?.groupName,
+                type: "group-invite",
+                timestamp: message?.timestamp,
+                isRead: false,
+              }),
+            );
+          }
         }
 
         break;
@@ -163,6 +177,7 @@ export const processMessage = async (
             ...data,
           }),
         );
+
         break;
       }
       default: {

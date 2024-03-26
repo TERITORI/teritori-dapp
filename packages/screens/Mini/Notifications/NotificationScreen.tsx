@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useWindowDimensions, View } from "react-native";
+import { useSelector } from "react-redux";
 
 import NotificationList from "./NotificationList";
 import CustomAppBar from "../components/AppBar/CustomAppBar";
@@ -7,6 +8,7 @@ import DropdownWithCheck from "../components/Dropdown/DropdownWithCheck";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { selectNotificationList } from "@/store/slices/notification";
 import { ScreenFC } from "@/utils/navigation";
 import { fontSemibold18 } from "@/utils/style/fonts";
 
@@ -45,6 +47,9 @@ const filterOptionsConst = [
 
 const NotificationScreen: ScreenFC<"Notifications"> = ({ navigation }) => {
   const [, setFilterOptions] = useState<any>([]);
+  const notifications = useSelector(selectNotificationList);
+
+  console.log("notifications:", notifications);
 
   const { width: windowWidth } = useWindowDimensions();
 
@@ -75,7 +80,7 @@ const NotificationScreen: ScreenFC<"Notifications"> = ({ navigation }) => {
           width: windowWidth,
         }}
       >
-        <NotificationList />
+        <NotificationList notifications={notifications} />
       </View>
     </ScreenContainer>
   );
