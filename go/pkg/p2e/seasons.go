@@ -209,17 +209,40 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 		StartsAt:   "2024-02-07T00:00:00",
 		EndsAt:     "2024-02-11T00:00:00",
 	},
-		// Season 1b
-  	{
-  		ID:         "Season 1b - ETH",
-  		GameID:     THE_RIOT_GAME_ID,
-  		Denom:      "tori",
-  		Decimals:   6,
-  		TotalPrize: 1,
-  		BossName:   "Tori Pup",
-  		BossImage:  "https://bafkreidzf2kol7hi3lae33fpu6iryfw7mgbp5fbqnyewq64kagykc266h4.ipfs.cf-ipfs.com/",
-  		TopN:       500,
-  		StartsAt:   "2024-02-11T00:00:00",
-  		EndsAt:     "2024-02-20T00:00:00",
-  	},
+	// Season 1b
+	{
+		ID:         "Season 1b - ETH",
+		GameID:     THE_RIOT_GAME_ID,
+		Denom:      "tori",
+		Decimals:   6,
+		TotalPrize: 1,
+		BossName:   "Tori Pup",
+		BossImage:  "https://bafkreidzf2kol7hi3lae33fpu6iryfw7mgbp5fbqnyewq64kagykc266h4.ipfs.cf-ipfs.com/",
+		TopN:       500,
+		StartsAt:   "2024-02-11T00:00:00",
+		EndsAt:     "2024-02-20T00:00:00",
+	},
+	// Pre-Season 1 official
+	{
+		ID:        "Pre-Official season 1",
+		GameID:    THE_RIOT_GAME_ID,
+		BossName:  `== $*=|'¤?")à-£_%`,
+		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.cf-ipfs.com/",
+		StartsAt:  "2024-02-20T00:00:00",
+		EndsAt:    "2024-03-05T00:00:00",
+		IsPre:     true,
+	},
+	// Season 1 official
+	{
+		ID:         "Season 1 official - ETH",
+		GameID:     THE_RIOT_GAME_ID,
+		Denom:      "tori",
+		Decimals:   6,
+		TotalPrize: 1_000_000,
+		BossName:   "Dr. Murphy",
+		BossImage:  "https://bafybeidh7eq25gobfdikufdiehuki6tmdtyai3ccs2x2htavlqkj5lx4si.ipfs.cf-ipfs.com/",
+		TopN:       500,
+		StartsAt:   "2024-03-05T00:00:00",
+		EndsAt:     "2024-04-12T00:00:00",
+	},
 }
