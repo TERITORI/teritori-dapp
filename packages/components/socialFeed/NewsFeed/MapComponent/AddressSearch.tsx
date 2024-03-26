@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -8,6 +8,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { LatLng } from "react-native-leaflet-view";
+import { z } from "zod";
 
 import location from "../../../../../assets/icons/location.svg";
 import {
@@ -23,13 +24,15 @@ import { TextInputOutsideLabel } from "../../../inputs/TextInputOutsideLabel";
 
 import { useDebounce } from "@/hooks/useDebounce";
 
-interface NominatimSearchResult {
-  lat: string;
-  lon: string;
-  display_name: string;
-}
+const zodAddressSearchResult = z.array(
+  z.object({
+    lat: z.string(),
+    lon: z.string(),
+    display_name: z.string(),
+  }),
+);
 
-interface TAddressSearchProps {
+interface AddressSearchProps {
   addressPlaceHolder: string;
   address: string;
   setAddress: Dispatch<SetStateAction<string>>;
@@ -37,49 +40,38 @@ interface TAddressSearchProps {
   setAddressPlaceHolder: Dispatch<SetStateAction<string>>;
 }
 
-export const AddressSearch: React.FC<TAddressSearchProps> = ({
+export const AddressSearch: React.FC<AddressSearchProps> = ({
   addressPlaceHolder,
   address,
   setAddress,
   setLocationSelected,
   setAddressPlaceHolder,
 }) => {
-  const [results, setResults] = useState<NominatimSearchResult[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
   const debouncedAddress = useDebounce(address, 1500);
 
-  const { data: searchAddressValue, error } = useQuery(
+  const { data, isLoading } = useQuery(
     ["searchAddress", debouncedAddress],
     async () => {
-      setIsLoading(true);
+      if (debouncedAddress.trim() === "") {
+        return [];
+      }
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?q=${debouncedAddress}&format=json`,
       );
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error("Invalid HTTP status: " + response.status);
       }
-      const data: NominatimSearchResult[] = await response.json();
-      setIsLoading(false);
+      const data = zodAddressSearchResult.parse(await response.json());
       return data;
-    },
-    {
-      enabled: debouncedAddress.trim() !== "",
     },
   );
 
-  useEffect(() => {
-    setResults([]);
-    if (error) {
-      setResults([]);
-      setIsLoading(false);
+  const results = useMemo(() => {
+    if (!data) {
+      return [];
     }
-    if (!searchAddressValue || searchAddressValue.length === 0) {
-      setResults([]);
-    } else {
-      setResults(searchAddressValue);
-    }
-  }, [searchAddressValue, error]);
+    return data;
+  }, [data]);
 
   return (
     <>
@@ -96,7 +88,6 @@ export const AddressSearch: React.FC<TAddressSearchProps> = ({
           name="address"
           placeHolder={addressPlaceHolder}
           onChangeText={(val: string) => {
-            setIsLoading(true);
             setAddress(val);
           }}
           value={address}
@@ -122,7 +113,6 @@ export const AddressSearch: React.FC<TAddressSearchProps> = ({
                     ]);
                     setAddressPlaceHolder(item.display_name);
                     setAddress("");
-                    setResults([]);
                   }}
                 >
                   <View style={[button24]}>
