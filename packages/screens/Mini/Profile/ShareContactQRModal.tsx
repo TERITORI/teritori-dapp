@@ -32,9 +32,7 @@ export const ShareContactQRModal = ({
     <MobileModal
       visible={isOpen}
       onClose={onClose}
-      innerContainerOptions={{
-        height: 520,
-      }}
+      innerContainerOptions={{ height: 520 }}
     >
       <View
         style={{
