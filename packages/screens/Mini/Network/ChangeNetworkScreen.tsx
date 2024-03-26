@@ -11,7 +11,7 @@ import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
-import { getCosmosNetwork } from "@/networks";
+import { CosmosNetworkInfo, getCosmosNetwork } from "@/networks";
 import { updateWallet } from "@/store/slices/wallets";
 import { useAppDispatch } from "@/store/store";
 import { RootStackParamList } from "@/utils/navigation";
@@ -23,29 +23,15 @@ type ChangeNetworkScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ChangeNetwork">;
 };
 
-type ChangeNetworkType = {
-  id: string;
-  label: string;
-  url: string;
-};
-
 export default function ChangeNetworkScreen({
   navigation,
 }: ChangeNetworkScreenProps) {
   const goBackTo = () => navigation.replace("MiniSettings");
   const selectedWallet = useSelectedNativeWallet();
 
-  const addresses: ChangeNetworkType[] = [
-    {
-      id: "teritori",
-      label: "Teritori Mainnet",
-      url: getCosmosNetwork("teritori")?.rpcEndpoint!,
-    },
-    {
-      id: "teritori-testnet",
-      label: "Teritori Testnet",
-      url: getCosmosNetwork("teritori-testnet")?.rpcEndpoint!,
-    },
+  const addresses: CosmosNetworkInfo[] = [
+    getCosmosNetwork("teritori")!,
+    getCosmosNetwork("teritori-testnet")!,
   ];
   const { setToast } = useFeedbacks();
   const dispatch = useAppDispatch();
@@ -80,13 +66,13 @@ export default function ChangeNetworkScreen({
                 paddingHorizontal: layout.spacing_x1_5,
               }}
               options={{
-                label: item?.label,
+                label: item?.displayName,
                 iconEnabled: false,
                 rightLabel: (
                   <View>
                     <Checkbox
                       isChecked={selectedWallet?.networkId === item?.id}
-                      value={item?.label}
+                      value={item?.displayName}
                       onPress={() => {
                         goBackTo();
                         if (!selectedWallet) {
@@ -106,7 +92,7 @@ export default function ChangeNetworkScreen({
                         setToast({
                           mode: "mini",
                           type: "success",
-                          message: `Now using ${item?.label} network`,
+                          message: `Now using ${item?.displayName} network`,
                         });
                       }}
                       checkboxStyle={{
@@ -117,7 +103,7 @@ export default function ChangeNetworkScreen({
                     />
                   </View>
                 ),
-                bottomLabel: item?.url,
+                bottomLabel: item?.rpcEndpoint,
               }}
             />
           )}
