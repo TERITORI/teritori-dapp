@@ -33,12 +33,11 @@ export const HubLanding: React.FC = () => {
   const networkId = useSelectedNetworkId();
   const banners = useBanners(networkId);
   const banner = banners?.length ? banners[0] : undefined;
-
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
       <View style={{ flex: 1 }}>
         {!!banner && (
-          <Link to={banner?.url || ""}>
+          <Link to={banner?.url} style={{ width: "100%", maxHeight: 500 }}>
             <OptimizedImage
               sourceURI={banner?.image}
               width={width}

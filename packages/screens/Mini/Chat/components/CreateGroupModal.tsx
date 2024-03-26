@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import friendGraySVG from "../../../../../assets/icons/friend-gray.svg";
-import { CustomButton } from "../../components/Button/CustomButton";
 import MiniTextInput from "../../components/MiniTextInput";
 import MobileModal from "../../components/MobileModal";
 import TitleBar from "../../components/TitleBar";
 
 import { BrandText } from "@/components/BrandText";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { SpacerColumn } from "@/components/spacer";
 import {
   neutral33,

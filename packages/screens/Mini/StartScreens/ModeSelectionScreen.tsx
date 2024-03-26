@@ -4,11 +4,11 @@ import { SafeAreaView, useWindowDimensions, View } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 
 import walletSVG from "../../../../assets/wallet-screen.svg";
-import { CustomButton } from "../components/Button/CustomButton";
 import MobileModal from "../components/MobileModal";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import ToggleButton from "@/components/buttons/ToggleButton";
 import { SpacerColumn } from "@/components/spacer";
 import { ScreenFC } from "@/utils/navigation";

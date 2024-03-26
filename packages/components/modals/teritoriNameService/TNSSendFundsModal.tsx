@@ -35,7 +35,7 @@ export const TNSSendFundsModal: React.FC<{
   const networkId = selectedWallet?.networkId;
   const nativeCurrency = getStakingCurrency(networkId);
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const balances = useBalances(networkId, selectedWallet?.address);
+  const { balances } = useBalances(networkId, selectedWallet?.address);
   const currencyBalance = balances.find(
     (bal) => bal.denom === nativeCurrency?.denom,
   );

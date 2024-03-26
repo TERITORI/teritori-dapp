@@ -33,12 +33,12 @@ import {
   sendMessage,
 } from "../../../weshnet/services";
 import { bytesFromString } from "../../../weshnet/utils";
-import { CustomButton } from "../components/Button/CustomButton";
 import { ChatAvatar } from "../components/ChatAvatar";
 import MiniTextInput from "../components/MiniTextInput";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { RoundedTabs } from "@/components/tabs/RoundedTabs";
 import { useFeedbacks } from "@/context/FeedbacksProvider";

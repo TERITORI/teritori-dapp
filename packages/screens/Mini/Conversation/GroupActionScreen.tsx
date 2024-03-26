@@ -4,12 +4,12 @@ import { useSelector } from "react-redux";
 
 import LeaveGroupModal from "./components/LeaveGroupModal";
 import CustomAppBar from "../components/AppBar/CustomAppBar";
-import { CustomButton } from "../components/Button/CustomButton";
 
 import groupSVG from "@/assets/icons/users-group-white.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";

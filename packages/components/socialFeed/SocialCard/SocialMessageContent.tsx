@@ -1,6 +1,6 @@
 import { BlurView } from "expo-blur";
 import React, { Fragment, useMemo } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
 import defaultThumbnailImage from "../../../../assets/default-images/default-track-thumbnail.png";
@@ -110,6 +110,8 @@ export const SocialMessageContent: React.FC<Props> = ({ post, isPreview }) => {
               bottom: 0,
               alignItems: "center",
               justifyContent: "center",
+              backgroundColor:
+                Platform.OS === "android" ? "rgb(0,0,0)" : "transparent",
             }}
           >
             <BrandText style={[fontSemibold13, { color: yellowPremium }]}>

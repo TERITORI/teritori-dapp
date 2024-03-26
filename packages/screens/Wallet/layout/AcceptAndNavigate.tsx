@@ -1,9 +1,9 @@
 import React, { ReactNode, useState } from "react";
 import { View } from "react-native";
 
-import { CustomButton } from "../../Mini/components/Button/CustomButton";
 import Checkbox from "../../Mini/components/Checkbox/Checkbox";
 
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { RouteName } from "@/utils/navigation";
 import { neutral22, neutralA3 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";

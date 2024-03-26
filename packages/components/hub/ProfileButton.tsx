@@ -162,7 +162,7 @@ const RegisterGnoNameModal: React.FC<{
   const { wrapWithFeedback } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
   const [network, userAddress] = parseUserId(selectedWallet?.userId);
-  const balances = useBalances(network?.id, userAddress);
+  const { balances } = useBalances(network?.id, userAddress);
   const stakingCurrency = getStakingCurrency(networkId);
   const denom = stakingCurrency?.denom;
   const bal = denom ? balances?.find((b) => b.denom === denom) : undefined;

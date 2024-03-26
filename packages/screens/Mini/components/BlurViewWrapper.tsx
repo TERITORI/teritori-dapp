@@ -1,13 +1,13 @@
 import { BlurView, BlurViewProps } from "expo-blur";
 import { Dispatch, PropsWithChildren, SetStateAction, useState } from "react";
-import { StyleProp, TextStyle, View, ViewStyle } from "react-native";
+import { Platform, StyleProp, TextStyle, View, ViewStyle } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { CustomButton } from "./Button/CustomButton";
 import eyeClosedSVG from "../../../../assets/icons/eye-closed.svg";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
@@ -87,6 +87,7 @@ export default function BlurViewWrapper({
 
           {!show && (
             <BlurView
+              tint="dark"
               intensity={30}
               style={[
                 {
@@ -99,6 +100,8 @@ export default function BlurViewWrapper({
                   justifyContent: "center",
                   borderRadius: layout.borderRadius,
                   overflow: "hidden",
+                  backgroundColor:
+                    Platform.OS === "android" ? "rgb(0,0,0)" : "transparent",
                 },
                 blurContainerStyle,
               ]}

@@ -1,5 +1,6 @@
 import { PropsWithChildren } from "react";
 import { SafeAreaView, ScrollView, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import chevronLeftSVG from "../../../../assets/icons/chevron-left.svg";
 import teritoriSVG from "../../../../assets/icons/teritori-white.svg";
@@ -24,6 +25,7 @@ export default function MultiStepScreenContainer({
   const navigation = useAppNavigation();
 
   const navigateBack = () => navigation.canGoBack() && navigation.goBack();
+  const safeAreaInsets = useSafeAreaInsets();
 
   return (
     <SafeAreaView
@@ -31,6 +33,7 @@ export default function MultiStepScreenContainer({
         flex: 1,
         width: "100%",
         backgroundColor: "#000000",
+        paddingTop: safeAreaInsets.top,
       }}
     >
       <View>
