@@ -28,7 +28,7 @@ export const GovernanceProposalScreen: ScreenFC<"GovernanceProposal"> = ({
     "#" + proposal?.proposal_id + " " + proposal?.content.title;
   useEffect(() => {
     navigation.setOptions({
-      title: `Teritori - Governance : ${headerTitle || ""}`,
+      title: `Teritori - Governance: ${headerTitle || ""}`,
     });
   }, [navigation, id, headerTitle]);
 
