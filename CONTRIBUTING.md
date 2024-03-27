@@ -126,7 +126,7 @@ We plan to transition from Cosmos SDK to [Gno](https://docs.gno.land/) for the b
 ## Patterns
 
 ### Comments in code
-- Do you really need a comment? Using [meaningful names](https://workat.tech/machine-coding/tutorial/writing-meaningful-variable-names-clean-code-za4m83tiesy0) and low [cognitive complexity](https://www.sonarsource.com/docs/CognitiveComplexity.pdf) is very often enough to make the code understandable without comments.
+- Do you really need a comment? Using [meaningful names](https://workat.tech/machine-coding/tutorial/writing-meaningful-variable-names-clean-code-za4m83tiesy0) and low [cognitive complexity](https://www.sonarsource.com/docs/CognitiveComplexity.pdf) is very often enough to make the code understandable without comments. Comments are not validated by CI and can/will become outdated without notice.
 - Don't push commented-out code, remove it! See [this article](https://methodpoet.com/commented-out-code/) for a deeper explanation.
 - Add comments to explain the intent of code if it's not obvious. A good example is when adding a hack to work around an upstream issue, adding a comment linking to the upstream issue is very meaningful there. When maintainers revisit this code they can understand why this "weird" bit of code is here and easily check if the issue is resolved.
 - Add comments to signal areas of improvement you think of but can't put in current scope ("TODO:"s and "FIXME:"s).
