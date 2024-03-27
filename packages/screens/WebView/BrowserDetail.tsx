@@ -11,7 +11,7 @@ import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { Spinner } from "@/components/Spinner";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
-import { ScreenFC } from "@/utils/navigation";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral00, neutral77, secondaryColor } from "@/utils/style/colors";
 import { fontMedium10, fontSemibold12 } from "@/utils/style/fonts";
 import {
@@ -21,6 +21,7 @@ import {
 } from "@/utils/style/layout";
 
 function BrowserHeader({ url }: { url: string }) {
+  const navigation = useAppNavigation();
   return (
     <View
       style={{
@@ -37,7 +38,17 @@ function BrowserHeader({ url }: { url: string }) {
         zIndex: 9999,
       }}
     >
-      <View style={{ flex: 1, alignItems: "center" }}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexDirection: "row",
+        }}
+      >
+        <CustomPressable onPress={() => navigation.goBack()}>
+          <SVG source={backSVG} width={25} height={25} />
+        </CustomPressable>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <SVG source={lockSVG} width={25} height={25} />
           <BrandText style={fontSemibold12}>
@@ -127,7 +138,10 @@ type BrowserNavigationType = {
   url: string;
 };
 
-export const BrowserDetail: ScreenFC<"BrowserDetail"> = ({ route }) => {
+export const BrowserDetail: ScreenFC<"BrowserDetail"> = ({
+  route,
+  navigation,
+}) => {
   const { width, height } = useWindowDimensions();
   const { params } = route;
   const [initUrl, setInitUrl] = useState(params.root + params.path ?? "");
