@@ -115,7 +115,7 @@ The Cosmos SDK itself is written in golang.
 
 #### Protocol for extra services: GRPC
 
-We use [GRPC](https://grpc.io/) as communication protocol for the centralized APIs. The models and endpoints definition are written in [protobuf](https://protobuf.dev/), this allows to generate types, servers and clients in any language. The definition are in the [api folder](api). The backend servers in the [go/pkg folder](go/pkg). The clients in the [js/packages/api folder](js/packages/api).
+We use [GRPC](https://grpc.io/) as communication protocol for the centralized APIs. The models and endpoints definition are written in [protobuf](https://protobuf.dev/), this allows to generate types, servers and clients in any language. The definition are in the [api folder](api). The backend servers in the [go/pkg folder](go/pkg). The clients in the [packages/api folder](packages/api).
 
 The Cosmos SDK is also using protobuf for it's endpoints definition but with custom encodings and extra layers on top of it.
 
