@@ -119,6 +119,7 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
         forceNetworkKind={forceNetworkKind}
         mobileTitle={mobileTitle}
         headerMini={headerMini}
+        footerChildren={footerChildren}
       />
     );
   /////////////// default returns

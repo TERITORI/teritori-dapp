@@ -14,7 +14,11 @@ import { useAppMode } from "../../hooks/useAppMode";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
-import { MOBILE_HEADER_HEIGHT, layout } from "../../utils/style/layout";
+import {
+  MOBILE_FOOTER_HEIGHT,
+  MOBILE_HEADER_HEIGHT,
+  layout,
+} from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SearchModalMobile } from "../Search/SearchModalMobile";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
@@ -53,6 +57,7 @@ export const ScreenContainerMobile: FC<{
   onBackPress?: () => void;
   children: ReactNode;
   headerMini?: ReactNode;
+  footerChildren?: React.ReactNode;
 }> = ({
   children,
   networkFilter,
@@ -63,6 +68,7 @@ export const ScreenContainerMobile: FC<{
   mobileTitle,
   onBackPress,
   headerMini,
+  footerChildren,
 }) => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
@@ -83,6 +89,7 @@ export const ScreenContainerMobile: FC<{
           {
             flex: 1,
             paddingTop: MOBILE_HEADER_HEIGHT,
+            paddingBottom: footerChildren ? MOBILE_FOOTER_HEIGHT : 0,
           },
         ]}
       >
@@ -135,6 +142,8 @@ export const ScreenContainerMobile: FC<{
             />
           </SelectedNetworkGate>
         </View>
+
+        {footerChildren || null}
       </View>
     </SafeAreaView>
   );

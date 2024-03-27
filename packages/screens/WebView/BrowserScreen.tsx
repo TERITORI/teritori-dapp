@@ -1,18 +1,53 @@
-import { View, useWindowDimensions } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { SectionList, View, useWindowDimensions } from "react-native";
 import { useSelector } from "react-redux";
 
-import { DAppStoreMenuItem } from "../Mini/DAppStore/component/DAppStoreMenuItems";
+import ListView from "../Mini/components/ListView";
 import MiniTextInput from "../Mini/components/MiniTextInput";
 
+import { BrandText } from "@/components/BrandText";
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { SpacerRow } from "@/components/spacer";
 import { selectAvailableApps } from "@/store/slices/dapps-store";
-import { ScreenFC } from "@/utils/navigation";
-import { neutral00 } from "@/utils/style/colors";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { neutral00, neutral22 } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
 import { MOBILE_HEADER_HEIGHT, layout } from "@/utils/style/layout";
 import { dAppType } from "@/utils/types/dapp-store";
 
-function WebViewHeader({ onChange }: { onChange: (text: string) => void }) {
+const browserRoutes = [
+  {
+    routeName: "TNSHome",
+    route: "tns",
+  },
+  {
+    routeName: "NativeWallet",
+    route: "wallet-manager",
+  },
+  {
+    routeName: "Organizations",
+    route: "orgs",
+  },
+  {
+    routeName: "ToriPunks",
+    route: "dapp/tori-punks/welcome",
+  },
+];
+
+function WebViewHeader({
+  searchInput,
+  onChange,
+  hasNoDapps,
+  setShowDapps,
+}: {
+  searchInput: string;
+  onChange: (text: string) => void;
+  hasNoDapps: boolean;
+  setShowDapps: Dispatch<SetStateAction<boolean>>;
+}) {
+  const navigation = useAppNavigation();
+
   return (
     <View
       style={{
@@ -29,32 +64,96 @@ function WebViewHeader({ onChange }: { onChange: (text: string) => void }) {
         zIndex: 9999,
       }}
     >
-      <View style={{ flex: 1, marginVertical: layout.spacing_x1_5 }}>
-        <MiniTextInput placeholder="Search Dapps" onChangeText={onChange} />
+      <View style={{ width: "100%" }}>
+        <MiniTextInput
+          placeholder="Search Dapps or internet ..."
+          onChangeText={onChange}
+          returnKeyType="search"
+          autoCapitalize="none"
+          onPressIn={() => setShowDapps(true)}
+          onSubmitEditing={() => {
+            if (hasNoDapps) {
+              const urlPattern: RegExp =
+                /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?/g;
+              if (urlPattern.test(searchInput)) {
+                navigation.navigate("BrowserDetail", {
+                  root: searchInput,
+                  path: "",
+                });
+              } else {
+                navigation.navigate("BrowserDetail", {
+                  root: "google.com/search",
+                  path: `?q=${searchInput}`,
+                });
+              }
+            }
+          }}
+          style={{
+            paddingHorizontal: layout.spacing_x2,
+            paddingVertical: layout.spacing_x1,
+          }}
+        />
       </View>
     </View>
   );
 }
 
-export const BrowserScreen: ScreenFC<"Browser"> = ({ navigation }) => {
+export const BrowserScreen: ScreenFC<"Browser"> = () => {
+  const [searchInput, setSearchInput] = useState("");
   const availableApps = useSelector(selectAvailableApps);
-  const coreDApps = availableApps["teritori-core-apps"];
+  const [showDapps, setShowDapps] = useState(false);
   const { width } = useWindowDimensions();
-  const topApps = availableApps["top-apps"];
 
-  const alwaysOnApps: dAppType[] = Object.values(coreDApps.options)
-    .concat(Object.values(topApps.options))
-    .filter((x: dAppType) => x.alwaysOn);
+  const filteredApps = useMemo(filterDapps, [
+    searchInput,
+    availableApps,
+    showDapps,
+  ]);
 
-  console.log("always on apps: ", alwaysOnApps);
+  function filterDapps() {
+    if (showDapps) {
+      return Object.values(availableApps).map((element) => {
+        return {
+          title: element.groupName,
+          icon: element.icon,
+          data: Object.values(element.options).filter((option: dAppType) => {
+            return option.title
+              .toLowerCase()
+              .includes(searchInput.toLowerCase());
+          }),
+        };
+      });
+    }
+
+    return [];
+  }
+
+  const hasNoDapps = useMemo(() => {
+    return filteredApps
+      .map((item) => {
+        if (item.data.length > 0) {
+          return "true";
+        }
+
+        return "false";
+      })
+      .every((cur) => cur !== "true");
+  }, [filteredApps]);
 
   function changeHandler(text: string) {
-    console.log(text);
+    setSearchInput(text);
   }
 
   return (
     <ScreenContainer
-      headerMini={<WebViewHeader onChange={changeHandler} />}
+      headerMini={
+        <WebViewHeader
+          onChange={changeHandler}
+          hasNoDapps={hasNoDapps}
+          searchInput={searchInput}
+          setShowDapps={setShowDapps}
+        />
+      }
       responsive
       fullWidth
       footerChildren={null}
@@ -68,25 +167,83 @@ export const BrowserScreen: ScreenFC<"Browser"> = ({ navigation }) => {
           paddingHorizontal: layout.spacing_x2,
         }}
       >
-        <FlatList
-          data={alwaysOnApps}
-          renderItem={({ item, index }) => {
+        <SectionList
+          sections={filteredApps}
+          keyExtractor={(item, index) => item.groupKey + index}
+          renderItem={({ item: option, index }) => (
+            <SearchedItem key={index} option={option} />
+          )}
+          renderSectionHeader={({ section: { title, icon } }) => {
+            if (hasNoDapps) {
+              return null;
+            }
+
             return (
-              <DAppStoreMenuItem
-                icon={item.icon}
-                title={item.title}
-                isAdded
-                onPress={() => {
-                  navigation.navigate("BrowserDetail", {
-                    path: "marketplace",
-                  });
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginHorizontal: layout.spacing_x1_5,
+                  marginTop: layout.spacing_x3_5,
+                  paddingBottom: layout.spacing_x1_5,
+                  borderBottomWidth: 2,
+                  borderBottomColor: neutral22,
                 }}
-              />
+              >
+                <SVGorImageIcon
+                  icon={icon}
+                  iconSize={24}
+                  style={{
+                    marginRight: layout.spacing_x1_5,
+                  }}
+                />
+                <BrandText style={fontSemibold14}>{title}</BrandText>
+              </View>
             );
           }}
-          keyExtractor={(item, idx) => `${item?.title}-${idx}`}
         />
       </View>
     </ScreenContainer>
   );
 };
+
+function SearchedItem({ option }: { option: dAppType }) {
+  const navigation = useAppNavigation();
+
+  return (
+    <ListView
+      onPress={() => {
+        if (option.route.toLowerCase() === "external" && option.url) {
+          navigation.navigate("BrowserDetail", { root: option.url, path: "" });
+        } else {
+          const nativeRoute = browserRoutes.filter(
+            (route) => route.routeName === option.route,
+          )?.[0]?.route;
+          navigation.navigate("BrowserDetail", {
+            root: "https://app.teritori.com/",
+            path: nativeRoute ?? option.route.toLowerCase(),
+          });
+        }
+      }}
+      style={{
+        paddingHorizontal: layout.spacing_x1_5,
+      }}
+      options={{
+        label: option?.title,
+        labelStyle: {
+          fontSize: 14,
+        },
+        leftIconEnabled: true,
+        leftIconOptions: {
+          component: (
+            <>
+              <SVGorImageIcon icon={option.icon} iconSize={18} />
+              <SpacerRow size={1.5} />
+            </>
+          ),
+        },
+        iconEnabled: true,
+      }}
+    />
+  );
+}

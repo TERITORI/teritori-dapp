@@ -54,7 +54,10 @@ import TransactionDetailScreen from "@/screens/Mini/Wallet/TransactionDetailScre
 import { CreatePasswordWallet } from "@/screens/Wallet/Screens/CreatePasswordWallet";
 import { CreateWalletScreen } from "@/screens/Wallet/Screens/CreateWalletScreen";
 import { BrowserDetail } from "@/screens/WebView/BrowserDetail";
-import { BrowserScreen, SearchWebViewScreen } from "@/screens/WebView/BrowserScreen";
+import {
+  BrowserScreen,
+  SearchWebViewScreen,
+} from "@/screens/WebView/BrowserScreen";
 import { selectIsChatActivated } from "@/store/slices/message";
 import { RootStackParamList } from "@/utils/navigation";
 

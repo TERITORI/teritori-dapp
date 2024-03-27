@@ -6,6 +6,7 @@ import feedSVG from "../../assets/icons/bottomTab/feed.svg";
 import walletSVG from "../../assets/icons/bottomTab/wallets.svg";
 import messageSVG from "../../assets/icons/message.svg";
 
+import browserSVG from "@/assets/icons/search-gray.svg";
 import ToggleButton from "@/components/buttons/ToggleButton";
 import { useCurrentRouteName } from "@/hooks/useCurrentRouteName";
 import {
@@ -18,6 +19,7 @@ const icons = {
   MiniChats: messageSVG,
   MiniFeeds: feedSVG,
   MiniWallets: walletSVG,
+  Browser: browserSVG,
 };
 
 interface TabBarIconProps {

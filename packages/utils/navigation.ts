@@ -153,7 +153,7 @@ export type RootStackParamList = {
   MiniChatCreateAccount: undefined;
   MiniGroupActions: { conversationId: string };
   Browser: undefined;
-  BrowserDetail: { path: string };
+  BrowserDetail: { root: string; path: string };
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -313,7 +313,7 @@ const navConfig: {
 
     //=== Web View
     Browser: "browser",
-    BrowserDetail: "browser/:path",
+    BrowserDetail: "browser-detail",
   },
 };
 
