@@ -1,12 +1,12 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
-import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadRequiredSublabel";
-import { NewConfigureRoyaltyDetailsFormValues } from "../CreateCollection.type";
+import { CreateCollectionFormValues } from "../CreateCollection.type";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
+import { TextInputLaunchpadRequired } from "@/screens/Launchpad/components/inputs/TextInputLaunchpadRequired";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -14,15 +14,9 @@ import {
   fontSemibold20,
 } from "@/utils/style/fonts";
 
-export const ConfigureRoyaltyDetails: React.FC = () => {
-  const { control } = useForm<NewConfigureRoyaltyDetailsFormValues>({
-    defaultValues: {
-      PaymentAddress: "",
-      SharePercentage: "",
-    },
-    mode: "onBlur",
-  });
-
+export const ConfigureRoyaltyDetails: React.FC<{
+  createCollectionForm: UseFormReturn<CreateCollectionFormValues>;
+}> = ({ createCollectionForm }) => {
   return (
     <View style={{ maxWidth: 416 }}>
       <SpacerColumn size={2} />
@@ -33,10 +27,10 @@ export const ConfigureRoyaltyDetails: React.FC = () => {
       </BrandText>
       <SpacerColumn size={2} />
 
-      <TextInputLaunchpadRequiredSublabel<NewConfigureRoyaltyDetailsFormValues>
+      <TextInputLaunchpadRequired<CreateCollectionFormValues>
         label="Payment Address "
         placeHolder="teritori123456789qwertyuiopasdfghjklzxcvbnm"
-        name="PaymentAddress"
+        name="royaltyAddress"
         sublabel={
           <View>
             <BrandText style={[fontSemibold13, { color: neutral55 }]}>
@@ -44,13 +38,13 @@ export const ConfigureRoyaltyDetails: React.FC = () => {
             </BrandText>
           </View>
         }
-        control={control}
+        control={createCollectionForm.control}
       />
 
-      <TextInputLaunchpadRequiredSublabel<NewConfigureRoyaltyDetailsFormValues>
+      <TextInputLaunchpadRequired<CreateCollectionFormValues>
         label="Share Percentage "
         placeHolder="8%"
-        name="SharePercentage"
+        name="royaltyPercentage"
         sublabel={
           <View>
             <BrandText style={[fontSemibold13, { color: neutral55 }]}>
@@ -58,7 +52,7 @@ export const ConfigureRoyaltyDetails: React.FC = () => {
             </BrandText>
           </View>
         }
-        control={control}
+        control={createCollectionForm.control}
       />
     </View>
   );

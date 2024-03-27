@@ -1,16 +1,18 @@
 import React, { useState } from "react";
+import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
-import { AssetsTab } from "./AssetsTab";
-import { UriTab } from "./UriTab";
+import { AssetsTab } from "../AssetsTab";
+import { UriTab } from "../UriTab";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
+import { CreateCollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
 import { neutral77, primaryColor } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 
-const AssetsandMetadataTabItems = {
+const AssetsAndMetadataTabItems = {
   assets: {
     name: "Upload assets & metadata",
   },
@@ -19,9 +21,11 @@ const AssetsandMetadataTabItems = {
   },
 };
 
-export const LaunchpadAssetsandMetadata: React.FC = () => {
+export const LaunchpadAssetsAndMetadata: React.FC<{
+  createCollectionForm: UseFormReturn<CreateCollectionFormValues>;
+}> = ({ createCollectionForm }) => {
   const [selectedTab, setSelectedTab] =
-    useState<keyof typeof AssetsandMetadataTabItems>("assets");
+    useState<keyof typeof AssetsAndMetadataTabItems>("assets");
 
   return (
     <View
@@ -61,7 +65,7 @@ export const LaunchpadAssetsandMetadata: React.FC = () => {
       <SpacerColumn size={2} />
 
       <Tabs
-        items={AssetsandMetadataTabItems}
+        items={AssetsAndMetadataTabItems}
         selected={selectedTab}
         style={{
           height: 64,

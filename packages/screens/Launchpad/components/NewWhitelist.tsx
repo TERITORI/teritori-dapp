@@ -1,14 +1,17 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
-import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadRequiredSublabel";
-import { NewWhitelistDetailsFormValues } from "../CreateCollection.type";
+import {
+  CreateCollectionFormValues,
+  CreateCollectionWhitelist,
+} from "../CreateCollection.type";
 
 import { BrandText } from "@/components/BrandText";
 import { SelectFileUploader } from "@/components/selectFileUploader";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
+import { TextInputLaunchpadRequired } from "@/screens/Launchpad/components/inputs/TextInputLaunchpadRequired";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "@/utils/social-feed";
 import { neutral55, neutral77 } from "@/utils/style/colors";
@@ -18,18 +21,18 @@ import {
   fontSemibold20,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { LocalFileData } from "@/utils/types/files";
 
-export const NewWhitelist: React.FC = () => {
-  const { control } = useForm<NewWhitelistDetailsFormValues>({
-    defaultValues: {
-      unitPrice: "",
-      memberLimit: "",
-      perAddresaLimit: "",
-      startTime: "",
-      endTime: "",
-    },
+export const NewWhitelist: React.FC<{
+  createCollectionForm: UseFormReturn<CreateCollectionFormValues>;
+}> = ({ createCollectionForm }) => {
+  const { control } = useForm<CreateCollectionWhitelist>({
     mode: "onBlur",
   });
+
+  const onUploadWhitelistFile = (files: LocalFileData[]) => {
+    // TODO: Parse addresses from the TXT file and createCollectionForm.setValue("whitelistAddresses", blabla)
+  };
 
   return (
     <View style={{ maxWidth: 416 }}>
@@ -40,7 +43,8 @@ export const NewWhitelist: React.FC = () => {
         Information about your minting settings
       </BrandText>
       <SpacerColumn size={2} />
-      <TextInputLaunchpadRequiredSublabel<NewWhitelistDetailsFormValues>
+
+      <TextInputLaunchpadRequired<CreateCollectionWhitelist>
         label="Unit Price "
         placeHolder="0"
         name="unitPrice"
@@ -54,24 +58,10 @@ export const NewWhitelist: React.FC = () => {
         control={control}
       />
 
-      <TextInputLaunchpadRequiredSublabel<NewWhitelistDetailsFormValues>
-        label="Member Limit "
-        placeHolder="0"
-        name="memberLimit"
-        sublabel={
-          <View>
-            <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-              Maximum number of whitelisted addresses
-            </BrandText>
-          </View>
-        }
-        control={control}
-      />
-
-      <TextInputLaunchpadRequiredSublabel<NewWhitelistDetailsFormValues>
+      <TextInputLaunchpadRequired<CreateCollectionWhitelist>
         label="Per Address Limit"
         placeHolder="0"
-        name="perAddresaLimit"
+        name="perAddressLimit"
         sublabel={
           <View>
             <BrandText style={[fontSemibold13, { color: neutral55 }]}>
@@ -82,7 +72,7 @@ export const NewWhitelist: React.FC = () => {
         control={control}
       />
 
-      <TextInputLaunchpadRequiredSublabel<NewWhitelistDetailsFormValues>
+      <TextInputLaunchpadRequired<CreateCollectionWhitelist>
         label="Start Time "
         placeHolder="0"
         name="startTime"
@@ -96,7 +86,7 @@ export const NewWhitelist: React.FC = () => {
         control={control}
       />
 
-      <TextInputLaunchpadRequiredSublabel<NewWhitelistDetailsFormValues>
+      <TextInputLaunchpadRequired<CreateCollectionWhitelist>
         label="End Time "
         placeHolder="0"
         name="endTime"
@@ -118,6 +108,7 @@ export const NewWhitelist: React.FC = () => {
         TXT file that contains the whitelisted addresses
       </BrandText>
       <SpacerColumn size={2} />
+
       <SelectFileUploader
         label="Select file"
         fileHeight={ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT}
@@ -127,7 +118,7 @@ export const NewWhitelist: React.FC = () => {
           width: 416,
         }}
         containerHeight={48}
-        onUpload={(files) => {}}
+        onUpload={onUploadWhitelistFile}
         mimeTypes={IMAGE_MIME_TYPES}
       />
     </View>

@@ -1,12 +1,12 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
-import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadRequiredSublabel";
-import { TeamandInvestmentFormValues } from "../CreateCollection.type";
+import { CreateCollectionFormValues } from "../../CreateCollection.type";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
+import { TextInputLaunchpadRequired } from "@/screens/Launchpad/components/inputs/TextInputLaunchpadRequired";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -14,19 +14,9 @@ import {
   fontSemibold20,
 } from "@/utils/style/fonts";
 
-export const LaunchpadTeamandInvestment: React.FC = () => {
-  const { control } = useForm<TeamandInvestmentFormValues>({
-    defaultValues: {
-      teamDesciption: "",
-      teamLink: "",
-      partner: "",
-      investDesciption: "",
-      investLink: "",
-      roadmap: "",
-    },
-    mode: "onBlur",
-  });
-
+export const LaunchpadTeamAndInvestment: React.FC<{
+  createCollectionForm: UseFormReturn<CreateCollectionFormValues>;
+}> = ({ createCollectionForm }) => {
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
       <View style={{ width: 416 }}>
@@ -37,7 +27,7 @@ export const LaunchpadTeamandInvestment: React.FC = () => {
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpadRequiredSublabel<TeamandInvestmentFormValues>
+        <TextInputLaunchpadRequired<CreateCollectionFormValues>
           label="Describe your team: "
           sublabel={
             <View>
@@ -60,11 +50,11 @@ export const LaunchpadTeamandInvestment: React.FC = () => {
             </View>
           }
           placeHolder="Describe here..."
-          name="teamDesciption"
-          control={control}
+          name="teamDescription"
+          control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequiredSublabel<TeamandInvestmentFormValues>
+        <TextInputLaunchpadRequired<CreateCollectionFormValues>
           required={false}
           label="Team links and attachments "
           sublabel={
@@ -76,11 +66,11 @@ export const LaunchpadTeamandInvestment: React.FC = () => {
             </View>
           }
           placeHolder="Type here..."
-          name="teamDesciption"
-          control={control}
+          name="teamLink"
+          control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequiredSublabel<TeamandInvestmentFormValues>
+        <TextInputLaunchpadRequired<CreateCollectionFormValues>
           label="Do you have any partners on the project? "
           sublabel={
             <View>
@@ -90,11 +80,11 @@ export const LaunchpadTeamandInvestment: React.FC = () => {
             </View>
           }
           placeHolder="Type here..."
-          name="partner"
-          control={control}
+          name="partnersDescription"
+          control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequiredSublabel<TeamandInvestmentFormValues>
+        <TextInputLaunchpadRequired<CreateCollectionFormValues>
           label="What have you invested in this project so far? "
           sublabel={
             <View>
@@ -113,11 +103,11 @@ export const LaunchpadTeamandInvestment: React.FC = () => {
             </View>
           }
           placeHolder="Type here..."
-          name="investDesciption"
-          control={control}
+          name="investDescription"
+          control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequiredSublabel<TeamandInvestmentFormValues>
+        <TextInputLaunchpadRequired<CreateCollectionFormValues>
           required={false}
           label="Investment links and attachments "
           sublabel={
@@ -130,22 +120,22 @@ export const LaunchpadTeamandInvestment: React.FC = () => {
           }
           placeHolder="Type here..."
           name="investLink"
-          control={control}
+          control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequiredSublabel<TeamandInvestmentFormValues>
+        <TextInputLaunchpadRequired<CreateCollectionFormValues>
           label="Whitepaper and roadmap: "
           sublabel={
             <View>
               <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-                Please provide any relevant links regarding your whitepaper and
+                Please provide any relevant link regarding your white paper and
                 roadmap. You can also post a google drive link.
               </BrandText>
             </View>
           }
           placeHolder="Type here..."
-          name="roadmap"
-          control={control}
+          name="roadmapLink"
+          control={createCollectionForm.control}
         />
       </View>
     </View>

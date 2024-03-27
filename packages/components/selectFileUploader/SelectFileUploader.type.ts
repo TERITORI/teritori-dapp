@@ -5,6 +5,7 @@ import { LocalFileData } from "../../utils/types/files";
 
 export interface SelectFileUploaderProps {
   onUpload: (files: LocalFileData[]) => void;
+  files?: LocalFileData[];
   label?: string;
   style?: StyleProp<ViewStyle>;
   isImageCover?: boolean;

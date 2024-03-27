@@ -1,20 +1,15 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
 import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
-import { ExistingWhitelistDetailsFormValues } from "../CreateCollection.type";
+import { CreateCollectionFormValues } from "../CreateCollection.type";
 
 import { SpacerColumn } from "@/components/spacer";
 
-export const ExistingWhitelist: React.FC = () => {
-  const { control } = useForm<ExistingWhitelistDetailsFormValues>({
-    defaultValues: {
-      whitelistAddress: "",
-    },
-    mode: "onBlur",
-  });
-
+export const ExistingWhitelist: React.FC<{
+  createCollectionForm: UseFormReturn<CreateCollectionFormValues>;
+}> = ({ createCollectionForm }) => {
   return (
     <View
       style={{
@@ -23,11 +18,11 @@ export const ExistingWhitelist: React.FC = () => {
     >
       <SpacerColumn size={2} />
 
-      <TextInputLaunchpadRequired<ExistingWhitelistDetailsFormValues>
+      <TextInputLaunchpadRequired<CreateCollectionFormValues>
         label="Whitelist Address"
         placeHolder="teritori123456789qwertyuiopasdfghjklzxcvbnm"
         name="whitelistAddress"
-        control={control}
+        control={createCollectionForm.control}
       />
     </View>
   );

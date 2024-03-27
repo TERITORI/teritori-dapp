@@ -1,65 +1,61 @@
-export interface NewCollectionAssetsFormValues {
-  nftApiKey?: string;
-}
+import { WhitelistMintInfo } from "@/api/launchpad/v1/launchpad";
+import { Uint128 } from "@/contracts-clients/nft-launchpad";
+import { LocalFileData } from "@/utils/types/files";
 
 export interface ExistingBaseUrlFormValues {
   baseTokenUri?: string;
   coverImageUrl?: string;
 }
 
-export interface NewCollectionBasicFormValues {
+export interface CreateCollectionFormValues {
   name?: string;
   description?: string;
   symbol?: string;
   externalLink?: string;
-}
-export interface NewCollectionDetailsFormValues {
   websiteLink?: string;
   twitterProfileUrl?: string;
-  twitterFollowers: string;
+  nbTwitterFollowers?: number;
   discordName?: string;
   email?: string;
-  projectType?: string;
-  projectDesciption?: string;
-}
-
-export interface NewCollectionMintFormValues {
-  token?: string;
-  unitPrice?: string;
-  perAddressLimit: string;
-  startTime?: string;
-}
-export interface TeamandInvestmentFormValues {
-  teamDesciption?: string;
+  projectTypes?: string[];
+  projectDescription?: string;
+  nbTokens?: number;
+  unitPrice?: Uint128;
+  perAddressLimit?: number;
+  startTime?: number;
+  teamDescription?: string;
   teamLink?: string;
-  partner?: string;
-  investDesciption?: string;
+  partnersDescription?: string;
+  investDescription?: string;
   investLink?: string;
-  roadmap?: string;
+  roadmapLink?: string;
+  artworkDescription?: string;
+  expectedSupply?: number;
+  expectedPublicMintPrice?: number;
+  expectedMintDate?: number;
+  nftApiKey?: string;
+  coverImage?: LocalFileData;
+  isPreviouslyApplied?: boolean;
+  isDerivativeProject?: boolean;
+  isReadyForMint?: boolean;
+  isDox?: boolean;
+  escrowMintProceedsPeriod?: number;
+  daoWhitelistCount?: number;
+  whitelistMintInfos: WhitelistMintInfo[];
+  royaltyAddress?: string;
+  royaltyPercentage?: number;
 }
-
-export interface NewCollectionAdditionalFormValues {
-  artwork?: string;
-  collectionSupply?: string;
-  mintPrice?: string;
-  mintDate?: string;
-  whitelistSpotPercentage?: string;
+export interface CreateCollectionWhitelist {
+  addressesCount?: number;
+  denom?: string;
+  endTime?: number;
+  perAddressLimit?: number;
+  merkleRoot?: string;
+  startTime?: number;
+  unitPrice?: Uint128;
 }
-
-export interface ExistingWhitelistDetailsFormValues {
-  whitelistAddress: string;
-}
-export interface NewWhitelistDetailsFormValues {
-  unitPrice: string;
-  memberLimit: string;
-  perAddresaLimit: string;
-  startTime: string;
-  endTime: string;
-}
-
-export interface NewConfigureRoyaltyDetailsFormValues {
-  PaymentAddress: string;
-  SharePercentage: string;
+export interface NewCollectionAssetsFormValues {
+  nftApiKey?: string;
 }
 
 export interface NewMetadataDetailsFormValues {

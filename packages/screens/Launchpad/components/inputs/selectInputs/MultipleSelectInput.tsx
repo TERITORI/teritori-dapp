@@ -1,11 +1,10 @@
-import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import React, { FC } from "react";
+import { TouchableOpacity, View, ViewStyle } from "react-native";
 
-import chevronDownSVG from "./../../../../../assets/icons/chevron-down.svg";
-import chevronUpSVG from "./../../../../../assets/icons/chevron-up.svg";
-import { MultipleSelectionDropdownProps } from "./DropdownProps.type";
-import { CheckboxDappStore } from "../../../DAppStore/components/CheckboxDappStore";
+import { CheckboxDappStore } from "../../../../DAppStore/components/CheckboxDappStore";
 
+import chevronDownSVG from "@/assets/icons/chevron-down.svg";
+import chevronUpSVG from "@/assets/icons/chevron-up.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
@@ -24,7 +23,18 @@ import {
 import { fontMedium14, fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-export const MultipleSelectionDropdown = ({
+interface Props {
+  style?: ViewStyle;
+  onDropdownClosed?: () => void;
+  dropdownOptions: string[];
+  placeHolder?: string;
+  setItems: (item: string) => void;
+  items: string[];
+  label: string;
+  sublabel?: React.ReactElement;
+}
+
+export const MultipleSelectInput: FC<Props> = ({
   style,
   dropdownOptions,
   placeHolder,
@@ -32,7 +42,7 @@ export const MultipleSelectionDropdown = ({
   label,
   setItems,
   sublabel,
-}: MultipleSelectionDropdownProps) => {
+}) => {
   const [isDropdownOpen, setDropdownState, ref] = useDropdowns();
 
   return (
