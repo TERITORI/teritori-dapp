@@ -9,6 +9,7 @@ import {
   Animated,
   GestureResponderEvent,
   ScrollView,
+  Platform,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -28,6 +29,7 @@ type Props = {
   onGoBack?: () => void;
   background?: string | "transparent";
   customHeader?: ReactNode;
+  noScrollView?: boolean;
 };
 
 export const BlurScreenContainer = ({
@@ -36,6 +38,7 @@ export const BlurScreenContainer = ({
   onGoBack,
   background = "transparent",
   customHeader,
+  noScrollView,
 }: Props) => {
   const { width: windowWidth } = useWindowDimensions();
   const navigation = useAppNavigation();
@@ -82,6 +85,22 @@ export const BlurScreenContainer = ({
     return locationY > 0 && locationY < 100;
   };
 
+  const WrapperComponent = noScrollView ? View : ScrollView;
+  const wrapperComponentProps = noScrollView
+    ? {
+        style: {
+          backgroundColor: background,
+          flex: 1,
+        },
+      }
+    : {
+        scrollEnabled: false,
+        contentContainerStyle: {
+          backgroundColor: background,
+          flex: 1,
+        },
+      };
+
   return (
     <SafeAreaView
       style={{
@@ -102,6 +121,8 @@ export const BlurScreenContainer = ({
           left: 0,
           right: 0,
           bottom: 0,
+          backgroundColor:
+            Platform.OS === "android" ? "rgb(0,0,0)" : "transparent",
         }}
       />
       <LinearGradient
@@ -159,7 +180,7 @@ export const BlurScreenContainer = ({
                 <SVG source={chevronSVG} height={24} width={24} />
               </CustomPressable>
             )}
-            <BrandText style={[fontSemibold18, { lineHeight: 0 }]}>
+            <BrandText style={[fontSemibold18, { lineHeight: 22 }]}>
               {title || "Settings"}
             </BrandText>
 
@@ -169,15 +190,9 @@ export const BlurScreenContainer = ({
           </View>
         )}
 
-        <ScrollView
-          scrollEnabled={false}
-          contentContainerStyle={{
-            backgroundColor: background,
-            flex: 1,
-          }}
-        >
+        <WrapperComponent {...wrapperComponentProps}>
           {children}
-        </ScrollView>
+        </WrapperComponent>
       </Animated.View>
     </SafeAreaView>
   );

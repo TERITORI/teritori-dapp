@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import { Select } from "./components/Select";
-import { CustomButton } from "../components/Button/CustomButton";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 import { BrandText } from "@/components/BrandText";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { SpacerColumn } from "@/components/spacer";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral22, neutral77, secondaryColor } from "@/utils/style/colors";

@@ -3,13 +3,13 @@ import { useState } from "react";
 import { View } from "react-native";
 
 import questionSVG from "../../../../assets/icons/question-gray.svg";
-import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import MiniAddressSelectorDropdown from "../components/MiniAddressSelectorDropdown";
 import MiniTextInput from "../components/MiniTextInput";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 import { BrandText } from "@/components/BrandText";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";

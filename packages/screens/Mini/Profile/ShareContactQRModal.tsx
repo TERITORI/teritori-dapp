@@ -3,19 +3,19 @@ import { View, useWindowDimensions } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { useSelector } from "react-redux";
 
-import { CustomButton } from "../components/Button/CustomButton";
 import MobileModal from "../components/MobileModal";
 
 import teritoriSVG from "@/assets/icons/networks/teritori-circle.svg";
 import { BrandText } from "@/components/BrandText";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { selectContactInfo } from "@/store/slices/message";
 import { neutral00, neutral22, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold18, fontSemibold24 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-const QR_SIZE = 248;
 
+const QR_SIZE = 248;
 export const ShareContactQRModal = ({
   onClose,
   isOpen,
@@ -32,9 +32,7 @@ export const ShareContactQRModal = ({
     <MobileModal
       visible={isOpen}
       onClose={onClose}
-      innerContainerOptions={{
-        height: 520,
-      }}
+      innerContainerOptions={{ height: 520 }}
     >
       <View
         style={{

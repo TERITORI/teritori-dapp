@@ -90,6 +90,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
 
   return (
     <BlurScreenContainer
+      noScrollView
       customHeader={
         <View
           style={{

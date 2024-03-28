@@ -6,11 +6,11 @@ import { AddedToken } from "./components/AddedToken";
 import TransactionItem from "./components/TransactionItem";
 import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
 import transactionSVG from "../../../../assets/icons/transactions-gray.svg";
-import { CustomButton } from "../components/Button/CustomButton";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { Spinner } from "@/components/Spinner";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { useBalances } from "@/hooks/useBalances";

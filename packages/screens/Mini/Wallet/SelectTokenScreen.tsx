@@ -27,7 +27,7 @@ const SelectTokenScreen: ScreenFC<"MiniSelectToken"> = ({
   );
 
   return (
-    <BlurScreenContainer title="Select Token">
+    <BlurScreenContainer title="Select Token" noScrollView>
       {!assets.length ? (
         <BrandText
           style={[

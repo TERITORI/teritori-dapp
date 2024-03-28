@@ -1,9 +1,8 @@
 import * as DocumentPicker from "expo-document-picker";
-import React from "react";
+import React, { ReactNode } from "react";
 
-import micSVG from "../../../../../assets/icons/mic-white.svg";
-import videoSVG from "../../../../../assets/icons/video.svg";
-
+import micSVG from "@/assets/icons/mic-white.svg";
+import videoSVG from "@/assets/icons/video.svg";
 import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { getAudioData } from "@/utils/audio";
@@ -17,9 +16,15 @@ type Props = {
   files?: LocalFileData[];
   onSelectFile: (data: LocalFileData[]) => void;
   type: FileType;
+  title?: ReactNode;
 };
 
-export const SelectAudioVideo = ({ onSelectFile, type, files }: Props) => {
+export const SelectAudioVideo = ({
+  onSelectFile,
+  type,
+  files,
+  title,
+}: Props) => {
   const onChooseFilePress = async (fileType: FileType) => {
     try {
       const acceptableMimeTypes =
@@ -81,14 +86,16 @@ export const SelectAudioVideo = ({ onSelectFile, type, files }: Props) => {
       onPress={() => onChooseFilePress(type)}
       disabled={Array.isArray(files) && files?.length > 0}
     >
-      <SVG
-        source={type === "audio" ? micSVG : videoSVG}
-        height={24}
-        width={24}
-        style={{
-          opacity: Array.isArray(files) && files?.length > 0 ? 0.7 : 1,
-        }}
-      />
+      {title || (
+        <SVG
+          source={type === "audio" ? micSVG : videoSVG}
+          height={24}
+          width={24}
+          style={{
+            opacity: Array.isArray(files) && files?.length > 0 ? 0.7 : 1,
+          }}
+        />
+      )}
     </CustomPressable>
   );
 };

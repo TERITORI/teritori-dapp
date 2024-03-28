@@ -2,19 +2,20 @@ import React, { useState } from "react";
 import { ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
-import { CustomButton, CustomButtonTypes } from "./Button/CustomButton";
-
 import cameraSVG from "@/assets/icons/camera-white.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { Spinner } from "@/components/Spinner";
+import {
+  CustomButton,
+  CustomButtonTypes,
+} from "@/components/buttons/CustomButton";
 import { QRCodeScannerModal } from "@/components/modals/QRCodeScannerModal";
 import { selectContactInfo } from "@/store/slices/message";
 import { useAppNavigation } from "@/utils/navigation";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { weshServices } from "@/weshnet";
-
 type Props = {
   setError: (text: string) => void;
   label?: string;

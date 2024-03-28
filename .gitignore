@@ -94,6 +94,7 @@ substreams-*/target
 /weshd/ios/Frameworks/
 /weshd/android/libs/
 /weshd/temp/
+temp/
 
 # eslint
 /.eslintcache

@@ -33,44 +33,45 @@ export const VoteDetails: React.FC<{
 }) => {
   return (
     <View>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          padding: layout.spacing_x0_5,
-          backgroundColor: neutral17,
-          borderRadius: layout.spacing_x0_75,
-          borderWidth: 1,
-          height: 36,
-          gap: layout.spacing_x0_25,
-          borderColor: neutral22,
-          width: 147,
-        }}
-      >
-        <BrandText
-          style={[
-            fontSemibold16,
-            {
-              paddingLeft: layout.spacing_x0_5,
-              color: neutral77,
-            },
-          ]}
+      <View style={{ flexDirection: "row" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            padding: layout.spacing_x0_5,
+            backgroundColor: neutral17,
+            borderRadius: layout.spacing_x0_75,
+            borderWidth: 1,
+            height: 36,
+            gap: layout.spacing_x0_25,
+            borderColor: neutral22,
+          }}
         >
-          Turnout:
-        </BrandText>
-        <BrandText
-          style={[
-            fontSemibold16,
-            {
-              paddingLeft: layout.spacing_x0_5,
-              color: secondaryColor,
-            },
-          ]}
-        >
-          {`${percentageTotalParticipant}%`}
-        </BrandText>
+          <BrandText
+            style={[
+              fontSemibold16,
+              {
+                paddingLeft: layout.spacing_x0_5,
+                color: neutral77,
+              },
+            ]}
+          >
+            Turnout:
+          </BrandText>
+          <BrandText
+            style={[
+              fontSemibold16,
+              {
+                paddingHorizontal: layout.spacing_x0_5,
+                color: secondaryColor,
+              },
+            ]}
+          >
+            {`${percentageTotalParticipant}%`}
+          </BrandText>
+        </View>
+        <View style={{ flex: 1 }} />
       </View>
-
       <SpacerColumn size={1} />
       <View style={{ flexDirection: "row", gap: layout.spacing_x2 }}>
         <VoteDetailsText
