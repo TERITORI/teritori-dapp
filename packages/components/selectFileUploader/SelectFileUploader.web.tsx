@@ -24,6 +24,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
   label,
   style,
   onUpload,
+  files,
   // multiple is not used at true for now, needs to refactor in parents
   multiple,
   mimeTypes,
@@ -37,7 +38,8 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
 }) => {
   const { setToastError } = useFeedbacks();
   const hiddenFileInput = useRef<HTMLInputElement>(null);
-  const [files, setFiles] = useState<LocalFileData[]>([]);
+  const [localFiles, setLocalFiles] = useState<LocalFileData[]>([]);
+  const filesToUse = (!localFiles.length ? files : localFiles) || [];
 
   const handleFiles = async (files: File[]) => {
     const _files = multiple ? files : [files[0]];
@@ -64,7 +66,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
 
     const formattedFiles = await Promise.all(supportedFiles.map(formatFile));
 
-    setFiles(formattedFiles);
+    setLocalFiles(formattedFiles);
     onUpload(formattedFiles);
   };
 
@@ -142,21 +144,23 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
               alignItems: "center",
               justifyContent: "center",
               height:
-                files.length > 0 && !multiple ? fileHeight : containerHeight,
+                filesToUse.length > 0 && !multiple
+                  ? fileHeight
+                  : containerHeight,
               borderRadius: 12,
             }}
           >
-            {files.length > 0 && !multiple ? (
+            {filesToUse.length > 0 && !multiple ? (
               <>
                 <DeleteButton
                   onPress={() => {
-                    setFiles([]);
+                    setLocalFiles([]);
                     onUpload([]);
                   }}
                   style={{ top: 12, right: 12 }}
                 />
                 <Image
-                  source={{ uri: URL.createObjectURL(files[0].file) }}
+                  source={{ uri: URL.createObjectURL(filesToUse[0].file) }}
                   style={{
                     overflow: "hidden",
                     height: fileHeight,
@@ -171,7 +175,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
                   flex: 1,
                   width: "100%",
                   height:
-                    files.length > 0 && !multiple
+                    filesToUse.length > 0 && !multiple
                       ? fileHeight
                       : containerHeight,
                   alignItems: "center",
@@ -180,7 +184,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
                   borderWidth: 1,
                 }}
               >
-                {files.length > 0 && multiple ? (
+                {filesToUse.length > 0 && multiple ? (
                   <View
                     style={{
                       height: "100%",
@@ -206,7 +210,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
                       <BrandText
                         style={[fontSemibold14, { color: secondaryColor }]}
                       >
-                        {files.length} files selected
+                        {filesToUse.length} files selected
                       </BrandText>
                     </View>
                     <input
@@ -249,7 +253,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
                       <BrandText
                         style={[fontSemibold14, { color: primaryColor }]}
                       >
-                        Select files
+                        {`Select file${multiple ? "s" : ""}`}
                       </BrandText>
                     </View>
                     <input

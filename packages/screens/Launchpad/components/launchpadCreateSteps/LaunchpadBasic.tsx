@@ -1,30 +1,28 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
-import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
-import { NewCollectionBasicFormValues } from "../CreateCollection.type";
+import { CreateCollectionFormValues } from "../../CreateCollection.type";
+import { TextInputLaunchpadRequired } from "../inputs/TextInputLaunchpadRequired";
 
 import { BrandText } from "@/components/BrandText";
 import { CustomNetworkSelector } from "@/components/NetworkSelector/CustomNetworkSelector";
 import { SelectFileUploader } from "@/components/selectFileUploader";
 import { SpacerColumn } from "@/components/spacer";
+import { NetworkFeature } from "@/networks";
+import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "@/utils/social-feed";
 import { neutral77, primaryColor } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { LocalFileData } from "@/utils/types/files";
 
-export const LaunchpadBasic: React.FC = () => {
-  const { control } = useForm<NewCollectionBasicFormValues>({
-    defaultValues: {
-      name: "",
-      description: "",
-      symbol: "",
-      externalLink: "",
-    },
-    mode: "onBlur",
-  });
+export const LaunchpadBasic: React.FC<{
+  createCollectionForm: UseFormReturn<CreateCollectionFormValues>;
+  onChangeCoverImage: (file: LocalFileData) => void;
+}> = ({ createCollectionForm, onChangeCoverImage }) => {
+  const coverImage = createCollectionForm.watch("coverImage");
 
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -58,28 +56,48 @@ export const LaunchpadBasic: React.FC = () => {
       <View style={{ width: 416 }}>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpadRequired<NewCollectionBasicFormValues>
+        {/*<TextInputCustom<CreateDaoFormType>*/}
+        {/*  noBrokenCorners*/}
+        {/*  variant="labelOutside"*/}
+        {/*  control={control}*/}
+        {/*  label="Organization's name"*/}
+        {/*  placeHolder="Type organization's name here"*/}
+        {/*  name="organizationName"*/}
+        {/*  rules={{ required: true }}*/}
+        {/*/>*/}
+
+        <TextInputLaunchpadRequired<CreateCollectionFormValues>
           label="Name"
           placeHolder="My Awesome Collection"
           name="name"
-          control={control}
+          control={createCollectionForm.control}
+          // control={control}
+          onChangeText={(e) => {
+            console.log("eeee", e);
+          }}
+          onChange={(e) => {
+            console.log("eeee", e);
+          }}
         />
 
-        <TextInputLaunchpadRequired<NewCollectionBasicFormValues>
+        <TextInputLaunchpadRequired<CreateCollectionFormValues>
           label="Description"
           placeHolder="My Awesome Collection Description"
           name="description"
-          control={control}
+          control={createCollectionForm.control}
+          // control={control}
         />
 
-        <TextInputLaunchpadRequired<NewCollectionBasicFormValues>
+        <TextInputLaunchpadRequired<CreateCollectionFormValues>
           label="Symbol"
           placeHolder="Symbol"
           name="symbol"
-          control={control}
+          control={createCollectionForm.control}
+          // control={control}
         />
 
         <SelectFileUploader
+          files={coverImage ? [coverImage] : []}
           label="Cover Image"
           fileHeight={ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT}
           isImageCover
@@ -88,21 +106,30 @@ export const LaunchpadBasic: React.FC = () => {
             width: 416,
           }}
           containerHeight={48}
-          onUpload={(files) => {}}
+          onUpload={(files) => {
+            createCollectionForm.setValue("coverImage", files[0]);
+          }}
           mimeTypes={IMAGE_MIME_TYPES}
         />
 
-        <TextInputLaunchpadRequired<NewCollectionBasicFormValues>
+        {/*>*/}
+        {/*  {({ onPress }) => (*/}
+        {/*    <BrandText>aaa</BrandText>*/}
+        {/*  )}*/}
+        {/*</SelectFileUploader>*/}
+
+        <TextInputLaunchpad<CreateCollectionFormValues>
           label="External Link"
           placeHolder="https://collection..."
           name="externalLink"
-          control={control}
-          required={false}
+          control={createCollectionForm.control}
+          // control={control}
         />
 
         <CustomNetworkSelector
+          forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
           style={{ marginBottom: layout.spacing_x3 }}
-          label="What network is your project on?"
+          label="Which network is your project on?"
         />
       </View>
     </View>

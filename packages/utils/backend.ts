@@ -14,6 +14,11 @@ import {
   GrpcWebImpl as LaunchpadGrpcWebImpl,
 } from "../api/launchpad/v1/launchpad";
 import {
+  LaunchpadService,
+  LaunchpadServiceClientImpl,
+  GrpcWebImpl as LaunchpadGrpcWebImpl,
+} from "../api/launchpad/v1/launchpad";
+import {
   MarketplaceServiceClientImpl,
   GrpcWebImpl as MarketplaceGrpcWebImpl,
   MarketplaceService,

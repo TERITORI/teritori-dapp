@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
-import { ConfigureRoyaltyDetails } from "./ConfigureRoyaltyDetails";
-import { ExistingWhitelist } from "./ExistingWhitelist";
-import { NavBar } from "./NavBar";
-import { NewWhitelist } from "./NewWhitelist";
-import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
-import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadRequiredSublabel";
-import { NewCollectionMintFormValues } from "../CreateCollection.type";
+import { CreateCollectionFormValues } from "../../CreateCollection.type";
+import { ConfigureRoyaltyDetails } from "../ConfigureRoyaltyDetails";
+import { ExistingWhitelist } from "../ExistingWhitelist";
+import { NavBar } from "../NavBar";
+import { NewWhitelist } from "../NewWhitelist";
+import { TextInputLaunchpadRequired } from "../inputs/TextInputLaunchpadRequired";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
@@ -21,42 +20,33 @@ import {
 import { layout } from "@/utils/style/layout";
 
 const CreateWhitelistTabItems = {
-  nowhitelist: {
+  noWhitelist: {
     name: "No whitelist",
   },
-  existinghitelist: {
+  existingWhitelist: {
     name: "Existing whitelist",
   },
-  newhitelist: {
+  newWhitelist: {
     name: "New whitelist",
   },
 };
 
 const CreateRoyaltyTabItems = {
-  noroyalty: {
+  noRoyalty: {
     name: "No royalty",
   },
-  configureroyaltydetails: {
+  configureRoyaltyDetails: {
     name: "Configure royalty details",
   },
 };
 
-export const LaunchpadMinting: React.FC = () => {
-  const { control } = useForm<NewCollectionMintFormValues>({
-    defaultValues: {
-      token: "",
-      unitPrice: "",
-      perAddressLimit: "",
-      startTime: "",
-    },
-    mode: "onBlur",
-  });
-
+export const LaunchpadMinting: React.FC<{
+  createCollectionForm: UseFormReturn<CreateCollectionFormValues>;
+}> = ({ createCollectionForm }) => {
   const [selectedWhitelistTab, setSelectedWhitelistTab] =
-    useState<keyof typeof CreateWhitelistTabItems>("nowhitelist");
-
+    useState<keyof typeof CreateWhitelistTabItems>("noWhitelist");
   const [selectedRoyaltyTab, setSelectedRoyaltyTab] =
-    useState<keyof typeof CreateRoyaltyTabItems>("noroyalty");
+    useState<keyof typeof CreateRoyaltyTabItems>("noRoyalty");
 
   return (
     <View
@@ -74,14 +64,14 @@ export const LaunchpadMinting: React.FC = () => {
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpadRequired<NewCollectionMintFormValues>
+        <TextInputLaunchpadRequired<CreateCollectionFormValues>
           label="Number of Tokens "
           placeHolder="0"
-          name="token"
-          control={control}
+          name="nbTokens"
+          control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequiredSublabel<NewCollectionMintFormValues>
+        <TextInputLaunchpadRequired<CreateCollectionFormValues>
           label="Unit Price"
           sublabel={
             <View>
@@ -92,10 +82,10 @@ export const LaunchpadMinting: React.FC = () => {
           }
           placeHolder="0"
           name="unitPrice"
-          control={control}
+          control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequiredSublabel<NewCollectionMintFormValues>
+        <TextInputLaunchpadRequired<CreateCollectionFormValues>
           label="Per Address Limit "
           sublabel={
             <View>
@@ -106,14 +96,14 @@ export const LaunchpadMinting: React.FC = () => {
           }
           placeHolder="0"
           name="perAddressLimit"
-          control={control}
+          control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<NewCollectionMintFormValues>
+        <TextInputLaunchpadRequired<CreateCollectionFormValues>
           label="Start Time "
           placeHolder="--.--.---- --:--"
           name="startTime"
-          control={control}
+          control={createCollectionForm.control}
         />
 
         <NavBar
@@ -122,8 +112,12 @@ export const LaunchpadMinting: React.FC = () => {
           onSelect={setSelectedWhitelistTab}
         />
 
-        {selectedWhitelistTab === "existinghitelist" && <ExistingWhitelist />}
-        {selectedWhitelistTab === "newhitelist" && <NewWhitelist />}
+        {selectedWhitelistTab === "existingWhitelist" && (
+          <ExistingWhitelist createCollectionForm={createCollectionForm} />
+        )}
+        {selectedWhitelistTab === "newWhitelist" && (
+          <NewWhitelist createCollectionForm={createCollectionForm} />
+        )}
 
         <NavBar
           items={CreateRoyaltyTabItems}
@@ -131,8 +125,10 @@ export const LaunchpadMinting: React.FC = () => {
           onSelect={setSelectedRoyaltyTab}
         />
 
-        {selectedRoyaltyTab === "configureroyaltydetails" && (
-          <ConfigureRoyaltyDetails />
+        {selectedRoyaltyTab === "configureRoyaltyDetails" && (
+          <ConfigureRoyaltyDetails
+            createCollectionForm={createCollectionForm}
+          />
         )}
       </View>
     </View>

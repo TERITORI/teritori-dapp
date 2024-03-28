@@ -1,38 +1,60 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
-
-import { LaunchpadAdditional } from "./components/LaunchpadAdditional";
-import { LaunchpadAssetsandMetadata } from "./components/LaunchpadAssetsandMetadata";
-import { LaunchpadBasic } from "./components/LaunchpadBasic";
-import { LaunchpadDetails } from "./components/LaunchpadDetails";
-import { LaunchpadMinting } from "./components/LaunchpadMinting";
-import { LaunchpadSteper } from "./components/LaunchpadSteper";
-import { LaunchpadTeamandInvestment } from "./components/LaunchpadTeamandInvestment";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SecondaryButton } from "@/components/buttons/SecondaryButton";
 import { SpacerColumn } from "@/components/spacer";
+import { useCreateCollection } from "@/hooks/launchpad/useCreateCollection";
 import { NetworkFeature } from "@/networks";
+import { CreateCollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
+import { LaunchpadSteper } from "@/screens/Launchpad/components/LaunchpadSteper";
+import { LaunchpadAdditional } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadAdditional";
+import { LaunchpadAssetsAndMetadata } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadAssetsAndMetadata";
+import { LaunchpadBasic } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadBasic";
+import { LaunchpadDetails } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadDetails";
+import { LaunchpadMinting } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting";
+import { LaunchpadTeamAndInvestment } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadTeamAndInvestment";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral33 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
+import { LocalFileData } from "@/utils/types/files";
 
-const StepContent = ({ step }: { step: number }) => {
+const StepContent: FC<{
+  step: number;
+  createCollectionForm: UseFormReturn<CreateCollectionFormValues>;
+  onChangeCoverImage: (file: LocalFileData) => void;
+}> = ({ step, createCollectionForm, onChangeCoverImage }) => {
   switch (step) {
     case 1:
-      return <LaunchpadBasic />;
+      return (
+        <LaunchpadBasic
+          createCollectionForm={createCollectionForm}
+          onChangeCoverImage={onChangeCoverImage}
+        />
+      );
     case 2:
-      return <LaunchpadDetails />;
+      return <LaunchpadDetails createCollectionForm={createCollectionForm} />;
     case 3:
-      return <LaunchpadTeamandInvestment />;
+      return (
+        <LaunchpadTeamAndInvestment
+          createCollectionForm={createCollectionForm}
+        />
+      );
     case 4:
-      return <LaunchpadAdditional />;
+      return (
+        <LaunchpadAdditional createCollectionForm={createCollectionForm} />
+      );
     case 5:
-      return <LaunchpadMinting />;
+      return <LaunchpadMinting createCollectionForm={createCollectionForm} />;
     case 6:
-      return <LaunchpadAssetsandMetadata />;
+      return (
+        <LaunchpadAssetsAndMetadata
+          createCollectionForm={createCollectionForm}
+        />
+      );
     default:
       return <></>;
   }
@@ -49,12 +71,24 @@ const stepOptions = [
 
 export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const navigation = useAppNavigation();
-
+  const createCollectionForm = useForm<CreateCollectionFormValues>({
+    mode: "all",
+  });
+  const createCollection = useCreateCollection();
+  const [coverImage, setCoverImage] = useState<LocalFileData>();
   const [selectedStep, setSelectedStep] = useState(1);
   const [isLoading, setLoading] = useState(false);
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     setLoading(true);
+
+    try {
+      await createCollection(createCollectionForm.getValues());
+      setLoading(false);
+    } catch (e) {
+      console.error("Error creating a NFT collection");
+      setLoading(false);
+    }
     setTimeout(() => {
       setLoading(false);
     }, 1000);
@@ -66,7 +100,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
       noMargin
       noScroll={false}
       footerChildren={<></>}
-      forceNetworkFeatures={[NetworkFeature.SocialFeed]}
+      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
       headerChildren={<BrandText>Launchpad Submission Form</BrandText>}
       onBackPress={() => navigation.navigate("LaunchpadApply")}
     >
@@ -88,7 +122,11 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
           }}
         >
           <SpacerColumn size={4} />
-          <StepContent step={selectedStep} />
+          <StepContent
+            step={selectedStep}
+            createCollectionForm={createCollectionForm}
+            onChangeCoverImage={(file) => setCoverImage(file)}
+          />
         </View>
 
         <View
@@ -117,20 +155,31 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
                 }}
               />
             )}
-            <PrimaryButton
-              width={137}
-              size="M"
-              text={stepOptions.length === selectedStep ? "Submit" : "Next"}
-              loader
-              isLoading={isLoading}
-              onPress={() => {
-                if (stepOptions.length === selectedStep) {
-                  onSubmit();
-                } else {
-                  setSelectedStep(selectedStep + 1);
+
+            {stepOptions.length === selectedStep ? (
+              <PrimaryButton
+                width={137}
+                size="M"
+                text="Submit"
+                loader
+                isLoading={isLoading}
+                disabled={
+                  !createCollectionForm.formState.isValid || !coverImage
                 }
-              }}
-            />
+                onPress={() => {
+                  createCollectionForm.handleSubmit(onSubmit);
+                }}
+              />
+            ) : (
+              <PrimaryButton
+                width={137}
+                size="M"
+                text="Next"
+                loader
+                isLoading={isLoading}
+                onPress={() => setSelectedStep(selectedStep + 1)}
+              />
+            )}
           </View>
         </View>
       </View>
