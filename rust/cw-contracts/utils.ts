@@ -1,9 +1,9 @@
-import * as fs from "fs";
-import path from "path";
-
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { GasPrice, calculateFee } from "@cosmjs/stargate";
+import * as fs from "fs";
+import path from "path";
+
 import { MNEMONIC } from "./mnemonic";
 
 const GAS_PRICE = GasPrice.fromString("0.025utori");

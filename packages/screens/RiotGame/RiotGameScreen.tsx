@@ -6,6 +6,8 @@ import { GameBgCard } from "./component/GameBgCard";
 import { GameBgOverlay } from "./component/GameBgOverlay";
 import { RiotGameHeader } from "./component/RiotGameHeader";
 
+import { Metadata, WhitelistMintInfo } from "@/api/launchpad/v1/launchpad";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
@@ -13,8 +15,6 @@ import { mustGetLauchpadClient } from "@/utils/backend";
 import { gameBgData } from "@/utils/game";
 import { neutral00 } from "@/utils/style/colors";
 import { headerHeight } from "@/utils/style/layout";
-import { Metadata, WhitelistMintInfo } from "@/api/launchpad/v1/launchpad";
-import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 
 export const RiotGameScreen = () => {
   const navigation = useAppNavigation();
@@ -32,12 +32,12 @@ export const RiotGameScreen = () => {
   };
 
   const updateWhitelists = async () => {
-    let client = mustGetLauchpadClient(networkId);
-    let whitelists: WhitelistMintInfo[] = [
+    const client = mustGetLauchpadClient(networkId);
+    const whitelists: WhitelistMintInfo[] = [
       {
         addresses: ["addr1", "addr2", "addr3", "addr4", "add5"],
         unitPrice: 1_000_000,
-        denom: 'utori',
+        denom: "utori",
         limitPerAddress: 2,
         addressesCount: 5,
         startTime: Date.now(),
@@ -46,20 +46,25 @@ export const RiotGameScreen = () => {
       {
         addresses: ["address2"],
         unitPrice: 2_000_000,
-        denom: 'utori',
+        denom: "utori",
         limitPerAddress: 2,
         addressesCount: 1,
         startTime: Date.now(),
         endTime: Date.now(),
-      }
-    ]
+      },
+    ];
 
-    let res = await client.UpdateCollectionWhitelists({sender: selectedWallet?.address, networkId:  networkId, projectId: 1, whitelistMintInfos: whitelists})
-    console.log(res)
-  }
+    const res = await client.UpdateCollectionWhitelists({
+      sender: selectedWallet?.address,
+      networkId,
+      projectId: 1,
+      whitelistMintInfos: whitelists,
+    });
+    console.log(res);
+  };
 
-   const uploadMetadata = async () => {
-    let client = mustGetLauchpadClient(networkId);
+  const uploadMetadata = async () => {
+    const client = mustGetLauchpadClient(networkId);
 
     const nft0 = {
       image: "image0",
@@ -68,8 +73,8 @@ export const RiotGameScreen = () => {
       description: "",
       name: "nft #0",
       attributes: [
-        {traitType: "type0", value: "value0"},
-        {traitType: "type1", value: "value1"},
+        { traitType: "type0", value: "value0" },
+        { traitType: "type1", value: "value1" },
       ],
       backgroundColor: "",
       animationUrl: "",
@@ -84,45 +89,43 @@ export const RiotGameScreen = () => {
       externalUrl: "",
       description: "",
       name: "nft #1",
-      attributes: [
-        {traitType: "type1", value: "value1"},
-      ],
+      attributes: [{ traitType: "type1", value: "value1" }],
       backgroundColor: "",
       animationUrl: "",
       youtubeUrl: "",
       royaltyPercentage: 5,
       royaltyPaymentAddress: "",
-    }
+    };
 
-    let metadatas: Metadata[] = [nft0, nft1];
+    const metadatas: Metadata[] = [nft0, nft1];
 
     const resp = await client.UpdateTokensMetadatas({
       sender: selectedWallet?.address,
       projectId: 1,
       networkId,
-      metadatas
-    })
-    console.log(resp)
-   }
+      metadatas,
+    });
+    console.log(resp);
+  };
 
-   const getTokenMetadata = async () => {
-    let client = mustGetLauchpadClient(networkId);
+  const getTokenMetadata = async () => {
+    const client = mustGetLauchpadClient(networkId);
     const resp = await client.TokenMetadata({
       sender: selectedWallet?.address,
       projectId: 1,
       networkId,
       tokenId: 1,
-    })
-    console.log(resp)
-   }
+    });
+    console.log(resp);
+  };
 
   return (
     <View style={styles.container}>
       <RiotGameHeader hideMenu />
 
-      <PrimaryButton text="Update tokens metadatas"  onPress={uploadMetadata} />
-      <PrimaryButton text="Get token metadata"  onPress={getTokenMetadata} />
-      <PrimaryButton text="Update whitelists"  onPress={updateWhitelists} />
+      <PrimaryButton text="Update tokens metadatas" onPress={uploadMetadata} />
+      <PrimaryButton text="Get token metadata" onPress={getTokenMetadata} />
+      <PrimaryButton text="Update whitelists" onPress={updateWhitelists} />
 
       <View style={styles.positionRelative}>
         <FlatList
