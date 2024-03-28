@@ -7,7 +7,7 @@ import { StoreWallet } from "@/utils/types/wallet";
 
 export const getNativeSigner = async (selectedWallet: StoreWallet) => {
   const network = mustGetCosmosNetwork(selectedWallet.networkId);
-
+  console.log("network", network);
   const wallet = await getNativeWallet(
     network.addressPrefix,
     selectedWallet.index,
