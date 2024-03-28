@@ -10,6 +10,7 @@ import { Tabs } from "@/components/tabs/Tabs";
 import { useIsDAOMember } from "@/hooks/dao/useDAOMember";
 import { useFetchFeed } from "@/hooks/feed/useFetchFeed";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { getUserId, NetworkKind, parseUserId } from "@/networks";
@@ -31,6 +32,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
   const isModerationDAOMember = useIsModerationDAOMember(
     selectedWallet?.userId,
   );
+  const [developerMode] = useDeveloperMode();
 
   const req: Partial<PostsRequest> = {
     filter: {
@@ -66,10 +68,19 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
       delete res["moderationDAO"];
     }
 
+    if (!developerMode) {
+      delete res["map"];
+    }
+
     delete res["videoNotes"];
     delete res["sounds"];
     return res;
-  }, [hasFlaggedPosts, isModerationDAOMember, selectedNetworkKind]);
+  }, [
+    hasFlaggedPosts,
+    isModerationDAOMember,
+    selectedNetworkKind,
+    developerMode,
+  ]);
 
   return (
     <>
