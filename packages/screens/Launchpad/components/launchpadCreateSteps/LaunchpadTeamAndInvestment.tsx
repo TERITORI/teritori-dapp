@@ -2,7 +2,7 @@ import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
-import { CreateCollectionFormValues } from "../../CreateCollection.type";
+import { CollectionFormValues } from "../../CreateCollection.type";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
@@ -15,7 +15,7 @@ import {
 } from "@/utils/style/fonts";
 
 export const LaunchpadTeamAndInvestment: React.FC<{
-  createCollectionForm: UseFormReturn<CreateCollectionFormValues>;
+  createCollectionForm: UseFormReturn<CollectionFormValues>;
 }> = ({ createCollectionForm }) => {
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -27,7 +27,7 @@ export const LaunchpadTeamAndInvestment: React.FC<{
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           label="Describe your team: "
           sublabel={
             <View>
@@ -54,7 +54,7 @@ export const LaunchpadTeamAndInvestment: React.FC<{
           control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           required={false}
           label="Team links and attachments "
           sublabel={
@@ -70,7 +70,7 @@ export const LaunchpadTeamAndInvestment: React.FC<{
           control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           label="Do you have any partners on the project? "
           sublabel={
             <View>
@@ -84,7 +84,7 @@ export const LaunchpadTeamAndInvestment: React.FC<{
           control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           label="What have you invested in this project so far? "
           sublabel={
             <View>
@@ -107,7 +107,7 @@ export const LaunchpadTeamAndInvestment: React.FC<{
           control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           required={false}
           label="Investment links and attachments "
           sublabel={
@@ -123,7 +123,7 @@ export const LaunchpadTeamAndInvestment: React.FC<{
           control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           label="Whitepaper and roadmap: "
           sublabel={
             <View>

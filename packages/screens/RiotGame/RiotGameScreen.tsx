@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { FlatList, StyleSheet, useWindowDimensions, View } from "react-native";
 
 import { CenterSection } from "./component/CenterSection";

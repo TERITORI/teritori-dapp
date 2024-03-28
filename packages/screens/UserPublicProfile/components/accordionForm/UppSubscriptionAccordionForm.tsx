@@ -6,8 +6,8 @@ import {
   UseFieldArrayUpdate,
 } from "react-hook-form";
 
-import { AccordionBottomComponent } from "./AccordionBottomComponent";
-import { AccordionTopComponent } from "./AccordionTopComponent";
+import { UPPSubscriptionAccordionFormBottom } from "./UPPSubscriptionAccordionFormBottom";
+import { UPPSubscriptionAccordionFormTop } from "./UPPSubscriptionAccordionFormTop";
 
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { neutral22, neutral33 } from "@/utils/style/colors";
@@ -24,7 +24,7 @@ interface AccordionProps {
   setIsLoading?: (value: boolean) => void;
 }
 
-export const AccordionComponent: FC<AccordionProps> = ({
+export const UppSubscriptionAccordionForm: FC<AccordionProps> = ({
   networkId,
   control,
   elem,
@@ -43,7 +43,7 @@ export const AccordionComponent: FC<AccordionProps> = ({
         padding: layout.spacing_x1,
       }}
     >
-      <AccordionTopComponent
+      <UPPSubscriptionAccordionFormTop
         isOpen={elem.open}
         networkId={networkId}
         setIsOpen={(value) => {
@@ -55,7 +55,7 @@ export const AccordionComponent: FC<AccordionProps> = ({
       />
 
       {elem.open && (
-        <AccordionBottomComponent
+        <UPPSubscriptionAccordionFormBottom
           networkId={networkId}
           control={control}
           elem={elem}

@@ -38,7 +38,7 @@ interface AccordionBottomProps {
   setIsLoading?: (value: boolean) => void;
 }
 
-export const AccordionBottomComponent = ({
+export const UPPSubscriptionAccordionFormBottom = ({
   networkId,
   control,
   elem: tier,

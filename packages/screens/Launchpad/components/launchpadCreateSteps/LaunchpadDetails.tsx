@@ -2,7 +2,7 @@ import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
-import { CreateCollectionFormValues } from "../../CreateCollection.type";
+import { CollectionFormValues } from "../../CreateCollection.type";
 import { TextInputLaunchpadRequired } from "../inputs/TextInputLaunchpadRequired";
 import { MultipleSelectInput } from "../inputs/selectInputs/MultipleSelectInput";
 import { SelectInputLaunchpad } from "../inputs/selectInputs/SelectInputLaunchpad";
@@ -18,7 +18,7 @@ import {
 import { layout } from "@/utils/style/layout";
 
 export const LaunchpadDetails: React.FC<{
-  createCollectionForm: UseFormReturn<CreateCollectionFormValues>;
+  createCollectionForm: UseFormReturn<CollectionFormValues>;
 }> = ({ createCollectionForm }) => {
   const isDerivativeProject = createCollectionForm.watch("isDerivativeProject");
   const isPreviouslyApplied = createCollectionForm.watch("isPreviouslyApplied");
@@ -34,7 +34,7 @@ export const LaunchpadDetails: React.FC<{
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           label="Website Link"
           placeHolder="https://website..."
           name="websiteLink"
@@ -42,7 +42,7 @@ export const LaunchpadDetails: React.FC<{
           required={false}
         />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           required
           label="Twitter Profile "
           placeHolder="https://twitter..."
@@ -50,7 +50,7 @@ export const LaunchpadDetails: React.FC<{
           control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           required
           label="How many Twitter followers does your project have? "
           placeHolder="10,000"
@@ -58,7 +58,7 @@ export const LaunchpadDetails: React.FC<{
           control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           required
           label="Discord name of your main contact: "
           placeHolder="nickname#0000"
@@ -66,7 +66,7 @@ export const LaunchpadDetails: React.FC<{
           control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           required
           label="Main contact email address: "
           placeHolder="contact@email.com"
@@ -115,7 +115,7 @@ export const LaunchpadDetails: React.FC<{
           style={{ zIndex: 2 }}
         />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           label="Describe your project: "
           sublabel={
             <View>

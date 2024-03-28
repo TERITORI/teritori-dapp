@@ -2,7 +2,7 @@ import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
-import { CreateCollectionFormValues } from "../../CreateCollection.type";
+import { CollectionFormValues } from "../../CreateCollection.type";
 import { TextInputLaunchpadRequired } from "../inputs/TextInputLaunchpadRequired";
 import { SelectInputLaunchpad } from "../inputs/selectInputs/SelectInputLaunchpad";
 
@@ -16,7 +16,7 @@ import {
 } from "@/utils/style/fonts";
 
 export const LaunchpadAdditional: React.FC<{
-  createCollectionForm: UseFormReturn<CreateCollectionFormValues>;
+  createCollectionForm: UseFormReturn<CollectionFormValues>;
 }> = ({ createCollectionForm }) => {
   const isReadyForMint = createCollectionForm.watch("isReadyForMint");
   const escrowMintProceedsPeriod = createCollectionForm.watch(
@@ -34,7 +34,7 @@ export const LaunchpadAdditional: React.FC<{
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           label="Please describe your artworkDescription: "
           sublabel={
             <View>
@@ -71,14 +71,14 @@ export const LaunchpadAdditional: React.FC<{
           label="Is your collection ready for the mint?"
         />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           label="What is your expected collection supply?"
           placeHolder="Type here..."
           name="expectedSupply"
           control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           label="What is your expected public sale mint price?"
           sublabel={
             <View>
@@ -92,7 +92,7 @@ export const LaunchpadAdditional: React.FC<{
           control={createCollectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           label="What is your expected mint date? "
           placeHolder="dd.mm.yyyy | hh:mm PM"
           name="expectedMintDate"
@@ -124,7 +124,7 @@ export const LaunchpadAdditional: React.FC<{
           style={{ zIndex: 1 }}
         />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           label="We'd love to offer TeritoriDAO members 10% of your whitelist supply if your project is willing. Please let us know how many whitelist spots you'd be willing to allocate our DAO: "
           placeHolder="0"
           name="daoWhitelistCount"

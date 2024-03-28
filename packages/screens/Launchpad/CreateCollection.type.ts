@@ -7,7 +7,7 @@ export interface ExistingBaseUrlFormValues {
   coverImageUrl?: string;
 }
 
-export interface CreateCollectionFormValues {
+export interface CollectionFormValues {
   name?: string;
   description?: string;
   symbol?: string;
@@ -45,6 +45,20 @@ export interface CreateCollectionFormValues {
   royaltyAddress?: string;
   royaltyPercentage?: number;
 }
+
+export interface WhitelistAccordionElem {
+  addressesCount?: number;
+  denom?: string;
+  endTime?: number;
+  perAddressLimit?: number;
+  merkleRoot?: string;
+  startTime?: number;
+  unitPrice?: Uint128;
+  isOpen: boolean;
+}
+
+export type WhitelistsAccordion = { whitelists: WhitelistAccordionElem[] };
+
 export interface CreateCollectionWhitelist {
   addressesCount?: number;
   denom?: string;
