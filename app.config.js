@@ -1,5 +1,6 @@
 const config = {
   expo: {
+    scheme: "teritori",
     name: "Teritori",
     slug: "teritori",
     version: "1.0.3",
@@ -37,11 +38,27 @@ const config = {
           "To optimize app launch times and resource utilization based on system boot information.",
         UIBackgroundModes: ["audio"],
       },
+      associatedDomains: ["applinks:app.teritori.com"],
     },
     android: {
       package: "com.teritori",
       versionCode: "6",
       permissions: ["WAKE_LOCK"],
+      scheme: "teritori",
+      intentFilters: [
+        {
+          action: "VIEW",
+          autoVerify: true,
+          data: [
+            {
+              scheme: "https",
+              host: "app.teritori.com",
+              pathPrefix: "/",
+            },
+          ],
+          category: ["BROWSABLE", "DEFAULT"],
+        },
+      ],
     },
     web: {
       bundler: "metro",

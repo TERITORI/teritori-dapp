@@ -8,6 +8,7 @@ import React, {
   useState,
 } from "react";
 import {
+  Platform,
   StyleProp,
   TextInput,
   TextInputProps,
@@ -122,7 +123,7 @@ export default function MiniTextInput({
               fontMedium16,
               {
                 color: "#fff",
-                lineHeight: 0,
+                lineHeight: Platform.OS === "android" ? 18 : 0,
                 width: "100%",
               },
               inputStyle,
