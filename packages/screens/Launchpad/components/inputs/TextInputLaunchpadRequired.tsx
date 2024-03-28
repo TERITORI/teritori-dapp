@@ -20,6 +20,7 @@ export const TextInputLaunchpadRequired = <T extends FieldValues>({
   name,
   label,
   placeHolder,
+  sublabel,
   required = true,
 }: TextInputCustomProps<T>) => {
   return (
@@ -27,6 +28,7 @@ export const TextInputLaunchpadRequired = <T extends FieldValues>({
       required={required}
       label={label}
       placeHolder={placeHolder}
+      sublabel={sublabel}
       name={name}
       control={control}
     />

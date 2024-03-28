@@ -29,6 +29,18 @@ type CosmWasmSocialFeed = {
   feedContractAddress: string;
 };
 
-export const allFeatureObjects = [zodCosmWasmPremiumFeed];
+const zodCosmWasmLaunchpad = z.object({
+  type: z.literal(NetworkFeature.NFTLaunchpad),
+  launchpadContractAddress: z.string(),
+  defaultMintDenom: z.string(),
+  // allowedMintDenoms: z.array(z.string()), // for future
+});
 
-export type NetworkFeatureObject = CosmWasmPremiumFeed | CosmWasmSocialFeed;
+export type CosmWasmLaunchpad = z.infer<typeof zodCosmWasmLaunchpad>;
+
+export const allFeatureObjects = [zodCosmWasmPremiumFeed, zodCosmWasmLaunchpad];
+
+export type NetworkFeatureObject =
+  | CosmWasmPremiumFeed
+  | CosmWasmSocialFeed
+  | CosmWasmLaunchpad;

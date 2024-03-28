@@ -1,8 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import ChevronRightSvg from "../../../../assets/icons/chevron-right.svg";
-
+import ChevronRightSvg from "@/assets/icons/chevron-right.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";

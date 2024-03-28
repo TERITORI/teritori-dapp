@@ -1,5 +1,9 @@
 import { teritoriTestnetCurrencies } from "./currencies";
-import { CosmWasmPremiumFeed, NetworkFeature } from "../features";
+import {
+  CosmWasmLaunchpad,
+  CosmWasmPremiumFeed,
+  NetworkFeature,
+} from "../features";
 import { NetworkInfo, NetworkKind } from "../types";
 
 const nameServiceContractAddress =
@@ -10,6 +14,13 @@ const premiumFeedFeature: CosmWasmPremiumFeed = {
   membershipContractAddress:
     "tori1rs244rjrhap2v4setxlugkh8ungxlrsh8asvh0trsgvqvplvkd5q7752l6",
   mintDenom: "utori",
+};
+
+const cosmwasmLaunchpadFeature: CosmWasmLaunchpad = {
+  type: NetworkFeature.NFTLaunchpad,
+  launchpadContractAddress:
+    "tori14q3el3uekvvhtg6af4wz89e8muqdsmz3yx37pw74w06luvsehwlsmh9q4e",
+  defaultMintDenom: "utori",
 };
 
 const riotContractAddressGen0 =
@@ -35,7 +46,7 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     NetworkFeature.CosmWasmPremiumFeed,
     NetworkFeature.NFTMarketplaceLeaderboard,
   ],
-  featureObjects: [premiumFeedFeature],
+  featureObjects: [premiumFeedFeature, cosmwasmLaunchpadFeature],
   currencies: teritoriTestnetCurrencies,
   txExplorer: "https://explorer.teritori.com/teritori-testnet/tx/$hash",
   accountExplorer:
