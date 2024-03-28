@@ -1,6 +1,6 @@
 [package]
 name = "nft-launchpad"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -20,7 +20,7 @@ schemars = "0.8.16"
 serde = { version = "1.0.197", features = ["derive"] }
 sylvia = "0.9.3"
 thiserror = "1.0.57"
-nft-tr721 = { workspace = true }
+nft-tr721 = { workspace = true, features = ["library"] }
 
 [dev-dependencies]
 sylvia = { version = "0.9.3", features = ["mt"] }

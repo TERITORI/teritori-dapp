@@ -1,12 +1,15 @@
 [package]
 name = "nft-tr721"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
 crate-type = ["cdylib", "rlib"]
+
+[features]
+library = []
 
 [dependencies]
 cosmwasm-std = { version = "1.5.3", features = ["cosmwasm_1_2"] }
@@ -25,7 +28,6 @@ sylvia = { workspace = true }
 prost = { workspace = true }
 apipb = { workspace = true }
 sha3 = "0.10.8"
-cw-multi-test = "0.20.0"
 
 [dev-dependencies]
 cw-multi-test = "0.20.0"

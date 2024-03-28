@@ -20,7 +20,7 @@ thiserror = "1.0.57"
 sylvia = "0.9.3"
 prost = "0.12.3"
 apipb = { version = "0.1.0", path = "./rust/apipb" }
-nft-tr721 = { version = "0.1.0", path = "./rust/cw-contracts/nft-tr721" }
-nft-launchpad = { version = "0.1.0", path = "./rust/cw-contracts/nft-launchpad" }
+nft-tr721 = { version = "0.2.0", path = "./rust/cw-contracts/nft-tr721" }
+nft-launchpad = { version = "0.2.0", path = "./rust/cw-contracts/nft-launchpad" }
 
 

@@ -17,9 +17,12 @@ use cw_storage_plus::{IndexedMap, Item, Map, MultiIndex};
 use rs_merkle::{Hasher, MerkleProof};
 use serde::de::DeserializeOwned;
 use sylvia::{
-    contract, entry_points,
+    contract,
     types::{ExecCtx, InstantiateCtx, QueryCtx},
 };
+
+// This is used in #[cfg_attr(not(feature = "library"), entry_points)] even the IDE detect this is not used
+use sylvia::entry_points;
 
 use crate::{error::ContractError, hasher::TrKeccak256, utils::proto_encode};
 
@@ -50,7 +53,7 @@ pub struct Tr721 {
 }
 
 // Contract implement -----------------------------------------------------
-#[entry_points]
+#[cfg_attr(not(feature = "library"), entry_points)]
 #[contract]
 #[error(ContractError)]
 impl Tr721 {
