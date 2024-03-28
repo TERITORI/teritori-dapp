@@ -6,8 +6,6 @@ import { GameBgCard } from "./component/GameBgCard";
 import { GameBgOverlay } from "./component/GameBgOverlay";
 import { RiotGameHeader } from "./component/RiotGameHeader";
 
-import { Metadata, WhitelistMintInfo } from "@/api/launchpad/v1/launchpad";
-import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
@@ -15,16 +13,11 @@ import { mustGetLauchpadClient } from "@/utils/backend";
 import { gameBgData } from "@/utils/game";
 import { neutral00 } from "@/utils/style/colors";
 import { headerHeight } from "@/utils/style/layout";
-import { mustGetLauchpadClient } from "@/utils/backend";
-import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { Metadata, WhitelistMintInfo } from "@/api/launchpad/v1/launchpad";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 
 export const RiotGameScreen = () => {
   const navigation = useAppNavigation();
-  const networkId = useSelectedNetworkId();
-  const selectedWallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
 
