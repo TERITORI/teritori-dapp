@@ -60,6 +60,7 @@ import { prettyPrice } from "@/utils/coins";
 import { MintPhase } from "@/utils/collection";
 import { getMetaMaskEthereumSigner } from "@/utils/ethereum";
 import { ScreenFC } from "@/utils/navigation";
+import { NUMBERS_REGEXP } from "@/utils/regex";
 import {
   neutral17,
   neutral22,
@@ -131,7 +132,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   const mintButtonDisabled = minted;
 
   const updateTotalBulkMint = (newTotalBulkMint: number | string) => {
-    const numOnlyRegexp = new RegExp(/^\d+$/);
+    const numOnlyRegexp = new RegExp(NUMBERS_REGEXP);
     if (!numOnlyRegexp.test("" + newTotalBulkMint)) {
       return;
     }

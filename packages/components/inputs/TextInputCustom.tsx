@@ -184,9 +184,12 @@ export const TextInputCustom = <T extends FieldValues>({
       if (fieldState.error.message) {
         return fieldState.error.message;
       }
+      if (rules?.pattern && field.value) {
+        return DEFAULT_FORM_ERRORS.pattern;
+      }
       return DEFAULT_FORM_ERRORS.required;
     }
-  }, [fieldState.error]);
+  }, [fieldState.error, field.value]);
 
   // FIXME: the first input does not trigger the custom validation
 

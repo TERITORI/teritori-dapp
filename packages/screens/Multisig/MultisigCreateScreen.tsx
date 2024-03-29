@@ -29,6 +29,7 @@ import {
   validateAddress,
   validateMaxNumber,
 } from "@/utils/formRules";
+import { NUMBERS_REGEXP } from "@/utils/regex";
 import {
   neutral33,
   neutral77,
@@ -204,6 +205,7 @@ export const MultisigCreateScreen = () => {
             label="Multisig name"
             rules={{
               required: true,
+              pattern: NUMBERS_REGEXP,
             }}
             placeHolder="Type the name of the multisig"
             iconSVG={walletInputSVG}
