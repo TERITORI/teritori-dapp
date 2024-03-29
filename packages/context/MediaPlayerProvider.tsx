@@ -20,8 +20,6 @@ import React, {
 } from "react";
 
 import { useFeedbacks } from "./FeedbacksProvider";
-import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
-import { getNetworkObjectId } from "../networks";
 import { web3ToWeb2URI } from "../utils/ipfs";
 import { Media } from "../utils/types/mediaPlayer";
 
@@ -89,7 +87,6 @@ const AudioModes = {
 export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
   const [videoLastRoute, setVideoLastRoute] = useState<Route<any>>();
   // ------- Only used in UI
@@ -240,7 +237,7 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
     ) {
       if (media?.postId) {
         navigation.navigate("FeedPostView", {
-          id: getNetworkObjectId(selectedNetworkId, media.postId),
+          id: media.postId,
         });
       }
     }

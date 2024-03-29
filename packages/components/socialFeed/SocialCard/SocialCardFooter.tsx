@@ -1,12 +1,6 @@
 import React, { Dispatch, FC, SetStateAction } from "react";
 import { View } from "react-native";
 
-import { Post } from "../../../api/feed/v1/feed";
-import { useSocialReactions } from "../../../hooks/feed/useSocialReactions";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { NetworkKind, parseUserId } from "../../../networks";
 import FlexRow from "../../FlexRow";
 import { SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
@@ -16,6 +10,11 @@ import { ReplyButton } from "../SocialActions/ReplyButton";
 import { ReportButton } from "../SocialActions/ReportButton";
 import { ShareButton } from "../SocialActions/ShareButton";
 import { TipButton } from "../SocialActions/TipButton";
+
+import { Post } from "@/api/feed/v1/feed";
+import { useSocialReactions } from "@/hooks/feed/useSocialReactions";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { NetworkKind, getNetwork } from "@/networks";
 
 // ====== Handle reactions, tip, comments
 export const SocialCardFooter: FC<{
@@ -34,10 +33,7 @@ export const SocialCardFooter: FC<{
   refetchFeed,
 }) => {
   const wallet = useSelectedWallet();
-  const authorNSInfo = useNSUserInfo(post.authorId);
-  const [, authorAddress] = parseUserId(post.authorId);
-  const username = authorNSInfo?.metadata?.tokenId || authorAddress;
-  const selectedNetworkInfo = useSelectedNetworkInfo();
+  const postNetwork = getNetwork(post.networkId);
   const { handleReaction, isPostMutationLoading } = useSocialReactions({
     post,
     setPost,
@@ -78,22 +74,19 @@ export const SocialCardFooter: FC<{
         <TipButton
           disabled={post.authorId === wallet?.userId}
           amount={post.tipAmount}
-          author={username}
-          postId={post.identifier}
+          authorId={post.authorId}
+          postId={post.id}
         />
 
-        {selectedNetworkInfo?.kind === NetworkKind.Gno && (
+        {postNetwork?.kind === NetworkKind.Gno && (
           <>
             <SpacerRow size={2} />
-            <ReportButton refetchFeed={refetchFeed} postId={post.identifier} />
+            <ReportButton refetchFeed={refetchFeed} postId={post.id} />
           </>
         )}
 
         <SpacerRow size={2} />
-        <ShareButton
-          postId={post.identifier}
-          network_Id={selectedNetworkInfo?.id}
-        />
+        <ShareButton postId={post.id} />
       </View>
     </FlexRow>
   );

@@ -1,6 +1,6 @@
 import { ResizeMode } from "expo-av";
 import React, { useEffect, useState } from "react";
-import { StyleProp, useWindowDimensions, ViewStyle } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 import { PostActions } from "./PostActions";
 import { PostHeader } from "./PostHeader";
@@ -11,9 +11,6 @@ import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { MediaPlayerVideo } from "@/components/mediaPlayer/MediaPlayerVideo";
 import { SpacerColumn } from "@/components/spacer";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
-import { useNSUserInfo } from "@/hooks/useNSUserInfo";
-import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
-import { getNetworkObjectId, parseUserId } from "@/networks";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import { errorColor, neutralA3 } from "@/utils/style/colors";
 import {
@@ -22,7 +19,6 @@ import {
   fontSemibold16,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { tinyAddress } from "@/utils/text";
 import {
   ZodSocialFeedPostMetadata,
   ZodSocialFeedVideoMetadata,
@@ -30,20 +26,13 @@ import {
 
 type Props = {
   post: Post;
-  refetchFeed?: () => Promise<any>;
-  style?: StyleProp<ViewStyle>;
   isFlagged?: boolean;
 };
-const DEFAULT_NAME = "Anon";
 
-export const MiniVideo = ({ post, refetchFeed, style }: Props) => {
+export const MiniVideo = ({ post }: Props) => {
   const navigation = useAppNavigation();
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-  const selectedNetworkId = selectedNetworkInfo?.id || "";
   const [localPost, setLocalPost] = useState<Post>(post);
   const { width: windowWidth } = useWindowDimensions();
-  const [, authorAddress] = parseUserId(localPost.authorId);
-  const authorNSInfo = useNSUserInfo(localPost.authorId);
 
   const metadata = zodTryParseJSON(
     ZodSocialFeedVideoMetadata,
@@ -60,34 +49,15 @@ export const MiniVideo = ({ post, refetchFeed, style }: Props) => {
     setLocalPost(post);
   }, [post]);
 
-  const authorMetadata = authorNSInfo.metadata;
-  const username = authorMetadata?.tokenId
-    ? authorMetadata.tokenId
-    : tinyAddress(authorAddress, 19);
-
-  const name =
-    authorMetadata?.public_name ||
-    (!authorMetadata?.tokenId
-      ? DEFAULT_NAME
-      : authorMetadata.tokenId.split(".")[0]) ||
-    DEFAULT_NAME;
-
   return (
     <CustomPressable
       onPress={() => {
         navigation.navigate("FeedPostView", {
-          id: getNetworkObjectId(selectedNetworkId, localPost.identifier),
+          id: localPost.id,
         });
       }}
     >
-      <PostHeader
-        user={{
-          img: authorMetadata.image,
-          name,
-          username,
-          postedAt: post.createdAt,
-        }}
-      />
+      <PostHeader authorId={post.authorId} postedAt={post.createdAt} />
       <SpacerColumn size={1.5} />
       <BrandText numberOfLines={2} style={[fontSemibold16]}>
         {title?.trim().replace("\n", " ")}
@@ -121,8 +91,7 @@ export const MiniVideo = ({ post, refetchFeed, style }: Props) => {
             borderTopLeftRadius: 0,
           }}
           resizeMode={ResizeMode.COVER}
-          authorId={localPost.authorId}
-          postId={localPost.identifier}
+          postId={localPost.id}
         />
       )}
 

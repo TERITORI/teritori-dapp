@@ -2,36 +2,71 @@ import { ResizeMode } from "expo-av";
 import { FC } from "react";
 import { ImageStyle, StyleProp, View, ViewStyle } from "react-native";
 
-import { useMediaPlayer } from "../../context/MediaPlayerProvider";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { getNetworkObjectId, parseUserId } from "../../networks";
-import { neutral77 } from "../../utils/style/colors";
-import { fontSemibold12 } from "../../utils/style/fonts";
-import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { OmniLink } from "../OmniLink";
 import { OptimizedImage } from "../OptimizedImage";
 import { SpacerRow } from "../spacer";
+import { Username } from "../user/Username";
+
+import defaultThumbnailImage from "@/assets/default-images/default-track-thumbnail.png";
+import defaultVideoThumbnail from "@/assets/default-images/default-video-thumbnail.png";
+import { usePost } from "@/hooks/feed/usePost";
+import { zodTryParseJSON } from "@/utils/sanitize";
+import { neutral77 } from "@/utils/style/colors";
+import { fontSemibold12 } from "@/utils/style/fonts";
+import {
+  PostCategory,
+  ZodSocialFeedTrackMetadata,
+  ZodSocialFeedVideoMetadata,
+  zodSocialFeedCommonMetadata,
+} from "@/utils/types/feed";
+import { Media } from "@/utils/types/mediaPlayer";
 
 const IMAGE_SIZE = 32;
-export const MediaNameImage: FC<{
-  style?: StyleProp<ViewStyle>;
-}> = ({ style }) => {
-  const { media } = useMediaPlayer();
-  const authorNSInfo = useNSUserInfo(media?.createdBy);
-  const [network, userAddress] = parseUserId(media?.createdBy);
-  const username = authorNSInfo?.metadata?.tokenId
-    ? authorNSInfo?.metadata?.tokenId
-    : tinyAddress(userAddress, 20);
 
-  if (!media) return <View />;
+export const MediaNameImage: FC<{
+  media: Media | undefined;
+  style?: StyleProp<ViewStyle>;
+}> = ({ media, style }) => {
+  const { post } = usePost(media?.postId);
+  if (!media || !post) return <View />;
+  const baseMetadata = zodTryParseJSON(
+    zodSocialFeedCommonMetadata,
+    post.metadata,
+  );
+  const title =
+    baseMetadata?.title ||
+    `${media.isVideo ? "Video" : "Audio"} from Social Feed`;
+  let imageURI = media.isVideo ? defaultVideoThumbnail : defaultThumbnailImage;
+  switch (post.category) {
+    case PostCategory.MusicAudio: {
+      const metadata = zodTryParseJSON(
+        ZodSocialFeedTrackMetadata,
+        post.metadata,
+      );
+      if (metadata?.audioFile.thumbnailFileData?.url) {
+        imageURI = metadata.audioFile.thumbnailFileData.url;
+      }
+      break;
+    }
+    case PostCategory.Video: {
+      const metadata = zodTryParseJSON(
+        ZodSocialFeedVideoMetadata,
+        post.metadata,
+      );
+      if (metadata?.videoFile.thumbnailFileData?.url) {
+        imageURI = metadata.videoFile.thumbnailFileData.url;
+      }
+      break;
+    }
+  }
   return (
     <OmniLink
       style={[{ alignSelf: "flex-start" }, style]}
       to={{
         screen: "FeedPostView",
         params: {
-          id: getNetworkObjectId(network?.id, media?.postId) || "",
+          id: media.postId,
         },
       }}
     >
@@ -42,11 +77,11 @@ export const MediaNameImage: FC<{
         }}
       >
         <OptimizedImage
-          sourceURI={media.imageUrl}
+          sourceURI={imageURI}
           style={imageCStyle}
           height={IMAGE_SIZE}
           width={IMAGE_SIZE}
-          resizeMode={ResizeMode.CONTAIN}
+          resizeMode={ResizeMode.COVER}
         />
         <SpacerRow size={1.5} />
         <View
@@ -55,22 +90,23 @@ export const MediaNameImage: FC<{
             flex: 1,
           }}
         >
-          <BrandText style={fontSemibold12} isTicker>
-            {media.name}
+          <BrandText style={fontSemibold12} isTicker numberOfLines={1}>
+            {title}
           </BrandText>
-          {media?.createdBy && (
-            <BrandText
-              style={[fontSemibold12, { color: neutral77 }]}
-              ellipsizeMode="middle"
-              numberOfLines={1}
-            >
-              {"@" + username}
-            </BrandText>
-          )}
+          <Username
+            userId={post?.authorId}
+            textStyle={fontSemibold12}
+            anonColor={neutral77}
+            namedColor={neutral77}
+          />
         </View>
       </View>
     </OmniLink>
   );
 };
 
-const imageCStyle: ImageStyle = { height: IMAGE_SIZE, width: IMAGE_SIZE };
+const imageCStyle: ImageStyle = {
+  height: IMAGE_SIZE,
+  width: IMAGE_SIZE,
+  borderRadius: 8,
+};

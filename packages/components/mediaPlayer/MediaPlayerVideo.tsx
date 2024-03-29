@@ -19,36 +19,32 @@ import { v4 as uuidv4 } from "uuid";
 
 import { TimerSlider } from "./TimerSlider";
 import { VolumeSlider } from "./VolumeSlider";
-import defaultThumbnailImage from "../../../assets/default-images/default-video-thumbnail.jpg";
-import FullScreenIcon from "../../../assets/icons/media-player/full-screen.svg";
-import NextIcon from "../../../assets/icons/media-player/next.svg";
-import PauseIcon from "../../../assets/icons/pause.svg";
-import PlayIcon from "../../../assets/icons/play.svg";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useMediaPlayer } from "../../context/MediaPlayerProvider";
-import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { useMousePosition } from "../../hooks/useMousePosition";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
-import { web3ToWeb2URI } from "../../utils/ipfs";
-import { prettyMediaDuration } from "../../utils/mediaPlayer";
-import { neutralA3, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold13 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { nameServiceDefaultImage } from "../../utils/tns";
-import { SocialFeedVideoMetadata } from "../../utils/types/feed";
-import { Media } from "../../utils/types/mediaPlayer";
 import { BrandText } from "../BrandText";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { CustomPressable } from "../buttons/CustomPressable";
-import { SOCIAl_CARD_BORDER_RADIUS } from "../socialFeed/SocialCard/cards/SocialThreadCard";
 import { SpacerColumn, SpacerRow } from "../spacer";
+
+import defaultThumbnailImage from "@/assets/default-images/default-video-thumbnail.png";
+import FullScreenIcon from "@/assets/icons/media-player/full-screen.svg";
+import NextIcon from "@/assets/icons/media-player/next.svg";
+import PauseIcon from "@/assets/icons/pause.svg";
+import PlayIcon from "@/assets/icons/play.svg";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useMediaPlayer } from "@/context/MediaPlayerProvider";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMousePosition } from "@/hooks/useMousePosition";
+import { web3ToWeb2URI } from "@/utils/ipfs";
+import { prettyMediaDuration } from "@/utils/mediaPlayer";
+import { SOCIAl_CARD_BORDER_RADIUS } from "@/utils/social-feed";
+import { neutralA3, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { SocialFeedVideoMetadata } from "@/utils/types/feed";
+import { Media } from "@/utils/types/mediaPlayer";
 
 interface MediaPlayerVideoProps {
   videoMetadata: SocialFeedVideoMetadata;
-  authorId: string;
   postId?: string;
   resizeMode?: ResizeMode;
   style?: StyleProp<ViewStyle>;
@@ -60,7 +56,6 @@ const CONTROLS_PADDING_HORIZONTAL = layout.spacing_x2;
 // expo-av Video component plugged to MediaPlayerContext
 export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   videoMetadata,
-  authorId,
   postId,
   resizeMode,
   style,
@@ -95,7 +90,6 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
         isControlsShown={isControlsShown}
         isInMediaPlayer={isInMediaPlayer}
         videoMetadata={videoMetadata}
-        authorId={authorId}
         postId={postId}
         resizeMode={resizeMode}
         id={id}
@@ -115,7 +109,6 @@ type ExpoAvVideoType = {
   videoMetadata: SocialFeedVideoMetadata;
   postId?: string;
   resizeMode?: ResizeMode;
-  authorId: string;
   id: string;
   setControlsShown: Dispatch<SetStateAction<boolean>>;
 };
@@ -129,7 +122,6 @@ function ExpoAvVideo({
   videoMetadata,
   postId,
   resizeMode,
-  authorId,
   id,
   containerRef,
   setControlsShown,
@@ -147,13 +139,6 @@ function ExpoAvVideo({
   const [extraPressCount, setExtraPressCount] = useState(0);
   const [pressTimer, setPressTimer] = useState<NodeJS.Timeout>();
   const [isThumbnailShown, setThumbnailShown] = useState(true);
-  // why?: Linked to problem code in onLocalPlaybackStatusUpdate()
-  // const [fullScreenUpdate, setFullScreenUpdate] =
-  //   useState<VideoFullscreenUpdate>();
-
-  const selectedNetwork = useSelectedNetworkInfo();
-  const userInfo = useNSUserInfo(authorId);
-  const { isDAO } = useIsDAO(authorId);
 
   // Handle show/hide controls by hovering the video area with mouse
   const mousePosition = useMousePosition();
@@ -172,25 +157,14 @@ function ExpoAvVideo({
     }
   });
 
-  const thumbnailURI =
-    videoMetadata.videoFile.thumbnailFileData?.url ||
-    userInfo.metadata.image ||
-    nameServiceDefaultImage(isDAO, selectedNetwork);
-  const fixedThumbnailURI = thumbnailURI
-    ? thumbnailURI.includes("://")
-      ? thumbnailURI
-      : "ipfs://" + thumbnailURI // we need this hack because ipfs "urls" in feed are raw CIDs
-    : defaultThumbnailImage;
+  const thumbnailURI = videoMetadata.videoFile.thumbnailFileData?.url;
 
   const mediaToSet: Media = {
     id,
-    imageUrl: fixedThumbnailURI,
-    name: videoMetadata.title,
-    createdBy: authorId,
     fileUrl: videoMetadata.videoFile.url,
     duration: videoMetadata.videoFile.videoMetadata?.duration,
     // postId is used to difference videos from Social Feed (News feed or Article consultation)
-    postId: postId || Math.floor(Math.random() * 200000).toString(),
+    postId,
     isVideo: true,
   };
 
@@ -199,7 +173,7 @@ function ExpoAvVideo({
     if (isInMediaPlayer || !videoRef.current) {
       await handlePlayPause();
     } else {
-      await firstPlayVideo(videoRef.current, mediaToSet);
+      firstPlayVideo(videoRef.current, mediaToSet);
     }
   };
 
@@ -261,11 +235,12 @@ function ExpoAvVideo({
           height: "100%",
         }}
       >
-        {fixedThumbnailURI && isThumbnailShown && (
+        {isThumbnailShown && (
           <OptimizedImage
-            sourceURI={fixedThumbnailURI}
-            width={containerWidth}
-            height={containerHeight}
+            sourceURI={thumbnailURI}
+            fallbackURI={defaultThumbnailImage}
+            width={1920}
+            height={1080}
             style={{
               width: containerWidth,
               height: containerHeight,

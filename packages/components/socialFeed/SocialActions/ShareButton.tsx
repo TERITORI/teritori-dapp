@@ -17,21 +17,14 @@ import { SocialButton } from "../../buttons/SocialButton";
 import ModalBase from "../../modals/ModalBase";
 import { SpacerRow } from "../../spacer";
 
-import { getNetworkObjectId } from "@/networks";
-
 interface ShareButtonProps {
   postId: string;
-  network_Id: string | undefined;
   useAltStyle?: boolean;
 }
 
 const WEBSITE_URL = "https://app.teritori.com";
 
-export const ShareButton = ({
-  postId,
-  network_Id,
-  useAltStyle,
-}: ShareButtonProps) => {
+export const ShareButton = ({ postId, useAltStyle }: ShareButtonProps) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const windowOrigin =
     Platform.OS === "web" ? window.location.origin : WEBSITE_URL;
@@ -41,8 +34,7 @@ export const ShareButton = ({
       text: "Twitter",
       iconSvg: twitterSVG,
       onPress: () => {
-        const id = getNetworkObjectId(network_Id, postId);
-        const message = `${windowOrigin}/feed/post/${id}`;
+        const message = `${windowOrigin}/feed/post/${postId}`;
 
         Linking.openURL(
           `https://twitter.com/intent/tweet?text=${encodeURIComponent(

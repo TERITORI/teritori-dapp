@@ -10,8 +10,7 @@ import { NotFound } from "@/components/NotFound";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { usePost } from "@/hooks/feed/usePost";
 import { parseNetworkObjectId } from "@/networks";
-import { gnoTeritoriNetwork } from "@/networks/gno-teritori";
-import { teritoriNetwork } from "@/networks/teritori";
+import { convertLegacyPostId } from "@/utils/feed/queries";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { primaryColor } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
@@ -20,31 +19,19 @@ import { PostCategory } from "@/utils/types/feed";
 
 export const FeedPostView: ScreenFC<"FeedPostView"> = ({
   route: {
-    params: { id },
+    params: { id: idParam },
   },
 }) => {
+  const id = convertLegacyPostId(idParam);
   const navigation = useAppNavigation();
-  let [network, postId] = parseNetworkObjectId(id);
-  if (!network) {
-    // fallback to teritori or gno network if there is no network prefix in the id
-    if (id.includes("-")) {
-      // teritori ids are uuids
-      network = teritoriNetwork;
-      postId = id;
-    } else {
-      // gno ids are integers
-      network = gnoTeritoriNetwork;
-      postId = id;
-    }
-  }
-  const networkId = network?.id;
-  const { post, isLoading, refetch } = usePost(postId, networkId);
+  const [network] = parseNetworkObjectId(idParam);
+  const { post, isLoading, refetch } = usePost(id);
   const label = post?.category === PostCategory.Video ? "Video" : "Post";
 
   if (isLoading) {
     return (
       <ScreenContainer
-        forceNetworkId={networkId}
+        forceNetworkId={network?.id}
         fullWidth
         responsive
         noMargin
@@ -71,7 +58,7 @@ export const FeedPostView: ScreenFC<"FeedPostView"> = ({
   if (!post) {
     return (
       <ScreenContainer
-        forceNetworkId={networkId}
+        forceNetworkId={network?.id}
         fullWidth
         responsive
         noMargin
@@ -92,17 +79,10 @@ export const FeedPostView: ScreenFC<"FeedPostView"> = ({
   }
 
   if (post.category === PostCategory.Video) {
-    return (
-      <FeedPostVideoView
-        networkId={networkId}
-        post={post}
-        refetchPost={refetch}
-      />
-    );
+    return <FeedPostVideoView post={post} refetchPost={refetch} />;
   } else if (post.category === PostCategory.Article) {
     return (
       <FeedPostArticleView
-        networkId={networkId}
         post={post}
         refetchPost={refetch}
         isLoadingPost={isLoading}
@@ -111,7 +91,6 @@ export const FeedPostView: ScreenFC<"FeedPostView"> = ({
   } else
     return (
       <FeedPostDefaultView
-        networkId={networkId}
         post={post}
         isLoadingPost={isLoading}
         refetchPost={refetch}

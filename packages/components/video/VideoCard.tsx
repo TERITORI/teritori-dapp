@@ -9,11 +9,10 @@ import {
   ViewStyle,
 } from "react-native";
 
-import defaultThumbnailImage from "../../../assets/default-images/default-video-thumbnail.jpg";
+import defaultThumbnailImage from "../../../assets/default-images/default-video-thumbnail.png";
 import { Post } from "../../api/feed/v1/feed";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getNetworkObjectId, parseUserId } from "../../networks";
+import { parseUserId } from "../../networks";
 import { prettyMediaDuration } from "../../utils/mediaPlayer";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import {
@@ -50,7 +49,6 @@ export const VideoCard: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = memo(({ post, hideAuthor, hideDescription, style }) => {
   const { width: windowWidth } = useWindowDimensions();
-  const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
   const video = zodTryParseJSON(ZodSocialFeedVideoMetadata, post.metadata);
   const authorNSInfo = useNSUserInfo(post.authorId);
@@ -71,16 +69,6 @@ export const VideoCard: React.FC<{
       ? video.videoFile.thumbnailFileData.url
       : "ipfs://" + video.videoFile.thumbnailFileData?.url // we need this hack because ipfs "urls" in feed are raw CIDs
     : defaultThumbnailImage;
-
-  if (post.identifier.startsWith("padded-")) {
-    return (
-      <View
-        style={{
-          width: cardWidth,
-        }}
-      />
-    );
-  }
 
   if (!video)
     return (
@@ -107,7 +95,7 @@ export const VideoCard: React.FC<{
           onHoverOut={() => setIsHovered(false)}
           onPress={() =>
             navigation.navigate("FeedPostView", {
-              id: getNetworkObjectId(selectedNetworkId, post.identifier),
+              id: post.id,
             })
           }
         >

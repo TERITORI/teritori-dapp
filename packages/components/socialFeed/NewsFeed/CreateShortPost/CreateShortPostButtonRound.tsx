@@ -6,15 +6,14 @@ import {
   useWindowDimensions,
 } from "react-native";
 
-import penSVG from "../../../../../assets/icons/pen.svg";
+import penSVG from "@/assets/icons/pen.svg";
+import { SVG } from "@/components/SVG";
 import {
-  neutral17,
-  neutral33,
-  secondaryColor,
-} from "../../../../utils/style/colors";
-import { RESPONSIVE_BREAKPOINT_S } from "../../../../utils/style/layout";
-import { SVG } from "../../../SVG";
-import { ROUND_BUTTON_WIDTH_L, ROUND_BUTTON_WIDTH_S } from "../NewsFeed";
+  ROUND_BUTTON_WIDTH_L,
+  ROUND_BUTTON_WIDTH_S,
+} from "@/utils/social-feed";
+import { neutral17, neutral33, secondaryColor } from "@/utils/style/colors";
+import { RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 
 export const CreateShortPostButtonRound: React.FC<{
   onPress: () => void;

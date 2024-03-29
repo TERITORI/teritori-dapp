@@ -10,10 +10,7 @@ import { Post } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
-import {
-  CommentsContainer,
-  LINES_HORIZONTAL_SPACE,
-} from "@/components/cards/CommentsContainer";
+import { CommentsContainer } from "@/components/cards/CommentsContainer";
 import { CreateShortPostButton } from "@/components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostButton";
 import { CreateShortPostModal } from "@/components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostModal";
 import {
@@ -26,17 +23,13 @@ import { RichText } from "@/components/socialFeed/RichText";
 import { SocialCardFooter } from "@/components/socialFeed/SocialCard/SocialCardFooter";
 import { SocialCardHeader } from "@/components/socialFeed/SocialCard/SocialCardHeader";
 import { SocialCardWrapper } from "@/components/socialFeed/SocialCard/SocialCardWrapper";
-import { SOCIAl_CARD_BORDER_RADIUS } from "@/components/socialFeed/SocialCard/cards/SocialThreadCard";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
-import {
-  combineFetchCommentPages,
-  useFetchComments,
-} from "@/hooks/feed/useFetchComments";
+import { useFetchComments } from "@/hooks/feed/useFetchComments";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
-import { getNetworkObjectId, parseUserId } from "@/networks";
+import { parseUserId } from "@/networks";
 import { web3ToWeb2URI } from "@/utils/ipfs";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {
@@ -44,6 +37,8 @@ import {
   ARTICLE_COVER_IMAGE_RATIO,
   ARTICLE_MAX_WIDTH,
   DEFAULT_USERNAME,
+  LINES_HORIZONTAL_SPACE,
+  SOCIAl_CARD_BORDER_RADIUS,
 } from "@/utils/social-feed";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
@@ -64,18 +59,16 @@ import {
 const contentPaddingHorizontal = layout.spacing_x2;
 
 export const FeedPostArticleView: FC<{
-  networkId: string;
   post: Post;
   refetchPost: () => Promise<any>;
   isLoadingPost?: boolean;
-}> = ({ post, networkId, refetchPost, isLoadingPost }) => {
+}> = ({ post, refetchPost, isLoadingPost }) => {
   const navigation = useAppNavigation();
   const { width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
   const isMobile = useIsMobile();
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
 
-  const postId = post.identifier;
   const authorId = post?.authorId;
   const authorNSInfo = useNSUserInfo(authorId);
   const [, authorAddress] = parseUserId(post?.authorId);
@@ -92,21 +85,17 @@ export const FeedPostArticleView: FC<{
   const isLoadingSharedValue = useSharedValue(true);
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const {
-    data,
+    data: comments,
     refetch: refetchComments,
     hasNextPage,
     fetchNextPage,
     isLoading: isLoadingComments,
   } = useFetchComments({
-    parentId: post?.identifier,
-    totalCount: post?.subPostLength,
+    parentId: post.id,
+    totalCount: post.subPostLength,
     enabled: true,
   });
   const isNextPageAvailable = useSharedValue(hasNextPage);
-  const comments = useMemo(
-    () => (data ? combineFetchCommentPages(data.pages) : []),
-    [data],
-  );
 
   const postMetadata = zodTryParseJSON(
     ZodSocialFeedPostMetadata,
@@ -167,7 +156,7 @@ export const FeedPostArticleView: FC<{
         setFlatListContentOffsetY(event.contentOffset.y);
       },
     },
-    [post?.identifier],
+    [post.id],
   );
 
   useEffect(() => {
@@ -175,11 +164,11 @@ export const FeedPostArticleView: FC<{
   }, [isLoadingPost, isLoadingComments, isLoadingSharedValue]);
 
   useEffect(() => {
-    if (post?.category === PostCategory.Video)
+    if (post.category === PostCategory.Video)
       navigation.replace("FeedPostView", {
-        id: postId,
+        id: post.id,
       });
-  }, [post?.category, postId, navigation]);
+  }, [post.category, post.id, navigation]);
 
   useEffect(() => {
     // HECK: updated state was not showing up in scrollhander
@@ -189,7 +178,7 @@ export const FeedPostArticleView: FC<{
   if (!metadataToUse) return null;
   return (
     <ScreenContainer
-      forceNetworkId={networkId}
+      forceNetworkId={post.networkId}
       fullWidth
       responsive
       noMargin
@@ -199,10 +188,7 @@ export const FeedPostArticleView: FC<{
       onBackPress={() =>
         post?.parentPostIdentifier
           ? navigation.navigate("FeedPostView", {
-              id: getNetworkObjectId(
-                networkId,
-                post?.parentPostIdentifier || "",
-              ),
+              id: post.id,
             })
           : navigation.canGoBack()
             ? navigation.goBack()
@@ -273,10 +259,8 @@ export const FeedPostArticleView: FC<{
 
               <SpacerColumn size={1.5} />
               <SocialCardHeader
-                authorAddress={authorAddress}
                 authorId={localPost.authorId}
                 createdAt={post.createdAt}
-                authorMetadata={authorNSInfo?.metadata}
               />
               <SpacerColumn size={1.5} />
 
@@ -285,7 +269,7 @@ export const FeedPostArticleView: FC<{
                 initialValue={metadataToUse.message}
                 isPostConsultation
                 audioFiles={audioFiles}
-                postId={postId}
+                postId={post.id}
                 authorId={authorId}
               />
               <SpacerColumn size={1.5} />
@@ -350,7 +334,7 @@ export const FeedPostArticleView: FC<{
               ref={feedInputRef}
               type="comment"
               replyTo={replyTo}
-              parentId={post.identifier}
+              parentId={post.localIdentifier}
               onSubmitInProgress={handleSubmitInProgress}
               onSubmitSuccess={() => {
                 setReplyTo(undefined);
@@ -407,7 +391,7 @@ export const FeedPostArticleView: FC<{
           refetchComments();
         }}
         replyTo={replyTo}
-        parentId={post.identifier}
+        parentId={post.localIdentifier}
       />
     </ScreenContainer>
   );

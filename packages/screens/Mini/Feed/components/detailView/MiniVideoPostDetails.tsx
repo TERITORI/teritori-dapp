@@ -1,5 +1,5 @@
 import { ResizeMode } from "expo-av";
-import React, { Fragment, useMemo, useRef, useState } from "react";
+import React, { Fragment, useRef, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 import Animated, {
   useAnimatedRef,
@@ -7,7 +7,6 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 
-import useSelectedWallet from "../../../../../hooks/useSelectedWallet";
 import CustomAppBar from "../../../components/AppBar/CustomAppBar";
 
 import { Post, PostsRequest } from "@/api/feed/v1/feed";
@@ -21,14 +20,11 @@ import { ReportButton } from "@/components/socialFeed/SocialActions/ReportButton
 import { ShareButton } from "@/components/socialFeed/SocialActions/ShareButton";
 import { TipButton } from "@/components/socialFeed/SocialActions/TipButton";
 import { SocialCardHeader } from "@/components/socialFeed/SocialCard/SocialCardHeader";
-import { SOCIAl_CARD_BORDER_RADIUS } from "@/components/socialFeed/SocialCard/cards/SocialThreadCard";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { VideosList } from "@/components/video/VideosList";
-import {
-  combineFetchCommentPages,
-  useFetchComments,
-} from "@/hooks/feed/useFetchComments";
+import { useFetchComments } from "@/hooks/feed/useFetchComments";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetwork, NetworkKind, parseUserId } from "@/networks";
 import { VideoComment } from "@/screens/FeedPostView/components/VideoComment";
 import {
@@ -36,7 +32,10 @@ import {
   MiniCommentInputInputHandle,
 } from "@/screens/Mini/components/MiniCommentInput";
 import { zodTryParseJSON } from "@/utils/sanitize";
-import { DEFAULT_USERNAME, postResultToPost } from "@/utils/social-feed";
+import {
+  DEFAULT_USERNAME,
+  SOCIAl_CARD_BORDER_RADIUS,
+} from "@/utils/social-feed";
 import { neutral00, neutralA3 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -48,21 +47,16 @@ import {
 } from "@/utils/types/feed";
 
 type Props = {
-  networkId: string;
   post: Post;
   refetchPost: () => Promise<any>;
 };
 
-export const MiniVideoPostDetails = ({
-  networkId,
-  post,
-  refetchPost,
-}: Props) => {
+export const MiniVideoPostDetails = ({ post, refetchPost }: Props) => {
   const feedInputRef = useRef<MiniCommentInputInputHandle>(null);
 
   const { width: windowWidth } = useWindowDimensions();
   const wallet = useSelectedWallet();
-  const network = getNetwork(networkId);
+  const network = getNetwork(post.networkId);
   const [replyTo, setReplyTo] = useState<ReplyToType>();
 
   const [localPost, setLocalPost] = useState(post || Post.create());
@@ -75,20 +69,15 @@ export const MiniVideoPostDetails = ({
     DEFAULT_USERNAME;
 
   const {
-    data: commentsData,
+    data: comments,
     hasNextPage,
     fetchNextPage,
     refetch: refetchComments,
   } = useFetchComments({
-    parentId: localPost.identifier,
+    parentId: localPost.id,
     totalCount: localPost.subPostLength,
     enabled: true,
   });
-
-  const comments = useMemo(
-    () => (commentsData ? combineFetchCommentPages(commentsData.pages) : []),
-    [commentsData],
-  );
 
   const userVideosFeedRequest: Partial<PostsRequest> = {
     filter: {
@@ -140,7 +129,7 @@ export const MiniVideoPostDetails = ({
         }
       },
     },
-    [post?.identifier],
+    [post?.id],
   );
 
   if (!video) return <BrandText>Video not valid</BrandText>;
@@ -154,7 +143,7 @@ export const MiniVideoPostDetails = ({
   return (
     <KeyboardAvoidingView extraVerticalOffset={-100}>
       <ScreenContainer
-        forceNetworkId={networkId}
+        forceNetworkId={post.networkId}
         fullWidth
         responsive
         noMargin
@@ -180,8 +169,7 @@ export const MiniVideoPostDetails = ({
                 borderRadius: SOCIAl_CARD_BORDER_RADIUS,
               }}
               resizeMode={ResizeMode.CONTAIN}
-              authorId={localPost.authorId}
-              postId={localPost.identifier}
+              postId={localPost.id}
             />
             {/*====== Video info ======*/}
             <SpacerColumn size={1.5} />
@@ -192,9 +180,7 @@ export const MiniVideoPostDetails = ({
             <View>
               <SocialCardHeader
                 authorId={localPost.authorId}
-                authorAddress={authorAddress}
                 createdAt={localPost.createdAt}
-                authorMetadata={authorNSInfo?.metadata}
               />
               <SpacerColumn size={1} />
               <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -206,24 +192,20 @@ export const MiniVideoPostDetails = ({
                 <TipButton
                   disabled={localPost.authorId === wallet?.userId}
                   amount={localPost.tipAmount}
-                  author={username}
-                  postId={localPost.identifier}
+                  authorId={localPost.authorId}
+                  postId={localPost.id}
                   useAltStyle
                 />
 
                 <SpacerRow size={1.5} />
-                <ShareButton
-                  postId={localPost.identifier}
-                  network_Id={network?.id}
-                  useAltStyle
-                />
+                <ShareButton postId={localPost.id} useAltStyle />
 
                 {network?.kind === NetworkKind.Gno && (
                   <>
                     <SpacerRow size={1.5} />
                     <ReportButton
                       refetchFeed={refetchPost}
-                      postId={localPost.identifier}
+                      postId={localPost.id}
                       useAltStyle
                     />
                   </>
@@ -254,11 +236,11 @@ export const MiniVideoPostDetails = ({
             {comments.map((comment, index) => (
               <Fragment key={index}>
                 <SpacerColumn size={2.5} />
-                <VideoComment comment={postResultToPost(networkId, comment)} />
+                <VideoComment comment={comment} />
               </Fragment>
             ))}
             <VideosList
-              consultedPostId={localPost.identifier}
+              consultedPostId={localPost.id}
               title={
                 otherVideosRequest.filter?.user
                   ? `More videos from ${username}`
@@ -286,7 +268,7 @@ export const MiniVideoPostDetails = ({
             }}
             ref={feedInputRef}
             replyTo={replyTo}
-            parentId={post.identifier}
+            parentId={post.id}
             onSubmitInProgress={handleSubmitInProgress}
             onSubmitSuccess={() => {
               setReplyTo(undefined);

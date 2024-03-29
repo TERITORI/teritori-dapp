@@ -20,7 +20,11 @@ import {
   RESPONSIVE_BREAKPOINT_S,
 } from "../../../../utils/style/layout";
 import { SVG } from "../../../SVG";
-import { ROUND_BUTTON_WIDTH_L, ROUND_BUTTON_WIDTH_S } from "../NewsFeed";
+
+import {
+  ROUND_BUTTON_WIDTH_S,
+  ROUND_BUTTON_WIDTH_L,
+} from "@/utils/social-feed";
 
 interface RefreshButtonProps {
   isRefreshing: SharedValue<boolean>;

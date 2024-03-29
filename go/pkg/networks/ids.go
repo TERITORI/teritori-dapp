@@ -12,6 +12,7 @@ type CollectionID string
 type UserID string
 type NFTID string
 type ActivityID string
+type PostID string
 
 func (n *NetworkBase) StringToNFTID(nftIDString string) NFTID {
 	return NFTID(nftIDString)
@@ -95,4 +96,8 @@ func (netstore NetworkStore) ParseActivityID(activityId string) (Network, string
 		return nil, "", 0, errors.Wrap(err, "failed to parse message index")
 	}
 	return network, parts[1], messageIndex, nil
+}
+
+func (n *NetworkBase) PostID(localId string) PostID {
+	return PostID(fmt.Sprintf("%s-%s", n.IDPrefix, localId))
 }
