@@ -11,8 +11,8 @@ import {
   ViewStyle,
   useWindowDimensions,
   StyleProp,
+  TouchableOpacity,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
@@ -232,10 +232,6 @@ const ModalBase: React.FC<ModalBaseProps> = ({
               {!!Header && <Header />}
 
               <TouchableOpacity
-                containerStyle={[
-                  { marginLeft: modalMarginPadding },
-                  closeButtonStyle,
-                ]}
                 style={{ justifyContent: "center" }}
                 onPress={onClose}
               >
