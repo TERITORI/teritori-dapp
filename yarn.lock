@@ -5201,6 +5201,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-leaflet/core@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@react-leaflet/core@npm:2.1.0"
+  peerDependencies:
+    leaflet: ^1.9.0
+    react: ^18.0.0
+    react-dom: ^18.0.0
+  checksum: c11a15fb71a9929b809f346d8f784d0f32afa373bc096aa1f0d0fa6a2ef0ce632a563c31876abf8b255a12a19d6e80ece31e2ef505f79a678bbf073e7a6c5c60
+  languageName: node
+  linkType: hard
+
 "@react-native-anywhere/polyfill-base64@npm:^0.0.1-alpha.0":
   version: 0.0.1-alpha.0
   resolution: "@react-native-anywhere/polyfill-base64@npm:0.0.1-alpha.0"
@@ -6487,6 +6498,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/geojson@npm:*":
+  version: 7946.0.14
+  resolution: "@types/geojson@npm:7946.0.14"
+  checksum: ae511bee6488ae3bd5a3a3347aedb0371e997b14225b8983679284e22fa4ebd88627c6e3ff8b08bf4cc35068cb29310c89427311ffc9322c255615821a922e71
+  languageName: node
+  linkType: hard
+
 "@types/glob@npm:^7.1.3":
   version: 7.2.0
   resolution: "@types/glob@npm:7.2.0"
@@ -6587,6 +6605,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/leaflet@npm:^1.9.8":
+  version: 1.9.8
+  resolution: "@types/leaflet@npm:1.9.8"
+  dependencies:
+    "@types/geojson": "*"
+  checksum: d6a33d5db0bdf608957cd52701b17ee89e936034a8f0ab619b8e7ef70312a0da177837dd125756e83af036276a8b299cc724c9ffb3caa7d22893fea2791e1e13
+  languageName: node
+  linkType: hard
+
+"@types/linkify-it@npm:*":
+  version: 3.0.5
+  resolution: "@types/linkify-it@npm:3.0.5"
+  checksum: fac28f41a6e576282300a459d70ea0d33aab70dbb77c3d09582bb0335bb00d862b6de69585792a4d590aae4173fbab0bf28861e2d90ca7b2b1439b52688e9ff6
+  languageName: node
+  linkType: hard
+
 "@types/lodash@npm:^4.14.182":
   version: 4.14.202
   resolution: "@types/lodash@npm:4.14.202"
@@ -6598,6 +6632,23 @@ __metadata:
   version: 4.0.2
   resolution: "@types/long@npm:4.0.2"
   checksum: d16cde7240d834cf44ba1eaec49e78ae3180e724cd667052b194a372f350d024cba8dd3f37b0864931683dab09ca935d52f0c4c1687178af5ada9fc85b0635f4
+  languageName: node
+  linkType: hard
+
+"@types/markdown-it@npm:^13.0.7":
+  version: 13.0.7
+  resolution: "@types/markdown-it@npm:13.0.7"
+  dependencies:
+    "@types/linkify-it": "*"
+    "@types/mdurl": "*"
+  checksum: c9e9af441340eb870a7b90b298f6197aa80b55bee28f179a4f85052333f0cb3d3f2763981359d58cf09024961f013999c1c743c1e52a185ca36576d4403f7eb9
+  languageName: node
+  linkType: hard
+
+"@types/mdurl@npm:*":
+  version: 1.0.5
+  resolution: "@types/mdurl@npm:1.0.5"
+  checksum: e8e872e8da8f517a9c748b06cec61c947cb73fd3069e8aeb0926670ec5dfac5d30549b3d0f1634950401633e812f9b7263f2d5dbe7e98fce12bcb2c659aa4b21
   languageName: node
   linkType: hard
 
@@ -13850,6 +13901,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"leaflet@npm:^1.9.4":
+  version: 1.9.4
+  resolution: "leaflet@npm:1.9.4"
+  checksum: bfc79f17a247b37b92d84b3c78702501603392d6589fde606de4a825d11f1609d90225388834f2e0709dac327e52dcd4b4b9cc9fd3d590060c5b1e53b84fa6c6
+  languageName: node
+  linkType: hard
+
 "ledger-cosmos-js@npm:^2.1.8":
   version: 2.1.8
   resolution: "ledger-cosmos-js@npm:2.1.8"
@@ -14015,6 +14073,15 @@ __metadata:
   version: 1.2.4
   resolution: "lines-and-columns@npm:1.2.4"
   checksum: 0c37f9f7fa212b38912b7145e1cd16a5f3cd34d782441c3e6ca653485d326f58b3caccda66efce1c5812bde4961bbde3374fae4b0d11bf1226152337f3894aa5
+  languageName: node
+  linkType: hard
+
+"linkify-it@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "linkify-it@npm:5.0.0"
+  dependencies:
+    uc.micro: ^2.0.0
+  checksum: b0b86cadaf816b64c947a83994ceaad1c15f9fe7e079776ab88699fb71afd7b8fc3fd3d0ae5ebec8c92c1d347be9ba257b8aef338c0ebf81b0d27dcf429a765a
   languageName: node
   linkType: hard
 
@@ -14325,6 +14392,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"markdown-it@npm:^14.1.0":
+  version: 14.1.0
+  resolution: "markdown-it@npm:14.1.0"
+  dependencies:
+    argparse: ^2.0.1
+    entities: ^4.4.0
+    linkify-it: ^5.0.0
+    mdurl: ^2.0.0
+    punycode.js: ^2.3.1
+    uc.micro: ^2.1.0
+  bin:
+    markdown-it: bin/markdown-it.mjs
+  checksum: 07296b45ebd0b13a55611a24d1b1ad002c6729ec54f558f597846994b0b7b1de79d13cd99ff3e7b6e9e027f36b63125cdcf69174da294ecabdd4e6b9fff39e5d
+  languageName: node
+  linkType: hard
+
 "marky@npm:^1.2.2":
   version: 1.2.5
   resolution: "marky@npm:1.2.5"
@@ -14410,6 +14493,13 @@ __metadata:
   version: 2.0.30
   resolution: "mdn-data@npm:2.0.30"
   checksum: d6ac5ac7439a1607df44b22738ecf83f48e66a0874e4482d6424a61c52da5cde5750f1d1229b6f5fa1b80a492be89465390da685b11f97d62b8adcc6e88189aa
+  languageName: node
+  linkType: hard
+
+"mdurl@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "mdurl@npm:2.0.0"
+  checksum: 880bc289ef668df0bb34c5b2b5aaa7b6ea755052108cdaf4a5e5968ad01cf27e74927334acc9ebcc50a8628b65272ae6b1fd51fae1330c130e261c0466e1a3b2
   languageName: node
   linkType: hard
 
@@ -16426,6 +16516,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"punycode.js@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "punycode.js@npm:2.3.1"
+  checksum: 13466d7ed5e8dacdab8c4cc03837e7dd14218a59a40eb14a837f1f53ca396e18ef2c4ee6d7766b8ed2fc391d6a3ac489eebf2de83b3596f5a54e86df4a251b72
+  languageName: node
+  linkType: hard
+
 "punycode@npm:^2.1.0, punycode@npm:^2.1.1":
   version: 2.3.1
   resolution: "punycode@npm:2.3.1"
@@ -16623,6 +16720,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-leaflet@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "react-leaflet@npm:4.2.1"
+  dependencies:
+    "@react-leaflet/core": ^2.1.0
+  peerDependencies:
+    leaflet: ^1.9.0
+    react: ^18.0.0
+    react-dom: ^18.0.0
+  checksum: 79222c2ba0c62facaa3dfee18f7a692f917a4fb744ba8d22269a77f9779fc9634962230eb51265ff2563a1a5e3287d2ec16640ee7f5de459458027e05cd756ba
+  languageName: node
+  linkType: hard
+
 "react-native-click-outside@npm:^0.1.1":
   version: 0.1.1
   resolution: "react-native-click-outside@npm:0.1.1"
@@ -16745,6 +16855,16 @@ __metadata:
     react: ">=0.14.5"
     react-native: ">=0.25.1"
   checksum: 070c6b15154608228214df4b9511d316181da38b95061c00752caa0890d428680bd00f25586467006e96673de96d4900db6e94adfcc3df17973eed3cb385589e
+  languageName: node
+  linkType: hard
+
+"react-native-leaflet-view@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "react-native-leaflet-view@npm:0.1.2"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: ed2cd15d0ee804a87e85828fef319657b4376950e215bd9cff709c7074bcfe33abe8c99b85a92b07cdf1ced589aee3f153b0af6f2fb56a700d897673133e959f
   languageName: node
   linkType: hard
 
@@ -19098,6 +19218,8 @@ __metadata:
     "@types/draft-convert": ^2.1.4
     "@types/draft-js": ^0.11.9
     "@types/html-to-draftjs": ^1.4.0
+    "@types/leaflet": ^1.9.8
+    "@types/markdown-it": ^13.0.7
     "@types/node": ^20.9.1
     "@types/react": ~18.2.45
     "@types/react-native-countdown-component": ^2.7.0
@@ -19141,14 +19263,17 @@ __metadata:
     expo-sharing: ~11.10.0
     expo-splash-screen: ~0.26.4
     expo-status-bar: ~1.11.1
+    glob: ^10.3.10
     google-protobuf: ^3.21.2
     html-to-draftjs: ^1.5.0
     immutable: ^4.0.0
     kubernetes-models: ^4.3.1
+    leaflet: ^1.9.4
     listr2: ^8.0.1
     lodash: ^4.17.21
     long: ^5.2.1
     lottie-react-native: 6.5.1
+    markdown-it: ^14.1.0
     metamask-react: ^2.4.1
     moment: ^2.29.4
     multiformats: ^12.1.3
@@ -19161,6 +19286,7 @@ __metadata:
     react: 18.2.0
     react-dom: 18.2.0
     react-hook-form: ^7.50.1
+    react-leaflet: ^4.2.1
     react-native: 0.73.6
     react-native-click-outside: ^0.1.1
     react-native-confetti-cannon: ^1.5.2
@@ -19172,6 +19298,7 @@ __metadata:
     react-native-heroicons: ^3.2.0
     react-native-image-picker: ^7.1.0
     react-native-keyboard-aware-scrollview: ^2.1.0
+    react-native-leaflet-view: ^0.1.2
     react-native-paper: ^4.12.5
     react-native-pell-rich-editor: ^1.8.8
     react-native-pie-chart: ^3.0.1
@@ -19695,6 +19822,13 @@ __metadata:
   version: 1.0.37
   resolution: "ua-parser-js@npm:1.0.37"
   checksum: 4d481c720d523366d7762dc8a46a1b58967d979aacf786f9ceceb1cd767de069f64a4bdffb63956294f1c0696eb465ddb950f28ba90571709e33521b4bd75e07
+  languageName: node
+  linkType: hard
+
+"uc.micro@npm:^2.0.0, uc.micro@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "uc.micro@npm:2.1.0"
+  checksum: 37197358242eb9afe367502d4638ac8c5838b78792ab218eafe48287b0ed28aaca268ec0392cc5729f6c90266744de32c06ae938549aee041fc93b0f9672d6b2
   languageName: node
   linkType: hard
 
