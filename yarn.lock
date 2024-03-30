@@ -6671,7 +6671,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:~18.2.14":
+"@types/react@npm:*":
   version: 18.2.48
   resolution: "@types/react@npm:18.2.48"
   dependencies:
@@ -6679,6 +6679,17 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: c9ca43ed2995389b7e09492c24e6f911a8439bb8276dd17cc66a2fbebbf0b42daf7b2ad177043256533607c2ca644d7d928fdfce37a67af1f8646d2bac988900
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:~18.2.45":
+  version: 18.2.70
+  resolution: "@types/react@npm:18.2.70"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: 4d1160ad2449ce5e96aa795f24f9e3902975cd59e6ce3c79eb674acb1262a54cdb0bc9c9b0aeb858da24e20148a09ec1822c8ed12f70c1c87b779ac2baf72ebd
   languageName: node
   linkType: hard
 
@@ -19088,7 +19099,7 @@ __metadata:
     "@types/draft-js": ^0.11.9
     "@types/html-to-draftjs": ^1.4.0
     "@types/node": ^20.9.1
-    "@types/react": ~18.2.14
+    "@types/react": ~18.2.45
     "@types/react-native-countdown-component": ^2.7.0
     "@types/uuid": ^9.0.0
     assert: ^2.1.0

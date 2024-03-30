@@ -8,7 +8,39 @@ import expo.modules.kotlin.exception.Exceptions
 import android.util.Log
 import expo.modules.core.Promise
 
+import java.net.InetAddress
+import java.net.NetworkInterface
 
+fun interfaceAddrs(): List<String> {
+    val interfaceAddresses = mutableListOf<String>()
+    try {
+        val interfaces = NetworkInterface.getNetworkInterfaces()
+        while (interfaces.hasMoreElements()) {
+            val intf = interfaces.nextElement()
+            val addresses = intf.inetAddresses
+            while (addresses.hasMoreElements()) {
+                val addr = addresses.nextElement()
+                val formattedAddress = formatAddress(addr)
+                if (formattedAddress != null) {
+                    interfaceAddresses.add(formattedAddress)
+                }
+            }
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return interfaceAddresses
+}
+
+fun formatAddress(addr: InetAddress): String? {
+    
+    if (addr.isAnyLocalAddress || addr.isLoopbackAddress || addr.isLinkLocalAddress) {
+         
+        return null
+    }
+
+    return "/${addr.hostAddress}"
+}
 
 
 class WeshdModule: Module() {
@@ -20,26 +52,26 @@ class WeshdModule: Module() {
 
 fun getAbsolutePathForWeshDir(context: Context): String {
     try {
-        // Get the app-specific directory
+         
         val appSpecificDir = context.filesDir
 
-        // Append "wesh-dir" to the path
+        
         val weshDirPath = File(appSpecificDir, "wesh-dir")
 
-        // Ensure the directory exists, create it if needed
+        
         if (!weshDirPath.exists()) {
             weshDirPath.mkdirs()
         }
 
-        // Get the absolute path
+         
         val absolutePath = weshDirPath.absolutePath
 
-        // Log the absolute path
+        
         Log.i("WeshDirInfo", "Absolute path for wesh-dir: $absolutePath")
 
         return absolutePath
     } catch (e: Exception) {
-        // Log the error and the path
+        
         Log.e("WeshDirError", "Error getting absolute path for wesh-dir", e)
         return ""  // Return an empty string or handle the error accordingly
     }
@@ -54,12 +86,15 @@ fun getAbsolutePathForWeshDir(context: Context): String {
     // The module will be accessible from `requireNativeModule('Weshd')` in JavaScript.
     Name("Weshd")
 
-    // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
+     
     Function("boot") {  ->
 
       val absolutePath = getAbsolutePathForWeshDir(context)
+      val addresses = interfaceAddrs()
+      val joinedAaddresses = addresses.joinToString(separator = ",")
+      Wesh.setMultiAddrs(joinedAaddresses)
       Wesh.boot(absolutePath)
-      
+
     }
 
     Function("shutdown") {  ->
