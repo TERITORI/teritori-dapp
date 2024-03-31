@@ -1,9 +1,6 @@
-import { StyleProp, ViewStyle } from "react-native";
-import { LatLng, LeafletView } from "react-native-leaflet-view";
+import { LatLng, LeafletView, MapMarker } from "react-native-leaflet-view";
 
-const FeedMapList: React.FC<{
-  style?: StyleProp<ViewStyle>;
-}> = ({ style }) => {
+const FeedMapList: React.FC = () => {
   const getIcon = (type: string) => {
     const iconList: { [key: string]: string } = {
       picture: "https://i.ibb.co/WkQxJQP/picture.png",
@@ -22,7 +19,7 @@ const FeedMapList: React.FC<{
     return DEFAULT_COORDINATE;
   };
 
-  const markers = [
+  const markers: MapMarker[] = [
     {
       position: getPosition([48.86, 2.3522]),
       icon: getIcon("picture"), //load image from web; not work with local image

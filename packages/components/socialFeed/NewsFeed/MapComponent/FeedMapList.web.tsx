@@ -1,10 +1,16 @@
-import L, { Icon, DivIcon, Point } from "leaflet";
+import L, { DivIcon, Icon, LatLngExpression, Point } from "leaflet";
 import React from "react";
 import "./styles.css";
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { StyleProp, View, ViewStyle } from "react-native";
+
+interface MarkerPopup {
+  position: LatLngExpression;
+  popUp: string;
+  type: "picture" | "text" | "video" | "audio";
+}
 
 // custom cluster icon
 const createClusterCustomIcon = function (cluster: any): DivIcon {
@@ -22,34 +28,33 @@ const getIcon = (type: string) => {
     video: "https://i.ibb.co/pxrhKLC/video.png",
     audio: "https://i.ibb.co/ZJkg6RD/music.png",
   };
-  const icon_ = new Icon({ iconUrl: iconList[`${type}`], iconSize: [38, 38] });
-  return icon_;
+  return new Icon({ iconUrl: iconList[`${type}`], iconSize: [38, 38] });
 };
 
-const markers = [
+const markers: MarkerPopup[] = [
   {
-    geocode: [48.86, 2.3522],
+    position: [48.86, 2.3522],
     popUp: "Hello, I am pop up 1",
     type: "picture",
   },
   {
-    geocode: [48.85, 2.3522],
+    position: [48.85, 2.3522],
     popUp: "Hello, I am pop up 2",
     type: "text",
   },
   {
-    geocode: [48.855, 2.34],
+    position: [48.855, 2.34],
     popUp: "Hello, I am pop up 3",
     type: "video",
   },
   {
-    geocode: [48.85, 2.31],
+    position: [48.85, 2.31],
     popUp: "Hello, I am pop up 3",
     type: "audio",
   },
 ];
 
-const FeedMapList_: React.FC<{
+const FeedMapList: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ style }) => {
   return (
@@ -60,6 +65,7 @@ const FeedMapList_: React.FC<{
         attributionControl={false}
       >
         <TileLayer
+          noWrap
           attribution=""
           url="https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=QkwJFLzzxPan25YCgnDExGpMFPxA3x4lnyKiUf8zmaqXLP5XyOR8n3yEM8jlKV3W"
         />
@@ -68,8 +74,8 @@ const FeedMapList_: React.FC<{
           iconCreateFunction={createClusterCustomIcon}
         >
           {/* Mapping through the markers */}
-          {markers.map((marker: any) => (
-            <Marker position={marker.geocode} icon={getIcon(marker.type)}>
+          {markers.map((marker) => (
+            <Marker position={marker.position} icon={getIcon(marker.type)}>
               <Popup>{marker.popUp}</Popup>
             </Marker>
           ))}
@@ -83,4 +89,4 @@ const containerCStyle: ViewStyle = {
   width: "100%",
 };
 
-export default FeedMapList_;
+export default FeedMapList;

@@ -19,6 +19,7 @@ const MapWeb = ({ locationSelected }: { locationSelected: LatLng }) => {
     >
       <TileLayer
         url={`https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=${process.env.EXPO_PUBLIC_LEAFLET_MAP_TOKEN}`}
+        noWrap
       />
       <Marker position={locationSelected} icon={customIcon} />
     </MapContainer>
