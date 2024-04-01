@@ -9,6 +9,8 @@ import {
   ScrollView,
 } from "react-native";
 
+import { UserDisplayName } from "./UserDisplayName";
+import { Username } from "./Username";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import trashSVG from "../../../assets/icons/trash.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -36,12 +38,13 @@ import { BrandText } from "../BrandText";
 import { DropdownOption } from "../DropdownOption";
 import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { BoxStyle } from "../boxes/Box";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
 export const UserCard: React.FC<{
   userId: string;
-  style: StyleProp<ViewStyle>;
+  style: StyleProp<BoxStyle>;
   daoId?: string;
 }> = ({ userId, style, daoId }) => {
   const [, userAddress] = parseUserId(userId);
@@ -59,9 +62,8 @@ export const UserCard: React.FC<{
   const padding = 16;
   const width = typeof flatStyle.width === "number" ? flatStyle.width : 325;
   return (
-    <LegacyTertiaryBox
-      style={style}
-      mainContainerStyle={[
+    <TertiaryBox
+      style={[
         {
           width,
           height: 287,
@@ -69,6 +71,7 @@ export const UserCard: React.FC<{
           justifyContent: "space-between",
           alignItems: "flex-start",
         },
+        style,
       ]}
     >
       <OmniLink to={{ screen: "UserPublicProfile", params: { id: userId } }}>
@@ -81,22 +84,19 @@ export const UserCard: React.FC<{
             alignSelf: "flex-start", // this extra flex-start is needed on web when the bio is long
           }}
         />
-        <BrandText
+        <UserDisplayName
+          userId={userId}
           style={[
             fontSemibold12,
             { lineHeight: 14, marginBottom: 8, width: width - 2 * padding }, // FIXME: we have to set a fixed width because LegacyTertiaryBox is broken
           ]}
-          numberOfLines={1}
-        >
-          {metadata.public_name || userAddress}
-        </BrandText>
-        <View>
-          <BrandText
-            style={[fontSemibold10, { color: neutral77, marginBottom: 8 }]}
-          >
-            {metadata.tokenId ? `@${metadata.tokenId}` : "Anon"}
-          </BrandText>
-        </View>
+        />
+        <Username
+          userId={userId}
+          namedColor={neutral77}
+          anonColor={neutral77}
+          textStyle={[fontSemibold10, { color: neutral77, marginBottom: 8 }]}
+        />
         <BrandText
           style={[
             fontSemibold10,
@@ -177,7 +177,7 @@ export const UserCard: React.FC<{
           ]}
         />
       </View>
-    </LegacyTertiaryBox>
+    </TertiaryBox>
   );
 };
 

@@ -16,13 +16,9 @@ import {
 } from "@/components/socialFeed/RichText";
 import { SpacerColumn } from "@/components/spacer";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
-import { useNSUserInfo } from "@/hooks/useNSUserInfo";
-import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
-import { getNetworkObjectId, parseUserId } from "@/networks";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import { neutralA3 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "@/utils/style/fonts";
-import { tinyAddress } from "@/utils/text";
 import {
   ZodSocialFeedArticleMetadata,
   ZodSocialFeedPostMetadata,
@@ -33,17 +29,11 @@ type Props = {
   refetchFeed?: () => Promise<any>;
   style?: StyleProp<ViewStyle>;
 };
-const DEFAULT_NAME = "Anon";
 
 export const MiniSocialArticle = ({ post, refetchFeed, style }: Props) => {
   const { width: windowWidth } = useWindowDimensions();
   const navigation = useAppNavigation();
-
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-  const selectedNetworkId = selectedNetworkInfo?.id || "";
   const [localPost, setLocalPost] = useState<Post>(post);
-  const [, authorAddress] = parseUserId(localPost.authorId);
-  const authorNSInfo = useNSUserInfo(localPost.authorId);
   const metadata = zodTryParseJSON(
     ZodSocialFeedArticleMetadata,
     localPost.metadata,
@@ -81,8 +71,7 @@ export const MiniSocialArticle = ({ post, refetchFeed, style }: Props) => {
   }, [post]);
 
   const onPressPost = () => {
-    const id = getNetworkObjectId(selectedNetworkId, localPost.identifier);
-    navigation.navigate("FeedPostView", { id });
+    navigation.navigate("FeedPostView", { id: localPost.id });
   };
 
   const thumbnailURI = thumbnailImage?.url
@@ -93,27 +82,9 @@ export const MiniSocialArticle = ({ post, refetchFeed, style }: Props) => {
 
   const title = simplePostMetadata?.title;
 
-  const authorMetadata = authorNSInfo.metadata;
-  const userName = authorMetadata?.tokenId
-    ? authorMetadata.tokenId
-    : tinyAddress(authorAddress, 19);
-  const name =
-    authorMetadata?.public_name ||
-    (!authorMetadata?.tokenId
-      ? DEFAULT_NAME
-      : authorMetadata.tokenId.split(".")[0]) ||
-    DEFAULT_NAME;
-
   return (
     <CustomPressable onPress={onPressPost}>
-      <PostHeader
-        user={{
-          img: authorMetadata.image,
-          name,
-          username: userName,
-          postedAt: post.createdAt,
-        }}
-      />
+      <PostHeader authorId={post.authorId} postedAt={post.createdAt} />
       <SpacerColumn size={1.5} />
       <BrandText numberOfLines={2} style={[fontSemibold16]}>
         {title?.trim().replace("\n", " ")}

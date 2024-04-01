@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useMemo } from "react";
 
 import { ArticlesFeed } from "./components/ArticlesFeed";
 import { FeedHeader } from "./components/FeedHeader";
@@ -21,7 +21,7 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
   useForceNetworkSelection(params?.network);
   const isMobile = useIsMobile();
 
-  const FeedContent = useCallback(() => {
+  const feedContent = useMemo(() => {
     switch (params?.tab) {
       case "music":
         return <MusicFeed />;
@@ -61,7 +61,7 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
       forceNetworkFeatures={[NetworkFeature.SocialFeed]}
       headerChildren={<BrandText>Social Feed</BrandText>}
     >
-      <FeedContent />
+      {feedContent}
     </ScreenContainer>
   );
 };
