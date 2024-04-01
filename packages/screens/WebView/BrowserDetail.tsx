@@ -49,7 +49,14 @@ function BrowserHeader({ url }: { url: string }) {
         <CustomPressable onPress={() => navigation.goBack()}>
           <SVG source={backSVG} width={25} height={25} />
         </CustomPressable>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 8,
+            flex: 1,
+          }}
+        >
           <SVG source={lockSVG} width={25} height={25} />
           <BrandText style={fontSemibold12}>
             {url.length > 40 ? url.substring(0, 40) + "..." : url}

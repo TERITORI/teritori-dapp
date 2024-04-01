@@ -48,6 +48,28 @@ function WebViewHeader({
 }) {
   const navigation = useAppNavigation();
 
+  function onSubmit() {
+    if (hasNoDapps) {
+      const urlPattern: RegExp =
+        /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?/g;
+      if (urlPattern.test(searchInput)) {
+        const url =
+          searchInput.search("https") !== -1
+            ? searchInput
+            : "https://" + searchInput;
+        navigation.navigate("BrowserDetail", {
+          root: url,
+          path: "",
+        });
+      } else {
+        navigation.navigate("BrowserDetail", {
+          root: "https://google.com/search",
+          path: `?q=${searchInput}`,
+        });
+      }
+    }
+  }
+
   return (
     <View
       style={{
@@ -71,23 +93,7 @@ function WebViewHeader({
           returnKeyType="search"
           autoCapitalize="none"
           onPressIn={() => setShowDapps(true)}
-          onSubmitEditing={() => {
-            if (hasNoDapps) {
-              const urlPattern: RegExp =
-                /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?/g;
-              if (urlPattern.test(searchInput)) {
-                navigation.navigate("BrowserDetail", {
-                  root: searchInput,
-                  path: "",
-                });
-              } else {
-                navigation.navigate("BrowserDetail", {
-                  root: "google.com/search",
-                  path: `?q=${searchInput}`,
-                });
-              }
-            }
-          }}
+          onSubmitEditing={onSubmit}
           style={{
             paddingHorizontal: layout.spacing_x2,
             paddingVertical: layout.spacing_x1,
@@ -201,6 +207,7 @@ export const BrowserScreen: ScreenFC<"Browser"> = () => {
               </View>
             );
           }}
+          stickySectionHeadersEnabled={false}
         />
       </View>
     </ScreenContainer>
