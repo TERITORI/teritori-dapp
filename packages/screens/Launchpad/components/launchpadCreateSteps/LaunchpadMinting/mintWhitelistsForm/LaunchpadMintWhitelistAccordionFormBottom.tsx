@@ -7,8 +7,7 @@ import { SVG } from "@/components/SVG";
 import { SelectFileUploader } from "@/components/selectFileUploader";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
-import { NetworkFeature, getNetworkFeature } from "@/networks";
-import { TextInputLaunchpadRequired } from "@/screens/Launchpad/components/inputs/TextInputLaunchpadRequired";
+import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { LaunchpadWhitelistsAccordionFormProps } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/LaunchpadMintWhitelistAccordionForm";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "@/utils/social-feed";
@@ -21,16 +20,15 @@ import {
 import { layout } from "@/utils/style/layout";
 import { LocalFileData } from "@/utils/types/files";
 
-type Props = Omit<LaunchpadWhitelistsAccordionFormProps, "closeOtherElems">;
+type Props = Omit<
+  LaunchpadWhitelistsAccordionFormProps,
+  "closeOtherElems" | "collectionForm"
+>;
 
 export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
-  networkId,
   control,
-  elem: whitelist,
   elemIndex: whitelistIndex,
   remove,
-  update,
-  setIsLoading,
 }) => {
   const unitPriceKey = `whitelists.${whitelistIndex}.unitPrice` as const;
   const startTimeKey = `whitelists.${whitelistIndex}.startTime` as const;
@@ -38,11 +36,8 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
   const perAddressLimitKey =
     `whitelists.${whitelistIndex}.perAddressLimit` as const;
 
-  const config = getNetworkFeature(networkId, NetworkFeature.NFTLaunchpad);
-  const whitelistPriceDenom = whitelist?.denom || config?.defaultMintDenom;
-
   const onUploadWhitelistFile = (files: LocalFileData[]) => {
-    // TODO: Parse addresses from the TXT file and createCollectionForm.setValue("whitelistAddresses", blabla)
+    // TODO: Parse addresses from the TXT file and collectionForm.setValue("whitelistAddresses", blabla)
   };
 
   return (
@@ -54,7 +49,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
         paddingBottom: layout.spacing_x1,
       }}
     >
-      <TextInputLaunchpadRequired
+      <TextInputLaunchpad
         label="Unit Price "
         placeHolder="0"
         name={unitPriceKey}
@@ -68,7 +63,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
         control={control}
       />
 
-      <TextInputLaunchpadRequired
+      <TextInputLaunchpad
         label="Per Address Limit"
         placeHolder="0"
         name={perAddressLimitKey}
@@ -82,7 +77,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
         control={control}
       />
 
-      <TextInputLaunchpadRequired
+      <TextInputLaunchpad
         label="Start Time "
         placeHolder="0"
         name={startTimeKey}
@@ -96,7 +91,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
         control={control}
       />
 
-      <TextInputLaunchpadRequired
+      <TextInputLaunchpad
         label="End Time "
         placeHolder="0"
         name={endTimeKey}

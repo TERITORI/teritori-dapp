@@ -3,26 +3,26 @@ import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
 import { CollectionFormValues } from "../../CreateCollection.type";
-import { TextInputLaunchpadRequired } from "../inputs/TextInputLaunchpadRequired";
 import { MultipleSelectInput } from "../inputs/selectInputs/MultipleSelectInput";
 import { SelectInputLaunchpad } from "../inputs/selectInputs/SelectInputLaunchpad";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
+import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
+import { patternOnlyEmail } from "@/utils/formRules";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold20,
 } from "@/utils/style/fonts";
-import { layout } from "@/utils/style/layout";
 
 export const LaunchpadDetails: React.FC<{
-  createCollectionForm: UseFormReturn<CollectionFormValues>;
-}> = ({ createCollectionForm }) => {
-  const isDerivativeProject = createCollectionForm.watch("isDerivativeProject");
-  const isPreviouslyApplied = createCollectionForm.watch("isPreviouslyApplied");
-  const projectTypes = createCollectionForm.watch("projectTypes") || [];
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}> = ({ collectionForm }) => {
+  const isDerivativeProject = collectionForm.watch("isDerivativeProject");
+  const isPreviouslyApplied = collectionForm.watch("isPreviouslyApplied");
+  const projectTypes = collectionForm.watch("projectTypes") || [];
 
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -34,44 +34,42 @@ export const LaunchpadDetails: React.FC<{
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
+        <TextInputLaunchpad<CollectionFormValues>
           label="Website Link"
           placeHolder="https://website..."
           name="websiteLink"
-          control={createCollectionForm.control}
-          required={false}
+          control={collectionForm.control}
+          rules={{ required: false }}
         />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
-          required
+        <TextInputLaunchpad<CollectionFormValues>
           label="Twitter Profile "
           placeHolder="https://twitter..."
           name="twitterProfileUrl"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
-          required
+        <TextInputLaunchpad<CollectionFormValues>
           label="How many Twitter followers does your project have? "
           placeHolder="10,000"
           name="nbTwitterFollowers"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
-          required
+        <TextInputLaunchpad<CollectionFormValues>
           label="Discord name of your main contact: "
           placeHolder="nickname#0000"
           name="discordName"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
-          required
+        <TextInputLaunchpad<CollectionFormValues>
           label="Main contact email address: "
           placeHolder="contact@email.com"
           name="email"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
+          setError={collectionForm.setError}
+          rules={{ pattern: patternOnlyEmail }}
         />
 
         <SelectInputLaunchpad
@@ -85,10 +83,7 @@ export const LaunchpadDetails: React.FC<{
                 : ""
           }
           setItem={(item) => {
-            createCollectionForm.setValue(
-              "isDerivativeProject",
-              item === "Yes",
-            );
+            collectionForm.setValue("isDerivativeProject", item === "Yes");
           }}
           label="Is your project a derivative project?"
           style={{ zIndex: 3 }}
@@ -102,20 +97,18 @@ export const LaunchpadDetails: React.FC<{
             const selectedProjectTypes = projectTypes.includes(item)
               ? projectTypes.filter((data) => data !== item)
               : [...projectTypes, item];
-            createCollectionForm.setValue("projectTypes", selectedProjectTypes);
+            collectionForm.setValue("projectTypes", selectedProjectTypes);
           }}
           label="Project type:"
           sublabel={
-            <View style={{ marginBottom: layout.spacing_x1 }}>
-              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-                Multiple answers allowed
-              </BrandText>
-            </View>
+            <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+              Multiple answers allowed
+            </BrandText>
           }
           style={{ zIndex: 2 }}
         />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
+        <TextInputLaunchpad<CollectionFormValues>
           label="Describe your project: "
           sublabel={
             <View>
@@ -132,7 +125,7 @@ export const LaunchpadDetails: React.FC<{
           }
           placeHolder="Describe here..."
           name="projectDescription"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
         />
 
         <SelectInputLaunchpad
@@ -146,10 +139,7 @@ export const LaunchpadDetails: React.FC<{
                 : ""
           }
           setItem={(item) => {
-            createCollectionForm.setValue(
-              "isPreviouslyApplied",
-              item === "Yes",
-            );
+            collectionForm.setValue("isPreviouslyApplied", item === "Yes");
           }}
           label="Have you previously applied for the same project before?"
           style={{ zIndex: 1 }}

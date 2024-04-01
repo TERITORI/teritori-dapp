@@ -6,7 +6,7 @@ import { CollectionFormValues } from "../CreateCollection.type";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
-import { TextInputLaunchpadRequired } from "@/screens/Launchpad/components/inputs/TextInputLaunchpadRequired";
+import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -15,8 +15,8 @@ import {
 } from "@/utils/style/fonts";
 
 export const ConfigureRoyaltyDetails: React.FC<{
-  createCollectionForm: UseFormReturn<CollectionFormValues>;
-}> = ({ createCollectionForm }) => {
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}> = ({ collectionForm }) => {
   return (
     <View style={{ maxWidth: 416 }}>
       <SpacerColumn size={2} />
@@ -27,7 +27,8 @@ export const ConfigureRoyaltyDetails: React.FC<{
       </BrandText>
       <SpacerColumn size={2} />
 
-      <TextInputLaunchpadRequired<CollectionFormValues>
+      <TextInputLaunchpad<CollectionFormValues>
+        rules={{ required: false }}
         label="Payment Address "
         placeHolder="teritori123456789qwertyuiopasdfghjklzxcvbnm"
         name="royaltyAddress"
@@ -38,10 +39,11 @@ export const ConfigureRoyaltyDetails: React.FC<{
             </BrandText>
           </View>
         }
-        control={createCollectionForm.control}
+        control={collectionForm.control}
       />
 
-      <TextInputLaunchpadRequired<CollectionFormValues>
+      <TextInputLaunchpad<CollectionFormValues>
+        rules={{ required: false }}
         label="Share Percentage "
         placeHolder="8%"
         name="royaltyPercentage"
@@ -52,7 +54,7 @@ export const ConfigureRoyaltyDetails: React.FC<{
             </BrandText>
           </View>
         }
-        control={createCollectionForm.control}
+        control={collectionForm.control}
       />
     </View>
   );

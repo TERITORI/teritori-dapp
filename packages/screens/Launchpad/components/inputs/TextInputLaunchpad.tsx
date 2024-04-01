@@ -2,7 +2,10 @@ import React from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
 import { TextInputProps } from "react-native";
 
-import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import {
+  TextInputCustom,
+  TextInputCustomRules,
+} from "@/components/inputs/TextInputCustom";
 import { layout } from "@/utils/style/layout";
 
 interface TextInputCustomProps<T extends FieldValues>
@@ -12,8 +15,8 @@ interface TextInputCustomProps<T extends FieldValues>
   control: Control<T>;
   name: Path<T>;
   sublabel?: React.ReactElement;
-  multiline?: boolean;
-  required?: boolean;
+  rules?: TextInputCustomRules;
+  regexp?: RegExp;
 }
 
 export const TextInputLaunchpad = <T extends FieldValues>({
@@ -22,11 +25,12 @@ export const TextInputLaunchpad = <T extends FieldValues>({
   label,
   placeHolder,
   sublabel,
-  required = false,
+  regexp,
+  rules,
 }: TextInputCustomProps<T>) => {
   return (
     <TextInputCustom<T>
-      rules={{ required }}
+      rules={{ required: true, ...rules }}
       labelStyle={{ maxWidth: 416 }}
       label={label}
       placeHolder={placeHolder}
@@ -37,6 +41,7 @@ export const TextInputLaunchpad = <T extends FieldValues>({
       containerStyle={{ marginBottom: layout.spacing_x2 }}
       boxMainContainerStyle={{ minHeight: 0 }}
       height={40}
+      regexp={regexp}
     />
   );
 };

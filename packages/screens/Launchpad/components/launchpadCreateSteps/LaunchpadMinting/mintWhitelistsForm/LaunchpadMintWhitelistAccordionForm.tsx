@@ -13,16 +13,15 @@ import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { WhitelistsAccordion } from "@/screens/Launchpad/CreateCollection.type";
 import { neutral00, neutral22, neutral33 } from "@/utils/style/colors";
 
-export type WhitelistField = FieldArrayWithId<
+export type WhitelistsAccordionField = FieldArrayWithId<
   WhitelistsAccordion,
-  "whitelists",
-  "id"
+  "whitelists"
 >;
 
 export interface LaunchpadWhitelistsAccordionFormProps {
   networkId: string;
   control: Control<WhitelistsAccordion>;
-  elem: FieldArrayWithId<WhitelistsAccordion, "whitelists", "id">;
+  elem: WhitelistsAccordionField;
   elemIndex: number;
   closeOtherElems: (elemIndex: number) => void;
   update: UseFieldArrayUpdate<WhitelistsAccordion, "whitelists">;
@@ -35,13 +34,18 @@ export const LaunchpadMintWhitelistAccordionForm: FC<
 > = ({
   networkId,
   control,
+  update,
+  remove,
   elem,
   elemIndex,
   closeOtherElems,
-  remove,
-  update,
   setIsLoading,
 }) => {
+  const setIsOpen = (isOpen: boolean) => {
+    update(elemIndex, { ...elem, isOpen });
+    closeOtherElems(elemIndex);
+  };
+
   return (
     <PrimaryBox
       style={{
@@ -51,26 +55,22 @@ export const LaunchpadMintWhitelistAccordionForm: FC<
       }}
     >
       <LaunchpadMintWhitelistAccordionFormTop
-        networkId={networkId}
-        setIsOpen={(isOpen) => {
-          console.log("isOpenisOpen", isOpen);
-          update(elemIndex, { ...elem, isOpen });
-          if (isOpen) closeOtherElems(elemIndex);
-        }}
         control={control}
+        networkId={networkId}
+        setIsOpen={setIsOpen}
         elem={elem}
         elemIndex={elemIndex}
       />
 
       {elem.isOpen && (
         <LaunchpadMintWhitelistAccordionFormBottom
-          networkId={networkId}
           control={control}
+          networkId={networkId}
           elem={elem}
-          update={update}
           elemIndex={elemIndex}
-          remove={remove}
           setIsLoading={setIsLoading}
+          remove={remove}
+          update={update}
         />
       )}
     </PrimaryBox>

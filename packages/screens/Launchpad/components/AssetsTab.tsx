@@ -31,9 +31,6 @@ export const AssetsTab: React.FC = () => {
       style={{
         width: "100%",
         flex: 1,
-        borderBottomWidth: 1,
-        borderColor: neutral33,
-        marginBottom: 10,
       }}
     >
       <View

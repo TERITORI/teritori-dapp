@@ -1,5 +1,10 @@
-import React, { FC, Fragment, useCallback } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import React, { FC, Fragment, useCallback, useEffect, useMemo } from "react";
+import {
+  useFieldArray,
+  useForm,
+  UseFormReturn,
+  useWatch,
+} from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
 
 import addSVG from "@/assets/icons/add-secondary.svg";
@@ -9,26 +14,33 @@ import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetworkFeature, NetworkFeature } from "@/networks";
 import {
+  CollectionFormValues,
   WhitelistAccordionElem,
   WhitelistsAccordion,
 } from "@/screens/Launchpad/CreateCollection.type";
-import { LaunchpadMintWhitelistAccordionForm } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/LaunchpadMintWhitelistAccordionForm";
+import {
+  LaunchpadMintWhitelistAccordionForm,
+  WhitelistsAccordionField,
+} from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/LaunchpadMintWhitelistAccordionForm";
 import { secondaryColor } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-export const MintWhitelistsForm: FC = () => {
+export const MintWhitelistsForm: FC<{
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}> = ({ collectionForm }) => {
   const selectedWallet = useSelectedWallet();
   const networkId = selectedWallet?.networkId || "";
 
+  const whitelistMintInfos = collectionForm.watch("whitelistMintInfos");
   const { control } = useForm<WhitelistsAccordion>({
     defaultValues: {
-      whitelists: [],
+      whitelists: whitelistMintInfos || [],
     },
   });
 
   const {
-    fields: whitelists,
+    fields: defaultWhitelists,
     remove,
     append,
     update,
@@ -36,12 +48,40 @@ export const MintWhitelistsForm: FC = () => {
     control,
     name: "whitelists",
   });
+  const whitelists = useWatch({ control, name: "whitelists" });
+  const displayedWhitelists: WhitelistsAccordionField[] = useMemo(
+    () =>
+      whitelists.map((elem, index) => ({
+        ...defaultWhitelists[index],
+        ...elem,
+      })),
+    [defaultWhitelists, whitelists],
+  );
+
+  // Update collectionForm
+  useEffect(() => {
+    collectionForm.setValue("whitelistMintInfos", defaultWhitelists);
+  }, [defaultWhitelists, collectionForm]);
+
+  const closeOtherElems = useCallback(
+    (elemIndex: number) => {
+      displayedWhitelists.map((elem, index) => {
+        if (index !== elemIndex) {
+          update(index, {
+            ...elem,
+            isOpen: false,
+          });
+        }
+      });
+    },
+    [displayedWhitelists, update],
+  );
 
   const createNewWhitelist = useCallback(() => {
     // Close all elems
-    whitelists.map((whitelist, index) => {
+    displayedWhitelists.map((elem, index) => {
       update(index, {
-        ...whitelist,
+        ...elem,
         isOpen: false,
       });
     });
@@ -55,23 +95,16 @@ export const MintWhitelistsForm: FC = () => {
     }
     const newElem: WhitelistAccordionElem = {
       isOpen: true,
+      addressesCount: 0,
+      denom: "",
+      endTime: 0,
+      perAddressLimit: 0,
+      merkleRoot: "",
+      startTime: 0,
+      unitPrice: "",
     };
     append(newElem);
-  }, [append, networkId, whitelists, update]);
-
-  const closeOtherElems = useCallback(
-    (elemIndex: number) => {
-      whitelists.map((whitelist, index) => {
-        if (index !== elemIndex) {
-          update(index, {
-            ...whitelist,
-            isOpen: false,
-          });
-        }
-      });
-    },
-    [whitelists, update],
-  );
+  }, [append, networkId, displayedWhitelists, update]);
 
   return (
     <View
@@ -85,7 +118,7 @@ export const MintWhitelistsForm: FC = () => {
           width: "100%",
         }}
       >
-        {whitelists.map((elem, index) => {
+        {displayedWhitelists.map((elem, index) => {
           return (
             <Fragment key={index}>
               <SpacerColumn size={2} />
@@ -93,10 +126,8 @@ export const MintWhitelistsForm: FC = () => {
                 closeOtherElems={closeOtherElems}
                 elem={elem}
                 elemIndex={index}
+                // FIXME: remove()
                 remove={() => remove(index)}
-                // setIsLoading={(value) => {
-                //   setLoadStates((prev) => ({ ...prev, [index]: value }));
-                // }}
                 update={update}
                 networkId={networkId}
                 control={control}

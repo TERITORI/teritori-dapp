@@ -13,7 +13,7 @@ import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { useDropdowns } from "@/hooks/useDropdowns";
 import {
-  neutral17,
+  neutral22,
   neutral44,
   neutral55,
   neutral77,
@@ -30,6 +30,7 @@ interface Props {
   setItem: (item: string) => void;
   item?: string;
   label: string;
+  required?: boolean;
 }
 
 export const SelectInputLaunchpad: FC<Props> = ({
@@ -39,6 +40,7 @@ export const SelectInputLaunchpad: FC<Props> = ({
   item,
   label,
   setItem,
+  required = true,
 }) => {
   const [isDropdownOpen, setDropdownState, ref] = useDropdowns();
   const [hovered, setHovered] = useState(false);
@@ -49,7 +51,7 @@ export const SelectInputLaunchpad: FC<Props> = ({
         {
           zIndex: 1,
           width: "100%",
-          marginBottom: layout.spacing_x3,
+          marginBottom: layout.spacing_x2,
         },
         style,
       ]}
@@ -58,11 +60,11 @@ export const SelectInputLaunchpad: FC<Props> = ({
       <CustomPressable
         onHoverIn={() => setHovered(true)}
         onHoverOut={() => setHovered(false)}
-        onPress={() => setDropdownState()}
+        onPress={() => setDropdownState(!isDropdownOpen)}
       >
         <Label
-          style={{ marginBottom: layout.spacing_x1 }}
-          isRequired
+          style={{ marginBottom: layout.spacing_x1_5 }}
+          isRequired={required}
           hovered={hovered}
         >
           {label}
@@ -76,26 +78,27 @@ export const SelectInputLaunchpad: FC<Props> = ({
                 height: 40,
                 flexDirection: "row",
                 paddingHorizontal: layout.spacing_x1_5,
-                backgroundColor: neutral17,
+                backgroundColor: neutral22,
                 alignItems: "center",
               },
               hovered && { borderColor: secondaryColor },
             ]}
           >
-            <TouchableOpacity
+            <View
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
                 flex: 1,
               }}
-              activeOpacity={1}
-              onPress={() => setDropdownState()}
             >
               <BrandText
                 style={[
                   fontMedium14,
-                  { marginRight: layout.spacing_x1, color: neutral77 },
+                  {
+                    marginRight: layout.spacing_x1,
+                    color: item ? secondaryColor : neutral77,
+                  },
                 ]}
               >
                 {item ? item : placeHolder}
@@ -106,7 +109,7 @@ export const SelectInputLaunchpad: FC<Props> = ({
                 height={16}
                 color={secondaryColor}
               />
-            </TouchableOpacity>
+            </View>
           </TertiaryBox>
 
           {isDropdownOpen && (

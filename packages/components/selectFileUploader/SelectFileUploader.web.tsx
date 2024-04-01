@@ -1,5 +1,5 @@
 import React, { FC, SyntheticEvent, useRef, useState } from "react";
-import { TouchableOpacity, View, Image } from "react-native";
+import { View, Image } from "react-native";
 
 import { SelectFileUploaderProps } from "./SelectFileUploader.type";
 import { formatFile } from "./formatFile";
@@ -20,6 +20,8 @@ import { SVGorImageIcon } from "../SVG/SVGorImageIcon";
 import { PrimaryBox } from "../boxes/PrimaryBox";
 import { Label } from "../inputs/TextInputCustom";
 
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+
 export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
   label,
   style,
@@ -38,6 +40,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
 }) => {
   const { setToastError } = useFeedbacks();
   const hiddenFileInput = useRef<HTMLInputElement>(null);
+  const [hovered, setHovered] = useState(false);
   const [localFiles, setLocalFiles] = useState<LocalFileData[]>([]);
   const filesToUse = (!localFiles.length ? files : localFiles) || [];
 
@@ -123,55 +126,59 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
   }
 
   return (
-    <>
-      <View style={style}>
+    <CustomPressable
+      style={style}
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
+      onPress={handleClick}
+    >
+      <View>
         {!!label && (
           <Label
             style={{ marginBottom: layout.spacing_x1 }}
             isRequired={isRequired}
+            hovered={hovered}
           >
             {label}
           </Label>
         )}
-        <TouchableOpacity onPress={handleClick}>
-          <div
-            onDrop={dropHandler}
-            onDragOver={dragOverHandler}
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              height:
-                filesToUse.length > 0 && !multiple
-                  ? fileHeight
-                  : containerHeight,
-              borderRadius: 12,
-            }}
-          >
-            {filesToUse.length > 0 && !multiple ? (
-              <>
-                <DeleteButton
-                  onPress={() => {
-                    setLocalFiles([]);
-                    onUpload([]);
-                  }}
-                  style={{ top: 12, right: 12 }}
-                />
-                <Image
-                  source={{ uri: URL.createObjectURL(filesToUse[0].file) }}
-                  style={{
-                    overflow: "hidden",
-                    height: fileHeight,
-                    width: isImageCover ? "100%" : "auto",
-                    objectFit: isImageCover ? "cover" : "fill",
-                  }}
-                />
-              </>
-            ) : (
-              <PrimaryBox
+        <div
+          onDrop={dropHandler}
+          onDragOver={dragOverHandler}
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            height:
+              filesToUse.length > 0 && !multiple ? fileHeight : containerHeight,
+            borderRadius: 12,
+          }}
+        >
+          {filesToUse.length > 0 && !multiple ? (
+            <>
+              <DeleteButton
+                onPress={() => {
+                  setLocalFiles([]);
+                  onUpload([]);
+                }}
+                style={{ top: 12, right: 12 }}
+              />
+              <Image
+                source={{ uri: URL.createObjectURL(filesToUse[0].file) }}
                 style={{
+                  overflow: "hidden",
+                  height: fileHeight,
+                  width: isImageCover ? "100%" : "auto",
+                  objectFit: isImageCover ? "cover" : "fill",
+                }}
+              />
+            </>
+          ) : (
+            <PrimaryBox
+              style={[
+                {
                   flex: 1,
                   width: "100%",
                   height:
@@ -182,96 +189,97 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
                   padding: layout.spacing_x2_5,
                   borderRadius: 12,
                   borderWidth: 1,
-                }}
-              >
-                {filesToUse.length > 0 && multiple ? (
+                },
+                hovered && { borderColor: secondaryColor },
+              ]}
+            >
+              {filesToUse.length > 0 && multiple ? (
+                <View
+                  style={{
+                    height: "100%",
+                    width: "100%",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
                   <View
                     style={{
-                      height: "100%",
-                      width: "100%",
-                      flexDirection: "row",
                       alignItems: "center",
                       justifyContent: "center",
                     }}
                   >
-                    <View
-                      style={{
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <SVGorImageIcon
-                        icon={filesSVG}
-                        iconSize={40}
-                        style={{ tintColor: "red" }}
-                      />
-                    </View>
-                    <View>
-                      <BrandText
-                        style={[fontSemibold14, { color: secondaryColor }]}
-                      >
-                        {filesToUse.length} files selected
-                      </BrandText>
-                    </View>
-                    <input
-                      type="file"
-                      ref={hiddenFileInput}
-                      style={{ display: "none", position: "absolute" }}
-                      onChange={handleChange}
-                      multiple={multiple}
-                      accept={mimeTypes?.join(",")}
+                    <SVGorImageIcon
+                      icon={filesSVG}
+                      iconSize={40}
+                      style={{ tintColor: "red" }}
                     />
                   </View>
-                ) : (
+                  <View>
+                    <BrandText
+                      style={[fontSemibold14, { color: secondaryColor }]}
+                    >
+                      {filesToUse.length} files selected
+                    </BrandText>
+                  </View>
+                  <input
+                    type="file"
+                    ref={hiddenFileInput}
+                    style={{ display: "none", position: "absolute" }}
+                    onChange={handleChange}
+                    multiple={multiple}
+                    accept={mimeTypes?.join(",")}
+                  />
+                </View>
+              ) : (
+                <View
+                  style={{
+                    height: "100%",
+                    width: "100%",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
                   <View
                     style={{
-                      height: "100%",
-                      width: "100%",
-                      flexDirection: "row",
+                      height: 32,
+                      width: 32,
+                      borderRadius: 24,
+                      backgroundColor: neutral17,
                       alignItems: "center",
                       justifyContent: "center",
+                      marginRight: layout.spacing_x2,
                     }}
                   >
-                    <View
-                      style={{
-                        height: 32,
-                        width: 32,
-                        borderRadius: 24,
-                        backgroundColor: neutral17,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        marginRight: layout.spacing_x2,
-                      }}
-                    >
-                      <SVGorImageIcon
-                        icon={addSVG}
-                        iconSize={40}
-                        style={{ tintColor: "red" }}
-                      />
-                    </View>
-                    <View>
-                      <BrandText
-                        style={[fontSemibold14, { color: primaryColor }]}
-                      >
-                        {`Select file${multiple ? "s" : ""}`}
-                      </BrandText>
-                    </View>
-                    <input
-                      type="file"
-                      ref={hiddenFileInput}
-                      style={{ display: "none", position: "absolute" }}
-                      onChange={handleChange}
-                      multiple={multiple}
-                      accept={mimeTypes?.join(",")}
+                    <SVGorImageIcon
+                      icon={addSVG}
+                      iconSize={40}
+                      style={{ tintColor: "red" }}
                     />
                   </View>
-                )}
-              </PrimaryBox>
-            )}
-          </div>
-        </TouchableOpacity>
+                  <View>
+                    <BrandText
+                      style={[fontSemibold14, { color: primaryColor }]}
+                    >
+                      {`Select file${multiple ? "s" : ""}`}
+                    </BrandText>
+                  </View>
+                  <input
+                    type="file"
+                    ref={hiddenFileInput}
+                    style={{ display: "none", position: "absolute" }}
+                    onChange={handleChange}
+                    multiple={multiple}
+                    accept={mimeTypes?.join(",")}
+                  />
+                </View>
+              )}
+            </PrimaryBox>
+          )}
+        </div>
       </View>
       {InputComponent}
-    </>
+    </CustomPressable>
   );
 };

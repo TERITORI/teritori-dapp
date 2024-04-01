@@ -7,7 +7,6 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
-import { getNativeCurrency } from "@/networks";
 import { LaunchpadWhitelistsAccordionFormProps } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/LaunchpadMintWhitelistAccordionForm";
 import { secondaryColor } from "@/utils/style/colors";
 import { fontSemibold16 } from "@/utils/style/fonts";
@@ -15,18 +14,14 @@ import { layout } from "@/utils/style/layout";
 
 type Props = Omit<
   LaunchpadWhitelistsAccordionFormProps,
-  "remove" | "update" | "closeOtherElems"
+  "remove" | "update" | "closeOtherElems" | "collectionForm"
 > & { setIsOpen: (item: boolean) => void };
 
 export const LaunchpadMintWhitelistAccordionFormTop: FC<Props> = ({
   setIsOpen,
-  networkId,
-  control,
   elem: whitelist,
   elemIndex: whitelistIndex,
 }) => {
-  const currency = getNativeCurrency(networkId, whitelist.denom);
-
   if (whitelist.isOpen) {
     return (
       <TouchableOpacity
@@ -74,18 +69,6 @@ export const LaunchpadMintWhitelistAccordionFormTop: FC<Props> = ({
         onPress={() => setIsOpen(true)}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          {/*<OptimizedImage*/}
-          {/*  sourceURI={whitelist.imageURI}*/}
-          {/*  fallbackURI={defaultTierImage}*/}
-          {/*  style={{*/}
-          {/*    backgroundColor: "black",*/}
-          {/*    height: 48,*/}
-          {/*    width: 48,*/}
-          {/*    borderRadius: 8,*/}
-          {/*  }}*/}
-          {/*  height={48}*/}
-          {/*  width={48}*/}
-          {/*/>*/}
           <BrandText
             style={[
               fontSemibold16,

@@ -1,4 +1,3 @@
-import { WhitelistMintInfo } from "@/api/launchpad/v1/launchpad";
 import { Uint128 } from "@/contracts-clients/nft-launchpad";
 import { LocalFileData } from "@/utils/types/files";
 
@@ -13,61 +12,52 @@ export interface CollectionFormValues {
   symbol?: string;
   externalLink?: string;
   websiteLink?: string;
-  twitterProfileUrl?: string;
-  nbTwitterFollowers?: number;
-  discordName?: string;
-  email?: string;
-  projectTypes?: string[];
-  projectDescription?: string;
-  nbTokens?: number;
-  unitPrice?: Uint128;
-  perAddressLimit?: number;
-  startTime?: number;
-  teamDescription?: string;
-  teamLink?: string;
-  partnersDescription?: string;
-  investDescription?: string;
-  investLink?: string;
-  roadmapLink?: string;
-  artworkDescription?: string;
-  expectedSupply?: number;
-  expectedPublicMintPrice?: number;
-  expectedMintDate?: number;
+  twitterProfileUrl: string;
+  nbTwitterFollowers: number;
+  discordName: string;
+  email: string;
+  projectTypes: string[];
+  projectDescription: string;
+  nbTokens: number;
+  unitPrice: Uint128;
+  perAddressLimit: number;
+  startTime: number;
+  teamDescription: string;
+  teamLink: string;
+  partnersDescription: string;
+  investDescription: string;
+  investLink: string;
+  roadmapLink: string;
+  artworkDescription: string;
+  expectedSupply: number;
+  expectedPublicMintPrice: number;
+  expectedMintDate: number;
   nftApiKey?: string;
   coverImage?: LocalFileData;
-  isPreviouslyApplied?: boolean;
-  isDerivativeProject?: boolean;
-  isReadyForMint?: boolean;
-  isDox?: boolean;
-  escrowMintProceedsPeriod?: number;
-  daoWhitelistCount?: number;
-  whitelistMintInfos: WhitelistMintInfo[];
+  isPreviouslyApplied: boolean;
+  isDerivativeProject: boolean;
+  isReadyForMint: boolean;
+  isDox: boolean;
+  escrowMintProceedsPeriod: number;
+  daoWhitelistCount: number;
+  whitelistMintInfos: WhitelistAccordionElem[];
   royaltyAddress?: string;
   royaltyPercentage?: number;
 }
 
 export interface WhitelistAccordionElem {
-  addressesCount?: number;
-  denom?: string;
-  endTime?: number;
-  perAddressLimit?: number;
-  merkleRoot?: string;
-  startTime?: number;
-  unitPrice?: Uint128;
+  addressesCount: number;
+  denom: string;
+  endTime: number;
+  perAddressLimit: number;
+  merkleRoot: string;
+  startTime: number;
+  unitPrice: Uint128;
   isOpen: boolean;
 }
 
 export type WhitelistsAccordion = { whitelists: WhitelistAccordionElem[] };
 
-export interface CreateCollectionWhitelist {
-  addressesCount?: number;
-  denom?: string;
-  endTime?: number;
-  perAddressLimit?: number;
-  merkleRoot?: string;
-  startTime?: number;
-  unitPrice?: Uint128;
-}
 export interface NewCollectionAssetsFormValues {
   nftApiKey?: string;
 }
