@@ -9,7 +9,7 @@ import { SpacerRow } from "../spacer";
 import { Username } from "../user/Username";
 
 import defaultThumbnailImage from "@/assets/default-images/default-track-thumbnail.png";
-import defaultVideoThumbnail from "@/assets/default-images/default-video-thumbnail.png";
+import defaultVideoThumbnail from "@/assets/default-images/default-video-thumbnail.webp";
 import { usePost } from "@/hooks/feed/usePost";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import { neutral77 } from "@/utils/style/colors";

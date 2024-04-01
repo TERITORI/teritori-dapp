@@ -9,7 +9,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-import defaultThumbnailImage from "../../../assets/default-images/default-video-thumbnail.png";
+import defaultThumbnailImage from "../../../assets/default-images/default-video-thumbnail.webp";
 import { Post } from "../../api/feed/v1/feed";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";

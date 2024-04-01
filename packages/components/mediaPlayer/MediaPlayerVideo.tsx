@@ -25,7 +25,7 @@ import { SVG } from "../SVG";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
-import defaultThumbnailImage from "@/assets/default-images/default-video-thumbnail.png";
+import defaultThumbnailImage from "@/assets/default-images/default-video-thumbnail.webp";
 import FullScreenIcon from "@/assets/icons/media-player/full-screen.svg";
 import NextIcon from "@/assets/icons/media-player/next.svg";
 import PauseIcon from "@/assets/icons/pause.svg";
