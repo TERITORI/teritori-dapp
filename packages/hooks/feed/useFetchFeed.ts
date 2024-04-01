@@ -36,7 +36,6 @@ const fetchTeritoriFeed = async (
   const feedClient = mustGetFeedClient(selectedNetwork.id);
   const response = await feedClient.Posts(postsRequest);
   const list = response.posts.sort((a, b) => b.createdAt - a.createdAt);
-  console.log("fetchTeritoriFeed", list);
   return { list, totalCount: undefined };
 };
 
