@@ -24,12 +24,18 @@ type Props = {
   clearReplyTo: () => void;
 };
 
+const MINIMUN_TEXT_INPUT_HEIGHT = 40;
+const TEXT_INPUT_VERTICAL_PADDING = 8;
+
 export const ChatInput = ({ conversationId, replyTo, clearReplyTo }: Props) => {
   const { width: windowWidth } = useWindowDimensions();
   const [newMessage, setNewMessage] = useState("");
   const [inputRef, setInputRef] = useState<RefObject<any> | null>(null);
   const [files, setFiles] = useState<Asset[] | null>(null);
   const [sendingMessage, setSendingMessage] = useState(false);
+  const [textInputHeight, setTextInputHeight] = useState(
+    MINIMUN_TEXT_INPUT_HEIGHT,
+  );
 
   const onNewMessageChange = (text: string) => {
     setNewMessage(text);
@@ -158,8 +164,21 @@ export const ChatInput = ({ conversationId, replyTo, clearReplyTo }: Props) => {
             setRef={setInputRef}
             value={newMessage}
             onChangeText={onNewMessageChange}
-            style={{ paddingVertical: layout.spacing_x1 }}
-            inputStyle={[fontMedium16, { color: neutral77, lineHeight: 0 }]}
+            style={{
+              paddingVertical: 0,
+
+              height: textInputHeight,
+            }}
+            inputStyle={[fontMedium16, { color: neutral77, lineHeight: 18 }]}
+            onContentSizeChange={(event) => {
+              const height = event.nativeEvent.contentSize.height;
+              setTextInputHeight(
+                TEXT_INPUT_VERTICAL_PADDING +
+                  (MINIMUN_TEXT_INPUT_HEIGHT > height
+                    ? MINIMUN_TEXT_INPUT_HEIGHT
+                    : height),
+              );
+            }}
             numberOfLines={6}
             multiline
             autoFocus
