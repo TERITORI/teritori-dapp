@@ -24,8 +24,12 @@ type Props = {
   clearReplyTo: () => void;
 };
 
-const MINIMUN_TEXT_INPUT_HEIGHT = 40;
+const MIN_TEXT_INPUT_HEIGHT = 40;
+const LINE_HEIGHT = 20;
+const NUMBER_OF_LINES = 6;
 const TEXT_INPUT_VERTICAL_PADDING = 8;
+const MAX_TEXT_INPUT_HEIGHT =
+  LINE_HEIGHT * NUMBER_OF_LINES + TEXT_INPUT_VERTICAL_PADDING;
 
 export const ChatInput = ({ conversationId, replyTo, clearReplyTo }: Props) => {
   const { width: windowWidth } = useWindowDimensions();
@@ -33,9 +37,7 @@ export const ChatInput = ({ conversationId, replyTo, clearReplyTo }: Props) => {
   const [inputRef, setInputRef] = useState<RefObject<any> | null>(null);
   const [files, setFiles] = useState<Asset[] | null>(null);
   const [sendingMessage, setSendingMessage] = useState(false);
-  const [textInputHeight, setTextInputHeight] = useState(
-    MINIMUN_TEXT_INPUT_HEIGHT,
-  );
+  const [textInputHeight, setTextInputHeight] = useState(MIN_TEXT_INPUT_HEIGHT);
 
   const onNewMessageChange = (text: string) => {
     setNewMessage(text);
@@ -169,17 +171,22 @@ export const ChatInput = ({ conversationId, replyTo, clearReplyTo }: Props) => {
 
               height: textInputHeight,
             }}
-            inputStyle={[fontMedium16, { color: neutral77, lineHeight: 18 }]}
+            inputStyle={[
+              fontMedium16,
+              { color: neutral77, lineHeight: LINE_HEIGHT },
+            ]}
             onContentSizeChange={(event) => {
               const height = event.nativeEvent.contentSize.height;
               setTextInputHeight(
                 TEXT_INPUT_VERTICAL_PADDING +
-                  (MINIMUN_TEXT_INPUT_HEIGHT > height
-                    ? MINIMUN_TEXT_INPUT_HEIGHT
-                    : height),
+                  (MIN_TEXT_INPUT_HEIGHT > height
+                    ? MIN_TEXT_INPUT_HEIGHT
+                    : height > MAX_TEXT_INPUT_HEIGHT
+                      ? MAX_TEXT_INPUT_HEIGHT
+                      : height),
               );
             }}
-            numberOfLines={6}
+            numberOfLines={NUMBER_OF_LINES}
             multiline
             autoFocus
             onSubmitEditing={() => {
