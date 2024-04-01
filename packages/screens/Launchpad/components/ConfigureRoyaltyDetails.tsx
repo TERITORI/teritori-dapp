@@ -7,6 +7,7 @@ import { CollectionFormValues } from "../CreateCollection.type";
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
+import { patternOnlyNumbers } from "@/utils/formRules";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -43,7 +44,7 @@ export const ConfigureRoyaltyDetails: React.FC<{
       />
 
       <TextInputLaunchpad<CollectionFormValues>
-        rules={{ required: false }}
+        rules={{ required: false, pattern: patternOnlyNumbers }}
         label="Share Percentage "
         placeHolder="8%"
         name="royaltyPercentage"

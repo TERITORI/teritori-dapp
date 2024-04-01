@@ -8,6 +8,7 @@ import { SelectInputLaunchpad } from "../inputs/selectInputs/SelectInputLaunchpa
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
+import { patternOnlyNumbers } from "@/utils/formRules";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -90,8 +91,10 @@ export const LaunchpadAdditional: React.FC<{
           placeHolder="0"
           name="expectedPublicMintPrice"
           control={collectionForm.control}
+          rules={{ pattern: patternOnlyNumbers }}
         />
 
+        {/*TODO: Control, format ?*/}
         <TextInputLaunchpad<CollectionFormValues>
           label="What is your expected mint date? "
           placeHolder="dd.mm.yyyy | hh:mm PM"
@@ -129,6 +132,7 @@ export const LaunchpadAdditional: React.FC<{
           placeHolder="0"
           name="daoWhitelistCount"
           control={collectionForm.control}
+          rules={{ pattern: patternOnlyNumbers }}
         />
       </View>
     </View>

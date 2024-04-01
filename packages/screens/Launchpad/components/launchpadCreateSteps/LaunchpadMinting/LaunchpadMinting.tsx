@@ -10,6 +10,7 @@ import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { MintWhitelistsForm } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/MintWhitelistsForm";
+import { patternOnlyNumbers } from "@/utils/formRules";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -42,6 +43,7 @@ export const LaunchpadMinting: React.FC<{
           placeHolder="0"
           name="nbTokens"
           control={collectionForm.control}
+          rules={{ pattern: patternOnlyNumbers }}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -56,10 +58,20 @@ export const LaunchpadMinting: React.FC<{
           placeHolder="0"
           name="unitPrice"
           control={collectionForm.control}
+          rules={{ pattern: patternOnlyNumbers }}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
           label="Per Address Limit "
+          placeHolder="0"
+          name="perAddressLimit"
+          control={collectionForm.control}
+          rules={{ pattern: patternOnlyNumbers }}
+        />
+
+        {/*TODO: Control, format ?*/}
+        <TextInputLaunchpad<CollectionFormValues>
+          label="Start Time "
           sublabel={
             <View>
               <BrandText style={[fontSemibold13, { color: neutral55 }]}>
@@ -67,13 +79,6 @@ export const LaunchpadMinting: React.FC<{
               </BrandText>
             </View>
           }
-          placeHolder="0"
-          name="perAddressLimit"
-          control={collectionForm.control}
-        />
-
-        <TextInputLaunchpad<CollectionFormValues>
-          label="Start Time "
           placeHolder="--.--.---- --:--"
           name="startTime"
           control={collectionForm.control}

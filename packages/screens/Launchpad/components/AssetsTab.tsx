@@ -4,10 +4,10 @@ import { SafeAreaView, View } from "react-native";
 
 import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
 import { MetadataUpdateModal } from "./modals/MetadataUpdateModal";
+import { SelectFileUploader } from "../../../components/inputs/selectFileUploader";
 import { NewCollectionAssetsFormValues } from "../CreateCollection.type";
 
 import { SelectedFilesPreview } from "@/components/FilePreview/SelectedFilesPreview/SelectedFilesPreview";
-import { SelectFileUploader } from "@/components/selectFileUploader";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { neutral33 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";

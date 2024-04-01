@@ -3,8 +3,7 @@ import { TouchableOpacity, View } from "react-native";
 
 import { FileUploaderProps } from "./FileUploader.type";
 import { formatFile } from "./formatFile";
-import uploadSVG from "../../../assets/icons/upload.svg";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import {
   gradientColorBlue,
   gradientColorDarkerBlue,
@@ -12,15 +11,17 @@ import {
   neutral17,
   neutral77,
   withAlpha,
-} from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { BrandText } from "../BrandText";
-import { DeleteButton } from "../FilePreview/DeleteButton";
-import { SVG } from "../SVG";
-import { LegacyPrimaryBox } from "../boxes/LegacyPrimaryBox";
-import { GradientText } from "../gradientText";
-import { Label } from "../inputs/TextInputCustom";
+} from "../../../utils/style/colors";
+import { fontSemibold14 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { BrandText } from "../../BrandText";
+import { DeleteButton } from "../../FilePreview/DeleteButton";
+import { SVG } from "../../SVG";
+import { LegacyPrimaryBox } from "../../boxes/LegacyPrimaryBox";
+import { GradientText } from "../../gradientText";
+import { Label } from "../TextInputCustom";
+
+import uploadSVG from "@/assets/icons/upload.svg";
 
 export const FileUploader: FC<FileUploaderProps> = ({
   label,

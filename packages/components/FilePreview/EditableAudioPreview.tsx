@@ -26,7 +26,7 @@ import { LocalFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
-import { FileUploader } from "../fileUploader";
+import { FileUploader } from "../inputs/fileUploader";
 import { SelectPicture } from "../mini/SelectPicture";
 
 interface AudioPreviewProps {

@@ -2,14 +2,15 @@ import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
+import { SelectFileUploader } from "../../../../components/inputs/selectFileUploader";
 import { CollectionFormValues } from "../../CreateCollection.type";
 
 import { BrandText } from "@/components/BrandText";
 import { NetworkSelectorWithLabel } from "@/components/NetworkSelector/NetworkSelectorWithLabel";
-import { SelectFileUploader } from "@/components/selectFileUploader";
 import { SpacerColumn } from "@/components/spacer";
 import { NetworkFeature } from "@/networks";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
+import { patternOnlyUrl } from "@/utils/formRules";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "@/utils/social-feed";
 import { neutral77, primaryColor } from "@/utils/style/colors";
@@ -95,6 +96,7 @@ export const LaunchpadBasic: React.FC<{
           placeHolder="https://collection..."
           name="externalLink"
           control={collectionForm.control}
+          rules={{ pattern: patternOnlyUrl }}
         />
 
         <NetworkSelectorWithLabel

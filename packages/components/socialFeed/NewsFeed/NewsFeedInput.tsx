@@ -25,7 +25,7 @@ import { OmniLink } from "../../OmniLink";
 import { SVG } from "../../SVG";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
-import { FileUploader } from "../../fileUploader";
+import { FileUploader } from "../../inputs/fileUploader";
 import { FeedPostingProgressBar } from "../../loaders/FeedPostingProgressBar";
 import { SpacerColumn } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";

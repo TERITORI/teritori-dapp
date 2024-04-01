@@ -9,7 +9,11 @@ import { SelectInputLaunchpad } from "../inputs/selectInputs/SelectInputLaunchpa
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
-import { patternOnlyEmail } from "@/utils/formRules";
+import {
+  patternOnlyEmail,
+  patternOnlyNumbers,
+  patternOnlyUrl,
+} from "@/utils/formRules";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -39,7 +43,7 @@ export const LaunchpadDetails: React.FC<{
           placeHolder="https://website..."
           name="websiteLink"
           control={collectionForm.control}
-          rules={{ required: false }}
+          rules={{ required: false, pattern: patternOnlyUrl }}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -47,6 +51,7 @@ export const LaunchpadDetails: React.FC<{
           placeHolder="https://twitter..."
           name="twitterProfileUrl"
           control={collectionForm.control}
+          rules={{ pattern: patternOnlyUrl }}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -54,6 +59,7 @@ export const LaunchpadDetails: React.FC<{
           placeHolder="10,000"
           name="nbTwitterFollowers"
           control={collectionForm.control}
+          rules={{ pattern: patternOnlyNumbers }}
         />
 
         <TextInputLaunchpad<CollectionFormValues>

@@ -1,16 +1,15 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 
 import trashSVG from "@/assets/icons/trash.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
-import { SelectFileUploader } from "@/components/selectFileUploader";
+import { CsvTextFileUploader } from "@/components/inputs/CsvTextFileUploader";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { LaunchpadWhitelistsAccordionFormProps } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/LaunchpadMintWhitelistAccordionForm";
-import { IMAGE_MIME_TYPES } from "@/utils/mime";
-import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "@/utils/social-feed";
+import { patternOnlyNumbers } from "@/utils/formRules";
 import { errorColor, neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -18,7 +17,6 @@ import {
   fontSemibold20,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { LocalFileData } from "@/utils/types/files";
 
 type Props = Omit<
   LaunchpadWhitelistsAccordionFormProps,
@@ -30,15 +28,14 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
   elemIndex: whitelistIndex,
   remove,
 }) => {
+  // TODO: control.setValues("???", whitelistAddresses)
+  const [whitelistAddresses, setWhitelistAddresses] = useState<string[]>([]);
+
   const unitPriceKey = `whitelists.${whitelistIndex}.unitPrice` as const;
   const startTimeKey = `whitelists.${whitelistIndex}.startTime` as const;
   const endTimeKey = `whitelists.${whitelistIndex}.endTime` as const;
   const perAddressLimitKey =
     `whitelists.${whitelistIndex}.perAddressLimit` as const;
-
-  const onUploadWhitelistFile = (files: LocalFileData[]) => {
-    // TODO: Parse addresses from the TXT file and collectionForm.setValue("whitelistAddresses", blabla)
-  };
 
   return (
     <View
@@ -61,6 +58,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
           </View>
         }
         control={control}
+        rules={{ pattern: patternOnlyNumbers }}
       />
 
       <TextInputLaunchpad
@@ -75,6 +73,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
           </View>
         }
         control={control}
+        rules={{ pattern: patternOnlyNumbers }}
       />
 
       <TextInputLaunchpad
@@ -89,6 +88,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
           </View>
         }
         control={control}
+        rules={{ pattern: patternOnlyNumbers }}
       />
 
       <TextInputLaunchpad
@@ -103,29 +103,25 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
           </View>
         }
         control={control}
+        rules={{ pattern: patternOnlyNumbers }}
       />
 
       <Separator />
       <SpacerColumn size={2} />
-      <BrandText style={fontSemibold20}>Whitelist File</BrandText>
+      <BrandText style={fontSemibold20}>Whitelist Addresses</BrandText>
       <SpacerColumn size={1} />
       <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-        TXT file that contains the whitelisted addresses
+        Select a TXT or CSV file that contains the whitelisted addresses (One
+        address per line)
       </BrandText>
-      <SpacerColumn size={2} />
 
-      <SelectFileUploader
-        label="Select file"
-        fileHeight={ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT}
-        isImageCover
-        style={{
-          marginBottom: layout.spacing_x2,
-        }}
-        containerHeight={48}
-        onUpload={onUploadWhitelistFile}
-        mimeTypes={IMAGE_MIME_TYPES}
+      <SpacerColumn size={2} />
+      <CsvTextFileUploader
+        rows={whitelistAddresses}
+        setRows={setWhitelistAddresses}
       />
 
+      <SpacerColumn size={2} />
       <Separator />
       <SpacerColumn size={2} />
 

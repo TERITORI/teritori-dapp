@@ -3,23 +3,23 @@ import { View, Image } from "react-native";
 
 import { SelectFileUploaderProps } from "./SelectFileUploader.type";
 import { formatFile } from "./formatFile";
-import addSVG from "../../../assets/icons/add-circle.svg";
-import filesSVG from "../../../assets/icons/files.svg";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
+import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import {
   neutral17,
   primaryColor,
   secondaryColor,
-} from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { LocalFileData } from "../../utils/types/files";
-import { BrandText } from "../BrandText";
-import { DeleteButton } from "../FilePreview/DeleteButton";
-import { SVGorImageIcon } from "../SVG/SVGorImageIcon";
-import { PrimaryBox } from "../boxes/PrimaryBox";
-import { Label } from "../inputs/TextInputCustom";
+} from "../../../utils/style/colors";
+import { fontSemibold14 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { LocalFileData } from "../../../utils/types/files";
+import { BrandText } from "../../BrandText";
+import { DeleteButton } from "../../FilePreview/DeleteButton";
+import { SVGorImageIcon } from "../../SVG/SVGorImageIcon";
+import { PrimaryBox } from "../../boxes/PrimaryBox";
+import { Label } from "../TextInputCustom";
 
+import addSVG from "@/assets/icons/add-circle.svg";
+import filesSVG from "@/assets/icons/files.svg";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 
 export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
@@ -31,6 +31,7 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
   multiple,
   mimeTypes,
   children,
+  resultChildren,
   maxUpload,
   isImageCover,
   fileHeight = 256,
@@ -157,24 +158,36 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
           }}
         >
           {filesToUse.length > 0 && !multiple ? (
-            <>
-              <DeleteButton
-                onPress={() => {
-                  setLocalFiles([]);
-                  onUpload([]);
-                }}
-                style={{ top: 12, right: 12 }}
-              />
-              <Image
-                source={{ uri: URL.createObjectURL(filesToUse[0].file) }}
-                style={{
-                  overflow: "hidden",
-                  height: fileHeight,
-                  width: isImageCover ? "100%" : "auto",
-                  objectFit: isImageCover ? "cover" : "fill",
-                }}
-              />
-            </>
+            resultChildren ? (
+              <>
+                <DeleteButton
+                  onPress={() => {
+                    setLocalFiles([]);
+                    onUpload([]);
+                  }}
+                />
+                {resultChildren({ onPress: handleClick })}
+              </>
+            ) : (
+              <>
+                <DeleteButton
+                  onPress={() => {
+                    setLocalFiles([]);
+                    onUpload([]);
+                  }}
+                  style={{ top: 12, right: 12 }}
+                />
+                <Image
+                  source={{ uri: URL.createObjectURL(filesToUse[0].file) }}
+                  style={{
+                    overflow: "hidden",
+                    height: fileHeight,
+                    width: isImageCover ? "100%" : "auto",
+                    objectFit: isImageCover ? "cover" : "fill",
+                  }}
+                />
+              </>
+            )
           ) : (
             <PrimaryBox
               style={[
