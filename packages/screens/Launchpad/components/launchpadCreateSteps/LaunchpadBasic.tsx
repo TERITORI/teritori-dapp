@@ -2,7 +2,7 @@ import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
-import { CreateCollectionFormValues } from "../../CreateCollection.type";
+import { CollectionFormValues } from "../../CreateCollection.type";
 import { TextInputLaunchpadRequired } from "../inputs/TextInputLaunchpadRequired";
 
 import { BrandText } from "@/components/BrandText";
@@ -19,7 +19,7 @@ import { layout } from "@/utils/style/layout";
 import { LocalFileData } from "@/utils/types/files";
 
 export const LaunchpadBasic: React.FC<{
-  createCollectionForm: UseFormReturn<CreateCollectionFormValues>;
+  createCollectionForm: UseFormReturn<CollectionFormValues>;
   onChangeCoverImage: (file: LocalFileData) => void;
 }> = ({ createCollectionForm, onChangeCoverImage }) => {
   const coverImage = createCollectionForm.watch("coverImage");
@@ -66,7 +66,7 @@ export const LaunchpadBasic: React.FC<{
         {/*  rules={{ required: true }}*/}
         {/*/>*/}
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           label="Name"
           placeHolder="My Awesome Collection"
           name="name"
@@ -80,7 +80,7 @@ export const LaunchpadBasic: React.FC<{
           }}
         />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           label="Description"
           placeHolder="My Awesome Collection Description"
           name="description"
@@ -88,7 +88,7 @@ export const LaunchpadBasic: React.FC<{
           // control={control}
         />
 
-        <TextInputLaunchpadRequired<CreateCollectionFormValues>
+        <TextInputLaunchpadRequired<CollectionFormValues>
           label="Symbol"
           placeHolder="Symbol"
           name="symbol"
@@ -118,7 +118,7 @@ export const LaunchpadBasic: React.FC<{
         {/*  )}*/}
         {/*</SelectFileUploader>*/}
 
-        <TextInputLaunchpad<CreateCollectionFormValues>
+        <TextInputLaunchpad<CollectionFormValues>
           label="External Link"
           placeHolder="https://collection..."
           name="externalLink"

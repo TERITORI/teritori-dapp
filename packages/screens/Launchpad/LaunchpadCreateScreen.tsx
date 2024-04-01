@@ -9,13 +9,13 @@ import { SecondaryButton } from "@/components/buttons/SecondaryButton";
 import { SpacerColumn } from "@/components/spacer";
 import { useCreateCollection } from "@/hooks/launchpad/useCreateCollection";
 import { NetworkFeature } from "@/networks";
-import { CreateCollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
+import { CollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
 import { LaunchpadSteper } from "@/screens/Launchpad/components/LaunchpadSteper";
 import { LaunchpadAdditional } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadAdditional";
 import { LaunchpadAssetsAndMetadata } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadAssetsAndMetadata";
 import { LaunchpadBasic } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadBasic";
 import { LaunchpadDetails } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadDetails";
-import { LaunchpadMinting } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting";
+import { LaunchpadMinting } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/LaunchpadMinting";
 import { LaunchpadTeamAndInvestment } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadTeamAndInvestment";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral33 } from "@/utils/style/colors";
@@ -24,7 +24,7 @@ import { LocalFileData } from "@/utils/types/files";
 
 const StepContent: FC<{
   step: number;
-  createCollectionForm: UseFormReturn<CreateCollectionFormValues>;
+  createCollectionForm: UseFormReturn<CollectionFormValues>;
   onChangeCoverImage: (file: LocalFileData) => void;
 }> = ({ step, createCollectionForm, onChangeCoverImage }) => {
   switch (step) {
@@ -71,22 +71,21 @@ const stepOptions = [
 
 export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const navigation = useAppNavigation();
-  const createCollectionForm = useForm<CreateCollectionFormValues>({
+  const createCollectionForm = useForm<CollectionFormValues>({
     mode: "all",
   });
-  const createCollection = useCreateCollection();
+  const { createCollection } = useCreateCollection();
   const [coverImage, setCoverImage] = useState<LocalFileData>();
   const [selectedStep, setSelectedStep] = useState(1);
   const [isLoading, setLoading] = useState(false);
 
   const onSubmit = async () => {
     setLoading(true);
-
     try {
       await createCollection(createCollectionForm.getValues());
       setLoading(false);
     } catch (e) {
-      console.error("Error creating a NFT collection");
+      console.error("Error creating a NFT collection", e);
       setLoading(false);
     }
     setTimeout(() => {
@@ -163,11 +162,13 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
                 text="Submit"
                 loader
                 isLoading={isLoading}
-                disabled={
-                  !createCollectionForm.formState.isValid || !coverImage
-                }
+                // TODO: Uncomment after form finish
+                // disabled={
+                //   !createCollectionForm.formState.isValid || !coverImage
+                // }
                 onPress={() => {
-                  createCollectionForm.handleSubmit(onSubmit);
+                  onSubmit();
+                  // createCollectionForm.handleSubmit(onSubmit);
                 }}
               />
             ) : (

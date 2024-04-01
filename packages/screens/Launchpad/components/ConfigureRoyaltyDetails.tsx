@@ -2,7 +2,7 @@ import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
-import { CreateCollectionFormValues } from "../CreateCollection.type";
+import { CollectionFormValues } from "../CreateCollection.type";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
@@ -15,7 +15,7 @@ import {
 } from "@/utils/style/fonts";
 
 export const ConfigureRoyaltyDetails: React.FC<{
-  createCollectionForm: UseFormReturn<CreateCollectionFormValues>;
+  createCollectionForm: UseFormReturn<CollectionFormValues>;
 }> = ({ createCollectionForm }) => {
   return (
     <View style={{ maxWidth: 416 }}>
@@ -27,7 +27,7 @@ export const ConfigureRoyaltyDetails: React.FC<{
       </BrandText>
       <SpacerColumn size={2} />
 
-      <TextInputLaunchpadRequired<CreateCollectionFormValues>
+      <TextInputLaunchpadRequired<CollectionFormValues>
         label="Payment Address "
         placeHolder="teritori123456789qwertyuiopasdfghjklzxcvbnm"
         name="royaltyAddress"
@@ -41,7 +41,7 @@ export const ConfigureRoyaltyDetails: React.FC<{
         control={createCollectionForm.control}
       />
 
-      <TextInputLaunchpadRequired<CreateCollectionFormValues>
+      <TextInputLaunchpadRequired<CollectionFormValues>
         label="Share Percentage "
         placeHolder="8%"
         name="royaltyPercentage"

@@ -8,7 +8,7 @@ import { UriTab } from "../UriTab";
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
-import { CreateCollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
+import { CollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
 import { neutral77, primaryColor } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 
@@ -22,7 +22,7 @@ const AssetsAndMetadataTabItems = {
 };
 
 export const LaunchpadAssetsAndMetadata: React.FC<{
-  createCollectionForm: UseFormReturn<CreateCollectionFormValues>;
+  createCollectionForm: UseFormReturn<CollectionFormValues>;
 }> = ({ createCollectionForm }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof AssetsAndMetadataTabItems>("assets");
