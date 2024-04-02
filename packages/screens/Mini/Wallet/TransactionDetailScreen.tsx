@@ -1,4 +1,5 @@
 import { capitalize } from "lodash";
+import React from "react";
 import { Linking, useWindowDimensions, View } from "react-native";
 
 import teritoriCircleSVG from "../../../../assets/icons/tori-circle.svg";
@@ -13,9 +14,11 @@ import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
 import { SpacerColumn } from "@/components/spacer";
+import { getTxInfo } from "@/components/tx/getTxInfo";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { useGetAssets } from "@/hooks/wallet/useGetAssets";
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
+import { getNetwork } from "@/networks";
 import { prettyPrice } from "@/utils/coins";
 import { ScreenFC } from "@/utils/navigation";
 import { blueDefault, neutral77 } from "@/utils/style/colors";
@@ -94,7 +97,7 @@ const formatTx = (
   return formattedTx;
 };
 
-const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
+export const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
   navigation,
   route,
 }) => {
@@ -116,6 +119,14 @@ const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
   const selectedToken = assets.find((asset) => asset.denom === amount.denom);
   const resolvedType = resolveTxType(route.params, selectedWallet?.address);
 
+  // let content;
+  // const { MessagePreview } = getTxInfo(
+  //   [message],
+  //   navigation,
+  //   getNetwork(networkId),
+  // );
+  // content = <MessagePreview />;
+
   return (
     <ScreenContainer
       headerMini={
@@ -135,6 +146,7 @@ const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
       footerChildren={null}
       noScroll
     >
+      {/*{content}*/}
       <View
         style={{
           flex: 1,
