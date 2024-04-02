@@ -25,17 +25,21 @@ export const QRCodeScannerModal = ({
 
   const onCodeScanned = useCallback(
     (codes: Code[]) => {
+      if (codes.length === 0) {
+        return;
+      }
       const data = codes[0]?.value;
-
       if (
         typeof data === "string" &&
         data.startsWith("https://app.teritori.com/")
       ) {
         onClose(data);
       } else {
+        onClose();
+
         setToast({
-          mode: "normal",
-          title: "QR Error",
+          mode: "mini",
+          type: "info",
           message: "QR is not of Teritori",
         });
       }
