@@ -36,7 +36,6 @@ var (
 	weshDir        = "./temp/wesh-dir/4242"
 	opts           weshnet.Opts
 	httpServer     http.Server
-	stopHTTPServer chan struct{}
 	wrappedServer  *grpcweb.WrappedGrpcServer
 	ds             *badger.Datastore
 	tinderDriver   *tinder.Service
@@ -306,20 +305,8 @@ type BootParams struct {
 func BootWesh(path string) {
 	weshDir = path
 	log.Println("weshnet: Boot Wesh: weshDir", weshDir)
-
 	CreateWrappedServer()
-	// Create a channel to synchronize the completion of StartHTTPServer
-	startHTTPServerDone := make(chan struct{})
-
-	// Start the HTTP server in a goroutine
-	go func() {
-		defer close(startHTTPServerDone)
-		log.Println(("starting from go rountine"))
-		StartHTTPServer()
-	}()
-
-	// Wait for StartHTTPServer to complete
-	<-startHTTPServerDone
+	go StartHTTPServer()
 }
 
 func HandleExit() error {
