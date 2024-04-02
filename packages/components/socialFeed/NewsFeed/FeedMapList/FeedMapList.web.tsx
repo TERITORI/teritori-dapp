@@ -74,8 +74,12 @@ const FeedMapList: React.FC<FeedMapListProps> = ({ style }) => {
           iconCreateFunction={createClusterCustomIcon}
         >
           {/* Mapping through the markers */}
-          {markers.map((marker) => (
-            <Marker position={marker.position} icon={getIcon(marker.type)}>
+          {markers.map((marker, index) => (
+            <Marker
+              position={marker.position}
+              icon={getIcon(marker.type)}
+              key={index}
+            >
               <Popup>{marker.popUp}</Popup>
             </Marker>
           ))}
