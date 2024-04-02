@@ -62,7 +62,14 @@ export const QRCodeScannerModal = ({
   }, [cameraPermissionStatus, requestCameraPermission]);
 
   return (
-    <ModalBase label="Scan QR" onClose={onClose} visible width={width}>
+    <ModalBase
+      label="Scan QR"
+      onClose={() => {
+        onClose();
+      }}
+      visible
+      width={width}
+    >
       <View
         style={{
           height: height - 180,
@@ -70,7 +77,7 @@ export const QRCodeScannerModal = ({
         }}
       >
         <>
-          {device !== undefined && (
+          {device !== undefined && cameraPermissionStatus === "granted" && (
             <Camera
               isActive
               device={device}
