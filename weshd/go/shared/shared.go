@@ -306,22 +306,7 @@ func BootWesh(path string) {
 	weshDir = path
 	log.Println("weshnet: Boot Wesh: weshDir", weshDir)
 	CreateWrappedServer()
-	if runtime.GOOS == "android" {
-
-		go StartHTTPServer()
-	} else {
-		 
-	startHTTPServerDone := make(chan struct{})
- 
-	go func() {
-		defer close(startHTTPServerDone)
-		 
-		StartHTTPServer()
-	}()
-
-	<-startHTTPServerDone
-
-	}
+	go StartHTTPServer()
 }
 
 func HandleExit() error {
