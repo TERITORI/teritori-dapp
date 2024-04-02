@@ -30,7 +30,7 @@ const config = {
         ITSAppUsesNonExemptEncryption: false,
         UIBackgroundModes: ["audio"],
       },
-      associatedDomains: ["applinks:app.teritori.com"],
+      // associatedDomains: ["applinks:app.teritori.com"], FIXME: when adding this ios is not build but it is needed for deep linking
     },
     android: {
       package: "com.teritori",
