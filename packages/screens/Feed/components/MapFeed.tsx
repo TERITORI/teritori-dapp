@@ -13,22 +13,18 @@ const MapView = Platform.select({
     lazy(
       () =>
         import(
-          "../../../components/socialFeed/NewsFeed/MapComponent/FeedMapList.native"
+          "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.native"
         ),
     ),
   web: () =>
     lazy(
       () =>
-        import(
-          "../../../components/socialFeed/NewsFeed/MapComponent/FeedMapList.web"
-        ),
+        import("@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.web"),
     ),
   default: () =>
     lazy(
       () =>
-        import(
-          "../../../components/socialFeed/NewsFeed/MapComponent/FeedMapList.web"
-        ),
+        import("@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.web"),
     ),
 })();
 

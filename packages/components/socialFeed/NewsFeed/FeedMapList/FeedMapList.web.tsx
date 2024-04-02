@@ -1,10 +1,12 @@
 import L, { DivIcon, Icon, LatLngExpression, Point } from "leaflet";
 import React from "react";
-import "./styles.css";
+import "../../modals/MapModal/styles.css";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
+
+import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
 
 interface MarkerPopup {
   position: LatLngExpression;
@@ -54,9 +56,7 @@ const markers: MarkerPopup[] = [
   },
 ];
 
-const FeedMapList: React.FC<{
-  style?: StyleProp<ViewStyle>;
-}> = ({ style }) => {
+const FeedMapList: React.FC<FeedMapListProps> = ({ style }) => {
   return (
     <View style={[containerCStyle, style]}>
       <MapContainer

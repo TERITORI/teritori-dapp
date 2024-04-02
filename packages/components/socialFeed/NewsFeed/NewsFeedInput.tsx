@@ -11,7 +11,6 @@ import { LatLng } from "react-native-leaflet-view";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
-import { MapModal } from "./MapModal";
 import audioSVG from "../../../../assets/icons/audio.svg";
 import cameraSVG from "../../../../assets/icons/camera.svg";
 import penSVG from "../../../../assets/icons/pen.svg";
@@ -30,6 +29,7 @@ import { FeedPostingProgressBar } from "../../loaders/FeedPostingProgressBar";
 import { SpacerColumn } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
+import { MapModal } from "../modals/MapModal/MapModal";
 
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import ToggleButton from "@/components/buttons/ToggleButton";

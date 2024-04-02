@@ -1,6 +1,9 @@
+import { FC } from "react";
 import { LatLng, LeafletView } from "react-native-leaflet-view";
 
-const MapMobile = ({ locationSelected }: { locationSelected: LatLng }) => {
+import { MapProps } from "@/components/socialFeed/modals/MapModal/Map.types";
+
+const Map: FC<MapProps> = ({ locationSelected }) => {
   const DEFAULT_COORDINATE: LatLng = {
     lat: locationSelected[0],
     lng: locationSelected[1],
@@ -27,4 +30,4 @@ const MapMobile = ({ locationSelected }: { locationSelected: LatLng }) => {
   );
 };
 
-export default MapMobile;
+export default Map;

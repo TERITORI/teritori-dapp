@@ -8,25 +8,28 @@ import React, {
 import { Platform, View, ViewStyle } from "react-native";
 import { LatLng } from "react-native-leaflet-view";
 
-import { AddressSearch } from "./MapComponent/AddressSearch";
-import { MapDescriptionInput } from "./MapComponent/MapDescriptionInput";
-import { MapHeader } from "./MapComponent/MapHeader";
 import {
   neutral17,
   primaryColor,
   transparentColor,
-} from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
-import { PrimaryButton } from "../../buttons/PrimaryButton";
-import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
-import { SpacerColumn, SpacerRow } from "../../spacer";
+} from "../../../../utils/style/colors";
+import { layout } from "../../../../utils/style/layout";
+import { PrimaryButton } from "../../../buttons/PrimaryButton";
+import { SecondaryButtonOutline } from "../../../buttons/SecondaryButtonOutline";
+import { SpacerColumn, SpacerRow } from "../../../spacer";
 
 import { ModalWithoutHeader } from "@/components/modals/ModalWithoutHeader";
+import { AddressSearch } from "@/components/socialFeed/modals/MapModal/AddressSearch";
+import { MapDescriptionInput } from "@/components/socialFeed/modals/MapModal/MapDescriptionInput";
+import { MapHeader } from "@/components/socialFeed/modals/MapModal/MapHeader";
 
 const MapView = Platform.select({
-  native: () => lazy(() => import("./MapComponent/Map.native")),
-  web: () => lazy(() => import("./MapComponent/Map.web")),
-  default: () => lazy(() => import("./MapComponent/Map.web")),
+  native: () =>
+    lazy(() => import("@/components/socialFeed/modals/MapModal/Map.native")),
+  web: () =>
+    lazy(() => import("@/components/socialFeed/modals/MapModal/Map.web")),
+  default: () =>
+    lazy(() => import("@/components/socialFeed/modals/MapModal/Map.web")),
 })();
 
 interface TMapModalProps {

@@ -1,6 +1,9 @@
+import React from "react";
 import { LatLng, LeafletView, MapMarker } from "react-native-leaflet-view";
 
-const FeedMapList: React.FC = () => {
+import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
+
+const FeedMapList: React.FC<FeedMapListProps> = () => {
   const getIcon = (type: string) => {
     const iconList: { [key: string]: string } = {
       picture: "https://i.ibb.co/WkQxJQP/picture.png",
