@@ -114,7 +114,8 @@ export const Conversations = ({
             },
           ]}
         >
-          {conversationItem && getNewConversationText(conversationItem)}
+          {(conversationItem && getNewConversationText(conversationItem)) ||
+            "Your request has been sent. Wait until contact accept your request to start conversation."}
         </BrandText>
       </View>
     );
