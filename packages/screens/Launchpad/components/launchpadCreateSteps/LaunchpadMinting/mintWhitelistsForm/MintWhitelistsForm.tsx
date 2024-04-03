@@ -1,10 +1,5 @@
-import React, { FC, Fragment, useCallback, useEffect, useMemo } from "react";
-import {
-  useFieldArray,
-  useForm,
-  UseFormReturn,
-  useWatch,
-} from "react-hook-form";
+import React, { FC, Fragment, useCallback } from "react";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
 
 import addSVG from "@/assets/icons/add-secondary.svg";
@@ -16,76 +11,32 @@ import { getNetworkFeature, NetworkFeature } from "@/networks";
 import {
   CollectionFormValues,
   WhitelistAccordionElem,
-  WhitelistsAccordion,
 } from "@/screens/Launchpad/CreateCollection.type";
-import {
-  LaunchpadMintWhitelistAccordionForm,
-  WhitelistsAccordionField,
-} from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/LaunchpadMintWhitelistAccordionForm";
+import { LaunchpadMintWhitelistAccordionForm } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/LaunchpadMintWhitelistAccordionForm";
 import { secondaryColor } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-export const MintWhitelistsForm: FC<{
-  collectionForm: UseFormReturn<CollectionFormValues>;
-}> = ({ collectionForm }) => {
+export const MintWhitelistsForm: FC = () => {
   const selectedWallet = useSelectedWallet();
   const networkId = selectedWallet?.networkId || "";
+  const collectionForm = useFormContext<CollectionFormValues>();
 
-  const whitelistMintInfos = collectionForm.watch("whitelistMintInfos");
-  const { control } = useForm<WhitelistsAccordion>({
-    defaultValues: {
-      whitelists: whitelistMintInfos || [],
-    },
+  const whitelistMintInfos = collectionForm.watch("whitelistMintInfos") || [];
+
+  const whitelistMintInfosFieldArray = useFieldArray({
+    control: collectionForm.control, // control props comes from useForm (optional: if you are using FormProvider)
+    name: "whitelistMintInfos", // unique name for your Field Array
   });
 
-  const {
-    fields: defaultWhitelists,
-    remove,
-    append,
-    update,
-  } = useFieldArray({
-    control,
-    name: "whitelists",
-  });
-  const whitelists = useWatch({ control, name: "whitelists" });
-  const displayedWhitelists: WhitelistsAccordionField[] = useMemo(
-    () =>
-      whitelists.map((elem, index) => ({
-        ...defaultWhitelists[index],
-        ...elem,
-      })),
-    [defaultWhitelists, whitelists],
-  );
-
-  // Update collectionForm
-  useEffect(() => {
-    collectionForm.setValue("whitelistMintInfos", defaultWhitelists);
-  }, [defaultWhitelists, collectionForm]);
-
-  const closeOtherElems = useCallback(
-    (elemIndex: number) => {
-      displayedWhitelists.map((elem, index) => {
-        if (index !== elemIndex) {
-          update(index, {
-            ...elem,
-            isOpen: false,
-          });
-        }
-      });
-    },
-    [displayedWhitelists, update],
-  );
+  const closeAll = () => {
+    whitelistMintInfosFieldArray.fields.map((elem, index) => {
+      whitelistMintInfosFieldArray.update(index, { ...elem, isOpen: false });
+    });
+  };
 
   const createNewWhitelist = useCallback(() => {
-    // Close all elems
-    displayedWhitelists.map((elem, index) => {
-      update(index, {
-        ...elem,
-        isOpen: false,
-      });
-    });
-
+    closeAll();
     const feature = getNetworkFeature(
       networkId,
       NetworkFeature.CosmWasmPremiumFeed,
@@ -103,8 +54,9 @@ export const MintWhitelistsForm: FC<{
       startTime: 0,
       unitPrice: "",
     };
-    append(newElem);
-  }, [append, networkId, displayedWhitelists, update]);
+
+    whitelistMintInfosFieldArray.append(newElem);
+  }, [whitelistMintInfos, networkId]);
 
   return (
     <View
@@ -118,19 +70,16 @@ export const MintWhitelistsForm: FC<{
           width: "100%",
         }}
       >
-        {displayedWhitelists.map((elem, index) => {
+        {whitelistMintInfosFieldArray.fields.map((elem, index) => {
           return (
-            <Fragment key={index}>
+            <Fragment key={elem.id}>
               <SpacerColumn size={2} />
               <LaunchpadMintWhitelistAccordionForm
-                closeOtherElems={closeOtherElems}
+                remove={whitelistMintInfosFieldArray.remove}
+                update={whitelistMintInfosFieldArray.update}
+                closeAll={closeAll}
                 elem={elem}
                 elemIndex={index}
-                // FIXME: remove()
-                remove={() => remove(index)}
-                update={update}
-                networkId={networkId}
-                control={control}
               />
             </Fragment>
           );

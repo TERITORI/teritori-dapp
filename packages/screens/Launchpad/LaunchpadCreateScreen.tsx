@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
@@ -24,20 +24,18 @@ import { LocalFileData } from "@/utils/types/files";
 
 const StepContent: FC<{
   step: number;
-  collectionForm: UseFormReturn<CollectionFormValues>;
-  onChangeCoverImage: (file: LocalFileData) => void;
-}> = ({ step, collectionForm, onChangeCoverImage }) => {
+}> = ({ step }) => {
   switch (step) {
     case 1:
-      return <LaunchpadBasic collectionForm={collectionForm} />;
+      return <LaunchpadBasic />;
     case 2:
-      return <LaunchpadDetails collectionForm={collectionForm} />;
+      return <LaunchpadDetails />;
     case 3:
-      return <LaunchpadTeamAndInvestment collectionForm={collectionForm} />;
+      return <LaunchpadTeamAndInvestment />;
     case 4:
-      return <LaunchpadAdditional collectionForm={collectionForm} />;
+      return <LaunchpadAdditional />;
     case 5:
-      return <LaunchpadMinting collectionForm={collectionForm} />;
+      return <LaunchpadMinting />;
     case 6:
       return <LaunchpadAssetsAndMetadata />;
     default:
@@ -106,11 +104,9 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
           }}
         >
           <SpacerColumn size={4} />
-          <StepContent
-            step={selectedStep}
-            collectionForm={collectionForm}
-            onChangeCoverImage={(file) => setCoverImage(file)}
-          />
+          <FormProvider {...collectionForm}>
+            <StepContent step={selectedStep} />
+          </FormProvider>
         </View>
 
         <View

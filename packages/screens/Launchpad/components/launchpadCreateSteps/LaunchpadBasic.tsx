@@ -1,5 +1,5 @@
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
 import { SelectFileUploader } from "../../../../components/inputs/selectFileUploader";
@@ -17,9 +17,8 @@ import { neutral77, primaryColor } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-export const LaunchpadBasic: React.FC<{
-  collectionForm: UseFormReturn<CollectionFormValues>;
-}> = ({ collectionForm }) => {
+export const LaunchpadBasic: React.FC = () => {
+  const collectionForm = useFormContext<CollectionFormValues>();
   const coverImage = collectionForm.watch("coverImage");
 
   return (

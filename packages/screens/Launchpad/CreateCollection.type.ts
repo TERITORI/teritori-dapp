@@ -56,8 +56,6 @@ export interface WhitelistAccordionElem {
   isOpen: boolean;
 }
 
-export type WhitelistsAccordion = { whitelists: WhitelistAccordionElem[] };
-
 export interface NewCollectionAssetsFormValues {
   nftApiKey?: string;
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
 import { CollectionFormValues } from "../CreateCollection.type";
@@ -15,9 +15,9 @@ import {
   fontSemibold20,
 } from "@/utils/style/fonts";
 
-export const ConfigureRoyaltyDetails: React.FC<{
-  collectionForm: UseFormReturn<CollectionFormValues>;
-}> = ({ collectionForm }) => {
+export const ConfigureRoyaltyDetails: React.FC = () => {
+  const collectionForm = useFormContext<CollectionFormValues>();
+
   return (
     <View style={{ maxWidth: 416 }}>
       <SpacerColumn size={2} />

@@ -1,5 +1,5 @@
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
 import { CollectionFormValues } from "../../CreateCollection.type";
@@ -16,9 +16,8 @@ import {
   fontSemibold20,
 } from "@/utils/style/fonts";
 
-export const LaunchpadAdditional: React.FC<{
-  collectionForm: UseFormReturn<CollectionFormValues>;
-}> = ({ collectionForm }) => {
+export const LaunchpadAdditional: React.FC = () => {
+  const collectionForm = useFormContext<CollectionFormValues>();
   const isReadyForMint = collectionForm.watch("isReadyForMint");
   const escrowMintProceedsPeriod = collectionForm.watch(
     "escrowMintProceedsPeriod",

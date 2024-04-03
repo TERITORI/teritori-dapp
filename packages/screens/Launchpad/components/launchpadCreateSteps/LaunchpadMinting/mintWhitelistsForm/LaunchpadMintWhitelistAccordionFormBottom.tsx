@@ -1,4 +1,9 @@
 import React, { FC, useState } from "react";
+import {
+  FieldArrayWithId,
+  UseFieldArrayRemove,
+  useFormContext,
+} from "react-hook-form";
 import { View, TouchableOpacity } from "react-native";
 
 import trashSVG from "@/assets/icons/trash.svg";
@@ -7,8 +12,8 @@ import { SVG } from "@/components/SVG";
 import { CsvTextFileUploader } from "@/components/inputs/CsvTextFileUploader";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { CollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
-import { LaunchpadWhitelistsAccordionFormProps } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/LaunchpadMintWhitelistAccordionForm";
 import { patternOnlyNumbers } from "@/utils/formRules";
 import { errorColor, neutral55, neutral77 } from "@/utils/style/colors";
 import {
@@ -18,24 +23,26 @@ import {
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-type Props = Omit<
-  LaunchpadWhitelistsAccordionFormProps,
-  "closeOtherElems" | "collectionForm"
->;
+type Props = {
+  elem: FieldArrayWithId<CollectionFormValues, "whitelistMintInfos", "id">;
+  remove: UseFieldArrayRemove;
+  elemIndex: number;
+};
 
 export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
-  control,
-  elemIndex: whitelistIndex,
+  elem,
+  elemIndex,
   remove,
 }) => {
-  // TODO: control.setValues("???", whitelistAddresses)
+  const collectionForm = useFormContext<CollectionFormValues>();
+  // TODO: Handle this in collectionForm
   const [whitelistAddresses, setWhitelistAddresses] = useState<string[]>([]);
 
-  const unitPriceKey = `whitelists.${whitelistIndex}.unitPrice` as const;
-  const startTimeKey = `whitelists.${whitelistIndex}.startTime` as const;
-  const endTimeKey = `whitelists.${whitelistIndex}.endTime` as const;
+  const unitPriceKey = `whitelistMintInfos.${elemIndex}.unitPrice` as const;
+  const startTimeKey = `whitelistMintInfos.${elemIndex}.startTime` as const;
+  const endTimeKey = `whitelistMintInfos.${elemIndex}.endTime` as const;
   const perAddressLimitKey =
-    `whitelists.${whitelistIndex}.perAddressLimit` as const;
+    `whitelistMintInfos.${elemIndex}.perAddressLimit` as const;
 
   return (
     <View
@@ -57,7 +64,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
             </BrandText>
           </View>
         }
-        control={control}
+        control={collectionForm.control}
         rules={{ pattern: patternOnlyNumbers }}
       />
 
@@ -72,7 +79,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
             </BrandText>
           </View>
         }
-        control={control}
+        control={collectionForm.control}
         rules={{ pattern: patternOnlyNumbers }}
       />
 
@@ -87,7 +94,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
             </BrandText>
           </View>
         }
-        control={control}
+        control={collectionForm.control}
         rules={{ pattern: patternOnlyNumbers }}
       />
 
@@ -102,7 +109,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
             </BrandText>
           </View>
         }
-        control={control}
+        control={collectionForm.control}
         rules={{ pattern: patternOnlyNumbers }}
       />
 
@@ -143,7 +150,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
             borderWidth: 1,
             borderColor: errorColor,
           }}
-          onPress={() => remove(whitelistIndex)}
+          onPress={() => remove(elemIndex)}
         >
           <SVG source={trashSVG} width={16} height={16} />
           <SpacerRow size={1} />

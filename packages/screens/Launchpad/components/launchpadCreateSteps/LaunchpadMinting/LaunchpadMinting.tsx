@@ -1,5 +1,5 @@
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
 import { CollectionFormValues } from "../../../CreateCollection.type";
@@ -19,9 +19,9 @@ import {
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-export const LaunchpadMinting: React.FC<{
-  collectionForm: UseFormReturn<CollectionFormValues>;
-}> = ({ collectionForm }) => {
+export const LaunchpadMinting: React.FC = () => {
+  const collectionForm = useFormContext<CollectionFormValues>();
+
   return (
     <View
       style={{
@@ -92,11 +92,11 @@ export const LaunchpadMinting: React.FC<{
           Information about your minting settings
         </BrandText>
 
-        <MintWhitelistsForm collectionForm={collectionForm} />
+        <MintWhitelistsForm />
 
         <SpacerColumn size={1} />
         <Separator />
-        <ConfigureRoyaltyDetails collectionForm={collectionForm} />
+        <ConfigureRoyaltyDetails />
       </View>
     </View>
   );

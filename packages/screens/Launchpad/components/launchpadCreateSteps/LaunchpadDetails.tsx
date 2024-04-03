@@ -1,5 +1,5 @@
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
 import { CollectionFormValues } from "../../CreateCollection.type";
@@ -21,9 +21,8 @@ import {
   fontSemibold20,
 } from "@/utils/style/fonts";
 
-export const LaunchpadDetails: React.FC<{
-  collectionForm: UseFormReturn<CollectionFormValues>;
-}> = ({ collectionForm }) => {
+export const LaunchpadDetails: React.FC = () => {
+  const collectionForm = useFormContext<CollectionFormValues>();
   const isDerivativeProject = collectionForm.watch("isDerivativeProject");
   const isPreviouslyApplied = collectionForm.watch("isPreviouslyApplied");
   const projectTypes = collectionForm.watch("projectTypes") || [];
@@ -74,7 +73,6 @@ export const LaunchpadDetails: React.FC<{
           placeHolder="contact@email.com"
           name="email"
           control={collectionForm.control}
-          setError={collectionForm.setError}
           rules={{ pattern: patternOnlyEmail }}
         />
 
