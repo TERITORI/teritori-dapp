@@ -1,9 +1,5 @@
 import React, { FC, useState } from "react";
-import {
-  FieldArrayWithId,
-  UseFieldArrayRemove,
-  useFormContext,
-} from "react-hook-form";
+import { UseFieldArrayRemove, useFormContext } from "react-hook-form";
 import { View, TouchableOpacity } from "react-native";
 
 import trashSVG from "@/assets/icons/trash.svg";
@@ -23,17 +19,10 @@ import {
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-type Props = {
-  elem: FieldArrayWithId<CollectionFormValues, "whitelistMintInfos", "id">;
+export const LaunchpadMintWhitelistAccordionFormBottom: FC<{
   remove: UseFieldArrayRemove;
   elemIndex: number;
-};
-
-export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
-  elem,
-  elemIndex,
-  remove,
-}) => {
+}> = ({ elemIndex, remove }) => {
   const collectionForm = useFormContext<CollectionFormValues>();
   // TODO: Handle this in collectionForm
   const [whitelistAddresses, setWhitelistAddresses] = useState<string[]>([]);
@@ -53,7 +42,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
         paddingBottom: layout.spacing_x1,
       }}
     >
-      <TextInputLaunchpad
+      <TextInputLaunchpad<CollectionFormValues>
         label="Unit Price "
         placeHolder="0"
         name={unitPriceKey}
@@ -68,7 +57,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
         rules={{ pattern: patternOnlyNumbers }}
       />
 
-      <TextInputLaunchpad
+      <TextInputLaunchpad<CollectionFormValues>
         label="Per Address Limit"
         placeHolder="0"
         name={perAddressLimitKey}
@@ -83,7 +72,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
         rules={{ pattern: patternOnlyNumbers }}
       />
 
-      <TextInputLaunchpad
+      <TextInputLaunchpad<CollectionFormValues>
         label="Start Time "
         placeHolder="0"
         name={startTimeKey}
@@ -98,7 +87,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
         rules={{ pattern: patternOnlyNumbers }}
       />
 
-      <TextInputLaunchpad
+      <TextInputLaunchpad<CollectionFormValues>
         label="End Time "
         placeHolder="0"
         name={endTimeKey}

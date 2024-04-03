@@ -20,7 +20,6 @@ import { LaunchpadTeamAndInvestment } from "@/screens/Launchpad/components/launc
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral33 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
-import { LocalFileData } from "@/utils/types/files";
 
 const StepContent: FC<{
   step: number;
@@ -58,9 +57,14 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
     mode: "all",
   });
   const { createCollection } = useCreateCollection();
-  const [coverImage, setCoverImage] = useState<LocalFileData>();
   const [selectedStep, setSelectedStep] = useState(1);
   const [isLoading, setLoading] = useState(false);
+  const coverImage = collectionForm.watch("coverImage");
+
+  console.log(
+    "collectionForm.getValues()collectionForm.getValues()",
+    collectionForm.getValues(),
+  );
 
   const onSubmit = async () => {
     setLoading(true);

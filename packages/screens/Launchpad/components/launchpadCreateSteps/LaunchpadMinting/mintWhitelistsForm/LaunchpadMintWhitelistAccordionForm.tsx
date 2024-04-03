@@ -1,19 +1,18 @@
 import React, { FC } from "react";
-import {
-  FieldArrayWithId,
-  UseFieldArrayRemove,
-  UseFieldArrayUpdate,
-} from "react-hook-form";
+import { UseFieldArrayRemove, UseFieldArrayUpdate } from "react-hook-form";
 
 import { LaunchpadMintWhitelistAccordionFormBottom } from "./LaunchpadMintWhitelistAccordionFormBottom";
 import { LaunchpadMintWhitelistAccordionFormTop } from "./LaunchpadMintWhitelistAccordionFormTop";
 
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
-import { CollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
+import {
+  CollectionFormValues,
+  WhitelistAccordionElem,
+} from "@/screens/Launchpad/CreateCollection.type";
 import { neutral00, neutral22, neutral33 } from "@/utils/style/colors";
 
 export const LaunchpadMintWhitelistAccordionForm: FC<{
-  elem: FieldArrayWithId<CollectionFormValues, "whitelistMintInfos", "id">;
+  elem: WhitelistAccordionElem;
   elemIndex: number;
   remove: UseFieldArrayRemove;
   update: UseFieldArrayUpdate<CollectionFormValues>;
@@ -37,7 +36,6 @@ export const LaunchpadMintWhitelistAccordionForm: FC<{
       {elem.isOpen && (
         <LaunchpadMintWhitelistAccordionFormBottom
           remove={remove}
-          elem={elem}
           elemIndex={elemIndex}
         />
       )}

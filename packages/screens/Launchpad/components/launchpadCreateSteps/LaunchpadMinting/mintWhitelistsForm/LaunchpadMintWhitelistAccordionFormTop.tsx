@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { FieldArrayWithId, UseFieldArrayUpdate } from "react-hook-form";
+import { UseFieldArrayUpdate } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
 
 import chevronDownSVG from "@/assets/icons/chevron-down.svg";
@@ -8,26 +8,24 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
-import { CollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
+import {
+  CollectionFormValues,
+  WhitelistAccordionElem,
+} from "@/screens/Launchpad/CreateCollection.type";
 import { secondaryColor } from "@/utils/style/colors";
 import { fontSemibold16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const LaunchpadMintWhitelistAccordionFormTop: FC<{
-  elem: FieldArrayWithId<CollectionFormValues, "whitelistMintInfos", "id">;
+  elem: WhitelistAccordionElem;
   elemIndex: number;
   update: UseFieldArrayUpdate<CollectionFormValues>;
   closeAll: () => void;
 }> = ({ elem, elemIndex, update, closeAll }) => {
-  const setIsOpen = (isOpen: boolean) => {
-    closeAll();
-    update(elemIndex, { ...elem, isOpen });
-  };
-
   if (elem.isOpen) {
     return (
       <TouchableOpacity
-        onPress={() => setIsOpen(false)}
+        onPress={() => update(elemIndex, { ...elem, isOpen: false })}
         style={{
           paddingTop: layout.spacing_x1,
           paddingHorizontal: layout.spacing_x1,
@@ -68,7 +66,10 @@ export const LaunchpadMintWhitelistAccordionFormTop: FC<{
           justifyContent: "space-between",
           padding: layout.spacing_x1,
         }}
-        onPress={() => setIsOpen(true)}
+        onPress={() => {
+          closeAll();
+          update(elemIndex, { ...elem, isOpen: true });
+        }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <BrandText

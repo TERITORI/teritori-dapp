@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useCallback } from "react";
+import React, { FC, Fragment, useCallback, useMemo } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
 
@@ -8,10 +8,7 @@ import { SVG } from "@/components/SVG";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetworkFeature, NetworkFeature } from "@/networks";
-import {
-  CollectionFormValues,
-  WhitelistAccordionElem,
-} from "@/screens/Launchpad/CreateCollection.type";
+import { CollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
 import { LaunchpadMintWhitelistAccordionForm } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/LaunchpadMintWhitelistAccordionForm";
 import { secondaryColor } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
@@ -22,18 +19,20 @@ export const MintWhitelistsForm: FC = () => {
   const networkId = selectedWallet?.networkId || "";
   const collectionForm = useFormContext<CollectionFormValues>();
 
-  const whitelistMintInfos = collectionForm.watch("whitelistMintInfos") || [];
-
   const whitelistMintInfosFieldArray = useFieldArray({
-    control: collectionForm.control, // control props comes from useForm (optional: if you are using FormProvider)
-    name: "whitelistMintInfos", // unique name for your Field Array
+    control: collectionForm.control,
+    name: "whitelistMintInfos",
   });
+  const whitelistMintInfos = useMemo(
+    () => collectionForm.watch("whitelistMintInfos") || [],
+    [collectionForm],
+  );
 
-  const closeAll = () => {
-    whitelistMintInfosFieldArray.fields.map((elem, index) => {
+  const closeAll = useCallback(() => {
+    whitelistMintInfos.map((elem, index) => {
       whitelistMintInfosFieldArray.update(index, { ...elem, isOpen: false });
     });
-  };
+  }, [whitelistMintInfos, whitelistMintInfosFieldArray]);
 
   const createNewWhitelist = useCallback(() => {
     closeAll();
@@ -44,7 +43,7 @@ export const MintWhitelistsForm: FC = () => {
     if (!feature) {
       throw new Error("This network does not support premium feed");
     }
-    const newElem: WhitelistAccordionElem = {
+    whitelistMintInfosFieldArray.append({
       isOpen: true,
       addressesCount: 0,
       denom: "",
@@ -53,10 +52,8 @@ export const MintWhitelistsForm: FC = () => {
       merkleRoot: "",
       startTime: 0,
       unitPrice: "",
-    };
-
-    whitelistMintInfosFieldArray.append(newElem);
-  }, [whitelistMintInfos, networkId]);
+    });
+  }, [networkId, closeAll, whitelistMintInfosFieldArray]);
 
   return (
     <View
@@ -70,9 +67,9 @@ export const MintWhitelistsForm: FC = () => {
           width: "100%",
         }}
       >
-        {whitelistMintInfosFieldArray.fields.map((elem, index) => {
+        {whitelistMintInfos.map((elem, index) => {
           return (
-            <Fragment key={elem.id}>
+            <Fragment key={index}>
               <SpacerColumn size={2} />
               <LaunchpadMintWhitelistAccordionForm
                 remove={whitelistMintInfosFieldArray.remove}
