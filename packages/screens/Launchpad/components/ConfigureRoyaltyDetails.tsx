@@ -1,12 +1,13 @@
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
 import { CollectionFormValues } from "../CreateCollection.type";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
-import { TextInputLaunchpadRequired } from "@/screens/Launchpad/components/inputs/TextInputLaunchpadRequired";
+import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
+import { patternOnlyNumbers } from "@/utils/formRules";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -14,9 +15,9 @@ import {
   fontSemibold20,
 } from "@/utils/style/fonts";
 
-export const ConfigureRoyaltyDetails: React.FC<{
-  createCollectionForm: UseFormReturn<CollectionFormValues>;
-}> = ({ createCollectionForm }) => {
+export const ConfigureRoyaltyDetails: React.FC = () => {
+  const collectionForm = useFormContext<CollectionFormValues>();
+
   return (
     <View style={{ maxWidth: 416 }}>
       <SpacerColumn size={2} />
@@ -27,7 +28,8 @@ export const ConfigureRoyaltyDetails: React.FC<{
       </BrandText>
       <SpacerColumn size={2} />
 
-      <TextInputLaunchpadRequired<CollectionFormValues>
+      <TextInputLaunchpad<CollectionFormValues>
+        rules={{ required: false }}
         label="Payment Address "
         placeHolder="teritori123456789qwertyuiopasdfghjklzxcvbnm"
         name="royaltyAddress"
@@ -38,10 +40,11 @@ export const ConfigureRoyaltyDetails: React.FC<{
             </BrandText>
           </View>
         }
-        control={createCollectionForm.control}
+        control={collectionForm.control}
       />
 
-      <TextInputLaunchpadRequired<CollectionFormValues>
+      <TextInputLaunchpad<CollectionFormValues>
+        rules={{ required: false, pattern: patternOnlyNumbers }}
         label="Share Percentage "
         placeHolder="8%"
         name="royaltyPercentage"
@@ -52,7 +55,7 @@ export const ConfigureRoyaltyDetails: React.FC<{
             </BrandText>
           </View>
         }
-        control={createCollectionForm.control}
+        control={collectionForm.control}
       />
     </View>
   );

@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import { FieldArrayWithId, UseFieldArrayUpdate } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
 
 import chevronDownSVG from "@/assets/icons/chevron-down.svg";
@@ -7,27 +8,23 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
-import { getNativeCurrency } from "@/networks";
-import { LaunchpadWhitelistsAccordionFormProps } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/LaunchpadMintWhitelistAccordionForm";
+import { CollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
 import { secondaryColor } from "@/utils/style/colors";
 import { fontSemibold16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-type Props = Omit<
-  LaunchpadWhitelistsAccordionFormProps,
-  "remove" | "update" | "closeOtherElems"
-> & { setIsOpen: (item: boolean) => void };
+export const LaunchpadMintWhitelistAccordionFormTop: FC<{
+  elem: FieldArrayWithId<CollectionFormValues, "whitelistMintInfos", "id">;
+  elemIndex: number;
+  update: UseFieldArrayUpdate<CollectionFormValues>;
+  closeAll: () => void;
+}> = ({ elem, elemIndex, update, closeAll }) => {
+  const setIsOpen = (isOpen: boolean) => {
+    closeAll();
+    update(elemIndex, { ...elem, isOpen });
+  };
 
-export const LaunchpadMintWhitelistAccordionFormTop: FC<Props> = ({
-  setIsOpen,
-  networkId,
-  control,
-  elem: whitelist,
-  elemIndex: whitelistIndex,
-}) => {
-  const currency = getNativeCurrency(networkId, whitelist.denom);
-
-  if (whitelist.isOpen) {
+  if (elem.isOpen) {
     return (
       <TouchableOpacity
         onPress={() => setIsOpen(false)}
@@ -48,7 +45,7 @@ export const LaunchpadMintWhitelistAccordionFormTop: FC<Props> = ({
               { color: secondaryColor, marginLeft: layout.spacing_x1 },
             ]}
           >
-            {`Whitelist #${whitelistIndex}`}
+            {`Whitelist #${elemIndex}`}
           </BrandText>
           <SVG
             source={chevronUpSVG}
@@ -74,25 +71,13 @@ export const LaunchpadMintWhitelistAccordionFormTop: FC<Props> = ({
         onPress={() => setIsOpen(true)}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          {/*<OptimizedImage*/}
-          {/*  sourceURI={whitelist.imageURI}*/}
-          {/*  fallbackURI={defaultTierImage}*/}
-          {/*  style={{*/}
-          {/*    backgroundColor: "black",*/}
-          {/*    height: 48,*/}
-          {/*    width: 48,*/}
-          {/*    borderRadius: 8,*/}
-          {/*  }}*/}
-          {/*  height={48}*/}
-          {/*  width={48}*/}
-          {/*/>*/}
           <BrandText
             style={[
               fontSemibold16,
               { color: secondaryColor, marginLeft: layout.spacing_x1 },
             ]}
           >
-            {`Whitelist #${whitelistIndex}`}
+            {`Whitelist #${elemIndex}`}
           </BrandText>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>

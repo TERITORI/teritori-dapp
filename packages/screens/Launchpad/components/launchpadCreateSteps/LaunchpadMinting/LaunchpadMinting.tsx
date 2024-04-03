@@ -1,14 +1,16 @@
-import React, { useState } from "react";
-import { UseFormReturn } from "react-hook-form";
+import React from "react";
+import { useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
 import { CollectionFormValues } from "../../../CreateCollection.type";
 import { ConfigureRoyaltyDetails } from "../../ConfigureRoyaltyDetails";
-import { TextInputLaunchpadRequired } from "../../inputs/TextInputLaunchpadRequired";
 
 import { BrandText } from "@/components/BrandText";
+import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
+import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { MintWhitelistsForm } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/MintWhitelistsForm";
+import { patternOnlyNumbers } from "@/utils/formRules";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -17,20 +19,8 @@ import {
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-const CreateRoyaltyTabItems = {
-  noRoyalty: {
-    name: "No royalty",
-  },
-  configureRoyaltyDetails: {
-    name: "Configure royalty details",
-  },
-};
-
-export const LaunchpadMinting: React.FC<{
-  createCollectionForm: UseFormReturn<CollectionFormValues>;
-}> = ({ createCollectionForm }) => {
-  const [selectedRoyaltyTab, setSelectedRoyaltyTab] =
-    useState<keyof typeof CreateRoyaltyTabItems>("noRoyalty");
+export const LaunchpadMinting: React.FC = () => {
+  const collectionForm = useFormContext<CollectionFormValues>();
 
   return (
     <View
@@ -48,14 +38,15 @@ export const LaunchpadMinting: React.FC<{
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
+        <TextInputLaunchpad<CollectionFormValues>
           label="Number of Tokens "
           placeHolder="0"
           name="nbTokens"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
+          rules={{ pattern: patternOnlyNumbers }}
         />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
+        <TextInputLaunchpad<CollectionFormValues>
           label="Unit Price"
           sublabel={
             <View>
@@ -66,11 +57,21 @@ export const LaunchpadMinting: React.FC<{
           }
           placeHolder="0"
           name="unitPrice"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
+          rules={{ pattern: patternOnlyNumbers }}
         />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
+        <TextInputLaunchpad<CollectionFormValues>
           label="Per Address Limit "
+          placeHolder="0"
+          name="perAddressLimit"
+          control={collectionForm.control}
+          rules={{ pattern: patternOnlyNumbers }}
+        />
+
+        {/*TODO: Control, format ?*/}
+        <TextInputLaunchpad<CollectionFormValues>
+          label="Start Time "
           sublabel={
             <View>
               <BrandText style={[fontSemibold13, { color: neutral55 }]}>
@@ -78,19 +79,13 @@ export const LaunchpadMinting: React.FC<{
               </BrandText>
             </View>
           }
-          placeHolder="0"
-          name="perAddressLimit"
-          control={createCollectionForm.control}
-        />
-
-        <TextInputLaunchpadRequired<CollectionFormValues>
-          label="Start Time "
           placeHolder="--.--.---- --:--"
           name="startTime"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
         />
 
-        <SpacerColumn size={1} />
+        <Separator />
+        <SpacerColumn size={2} />
         <BrandText style={fontSemibold20}>Whitelist Minting Details</BrandText>
         <SpacerColumn size={1} />
         <BrandText style={[fontSemibold14, { color: neutral77 }]}>
@@ -99,11 +94,9 @@ export const LaunchpadMinting: React.FC<{
 
         <MintWhitelistsForm />
 
-        {selectedRoyaltyTab === "configureRoyaltyDetails" && (
-          <ConfigureRoyaltyDetails
-            createCollectionForm={createCollectionForm}
-          />
-        )}
+        <SpacerColumn size={1} />
+        <Separator />
+        <ConfigureRoyaltyDetails />
       </View>
     </View>
   );

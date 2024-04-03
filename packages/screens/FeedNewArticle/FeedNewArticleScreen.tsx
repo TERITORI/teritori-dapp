@@ -4,6 +4,7 @@ import { ScrollView, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import priceSVG from "../../../assets/icons/price.svg";
+import { FileUploader } from "../../components/inputs/fileUploader";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 
 import { BrandText } from "@/components/BrandText";
@@ -11,7 +12,6 @@ import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { WalletStatusBox } from "@/components/WalletStatusBox";
 import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
-import { FileUploader } from "@/components/fileUploader";
 import { Label, TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgressBar";
 import { RichText } from "@/components/socialFeed/RichText";

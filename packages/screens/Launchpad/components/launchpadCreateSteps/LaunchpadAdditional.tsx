@@ -1,13 +1,14 @@
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
 import { CollectionFormValues } from "../../CreateCollection.type";
-import { TextInputLaunchpadRequired } from "../inputs/TextInputLaunchpadRequired";
 import { SelectInputLaunchpad } from "../inputs/selectInputs/SelectInputLaunchpad";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
+import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
+import { patternOnlyNumbers } from "@/utils/formRules";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -15,14 +16,13 @@ import {
   fontSemibold20,
 } from "@/utils/style/fonts";
 
-export const LaunchpadAdditional: React.FC<{
-  createCollectionForm: UseFormReturn<CollectionFormValues>;
-}> = ({ createCollectionForm }) => {
-  const isReadyForMint = createCollectionForm.watch("isReadyForMint");
-  const escrowMintProceedsPeriod = createCollectionForm.watch(
+export const LaunchpadAdditional: React.FC = () => {
+  const collectionForm = useFormContext<CollectionFormValues>();
+  const isReadyForMint = collectionForm.watch("isReadyForMint");
+  const escrowMintProceedsPeriod = collectionForm.watch(
     "escrowMintProceedsPeriod",
   );
-  const isDox = createCollectionForm.watch("isDox");
+  const isDox = collectionForm.watch("isDox");
 
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -34,7 +34,7 @@ export const LaunchpadAdditional: React.FC<{
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
+        <TextInputLaunchpad<CollectionFormValues>
           label="Please describe your artworkDescription: "
           sublabel={
             <View>
@@ -51,7 +51,7 @@ export const LaunchpadAdditional: React.FC<{
           }
           placeHolder="Describe here..."
           name="artworkDescription"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
           multiline
         />
 
@@ -66,19 +66,19 @@ export const LaunchpadAdditional: React.FC<{
                 : ""
           }
           setItem={(item) => {
-            createCollectionForm.setValue("isReadyForMint", item === "Yes");
+            collectionForm.setValue("isReadyForMint", item === "Yes");
           }}
           label="Is your collection ready for the mint?"
         />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
+        <TextInputLaunchpad<CollectionFormValues>
           label="What is your expected collection supply?"
           placeHolder="Type here..."
           name="expectedSupply"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
+        <TextInputLaunchpad<CollectionFormValues>
           label="What is your expected public sale mint price?"
           sublabel={
             <View>
@@ -89,14 +89,16 @@ export const LaunchpadAdditional: React.FC<{
           }
           placeHolder="0"
           name="expectedPublicMintPrice"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
+          rules={{ pattern: patternOnlyNumbers }}
         />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
+        {/*TODO: Control, format ?*/}
+        <TextInputLaunchpad<CollectionFormValues>
           label="What is your expected mint date? "
           placeHolder="dd.mm.yyyy | hh:mm PM"
           name="expectedMintDate"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
         />
 
         <SelectInputLaunchpad
@@ -104,7 +106,7 @@ export const LaunchpadAdditional: React.FC<{
           placeHolder="Select Option"
           item={escrowMintProceedsPeriod?.toString()}
           setItem={(item) => {
-            createCollectionForm.setValue(
+            collectionForm.setValue(
               "escrowMintProceedsPeriod",
               parseInt(item, 10),
             );
@@ -118,17 +120,18 @@ export const LaunchpadAdditional: React.FC<{
           placeHolder="Select Option"
           item={isDox === true ? "Yes" : isDox === false ? "No" : ""}
           setItem={(item) => {
-            createCollectionForm.setValue("isDox", item === "Yes");
+            collectionForm.setValue("isDox", item === "Yes");
           }}
           label="Are you dox or have you planned to dox?"
           style={{ zIndex: 1 }}
         />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
+        <TextInputLaunchpad<CollectionFormValues>
           label="We'd love to offer TeritoriDAO members 10% of your whitelist supply if your project is willing. Please let us know how many whitelist spots you'd be willing to allocate our DAO: "
           placeHolder="0"
           name="daoWhitelistCount"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
+          rules={{ pattern: patternOnlyNumbers }}
         />
       </View>
     </View>

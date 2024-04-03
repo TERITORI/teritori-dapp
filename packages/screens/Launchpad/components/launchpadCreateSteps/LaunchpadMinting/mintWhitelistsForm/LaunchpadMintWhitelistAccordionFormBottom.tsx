@@ -1,17 +1,20 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
+import {
+  FieldArrayWithId,
+  UseFieldArrayRemove,
+  useFormContext,
+} from "react-hook-form";
 import { View, TouchableOpacity } from "react-native";
 
 import trashSVG from "@/assets/icons/trash.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
-import { SelectFileUploader } from "@/components/selectFileUploader";
+import { CsvTextFileUploader } from "@/components/inputs/CsvTextFileUploader";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
-import { NetworkFeature, getNetworkFeature } from "@/networks";
-import { TextInputLaunchpadRequired } from "@/screens/Launchpad/components/inputs/TextInputLaunchpadRequired";
-import { LaunchpadWhitelistsAccordionFormProps } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/LaunchpadMintWhitelistAccordionForm";
-import { IMAGE_MIME_TYPES } from "@/utils/mime";
-import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "@/utils/social-feed";
+import { CollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
+import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
+import { patternOnlyNumbers } from "@/utils/formRules";
 import { errorColor, neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -19,31 +22,27 @@ import {
   fontSemibold20,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { LocalFileData } from "@/utils/types/files";
 
-type Props = Omit<LaunchpadWhitelistsAccordionFormProps, "closeOtherElems">;
+type Props = {
+  elem: FieldArrayWithId<CollectionFormValues, "whitelistMintInfos", "id">;
+  remove: UseFieldArrayRemove;
+  elemIndex: number;
+};
 
 export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
-  networkId,
-  control,
-  elem: whitelist,
-  elemIndex: whitelistIndex,
+  elem,
+  elemIndex,
   remove,
-  update,
-  setIsLoading,
 }) => {
-  const unitPriceKey = `whitelists.${whitelistIndex}.unitPrice` as const;
-  const startTimeKey = `whitelists.${whitelistIndex}.startTime` as const;
-  const endTimeKey = `whitelists.${whitelistIndex}.endTime` as const;
+  const collectionForm = useFormContext<CollectionFormValues>();
+  // TODO: Handle this in collectionForm
+  const [whitelistAddresses, setWhitelistAddresses] = useState<string[]>([]);
+
+  const unitPriceKey = `whitelistMintInfos.${elemIndex}.unitPrice` as const;
+  const startTimeKey = `whitelistMintInfos.${elemIndex}.startTime` as const;
+  const endTimeKey = `whitelistMintInfos.${elemIndex}.endTime` as const;
   const perAddressLimitKey =
-    `whitelists.${whitelistIndex}.perAddressLimit` as const;
-
-  const config = getNetworkFeature(networkId, NetworkFeature.NFTLaunchpad);
-  const whitelistPriceDenom = whitelist?.denom || config?.defaultMintDenom;
-
-  const onUploadWhitelistFile = (files: LocalFileData[]) => {
-    // TODO: Parse addresses from the TXT file and createCollectionForm.setValue("whitelistAddresses", blabla)
-  };
+    `whitelistMintInfos.${elemIndex}.perAddressLimit` as const;
 
   return (
     <View
@@ -54,7 +53,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
         paddingBottom: layout.spacing_x1,
       }}
     >
-      <TextInputLaunchpadRequired
+      <TextInputLaunchpad
         label="Unit Price "
         placeHolder="0"
         name={unitPriceKey}
@@ -65,10 +64,11 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
             </BrandText>
           </View>
         }
-        control={control}
+        control={collectionForm.control}
+        rules={{ pattern: patternOnlyNumbers }}
       />
 
-      <TextInputLaunchpadRequired
+      <TextInputLaunchpad
         label="Per Address Limit"
         placeHolder="0"
         name={perAddressLimitKey}
@@ -79,10 +79,11 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
             </BrandText>
           </View>
         }
-        control={control}
+        control={collectionForm.control}
+        rules={{ pattern: patternOnlyNumbers }}
       />
 
-      <TextInputLaunchpadRequired
+      <TextInputLaunchpad
         label="Start Time "
         placeHolder="0"
         name={startTimeKey}
@@ -93,10 +94,11 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
             </BrandText>
           </View>
         }
-        control={control}
+        control={collectionForm.control}
+        rules={{ pattern: patternOnlyNumbers }}
       />
 
-      <TextInputLaunchpadRequired
+      <TextInputLaunchpad
         label="End Time "
         placeHolder="0"
         name={endTimeKey}
@@ -107,30 +109,26 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
             </BrandText>
           </View>
         }
-        control={control}
+        control={collectionForm.control}
+        rules={{ pattern: patternOnlyNumbers }}
       />
 
       <Separator />
       <SpacerColumn size={2} />
-      <BrandText style={fontSemibold20}>Whitelist File</BrandText>
+      <BrandText style={fontSemibold20}>Whitelist Addresses</BrandText>
       <SpacerColumn size={1} />
       <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-        TXT file that contains the whitelisted addresses
+        Select a TXT or CSV file that contains the whitelisted addresses (One
+        address per line)
       </BrandText>
-      <SpacerColumn size={2} />
 
-      <SelectFileUploader
-        label="Select file"
-        fileHeight={ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT}
-        isImageCover
-        style={{
-          marginBottom: layout.spacing_x2,
-        }}
-        containerHeight={48}
-        onUpload={onUploadWhitelistFile}
-        mimeTypes={IMAGE_MIME_TYPES}
+      <SpacerColumn size={2} />
+      <CsvTextFileUploader
+        rows={whitelistAddresses}
+        setRows={setWhitelistAddresses}
       />
 
+      <SpacerColumn size={2} />
       <Separator />
       <SpacerColumn size={2} />
 
@@ -152,7 +150,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<Props> = ({
             borderWidth: 1,
             borderColor: errorColor,
           }}
-          onPress={() => remove(whitelistIndex)}
+          onPress={() => remove(elemIndex)}
         >
           <SVG source={trashSVG} width={16} height={16} />
           <SpacerRow size={1} />

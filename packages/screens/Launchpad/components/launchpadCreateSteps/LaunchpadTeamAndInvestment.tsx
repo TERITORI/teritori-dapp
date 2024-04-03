@@ -1,12 +1,12 @@
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
 import { CollectionFormValues } from "../../CreateCollection.type";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
-import { TextInputLaunchpadRequired } from "@/screens/Launchpad/components/inputs/TextInputLaunchpadRequired";
+import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -14,9 +14,9 @@ import {
   fontSemibold20,
 } from "@/utils/style/fonts";
 
-export const LaunchpadTeamAndInvestment: React.FC<{
-  createCollectionForm: UseFormReturn<CollectionFormValues>;
-}> = ({ createCollectionForm }) => {
+export const LaunchpadTeamAndInvestment: React.FC = () => {
+  const collectionForm = useFormContext<CollectionFormValues>();
+
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
       <View style={{ width: 416 }}>
@@ -27,7 +27,7 @@ export const LaunchpadTeamAndInvestment: React.FC<{
         </BrandText>
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
+        <TextInputLaunchpad<CollectionFormValues>
           label="Describe your team: "
           sublabel={
             <View>
@@ -51,11 +51,10 @@ export const LaunchpadTeamAndInvestment: React.FC<{
           }
           placeHolder="Describe here..."
           name="teamDescription"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
-          required={false}
+        <TextInputLaunchpad<CollectionFormValues>
           label="Team links and attachments "
           sublabel={
             <View>
@@ -67,10 +66,10 @@ export const LaunchpadTeamAndInvestment: React.FC<{
           }
           placeHolder="Type here..."
           name="teamLink"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
+        <TextInputLaunchpad<CollectionFormValues>
           label="Do you have any partners on the project? "
           sublabel={
             <View>
@@ -81,10 +80,10 @@ export const LaunchpadTeamAndInvestment: React.FC<{
           }
           placeHolder="Type here..."
           name="partnersDescription"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
+        <TextInputLaunchpad<CollectionFormValues>
           label="What have you invested in this project so far? "
           sublabel={
             <View>
@@ -104,11 +103,10 @@ export const LaunchpadTeamAndInvestment: React.FC<{
           }
           placeHolder="Type here..."
           name="investDescription"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
-          required={false}
+        <TextInputLaunchpad<CollectionFormValues>
           label="Investment links and attachments "
           sublabel={
             <View>
@@ -120,10 +118,10 @@ export const LaunchpadTeamAndInvestment: React.FC<{
           }
           placeHolder="Type here..."
           name="investLink"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
         />
 
-        <TextInputLaunchpadRequired<CollectionFormValues>
+        <TextInputLaunchpad<CollectionFormValues>
           label="Whitepaper and roadmap: "
           sublabel={
             <View>
@@ -135,7 +133,7 @@ export const LaunchpadTeamAndInvestment: React.FC<{
           }
           placeHolder="Type here..."
           name="roadmapLink"
-          control={createCollectionForm.control}
+          control={collectionForm.control}
         />
       </View>
     </View>

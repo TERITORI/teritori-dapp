@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import {
-  Control,
   FieldArrayWithId,
   UseFieldArrayRemove,
   UseFieldArrayUpdate,
@@ -10,38 +9,16 @@ import { LaunchpadMintWhitelistAccordionFormBottom } from "./LaunchpadMintWhitel
 import { LaunchpadMintWhitelistAccordionFormTop } from "./LaunchpadMintWhitelistAccordionFormTop";
 
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
-import { WhitelistsAccordion } from "@/screens/Launchpad/CreateCollection.type";
+import { CollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
 import { neutral00, neutral22, neutral33 } from "@/utils/style/colors";
 
-export type WhitelistField = FieldArrayWithId<
-  WhitelistsAccordion,
-  "whitelists",
-  "id"
->;
-
-export interface LaunchpadWhitelistsAccordionFormProps {
-  networkId: string;
-  control: Control<WhitelistsAccordion>;
-  elem: FieldArrayWithId<WhitelistsAccordion, "whitelists", "id">;
+export const LaunchpadMintWhitelistAccordionForm: FC<{
+  elem: FieldArrayWithId<CollectionFormValues, "whitelistMintInfos", "id">;
   elemIndex: number;
-  closeOtherElems: (elemIndex: number) => void;
-  update: UseFieldArrayUpdate<WhitelistsAccordion, "whitelists">;
   remove: UseFieldArrayRemove;
-  setIsLoading?: (value: boolean) => void;
-}
-
-export const LaunchpadMintWhitelistAccordionForm: FC<
-  LaunchpadWhitelistsAccordionFormProps
-> = ({
-  networkId,
-  control,
-  elem,
-  elemIndex,
-  closeOtherElems,
-  remove,
-  update,
-  setIsLoading,
-}) => {
+  update: UseFieldArrayUpdate<CollectionFormValues>;
+  closeAll: () => void;
+}> = ({ elem, elemIndex, remove, update, closeAll }) => {
   return (
     <PrimaryBox
       style={{
@@ -51,26 +28,17 @@ export const LaunchpadMintWhitelistAccordionForm: FC<
       }}
     >
       <LaunchpadMintWhitelistAccordionFormTop
-        networkId={networkId}
-        setIsOpen={(isOpen) => {
-          console.log("isOpenisOpen", isOpen);
-          update(elemIndex, { ...elem, isOpen });
-          if (isOpen) closeOtherElems(elemIndex);
-        }}
-        control={control}
+        update={update}
         elem={elem}
         elemIndex={elemIndex}
+        closeAll={closeAll}
       />
 
       {elem.isOpen && (
         <LaunchpadMintWhitelistAccordionFormBottom
-          networkId={networkId}
-          control={control}
-          elem={elem}
-          update={update}
-          elemIndex={elemIndex}
           remove={remove}
-          setIsLoading={setIsLoading}
+          elem={elem}
+          elemIndex={elemIndex}
         />
       )}
     </PrimaryBox>

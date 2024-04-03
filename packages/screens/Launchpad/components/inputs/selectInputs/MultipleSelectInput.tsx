@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { TouchableOpacity, View, ViewStyle } from "react-native";
 
 import { CheckboxDappStore } from "../../../../DAppStore/components/CheckboxDappStore";
@@ -9,12 +9,13 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { Label } from "@/components/inputs/TextInputCustom";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { useDropdowns } from "@/hooks/useDropdowns";
 import {
-  neutral17,
+  neutral22,
   neutral44,
   neutral55,
   neutral77,
@@ -32,6 +33,7 @@ interface Props {
   items: string[];
   label: string;
   sublabel?: React.ReactElement;
+  required?: boolean;
 }
 
 export const MultipleSelectInput: FC<Props> = ({
@@ -42,8 +44,10 @@ export const MultipleSelectInput: FC<Props> = ({
   label,
   setItems,
   sublabel,
+  required = true,
 }) => {
   const [isDropdownOpen, setDropdownState, ref] = useDropdowns();
+  const [hovered, setHovered] = useState(false);
 
   return (
     <View
@@ -52,104 +56,114 @@ export const MultipleSelectInput: FC<Props> = ({
           zIndex: 1,
           width: "100%",
           minHeight: 40,
-          marginBottom: layout.spacing_x3,
+          marginBottom: layout.spacing_x2,
         },
         style,
       ]}
       ref={ref}
     >
-      <Label style={{ marginBottom: layout.spacing_x1 }} isRequired>
-        {label}
-      </Label>
+      <CustomPressable
+        onHoverIn={() => setHovered(true)}
+        onHoverOut={() => setHovered(false)}
+        onPress={() => setDropdownState(!isDropdownOpen)}
+      >
+        <Label isRequired={required} hovered={hovered}>
+          {label}
+        </Label>
+        {sublabel && sublabel}
 
-      {sublabel && sublabel}
-
-      <View>
-        <TertiaryBox
-          style={{
-            width: "100%",
-            height: 40,
-            flexDirection: "row",
-            paddingHorizontal: layout.spacing_x1_5,
-            backgroundColor: neutral17,
-            alignItems: "center",
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              flex: 1,
-            }}
-            activeOpacity={1}
-            onPress={() => setDropdownState()}
+        <SpacerColumn size={1.5} />
+        <View>
+          <TertiaryBox
+            style={[
+              {
+                width: "100%",
+                height: 40,
+                flexDirection: "row",
+                paddingHorizontal: layout.spacing_x1_5,
+                backgroundColor: neutral22,
+                alignItems: "center",
+              },
+              hovered && { borderColor: secondaryColor },
+            ]}
           >
-            <BrandText
-              style={[
-                fontMedium14,
-                { marginRight: layout.spacing_x1, color: neutral77 },
-              ]}
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flex: 1,
+              }}
             >
-              {items?.length > 0 ? items.join(", ") : placeHolder}
-            </BrandText>
-            <SVG
-              source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
-              width={16}
-              height={16}
-              color={secondaryColor}
-            />
-          </TouchableOpacity>
-        </TertiaryBox>
-
-        {isDropdownOpen && (
-          <PrimaryBox
-            style={{
-              position: "absolute",
-              top: 44,
-              right: 0,
-              width: "100%",
-              paddingHorizontal: layout.spacing_x1_5,
-              paddingBottom: layout.spacing_x1,
-              backgroundColor: neutral44,
-              borderColor: neutral55,
-              alignItems: "flex-start",
-            }}
-          >
-            {dropdownOptions.map((item, index) => (
-              <TouchableOpacity
-                onPress={() => {
-                  setItems(item);
-                }}
-                key={index}
-                style={{
-                  paddingTop: layout.spacing_x1_5,
-                  width: "100%",
-                }}
+              <BrandText
+                style={[
+                  fontMedium14,
+                  {
+                    marginRight: layout.spacing_x1,
+                    color: items?.length > 0 ? secondaryColor : neutral77,
+                  },
+                ]}
               >
-                <View style={{ flexDirection: "row" }}>
-                  <CheckboxDappStore
-                    isChecked={items.includes(item)}
-                    style={{ marginRight: layout.spacing_x1 }}
-                  />
+                {items?.length > 0 ? items.join(", ") : placeHolder}
+              </BrandText>
+              <SVG
+                source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
+                width={16}
+                height={16}
+                color={secondaryColor}
+              />
+            </View>
+          </TertiaryBox>
 
-                  <BrandText
-                    style={[fontSemibold14, { color: secondaryColor }]}
-                  >
-                    {item}
-                  </BrandText>
-                </View>
-                {dropdownOptions.length - 1 !== index && (
-                  <>
-                    <SpacerColumn size={1} />
-                    <Separator color={neutral55} />
-                  </>
-                )}
-              </TouchableOpacity>
-            ))}
-          </PrimaryBox>
-        )}
-      </View>
+          {isDropdownOpen && (
+            <PrimaryBox
+              style={{
+                position: "absolute",
+                top: 44,
+                right: 0,
+                width: "100%",
+                paddingHorizontal: layout.spacing_x1_5,
+                paddingBottom: layout.spacing_x1,
+                backgroundColor: neutral44,
+                borderColor: neutral55,
+                alignItems: "flex-start",
+              }}
+            >
+              {dropdownOptions.map((item, index) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    setItems(item);
+                  }}
+                  key={index}
+                  style={{
+                    paddingTop: layout.spacing_x1_5,
+                    width: "100%",
+                  }}
+                >
+                  <View style={{ flexDirection: "row" }}>
+                    <CheckboxDappStore
+                      isChecked={items.includes(item)}
+                      style={{ marginRight: layout.spacing_x1 }}
+                    />
+
+                    <BrandText
+                      style={[fontSemibold14, { color: secondaryColor }]}
+                    >
+                      {item}
+                    </BrandText>
+                  </View>
+                  {dropdownOptions.length - 1 !== index && (
+                    <>
+                      <SpacerColumn size={1} />
+                      <Separator color={neutral55} />
+                    </>
+                  )}
+                </TouchableOpacity>
+              ))}
+            </PrimaryBox>
+          )}
+        </View>
+      </CustomPressable>
     </View>
   );
 };

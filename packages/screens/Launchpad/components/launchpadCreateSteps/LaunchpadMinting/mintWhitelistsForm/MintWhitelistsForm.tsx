@@ -1,5 +1,5 @@
 import React, { FC, Fragment, useCallback } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
 
 import addSVG from "@/assets/icons/add-secondary.svg";
@@ -9,8 +9,8 @@ import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetworkFeature, NetworkFeature } from "@/networks";
 import {
+  CollectionFormValues,
   WhitelistAccordionElem,
-  WhitelistsAccordion,
 } from "@/screens/Launchpad/CreateCollection.type";
 import { LaunchpadMintWhitelistAccordionForm } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/LaunchpadMintWhitelistAccordionForm";
 import { secondaryColor } from "@/utils/style/colors";
@@ -20,32 +20,23 @@ import { layout } from "@/utils/style/layout";
 export const MintWhitelistsForm: FC = () => {
   const selectedWallet = useSelectedWallet();
   const networkId = selectedWallet?.networkId || "";
+  const collectionForm = useFormContext<CollectionFormValues>();
 
-  const { control } = useForm<WhitelistsAccordion>({
-    defaultValues: {
-      whitelists: [],
-    },
+  const whitelistMintInfos = collectionForm.watch("whitelistMintInfos") || [];
+
+  const whitelistMintInfosFieldArray = useFieldArray({
+    control: collectionForm.control, // control props comes from useForm (optional: if you are using FormProvider)
+    name: "whitelistMintInfos", // unique name for your Field Array
   });
 
-  const {
-    fields: whitelists,
-    remove,
-    append,
-    update,
-  } = useFieldArray({
-    control,
-    name: "whitelists",
-  });
+  const closeAll = () => {
+    whitelistMintInfosFieldArray.fields.map((elem, index) => {
+      whitelistMintInfosFieldArray.update(index, { ...elem, isOpen: false });
+    });
+  };
 
   const createNewWhitelist = useCallback(() => {
-    // Close all elems
-    whitelists.map((whitelist, index) => {
-      update(index, {
-        ...whitelist,
-        isOpen: false,
-      });
-    });
-
+    closeAll();
     const feature = getNetworkFeature(
       networkId,
       NetworkFeature.CosmWasmPremiumFeed,
@@ -55,23 +46,17 @@ export const MintWhitelistsForm: FC = () => {
     }
     const newElem: WhitelistAccordionElem = {
       isOpen: true,
+      addressesCount: 0,
+      denom: "",
+      endTime: 0,
+      perAddressLimit: 0,
+      merkleRoot: "",
+      startTime: 0,
+      unitPrice: "",
     };
-    append(newElem);
-  }, [append, networkId, whitelists, update]);
 
-  const closeOtherElems = useCallback(
-    (elemIndex: number) => {
-      whitelists.map((whitelist, index) => {
-        if (index !== elemIndex) {
-          update(index, {
-            ...whitelist,
-            isOpen: false,
-          });
-        }
-      });
-    },
-    [whitelists, update],
-  );
+    whitelistMintInfosFieldArray.append(newElem);
+  }, [whitelistMintInfos, networkId]);
 
   return (
     <View
@@ -85,21 +70,16 @@ export const MintWhitelistsForm: FC = () => {
           width: "100%",
         }}
       >
-        {whitelists.map((elem, index) => {
+        {whitelistMintInfosFieldArray.fields.map((elem, index) => {
           return (
-            <Fragment key={index}>
+            <Fragment key={elem.id}>
               <SpacerColumn size={2} />
               <LaunchpadMintWhitelistAccordionForm
-                closeOtherElems={closeOtherElems}
+                remove={whitelistMintInfosFieldArray.remove}
+                update={whitelistMintInfosFieldArray.update}
+                closeAll={closeAll}
                 elem={elem}
                 elemIndex={index}
-                remove={() => remove(index)}
-                // setIsLoading={(value) => {
-                //   setLoadStates((prev) => ({ ...prev, [index]: value }));
-                // }}
-                update={update}
-                networkId={networkId}
-                control={control}
               />
             </Fragment>
           );

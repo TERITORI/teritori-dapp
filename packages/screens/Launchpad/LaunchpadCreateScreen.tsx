@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
@@ -24,37 +24,20 @@ import { LocalFileData } from "@/utils/types/files";
 
 const StepContent: FC<{
   step: number;
-  createCollectionForm: UseFormReturn<CollectionFormValues>;
-  onChangeCoverImage: (file: LocalFileData) => void;
-}> = ({ step, createCollectionForm, onChangeCoverImage }) => {
+}> = ({ step }) => {
   switch (step) {
     case 1:
-      return (
-        <LaunchpadBasic
-          createCollectionForm={createCollectionForm}
-          onChangeCoverImage={onChangeCoverImage}
-        />
-      );
+      return <LaunchpadBasic />;
     case 2:
-      return <LaunchpadDetails createCollectionForm={createCollectionForm} />;
+      return <LaunchpadDetails />;
     case 3:
-      return (
-        <LaunchpadTeamAndInvestment
-          createCollectionForm={createCollectionForm}
-        />
-      );
+      return <LaunchpadTeamAndInvestment />;
     case 4:
-      return (
-        <LaunchpadAdditional createCollectionForm={createCollectionForm} />
-      );
+      return <LaunchpadAdditional />;
     case 5:
-      return <LaunchpadMinting createCollectionForm={createCollectionForm} />;
+      return <LaunchpadMinting />;
     case 6:
-      return (
-        <LaunchpadAssetsAndMetadata
-          createCollectionForm={createCollectionForm}
-        />
-      );
+      return <LaunchpadAssetsAndMetadata />;
     default:
       return <></>;
   }
@@ -71,7 +54,7 @@ const stepOptions = [
 
 export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const navigation = useAppNavigation();
-  const createCollectionForm = useForm<CollectionFormValues>({
+  const collectionForm = useForm<CollectionFormValues>({
     mode: "all",
   });
   const { createCollection } = useCreateCollection();
@@ -82,7 +65,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const onSubmit = async () => {
     setLoading(true);
     try {
-      await createCollection(createCollectionForm.getValues());
+      await createCollection(collectionForm.getValues());
       setLoading(false);
     } catch (e) {
       console.error("Error creating a NFT collection", e);
@@ -121,11 +104,9 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
           }}
         >
           <SpacerColumn size={4} />
-          <StepContent
-            step={selectedStep}
-            createCollectionForm={createCollectionForm}
-            onChangeCoverImage={(file) => setCoverImage(file)}
-          />
+          <FormProvider {...collectionForm}>
+            <StepContent step={selectedStep} />
+          </FormProvider>
         </View>
 
         <View
@@ -162,13 +143,9 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
                 text="Submit"
                 loader
                 isLoading={isLoading}
-                // TODO: Uncomment after form finish
-                // disabled={
-                //   !createCollectionForm.formState.isValid || !coverImage
-                // }
+                disabled={!collectionForm.formState.isValid || !coverImage}
                 onPress={() => {
-                  onSubmit();
-                  // createCollectionForm.handleSubmit(onSubmit);
+                  collectionForm.handleSubmit(onSubmit);
                 }}
               />
             ) : (

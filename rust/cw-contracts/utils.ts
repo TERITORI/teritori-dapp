@@ -1,6 +1,6 @@
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
-import { GasPrice, calculateFee } from "@cosmjs/stargate";
+import { GasPrice } from "@cosmjs/stargate";
 import * as fs from "fs";
 import path from "path";
 
