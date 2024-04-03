@@ -53,46 +53,30 @@ pub struct TokenMetadataResponse {
     #[prost(string, repeated, tag="3")]
     pub merkle_proof: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UpdateCollectionWhitelistsRequest {
-    #[prost(string, tag="1")]
-    pub sender: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
-    pub network_id: ::prost::alloc::string::String,
-    #[prost(uint32, tag="3")]
-    pub project_id: u32,
-    #[prost(message, repeated, tag="4")]
-    pub whitelist_mint_infos: ::prost::alloc::vec::Vec<WhitelistMintInfo>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UpdateCollectionWhitelistsResponse {
-    #[prost(string, repeated, tag="1")]
-    pub merkle_roots: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct WhitelistedAddressMerkleInfoRequest {
-    #[prost(string, tag="1")]
-    pub sender: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
-    pub network_id: ::prost::alloc::string::String,
-    #[prost(uint32, tag="3")]
-    pub project_id: u32,
-    #[prost(uint32, tag="4")]
-    pub whitelist_id: u32,
-    #[prost(string, tag="5")]
-    pub address: ::prost::alloc::string::String,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct WhitelistedAddressMerkleInfoResponse {
-    #[prost(string, tag="1")]
-    pub merkle_root: ::prost::alloc::string::String,
-    #[prost(string, repeated, tag="2")]
-    pub merkle_proof: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-}
+// message UpdateCollectionWhitelistsRequest {
+//    string sender = 1;
+//    string network_id = 2;
+//    uint32 project_id = 3;
+//    repeated WhitelistMintInfo whitelist_mint_infos = 4; 
+// }
+
+// message UpdateCollectionWhitelistsResponse {
+//    repeated string merkle_roots = 1;
+// }
+
+// message WhitelistedAddressMerkleInfoRequest {
+//    string sender = 1;
+//    string network_id = 2;
+//    uint32 project_id = 3;
+//    uint32 whitelist_id = 4;
+//    string address = 5;
+// }
+
+// message WhitelistedAddressMerkleInfoResponse {
+//    string merkle_root = 1;
+//    repeated string merkle_proof = 2;
+// }
+
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Metadata {

@@ -7,6 +7,12 @@
     "supported_networks"
   ],
   "properties": {
+    "deployer": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "name": {
       "type": "string"
     },

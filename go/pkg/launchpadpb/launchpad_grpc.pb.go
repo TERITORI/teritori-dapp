@@ -24,9 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type LaunchpadServiceClient interface {
 	UpdateTokensMetadatas(ctx context.Context, in *UpdateTokensMetadatasRequest, opts ...grpc.CallOption) (*UpdateTokensMetadatasResponse, error)
 	CalculateCollectionMerkleRoot(ctx context.Context, in *CalculateCollectionMerkleRootRequest, opts ...grpc.CallOption) (*CalculateCollectionMerkleRootResponse, error)
-	UpdateCollectionWhitelists(ctx context.Context, in *UpdateCollectionWhitelistsRequest, opts ...grpc.CallOption) (*UpdateCollectionWhitelistsResponse, error)
 	TokenMetadata(ctx context.Context, in *TokenMetadataRequest, opts ...grpc.CallOption) (*TokenMetadataResponse, error)
-	WhitelistedAddressMerkleInfo(ctx context.Context, in *WhitelistedAddressMerkleInfoRequest, opts ...grpc.CallOption) (*WhitelistedAddressMerkleInfoResponse, error)
 }
 
 type launchpadServiceClient struct {
@@ -55,27 +53,9 @@ func (c *launchpadServiceClient) CalculateCollectionMerkleRoot(ctx context.Conte
 	return out, nil
 }
 
-func (c *launchpadServiceClient) UpdateCollectionWhitelists(ctx context.Context, in *UpdateCollectionWhitelistsRequest, opts ...grpc.CallOption) (*UpdateCollectionWhitelistsResponse, error) {
-	out := new(UpdateCollectionWhitelistsResponse)
-	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/UpdateCollectionWhitelists", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *launchpadServiceClient) TokenMetadata(ctx context.Context, in *TokenMetadataRequest, opts ...grpc.CallOption) (*TokenMetadataResponse, error) {
 	out := new(TokenMetadataResponse)
 	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/TokenMetadata", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *launchpadServiceClient) WhitelistedAddressMerkleInfo(ctx context.Context, in *WhitelistedAddressMerkleInfoRequest, opts ...grpc.CallOption) (*WhitelistedAddressMerkleInfoResponse, error) {
-	out := new(WhitelistedAddressMerkleInfoResponse)
-	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/WhitelistedAddressMerkleInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -88,9 +68,7 @@ func (c *launchpadServiceClient) WhitelistedAddressMerkleInfo(ctx context.Contex
 type LaunchpadServiceServer interface {
 	UpdateTokensMetadatas(context.Context, *UpdateTokensMetadatasRequest) (*UpdateTokensMetadatasResponse, error)
 	CalculateCollectionMerkleRoot(context.Context, *CalculateCollectionMerkleRootRequest) (*CalculateCollectionMerkleRootResponse, error)
-	UpdateCollectionWhitelists(context.Context, *UpdateCollectionWhitelistsRequest) (*UpdateCollectionWhitelistsResponse, error)
 	TokenMetadata(context.Context, *TokenMetadataRequest) (*TokenMetadataResponse, error)
-	WhitelistedAddressMerkleInfo(context.Context, *WhitelistedAddressMerkleInfoRequest) (*WhitelistedAddressMerkleInfoResponse, error)
 	mustEmbedUnimplementedLaunchpadServiceServer()
 }
 
@@ -104,14 +82,8 @@ func (UnimplementedLaunchpadServiceServer) UpdateTokensMetadatas(context.Context
 func (UnimplementedLaunchpadServiceServer) CalculateCollectionMerkleRoot(context.Context, *CalculateCollectionMerkleRootRequest) (*CalculateCollectionMerkleRootResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CalculateCollectionMerkleRoot not implemented")
 }
-func (UnimplementedLaunchpadServiceServer) UpdateCollectionWhitelists(context.Context, *UpdateCollectionWhitelistsRequest) (*UpdateCollectionWhitelistsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateCollectionWhitelists not implemented")
-}
 func (UnimplementedLaunchpadServiceServer) TokenMetadata(context.Context, *TokenMetadataRequest) (*TokenMetadataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TokenMetadata not implemented")
-}
-func (UnimplementedLaunchpadServiceServer) WhitelistedAddressMerkleInfo(context.Context, *WhitelistedAddressMerkleInfoRequest) (*WhitelistedAddressMerkleInfoResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WhitelistedAddressMerkleInfo not implemented")
 }
 func (UnimplementedLaunchpadServiceServer) mustEmbedUnimplementedLaunchpadServiceServer() {}
 
@@ -162,24 +134,6 @@ func _LaunchpadService_CalculateCollectionMerkleRoot_Handler(srv interface{}, ct
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LaunchpadService_UpdateCollectionWhitelists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateCollectionWhitelistsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LaunchpadServiceServer).UpdateCollectionWhitelists(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/launchpad.v1.LaunchpadService/UpdateCollectionWhitelists",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LaunchpadServiceServer).UpdateCollectionWhitelists(ctx, req.(*UpdateCollectionWhitelistsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _LaunchpadService_TokenMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(TokenMetadataRequest)
 	if err := dec(in); err != nil {
@@ -194,24 +148,6 @@ func _LaunchpadService_TokenMetadata_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LaunchpadServiceServer).TokenMetadata(ctx, req.(*TokenMetadataRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _LaunchpadService_WhitelistedAddressMerkleInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(WhitelistedAddressMerkleInfoRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LaunchpadServiceServer).WhitelistedAddressMerkleInfo(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/launchpad.v1.LaunchpadService/WhitelistedAddressMerkleInfo",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LaunchpadServiceServer).WhitelistedAddressMerkleInfo(ctx, req.(*WhitelistedAddressMerkleInfoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -232,16 +168,8 @@ var LaunchpadService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LaunchpadService_CalculateCollectionMerkleRoot_Handler,
 		},
 		{
-			MethodName: "UpdateCollectionWhitelists",
-			Handler:    _LaunchpadService_UpdateCollectionWhitelists_Handler,
-		},
-		{
 			MethodName: "TokenMetadata",
 			Handler:    _LaunchpadService_TokenMetadata_Handler,
-		},
-		{
-			MethodName: "WhitelistedAddressMerkleInfo",
-			Handler:    _LaunchpadService_WhitelistedAddressMerkleInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -113,6 +113,10 @@ func (s *Launchpad) CalculateCollectionMerkleRoot(ctx context.Context, req *laun
 
 // Update collection whitelists and generate merkle root for each whitelist
 // This will flush all existing whitelists and replace by new one
+// UPDATE: normally we dont use this endpoint anymore as we will store addresses by ipfs so the frontend
+// can calculate merkle tree/root/path without need of backend.
+// But for now, we let is here just to keep the code in case where we need it later
+// To re-activate this, please update the api proto
 func (s *Launchpad) UpdateCollectionWhitelists(ctx context.Context, req *launchpadpb.UpdateCollectionWhitelistsRequest) (*launchpadpb.UpdateCollectionWhitelistsResponse, error) {
 	if err := s.verifySender(req.Sender); err != nil {
 		return nil, errors.Wrap(err, "failed to verify sender")

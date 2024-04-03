@@ -28,6 +28,8 @@ pub struct Post {
     pub category: u32,
     #[prost(bool, tag="2")]
     pub is_deleted: bool,
+    /// use local_identifier
+    #[deprecated]
     #[prost(string, tag="3")]
     pub identifier: ::prost::alloc::string::String,
     #[prost(string, tag="4")]
@@ -46,6 +48,12 @@ pub struct Post {
     pub tip_amount: i64,
     #[prost(uint32, tag="11")]
     pub premium_level: u32,
+    #[prost(string, tag="12")]
+    pub id: ::prost::alloc::string::String,
+    #[prost(string, tag="13")]
+    pub local_identifier: ::prost::alloc::string::String,
+    #[prost(string, tag="14")]
+    pub network_id: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

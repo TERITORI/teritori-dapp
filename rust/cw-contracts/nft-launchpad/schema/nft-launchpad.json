@@ -1,6 +1,6 @@
 {
   "contract_name": "nft-launchpad",
-  "contract_version": "0.1.0",
+  "contract_version": "0.2.0",
   "idl_version": "1.0.0",
   "instantiate": {
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -22,6 +22,12 @@
           "supported_networks"
         ],
         "properties": {
+          "deployer": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "name": {
             "type": "string"
           },
@@ -167,6 +173,7 @@
           "partners",
           "project_desc",
           "project_type",
+          "reveal_time",
           "roadmap_link",
           "start_time",
           "symbol",
@@ -283,6 +290,11 @@
           "project_type": {
             "type": "string"
           },
+          "reveal_time": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          },
           "roadmap_link": {
             "type": "string"
           },
@@ -362,6 +374,12 @@
           "supported_networks"
         ],
         "properties": {
+          "deployer": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "name": {
             "type": "string"
           },
@@ -390,6 +408,7 @@
         "type": "object",
         "required": [
           "addresses_count",
+          "addresses_ipfs",
           "denom",
           "end_time",
           "limit_per_address",
@@ -402,6 +421,9 @@
             "type": "integer",
             "format": "uint32",
             "minimum": 0.0
+          },
+          "addresses_ipfs": {
+            "type": "string"
           },
           "denom": {
             "type": "string"
@@ -522,6 +544,7 @@
         "partners",
         "project_desc",
         "project_type",
+        "reveal_time",
         "roadmap_link",
         "start_time",
         "symbol",
@@ -638,6 +661,11 @@
         "project_type": {
           "type": "string"
         },
+        "reveal_time": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
         "roadmap_link": {
           "type": "string"
         },
@@ -722,6 +750,7 @@
           "type": "object",
           "required": [
             "addresses_count",
+            "addresses_ipfs",
             "denom",
             "end_time",
             "limit_per_address",
@@ -734,6 +763,9 @@
               "type": "integer",
               "format": "uint32",
               "minimum": 0.0
+            },
+            "addresses_ipfs": {
+              "type": "string"
             },
             "denom": {
               "type": "string"
@@ -791,6 +823,7 @@
         "partners",
         "project_desc",
         "project_type",
+        "reveal_time",
         "roadmap_link",
         "start_time",
         "symbol",
@@ -907,6 +940,11 @@
         "project_type": {
           "type": "string"
         },
+        "reveal_time": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
         "roadmap_link": {
           "type": "string"
         },
@@ -991,6 +1029,7 @@
           "type": "object",
           "required": [
             "addresses_count",
+            "addresses_ipfs",
             "denom",
             "end_time",
             "limit_per_address",
@@ -1003,6 +1042,9 @@
               "type": "integer",
               "format": "uint32",
               "minimum": 0.0
+            },
+            "addresses_ipfs": {
+              "type": "string"
             },
             "denom": {
               "type": "string"
@@ -1042,6 +1084,12 @@
         "supported_networks"
       ],
       "properties": {
+        "deployer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "name": {
           "type": "string"
         },

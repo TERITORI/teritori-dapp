@@ -25,6 +25,7 @@
     "partners",
     "project_desc",
     "project_type",
+    "reveal_time",
     "roadmap_link",
     "start_time",
     "symbol",
@@ -141,6 +142,11 @@
     "project_type": {
       "type": "string"
     },
+    "reveal_time": {
+      "type": "integer",
+      "format": "uint64",
+      "minimum": 0.0
+    },
     "roadmap_link": {
       "type": "string"
     },
@@ -225,6 +231,7 @@
       "type": "object",
       "required": [
         "addresses_count",
+        "addresses_ipfs",
         "denom",
         "end_time",
         "limit_per_address",
@@ -237,6 +244,9 @@
           "type": "integer",
           "format": "uint32",
           "minimum": 0.0
+        },
+        "addresses_ipfs": {
+          "type": "string"
         },
         "denom": {
           "type": "string"

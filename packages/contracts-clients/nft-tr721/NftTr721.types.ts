@@ -28,6 +28,7 @@ export interface MintInfo {
 }
 export interface WhitelistMintInfo {
   addresses_count: number;
+  addresses_ipfs: string;
   denom: string;
   end_time: number;
   limit_per_address: number;
@@ -304,17 +305,7 @@ export type CosmosMsgForEmpty = {
 } | {
   distribution: DistributionMsg;
 } | {
-  stargate: {
-    type_url: string;
-    value: Binary;
-    [k: string]: unknown;
-  };
-} | {
-  ibc: IbcMsg;
-} | {
   wasm: WasmMsg;
-} | {
-  gov: GovMsg;
 };
 export type BankMsg = {
   send: {
@@ -356,27 +347,6 @@ export type DistributionMsg = {
 } | {
   withdraw_delegator_reward: {
     validator: string;
-    [k: string]: unknown;
-  };
-};
-export type IbcMsg = {
-  transfer: {
-    amount: Coin;
-    channel_id: string;
-    timeout: IbcTimeout;
-    to_address: string;
-    [k: string]: unknown;
-  };
-} | {
-  send_packet: {
-    channel_id: string;
-    data: Binary;
-    timeout: IbcTimeout;
-    [k: string]: unknown;
-  };
-} | {
-  close_channel: {
-    channel_id: string;
     [k: string]: unknown;
   };
 };
@@ -425,21 +395,6 @@ export type WasmMsg = {
     [k: string]: unknown;
   };
 };
-export type GovMsg = {
-  vote: {
-    proposal_id: number;
-    vote: VoteOption;
-    [k: string]: unknown;
-  };
-} | {
-  vote_weighted: {
-    options: WeightedVoteOption[];
-    proposal_id: number;
-    [k: string]: unknown;
-  };
-};
-export type VoteOption = "yes" | "no" | "abstain" | "no_with_veto";
-export type Decimal = string;
 export type ReplyOn = "always" | "error" | "success" | "never";
 export interface ResponseForEmpty {
   attributes: Attribute[];
@@ -471,21 +426,6 @@ export interface Coin {
   [k: string]: unknown;
 }
 export interface Empty {
-  [k: string]: unknown;
-}
-export interface IbcTimeout {
-  block?: IbcTimeoutBlock | null;
-  timestamp?: Timestamp | null;
-  [k: string]: unknown;
-}
-export interface IbcTimeoutBlock {
-  height: number;
-  revision: number;
-  [k: string]: unknown;
-}
-export interface WeightedVoteOption {
-  option: VoteOption;
-  weight: Decimal;
   [k: string]: unknown;
 }
 export type String = string;

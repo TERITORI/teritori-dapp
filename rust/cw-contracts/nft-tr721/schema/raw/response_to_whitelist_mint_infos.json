@@ -14,6 +14,7 @@
       "type": "object",
       "required": [
         "addresses_count",
+        "addresses_ipfs",
         "denom",
         "end_time",
         "limit_per_address",
@@ -26,6 +27,9 @@
           "type": "integer",
           "format": "uint32",
           "minimum": 0.0
+        },
+        "addresses_ipfs": {
+          "type": "string"
         },
         "denom": {
           "type": "string"

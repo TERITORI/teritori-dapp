@@ -9,6 +9,7 @@ export interface InstantiateMsg {
   [k: string]: unknown;
 }
 export interface Config {
+  deployer?: string | null;
   name: string;
   nft_code_id?: number | null;
   supported_networks: string[];
@@ -64,6 +65,7 @@ export interface Collection {
   partners: string;
   project_desc: string;
   project_type: string;
+  reveal_time: number;
   roadmap_link: string;
   royalty_address?: Addr | null;
   royalty_percentage?: number | null;
@@ -82,6 +84,7 @@ export interface Collection {
 }
 export interface WhitelistMintInfo {
   addresses_count: number;
+  addresses_ipfs: string;
   denom: string;
   end_time: number;
   limit_per_address: number;
