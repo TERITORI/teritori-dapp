@@ -45,11 +45,8 @@ export const MintWhitelistsForm: FC = () => {
     }
     whitelistMintInfosFieldArray.append({
       isOpen: true,
-      addressesCount: 0,
-      denom: "",
       endTime: 0,
       perAddressLimit: 0,
-      merkleRoot: "",
       startTime: 0,
       unitPrice: "",
     });

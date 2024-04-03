@@ -21,7 +21,7 @@ export const useCreateCollection = () => {
   const selectedWallet = useSelectedWallet();
 
   const userIPFSKey = useSelector(selectNFTStorageAPI);
-  const { pinataPinFileToIPFS } = useIpfs();
+  const { pinataPinFileToIPFS, uploadFilesToPinata } = useIpfs();
 
   const createCollection = useCallback(
     async (collectionFormValues: CollectionFormValues) => {
@@ -60,7 +60,12 @@ export const useCreateCollection = () => {
         } as PinataFileProps);
 
         // TODO: whitelists addresses IPFS hash
-        const whitelistsAddressesIpfsHash: string[] = [];
+        const remoteWhitelistAddressesFiles = await uploadFilesToPinata({
+          pinataJWTKey,
+          files: collectionFormValues.whitelistMintInfos.map(
+            (whitelist) => whitelist.addressesFile!,
+          ),
+        });
 
         // ========== TODO: Generate merkle tree/root/path
 
@@ -117,7 +122,8 @@ export const useCreateCollection = () => {
                 merkle_root: "",
                 start_time: whitelist.startTime || 0,
                 unit_price: whitelist.unitPrice || "0",
-                addresses_ipfs: whitelistsAddressesIpfsHash[index],
+                //FIXME: remoteWhitelistAddressesFile[index] will not correctly match collectionFormValues.whitelistMintInfos[index]
+                addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
               };
             },
           ),
@@ -145,7 +151,7 @@ export const useCreateCollection = () => {
         console.log("Error creating a NFT Collection in the Launchpad ", e);
       }
     },
-    [pinataPinFileToIPFS, selectedWallet, userIPFSKey],
+    [pinataPinFileToIPFS, selectedWallet, userIPFSKey, uploadFilesToPinata],
   );
 
   return {

@@ -1,5 +1,9 @@
-import React, { FC, useState } from "react";
-import { UseFieldArrayRemove, useFormContext } from "react-hook-form";
+import React, { FC } from "react";
+import {
+  UseFieldArrayRemove,
+  UseFieldArrayUpdate,
+  useFormContext,
+} from "react-hook-form";
 import { View, TouchableOpacity } from "react-native";
 
 import trashSVG from "@/assets/icons/trash.svg";
@@ -8,7 +12,10 @@ import { SVG } from "@/components/SVG";
 import { CsvTextFileUploader } from "@/components/inputs/CsvTextFileUploader";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
-import { CollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
+import {
+  CollectionFormValues,
+  CollectionWhitelistFormValues,
+} from "@/screens/Launchpad/CreateCollection.type";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { patternOnlyNumbers } from "@/utils/formRules";
 import { errorColor, neutral55, neutral77 } from "@/utils/style/colors";
@@ -20,13 +27,13 @@ import {
 import { layout } from "@/utils/style/layout";
 
 export const LaunchpadMintWhitelistAccordionFormBottom: FC<{
+  elem: CollectionWhitelistFormValues;
+  update: UseFieldArrayUpdate<CollectionFormValues>;
   remove: UseFieldArrayRemove;
   elemIndex: number;
-}> = ({ elemIndex, remove }) => {
+}> = ({ elem, elemIndex, remove, update }) => {
   const collectionForm = useFormContext<CollectionFormValues>();
   // TODO: Handle this in collectionForm
-  const [whitelistAddresses, setWhitelistAddresses] = useState<string[]>([]);
-
   const unitPriceKey = `whitelistMintInfos.${elemIndex}.unitPrice` as const;
   const startTimeKey = `whitelistMintInfos.${elemIndex}.startTime` as const;
   const endTimeKey = `whitelistMintInfos.${elemIndex}.endTime` as const;
@@ -113,8 +120,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<{
 
       <SpacerColumn size={2} />
       <CsvTextFileUploader
-        rows={whitelistAddresses}
-        setRows={setWhitelistAddresses}
+        onUpload={(file) => update(elemIndex, { ...elem, addressesFile: file })}
       />
 
       <SpacerColumn size={2} />

@@ -50,6 +50,7 @@ export interface CollectionWhitelistFormValues {
   startTime: number;
   unitPrice: Uint128;
   isOpen: boolean;
+  addressesFile?: LocalFileData;
 }
 
 export interface NewCollectionAssetsFormValues {

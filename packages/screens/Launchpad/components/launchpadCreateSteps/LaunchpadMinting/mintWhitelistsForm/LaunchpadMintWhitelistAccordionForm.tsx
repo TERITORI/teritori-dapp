@@ -35,7 +35,9 @@ export const LaunchpadMintWhitelistAccordionForm: FC<{
 
       {elem.isOpen && (
         <LaunchpadMintWhitelistAccordionFormBottom
+          update={update}
           remove={remove}
+          elem={elem}
           elemIndex={elemIndex}
         />
       )}
