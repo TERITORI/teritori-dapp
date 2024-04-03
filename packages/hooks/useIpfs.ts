@@ -109,6 +109,7 @@ export const useIpfs = () => {
           return {
             ...omit(file, "file"),
             url,
+            localUrl: file.url,
             thumbnailFileData: {
               ...omit(file.thumbnailFileData, "file"),
               url: thumbnailUrl,
@@ -120,6 +121,7 @@ export const useIpfs = () => {
             // Thumbnails cannot have a thumbnail, so we set isThumbnailImage here
             isThumbnailImage: file.isThumbnailImage,
             url,
+            localUrl: file.url,
           };
         }
       };
