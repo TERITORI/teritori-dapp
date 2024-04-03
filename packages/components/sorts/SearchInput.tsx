@@ -13,11 +13,14 @@ import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
+import { useIsMobile } from "@/hooks/useIsMobile";
+
 export const SearchInput: React.FC<{
   style?: StyleProp<ViewStyle>;
   borderRadius?: number;
   handleChangeText?: (e: string) => void;
 }> = ({ handleChangeText, borderRadius, style }) => {
+  const isMobile = useIsMobile();
   return (
     <LegacyTertiaryBox
       style={style}
@@ -31,7 +34,11 @@ export const SearchInput: React.FC<{
       fullWidth
     >
       <SVG
-        style={{ marginRight: layout.spacing_x1, maxWidth: 22 }}
+        style={{
+          marginRight: layout.spacing_x1,
+          maxWidth: 22,
+          marginLeft: isMobile ? layout.spacing_x2 : 0,
+        }}
         source={searchSVG}
       />
       <TextInput

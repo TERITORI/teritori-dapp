@@ -328,8 +328,11 @@ const PrettyPriceWithCurrency: React.FC<{
               style={[
                 isMobile ? fontSemibold9 : fontSemibold11,
                 {
-                  marginLeft: layout.spacing_x1,
+                  marginLeft: isMobile
+                    ? layout.spacing_x0_5
+                    : layout.spacing_x1,
                   color: neutral77,
+                  width: isMobile ? layout.spacing_x3 : "auto",
                 },
               ]}
               numberOfLines={1}
@@ -418,12 +421,15 @@ const CollectionRow: React.FC<{
       </View>
       <PrettyPriceWithCurrency
         data={rowData["tradeVolume"]}
-        style={{ flex: TABLE_COLUMNS.tradeVolume.flex }}
+        style={{
+          flex: TABLE_COLUMNS.tradeVolume.flex,
+        }}
       />
       <InnerCell
         style={{ flex: TABLE_COLUMNS.tradeVolumeDiff.flex }}
         textStyle={{
           color: tradeDiffColor,
+          marginLeft: isMobile ? layout.spacing_x1_5 : 0,
         }}
       >
         {tradeDiffText}
