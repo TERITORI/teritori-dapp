@@ -37,8 +37,6 @@ import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
 import { SocialVideoCard } from "../SocialCard/cards/SocialVideoCard";
 
 const OFFSET_Y_LIMIT_FLOATING = 224;
-export const ROUND_BUTTON_WIDTH_L = 60;
-export const ROUND_BUTTON_WIDTH_S = 42;
 
 interface NewsFeedProps {
   Header: React.ComponentType;
@@ -231,7 +229,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
             <ListHeaderComponent />
           </>
         }
-        keyExtractor={(post: Post) => post.identifier}
+        keyExtractor={(post) => post.id}
         onScroll={scrollHandler}
         contentContainerStyle={contentCStyle}
         onEndReachedThreshold={4}

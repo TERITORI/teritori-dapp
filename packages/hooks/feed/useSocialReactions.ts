@@ -2,14 +2,18 @@ import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { Dispatch, SetStateAction } from "react";
 
 import { useFeedPosting } from "./useFeedPosting";
-import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
 
 import { Post } from "@/api/feed/v1/feed";
 import { signingSocialFeedClient } from "@/client-creators/socialFeedClient";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useTeritoriSocialFeedReactPostMutation } from "@/contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
-import { mustGetGnoNetwork, NetworkFeature, NetworkKind } from "@/networks";
+import {
+  getNetwork,
+  mustGetGnoNetwork,
+  NetworkFeature,
+  NetworkKind,
+} from "@/networks";
 import { TERITORI_FEED_ID } from "@/utils/feed/constants";
 import { adenaDoContract } from "@/utils/gno";
 import {
@@ -26,15 +30,13 @@ export const useSocialReactions = ({
   post: Post;
   setPost: Dispatch<SetStateAction<Post>>;
 }) => {
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-  const selectedNetworkId = selectedNetworkInfo?.id || "";
   const selectedWallet = useSelectedWallet();
   const userId = selectedWallet?.userId;
   const { showNotEnoughFundsModal, showConnectWalletModal } =
     useWalletControl();
   const postCategory = PostCategory.Reaction;
   const { canPayForPost: canPayForReaction, publishingFee } = useFeedPosting(
-    selectedNetworkId,
+    post.networkId,
     userId,
     postCategory,
   );
@@ -51,7 +53,7 @@ export const useSocialReactions = ({
     });
   const cosmosReaction = async (emoji: string, walletAddress: string) => {
     const client = await signingSocialFeedClient({
-      networkId: selectedNetworkId,
+      networkId: post.networkId,
       walletAddress,
     });
 
@@ -59,22 +61,22 @@ export const useSocialReactions = ({
       client,
       msg: {
         icon: emoji,
-        identifier: post.identifier,
+        identifier: post.localIdentifier,
         up: true,
       },
     });
   };
   const gnoReaction = async (emoji: string, rpcEndpoint: string) => {
-    const gnoNetwork = mustGetGnoNetwork(selectedNetworkId);
+    const gnoNetwork = mustGetGnoNetwork(post.networkId);
     const vmCall = {
       caller: selectedWallet?.address || "",
       send: "",
       pkg_path: gnoNetwork.socialFeedsPkgPath,
       func: "ReactPost",
-      args: [TERITORI_FEED_ID, post.identifier, emoji, "true"],
+      args: [TERITORI_FEED_ID, post.id, emoji, "true"],
     };
     const txHash = await adenaDoContract(
-      selectedNetworkId,
+      post.networkId,
       [{ type: "/vm.m_call", value: vmCall }],
       {
         gasWanted: 2_000_000,
@@ -122,8 +124,9 @@ export const useSocialReactions = ({
       });
       return;
     }
-    if (selectedNetworkInfo?.kind === NetworkKind.Gno) {
-      gnoReaction(emoji, selectedNetworkInfo?.endpoint || "");
+    const network = getNetwork(post.networkId);
+    if (network?.kind === NetworkKind.Gno) {
+      gnoReaction(emoji, network?.endpoint || "");
     } else {
       cosmosReaction(emoji, selectedWallet.address);
     }

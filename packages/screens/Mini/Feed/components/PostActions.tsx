@@ -11,8 +11,6 @@ import { EmojiSelector } from "@/components/socialFeed/EmojiSelector";
 import { TipButton } from "@/components/socialFeed/SocialActions/TipButton";
 import { SpacerRow } from "@/components/spacer";
 import { useSocialReactions } from "@/hooks/feed/useSocialReactions";
-import { useNSUserInfo } from "@/hooks/useNSUserInfo";
-import { parseUserId } from "@/networks";
 import { layout } from "@/utils/style/layout";
 
 type CardFooterProps = {
@@ -22,9 +20,6 @@ type CardFooterProps = {
 
 export function PostActions({ post, setPost }: CardFooterProps) {
   const wallet = useSelectedWallet();
-  const authorNSInfo = useNSUserInfo(post.authorId);
-  const [, authorAddress] = parseUserId(post.authorId);
-  const username = authorNSInfo?.metadata?.tokenId || authorAddress;
   const { handleReaction, isPostMutationLoading } = useSocialReactions({
     post,
     setPost,
@@ -74,8 +69,8 @@ export function PostActions({ post, setPost }: CardFooterProps) {
       <TipButton
         disabled={post.authorId === wallet?.userId}
         amount={post.tipAmount}
-        author={username}
-        postId={post.identifier}
+        authorId={post.authorId}
+        postId={post.id}
       />
     </View>
   );

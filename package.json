@@ -177,7 +177,7 @@
     "@types/html-to-draftjs": "^1.4.0",
     "@types/markdown-it": "^13.0.7",
     "@types/node": "^20.9.1",
-    "@types/react": "~18.2.14",
+    "@types/react": "~18.2.45",
     "@types/react-native-countdown-component": "^2.7.0",
     "@types/uuid": "^9.0.0",
     "babel-loader": "^8.2.5",

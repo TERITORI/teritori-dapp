@@ -28,13 +28,13 @@ export const ShareButton = ({ postId, useAltStyle }: ShareButtonProps) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const windowOrigin =
     Platform.OS === "web" ? window.location.origin : WEBSITE_URL;
+
   const SOCIAL_BUTTONS = [
     {
       text: "Twitter",
       iconSvg: twitterSVG,
       onPress: () => {
-        const message = `${windowOrigin}/feed/post/${postId}
-#Teritori`;
+        const message = `${windowOrigin}/feed/post/${postId}`;
 
         Linking.openURL(
           `https://twitter.com/intent/tweet?text=${encodeURIComponent(

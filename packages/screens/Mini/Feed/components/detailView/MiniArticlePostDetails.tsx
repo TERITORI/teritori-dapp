@@ -19,10 +19,7 @@ import { RichText } from "@/components/socialFeed/RichText";
 import { SocialCardHeader } from "@/components/socialFeed/SocialCard/SocialCardHeader";
 import { SocialCardWrapper } from "@/components/socialFeed/SocialCard/SocialCardWrapper";
 import { SpacerColumn } from "@/components/spacer";
-import {
-  combineFetchCommentPages,
-  useFetchComments,
-} from "@/hooks/feed/useFetchComments";
+import { useFetchComments } from "@/hooks/feed/useFetchComments";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
 import {
@@ -38,18 +35,11 @@ import { tinyAddress } from "@/utils/text";
 import { ReplyToType, ZodSocialFeedArticleMetadata } from "@/utils/types/feed";
 
 type Props = {
-  networkId: string;
   post: Post;
   refetchPost: () => Promise<any>;
-  isLoading?: boolean;
 };
 
-export const MiniArticlePostDetails = ({
-  networkId,
-  post,
-  refetchPost,
-  isLoading,
-}: Props) => {
+export const MiniArticlePostDetails = ({ post, refetchPost }: Props) => {
   const { width: windowWidth } = useWindowDimensions();
 
   const aref = useAnimatedRef<Animated.ScrollView>();
@@ -81,23 +71,18 @@ export const MiniArticlePostDetails = ({
   const [, authorAddress] = parseUserId(localPost.authorId);
 
   const {
-    data,
+    data: comments,
     refetch: refetchComments,
     hasNextPage,
     fetchNextPage,
     // isLoading: isLoadingComments,
   } = useFetchComments({
-    parentId: post?.identifier,
-    totalCount: post?.subPostLength,
+    parentId: post.id,
+    totalCount: post.subPostLength,
     enabled: true,
   });
 
   const isNextPageAvailable = useSharedValue(hasNextPage);
-  const comments = useMemo(
-    () => (data ? combineFetchCommentPages(data.pages) : []),
-    [data],
-  );
-  const postId = post.identifier;
   const authorId = post?.authorId;
   const username =
     authorNSInfo?.metadata?.tokenId ||
@@ -127,7 +112,7 @@ export const MiniArticlePostDetails = ({
         }
       },
     },
-    [postId],
+    [post.id],
   );
 
   const handleSubmitInProgress = () => {
@@ -140,7 +125,7 @@ export const MiniArticlePostDetails = ({
   return (
     <KeyboardAvoidingView extraVerticalOffset={-100}>
       <ScreenContainer
-        forceNetworkId={networkId}
+        forceNetworkId={post.networkId}
         fullWidth
         responsive
         noMargin
@@ -191,10 +176,8 @@ export const MiniArticlePostDetails = ({
                 )}
 
                 <SocialCardHeader
-                  authorAddress={authorAddress}
                   authorId={localPost.authorId}
                   createdAt={post.createdAt}
-                  authorMetadata={authorNSInfo?.metadata}
                 />
 
                 {/*========== Article content */}
@@ -203,7 +186,7 @@ export const MiniArticlePostDetails = ({
                     initialValue={metadataToUse.message}
                     isPostConsultation
                     audioFiles={audioFiles}
-                    postId={postId}
+                    postId={post.id}
                     authorId={authorId}
                   />
                 </View>
@@ -231,7 +214,7 @@ export const MiniArticlePostDetails = ({
               }}
               ref={feedInputRef}
               replyTo={replyTo}
-              parentId={post.identifier}
+              parentId={post.id}
               onSubmitInProgress={handleSubmitInProgress}
               onSubmitSuccess={() => {
                 setReplyTo(undefined);

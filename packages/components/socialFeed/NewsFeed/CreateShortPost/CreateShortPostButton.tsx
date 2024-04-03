@@ -1,16 +1,12 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
-import penSVG from "../../../../../assets/icons/pen.svg";
-import {
-  neutral17,
-  neutral33,
-  secondaryColor,
-} from "../../../../utils/style/colors";
-import { fontSemibold14 } from "../../../../utils/style/fonts";
-import { layout } from "../../../../utils/style/layout";
-import { BrandText } from "../../../BrandText";
-import { SVG } from "../../../SVG";
+import penSVG from "@/assets/icons/pen.svg";
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { neutral17, neutral33, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const CreateShortPostButton: React.FC<{
   label: string;

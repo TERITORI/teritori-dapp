@@ -11,30 +11,15 @@ import { NotFound } from "@/components/NotFound";
 import { Spinner } from "@/components/Spinner";
 import { BackButton } from "@/components/navigation/components/BackButton";
 import { usePost } from "@/hooks/feed/usePost";
-import { parseNetworkObjectId } from "@/networks";
-import { gnoTeritoriNetwork } from "@/networks/gno-teritori";
-import { teritoriNetwork } from "@/networks/teritori";
+import { convertLegacyPostId } from "@/utils/feed/queries";
 import { ScreenFC } from "@/utils/navigation";
 import { layout } from "@/utils/style/layout";
 import { PostCategory } from "@/utils/types/feed";
 
 export const FeedDetailsView: ScreenFC<"FeedPostView"> = ({ route }) => {
-  const { id } = route.params;
-  let [network, postId] = parseNetworkObjectId(id);
-  if (!network) {
-    // fallback to teritori or gno network if there is no network prefix in the id
-    if (id.includes("-")) {
-      // teritori ids are uuids
-      network = teritoriNetwork;
-      postId = id;
-    } else {
-      // gno ids are integers
-      network = gnoTeritoriNetwork;
-      postId = id;
-    }
-  }
-  const networkId = network?.id;
-  const { post, isLoading, refetch, isFetching } = usePost(postId, networkId);
+  const { id: idParam } = route.params;
+  const postId = convertLegacyPostId(idParam);
+  const { post, isLoading, refetch } = usePost(postId);
   const label = post?.category === PostCategory.Video ? "Video" : "Post";
 
   if (isLoading) {
@@ -77,29 +62,10 @@ export const FeedDetailsView: ScreenFC<"FeedPostView"> = ({ route }) => {
     );
   }
   if (post.category === PostCategory.Video) {
-    return (
-      <MiniVideoPostDetails
-        networkId={networkId}
-        post={post}
-        refetchPost={refetch}
-      />
-    );
+    return <MiniVideoPostDetails post={post} refetchPost={refetch} />;
   }
   if (post.category === PostCategory.Article) {
-    return (
-      <MiniArticlePostDetails
-        networkId={networkId}
-        post={post}
-        refetchPost={refetch}
-      />
-    );
+    return <MiniArticlePostDetails post={post} refetchPost={refetch} />;
   }
-  return (
-    <MiniDefaultPostDetails
-      networkId={networkId}
-      post={post}
-      refetchPost={refetch}
-      isLoading={isLoading || isFetching}
-    />
-  );
+  return <MiniDefaultPostDetails post={post} refetchPost={refetch} />;
 };

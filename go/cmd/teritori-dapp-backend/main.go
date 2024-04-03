@@ -123,6 +123,7 @@ func main() {
 		Logger:    logger,
 		IndexerDB: indexerDB,
 		PinataJWT: *pinataJWT,
+		Networks:  netstore,
 	})
 
 	daoSvc := dao.NewDAOService(context.Background(), &dao.Config{

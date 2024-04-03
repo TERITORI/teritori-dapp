@@ -154,7 +154,10 @@ export const MediaPlayerBar: FC<{
       <SpacerRow size={isDesktopContentSmall ? 2 : 4} />
 
       <View style={{ flex: 1 }}>
-        <MediaNameImage style={{ maxWidth: 400, width: "100%" }} />
+        <MediaNameImage
+          media={media}
+          style={{ maxWidth: 400, width: "100%" }}
+        />
       </View>
       <SpacerRow size={isDesktopContentSmall ? 2 : 4} />
 
