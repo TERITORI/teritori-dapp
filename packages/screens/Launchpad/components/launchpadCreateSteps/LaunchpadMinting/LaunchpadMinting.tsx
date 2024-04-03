@@ -69,21 +69,6 @@ export const LaunchpadMinting: React.FC = () => {
           rules={{ pattern: patternOnlyNumbers }}
         />
 
-        {/*TODO: Control, format ?*/}
-        <TextInputLaunchpad<CollectionFormValues>
-          label="Start Time "
-          sublabel={
-            <View>
-              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-                Start time for the minting
-              </BrandText>
-            </View>
-          }
-          placeHolder="--.--.---- --:--"
-          name="startTime"
-          control={collectionForm.control}
-        />
-
         <Separator />
         <SpacerColumn size={2} />
         <BrandText style={fontSemibold20}>Whitelist Minting Details</BrandText>

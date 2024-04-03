@@ -21,7 +21,6 @@ export interface CollectionFormValues {
   nbTokens: number;
   unitPrice: Uint128;
   perAddressLimit: number;
-  startTime: number;
   teamDescription: string;
   teamLink: string;
   partnersDescription: string;
@@ -40,17 +39,14 @@ export interface CollectionFormValues {
   isDox: boolean;
   escrowMintProceedsPeriod: number;
   daoWhitelistCount: number;
-  whitelistMintInfos: WhitelistAccordionElem[];
+  whitelistMintInfos: CollectionWhitelistFormValues[];
   royaltyAddress?: string;
   royaltyPercentage?: number;
 }
 
-export interface WhitelistAccordionElem {
-  addressesCount: number;
-  denom: string;
+export interface CollectionWhitelistFormValues {
   endTime: number;
   perAddressLimit: number;
-  merkleRoot: string;
   startTime: number;
   unitPrice: Uint128;
   isOpen: boolean;

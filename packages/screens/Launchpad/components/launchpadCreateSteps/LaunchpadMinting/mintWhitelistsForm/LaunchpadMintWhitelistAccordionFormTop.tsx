@@ -10,14 +10,14 @@ import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import {
   CollectionFormValues,
-  WhitelistAccordionElem,
+  CollectionWhitelistFormValues,
 } from "@/screens/Launchpad/CreateCollection.type";
 import { secondaryColor } from "@/utils/style/colors";
 import { fontSemibold16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const LaunchpadMintWhitelistAccordionFormTop: FC<{
-  elem: WhitelistAccordionElem;
+  elem: CollectionWhitelistFormValues;
   elemIndex: number;
   update: UseFieldArrayUpdate<CollectionFormValues>;
   closeAll: () => void;

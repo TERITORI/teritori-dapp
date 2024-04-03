@@ -27,7 +27,6 @@ export const useCreateCollection = () => {
     async (collectionFormValues: CollectionFormValues) => {
       if (!selectedWallet) return;
       const network = mustGetCosmosNetwork(selectedWallet.networkId);
-
       const signingComswasmClient = await getKeplrSigningCosmWasmClient(
         network.id,
       );
@@ -36,29 +35,36 @@ export const useCreateCollection = () => {
         NetworkFeature.NFTLaunchpad,
       );
       if (!cosmwasmLaunchpadFeature) return;
-
       const client = new NftLaunchpadClient(
         signingComswasmClient,
         selectedWallet.address,
         cosmwasmLaunchpadFeature.launchpadContractAddress,
       );
+      const pinataJWTKey =
+        userIPFSKey ||
+        (await generateIpfsKey(network.id, selectedWallet.userId));
+      if (!pinataJWTKey) {
+        console.error("upload file err : No Pinata JWT");
+        // setToastError({
+        //   title: "File upload failed",
+        //   message: "No Pinata JWT",
+        // });
+        return;
+      }
+
       try {
-        const pinataJWTKey =
-          userIPFSKey ||
-          (await generateIpfsKey(network.id, selectedWallet.userId));
-        if (!pinataJWTKey) {
-          console.error("upload file err : No Pinata JWT");
-          // setToastError({
-          //   title: "File upload failed",
-          //   message: "No Pinata JWT",
-          // });
-          return;
-        }
-        const fileIpfsHash = await pinataPinFileToIPFS({
+        // ========== Upload files to IPFS
+        const coverImageIpfsHash = await pinataPinFileToIPFS({
           pinataJWTKey,
           file: collectionFormValues.coverImage,
         } as PinataFileProps);
 
+        // TODO: whitelists addresses IPFS hash
+        const whitelistsAddressesIpfsHash: string[] = [];
+
+        // ========== TODO: Generate merkle tree/root/path
+
+        // ========== Build Collection from forms
         const collection: Collection = {
           name: collectionFormValues.name || "",
           desc: collectionFormValues.description || "",
@@ -74,7 +80,8 @@ export const useCreateCollection = () => {
           tokens_count: collectionFormValues.nbTokens || 0,
           unit_price: collectionFormValues.unitPrice || "",
           limit_per_address: collectionFormValues.perAddressLimit || 0,
-          start_time: collectionFormValues.startTime || 0,
+          start_time: 0,
+          reveal_time: 0,
           team_desc: collectionFormValues.teamDescription || "",
           team_link: collectionFormValues.teamLink || "",
           partners: collectionFormValues.partnersDescription || "",
@@ -86,12 +93,10 @@ export const useCreateCollection = () => {
           expected_public_mint_price:
             collectionFormValues.expectedPublicMintPrice || 0,
           expected_mint_date: collectionFormValues.expectedMintDate || 0,
-
           // TODO:
           // nftApiKey: collectionFormValues.nftApiKey || "",
 
-          cover_img_uri: fileIpfsHash || "",
-
+          cover_img_uri: coverImageIpfsHash || "",
           is_applied_previously:
             collectionFormValues.isPreviouslyApplied || false,
           is_project_derivative:
@@ -103,15 +108,16 @@ export const useCreateCollection = () => {
           dao_whitelist_count: collectionFormValues.daoWhitelistCount || 0,
 
           whitelist_mint_infos: collectionFormValues.whitelistMintInfos.map(
-            (whitelist) => {
+            (whitelist, index) => {
               return {
-                addresses_count: whitelist.addressesCount || 0,
-                denom: whitelist.denom || "",
+                addresses_count: collectionFormValues.whitelistMintInfos.length,
+                denom: "",
                 end_time: whitelist.endTime || 0,
                 limit_per_address: whitelist.perAddressLimit || 0,
-                merkle_root: whitelist.merkleRoot || "",
+                merkle_root: "",
                 start_time: whitelist.startTime || 0,
                 unit_price: whitelist.unitPrice || "0",
+                addresses_ipfs: whitelistsAddressesIpfsHash[index],
               };
             },
           ),
@@ -127,6 +133,7 @@ export const useCreateCollection = () => {
           base_token_uri: "None",
         };
 
+        // ========== Submit the collection
         await client.submitCollection({
           collection,
         });

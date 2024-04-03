@@ -7,12 +7,12 @@ import { LaunchpadMintWhitelistAccordionFormTop } from "./LaunchpadMintWhitelist
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import {
   CollectionFormValues,
-  WhitelistAccordionElem,
+  CollectionWhitelistFormValues,
 } from "@/screens/Launchpad/CreateCollection.type";
 import { neutral00, neutral22, neutral33 } from "@/utils/style/colors";
 
 export const LaunchpadMintWhitelistAccordionForm: FC<{
-  elem: WhitelistAccordionElem;
+  elem: CollectionWhitelistFormValues;
   elemIndex: number;
   remove: UseFieldArrayRemove;
   update: UseFieldArrayUpdate<CollectionFormValues>;
