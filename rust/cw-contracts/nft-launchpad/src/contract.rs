@@ -116,18 +116,28 @@ impl NftLaunchpad {
         ctx: ExecCtx,
         collection_id: u64,
     ) -> Result<Response, ContractError> {
+        let sender = ctx.info.sender.to_string();
+        let config = self.config.load(ctx.deps.storage)?;
+
+        // Only allow deployer to deploy
+        if config.deployer.is_none() {
+            return Err(ContractError::DeployerMissing);
+        }
+
+        if sender != config.deployer.unwrap() {
+            return Err(ContractError::Forbidden);
+        }
+
         let collection = self
             .collections
             .load(ctx.deps.storage, collection_id)
-            .map_err(|_| ContractError::CollectionNotFound)?;
+            .map_err(|_| ContractError::CollectionNotFound)?;        
 
         // Do not allow to deploy collection if merkle root is not set
         if collection.merkle_root.is_none() {
             return Err(ContractError::MerkleRootMissing);
         }
 
-        let config = self.config.load(ctx.deps.storage)?;
-        let sender = ctx.info.sender.to_string();
         let nft_code_id = config.nft_code_id;
 
         // Do not allow to deploy collection is nft_code_is is not set
@@ -248,6 +258,7 @@ pub struct Config {
     pub name: String,
     pub nft_code_id: Option<u64>,
     pub supported_networks: Vec<String>,
+    pub deployer: Option<String>,
 }
 
 #[cw_serde]
@@ -301,6 +312,8 @@ pub struct Collection {
     pub is_dox: bool,
 
     pub dao_whitelist_count: u32,
+
+    pub reveal_time: u64,
 
     // Minting details ----------------------------
     pub tokens_count: u64,

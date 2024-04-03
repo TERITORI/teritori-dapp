@@ -15,6 +15,7 @@ fn get_default_collection() -> Collection {
         denom: "denom".to_string(),
         limit_per_address: 2,
         addresses_count: 3,
+        addresses_ipfs: "addresses_ipfs".to_string(),
         start_time: u64::default(),
         end_time: u64::default(),
     }];
@@ -76,6 +77,7 @@ fn get_default_collection() -> Collection {
         unit_price: Uint128::new(100),
         limit_per_address: 2,
         start_time: u64::default(),
+        reveal_time: u64::default(),
 
         // Whitelist minting --------------------------
         whitelist_mint_infos,
@@ -102,6 +104,7 @@ fn instantiate() {
         name: "teritori launchpad".to_string(),
         supported_networks: vec![],
         nft_code_id: None,
+        deployer: None,
     };
 
     let contract = code_id.instantiate(config).call(sender).unwrap();
@@ -134,6 +137,7 @@ fn full_flow() {
             name: "teritori launchpad".to_string(),
             supported_networks: vec![],
             nft_code_id: None,
+            deployer: None,
         })
         .call(sender)
         .unwrap();
@@ -164,8 +168,41 @@ fn full_flow() {
         assert_eq!(commited_collection.name, default_collection.name);
     }
 
-    // Deploy inexist collection  ---------------------------------------------------------
+    // Deploy when deployer missing  ---------------------------------------------------------
     {
+        let err = contract.deploy_collection(999).call(sender).unwrap_err();
+        assert_eq!(err, ContractError::DeployerMissing)
+    }
+
+    // Deploy when sender is not deployer  ---------------------------------------------------------
+    {
+        contract
+        .update_config(Config {
+            name: "test".to_string(),
+            supported_networks: vec![],
+            nft_code_id: None,
+            deployer:Some("deployer".to_string()),
+        })
+        .call(sender)
+        .unwrap();
+
+        let err = contract.deploy_collection(999).call(sender).unwrap_err();
+        assert_eq!(err, ContractError::Forbidden)
+    }
+
+
+    // Set sender as deployer and Deploy inexist collection  ---------------------------------------------------------
+    {
+         contract
+        .update_config(Config {
+            name: "test".to_string(),
+            supported_networks: vec![],
+            nft_code_id: None,
+            deployer:Some(sender.to_string()),
+        })
+        .call(sender)
+        .unwrap();
+
         let err = contract.deploy_collection(999).call(sender).unwrap_err();
         assert_eq!(err, ContractError::CollectionNotFound)
     }
@@ -205,6 +242,7 @@ fn full_flow() {
                 name: "test".to_string(),
                 nft_code_id: Some(deployed_nft_code_id),
                 supported_networks: vec![],
+                deployer: Some(sender.to_string()),
             })
             .call(sender)
             .unwrap();

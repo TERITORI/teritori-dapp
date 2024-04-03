@@ -71,6 +71,7 @@ pub fn get_default_whitelist_mint_info() -> WhitelistMintInfo {
         denom: "denom".to_string(),
         limit_per_address: 2,
         addresses_count: 1,
+        addresses_ipfs: "ipfs_path".to_string(),
         start_time: DEFAULT_BLOCK_TIME,
         end_time: DEFAULT_BLOCK_TIME,
     }

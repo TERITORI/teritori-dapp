@@ -760,11 +760,12 @@ pub struct WhitelistProof {
 #[cw_serde]
 #[derive(Default)]
 pub struct WhitelistMintInfo {
-    pub merkle_root: String,
+    pub merkle_root: String,  // Merkle roof of addresses
     pub unit_price: Uint128,
     pub denom: String,
     pub limit_per_address: u32,
     pub addresses_count: u32,
+    pub addresses_ipfs: String,
     pub start_time: u64,
     pub end_time: u64,
 }
@@ -784,5 +785,6 @@ pub struct MintInfo {
     pub royalty_percentage: Option<u8>,
 
     // Extend info --------------------------
-    pub merkle_root: String,
+    pub merkle_root: String,  // Merkle roof of metadatas
+
 }

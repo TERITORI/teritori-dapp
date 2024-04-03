@@ -13,6 +13,9 @@ pub enum ContractError {
     #[error("Merkle root missing.")]
     MerkleRootMissing,
 
+    #[error("Deployer missing.")]
+    DeployerMissing,
+
     #[error("Collection not found.")]
     CollectionNotFound,
 
