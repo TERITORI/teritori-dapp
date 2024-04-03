@@ -16,11 +16,14 @@ import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import {
   neutral00,
+  neutral09,
   neutral22,
   neutral33,
   neutral99,
+  neutralA3,
 } from "@/utils/style/colors";
 import {
+  fontMedium16,
   fontSemibold12,
   fontSemibold14,
   fontSemibold22,
@@ -31,6 +34,7 @@ import { weshConfig } from "@/weshnet";
 import {
   getConversationAvatar,
   getConversationName,
+  getNewConversationText,
 } from "@/weshnet/messageHelpers";
 import { stringFromBytes } from "@/weshnet/utils";
 
@@ -85,6 +89,36 @@ export const Conversations = ({
   const handleLongPressMessage = (msgId: string) => {
     setLongPressedMessageId(msgId);
   };
+
+  if (messages.length === 0) {
+    return (
+      <View
+        style={{
+          backgroundColor: neutral09,
+          marginTop: 50,
+          paddingHorizontal: layout.spacing_x2,
+          paddingVertical: layout.spacing_x2,
+          borderRadius: layout.borderRadius,
+          borderColor: neutralA3,
+          borderWidth: 1,
+        }}
+      >
+        <BrandText
+          style={[
+            fontMedium16,
+            {
+              textAlign: "center",
+              lineHeight: 30,
+              letterSpacing: 0.5,
+              color: neutralA3,
+            },
+          ]}
+        >
+          {conversationItem && getNewConversationText(conversationItem)}
+        </BrandText>
+      </View>
+    );
+  }
 
   return (
     <>
