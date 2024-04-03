@@ -11,6 +11,7 @@ import (
 	mrand "math/rand"
 	"net/http"
 	"os"
+	"runtime"
 	"strconv"
 
 	"berty.tech/weshnet"
@@ -306,7 +307,22 @@ func BootWesh(path string) {
 	weshDir = path
 	log.Println("weshnet: Boot Wesh: weshDir", weshDir)
 	CreateWrappedServer()
-	go StartHTTPServer()
+	if runtime.GOOS == "android" {
+
+		go StartHTTPServer()
+	} else {
+		 
+	startHTTPServerDone := make(chan struct{})
+ 
+	go func() {
+		defer close(startHTTPServerDone)
+		 
+		StartHTTPServer()
+	}()
+
+	<-startHTTPServerDone
+
+	}
 }
 
 func HandleExit() error {
