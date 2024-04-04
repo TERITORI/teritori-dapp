@@ -39,6 +39,17 @@ export interface TokenMetadataResponse {
   merkleProof: string[];
 }
 
+export interface UpdateCollectionWhitelistsRequest {
+  sender: string;
+  networkId: string;
+  projectId: number;
+  whitelistMintInfos: WhitelistMintInfo[];
+}
+
+export interface UpdateCollectionWhitelistsResponse {
+  merkleRoots: string[];
+}
+
 export interface Metadata {
   image?: string | undefined;
   imageData?: string | undefined;
@@ -568,6 +579,181 @@ export const TokenMetadataResponse = {
       ? Metadata.fromPartial(object.metadata)
       : undefined;
     message.merkleProof = object.merkleProof?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseUpdateCollectionWhitelistsRequest(): UpdateCollectionWhitelistsRequest {
+  return { sender: "", networkId: "", projectId: 0, whitelistMintInfos: [] };
+}
+
+export const UpdateCollectionWhitelistsRequest = {
+  encode(message: UpdateCollectionWhitelistsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(18).string(message.networkId);
+    }
+    if (message.projectId !== 0) {
+      writer.uint32(24).uint32(message.projectId);
+    }
+    for (const v of message.whitelistMintInfos) {
+      WhitelistMintInfo.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateCollectionWhitelistsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateCollectionWhitelistsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.projectId = reader.uint32();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.whitelistMintInfos.push(WhitelistMintInfo.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateCollectionWhitelistsRequest {
+    return {
+      sender: isSet(object.sender) ? globalThis.String(object.sender) : "",
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      projectId: isSet(object.projectId) ? globalThis.Number(object.projectId) : 0,
+      whitelistMintInfos: globalThis.Array.isArray(object?.whitelistMintInfos)
+        ? object.whitelistMintInfos.map((e: any) => WhitelistMintInfo.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: UpdateCollectionWhitelistsRequest): unknown {
+    const obj: any = {};
+    if (message.sender !== "") {
+      obj.sender = message.sender;
+    }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    if (message.projectId !== 0) {
+      obj.projectId = Math.round(message.projectId);
+    }
+    if (message.whitelistMintInfos?.length) {
+      obj.whitelistMintInfos = message.whitelistMintInfos.map((e) => WhitelistMintInfo.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UpdateCollectionWhitelistsRequest>, I>>(
+    base?: I,
+  ): UpdateCollectionWhitelistsRequest {
+    return UpdateCollectionWhitelistsRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UpdateCollectionWhitelistsRequest>, I>>(
+    object: I,
+  ): UpdateCollectionWhitelistsRequest {
+    const message = createBaseUpdateCollectionWhitelistsRequest();
+    message.sender = object.sender ?? "";
+    message.networkId = object.networkId ?? "";
+    message.projectId = object.projectId ?? 0;
+    message.whitelistMintInfos = object.whitelistMintInfos?.map((e) => WhitelistMintInfo.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseUpdateCollectionWhitelistsResponse(): UpdateCollectionWhitelistsResponse {
+  return { merkleRoots: [] };
+}
+
+export const UpdateCollectionWhitelistsResponse = {
+  encode(message: UpdateCollectionWhitelistsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.merkleRoots) {
+      writer.uint32(10).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateCollectionWhitelistsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUpdateCollectionWhitelistsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.merkleRoots.push(reader.string());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateCollectionWhitelistsResponse {
+    return {
+      merkleRoots: globalThis.Array.isArray(object?.merkleRoots)
+        ? object.merkleRoots.map((e: any) => globalThis.String(e))
+        : [],
+    };
+  },
+
+  toJSON(message: UpdateCollectionWhitelistsResponse): unknown {
+    const obj: any = {};
+    if (message.merkleRoots?.length) {
+      obj.merkleRoots = message.merkleRoots;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UpdateCollectionWhitelistsResponse>, I>>(
+    base?: I,
+  ): UpdateCollectionWhitelistsResponse {
+    return UpdateCollectionWhitelistsResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UpdateCollectionWhitelistsResponse>, I>>(
+    object: I,
+  ): UpdateCollectionWhitelistsResponse {
+    const message = createBaseUpdateCollectionWhitelistsResponse();
+    message.merkleRoots = object.merkleRoots?.map((e) => e) || [];
     return message;
   },
 };

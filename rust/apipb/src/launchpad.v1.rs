@@ -53,17 +53,24 @@ pub struct TokenMetadataResponse {
     #[prost(string, repeated, tag="3")]
     pub merkle_proof: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
-// message UpdateCollectionWhitelistsRequest {
-//    string sender = 1;
-//    string network_id = 2;
-//    uint32 project_id = 3;
-//    repeated WhitelistMintInfo whitelist_mint_infos = 4; 
-// }
-
-// message UpdateCollectionWhitelistsResponse {
-//    repeated string merkle_roots = 1;
-// }
-
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateCollectionWhitelistsRequest {
+    #[prost(string, tag="1")]
+    pub sender: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub network_id: ::prost::alloc::string::String,
+    #[prost(uint32, tag="3")]
+    pub project_id: u32,
+    #[prost(message, repeated, tag="4")]
+    pub whitelist_mint_infos: ::prost::alloc::vec::Vec<WhitelistMintInfo>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateCollectionWhitelistsResponse {
+    #[prost(string, repeated, tag="1")]
+    pub merkle_roots: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
 // message WhitelistedAddressMerkleInfoRequest {
 //    string sender = 1;
 //    string network_id = 2;

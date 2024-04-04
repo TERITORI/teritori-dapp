@@ -46,16 +46,16 @@ message TokenMetadataResponse {
   repeated string merkle_proof = 3;
 }
 
-// message UpdateCollectionWhitelistsRequest {
-//   string sender = 1;
-//   string network_id = 2;
-//   uint32 project_id = 3;
-//   repeated WhitelistMintInfo whitelist_mint_infos = 4; 
-// }
+message UpdateCollectionWhitelistsRequest {
+  string sender = 1;
+  string network_id = 2;
+  uint32 project_id = 3;
+  repeated WhitelistMintInfo whitelist_mint_infos = 4; 
+}
 
-// message UpdateCollectionWhitelistsResponse {
-//   repeated string merkle_roots = 1;
-// }
+message UpdateCollectionWhitelistsResponse {
+  repeated string merkle_roots = 1;
+}
 
 // message WhitelistedAddressMerkleInfoRequest {
 //   string sender = 1;
