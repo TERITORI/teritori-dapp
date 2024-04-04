@@ -168,7 +168,6 @@ func StartHTTPServer() {
 
 	if err := httpServer.ListenAndServe(); err != nil {
 		log.Println("weshnet: http listenAndServer err", err)
-		panic(errors.Wrap(err, "failed to start http server"))
 	}
 
 }
@@ -401,5 +400,5 @@ func HandleExit() error {
 
 func Shutdown() {
 	HandleExit()
-	httpServer.Close()
+	httpServer.Close() 
 }
