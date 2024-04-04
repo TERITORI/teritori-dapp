@@ -9,10 +9,18 @@ import messageSVG from "../../assets/icons/message.svg";
 import ToggleButton from "@/components/buttons/ToggleButton";
 import { useCurrentRouteName } from "@/hooks/useCurrentRouteName";
 import {
+  selectContactInfo,
   selectIsChatActivated,
   selectIsForceChatActivated,
+  selectIsWeshConnected,
+  setContactInfo,
 } from "@/store/slices/message";
-import { checkAndBootWeshModule, stopWeshModule } from "@/weshnet/services";
+import { useAppDispatch } from "@/store/store";
+import {
+  checkAndBootWeshModule,
+  createSharableLink,
+  stopWeshModule,
+} from "@/weshnet/services";
 
 const icons = {
   MiniChats: messageSVG,
@@ -27,18 +35,25 @@ interface TabBarIconProps {
   focused: boolean;
 }
 
-export const TabBarIcon = ({
-  color,
-  title,
-  focused,
-  size,
-}: TabBarIconProps) => {
+export const TabBarIcon = ({ color, title, size }: TabBarIconProps) => {
   const isChatActivated = useSelector(selectIsChatActivated);
   const isForceChatActivated = useSelector(selectIsForceChatActivated);
   const currentRouteName = useCurrentRouteName();
+  const contactInfo = useSelector(selectContactInfo);
+  const isWeshConnected = useSelector(selectIsWeshConnected);
+  const dispatch = useAppDispatch();
 
   function toggleChat(value: boolean) {
     if (value) {
+      // to check if wesh is connected creating a shareable link and if it didn't get created then it is not connected
+      const shareLink = createSharableLink({
+        ...contactInfo,
+      });
+      dispatch(
+        setContactInfo({
+          shareLink,
+        }),
+      );
       checkAndBootWeshModule();
     } else {
       stopWeshModule();
@@ -50,7 +65,11 @@ export const TabBarIcon = ({
       <ToggleButton
         isActive={isChatActivated}
         onValueChange={toggleChat}
-        disabled={currentRouteName !== "MiniChats"}
+        disabled={
+          currentRouteName !== "MiniChats" ||
+          (isChatActivated && !contactInfo.shareLink) ||
+          (isChatActivated && !isWeshConnected)
+        }
       />
     );
   }
