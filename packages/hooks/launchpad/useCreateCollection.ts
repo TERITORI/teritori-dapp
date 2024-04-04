@@ -1,9 +1,11 @@
 import { useCallback } from "react";
 import { useSelector } from "react-redux";
+import { MerkleTree } from "merkletreejs";
 
 import {
   Collection,
   NftLaunchpadClient,
+  WhitelistMintInfo,
 } from "@/contracts-clients/nft-launchpad";
 import { PinataFileProps, useIpfs } from "@/hooks/useIpfs";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
@@ -16,6 +18,7 @@ import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { CollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { generateIpfsKey } from "@/utils/ipfs";
+import keccak256 from "keccak256";  // Tested and this lib is compatible with merkle tree libs from Rust and Go
 
 export const useCreateCollection = () => {
   const selectedWallet = useSelectedWallet();
@@ -68,6 +71,24 @@ export const useCreateCollection = () => {
         });
 
         // ========== TODO: Generate merkle tree/root/path
+        const whitelist_mint_infos: WhitelistMintInfo[] = collectionFormValues.whitelistMintInfos.map((whitelist, index) => {
+          const addresses: string[] = [];  // TODO: read uploaded file and get contents
+          const leaves = addresses.map(keccak256)
+          const tree = new MerkleTree(leaves, keccak256);
+          const merkleRoot = tree.getRoot().toString("hex");
+
+          const info: WhitelistMintInfo = {
+            addresses_count: addresses.length,
+            addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
+            denom: "",  // TODO: Get from network package the denom related to selected network
+            end_time: whitelist.endTime || 0,
+            limit_per_address: whitelist.perAddressLimit || 0,
+            merkle_root: merkleRoot,
+            start_time: whitelist.startTime || 0,
+            unit_price: whitelist.unitPrice || "0",
+          }
+          return info;
+        });
 
         // ========== Build Collection from forms
         const collection: Collection = {
@@ -112,21 +133,7 @@ export const useCreateCollection = () => {
             collectionFormValues.escrowMintProceedsPeriod || 0,
           dao_whitelist_count: collectionFormValues.daoWhitelistCount || 0,
 
-          whitelist_mint_infos: collectionFormValues.whitelistMintInfos.map(
-            (whitelist, index) => {
-              return {
-                addresses_count: collectionFormValues.whitelistMintInfos.length,
-                denom: "",
-                end_time: whitelist.endTime || 0,
-                limit_per_address: whitelist.perAddressLimit || 0,
-                merkle_root: "",
-                start_time: whitelist.startTime || 0,
-                unit_price: whitelist.unitPrice || "0",
-                //FIXME: remoteWhitelistAddressesFile[index] will not correctly match collectionFormValues.whitelistMintInfos[index]
-                addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
-              };
-            },
-          ),
+          whitelist_mint_infos,
 
           royalty_address: collectionFormValues.royaltyAddress || "",
           royalty_percentage: collectionFormValues.royaltyPercentage || 0,
