@@ -2,7 +2,7 @@ import React from "react";
 import { useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
-import { CollectionFormValues } from "../../CreateCollection.type";
+import { CollectionFormValues } from "../../../../utils/types/launchpad";
 import { MultipleSelectInput } from "../inputs/selectInputs/MultipleSelectInput";
 import { SelectInputLaunchpad } from "../inputs/selectInputs/SelectInputLaunchpad";
 

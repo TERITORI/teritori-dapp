@@ -8,11 +8,11 @@ import { SVG } from "@/components/SVG";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetworkFeature, NetworkFeature } from "@/networks";
-import { CollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
 import { LaunchpadMintWhitelistAccordionForm } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/LaunchpadMintWhitelistAccordionForm";
 import { secondaryColor } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { CollectionFormValues } from "@/utils/types/launchpad";
 
 export const MintWhitelistsForm: FC = () => {
   const selectedWallet = useSelectedWallet();

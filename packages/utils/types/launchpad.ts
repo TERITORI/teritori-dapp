@@ -51,6 +51,7 @@ export interface CollectionWhitelistFormValues {
   unitPrice: Uint128;
   isOpen: boolean;
   addressesFile?: LocalFileData;
+  addresses?: string[];
 }
 
 export interface NewCollectionAssetsFormValues {

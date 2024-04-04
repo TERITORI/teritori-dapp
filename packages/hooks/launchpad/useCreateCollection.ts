@@ -1,6 +1,7 @@
+import keccak256 from "keccak256"; // Tested and this lib is compatible with merkle tree libs from Rust and Go
+import { MerkleTree } from "merkletreejs";
 import { useCallback } from "react";
 import { useSelector } from "react-redux";
-import { MerkleTree } from "merkletreejs";
 
 import {
   Collection,
@@ -15,10 +16,9 @@ import {
   NetworkFeature,
 } from "@/networks";
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
-import { CollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { generateIpfsKey } from "@/utils/ipfs";
-import keccak256 from "keccak256";  // Tested and this lib is compatible with merkle tree libs from Rust and Go
+import { CollectionFormValues } from "@/utils/types/launchpad";
 
 export const useCreateCollection = () => {
   const selectedWallet = useSelectedWallet();
@@ -62,7 +62,6 @@ export const useCreateCollection = () => {
           file: collectionFormValues.coverImage,
         } as PinataFileProps);
 
-        // TODO: whitelists addresses IPFS hash
         const remoteWhitelistAddressesFiles = await uploadFilesToPinata({
           pinataJWTKey,
           files: collectionFormValues.whitelistMintInfos.map(
@@ -71,24 +70,25 @@ export const useCreateCollection = () => {
         });
 
         // ========== TODO: Generate merkle tree/root/path
-        const whitelist_mint_infos: WhitelistMintInfo[] = collectionFormValues.whitelistMintInfos.map((whitelist, index) => {
-          const addresses: string[] = [];  // TODO: read uploaded file and get contents
-          const leaves = addresses.map(keccak256)
-          const tree = new MerkleTree(leaves, keccak256);
-          const merkleRoot = tree.getRoot().toString("hex");
+        const whitelist_mint_infos: WhitelistMintInfo[] =
+          collectionFormValues.whitelistMintInfos.map((whitelist, index) => {
+            const addresses: string[] = whitelist.addresses || [];
+            const leaves = addresses.map(keccak256);
+            const tree = new MerkleTree(leaves, keccak256);
+            const merkleRoot = tree.getRoot().toString("hex");
 
-          const info: WhitelistMintInfo = {
-            addresses_count: addresses.length,
-            addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
-            denom: "",  // TODO: Get from network package the denom related to selected network
-            end_time: whitelist.endTime || 0,
-            limit_per_address: whitelist.perAddressLimit || 0,
-            merkle_root: merkleRoot,
-            start_time: whitelist.startTime || 0,
-            unit_price: whitelist.unitPrice || "0",
-          }
-          return info;
-        });
+            const info: WhitelistMintInfo = {
+              addresses_count: addresses.length,
+              addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
+              denom: "", // TODO: Get from network package the denom related to selected network
+              end_time: whitelist.endTime || 0,
+              limit_per_address: whitelist.perAddressLimit || 0,
+              merkle_root: merkleRoot,
+              start_time: whitelist.startTime || 0,
+              unit_price: whitelist.unitPrice || "0",
+            };
+            return info;
+          });
 
         // ========== Build Collection from forms
         const collection: Collection = {
@@ -155,7 +155,7 @@ export const useCreateCollection = () => {
         //   return { denom: info.native_denom, amount: "0", invalid: true };
         // }
         // throw e;
-        console.log("Error creating a NFT Collection in the Launchpad ", e);
+        console.error("Error creating a NFT Collection in the Launchpad ", e);
       }
     },
     [pinataPinFileToIPFS, selectedWallet, userIPFSKey, uploadFilesToPinata],

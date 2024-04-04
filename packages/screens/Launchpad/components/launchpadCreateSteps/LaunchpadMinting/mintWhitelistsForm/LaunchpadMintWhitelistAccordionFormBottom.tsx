@@ -12,10 +12,6 @@ import { SVG } from "@/components/SVG";
 import { CsvTextFileUploader } from "@/components/inputs/CsvTextFileUploader";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
-import {
-  CollectionFormValues,
-  CollectionWhitelistFormValues,
-} from "@/screens/Launchpad/CreateCollection.type";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { patternOnlyNumbers } from "@/utils/formRules";
 import { errorColor, neutral55, neutral77 } from "@/utils/style/colors";
@@ -25,6 +21,10 @@ import {
   fontSemibold20,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import {
+  CollectionFormValues,
+  CollectionWhitelistFormValues,
+} from "@/utils/types/launchpad";
 
 export const LaunchpadMintWhitelistAccordionFormBottom: FC<{
   elem: CollectionWhitelistFormValues;
@@ -120,7 +120,9 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<{
 
       <SpacerColumn size={2} />
       <CsvTextFileUploader
-        onUpload={(file) => update(elemIndex, { ...elem, addressesFile: file })}
+        onUpload={(file, rows) =>
+          update(elemIndex, { ...elem, addressesFile: file, addresses: rows })
+        }
       />
 
       <SpacerColumn size={2} />

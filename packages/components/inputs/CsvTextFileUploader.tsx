@@ -12,7 +12,7 @@ import { LocalFileData } from "@/utils/types/files";
 
 // Allows to select a TXT and CSV file and display each rows
 export const CsvTextFileUploader: FC<{
-  onUpload: (file: LocalFileData) => void;
+  onUpload: (file: LocalFileData, rows: string[]) => void;
 }> = ({ onUpload }) => {
   const [rows, setRows] = useState<string[]>([]);
   const onUploadFile = (files: LocalFileData[]) => {
@@ -22,7 +22,7 @@ export const CsvTextFileUploader: FC<{
         setRows(results.data.map((rowData) => rowData[0]));
       },
     });
-    onUpload(files[0]);
+    onUpload(files[0], rows);
   };
   return (
     <SelectFileUploader

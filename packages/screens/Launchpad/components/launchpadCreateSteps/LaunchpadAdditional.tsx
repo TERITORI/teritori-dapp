@@ -2,7 +2,7 @@ import React from "react";
 import { useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
-import { CollectionFormValues } from "../../CreateCollection.type";
+import { CollectionFormValues } from "../../../../utils/types/launchpad";
 import { SelectInputLaunchpad } from "../inputs/selectInputs/SelectInputLaunchpad";
 
 import { BrandText } from "@/components/BrandText";
@@ -35,7 +35,7 @@ export const LaunchpadAdditional: React.FC = () => {
         <SpacerColumn size={2} />
 
         <TextInputLaunchpad<CollectionFormValues>
-          label="Please describe your artworkDescription: "
+          label="Please describe your artwork: "
           sublabel={
             <View>
               <BrandText style={[fontSemibold13, { color: neutral55 }]}>
@@ -126,6 +126,7 @@ export const LaunchpadAdditional: React.FC = () => {
           style={{ zIndex: 1 }}
         />
 
+        {/*FIXME: Our text inputs returns always strings. It's bad because daoWhitelistCount is a number, and there is no error here*/}
         <TextInputLaunchpad<CollectionFormValues>
           label="We'd love to offer TeritoriDAO members 10% of your whitelist supply if your project is willing. Please let us know how many whitelist spots you'd be willing to allocate our DAO: "
           placeHolder="0"

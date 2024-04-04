@@ -5,7 +5,7 @@ import { SafeAreaView, View } from "react-native";
 import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
 import { MetadataUpdateModal } from "./modals/MetadataUpdateModal";
 import { SelectFileUploader } from "../../../components/inputs/selectFileUploader";
-import { NewCollectionAssetsFormValues } from "../CreateCollection.type";
+import { NewCollectionAssetsFormValues } from "../../../utils/types/launchpad";
 
 import { SelectedFilesPreview } from "@/components/FilePreview/SelectedFilesPreview/SelectedFilesPreview";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";

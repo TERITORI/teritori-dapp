@@ -9,7 +9,6 @@ import { SecondaryButton } from "@/components/buttons/SecondaryButton";
 import { SpacerColumn } from "@/components/spacer";
 import { useCreateCollection } from "@/hooks/launchpad/useCreateCollection";
 import { NetworkFeature } from "@/networks";
-import { CollectionFormValues } from "@/screens/Launchpad/CreateCollection.type";
 import { LaunchpadSteper } from "@/screens/Launchpad/components/LaunchpadSteper";
 import { LaunchpadAdditional } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadAdditional";
 import { LaunchpadAssetsAndMetadata } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadAssetsAndMetadata";
@@ -20,6 +19,7 @@ import { LaunchpadTeamAndInvestment } from "@/screens/Launchpad/components/launc
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral33 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
+import { CollectionFormValues } from "@/utils/types/launchpad";
 
 const StepContent: FC<{
   step: number;
@@ -60,11 +60,6 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const [selectedStep, setSelectedStep] = useState(1);
   const [isLoading, setLoading] = useState(false);
   const coverImage = collectionForm.watch("coverImage");
-
-  console.log(
-    "collectionForm.getValues()collectionForm.getValues()",
-    collectionForm.getValues(),
-  );
 
   const onSubmit = async () => {
     setLoading(true);

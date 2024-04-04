@@ -5,11 +5,11 @@ import { LaunchpadMintWhitelistAccordionFormBottom } from "./LaunchpadMintWhitel
 import { LaunchpadMintWhitelistAccordionFormTop } from "./LaunchpadMintWhitelistAccordionFormTop";
 
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
+import { neutral00, neutral22, neutral33 } from "@/utils/style/colors";
 import {
   CollectionFormValues,
   CollectionWhitelistFormValues,
-} from "@/screens/Launchpad/CreateCollection.type";
-import { neutral00, neutral22, neutral33 } from "@/utils/style/colors";
+} from "@/utils/types/launchpad";
 
 export const LaunchpadMintWhitelistAccordionForm: FC<{
   elem: CollectionWhitelistFormValues;

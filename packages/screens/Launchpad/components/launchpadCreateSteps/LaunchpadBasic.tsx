@@ -3,7 +3,7 @@ import { useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
 import { SelectFileUploader } from "../../../../components/inputs/selectFileUploader";
-import { CollectionFormValues } from "../../CreateCollection.type";
+import { CollectionFormValues } from "../../../../utils/types/launchpad";
 
 import { BrandText } from "@/components/BrandText";
 import { NetworkSelectorWithLabel } from "@/components/NetworkSelector/NetworkSelectorWithLabel";

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Image, View } from "react-native";
 
 import ModalBase from "../../../../components/modals/ModalBase";
-import { NewMetadataDetailsFormValues } from "../../CreateCollection.type";
+import { NewMetadataDetailsFormValues } from "../../../../utils/types/launchpad";
 import { TextInputLaunchpadRequired } from "../inputs/TextInputLaunchpadRequired";
 
 import { BrandText } from "@/components/BrandText";

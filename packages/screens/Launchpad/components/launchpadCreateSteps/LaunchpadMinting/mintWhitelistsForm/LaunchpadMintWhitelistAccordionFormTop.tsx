@@ -8,13 +8,13 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
-import {
-  CollectionFormValues,
-  CollectionWhitelistFormValues,
-} from "@/screens/Launchpad/CreateCollection.type";
 import { secondaryColor } from "@/utils/style/colors";
 import { fontSemibold16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import {
+  CollectionFormValues,
+  CollectionWhitelistFormValues,
+} from "@/utils/types/launchpad";
 
 export const LaunchpadMintWhitelistAccordionFormTop: FC<{
   elem: CollectionWhitelistFormValues;
