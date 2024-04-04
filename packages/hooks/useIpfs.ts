@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { parseUserId } from "@/networks";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { generateIpfsKey } from "@/utils/ipfs";
-import { LocalFileData, RemoteFileData } from "@/utils/types/files";
+import { LocalFileData, RemoteFileDataWithLocalUrl } from "@/utils/types/files";
 
 interface UploadPostFilesToPinataParams {
   files: LocalFileData[];
@@ -84,12 +84,14 @@ export const useIpfs = () => {
     async ({
       files,
       pinataJWTKey,
-    }: UploadPostFilesToPinataParams): Promise<RemoteFileData[]> => {
+    }: UploadPostFilesToPinataParams): Promise<
+      RemoteFileDataWithLocalUrl[]
+    > => {
       setIpfsUploadProgresses([]);
 
       const storedFile = async (
         file: LocalFileData,
-      ): Promise<RemoteFileData> => {
+      ): Promise<RemoteFileDataWithLocalUrl> => {
         const fileIpfsHash = await pinataPinFileToIPFS({
           file,
           pinataJWTKey,

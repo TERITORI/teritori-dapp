@@ -41,7 +41,11 @@ export interface LocalFileData extends BaseFileData {
 
 export const ZodRemoteFileData = z.object({
   ...ZodBaseFileData.shape,
-  localUrl: z.string().optional(),
   thumbnailFileData: ZodBaseFileData.optional(),
 });
 export type RemoteFileData = z.infer<typeof ZodRemoteFileData>;
+
+// Can be used to match LocalFileData and RemoteFileData
+export interface RemoteFileDataWithLocalUrl extends RemoteFileData {
+  localUrl?: string;
+}
