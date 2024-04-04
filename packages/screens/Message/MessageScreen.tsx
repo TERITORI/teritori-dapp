@@ -18,7 +18,6 @@ import { JoinGroup } from "./components/JoinGroup";
 import { MessageBlankFiller } from "./components/MessageBlankFiller";
 import MessageCard from "./components/MessageCard";
 import { MessageHeader } from "./components/MessageHeader";
-import { MessageOnboarding } from "./components/MessageOnboarding";
 import { Profile } from "./components/Profile";
 import { SideBarChats } from "./components/SideBarChats";
 import chat from "../../../assets/icons/add-chat.svg";
@@ -34,7 +33,6 @@ import { useMessage } from "@/context/MessageProvider";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import {
   selectIsWeshConnected,
-  selectIsOnboardingCompleted,
   selectContactInfo,
 } from "@/store/slices/message";
 import { useAppNavigation, ScreenFC } from "@/utils/navigation";
@@ -55,7 +53,6 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
   const activeView = route?.params?.view;
   const activeTab = route?.params?.tab;
   const isWeshConnected = useSelector(selectIsWeshConnected);
-  const isOnboardingCompleted = useSelector(selectIsOnboardingCompleted);
   const contactInfo = useSelector(selectContactInfo);
   const { activeConversation, setActiveConversation } = useMessage();
 
@@ -149,10 +146,6 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
         </View>
       </ScreenContainer>
     );
-  }
-
-  if (!isOnboardingCompleted) {
-    return <MessageOnboarding />;
   }
 
   return (
