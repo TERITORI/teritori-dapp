@@ -38,6 +38,8 @@ export const useCreateCollection = () => {
         NetworkFeature.NFTLaunchpad,
       );
       if (!cosmwasmLaunchpadFeature) return;
+      const denom = cosmwasmLaunchpadFeature.defaultMintDenom;
+
       const client = new NftLaunchpadClient(
         signingComswasmClient,
         selectedWallet.address,
@@ -80,7 +82,7 @@ export const useCreateCollection = () => {
             const info: WhitelistMintInfo = {
               addresses_count: addresses.length,
               addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
-              denom: "", // TODO: Get from network package the denom related to selected network
+              denom,
               end_time: whitelist.endTime || 0,
               limit_per_address: whitelist.perAddressLimit || 0,
               merkle_root: merkleRoot,
@@ -139,7 +141,7 @@ export const useCreateCollection = () => {
           royalty_percentage: collectionFormValues.royaltyPercentage || 0,
 
           target_network: network.id,
-          denom: cosmwasmLaunchpadFeature.defaultMintDenom,
+          denom,
           deployed_address: "None",
           merkle_root: "None",
           whitepaper_link: "None",
