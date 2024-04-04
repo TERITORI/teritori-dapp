@@ -6,6 +6,8 @@ import { fontSemibold12 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 
+import { useIsMobile } from "@/hooks/useIsMobile";
+
 export type TableRowHeading = { label: string; flex: number };
 
 interface TableRowProps {
@@ -14,6 +16,8 @@ interface TableRowProps {
 }
 
 export const TableRow: React.FC<TableRowProps> = ({ headings, labelStyle }) => {
+  const isMobile = useIsMobile();
+
   return (
     <View style={styles.row}>
       {headings.map(({ label, flex }, index) => (
@@ -24,7 +28,11 @@ export const TableRow: React.FC<TableRowProps> = ({ headings, labelStyle }) => {
             {
               flex,
               paddingRight:
-                headings.length - 1 === index ? 0 : layout.spacing_x1,
+                headings.length - 1 === index
+                  ? isMobile
+                    ? 0
+                    : layout.spacing_x1
+                  : 0,
             },
             labelStyle,
           ]}
@@ -47,7 +55,7 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: codGrayColor,
     minHeight: layout.contentSpacing,
-    paddingHorizontal: layout.spacing_x2_5,
+    paddingHorizontal: layout.spacing_x1_25,
     borderTopLeftRadius: layout.borderRadius,
     borderTopRightRadius: layout.borderRadius,
   },
