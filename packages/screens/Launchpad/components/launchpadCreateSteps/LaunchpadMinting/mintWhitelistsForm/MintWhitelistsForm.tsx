@@ -65,6 +65,7 @@ export const MintWhitelistsForm: FC = () => {
         }}
       >
         {whitelistMintInfos.map((elem, index) => {
+          console.log("elemelemelemelem", elem);
           return (
             <Fragment key={index}>
               <SpacerColumn size={2} />

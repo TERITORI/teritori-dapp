@@ -123,6 +123,7 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<{
         onUpload={(file, rows) =>
           update(elemIndex, { ...elem, addressesFile: file, addresses: rows })
         }
+        file={elem.addressesFile}
       />
 
       <SpacerColumn size={2} />

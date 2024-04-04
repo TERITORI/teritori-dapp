@@ -143,9 +143,13 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
                 loader
                 isLoading={isLoading}
                 disabled={!collectionForm.formState.isValid || !coverImage}
-                onPress={() => {
-                  collectionForm.handleSubmit(onSubmit);
-                }}
+                // WIP TODO: handleSubmit
+                onPress={
+                  onSubmit
+                  // () => {
+                  //   collectionForm.handleSubmit(onSubmit);
+                  // }
+                }
               />
             ) : (
               <PrimaryButton

@@ -65,7 +65,8 @@ export interface Collection {
   partners: string;
   project_desc: string;
   project_type: string;
-  reveal_time: number;
+  // TODO: Update client type
+  // reveal_time: number;
   roadmap_link: string;
   royalty_address?: Addr | null;
   royalty_percentage?: number | null;

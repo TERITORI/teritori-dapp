@@ -83,10 +83,13 @@ export const useCreateCollection = () => {
               addresses_count: addresses.length,
               addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
               denom,
-              end_time: whitelist.endTime || 0,
-              limit_per_address: whitelist.perAddressLimit || 0,
+              // TODO: Remove all parseInt(String()) usages, it's just for tests.
+              //  We could : Get true numbers (and not strings even if the type is number), or get only strings and parse. First choice is better IMO
+              end_time: parseInt(String(whitelist.endTime), 10) || 0,
+              limit_per_address:
+                parseInt(String(whitelist.perAddressLimit), 10) || 0,
               merkle_root: merkleRoot,
-              start_time: whitelist.startTime || 0,
+              start_time: parseInt(String(whitelist.startTime), 10) || 0,
               unit_price: whitelist.unitPrice || "0",
             };
             return info;
@@ -100,16 +103,19 @@ export const useCreateCollection = () => {
           external_link: collectionFormValues.externalLink || "",
           website_link: collectionFormValues.websiteLink || "",
           twitter_profile: collectionFormValues.twitterProfileUrl || "",
-          twitter_followers_count: collectionFormValues.nbTwitterFollowers || 0,
+          twitter_followers_count:
+            parseInt(String(collectionFormValues.nbTwitterFollowers), 10) || 0,
           contact_discord_name: collectionFormValues.discordName || "",
           contact_email: collectionFormValues.email || "",
           project_type: collectionFormValues.projectTypes?.join() || "",
           project_desc: collectionFormValues.projectDescription || "",
-          tokens_count: collectionFormValues.nbTokens || 0,
+          tokens_count:
+            parseInt(String(collectionFormValues.nbTokens), 10) || 0,
           unit_price: collectionFormValues.unitPrice || "",
-          limit_per_address: collectionFormValues.perAddressLimit || 0,
+          limit_per_address:
+            parseInt(String(collectionFormValues.perAddressLimit), 10) || 0,
           start_time: 0,
-          reveal_time: 0,
+          // reveal_time: 0,
           team_desc: collectionFormValues.teamDescription || "",
           team_link: collectionFormValues.teamLink || "",
           partners: collectionFormValues.partnersDescription || "",
@@ -117,10 +123,15 @@ export const useCreateCollection = () => {
           investment_link: collectionFormValues.investLink || "",
           roadmap_link: collectionFormValues.roadmapLink || "",
           artwork_desc: collectionFormValues.artworkDescription || "",
-          expected_supply: collectionFormValues.expectedSupply || 0,
+          expected_supply:
+            parseInt(String(collectionFormValues.expectedSupply), 10) || 0,
           expected_public_mint_price:
-            collectionFormValues.expectedPublicMintPrice || 0,
-          expected_mint_date: collectionFormValues.expectedMintDate || 0,
+            parseInt(
+              String(collectionFormValues.expectedPublicMintPrice),
+              10,
+            ) || 0,
+          expected_mint_date:
+            parseInt(String(collectionFormValues.expectedMintDate), 10) || 0,
           // TODO:
           // nftApiKey: collectionFormValues.nftApiKey || "",
 
@@ -132,13 +143,18 @@ export const useCreateCollection = () => {
           is_ready_for_mint: collectionFormValues.isReadyForMint || false,
           is_dox: collectionFormValues.isDox || false,
           escrow_mint_proceeds_period:
-            collectionFormValues.escrowMintProceedsPeriod || 0,
-          dao_whitelist_count: collectionFormValues.daoWhitelistCount || 0,
+            parseInt(
+              String(collectionFormValues.escrowMintProceedsPeriod),
+              10,
+            ) || 0,
+          dao_whitelist_count:
+            parseInt(String(collectionFormValues.daoWhitelistCount), 10) || 0,
 
           whitelist_mint_infos,
 
           royalty_address: collectionFormValues.royaltyAddress || "",
-          royalty_percentage: collectionFormValues.royaltyPercentage || 0,
+          royalty_percentage:
+            parseInt(String(collectionFormValues.royaltyPercentage), 10) || 0,
 
           target_network: network.id,
           denom,
@@ -149,9 +165,11 @@ export const useCreateCollection = () => {
         };
 
         // ========== Submit the collection
-        await client.submitCollection({
+        const result = await client.submitCollection({
           collection,
         });
+        console.log("======== createCollection result", result);
+        return result;
       } catch (e) {
         // if (e instanceof Error && e.message.includes("Token Name Invalid")) {
         //   return { denom: info.native_denom, amount: "0", invalid: true };

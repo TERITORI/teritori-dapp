@@ -1,5 +1,5 @@
 import { parse } from "papaparse";
-import React, { FC, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
@@ -13,22 +13,33 @@ import { LocalFileData } from "@/utils/types/files";
 // Allows to select a TXT and CSV file and display each rows
 export const CsvTextFileUploader: FC<{
   onUpload: (file: LocalFileData, rows: string[]) => void;
-}> = ({ onUpload }) => {
+  file?: LocalFileData;
+}> = ({ onUpload, file }) => {
   const [rows, setRows] = useState<string[]>([]);
-  const onUploadFile = (files: LocalFileData[]) => {
-    const file = files[0].file;
-    parse<string[]>(file, {
-      complete: (results) => {
-        setRows(results.data.map((rowData) => rowData[0]));
-      },
-    });
-    onUpload(files[0], rows);
-  };
+
+  const onUploadFiles = useCallback(
+    (files: LocalFileData[]) => {
+      const file = files[0].file;
+      parse<string[]>(file, {
+        complete: (results) => {
+          setRows(results.data.map((rowData) => rowData[0]));
+        },
+      });
+      onUpload(files[0], rows);
+    },
+    [onUpload, rows],
+  );
+
+  // Retrieve file from parent
+  useEffect(() => {
+    if (file) onUploadFiles([file]);
+  }, [file, onUploadFiles]);
+
   return (
     <SelectFileUploader
       label={!rows.length ? "Select file" : undefined}
       containerHeight={48}
-      onUpload={onUploadFile}
+      onUpload={onUploadFiles}
       mimeTypes={TXT_CSV_MIME_TYPES}
       files={!rows.length ? [] : undefined}
       resultChildren={({ onPress }) => (
