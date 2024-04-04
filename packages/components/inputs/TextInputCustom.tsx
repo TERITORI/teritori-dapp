@@ -226,7 +226,7 @@ export const TextInputCustom = <T extends FieldValues>({
         onChangeText={handleChangeText}
         onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
         placeholderTextColor={neutralA3}
-        value={field.value}
+        value={field.value || ""}
         style={[styles.textInput, textInputStyle]}
         {...restProps}
       />
@@ -296,7 +296,7 @@ export const TextInputCustom = <T extends FieldValues>({
               onChangeText={handleChangeText}
               onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
               placeholderTextColor={neutral77}
-              value={field.value}
+              value={field.value || ""}
               style={[styles.textInput, textInputStyle]}
               {...restProps}
             />
