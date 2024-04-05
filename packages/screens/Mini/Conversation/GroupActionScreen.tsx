@@ -52,7 +52,8 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
 
   const friendMembers = conversationList
     .filter((member) => member.type === "contact")
-    .map((fm) => fm.id);
+    .map((fm) => (fm?.members?.length > 0 ? fm?.members[0].id : ""));
+
   const contactInfo = useSelector(selectContactInfo);
   const [showLeaveGroupConfirmation, setShowLeaveGroupConfirmation] =
     useState(false);
@@ -133,11 +134,11 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
 
   const handleAddMembers = async (member: Contact) => {
     const friendShareableLink = createSharableLinkOfFriends({
-      accountPk: member.id,
-      peerId: member.peerId,
-      publicRendezvousSeed: member.rdvSeed,
-      avatar: member.avatar,
-      name: member.name,
+      accountPk: member?.id,
+      peerId: member?.peerId,
+      publicRendezvousSeed: member?.rdvSeed,
+      avatar: member?.avatar,
+      name: member?.name,
     });
     await handleAddContact(friendShareableLink);
   };
@@ -165,6 +166,7 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
       duration: 2000,
     });
   };
+
   return (
     <>
       <ScreenContainer
@@ -199,7 +201,7 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
             data={conversation?.members}
             renderItem={({ item: member, index }) => {
               const isMe =
-                member.id === stringFromBytes(weshConfig.config?.accountPk);
+                member?.id === stringFromBytes(weshConfig.config?.accountPk);
 
               return (
                 <View
@@ -215,15 +217,16 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
                       alignItems: "center",
                     }}
                   >
-                    <Avatar size={32} source={member.avatar} />
-                    <BrandText style={[fontMedium15]}>{member.name}</BrandText>
-                    {member.hasLeft ? (
+                    <Avatar size={32} source={member?.avatar} />
+                    <BrandText style={[fontMedium15]}>{member?.name}</BrandText>
+                    {member?.hasLeft ? (
                       <BrandText style={[fontMedium10, { color: neutral77 }]}>
                         Left Group
                       </BrandText>
                     ) : null}
                   </View>
-                  {!friendMembers.includes(member.id) && !isMe && (
+                  {isMe && <BrandText>You</BrandText>}
+                  {!friendMembers.includes(member?.id) && !isMe && (
                     <CustomButton
                       onPress={() => handleAddMembers(member)}
                       title="Add"
@@ -235,7 +238,7 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
                 </View>
               );
             }}
-            keyExtractor={(member) => member.id}
+            keyExtractor={(member) => member?.id}
             contentContainerStyle={{
               gap: layout.spacing_x2,
               flex: 1,

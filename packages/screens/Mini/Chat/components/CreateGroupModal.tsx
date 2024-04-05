@@ -51,7 +51,7 @@ export const CreateGroupModal = ({
     <MobileModal
       visible={isOpen}
       onClose={onClose}
-      innerContainerOptions={{ height: "40%" }}
+      innerContainerOptions={{ style: { maxHeight: 400 } }}
     >
       <View
         style={{
@@ -69,20 +69,6 @@ export const CreateGroupModal = ({
           />
 
           <View style={{ width: "100%" }}>
-            {validationError && (
-              <BrandText
-                style={[
-                  fontMedium14,
-                  {
-                    marginBottom: layout.spacing_x1,
-                    color: redDefault,
-                    paddingLeft: layout.spacing_x1_5,
-                  },
-                ]}
-              >
-                {validationError}
-              </BrandText>
-            )}
             <SpacerColumn size={3} />
             <MiniTextInput
               placeholder="Group Name"
@@ -98,6 +84,20 @@ export const CreateGroupModal = ({
               }}
             />
             <SpacerColumn size={1.5} />
+            {validationError && (
+              <BrandText
+                style={[
+                  fontMedium14,
+                  {
+                    marginBottom: layout.spacing_x1,
+                    color: redDefault,
+                    paddingLeft: layout.spacing_x1_5,
+                  },
+                ]}
+              >
+                {validationError}
+              </BrandText>
+            )}
             <CustomButton title="Create" onPress={onCreateGroupPress} />
             <SpacerColumn size={2} />
           </View>
