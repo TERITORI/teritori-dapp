@@ -62,8 +62,10 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<{
         }
         control={collectionForm.control}
         rules={{ pattern: patternOnlyNumbers }}
+        onChangeText={(text) => update(elemIndex, { ...elem, unitPrice: text })}
       />
 
+      {/*TODO: Make input number that can be sync with CollectionFormValues without having to set onChangeText and value*/}
       <TextInputLaunchpad<CollectionFormValues>
         label="Per Address Limit"
         placeHolder="0"
@@ -77,6 +79,9 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<{
         }
         control={collectionForm.control}
         rules={{ pattern: patternOnlyNumbers }}
+        onChangeText={(text) =>
+          update(elemIndex, { ...elem, perAddressLimit: parseInt(text, 10) })
+        }
       />
 
       <TextInputLaunchpad<CollectionFormValues>
@@ -92,6 +97,9 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<{
         }
         control={collectionForm.control}
         rules={{ pattern: patternOnlyNumbers }}
+        onChangeText={(text) =>
+          update(elemIndex, { ...elem, startTime: parseInt(text, 10) })
+        }
       />
 
       <TextInputLaunchpad<CollectionFormValues>
@@ -107,6 +115,9 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<{
         }
         control={collectionForm.control}
         rules={{ pattern: patternOnlyNumbers }}
+        onChangeText={(text) =>
+          update(elemIndex, { ...elem, endTime: parseInt(text, 10) })
+        }
       />
 
       <Separator />
@@ -120,10 +131,11 @@ export const LaunchpadMintWhitelistAccordionFormBottom: FC<{
 
       <SpacerColumn size={2} />
       <CsvTextFileUploader
+        rows={elem.addresses}
+        file={elem.addressesFile}
         onUpload={(file, rows) =>
           update(elemIndex, { ...elem, addressesFile: file, addresses: rows })
         }
-        file={elem.addressesFile}
       />
 
       <SpacerColumn size={2} />

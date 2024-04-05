@@ -31,7 +31,6 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
   multiple,
   mimeTypes,
   children,
-  resultChildren,
   maxUpload,
   isImageCover,
   fileHeight = 256,
@@ -158,36 +157,24 @@ export const SelectFileUploader: FC<SelectFileUploaderProps> = ({
           }}
         >
           {filesToUse.length > 0 && !multiple ? (
-            resultChildren ? (
-              <>
-                <DeleteButton
-                  onPress={() => {
-                    setLocalFiles([]);
-                    onUpload([]);
-                  }}
-                />
-                {resultChildren({ onPress: handleClick })}
-              </>
-            ) : (
-              <>
-                <DeleteButton
-                  onPress={() => {
-                    setLocalFiles([]);
-                    onUpload([]);
-                  }}
-                  style={{ top: 12, right: 12 }}
-                />
-                <Image
-                  source={{ uri: URL.createObjectURL(filesToUse[0].file) }}
-                  style={{
-                    overflow: "hidden",
-                    height: fileHeight,
-                    width: isImageCover ? "100%" : "auto",
-                    objectFit: isImageCover ? "cover" : "fill",
-                  }}
-                />
-              </>
-            )
+            <>
+              <DeleteButton
+                onPress={() => {
+                  setLocalFiles([]);
+                  onUpload([]);
+                }}
+                style={{ top: 12, right: 12 }}
+              />
+              <Image
+                source={{ uri: URL.createObjectURL(filesToUse[0].file) }}
+                style={{
+                  overflow: "hidden",
+                  height: fileHeight,
+                  width: isImageCover ? "100%" : "auto",
+                  objectFit: isImageCover ? "cover" : "fill",
+                }}
+              />
+            </>
           ) : (
             <PrimaryBox
               style={[

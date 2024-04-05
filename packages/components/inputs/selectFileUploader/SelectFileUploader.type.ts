@@ -13,7 +13,6 @@ export interface SelectFileUploaderProps {
   multiple?: boolean;
   mimeTypes?: string[];
   children?: ({ onPress }: { onPress: () => void }) => React.ReactNode;
-  resultChildren?: ({ onPress }: { onPress: () => void }) => React.ReactNode;
   maxUpload?: number;
   setIsLoading?: Dispatch<SetStateAction<boolean>>;
   containerHeight?: number;

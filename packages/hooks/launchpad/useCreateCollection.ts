@@ -81,7 +81,7 @@ export const useCreateCollection = () => {
 
             const info: WhitelistMintInfo = {
               addresses_count: addresses.length,
-              addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
+              // addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
               denom,
               // TODO: Remove all parseInt(String()) usages, it's just for tests.
               //  We could : Get true numbers (and not strings even if the type is number), or get only strings and parse. First choice is better IMO
@@ -132,8 +132,6 @@ export const useCreateCollection = () => {
             ) || 0,
           expected_mint_date:
             parseInt(String(collectionFormValues.expectedMintDate), 10) || 0,
-          // TODO:
-          // nftApiKey: collectionFormValues.nftApiKey || "",
 
           cover_img_uri: coverImageIpfsHash || "",
           is_applied_previously:

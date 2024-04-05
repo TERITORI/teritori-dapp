@@ -85,7 +85,8 @@ export interface Collection {
 }
 export interface WhitelistMintInfo {
   addresses_count: number;
-  addresses_ipfs: string;
+  // TODO: Update client type
+  // addresses_ipfs: string;
   denom: string;
   end_time: number;
   limit_per_address: number;

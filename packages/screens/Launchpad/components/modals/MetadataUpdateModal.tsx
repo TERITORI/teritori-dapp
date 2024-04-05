@@ -4,12 +4,12 @@ import { Image, View } from "react-native";
 
 import ModalBase from "../../../../components/modals/ModalBase";
 import { NewMetadataDetailsFormValues } from "../../../../utils/types/launchpad";
-import { TextInputLaunchpadRequired } from "../inputs/TextInputLaunchpadRequired";
 
 import { BrandText } from "@/components/BrandText";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { Separator } from "@/components/separators/Separator";
+import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { neutral77, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold16, fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -28,7 +28,7 @@ export const MetadataUpdateModal: React.FC<{
       youtubeURL: "",
       attributes: "",
     },
-    mode: "onBlur",
+    mode: "all",
   });
 
   return (
@@ -107,35 +107,35 @@ export const MetadataUpdateModal: React.FC<{
       >
         <Separator style={{ marginBottom: layout.spacing_x3 }} />
 
-        <TextInputLaunchpadRequired<NewMetadataDetailsFormValues>
+        <TextInputLaunchpad<NewMetadataDetailsFormValues>
           name="name"
           label="Name"
           control={control}
           placeHolder="Token name"
         />
 
-        <TextInputLaunchpadRequired<NewMetadataDetailsFormValues>
+        <TextInputLaunchpad<NewMetadataDetailsFormValues>
           name="description"
           label="Description"
           control={control}
           placeHolder="Token description"
         />
 
-        <TextInputLaunchpadRequired<NewMetadataDetailsFormValues>
+        <TextInputLaunchpad<NewMetadataDetailsFormValues>
           name="externalURL"
           label="External URL"
           control={control}
           placeHolder="https://"
         />
 
-        <TextInputLaunchpadRequired<NewMetadataDetailsFormValues>
+        <TextInputLaunchpad<NewMetadataDetailsFormValues>
           name="youtubeURL"
           label="Youtube URL"
           control={control}
           placeHolder="https://"
         />
 
-        <TextInputLaunchpadRequired<NewMetadataDetailsFormValues>
+        <TextInputLaunchpad<NewMetadataDetailsFormValues>
           name="attributes"
           label="Attributes"
           control={control}

@@ -1,8 +1,9 @@
 import { parse } from "papaparse";
-import React, { FC, useCallback, useEffect, useState } from "react";
-import { TouchableOpacity } from "react-native";
+import React, { FC, useCallback, useState } from "react";
+import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
+import { DeleteButton } from "@/components/FilePreview/DeleteButton";
 import { SelectFileUploader } from "@/components/inputs/selectFileUploader";
 import { TXT_CSV_MIME_TYPES } from "@/utils/mime";
 import { neutral33 } from "@/utils/style/colors";
@@ -13,58 +14,69 @@ import { LocalFileData } from "@/utils/types/files";
 // Allows to select a TXT and CSV file and display each rows
 export const CsvTextFileUploader: FC<{
   onUpload: (file: LocalFileData, rows: string[]) => void;
+  rows?: string[];
   file?: LocalFileData;
-}> = ({ onUpload, file }) => {
-  const [rows, setRows] = useState<string[]>([]);
+}> = ({ onUpload, rows, file }) => {
+  const [localRows, setLocalRows] = useState<string[] | undefined>(rows);
+  const [localFile, setLocalFile] = useState<LocalFileData | undefined>(file);
 
   const onUploadFiles = useCallback(
     (files: LocalFileData[]) => {
-      const file = files[0].file;
-      parse<string[]>(file, {
+      if (!files[0]) return;
+      setLocalFile(files[0]);
+
+      parse<string[]>(files[0].file, {
         complete: (results) => {
-          setRows(results.data.map((rowData) => rowData[0]));
+          setLocalRows(results.data.map((rowData) => rowData[0]));
+          onUpload(
+            files[0],
+            results.data.map((rowData) => rowData[0]),
+          );
         },
       });
-      onUpload(files[0], rows);
     },
-    [onUpload, rows],
+    [onUpload],
   );
 
-  // Retrieve file from parent
-  useEffect(() => {
-    if (file) onUploadFiles([file]);
-  }, [file, onUploadFiles]);
-
+  if (localRows) {
+    return (
+      <View
+        style={{
+          width: "100%",
+          borderRadius: 8,
+          borderColor: neutral33,
+          borderWidth: 1,
+          padding: layout.spacing_x1_5,
+        }}
+      >
+        <DeleteButton
+          onPress={() => {
+            setLocalFile(undefined);
+            setLocalRows(undefined);
+            onUploadFiles([]);
+          }}
+        />
+        {localRows.map((row, index) => (
+          <BrandText
+            key={index}
+            style={[
+              fontSemibold14,
+              index > 0 && { marginTop: layout.spacing_x1 },
+            ]}
+          >
+            {row}
+          </BrandText>
+        ))}
+      </View>
+    );
+  }
   return (
     <SelectFileUploader
-      label={!rows.length ? "Select file" : undefined}
+      label="Select file"
       containerHeight={48}
       onUpload={onUploadFiles}
       mimeTypes={TXT_CSV_MIME_TYPES}
-      files={!rows.length ? [] : undefined}
-      resultChildren={({ onPress }) => (
-        <TouchableOpacity
-          onPress={onPress}
-          style={{
-            width: "100%",
-            borderRadius: 8,
-            borderColor: neutral33,
-            borderWidth: 1,
-            padding: layout.spacing_x1_5,
-          }}
-        >
-          {rows.map((row, index) => (
-            <BrandText
-              style={[
-                fontSemibold14,
-                index > 0 && { marginTop: layout.spacing_x1 },
-              ]}
-            >
-              {row}
-            </BrandText>
-          ))}
-        </TouchableOpacity>
-      )}
+      files={localFile ? [localFile] : undefined}
     />
   );
 };

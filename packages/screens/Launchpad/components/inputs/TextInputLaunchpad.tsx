@@ -17,6 +17,7 @@ interface TextInputCustomProps<T extends FieldValues>
   sublabel?: React.ReactElement;
   rules?: TextInputCustomRules;
   regexp?: RegExp;
+  onChangeText?: (value: string) => void;
 }
 
 export const TextInputLaunchpad = <T extends FieldValues>({
@@ -27,6 +28,7 @@ export const TextInputLaunchpad = <T extends FieldValues>({
   sublabel,
   regexp,
   rules,
+  onChangeText,
 }: TextInputCustomProps<T>) => {
   return (
     <TextInputCustom<T>
@@ -42,6 +44,7 @@ export const TextInputLaunchpad = <T extends FieldValues>({
       boxMainContainerStyle={{ minHeight: 0 }}
       height={40}
       regexp={regexp}
+      onChange={(e) => onChangeText?.(e.nativeEvent.text)}
     />
   );
 };

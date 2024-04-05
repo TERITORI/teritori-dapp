@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useCallback, useMemo } from "react";
+import React, { FC, Fragment, useCallback } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
 
@@ -23,16 +23,11 @@ export const MintWhitelistsForm: FC = () => {
     control: collectionForm.control,
     name: "whitelistMintInfos",
   });
-  const whitelistMintInfos = useMemo(
-    () => collectionForm.watch("whitelistMintInfos") || [],
-    [collectionForm],
-  );
-
   const closeAll = useCallback(() => {
-    whitelistMintInfos.map((elem, index) => {
+    whitelistMintInfosFieldArray.fields.map((elem, index) => {
       whitelistMintInfosFieldArray.update(index, { ...elem, isOpen: false });
     });
-  }, [whitelistMintInfos, whitelistMintInfosFieldArray]);
+  }, [whitelistMintInfosFieldArray]);
 
   const createNewWhitelist = useCallback(() => {
     closeAll();
@@ -64,8 +59,7 @@ export const MintWhitelistsForm: FC = () => {
           width: "100%",
         }}
       >
-        {whitelistMintInfos.map((elem, index) => {
-          console.log("elemelemelemelem", elem);
+        {whitelistMintInfosFieldArray.fields.map((elem, index) => {
           return (
             <Fragment key={index}>
               <SpacerColumn size={2} />

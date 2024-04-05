@@ -2,11 +2,11 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { TextInputLaunchpadRequired } from "./inputs/TextInputLaunchpadRequired";
 import { ExistingBaseUrlFormValues } from "../../../utils/types/launchpad";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
+import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { neutral77 } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -17,7 +17,7 @@ export const UriTab: React.FC = () => {
       baseTokenUri: "",
       coverImageUrl: "",
     },
-    mode: "onBlur",
+    mode: "all",
   });
 
   return (
@@ -46,14 +46,14 @@ export const UriTab: React.FC = () => {
 
           <SpacerColumn size={2} />
 
-          <TextInputLaunchpadRequired<ExistingBaseUrlFormValues>
+          <TextInputLaunchpad<ExistingBaseUrlFormValues>
             label="Base Token URI"
             placeHolder="ipfs://"
             name="baseTokenUri"
             control={control}
           />
 
-          <TextInputLaunchpadRequired<ExistingBaseUrlFormValues>
+          <TextInputLaunchpad<ExistingBaseUrlFormValues>
             name="coverImageUrl"
             label="Cover Image URL"
             placeHolder="ipfs://"
