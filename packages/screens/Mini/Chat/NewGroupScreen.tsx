@@ -136,7 +136,7 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
           }),
       );
 
-      subscribeMessages(stringFromBytes(groupInfo.group?.publicKey));
+      // subscribeMessages(stringFromBytes(groupInfo.group?.publicKey));
       setToast({
         mode: "mini",
         message: "Group Successfully Created",

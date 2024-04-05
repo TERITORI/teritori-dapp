@@ -34,15 +34,17 @@ export const Request = ({ data }: Props) => {
   const handleAddFriend = async () => {
     setAddLoading(true);
     try {
+      
       const contactPk = bytesFromString(data?.contactId);
+      console.log(data?.contactId);
       await acceptFriendRequest(contactPk);
-      const groupInfo = await activateGroup({ contactPk });
-      await sendMessage({
-        groupPk: groupInfo?.group?.publicKey,
-        message: {
-          type: "accept-contact",
-        },
-      });
+      // const groupInfo = await activateGroup({ contactPk });
+      // await sendMessage({
+      //   groupPk: groupInfo?.group?.publicKey,
+      //   message: {
+      //     type: "accept-contact",
+      //   },
+      // });
     } catch (err) {
       console.error("add friend err", err);
       setToastError({

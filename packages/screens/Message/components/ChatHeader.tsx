@@ -100,7 +100,7 @@ export const ChatHeader = ({
             status: "active",
           }),
         );
-        subscribeMessages(conversation.id);
+        // subscribeMessages(conversation.id);
         setDropdownState(false);
       },
     },

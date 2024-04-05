@@ -27,16 +27,13 @@ import {
 import { layout } from "../../../utils/style/layout";
 import { ContactRequest } from "../../../utils/types/message";
 import { weshClient } from "../../../weshnet";
-import {
-  acceptFriendRequest,
-  activateGroup,
-  sendMessage,
-} from "../../../weshnet/services";
+import { acceptFriendRequest, sendMessage } from "../../../weshnet/services";
 import { bytesFromString } from "../../../weshnet/utils";
 import { ChatAvatar } from "../components/ChatAvatar";
 import MiniTextInput from "../components/MiniTextInput";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
+// import { CustomButton } from "@/components/Button/CustomButton";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
 import { CustomButton } from "@/components/buttons/CustomButton";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
@@ -159,8 +156,7 @@ function FriendRequest({ isOnline, data }: Props) {
     });
     try {
       const contactPk = bytesFromString(data?.contactId);
-      await acceptFriendRequest(contactPk);
-      const groupInfo = await activateGroup({ contactPk });
+      const groupInfo = await acceptFriendRequest(contactPk);
       await sendMessage({
         groupPk: groupInfo?.group?.publicKey,
         message: {

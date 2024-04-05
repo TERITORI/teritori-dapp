@@ -45,10 +45,9 @@ import { blobToDataURI, readFileAsBase64 } from "@/utils/file";
 const isRunningInExpoGo = Constants.appOwnership === "expo";
 const DEV_WESHPORT_STORAGE_KEY = "__DEV__WeshPort";
 
-let getPeerListIntervalId: ReturnType<typeof setInterval>;
-
 export const getAndUpdatePeerList = async () => {
   const peerList = await weshClient.client.PeerList({});
+  console.log("peerList", peerList);
 
   store.dispatch(
     setPeerList(
@@ -146,12 +145,12 @@ export const afterWeshnetConnectionAction = async () => {
     subscribeMetadata(weshConfig.config?.accountGroupPk);
 
     getAndUpdatePeerList();
-    if (getPeerListIntervalId) {
-      clearInterval(getPeerListIntervalId);
-    }
-    getPeerListIntervalId = setInterval(() => {
-      getAndUpdatePeerList();
-    }, 30 * 1000);
+    // if (getPeerListIntervalId) {
+    //   clearInterval(getPeerListIntervalId);
+    // }
+    // getPeerListIntervalId = setInterval(() => {
+    //   getAndUpdatePeerList();
+    // }, 30 * 1000);
   } catch (err) {
     console.error("create config err", err);
   }
@@ -165,6 +164,7 @@ const bootSubscribeMessages = () => {
     "",
   );
 
+  // subscribeMessages(conversations[2].id);
   conversations.forEach((item) => {
     subscribeMessages(item.id);
   });
@@ -342,10 +342,14 @@ export const addContact = async (
 };
 
 export const acceptFriendRequest = async (contactPk: Uint8Array) => {
-  await weshClient.client.ContactRequestAccept({
-    contactPk,
-  });
-  return await activateGroup({ contactPk });
+  try {
+    await weshClient.client.ContactRequestAccept({
+      contactPk,
+    });
+    return await activateGroup({ contactPk });
+  } catch (error) {
+    console.log("accept error", error);
+  }
 };
 
 export const activateGroup = async (params: Partial<GroupInfo_Request>) => {

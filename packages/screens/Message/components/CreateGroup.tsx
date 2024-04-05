@@ -116,7 +116,7 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
           }),
       );
 
-      subscribeMessages(stringFromBytes(groupInfo.group?.publicKey));
+      // subscribeMessages(stringFromBytes(groupInfo.group?.publicKey));
 
       onClose();
     } catch (err: any) {

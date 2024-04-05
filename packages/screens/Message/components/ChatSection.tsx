@@ -292,7 +292,7 @@ export const ChatSection = ({ conversationId }: ChatSectionProps) => {
             </View>
           )}
 
-          {!messages.length && (
+          {/* {!messages.length && (
             <View
               style={{
                 alignItems: "center",
@@ -303,7 +303,7 @@ export const ChatSection = ({ conversationId }: ChatSectionProps) => {
                 {getNewConversationText(conversation)}
               </BrandText>
             </View>
-          )}
+          )} */}
 
           <FlatList
             ref={flatListRef}
