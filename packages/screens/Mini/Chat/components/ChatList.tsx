@@ -77,7 +77,15 @@ export const ChatList = () => {
         />
         <SpacerColumn size={3} />
         <FlatList
-          data={searchResults}
+          data={searchResults.filter((result) => {
+            if (
+              result?.type === "group" &&
+              (!result?.members || result?.members.filter(Boolean).length === 0) // Hiding conversation from left member of the group
+            ) {
+              return false;
+            }
+            return true;
+          })}
           renderItem={({ item }) => {
             return (
               <>
