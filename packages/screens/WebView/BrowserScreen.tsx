@@ -1,18 +1,25 @@
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { SectionList, View, useWindowDimensions } from "react-native";
 import { useSelector } from "react-redux";
 
 import ListView from "../Mini/components/ListView";
 import MiniTextInput from "../Mini/components/MiniTextInput";
 
+import teritoriSVG from "@/assets/icons/networks/teritori.svg";
+import searchSVG from "@/assets/icons/search-gray.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerRow } from "@/components/spacer";
 import { selectAvailableApps } from "@/store/slices/dapps-store";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
-import { neutral00, neutral22 } from "@/utils/style/colors";
-import { fontSemibold14 } from "@/utils/style/fonts";
+import {
+  neutral00,
+  neutral22,
+  neutral76,
+  withAlpha,
+} from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold18 } from "@/utils/style/fonts";
 import { MOBILE_HEADER_HEIGHT, layout } from "@/utils/style/layout";
 import { dAppType } from "@/utils/types/dapp-store";
 
@@ -39,12 +46,10 @@ function WebViewHeader({
   searchInput,
   onChange,
   hasNoDapps,
-  setShowDapps,
 }: {
   searchInput: string;
   onChange: (text: string) => void;
   hasNoDapps: boolean;
-  setShowDapps: Dispatch<SetStateAction<boolean>>;
 }) {
   const navigation = useAppNavigation();
 
@@ -88,15 +93,20 @@ function WebViewHeader({
     >
       <View style={{ width: "100%" }}>
         <MiniTextInput
-          placeholder="Search Dapps or internet ..."
+          icon={searchSVG}
+          placeholder="Search dApps or internet..."
           onChangeText={onChange}
           returnKeyType="search"
           autoCapitalize="none"
-          onPressIn={() => setShowDapps(true)}
           onSubmitEditing={onSubmit}
           style={{
-            paddingHorizontal: layout.spacing_x2,
+            paddingHorizontal: layout.spacing_x1_5,
             paddingVertical: layout.spacing_x1,
+            backgroundColor: withAlpha(neutral76, 0.24),
+            borderRadius: layout.spacing_x1_25,
+          }}
+          inputStyle={{
+            lineHeight: layout.spacing_x2,
           }}
         />
       </View>
@@ -148,6 +158,11 @@ export const BrowserScreen: ScreenFC<"Browser"> = () => {
 
   function changeHandler(text: string) {
     setSearchInput(text);
+    if (!text) {
+      setShowDapps(false);
+    } else {
+      setShowDapps(true);
+    }
   }
 
   return (
@@ -157,7 +172,6 @@ export const BrowserScreen: ScreenFC<"Browser"> = () => {
           onChange={changeHandler}
           hasNoDapps={hasNoDapps}
           searchInput={searchInput}
-          setShowDapps={setShowDapps}
         />
       }
       responsive
@@ -190,20 +204,21 @@ export const BrowserScreen: ScreenFC<"Browser"> = () => {
                   flexDirection: "row",
                   alignItems: "center",
                   marginHorizontal: layout.spacing_x1_5,
+                  marginBottom: layout.spacing_x2,
                   marginTop: layout.spacing_x3_5,
-                  paddingBottom: layout.spacing_x1_5,
+                  paddingBottom: layout.spacing_x2_5,
                   borderBottomWidth: 2,
                   borderBottomColor: neutral22,
                 }}
               >
                 <SVGorImageIcon
-                  icon={icon}
+                  icon={teritoriSVG}
                   iconSize={24}
                   style={{
                     marginRight: layout.spacing_x1_5,
                   }}
                 />
-                <BrandText style={fontSemibold14}>{title}</BrandText>
+                <BrandText style={fontSemibold18}>{title}</BrandText>
               </View>
             );
           }}
