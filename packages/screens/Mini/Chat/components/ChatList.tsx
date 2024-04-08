@@ -132,6 +132,20 @@ const SingleFriendChatList = ({ data, onPress }: SingleChatListType) => {
     onPress();
   };
 
+  const conversationMembers =
+    conversation &&
+    conversation?.members &&
+    Array.isArray(conversation?.members)
+      ? conversation?.type === "contact"
+        ? [conversation?.members[0].avatar]
+        : [
+            userContactInfo?.avatar || "",
+            ...conversation?.members?.map((_, index) =>
+              getConversationAvatar(conversation, index),
+            ),
+          ]
+      : [""];
+
   return (
     <CustomPressable
       onPress={handleListPress}
@@ -142,20 +156,7 @@ const SingleFriendChatList = ({ data, onPress }: SingleChatListType) => {
       }}
     >
       <ChatAvatar
-        membersAvatar={
-          conversation &&
-          conversation?.members &&
-          conversation.type === "contact"
-            ? [conversation?.members[0].avatar]
-            : Array.isArray(conversation?.members)
-              ? [
-                  userContactInfo?.avatar || "",
-                  ...conversation?.members?.map((_, index) =>
-                    getConversationAvatar(conversation, index),
-                  ),
-                ]
-              : [""]
-        }
+        membersAvatar={conversationMembers}
         isActive={peerStatus?.isActive}
       />
       <View
