@@ -99,7 +99,7 @@ export const processMessage = async (
       case "group-join": {
         if (conversation) {
           const newMember: ContactRequest[] = [];
-          const oldMembers = conversation.members.map((member) => member.id);
+          const oldMembers = conversation.members.map((member) => member?.id);
 
           if (
             message?.payload?.metadata?.contact?.id &&
@@ -131,7 +131,7 @@ export const processMessage = async (
           const memberId = message?.senderId;
 
           const updatedMembers = oldMembers.map((member) => {
-            if (member.id !== memberId) {
+            if (member?.id !== memberId) {
               return member;
             }
             return {
