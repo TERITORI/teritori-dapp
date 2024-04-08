@@ -6,18 +6,24 @@ use crate::{
     error::ContractError,
 };
 
-use nft_tr721::contract::{sv::multitest_utils::CodeId as NftTr721CodeId, WhitelistMintInfo};
+use nft_tr721::contract::{
+    sv::multitest_utils::CodeId as NftTr721CodeId, MintPeriod, WhitelistInfo,
+};
 
 fn get_default_collection() -> Collection {
-    let whitelist_mint_infos = vec![WhitelistMintInfo {
-        merkle_root: "merkle_root".to_string(),
+    let mint_periods = vec![MintPeriod {
         unit_price: Uint128::new(10),
         denom: "denom".to_string(),
-        limit_per_address: 2,
-        addresses_count: 3,
-        addresses_ipfs: "addresses_ipfs".to_string(),
+        limit_per_address: Some(2),
         start_time: u64::default(),
-        end_time: u64::default(),
+        end_time: Some(u64::default()),
+        max_tokens: None,
+
+        whitelist_info: Some(WhitelistInfo {
+            addresses_merkle_root: "addresses_merkle_root".to_string(),
+            addresses_count: 3,
+            addresses_ipfs: "addresses_ipfs".to_string(),
+        }),
     }];
 
     Collection {
@@ -73,14 +79,10 @@ fn get_default_collection() -> Collection {
 
         // Minting details ----------------------------
         tokens_count: 1000,
-        denom: "denom".to_string(),
-        unit_price: Uint128::new(100),
-        limit_per_address: 2,
-        start_time: u64::default(),
         reveal_time: u64::default(),
 
         // Whitelist minting --------------------------
-        whitelist_mint_infos,
+        mint_periods,
 
         // Royalty --------------------------
         royalty_address: Some(Addr::unchecked("royalty_address")),
@@ -88,7 +90,7 @@ fn get_default_collection() -> Collection {
 
         // Extend info --------------------------
         base_token_uri: None,
-        merkle_root: None,
+        metadatas_merkle_root: None,
         deployed_address: None,
     }
 }
@@ -177,31 +179,30 @@ fn full_flow() {
     // Deploy when sender is not deployer  ---------------------------------------------------------
     {
         contract
-        .update_config(Config {
-            name: "test".to_string(),
-            supported_networks: vec![],
-            nft_code_id: None,
-            deployer:Some("deployer".to_string()),
-        })
-        .call(sender)
-        .unwrap();
+            .update_config(Config {
+                name: "test".to_string(),
+                supported_networks: vec![],
+                nft_code_id: None,
+                deployer: Some("deployer".to_string()),
+            })
+            .call(sender)
+            .unwrap();
 
         let err = contract.deploy_collection(999).call(sender).unwrap_err();
         assert_eq!(err, ContractError::Forbidden)
     }
 
-
     // Set sender as deployer and Deploy inexist collection  ---------------------------------------------------------
     {
-         contract
-        .update_config(Config {
-            name: "test".to_string(),
-            supported_networks: vec![],
-            nft_code_id: None,
-            deployer:Some(sender.to_string()),
-        })
-        .call(sender)
-        .unwrap();
+        contract
+            .update_config(Config {
+                name: "test".to_string(),
+                supported_networks: vec![],
+                nft_code_id: None,
+                deployer: Some(sender.to_string()),
+            })
+            .call(sender)
+            .unwrap();
 
         let err = contract.deploy_collection(999).call(sender).unwrap_err();
         assert_eq!(err, ContractError::CollectionNotFound)
@@ -224,7 +225,7 @@ fn full_flow() {
         let collection_after = contract.get_collection_by_id(1).unwrap();
 
         assert_eq!(
-            collection_after.merkle_root,
+            collection_after.metadatas_merkle_root,
             Some(new_merkle_root.to_string())
         );
     }

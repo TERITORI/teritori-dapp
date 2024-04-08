@@ -1,11 +1,15 @@
-use cosmwasm_std::{Addr, Attribute, HexBinary, Uint128};
+use cosmwasm_std::{Attribute, HexBinary, Uint128};
 use cw2981_royalties::{Metadata, Trait};
-use rs_merkle::{Hasher, MerkleTree};
 use cw_multi_test::AppResponse;
+use rs_merkle::{Hasher, MerkleTree};
 
-use crate::{contract::{MintInfo, WhitelistMintInfo}, hasher::TrKeccak256};
+use crate::{
+    contract::{MintInfo, MintPeriod, WhitelistInfo},
+    hasher::TrKeccak256,
+};
 
-pub const MERKLE_ROOT: &str = "0110bb1a773c10cce02033f0594eda56df7b9ca30137520327b804107b252001";
+pub const METADATAS_MERKLE_ROOT: &str =
+    "0110bb1a773c10cce02033f0594eda56df7b9ca30137520327b804107b252001";
 pub const WHITELIST_USER: &str = "whitelist_user";
 pub const DEFAULT_BLOCK_TIME: u64 = 1_571_797_419;
 
@@ -63,21 +67,25 @@ pub fn get_default_nfts() -> Vec<Metadata> {
     vec![nft0, nft1, nft2, nft3]
 }
 
-pub fn get_default_whitelist_mint_info() -> WhitelistMintInfo {
-    WhitelistMintInfo {
-        // addresses: vec![WHITELIST_USER.to_string()],
-        merkle_root: "".to_string(),
+pub fn get_default_period() -> MintPeriod {
+    MintPeriod {
         unit_price: Uint128::new(1),
         denom: "denom".to_string(),
-        limit_per_address: 2,
-        addresses_count: 1,
-        addresses_ipfs: "ipfs_path".to_string(),
+        limit_per_address: Some(2),
+
         start_time: DEFAULT_BLOCK_TIME,
-        end_time: DEFAULT_BLOCK_TIME,
+        end_time: Some(DEFAULT_BLOCK_TIME),
+        max_tokens: Some(1),
+
+        whitelist_info: Some(WhitelistInfo {
+            addresses_merkle_root: "".to_string(),
+            addresses_count: 1,
+            addresses_ipfs: "ipfs_path".to_string(),
+        }),
     }
 }
 
-pub fn get_merkle_tree(leaf_values: Vec<&str>) -> MerkleTree::<TrKeccak256> {
+pub fn get_merkle_tree(leaf_values: Vec<&str>) -> MerkleTree<TrKeccak256> {
     let leaves: Vec<[u8; 32]> = leaf_values
         .iter()
         .map(|x| TrKeccak256::hash(x.as_bytes()))
@@ -94,25 +102,16 @@ pub fn get_merkle_tree_info(leaf_values: Vec<&str>, needed_leaf_indice: usize) -
     (root_hex, proof_hex)
 }
 
-pub fn get_default_whitelist_mint_infos() -> Vec<WhitelistMintInfo> {
+pub fn get_default_periods() -> Vec<MintPeriod> {
     vec![]
 }
 
 pub fn get_default_mint_info() -> MintInfo {
     MintInfo {
-        // Minting details ----------------------------
         tokens_count: get_default_nfts().len().try_into().unwrap(),
-        unit_price: Uint128::new(2),
-        denom: "denom".to_string(),
-        limit_per_address: 2,
-        start_time: DEFAULT_BLOCK_TIME - 10,
-
-        // Royalty --------------------------
-        royalty_address: Some(Addr::unchecked("royalty_address")),
-        royalty_percentage: Some(50),
-
-        // Extend info --------------------------
-        merkle_root: MERKLE_ROOT.to_string(),
+        metadatas_merkle_root: METADATAS_MERKLE_ROOT.to_string(),
+        royalty_address: None,
+        royalty_percentage: None,
     }
 }
 

@@ -46,10 +46,13 @@ pub struct Tr721 {
         IndexedMap<'static, &'static str, TokenInfo<Metadata>, TokenIndexes<'static, Metadata>>,
     pub(crate) requested_mints: Map<'static, String, Addr>, //  token id => User address
     pub(crate) launchpad_contract: Item<'static, String>,
+
     pub(crate) mint_info: Item<'static, MintInfo>,
-    pub(crate) whitelist_mint_infos: Map<'static, u32, WhitelistMintInfo>,
-    pub(crate) whitelist_minted_count: Map<'static, (u32, String), u32>, // Map (whitelist period, user) => count
-    pub(crate) minted_count: Map<'static, String, u32>,                  // Map user => count
+    pub(crate) mint_periods: Map<'static, u32, MintPeriod>,
+
+    pub(crate) user_minted_count: Map<'static, (u32, String), u32>, // Map (period, user) => count
+    pub(crate) user_total_minted_count: Map<'static, String, u32>,         // Map user => count
+    pub(crate) period_minted_count: Map<'static, u32, u32>,         // Map period => count
 }
 
 // Contract implement -----------------------------------------------------
@@ -69,14 +72,18 @@ impl Tr721 {
             contract_version: Item::new("contract_info"),
             tokens: IndexedMap::new("tokens", indexes),
 
+            launchpad_contract: Item::new("launchpad_contract"),
+
             // Custom states
             admin: Item::new("admin"),
             requested_mints: Map::new("tr721_requested_mints"),
+
             mint_info: Item::new("mint_info"),
-            whitelist_mint_infos: Map::new("whitelist_mint_infos"),
-            launchpad_contract: Item::new("launchpad_contract"),
-            whitelist_minted_count: Map::new("whitelist_minted_count"),
-            minted_count: Map::new("minted_count"),
+            mint_periods: Map::new("mint_periods"),
+
+            user_total_minted_count: Map::new("user_total_minted_count"),
+            user_minted_count: Map::new("user_minted_count"),
+            period_minted_count: Map::new("period_minted_count"),
         }
     }
 
@@ -127,7 +134,7 @@ impl Tr721 {
         symbol: String,
         launchpad_contract: String,
         mint_info: MintInfo,
-        whitelist_mint_infos: Vec<WhitelistMintInfo>,
+        mint_periods: Vec<MintPeriod>,
     ) -> StdResult<Response> {
         // Set contract version
         self.contract_version.save(
@@ -145,12 +152,9 @@ impl Tr721 {
 
         self.mint_info.save(ctx.deps.storage, &mint_info)?;
 
-        for (idx, whitelist_mint_info) in whitelist_mint_infos.iter().enumerate() {
-            self.whitelist_mint_infos.save(
-                ctx.deps.storage,
-                idx.try_into().unwrap(),
-                whitelist_mint_info,
-            )?;
+        for (idx, mint_periods) in mint_periods.iter().enumerate() {
+            self.mint_periods
+                .save(ctx.deps.storage, idx.try_into().unwrap(), mint_periods)?;
         }
 
         let base_msg = BaseInstantiateMsg {
@@ -282,23 +286,25 @@ impl Tr721 {
 
     // NOTE: Normally we should not update whitelist, this endpoint exists mostly for testing or used in very urgent/critical case
     #[msg(exec)]
-    pub fn update_whitelist_mint_info(
+    pub fn update_mint_period(
         &self,
         ctx: ExecCtx,
-        whitelist_id: u32,
-        whitelist_mint_info: WhitelistMintInfo,
+        mint_period_id: u32,
+        mint_period: MintPeriod,
     ) -> Result<Response, ContractError> {
         self.assert_admin(ctx.deps.storage, ctx.info.sender.to_string())?;
 
-        self.whitelist_mint_infos
-            .save(ctx.deps.storage, whitelist_id, &whitelist_mint_info)?;
-        Ok(Response::new().add_attribute("action", "update_whitelist_mint_info"))
+        self.mint_periods
+            .save(ctx.deps.storage, mint_period_id, &mint_period)?;
+
+        Ok(Response::new().add_attribute("action", "update_mint_period"))
     }
 
     #[msg(exec)]
     pub fn request_mint(
         &self,
         ctx: ExecCtx,
+        period_id: u32,
         whitelist_proof: Option<WhitelistProof>,
     ) -> Result<Response, ContractError> {
         // Check conditions:
@@ -314,101 +320,84 @@ impl Tr721 {
             return Err(ContractError::MintExceedMaxTokens);
         }
 
-        // Check if user is in whitelist
-        // - is time matched
-        // - is address in whitelist
-        let mut current_whitelist: Option<WhitelistMintInfo> = None;
-        let mut current_period: Option<u32> = None;
+        let period: MintPeriod = self
+            .mint_periods
+            .load(ctx.deps.storage, period_id)
+            .map_err(|_| ContractError::InvalidPeriod)?;
 
-        // If merkle proof is sent then we check if sender is in whitelist and is there related whitelist period
-        if whitelist_proof.is_some() {
-            for item in
-                self.whitelist_mint_infos
-                    .range(ctx.deps.storage, None, None, Order::Ascending)
-            {
-                let (period, whitelist) = item?;
+        // If not started yet then throw error
+        if now < period.start_time {
+            return Err(ContractError::MintNotStarted);
+        }
 
-                if now >= whitelist.start_time && now < whitelist.end_time {
-                    let wp = whitelist_proof.to_owned().unwrap();
+        // If end time is given and now has passed the end time then throw error
+        if period.end_time.is_some() && now > period.end_time.unwrap() {
+            return Err(ContractError::MintEnded);
+        }
 
-                    // Verify if sender is in whitelist addresses
-                    let proof_hex = HexBinary::from_hex(&wp.merkle_proof).unwrap().to_vec();
-                    let proof_from_hex =
-                        MerkleProof::<TrKeccak256>::try_from(proof_hex.to_owned()).unwrap();
+        // If merkle is given then check whitelisted addresses
+        if period.whitelist_info.is_some() {
+            if whitelist_proof.is_none() {
+                return Err(ContractError::MintWhitelistOnly);
+            }
 
-                    let root_hex = whitelist.to_owned().merkle_root;
-                    let root_from_hex: [u8; 32] = HexBinary::from_hex(root_hex.as_str())
-                        .unwrap()
-                        .to_vec()
-                        .try_into()
-                        .unwrap();
+            let whitelist_info = period.whitelist_info.to_owned().unwrap();
 
-                    let leaf_indices = vec![wp.address_indice.try_into().unwrap()];
-                    let leaf_hashes = vec![TrKeccak256::hash(sender.as_bytes())];
-                    let total_leaves_count: usize = whitelist.addresses_count.try_into().unwrap();
+            let wp = whitelist_proof.to_owned().unwrap();
 
-                    let is_verified = proof_from_hex.verify(
-                        root_from_hex,
-                        &leaf_indices,
-                        &leaf_hashes,
-                        total_leaves_count,
-                    );
+            // Verify if sender is in whitelist addresses
+            let proof_hex = HexBinary::from_hex(&wp.merkle_proof).unwrap().to_vec();
+            let proof_from_hex =
+                MerkleProof::<TrKeccak256>::try_from(proof_hex.to_owned()).unwrap();
 
-                    if is_verified {
-                        current_whitelist = Some(whitelist);
-                        current_period = Some(period);
-                        break;
-                    }
-                }
+            let root_hex: String = whitelist_info.to_owned().addresses_merkle_root;
+            let root_from_hex: [u8; 32] = HexBinary::from_hex(root_hex.as_str())
+                .unwrap()
+                .to_vec()
+                .try_into()
+                .unwrap();
+
+            let leaf_indices = vec![wp.address_indice.try_into().unwrap()];
+            let leaf_hashes = vec![TrKeccak256::hash(sender.as_bytes())];
+            let total_leaves_count: usize = whitelist_info.addresses_count.try_into().unwrap();
+
+            let is_verified = proof_from_hex.verify(
+                root_from_hex,
+                &leaf_indices,
+                &leaf_hashes,
+                total_leaves_count,
+            );
+
+            if !is_verified {
+                return Err(ContractError::MintNotWhitelisted);
             }
         }
 
-        // Whitelist mint:check if sender has not reach the max per user
-        if current_whitelist.is_some() && current_period.is_some() {
-            self.whitelist_minted_count.update(
-                ctx.deps.storage,
-                (current_period.unwrap(), sender),
-                |count| -> Result<u32, ContractError> {
-                    let current_count = count.unwrap_or(0);
-                    if current_count >= current_whitelist.to_owned().unwrap().limit_per_address {
-                        return Err(ContractError::WhitelistMintExceedMaxPerUser);
-                    }
-
-                    Ok(current_count + 1)
-                },
-            )?;
-
-            self.assert_funds(
-                &ctx.info.funds,
-                current_whitelist.to_owned().unwrap().denom,
-                current_whitelist.to_owned().unwrap().unit_price,
-            )?;
+        // If max per period is given then check if we reach max tokens for current period
+        if period.max_tokens.is_some() {
+            let current_period_minted_count =
+                self.period_minted_count.load(ctx.deps.storage, period_id).unwrap_or(0);
+            if current_period_minted_count >= period.max_tokens.unwrap() {
+                return Err(ContractError::MintExceedMaxPerPeriod);
+            }
         }
-        // Normal mint: check if user has not reach max per user
-        else if now >= mint_info.start_time {
-            self.minted_count.update(
-                ctx.deps.storage,
-                sender,
-                |count| -> Result<u32, ContractError> {
-                    let current_count = count.unwrap_or(0);
-                    if current_count >= mint_info.limit_per_address {
-                        return Err(ContractError::MintExceedMaxPerUser);
-                    }
 
-                    Ok(current_count + 1)
-                },
-            )?;
+        // If max per user then check if sender has reached max per user for given
+        if period.limit_per_address.is_some() {
+            let current_user_minted = self
+                .user_minted_count
+                .load(ctx.deps.storage, (period_id, sender)).unwrap_or(0);
+            if current_user_minted >= period.limit_per_address.unwrap() {
+                return Err(ContractError::MintExceedMaxPerUser);
+            }
+        }
 
-            self.assert_funds(
-                &ctx.info.funds,
-                mint_info.to_owned().denom,
-                mint_info.to_owned().unit_price,
-            )?;
-        }
-        // If neither in Normal mint nor Whitelist mint then raise error
-        else {
-            return Err(ContractError::MintNotStarted);
-        }
+        // Check sent fund
+        self.assert_funds(
+            &ctx.info.funds,
+            period.to_owned().denom,
+            period.to_owned().unit_price,
+        )?;
 
         let sender = ctx.deps.api.addr_validate(ctx.info.sender.as_str())?;
         let token_id = Tr721Contract::default()
@@ -423,6 +412,27 @@ impl Tr721 {
                 Some(_) => Err(ContractError::NftAlreadyRequested),
                 None => Ok(sender.clone()),
             },
+        )?;
+
+        // Update minted count per period
+        self.period_minted_count.update(
+            ctx.deps.storage,
+            period_id,
+            |count| -> Result<u32, ContractError> { Ok(count.unwrap_or(0) + 1) },
+        )?;
+
+        // Update minted count per user per period
+        self.user_minted_count.update(
+            ctx.deps.storage,
+            (period_id, sender.to_string()),
+            |count| -> Result<u32, ContractError> { Ok(count.unwrap_or(0) + 1) },
+        )?;
+
+        // Update total minted count per user
+        self.user_total_minted_count.update(
+            ctx.deps.storage,
+            sender.to_string(),
+            |count| -> Result<u32, ContractError> { Ok(count.unwrap_or(0) + 1) },
         )?;
 
         Ok(Response::new()
@@ -455,7 +465,7 @@ impl Tr721 {
         let proof_hex = HexBinary::from_hex(&merkle_proof).unwrap().to_vec();
         let proof_from_hex = MerkleProof::<TrKeccak256>::try_from(proof_hex.to_owned()).unwrap();
 
-        let root_hex = collection_info.merkle_root;
+        let root_hex = collection_info.metadatas_merkle_root;
         let root_from_hex: [u8; 32] = HexBinary::from_hex(root_hex.as_str())
             .unwrap()
             .to_vec()
@@ -500,7 +510,6 @@ impl Tr721 {
             .add_attribute("token_id", token_id.to_string()))
     }
 
-    // Total minted = minted + whitelist minted
     #[msg(query)]
     pub fn total_minted(&self, ctx: QueryCtx) -> StdResult<u64> {
         let total_minted = Tr721Contract::default()
@@ -511,26 +520,39 @@ impl Tr721 {
     }
 
     #[msg(query)]
-    pub fn minted_count_by_user(&self, ctx: QueryCtx, user: String) -> StdResult<u32> {
-        let validated_addr = ctx.deps.api.addr_validate(&user)?.to_string();
+    pub fn minted_count_by_period(&self, ctx: QueryCtx, period_id: u32) -> StdResult<u32> {
         let count = self
-            .minted_count
-            .load(ctx.deps.storage, validated_addr)
+            .period_minted_count
+            .load(ctx.deps.storage, period_id)
             .unwrap_or(0);
         Ok(count)
     }
 
     #[msg(query)]
-    pub fn whitelist_minted_count_by_user(
+    pub fn minted_count_by_user(
         &self,
         ctx: QueryCtx,
-        period: u32,
+        period_id: u32,
         user: String,
     ) -> StdResult<u32> {
         let validated_addr = ctx.deps.api.addr_validate(&user)?.to_string();
         let count = self
-            .whitelist_minted_count
-            .load(ctx.deps.storage, (period, validated_addr))
+            .user_minted_count
+            .load(ctx.deps.storage, (period_id, validated_addr))
+            .unwrap_or(0);
+        Ok(count)
+    }
+
+    #[msg(query)]
+    pub fn total_minted_count_by_user(
+        &self,
+        ctx: QueryCtx,
+        user: String,
+    ) -> StdResult<u32> {
+        let validated_addr = ctx.deps.api.addr_validate(&user)?.to_string();
+        let count = self
+            .user_total_minted_count
+            .load(ctx.deps.storage, validated_addr)
             .unwrap_or(0);
         Ok(count)
     }
@@ -542,18 +564,18 @@ impl Tr721 {
     }
 
     #[msg(query)]
-    pub fn whitelist_mint_infos(&self, ctx: QueryCtx) -> StdResult<Vec<WhitelistMintInfo>> {
-        let mut whitelist_mint_infos: Vec<WhitelistMintInfo> = vec![];
+    pub fn mint_periods(&self, ctx: QueryCtx) -> StdResult<Vec<MintPeriod>> {
+        let mut mint_periods: Vec<MintPeriod> = vec![];
 
         for item in self
-            .whitelist_mint_infos
+            .mint_periods
             .range(ctx.deps.storage, None, None, Order::Ascending)
         {
             let (_key, info) = item?;
-            whitelist_mint_infos.push(info);
+            mint_periods.push(info);
         }
 
-        Ok(whitelist_mint_infos)
+        Ok(mint_periods)
     }
 
     #[msg(query)]
@@ -722,7 +744,7 @@ impl Tr721 {
 
     #[msg(query)]
     pub fn merkle_root(&self, ctx: QueryCtx) -> StdResult<String> {
-        let merkle_root = self.mint_info.load(ctx.deps.storage)?.merkle_root;
+        let merkle_root = self.mint_info.load(ctx.deps.storage)?.metadatas_merkle_root;
         Ok(merkle_root)
     }
 
@@ -759,32 +781,34 @@ pub struct WhitelistProof {
 
 #[cw_serde]
 #[derive(Default)]
-pub struct WhitelistMintInfo {
-    pub merkle_root: String,  // Merkle roof of addresses
+pub struct MintPeriod {
     pub unit_price: Uint128,
     pub denom: String,
-    pub limit_per_address: u32,
-    pub addresses_count: u32,
-    pub addresses_ipfs: String,
+
+    pub max_tokens: Option<u32>, // If not given then there is no limit for minting for this period
+    pub limit_per_address: Option<u32>, // If not given then there is no limit
+
     pub start_time: u64,
-    pub end_time: u64,
+    pub end_time: Option<u64>, // If not given then there is no end date
+
+    pub whitelist_info: Option<WhitelistInfo>,
+}
+
+#[cw_serde]
+#[derive(Default)]
+pub struct WhitelistInfo {
+    pub addresses_merkle_root: String, // Merkle roof of addresses. If given then check the whitelist by merkle tree
+    pub addresses_count: u32,          // If given, this is the total addresses in whitelist
+    pub addresses_ipfs: String, // If given, this is ipfs link contains all the whitelist addresses
 }
 
 #[cw_serde]
 #[derive(Default)]
 pub struct MintInfo {
-    // Minting details ----------------------------
-    pub tokens_count: u64,
-    pub unit_price: Uint128,
-    pub denom: String,
-    pub limit_per_address: u32,
-    pub start_time: u64,
+    pub metadatas_merkle_root: String, // Merkle roof of metadatas. This is mandatory
+    pub tokens_count: u64,             // Total tokens of the collection
 
     // Royalty --------------------------
     pub royalty_address: Option<Addr>,
     pub royalty_percentage: Option<u8>,
-
-    // Extend info --------------------------
-    pub merkle_root: String,  // Merkle roof of metadatas
-
 }

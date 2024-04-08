@@ -13,7 +13,7 @@ use crate::error::ContractError;
 
 use nft_tr721::{
     contract::sv::InstantiateMsg as Tr721InstantiateMsg,
-    contract::{MintInfo as Tr721MintInfo, WhitelistMintInfo as Tr721WhitelistMintInfo},
+    contract::{MintInfo as Tr721MintInfo, MintPeriod as Tr721MintPeriod},
 };
 
 const INSTANTIATE_REPLY_ID: u64 = 1u64;
@@ -100,7 +100,7 @@ impl NftLaunchpad {
         }
 
         // Update merkle root
-        collection.merkle_root = Some(merkle_root.clone());
+        collection.metadatas_merkle_root = Some(merkle_root.clone());
 
         // Update collection
         self.collections.save(storage, collection_id, &collection)?;
@@ -134,7 +134,7 @@ impl NftLaunchpad {
             .map_err(|_| ContractError::CollectionNotFound)?;        
 
         // Do not allow to deploy collection if merkle root is not set
-        if collection.merkle_root.is_none() {
+        if collection.metadatas_merkle_root.is_none() {
             return Err(ContractError::MerkleRootMissing);
         }
 
@@ -156,20 +156,12 @@ impl NftLaunchpad {
                 minter: sender,
                 launchpad_contract: "launchpad_contract".to_string(),
                 mint_info: Tr721MintInfo {
+                    metadatas_merkle_root: collection.metadatas_merkle_root.unwrap(),
                     tokens_count: collection.tokens_count,
-                    unit_price: collection.unit_price,
-                    denom: collection.denom,
-                    limit_per_address: collection.limit_per_address,
-                    start_time: collection.start_time,
-
-                    // Royalty --------------------------
-                    royalty_address: collection.royalty_address,
-                    royalty_percentage: collection.royalty_percentage,
-
-                    // Extend info --------------------------
-                    merkle_root: collection.merkle_root.unwrap(),
+                    royalty_address: None,
+                    royalty_percentage: None,
                 },
-                whitelist_mint_infos: collection.whitelist_mint_infos,
+                mint_periods: collection.mint_periods,
             })?,
             funds: vec![],
             label: format!(
@@ -317,13 +309,9 @@ pub struct Collection {
 
     // Minting details ----------------------------
     pub tokens_count: u64,
-    pub denom: String,
-    pub unit_price: Uint128,
-    pub limit_per_address: u32,
-    pub start_time: u64,
 
-    // Whitelist minting --------------------------
-    pub whitelist_mint_infos: Vec<Tr721WhitelistMintInfo>,
+    // Mint periods --------------------------
+    pub mint_periods: Vec<Tr721MintPeriod>,
 
     // Royalty --------------------------
     pub royalty_address: Option<Addr>,
@@ -331,7 +319,7 @@ pub struct Collection {
 
     // Extend info --------------------------
     pub base_token_uri: Option<String>,
-    pub merkle_root: Option<String>,
+    pub metadatas_merkle_root: Option<String>,
     pub deployed_address: Option<String>,
 }
 

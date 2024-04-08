@@ -6,14 +6,15 @@ use sylvia::multitest::App;
 
 use crate::{
     contract::{
-        sv::multitest_utils::CodeId, ContractVersion, MintInfo, WhitelistMintInfo, WhitelistProof,
+        sv::multitest_utils::CodeId, ContractVersion, MintInfo, MintPeriod, WhitelistInfo,
+        WhitelistProof,
     },
     error::ContractError,
     hasher::TrKeccak256,
     test_helpers::{
-        assert_wasm_attr, get_default_mint_info, get_default_nfts,
-        get_default_whitelist_mint_infos, get_merkle_tree, get_merkle_tree_info,
-        DEFAULT_BLOCK_TIME, MERKLE_ROOT,
+        assert_wasm_attr, get_default_mint_info, get_default_nfts, get_default_period,
+        get_default_periods, get_merkle_tree, get_merkle_tree_info, DEFAULT_BLOCK_TIME,
+        METADATAS_MERKLE_ROOT,
     },
     utils::proto_encode,
 };
@@ -47,7 +48,7 @@ fn full_flow() {
 
     // Instantiate NFT contract ---------------------------------------------------------
     let mint_info = get_default_mint_info();
-    let whitelist_mint_infos = get_default_whitelist_mint_infos();
+    let mint_periods = get_default_periods();
     let contract = CodeId::store_code(&app)
         .instantiate(
             ADMIN.to_string(),
@@ -56,7 +57,7 @@ fn full_flow() {
             "SYMBOL".to_string(),
             "launchpad_contract".to_string(),
             mint_info,
-            whitelist_mint_infos,
+            mint_periods,
         )
         .call(CREATOR)
         .unwrap();
@@ -83,13 +84,16 @@ fn full_flow() {
     {
         let resp = contract.mint_info().unwrap();
         assert_eq!(resp.tokens_count, 4);
-        assert_eq!(resp.merkle_root, MERKLE_ROOT.to_string());
+        assert_eq!(
+            resp.metadatas_merkle_root,
+            METADATAS_MERKLE_ROOT.to_string()
+        );
     }
 
-    // Query whitelist mint
+    // Query periods
     {
-        let resp = contract.whitelist_mint_infos().unwrap();
-        assert_eq!(resp, get_default_whitelist_mint_infos());
+        let resp = contract.mint_periods().unwrap();
+        assert_eq!(resp, get_default_periods());
     }
 
     // Mint NFT with metadata onchain + royalty address and query NFT info
@@ -224,95 +228,140 @@ fn full_flow() {
             .unwrap();
 
         assert_eq!(
-            contract.request_mint(None).call(OWNER).unwrap_err(),
+            contract.request_mint(0, None).call(OWNER).unwrap_err(),
             ContractError::MintExceedMaxTokens
         );
     }
 
-    // Request mint:
-    // - Mint not started
-    // - Not in whitelist address
-    // => ContractError::MintNotStarted
+    // Request mint: Error period does not exist
     {
         contract
             .update_mint_info(MintInfo {
                 tokens_count: 10,
-                start_time: DEFAULT_BLOCK_TIME + 10,
                 ..MintInfo::default()
             })
             .call(ADMIN)
             .unwrap();
 
         assert_eq!(
-            contract.request_mint(None).call(OWNER).unwrap_err(),
-            ContractError::MintNotStarted
+            contract.request_mint(5, None).call(OWNER).unwrap_err(),
+            ContractError::InvalidPeriod
         );
     }
 
     // Request mint:
     // - Mint not started
-    // - In whitelist address but not in whitelist time
     // => ContractError::MintNotStarted
     {
-        let tree = get_merkle_tree(vec![OWNER]);
-        let root_hex = HexBinary::from(tree.root().unwrap()).to_string();
         contract
-            .update_whitelist_mint_info(
+            .update_mint_period(
                 0,
-                WhitelistMintInfo {
-                    merkle_root: root_hex,
-                    ..WhitelistMintInfo::default()
+                MintPeriod {
+                    start_time: DEFAULT_BLOCK_TIME + 10,
+                    ..MintPeriod::default()
                 },
             )
             .call(ADMIN)
             .unwrap();
 
         assert_eq!(
-            contract.request_mint(None).call(OWNER).unwrap_err(),
+            contract.request_mint(0, None).call(OWNER).unwrap_err(),
             ContractError::MintNotStarted
         );
     }
 
     // Request mint:
-    // - Mint not started
-    // - In whitelist time but not in whitelist
-    // => ContractError::MintNotStarted
+    // - Mint ended
+    // => ContractError::MintEnded
     {
         contract
-            .update_whitelist_mint_info(
+            .update_mint_period(
                 0,
-                WhitelistMintInfo {
+                MintPeriod {
                     start_time: DEFAULT_BLOCK_TIME - 10,
-                    end_time: DEFAULT_BLOCK_TIME + 10,
-                    ..WhitelistMintInfo::default()
+                    end_time: Some(DEFAULT_BLOCK_TIME - 5),
+                    ..MintPeriod::default()
                 },
             )
             .call(ADMIN)
             .unwrap();
 
         assert_eq!(
-            contract.request_mint(None).call(OWNER).unwrap_err(),
-            ContractError::MintNotStarted
+            contract.request_mint(0, None).call(OWNER).unwrap_err(),
+            ContractError::MintEnded
         );
     }
 
     // Request mint:
-    // - Mint not started
-    // - In whitelist time and in whitelist
-    // - Reach max per whitelist user
-    // => ContractError::WhitelistMintExceedMaxPerUser
+    // - Mint started
+    // - Merkle root not provided => ContractError::MintWhitelistOnly
+    // - Merkle provided but address not in whitelist => ContractError::MintNotWhitelisted
     {
-        let (root_hex, proof_hex) = get_merkle_tree_info(vec![UNAUTHOR, OWNER], 1);
+        contract
+            .update_mint_period(
+                0,
+                MintPeriod {
+                    start_time: DEFAULT_BLOCK_TIME - 10,
+                    ..MintPeriod::default()
+                },
+            )
+            .call(ADMIN)
+            .unwrap();
+
+        let (root_hex, proof_hex) = get_merkle_tree_info(vec![OWNER], 0);
 
         contract
-            .update_whitelist_mint_info(
+            .update_mint_period(
                 0,
-                WhitelistMintInfo {
-                    merkle_root: root_hex,
-                    addresses_count: 2,
+                MintPeriod {
+                    whitelist_info: Some(WhitelistInfo {
+                        addresses_merkle_root: root_hex,
+                        addresses_count: 1,
+                        addresses_ipfs: "".to_string(),
+                    }),
+                    ..MintPeriod::default()
+                },
+            )
+            .call(ADMIN)
+            .unwrap();
+
+        // Not provide whitelist proof
+        assert_eq!(
+            contract.request_mint(0, None).call(OWNER).unwrap_err(),
+            ContractError::MintWhitelistOnly
+        );
+
+        // Address not match with proof
+        assert_eq!(
+            contract
+                .request_mint(
+                    0,
+                    Some(WhitelistProof {
+                        merkle_proof: proof_hex.to_string(),
+                        address_indice: 0
+                    })
+                )
+                .call(UNAUTHOR)
+                .unwrap_err(),
+            ContractError::MintNotWhitelisted
+        );
+    }
+
+    // Request mint:
+    // - In period
+    // - In whitelist
+    // - Reach max token per period
+    // => ContractError::MintExceedMaxPerPeriod
+    {
+        let (_, proof_hex) = get_merkle_tree_info(vec![OWNER], 0);
+
+        contract
+            .update_mint_period(
+                0,
+                MintPeriod {
                     start_time: DEFAULT_BLOCK_TIME - 10,
-                    end_time: DEFAULT_BLOCK_TIME + 10,
-                    ..WhitelistMintInfo::default()
+                    max_tokens: Some(0),
+                    ..MintPeriod::default()
                 },
             )
             .call(ADMIN)
@@ -320,13 +369,16 @@ fn full_flow() {
 
         assert_eq!(
             contract
-                .request_mint(Some(WhitelistProof {
-                    merkle_proof: proof_hex,
-                    address_indice: 1,
-                }))
+                .request_mint(
+                    0,
+                    Some(WhitelistProof {
+                        merkle_proof: proof_hex.to_string(),
+                        address_indice: 0
+                    })
+                )
                 .call(OWNER)
                 .unwrap_err(),
-            ContractError::WhitelistMintExceedMaxPerUser
+            ContractError::MintExceedMaxPerPeriod
         );
     }
 
@@ -339,19 +391,24 @@ fn full_flow() {
     // => Not send valid denom: ContractError::InvalidDenom
     // => Not send valid amount: ContractError::InvalidAmount
     {
-        let (root_hex, proof_hex) = get_merkle_tree_info(vec!["addr0", "addr1", "addr2", "addr3", "addr4", OWNER], 5);
+        let (root_hex, proof_hex) =
+            get_merkle_tree_info(vec!["addr0", "addr1", "addr2", "addr3", "addr4", OWNER], 5);
         contract
-            .update_whitelist_mint_info(
+            .update_mint_period(
                 0,
-                WhitelistMintInfo {
-                    limit_per_address: 10,
+                MintPeriod {
+                    max_tokens: None,
+                    limit_per_address: Some(1),
                     unit_price: Uint128::new(10),
                     denom: "utori".to_string(),
-                    merkle_root: root_hex,
-                    addresses_count: 6,
                     start_time: DEFAULT_BLOCK_TIME - 10,
-                    end_time: DEFAULT_BLOCK_TIME + 10,
-                    ..WhitelistMintInfo::default()
+                    end_time: Some(DEFAULT_BLOCK_TIME + 10),
+                    whitelist_info: Some(WhitelistInfo {
+                        addresses_count: 6,
+                        addresses_merkle_root: root_hex,
+                        addresses_ipfs: "ipfs".to_string(),
+                    }),
+                    ..MintPeriod::default()
                 },
             )
             .call(ADMIN)
@@ -359,12 +416,12 @@ fn full_flow() {
 
         let whitelist_proof = Some(WhitelistProof {
             merkle_proof: proof_hex,
-            address_indice: 5
+            address_indice: 5,
         });
 
         assert_eq!(
             contract
-                .request_mint(whitelist_proof.to_owned())
+                .request_mint(0, whitelist_proof.to_owned())
                 .call(OWNER)
                 .unwrap_err(),
             ContractError::InvalidFund
@@ -372,7 +429,7 @@ fn full_flow() {
 
         assert_eq!(
             contract
-                .request_mint(whitelist_proof.to_owned())
+                .request_mint(0, whitelist_proof.to_owned())
                 .with_funds(&[coin(10, "uinvalid")])
                 .call(OWNER)
                 .unwrap_err(),
@@ -381,7 +438,7 @@ fn full_flow() {
 
         assert_eq!(
             contract
-                .request_mint(whitelist_proof.to_owned())
+                .request_mint(0, whitelist_proof.to_owned())
                 .with_funds(&[coin(1, "utori")])
                 .call(OWNER)
                 .unwrap_err(),
@@ -392,13 +449,14 @@ fn full_flow() {
     // Request mint: with the mint/whitelist info in previous step
     // but with correct fund this time => mint successfully
     {
-        let (_, proof_hex) = get_merkle_tree_info(vec!["addr0", "addr1", "addr2", "addr3", "addr4", OWNER], 5);
+        let (_, proof_hex) =
+            get_merkle_tree_info(vec!["addr0", "addr1", "addr2", "addr3", "addr4", OWNER], 5);
         let whitelist_proof = Some(WhitelistProof {
             merkle_proof: proof_hex,
-            address_indice: 5
+            address_indice: 5,
         });
         let resp = contract
-            .request_mint(whitelist_proof)
+            .request_mint(0, whitelist_proof.to_owned())
             .with_funds(&[coin(10, "utori")])
             .call(OWNER)
             .unwrap();
@@ -414,63 +472,38 @@ fn full_flow() {
         let total_minted = contract.total_minted().unwrap();
         assert_eq!(total_minted, 2); // We have already minted by minter previously
 
-        let minted_by_user = contract.minted_count_by_user(OWNER.to_string()).unwrap();
+        let minted_by_user = contract.minted_count_by_user(0, OWNER.to_string()).unwrap();
+        assert_eq!(minted_by_user, 1);
+
+        let minted_by_user = contract.minted_count_by_user(5, OWNER.to_string()).unwrap();
         assert_eq!(minted_by_user, 0);
 
-        let whitelist_minted_by_user = contract
-            .whitelist_minted_count_by_user(0, OWNER.to_string())
-            .unwrap();
-        assert_eq!(whitelist_minted_by_user, 1);
-    }
-
-    // Request mint: normal mint
-    // - Reached max token per user
-    // => ContractError::MintExceedMaxPerUser
-    {
-        contract
-            .update_whitelist_mint_info(0, WhitelistMintInfo::default())
-            .call(ADMIN)
-            .unwrap();
-
-        contract
-            .update_mint_info(MintInfo {
-                tokens_count: 10,
-                start_time: DEFAULT_BLOCK_TIME - 10,
-                ..MintInfo::default()
-            })
-            .call(ADMIN)
-            .unwrap();
-
+        // - Reached max token per user
+        // => ContractError::MintExceedMaxPerUser
         assert_eq!(
-            contract.request_mint(None).call(OWNER).unwrap_err(),
+            contract.request_mint(0, whitelist_proof).call(OWNER).unwrap_err(),
             ContractError::MintExceedMaxPerUser
         );
     }
 
-    // Request mint: normal mint
+    // Request mint: normal mint without whitelist
     // - Not Reached max token per user
     // - Send correct fund
     // => success
     {
         contract
-            .update_whitelist_mint_info(0, WhitelistMintInfo::default())
-            .call(ADMIN)
-            .unwrap();
-
-        contract
-            .update_mint_info(MintInfo {
-                tokens_count: 4,
-                limit_per_address: 10,
+            .update_mint_period(1, MintPeriod{
+                start_time: DEFAULT_BLOCK_TIME - 10,
                 denom: "utori".to_string(),
                 unit_price: Uint128::new(10),
-                start_time: DEFAULT_BLOCK_TIME - 10,
-                ..MintInfo::default()
+                whitelist_info: None,
+                ..MintPeriod::default()
             })
             .call(ADMIN)
             .unwrap();
 
         let resp = contract
-            .request_mint(None)
+            .request_mint(1, None)
             .with_funds(&[coin(10, "utori")])
             .call(OWNER)
             .unwrap();
@@ -486,13 +519,11 @@ fn full_flow() {
         let total_minted = contract.total_minted().unwrap();
         assert_eq!(total_minted, 3);
 
-        let minted_by_user = contract.minted_count_by_user(OWNER.to_string()).unwrap();
+        let minted_by_user = contract.minted_count_by_user(1, OWNER.to_string()).unwrap();
         assert_eq!(minted_by_user, 1);
 
-        let whitelist_minted_by_user = contract
-            .whitelist_minted_count_by_user(0, OWNER.to_string())
-            .unwrap();
-        assert_eq!(whitelist_minted_by_user, 1);
+        let total_minted_by_user = contract.total_minted_count_by_user(OWNER.to_string()).unwrap();
+        assert_eq!(total_minted_by_user, 2);
     }
 
     // Query merke root
@@ -503,7 +534,7 @@ fn full_flow() {
             .unwrap();
 
         let resp = contract.merkle_root().unwrap();
-        assert_eq!(resp, MERKLE_ROOT.to_string())
+        assert_eq!(resp, METADATAS_MERKLE_ROOT.to_string())
     }
 
     // Test merkle tree
@@ -558,7 +589,7 @@ fn full_flow() {
         let merkle_root = merkle_tree.root().unwrap();
         let root_hex = HexBinary::from(merkle_root).to_string();
 
-        assert_eq!(root_hex, MERKLE_ROOT.to_string());
+        assert_eq!(root_hex, METADATAS_MERKLE_ROOT.to_string());
 
         // Try to claim un-requested token
         let not_requested_err = contract

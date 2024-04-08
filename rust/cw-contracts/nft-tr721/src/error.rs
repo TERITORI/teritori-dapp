@@ -30,8 +30,20 @@ pub enum ContractError {
     #[error("Mint has not started yet")]
     MintNotStarted,
 
+    #[error("Mint has ended")]
+    MintEnded,
+
+    #[error("This period is only for whitelisted addresses")]
+    MintWhitelistOnly,
+
+    #[error("Not in whitelisted addresses")]
+    MintNotWhitelisted,
+
     #[error("Exceed max tokens")]
     MintExceedMaxTokens,
+
+    #[error("Exceed max per period")]
+    MintExceedMaxPerPeriod,
 
     #[error("Exceed max per user")]
     MintExceedMaxPerUser,
@@ -47,4 +59,7 @@ pub enum ContractError {
 
     #[error("Invalid amount")]
     InvalidAmount,
+
+    #[error("Period does not exist")]
+    InvalidPeriod,
 }
