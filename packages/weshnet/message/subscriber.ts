@@ -12,15 +12,18 @@ export const subscribeMessages = async (
   ignoreDuplication?: boolean,
 ) => {
   try {
-    // await weshClient.client.ActivateGroup({
-    //   groupPk: bytesFromString(groupPk),
-    // });
+    await weshClient.client.ActivateGroup({
+      groupPk: bytesFromString(groupPk),
+    });
     // const messages = weshClient.client.GroupMessageList(config);
     // console.log('groupPK', groupPk);
     // const groupInfo = weshClient.client.GroupDeviceStatus({ groupPk: bytesFromString(groupPk) });
     // const groupInfo2 = await weshClient.client.DebugGroup({ groupPk: bytesFromString(groupPk) });
-    // const groupInfo3 = await weshClient.client.GroupInfo({ groupPk: bytesFromString(groupPk) });
-    // console.log('groupInfo3', stringFromBytes(groupInfo3.devicePk));
+    // const groupInfo3 = await weshClient.client.GroupInfo({
+    //   groupPk: bytesFromString(groupPk),
+    // });
+
+    // console.log("groupInfo3", groupInfo3.group?.groupType);
     // console.log
 
     // const groupInfoObserver = {
@@ -34,14 +37,21 @@ export const subscribeMessages = async (
     //     console.log("complete");
     //   }
     // }
-    // groupInfo.subscribe(groupInfoObserver);
+    // groupInfo.subscribe(groupInfoObserver);bytesFromString(
+    console.log("groupPk", groupPk);
     const messages = weshClient.client.GroupMessageList({
       groupPk: bytesFromString(groupPk),
+      untilNow: true,
     });
 
+    const newInfo = await weshClient.client.DebugGroup({
+      groupPk: bytesFromString(groupPk),
+    });
+    console.log('new info', newInfo);
     const observer = {
       next: (data: GroupMessageEvent) => {
         try {
+          console.log("message", data);
           processMessage(data, groupPk);
         } catch (err) {
           console.error("subscribe message next err:", err);

@@ -79,6 +79,8 @@ export const ChatSection = ({ conversationId }: ChatSectionProps) => {
     selectMessageList(state, conversationId),
   );
 
+  console.log('conversation', messages);
+
   const contactMessages = useMemo(
     () =>
       messages.filter(
@@ -145,15 +147,18 @@ export const ChatSection = ({ conversationId }: ChatSectionProps) => {
   const { width } = useWindowDimensions();
 
   const handleRead = async (lastMessageId: string) => {
-    if (lastReadProcessedId === lastMessageId) {
-      return;
-    }
+    console.log(lastReadProcessedId === lastMessageId);
+    // if (lastReadProcessedId === lastMessageId) {
+    //   return;
+    // }
 
     setLastReadProcessedId(lastMessageId);
+    console.log(!lastMessageId);
+
     try {
-      if (!lastMessageId) {
-        return;
-      }
+      // if (!lastMessageId) {
+      //   return;
+      // }
       if (conversation?.type === "group") {
         dispatch(
           updateConversationById({

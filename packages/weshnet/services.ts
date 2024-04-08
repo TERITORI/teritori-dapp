@@ -142,7 +142,9 @@ export const afterWeshnetConnectionAction = async () => {
       }),
     );
 
-    subscribeMetadata(weshConfig.config?.accountGroupPk);
+    setTimeout(() => {
+      subscribeMetadata(weshConfig.config?.accountGroupPk);
+    }, 1000);
 
     getAndUpdatePeerList();
     // if (getPeerListIntervalId) {
@@ -164,9 +166,13 @@ const bootSubscribeMessages = () => {
     "",
   );
 
-  // subscribeMessages(conversations[2].id);
-  conversations.forEach((item) => {
-    subscribeMessages(item.id);
+  // subscribeMessages(conversations[0].id);
+  // console.log(conversations);
+
+  conversations.forEach((item, i) => {
+    setTimeout(() => {
+      subscribeMessages(item.id);
+    }, i * 1600);
   });
 };
 
@@ -491,8 +497,8 @@ export const handleRestoreAccount = async () => {
 };
 
 function stopMessagingConnection() {
-  unsubscribeMessageSubscriptions();
-  unsubscribeMetadataSubscriptions();
+  // unsubscribeMessageSubscriptions();
+  // unsubscribeMetadataSubscriptions();
   store.dispatch(setIsWeshConnected(false));
 }
 

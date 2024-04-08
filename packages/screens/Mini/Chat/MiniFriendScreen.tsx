@@ -28,7 +28,7 @@ import { layout } from "../../../utils/style/layout";
 import { ContactRequest } from "../../../utils/types/message";
 import { weshClient } from "../../../weshnet";
 import { acceptFriendRequest, sendMessage } from "../../../weshnet/services";
-import { bytesFromString } from "../../../weshnet/utils";
+import { bytesFromString, stringFromBytes } from "../../../weshnet/utils";
 import { ChatAvatar } from "../components/ChatAvatar";
 import MiniTextInput from "../components/MiniTextInput";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
@@ -40,6 +40,7 @@ import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { RoundedTabs } from "@/components/tabs/RoundedTabs";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { subscribeMessages } from "@/weshnet/message/subscriber";
 
 const miniFriendTabItems = {
   requests: {
@@ -157,6 +158,7 @@ function FriendRequest({ isOnline, data }: Props) {
     try {
       const contactPk = bytesFromString(data?.contactId);
       const groupInfo = await acceptFriendRequest(contactPk);
+
       await sendMessage({
         groupPk: groupInfo?.group?.publicKey,
         message: {
