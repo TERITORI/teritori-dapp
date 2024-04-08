@@ -11,6 +11,7 @@ import (
 	mrand "math/rand"
 	"net/http"
 	"os"
+	"runtime"
 	"strconv"
 
 	"berty.tech/weshnet"
@@ -36,7 +37,6 @@ var (
 	weshDir        = "./temp/wesh-dir/4242"
 	opts           weshnet.Opts
 	httpServer     http.Server
-	stopHTTPServer chan struct{}
 	wrappedServer  *grpcweb.WrappedGrpcServer
 	ds             *badger.Datastore
 	tinderDriver   *tinder.Service
@@ -168,7 +168,6 @@ func StartHTTPServer() {
 
 	if err := httpServer.ListenAndServe(); err != nil {
 		log.Println("weshnet: http listenAndServer err", err)
-		panic(errors.Wrap(err, "failed to start http server"))
 	}
 
 }
@@ -306,20 +305,23 @@ type BootParams struct {
 func BootWesh(path string) {
 	weshDir = path
 	log.Println("weshnet: Boot Wesh: weshDir", weshDir)
-
 	CreateWrappedServer()
-	// Create a channel to synchronize the completion of StartHTTPServer
-	startHTTPServerDone := make(chan struct{})
+	if runtime.GOOS == "android" {
 
-	// Start the HTTP server in a goroutine
+		go StartHTTPServer()
+	} else {
+		 
+	startHTTPServerDone := make(chan struct{})
+ 
 	go func() {
 		defer close(startHTTPServerDone)
-		log.Println(("starting from go rountine"))
+		 
 		StartHTTPServer()
 	}()
 
-	// Wait for StartHTTPServer to complete
 	<-startHTTPServerDone
+
+	}
 }
 
 func HandleExit() error {
@@ -398,5 +400,5 @@ func HandleExit() error {
 
 func Shutdown() {
 	HandleExit()
-	httpServer.Close()
+	httpServer.Close() 
 }
