@@ -18,6 +18,7 @@ import { SpacerColumn } from "@/components/spacer";
 import { useMessage } from "@/context/MessageProvider";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import {
+  selectContactInfo,
   selectConversationById,
   selectFilteredConversationList,
   selectLastContactMessageByGroupPk,
@@ -107,6 +108,8 @@ type SingleChatListType = {
 };
 
 const SingleFriendChatList = ({ data, onPress }: SingleChatListType) => {
+  const userContactInfo = useSelector(selectContactInfo);
+
   const lastMessage = useSelector((state: RootState) =>
     selectLastMessageByGroupPk(state, data.id),
   );
@@ -142,11 +145,16 @@ const SingleFriendChatList = ({ data, onPress }: SingleChatListType) => {
         membersAvatar={
           conversation &&
           conversation?.members &&
-          Array.isArray(conversation?.members)
-            ? conversation?.members?.map((_, index) =>
-                getConversationAvatar(conversation, index),
-              )
-            : [""]
+          conversation.type === "contact"
+            ? [conversation?.members[0].avatar]
+            : Array.isArray(conversation?.members)
+              ? [
+                  userContactInfo?.avatar || "",
+                  ...conversation?.members?.map((_, index) =>
+                    getConversationAvatar(conversation, index),
+                  ),
+                ]
+              : [""]
         }
         isActive={peerStatus?.isActive}
       />
