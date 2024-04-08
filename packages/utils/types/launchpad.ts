@@ -18,9 +18,8 @@ export interface CollectionFormValues {
   email: string;
   projectTypes: string[];
   projectDescription: string;
-  nbTokens: number;
-  unitPrice: Uint128;
-  perAddressLimit: number;
+  tokensCount: number;
+  revealTime?: string;
   teamDescription: string;
   teamLink: string;
   partnersDescription: string;
@@ -30,8 +29,7 @@ export interface CollectionFormValues {
   artworkDescription: string;
   expectedSupply: number;
   expectedPublicMintPrice: number;
-  expectedMintDate: number;
-  nftApiKey?: string;
+  expectedMintDate: string;
   coverImage?: LocalFileData;
   isPreviouslyApplied: boolean;
   isDerivativeProject: boolean;
@@ -39,19 +37,21 @@ export interface CollectionFormValues {
   isDox: boolean;
   escrowMintProceedsPeriod: number;
   daoWhitelistCount: number;
-  whitelistMintInfos: CollectionWhitelistFormValues[];
+  mintPeriods: CollectionMintPeriodFormValues[];
   royaltyAddress?: string;
   royaltyPercentage?: number;
 }
 
-export interface CollectionWhitelistFormValues {
-  endTime: number;
-  perAddressLimit: number;
-  startTime: number;
-  unitPrice: Uint128;
+export interface CollectionMintPeriodFormValues {
+  unitPrice?: Uint128;
+  denom: string;
+  maxTokens?: number;
+  perAddressLimit?: number;
+  startTime: string;
+  endTime?: string;
+  whitelistAddressesFile?: LocalFileData;
+  whitelistAddresses?: string[];
   isOpen: boolean;
-  addressesFile?: LocalFileData;
-  addresses?: string[];
 }
 
 export interface NewCollectionAssetsFormValues {

@@ -56,6 +56,7 @@ export const AssetsTab: React.FC = () => {
             }}
           >
             <View>
+              {/*TODO: Remove this field ?*/}
               <TextInputLaunchpad<NewCollectionAssetsFormValues>
                 label="NFT.Storage API Key"
                 placeHolder="My Awesome Collection"

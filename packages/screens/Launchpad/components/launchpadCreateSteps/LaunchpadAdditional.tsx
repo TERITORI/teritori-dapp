@@ -93,9 +93,9 @@ export const LaunchpadAdditional: React.FC = () => {
           rules={{ pattern: patternOnlyNumbers }}
         />
 
-        {/*TODO: Control, format ?*/}
+        {/*TODO: Control, format ? hat is this data ?*/}
         <TextInputLaunchpad<CollectionFormValues>
-          label="What is your expected mint date? "
+          label="What is your expected mint date?"
           placeHolder="dd.mm.yyyy | hh:mm PM"
           name="expectedMintDate"
           control={collectionForm.control}

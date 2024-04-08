@@ -13,11 +13,11 @@ import { fontSemibold16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
   CollectionFormValues,
-  CollectionWhitelistFormValues,
+  CollectionMintPeriodFormValues,
 } from "@/utils/types/launchpad";
 
-export const LaunchpadMintWhitelistAccordionFormTop: FC<{
-  elem: CollectionWhitelistFormValues;
+export const LaunchpadMintPeriodAccordionFormTop: FC<{
+  elem: CollectionMintPeriodFormValues;
   elemIndex: number;
   update: UseFieldArrayUpdate<CollectionFormValues>;
   closeAll: () => void;
@@ -43,7 +43,7 @@ export const LaunchpadMintWhitelistAccordionFormTop: FC<{
               { color: secondaryColor, marginLeft: layout.spacing_x1 },
             ]}
           >
-            {`Whitelist #${elemIndex}`}
+            {`Period #${elemIndex + 1}`}
           </BrandText>
           <SVG
             source={chevronUpSVG}
@@ -78,7 +78,7 @@ export const LaunchpadMintWhitelistAccordionFormTop: FC<{
               { color: secondaryColor, marginLeft: layout.spacing_x1 },
             ]}
           >
-            {`Whitelist #${elemIndex}`}
+            {`Period #${elemIndex + 1}`}
           </BrandText>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>

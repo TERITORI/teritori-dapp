@@ -5,8 +5,8 @@ import { useSelector } from "react-redux";
 
 import {
   Collection,
+  MintPeriod,
   NftLaunchpadClient,
-  WhitelistMintInfo,
 } from "@/contracts-clients/nft-launchpad";
 import { PinataFileProps, useIpfs } from "@/hooks/useIpfs";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
@@ -58,44 +58,51 @@ export const useCreateCollection = () => {
       }
 
       try {
-        // ========== Upload files to IPFS
+        // ========== Cover image
         const coverImageIpfsHash = await pinataPinFileToIPFS({
           pinataJWTKey,
           file: collectionFormValues.coverImage,
         } as PinataFileProps);
 
+        // ========== Whitelists
         const remoteWhitelistAddressesFiles = await uploadFilesToPinata({
           pinataJWTKey,
-          files: collectionFormValues.whitelistMintInfos.map(
-            (whitelist) => whitelist.addressesFile!,
+          files: collectionFormValues.mintPeriods.map(
+            (mintPeriod) => mintPeriod.whitelistAddressesFile!,
           ),
         });
-
-        // ========== TODO: Generate merkle tree/root/path
-        const whitelist_mint_infos: WhitelistMintInfo[] =
-          collectionFormValues.whitelistMintInfos.map((whitelist, index) => {
-            const addresses: string[] = whitelist.addresses || [];
+        const mint_periods: MintPeriod[] = collectionFormValues.mintPeriods.map(
+          (whitelist, index) => {
+            const addresses: string[] = whitelist.whitelistAddresses || [];
             const leaves = addresses.map(keccak256);
             const tree = new MerkleTree(leaves, keccak256);
             const merkleRoot = tree.getRoot().toString("hex");
 
-            const info: WhitelistMintInfo = {
-              addresses_count: addresses.length,
-              // addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
+            const mintPeriod: MintPeriod = {
               denom,
               // TODO: Remove all parseInt(String()) usages, it's just for tests.
               //  We could : Get true numbers (and not strings even if the type is number), or get only strings and parse. First choice is better IMO
               end_time: parseInt(String(whitelist.endTime), 10) || 0,
+              max_tokens: parseInt(String(whitelist.maxTokens), 10) || 0,
               limit_per_address:
                 parseInt(String(whitelist.perAddressLimit), 10) || 0,
-              merkle_root: merkleRoot,
               start_time: parseInt(String(whitelist.startTime), 10) || 0,
               unit_price: whitelist.unitPrice || "0",
+              whitelist_info: {
+                addresses_count: addresses.length,
+                addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
+                addresses_merkle_root: merkleRoot,
+              },
             };
-            return info;
-          });
+            return mintPeriod;
+          },
+        );
 
-        // ========== Build Collection from forms
+        // ========== Metadata
+        //TODO: Upload images on IPFS, fill Metadata form with text
+        //TODO: UpdateTokensMetadatas, fill Collection form with merkleRoot
+
+        // ========== Final collection
         const collection: Collection = {
           name: collectionFormValues.name || "",
           desc: collectionFormValues.description || "",
@@ -110,12 +117,9 @@ export const useCreateCollection = () => {
           project_type: collectionFormValues.projectTypes?.join() || "",
           project_desc: collectionFormValues.projectDescription || "",
           tokens_count:
-            parseInt(String(collectionFormValues.nbTokens), 10) || 0,
-          unit_price: collectionFormValues.unitPrice || "",
-          limit_per_address:
-            parseInt(String(collectionFormValues.perAddressLimit), 10) || 0,
-          start_time: 0,
-          // reveal_time: 0,
+            parseInt(String(collectionFormValues.tokensCount), 10) || 0,
+          reveal_time:
+            parseInt(String(collectionFormValues.revealTime), 10) || 0,
           team_desc: collectionFormValues.teamDescription || "",
           team_link: collectionFormValues.teamLink || "",
           partners: collectionFormValues.partnersDescription || "",
@@ -148,16 +152,15 @@ export const useCreateCollection = () => {
           dao_whitelist_count:
             parseInt(String(collectionFormValues.daoWhitelistCount), 10) || 0,
 
-          whitelist_mint_infos,
+          mint_periods,
+          metadatas_merkle_root: "TODO",
 
           royalty_address: collectionFormValues.royaltyAddress || "",
           royalty_percentage:
             parseInt(String(collectionFormValues.royaltyPercentage), 10) || 0,
 
           target_network: network.id,
-          denom,
           deployed_address: "None",
-          merkle_root: "None",
           whitepaper_link: "None",
           base_token_uri: "None",
         };

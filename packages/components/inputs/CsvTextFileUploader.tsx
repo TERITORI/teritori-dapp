@@ -72,7 +72,6 @@ export const CsvTextFileUploader: FC<{
   }
   return (
     <SelectFileUploader
-      label="Select file"
       containerHeight={48}
       onUpload={onUploadFiles}
       mimeTypes={TXT_CSV_MIME_TYPES}
