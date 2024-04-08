@@ -10,7 +10,6 @@ import {
 import { LatLng } from "react-native-leaflet-view";
 import { z } from "zod";
 
-import location from "../../../../../assets/icons/location.svg";
 import {
   neutral77,
   primaryColor,
@@ -22,6 +21,7 @@ import { SVG } from "../../../SVG";
 import { TextInputCustom } from "../../../inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../../inputs/TextInputOutsideLabel";
 
+import location from "@/assets/icons/location.svg";
 import { useDebounce } from "@/hooks/useDebounce";
 
 const zodAddressSearchResult = z.array(
