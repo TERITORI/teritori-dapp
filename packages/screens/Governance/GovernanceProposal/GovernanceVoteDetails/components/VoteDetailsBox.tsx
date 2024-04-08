@@ -58,7 +58,7 @@ export const VoteDetailsBox: React.FC<{
           borderWidth: 0,
           backgroundColor: neutral17,
           width: "98%",
-          flex: isMobile ? 0.8 : 0.4,
+          flex: isMobile ? 3.5 : 2.5,
           justifyContent: "center",
           paddingVertical: layout.spacing_x2,
         }}

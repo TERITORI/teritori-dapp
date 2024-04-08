@@ -1,3 +1,4 @@
+import moment from "moment";
 import React from "react";
 import { View } from "react-native";
 
@@ -40,25 +41,25 @@ export const VoteTimeDetailsBox: React.FC<{
       >
         <VoteTimeText
           label="Submit Time"
-          subLabel={`${submit_time.slice(0, 10)} ${submit_time.slice(11, 16)} UTC`}
+          subLabel={moment.utc(submit_time).format()}
         />
         <Separator horizontal />
 
         <VoteTimeText
           label="Deposit End Time"
-          subLabel={`${deposit_end_time.slice(0, 10)} ${deposit_end_time.slice(11, 16)} UTC`}
+          subLabel={moment.utc(deposit_end_time).format()}
         />
         {!isMobile && (
           <>
             <Separator horizontal />
             <VoteTimeText
               label="Voting Start"
-              subLabel={`${voting_start_time.slice(0, 10)} ${voting_start_time.slice(11, 16)} UTC`}
+              subLabel={moment.utc(voting_start_time).format()}
             />
             <Separator horizontal />
             <VoteTimeText
               label="Voting End"
-              subLabel={`${voting_end_time.slice(0, 10)} ${voting_end_time.slice(11, 16)} UTC`}
+              subLabel={moment.utc(voting_end_time).format()}
             />
           </>
         )}
@@ -73,13 +74,13 @@ export const VoteTimeDetailsBox: React.FC<{
         >
           <VoteTimeText
             label="Voting Start"
-            subLabel={`${voting_start_time.slice(0, 10)} ${voting_start_time.slice(11, 16)} UTC`}
+            subLabel={moment.utc(voting_start_time).format()}
           />
           <Separator horizontal />
 
           <VoteTimeText
             label="Voting End"
-            subLabel={`${voting_end_time.slice(0, 10)} ${voting_end_time.slice(11, 16)} UTC`}
+            subLabel={moment.utc(voting_end_time).format()}
           />
         </View>
       )}
