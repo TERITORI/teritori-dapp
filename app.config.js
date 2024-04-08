@@ -41,7 +41,20 @@ const config = {
     android: {
       package: "com.teritori",
       versionCode: "6",
-      permissions: ["WAKE_LOCK"],
+      permissions: [
+        "WAKE_LOCK",
+        "BLUETOOTH",
+        "BLUETOOTH_ADMIN",
+        "BLUETOOTH_ADVERTISE",
+        "BLUETOOTH_SCAN",
+        "BLUETOOTH_CONNECT",
+        "ACCESS_NETWORK_STATE",
+        "CHANGE_NETWORK_STATE",
+        "CHANGE_WIFI_STATE",
+        "ACCESS_WIFI_STATE",
+        "CHANGE_WIFI_MULTICAST_STATE",
+        "NFC",
+      ],
     },
     web: {
       bundler: "metro",
@@ -64,6 +77,7 @@ const config = {
         "react-native-vision-camera",
         {
           cameraPermissionText: "$(PRODUCT_NAME) needs access to your Camera.",
+          enableCodeScanner: true,
         },
       ],
     ],

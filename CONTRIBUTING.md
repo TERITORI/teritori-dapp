@@ -1,40 +1,40 @@
-# Contributing
+# Contributing 🤝
 
-## Contributor guidelines
+## Contributor guidelines 📝
 
-### Core contributor loop
+### Core contributor loop 🔁
 
-- Check the [list of PRs that need review](https://github.com/TERITORI/teritori-dapp/pulls?q=is%3Apr+is%3Aopen+review%3Arequired+draft%3Afalse+) and review relevant PRs, see [Reviewing a PR](#reviewing-a-pr)
-- Check your [assigned PRs that require changes](https://github.com/TERITORI/teritori-dapp/pulls?q=is%3Apr+is%3Aopen+review%3Achanges_requested+draft%3Afalse+assignee%3A%40me+) and address the reviews
-- Make sure you have self-reviewed your existing PRs and the CI passes on them, see [Reviewing a PR](#reviewing-a-pr)
-- Continue on your assigned tasks
-- If you have nothing to do at this point, ask for a new task
+- ✅ Check the [list of PRs that need review](https://github.com/TERITORI/teritori-dapp/pulls?q=is%3Apr+is%3Aopen+review%3Arequired+draft%3Afalse+) and review relevant PRs, see [Reviewing a PR](#reviewing-a-pr)
+- 🛠️ Check your [assigned PRs that require changes](https://github.com/TERITORI/teritori-dapp/pulls?q=is%3Apr+is%3Aopen+review%3Achanges_requested+draft%3Afalse+assignee%3A%40me+) and address the reviews
+- 🔍 Make sure you have self-reviewed your existing PRs and the CI passes on them, see [Reviewing a PR](#reviewing-a-pr)
+- 🚀 Continue on your assigned tasks
+- 🆕 If you have nothing to do at this point, ask for a new task
 
-For all tasks, create a PR as soon as possible to make other mates aware of your work and to prevent you from going in a bad direction
+For all tasks, create a PR as soon as possible to make other mates aware of your work and to prevent you from going in a bad direction 🔄
 
-### Creating a PR
+### Creating a PR ➕
 
-- Make sure the branch name is lowercase, git will automatically lowercase the branch name is some environment and branch names with uppercase characters are a pain to manage.
-- We recommend NOT to use the `/` character in branch names since it's the syntax for specifying a remote branch with `<remote>/<branch>` like `origin/main` and can be confusing
-- We recommend working with the [git cli](https://git-scm.com/docs/git) and not github tools except to review diffs.
-- Make sure the PR's title follows [the conventional commits standard](https://www.conventionalcommits.org/en/v1.0.0/) as it will be used as the squashed commit title on main
-- Make sure your are assigned to the PR, this helps you to know [which PRs require your attention](https://github.com/TERITORI/teritori-dapp/pulls?q=is%3Apr+is%3Aopen+assignee%3A%40me)
-- Try to keep the PR [atomic](https://fagnerbrack.com/one-pull-request-one-concern-e84a27dfe9f1), it will be merged faster and benefit all your mates
-- Self-review the changes and pass CI before asking for other peoples reviews, see [Reviewing a PR](#reviewing-a-pr)
+- 🔤 Make sure the branch name is lowercase, git will automatically lowercase the branch name is some environment and branch names with uppercase characters are a pain to manage.
+- ❌ We recommend NOT to use the `/` character in branch names since it's the syntax for specifying a remote branch with `<remote>/<branch>` like `origin/main` and can be confusing
+- 💻 We recommend working with the [git cli](https://git-scm.com/docs/git) and not GitHub tools except to review diffs.
+- 📝 Make sure the PR's title follows [the conventional commits standard](https://www.conventionalcommits.org/en/v1.0.0/) as it will be used as the squashed commit title on main
+- 👤 Make sure you are assigned to the PR, this helps you to know [which PRs require your attention](https://github.com/TERITORI/teritori-dapp/pulls?q=is%3Apr+is%3Aopen+assignee%3A%40me)
+- 📊 Try to keep the PR [atomic](https://fagnerbrack.com/one-pull-request-one-concern-e84a27dfe9f1), it will be merged faster and benefit all your mates
+- 🔎 Self-review the changes and pass CI before asking for other people's reviews, see [Reviewing a PR](#reviewing-a-pr)
 
-### Reviewing a PR
+### Reviewing a PR 👀
 
-- Read and understand all changes
+- 📖 Read and understand all changes
   
   You can use the GitHub diff and mark each file as viewed, this will help in subsequent reviews as unchanged files will keep the "Viewed" status
   
   <img width="448" alt="Screenshot 2024-03-21 at 20 01 38" src="https://github.com/TERITORI/teritori-dapp/assets/7917064/6141fdd3-2746-498d-916f-9945a56c7ff0">
 
-- Test
+- 🧪 Test
   
   Check that the feature works or the bug is fixed
 
-  If there is changes in code used at other places, test for regressions in affected features
+  If there are changes in code used at other places, test for regressions in affected features
 
 If the PR is not atomic enough and makes reviewing hard, you can ask the author to split it
 
@@ -115,7 +115,7 @@ The Cosmos SDK itself is written in golang.
 
 #### Protocol for extra services: GRPC
 
-We use [GRPC](https://grpc.io/) as communication protocol for the centralized APIs. The models and endpoints definition are written in [protobuf](https://protobuf.dev/), this allows to generate types, servers and clients in any language. The definition are in the [api folder](api). The backend servers in the [go/pkg folder](go/pkg). The clients in the [js/packages/api folder](js/packages/api).
+We use [GRPC](https://grpc.io/) as communication protocol for the centralized APIs. The models and endpoints definition are written in [protobuf](https://protobuf.dev/), this allows to generate types, servers and clients in any language. The definition are in the [api folder](api). The backend servers in the [go/pkg folder](go/pkg). The clients in the [packages/api folder](packages/api).
 
 The Cosmos SDK is also using protobuf for it's endpoints definition but with custom encodings and extra layers on top of it.
 
@@ -124,6 +124,31 @@ The Cosmos SDK is also using protobuf for it's endpoints definition but with cus
 We plan to transition from Cosmos SDK to [Gno](https://docs.gno.land/) for the blockchain nodes and smart-contracts framework
 
 ## Patterns
+
+### Comments in code
+- Do you really need a comment? Using [meaningful names](https://workat.tech/machine-coding/tutorial/writing-meaningful-variable-names-clean-code-za4m83tiesy0) and low [cognitive complexity](https://www.sonarsource.com/docs/CognitiveComplexity.pdf) is very often enough to make the code understandable without comments. Comments are not validated by CI and can/will become outdated without notice.
+- Don't push commented-out code, remove it! See [this article](https://methodpoet.com/commented-out-code/) for a deeper explanation.
+- Add comments to explain the intent of code if it's not obvious. A good example is when adding a hack to work around an upstream issue, adding a comment linking to the upstream issue is very meaningful there. When maintainers revisit this code they can understand why this "weird" bit of code is here and easily check if the issue is resolved.
+- Add comments to signal areas of improvement you think of but can't put in current scope ("TODO:"s and "FIXME:"s).
+
+```typescript
+// bad
+
+// get index for current elem from deep thought
+let k = s.gi(x)
+// add 42
+k += 42
+// do something with index
+cb(k)
+```
+
+```typescript
+// good
+
+let index = deepThought.getIndex(elem)
+index += 42 // we need this hack due to a bug in DeepThought initialization, see https://github.com/deepthought/core/issues/21. TODO: remove this line when resolved upstream
+doSomethingWithIndex(index)
+```
 
 ### Continuous Integration (CI)
 

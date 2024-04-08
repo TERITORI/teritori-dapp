@@ -17,7 +17,7 @@ export const SearchInputRounded: React.FC<{
     <PrimaryBox
       style={{
         padding: layout.spacing_x1,
-        width: isMobile ? "auto" : 471,
+        width: isMobile ? 195 : 471,
         flexDirection: "row",
         alignItems: "center",
         borderColor: neutral33,

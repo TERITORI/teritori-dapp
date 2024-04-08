@@ -9,6 +9,7 @@ import (
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/feedpb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/dgraph-io/ristretto"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -25,6 +26,7 @@ type Config struct {
 	Logger    *zap.Logger
 	IndexerDB *gorm.DB
 	PinataJWT string
+	Networks  networks.NetworkStore
 }
 
 type DBPostWithExtra struct {
@@ -187,10 +189,18 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 			return nil, err
 		}
 
+		n, err := s.conf.Networks.GetNetwork(dbPost.NetworkID)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get post network")
+		}
+
 		posts[idx] = &feedpb.Post{
+			Id:                   string(n.GetBase().PostID(dbPost.Identifier)),
 			Category:             dbPost.Category,
 			IsDeleted:            dbPost.IsDeleted,
 			Identifier:           dbPost.Identifier,
+			LocalIdentifier:      dbPost.Identifier,
+			NetworkId:            dbPost.NetworkID,
 			Metadata:             string(metadata),
 			ParentPostIdentifier: dbPost.ParentPostIdentifier,
 			SubPostLength:        dbPost.SubPostLength,

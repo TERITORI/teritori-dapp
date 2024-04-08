@@ -11,10 +11,11 @@ import {
 } from "./types/feed";
 import { LocalFileData } from "./types/files";
 import { TabDefinition } from "./types/tabs";
-import flagSVG from "../../assets/icons/notification.svg";
-import { Post, Reaction } from "../api/feed/v1/feed";
-import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import { getUserId } from "../networks";
+
+import { Post, Reaction } from "@/api/feed/v1/feed";
+import flagSVG from "@/assets/icons/notification.svg";
+import { PostResult } from "@/contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import { getNetworkObjectId, getUserId } from "@/networks";
 
 export const DEFAULT_NAME = "Anon";
 export const DEFAULT_USERNAME = "anonymous";
@@ -27,6 +28,10 @@ export const ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH = 364;
 export const ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT = 252;
 export const LIKE_EMOJI = "👍";
 export const DISLIKE_EMOJI = "👎";
+export const LINES_HORIZONTAL_SPACE = 40;
+export const ROUND_BUTTON_WIDTH_L = 60;
+export const ROUND_BUTTON_WIDTH_S = 42;
+export const SOCIAl_CARD_BORDER_RADIUS = 12;
 
 export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
   const hasIcon = reactions.find((r) => r.icon === icon);
@@ -47,6 +52,9 @@ export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
 export const feedsTabItems: { [key: string]: TabDefinition } = {
   "": {
     name: "Jungle News Feed",
+  },
+  map: {
+    name: "Map Feed",
   },
   music: {
     name: "Music Feed",
@@ -102,7 +110,10 @@ export const postResultToPost = (
   const post: Post = {
     category: postResult.category,
     isDeleted: postResult.deleted,
+    id: getNetworkObjectId(networkId, postResult.identifier),
     identifier: postResult.identifier,
+    localIdentifier: postResult.identifier,
+    networkId,
     metadata: postResult.metadata,
     parentPostIdentifier: postResult.parent_post_identifier || "",
     subPostLength: postResult.sub_post_length,

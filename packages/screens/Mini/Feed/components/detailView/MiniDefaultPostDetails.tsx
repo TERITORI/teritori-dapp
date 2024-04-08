@@ -14,10 +14,7 @@ import { ScreenContainer } from "@/components/ScreenContainer";
 import { CommentsContainer } from "@/components/cards/CommentsContainer";
 import { SocialThreadCard } from "@/components/socialFeed/SocialCard/cards/SocialThreadCard";
 import { SpacerColumn } from "@/components/spacer";
-import {
-  combineFetchCommentPages,
-  useFetchComments,
-} from "@/hooks/feed/useFetchComments";
+import { useFetchComments } from "@/hooks/feed/useFetchComments";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
@@ -36,18 +33,11 @@ import {
 } from "@/utils/types/feed";
 
 type Props = {
-  networkId: string;
   post: Post;
   refetchPost: () => Promise<any>;
-  isLoading?: boolean;
 };
 
-const MiniDefaultPostDetails = ({
-  networkId,
-  post,
-  refetchPost,
-  isLoading,
-}: Props) => {
+const MiniDefaultPostDetails = ({ post, refetchPost }: Props) => {
   const navigation = useAppNavigation();
 
   const { width: windowWidth } = useWindowDimensions();
@@ -57,28 +47,23 @@ const MiniDefaultPostDetails = ({
   const [localPost, setLocalPost] = useState(post || Post.create());
   const [replyTo, setReplyTo] = useState<ReplyToType>();
   const {
-    data,
+    data: comments,
     refetch: refetchComments,
     hasNextPage,
     fetchNextPage,
   } = useFetchComments({
-    parentId: post?.identifier,
-    totalCount: post?.subPostLength,
+    parentId: post.id,
+    totalCount: post.subPostLength,
     enabled: true,
   });
   const isNextPageAvailable = useSharedValue(hasNextPage);
-  const comments = useMemo(
-    () => (data ? combineFetchCommentPages(data.pages) : []),
-    [data],
-  );
-  const postId = post.identifier;
 
   useEffect(() => {
-    if (post?.category === PostCategory.Video)
+    if (post.category === PostCategory.Video)
       navigation.replace("FeedPostView", {
-        id: postId,
+        id: post.id,
       });
-  }, [post?.category, postId, navigation]);
+  }, [post.category, post.id, navigation]);
 
   useEffect(() => {
     if (post) {
@@ -129,7 +114,7 @@ const MiniDefaultPostDetails = ({
         }
       },
     },
-    [post?.identifier],
+    [post.id],
   );
 
   const handleSubmitInProgress = () => {
@@ -141,7 +126,7 @@ const MiniDefaultPostDetails = ({
   return (
     <KeyboardAvoidingView extraVerticalOffset={-100}>
       <ScreenContainer
-        forceNetworkId={networkId}
+        forceNetworkId={post.networkId}
         fullWidth
         responsive
         noMargin
@@ -201,7 +186,7 @@ const MiniDefaultPostDetails = ({
             }}
             ref={feedInputRef}
             replyTo={replyTo}
-            parentId={post.identifier}
+            parentId={post.id}
             onSubmitInProgress={handleSubmitInProgress}
             onSubmitSuccess={() => {
               setReplyTo(undefined);
