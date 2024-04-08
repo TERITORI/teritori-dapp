@@ -1,5 +1,6 @@
 import React from "react";
 import { SafeAreaView, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MiniArticlePostDetails } from "./components/detailView/MiniArticlePostDetails";
 import MiniDefaultPostDetails from "./components/detailView/MiniDefaultPostDetails";
@@ -13,7 +14,7 @@ import { BackButton } from "@/components/navigation/components/BackButton";
 import { usePost } from "@/hooks/feed/usePost";
 import { convertLegacyPostId } from "@/utils/feed/queries";
 import { ScreenFC } from "@/utils/navigation";
-import { layout } from "@/utils/style/layout";
+import { layout, MOBILE_HEADER_HEIGHT } from "@/utils/style/layout";
 import { PostCategory } from "@/utils/types/feed";
 
 export const FeedDetailsView: ScreenFC<"FeedPostView"> = ({ route }) => {
@@ -21,14 +22,23 @@ export const FeedDetailsView: ScreenFC<"FeedPostView"> = ({ route }) => {
   const postId = convertLegacyPostId(idParam);
   const { post, isLoading, refetch } = usePost(postId);
   const label = post?.category === PostCategory.Video ? "Video" : "Post";
+  const safeAreaInset = useSafeAreaInsets();
 
   if (isLoading) {
     return (
-      <SafeAreaView style={{ backgroundColor: "#000", flex: 1 }}>
+      <SafeAreaView
+        style={{
+          backgroundColor: "#000",
+          flex: 1,
+          paddingTop: safeAreaInset.top,
+        }}
+      >
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
+            height: MOBILE_HEADER_HEIGHT,
+            maxHeight: MOBILE_HEADER_HEIGHT,
             gap: layout.spacing_x1_5,
             paddingHorizontal: layout.spacing_x2,
           }}
