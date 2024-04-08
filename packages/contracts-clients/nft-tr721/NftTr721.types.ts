@@ -10,31 +10,31 @@ export interface InstantiateMsg {
   admin: string;
   launchpad_contract: string;
   mint_info: MintInfo;
+  mint_periods: MintPeriod[];
   minter: string;
   name: string;
   symbol: string;
-  whitelist_mint_infos: WhitelistMintInfo[];
   [k: string]: unknown;
 }
 export interface MintInfo {
-  denom: string;
-  limit_per_address: number;
-  merkle_root: string;
+  metadatas_merkle_root: string;
   royalty_address?: Addr | null;
   royalty_percentage?: number | null;
-  start_time: number;
   tokens_count: number;
-  unit_price: Uint128;
 }
-export interface WhitelistMintInfo {
+export interface MintPeriod {
+  denom: string;
+  end_time?: number | null;
+  limit_per_address?: number | null;
+  max_tokens?: number | null;
+  start_time: number;
+  unit_price: Uint128;
+  whitelist_info?: WhitelistInfo | null;
+}
+export interface WhitelistInfo {
   addresses_count: number;
   addresses_ipfs: string;
-  denom: string;
-  end_time: number;
-  limit_per_address: number;
-  merkle_root: string;
-  start_time: number;
-  unit_price: Uint128;
+  addresses_merkle_root: string;
 }
 export type ExecuteMsg = {
   transfer_nft: {
@@ -87,13 +87,14 @@ export type ExecuteMsg = {
     [k: string]: unknown;
   };
 } | {
-  update_whitelist_mint_info: {
-    whitelist_id: number;
-    whitelist_mint_info: WhitelistMintInfo;
+  update_mint_period: {
+    mint_period: MintPeriod;
+    mint_period_id: number;
     [k: string]: unknown;
   };
 } | {
   request_mint: {
+    period_id: number;
     whitelist_proof?: WhitelistProof | null;
     [k: string]: unknown;
   };
@@ -142,13 +143,18 @@ export type QueryMsg = {
     [k: string]: unknown;
   };
 } | {
+  minted_count_by_period: {
+    period_id: number;
+    [k: string]: unknown;
+  };
+} | {
   minted_count_by_user: {
+    period_id: number;
     user: string;
     [k: string]: unknown;
   };
 } | {
-  whitelist_minted_count_by_user: {
-    period: number;
+  total_minted_count_by_user: {
     user: string;
     [k: string]: unknown;
   };
@@ -157,7 +163,7 @@ export type QueryMsg = {
     [k: string]: unknown;
   };
 } | {
-  whitelist_mint_infos: {
+  mint_periods: {
     [k: string]: unknown;
   };
 } | {
@@ -429,6 +435,7 @@ export interface Empty {
   [k: string]: unknown;
 }
 export type String = string;
+export type ArrayOfMintPeriod = MintPeriod[];
 export type Uint32 = number;
 export interface MinterResponse {
   minter?: string | null;
@@ -448,4 +455,3 @@ export interface RoyaltiesInfoResponse {
   address: string;
   royalty_amount: Uint128;
 }
-export type ArrayOfWhitelistMintInfo = WhitelistMintInfo[];

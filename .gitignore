@@ -104,4 +104,4 @@ temp/
 cosmwasm-contracts/*/target
 
 # secret files
-rust/cw-contracts/mnemonic.ts
+rust/scripts/mnemonic.ts

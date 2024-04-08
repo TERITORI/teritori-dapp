@@ -6,24 +6,29 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { Addr, Uint128, InstantiateMsg, MintInfo, WhitelistMintInfo, ExecuteMsg, Binary, Expiration, Timestamp, Uint64, Metadata, Trait, WhitelistProof, QueryMsg, AllNftInfoResponseForNullable_Metadata, OwnerOfResponse, Approval, NftInfoResponseForNullable_Metadata, OperatorsResponse, TokensResponse, ApprovalResponse, ApprovalsResponse, CheckRoyaltiesResponse, ContractInfoResponse, ContractVersion, CosmosMsgForEmpty, BankMsg, StakingMsg, DistributionMsg, WasmMsg, ReplyOn, ResponseForEmpty, Attribute, Event, SubMsgForEmpty, Coin, Empty, String, Uint32, MinterResponse, NumTokensResponse, OperatorResponse, OwnershipForAddr, RoyaltiesInfoResponse, ArrayOfWhitelistMintInfo } from "./NftTr721.types";
+import { Addr, Uint128, InstantiateMsg, MintInfo, MintPeriod, WhitelistInfo, ExecuteMsg, Binary, Expiration, Timestamp, Uint64, Metadata, Trait, WhitelistProof, QueryMsg, AllNftInfoResponseForNullable_Metadata, OwnerOfResponse, Approval, NftInfoResponseForNullable_Metadata, OperatorsResponse, TokensResponse, ApprovalResponse, ApprovalsResponse, CheckRoyaltiesResponse, ContractInfoResponse, ContractVersion, CosmosMsgForEmpty, BankMsg, StakingMsg, DistributionMsg, WasmMsg, ReplyOn, ResponseForEmpty, Attribute, Event, SubMsgForEmpty, Coin, Empty, String, ArrayOfMintPeriod, Uint32, MinterResponse, NumTokensResponse, OperatorResponse, OwnershipForAddr, RoyaltiesInfoResponse } from "./NftTr721.types";
 export interface NftTr721ReadOnlyInterface {
   contractAddress: string;
   totalMinted: () => Promise<Uint64>;
+  mintedCountByPeriod: ({
+    periodId
+  }: {
+    periodId: number;
+  }) => Promise<Uint32>;
   mintedCountByUser: ({
+    periodId,
     user
   }: {
+    periodId: number;
     user: string;
   }) => Promise<Uint32>;
-  whitelistMintedCountByUser: ({
-    period,
+  totalMintedCountByUser: ({
     user
   }: {
-    period: number;
     user: string;
   }) => Promise<Uint32>;
   mintInfo: () => Promise<MintInfo>;
-  whitelistMintInfos: () => Promise<ArrayOfWhitelistMintInfo>;
+  mintPeriods: () => Promise<ArrayOfMintPeriod>;
   minter: () => Promise<MinterResponse>;
   contractInfo: () => Promise<ContractInfoResponse>;
   nftInfo: ({
@@ -119,10 +124,11 @@ export class NftTr721QueryClient implements NftTr721ReadOnlyInterface {
     this.client = client;
     this.contractAddress = contractAddress;
     this.totalMinted = this.totalMinted.bind(this);
+    this.mintedCountByPeriod = this.mintedCountByPeriod.bind(this);
     this.mintedCountByUser = this.mintedCountByUser.bind(this);
-    this.whitelistMintedCountByUser = this.whitelistMintedCountByUser.bind(this);
+    this.totalMintedCountByUser = this.totalMintedCountByUser.bind(this);
     this.mintInfo = this.mintInfo.bind(this);
-    this.whitelistMintInfos = this.whitelistMintInfos.bind(this);
+    this.mintPeriods = this.mintPeriods.bind(this);
     this.minter = this.minter.bind(this);
     this.contractInfo = this.contractInfo.bind(this);
     this.nftInfo = this.nftInfo.bind(this);
@@ -148,27 +154,38 @@ export class NftTr721QueryClient implements NftTr721ReadOnlyInterface {
       total_minted: {}
     });
   };
+  mintedCountByPeriod = async ({
+    periodId
+  }: {
+    periodId: number;
+  }): Promise<Uint32> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      minted_count_by_period: {
+        period_id: periodId
+      }
+    });
+  };
   mintedCountByUser = async ({
+    periodId,
     user
   }: {
+    periodId: number;
     user: string;
   }): Promise<Uint32> => {
     return this.client.queryContractSmart(this.contractAddress, {
       minted_count_by_user: {
+        period_id: periodId,
         user
       }
     });
   };
-  whitelistMintedCountByUser = async ({
-    period,
+  totalMintedCountByUser = async ({
     user
   }: {
-    period: number;
     user: string;
   }): Promise<Uint32> => {
     return this.client.queryContractSmart(this.contractAddress, {
-      whitelist_minted_count_by_user: {
-        period,
+      total_minted_count_by_user: {
         user
       }
     });
@@ -178,9 +195,9 @@ export class NftTr721QueryClient implements NftTr721ReadOnlyInterface {
       mint_info: {}
     });
   };
-  whitelistMintInfos = async (): Promise<ArrayOfWhitelistMintInfo> => {
+  mintPeriods = async (): Promise<ArrayOfMintPeriod> => {
     return this.client.queryContractSmart(this.contractAddress, {
-      whitelist_mint_infos: {}
+      mint_periods: {}
     });
   };
   minter = async (): Promise<MinterResponse> => {
@@ -439,16 +456,18 @@ export interface NftTr721Interface extends NftTr721ReadOnlyInterface {
   }: {
     mintInfo: MintInfo;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
-  updateWhitelistMintInfo: ({
-    whitelistId,
-    whitelistMintInfo
+  updateMintPeriod: ({
+    mintPeriod,
+    mintPeriodId
   }: {
-    whitelistId: number;
-    whitelistMintInfo: WhitelistMintInfo;
+    mintPeriod: MintPeriod;
+    mintPeriodId: number;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   requestMint: ({
+    periodId,
     whitelistProof
   }: {
+    periodId: number;
     whitelistProof?: WhitelistProof;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   claim: ({
@@ -479,7 +498,7 @@ export class NftTr721Client extends NftTr721QueryClient implements NftTr721Inter
     this.revokeAll = this.revokeAll.bind(this);
     this.mint = this.mint.bind(this);
     this.updateMintInfo = this.updateMintInfo.bind(this);
-    this.updateWhitelistMintInfo = this.updateWhitelistMintInfo.bind(this);
+    this.updateMintPeriod = this.updateMintPeriod.bind(this);
     this.requestMint = this.requestMint.bind(this);
     this.claim = this.claim.bind(this);
   }
@@ -602,27 +621,30 @@ export class NftTr721Client extends NftTr721QueryClient implements NftTr721Inter
       }
     }, fee, memo, _funds);
   };
-  updateWhitelistMintInfo = async ({
-    whitelistId,
-    whitelistMintInfo
+  updateMintPeriod = async ({
+    mintPeriod,
+    mintPeriodId
   }: {
-    whitelistId: number;
-    whitelistMintInfo: WhitelistMintInfo;
+    mintPeriod: MintPeriod;
+    mintPeriodId: number;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
-      update_whitelist_mint_info: {
-        whitelist_id: whitelistId,
-        whitelist_mint_info: whitelistMintInfo
+      update_mint_period: {
+        mint_period: mintPeriod,
+        mint_period_id: mintPeriodId
       }
     }, fee, memo, _funds);
   };
   requestMint = async ({
+    periodId,
     whitelistProof
   }: {
+    periodId: number;
     whitelistProof?: WhitelistProof;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       request_mint: {
+        period_id: periodId,
         whitelist_proof: whitelistProof
       }
     }, fee, memo, _funds);

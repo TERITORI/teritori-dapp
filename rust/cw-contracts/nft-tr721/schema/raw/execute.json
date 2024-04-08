@@ -225,23 +225,23 @@
     {
       "type": "object",
       "required": [
-        "update_whitelist_mint_info"
+        "update_mint_period"
       ],
       "properties": {
-        "update_whitelist_mint_info": {
+        "update_mint_period": {
           "type": "object",
           "required": [
-            "whitelist_id",
-            "whitelist_mint_info"
+            "mint_period",
+            "mint_period_id"
           ],
           "properties": {
-            "whitelist_id": {
+            "mint_period": {
+              "$ref": "#/definitions/MintPeriod"
+            },
+            "mint_period_id": {
               "type": "integer",
               "format": "uint32",
               "minimum": 0.0
-            },
-            "whitelist_mint_info": {
-              "$ref": "#/definitions/WhitelistMintInfo"
             }
           }
         }
@@ -256,7 +256,15 @@
       "properties": {
         "request_mint": {
           "type": "object",
+          "required": [
+            "period_id"
+          ],
           "properties": {
+            "period_id": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0.0
+            },
             "whitelist_proof": {
               "anyOf": [
                 {
@@ -439,23 +447,11 @@
     "MintInfo": {
       "type": "object",
       "required": [
-        "denom",
-        "limit_per_address",
-        "merkle_root",
-        "start_time",
-        "tokens_count",
-        "unit_price"
+        "metadatas_merkle_root",
+        "tokens_count"
       ],
       "properties": {
-        "denom": {
-          "type": "string"
-        },
-        "limit_per_address": {
-          "type": "integer",
-          "format": "uint32",
-          "minimum": 0.0
-        },
-        "merkle_root": {
+        "metadatas_merkle_root": {
           "type": "string"
         },
         "royalty_address": {
@@ -476,18 +472,66 @@
           "format": "uint8",
           "minimum": 0.0
         },
-        "start_time": {
+        "tokens_count": {
           "type": "integer",
           "format": "uint64",
           "minimum": 0.0
+        }
+      },
+      "additionalProperties": false
+    },
+    "MintPeriod": {
+      "type": "object",
+      "required": [
+        "denom",
+        "start_time",
+        "unit_price"
+      ],
+      "properties": {
+        "denom": {
+          "type": "string"
         },
-        "tokens_count": {
+        "end_time": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "limit_per_address": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "max_tokens": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "start_time": {
           "type": "integer",
           "format": "uint64",
           "minimum": 0.0
         },
         "unit_price": {
           "$ref": "#/definitions/Uint128"
+        },
+        "whitelist_info": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/WhitelistInfo"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "additionalProperties": false
@@ -530,17 +574,12 @@
       "description": "A thin wrapper around u64 that is using strings for JSON encoding/decoding, such that the full u64 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u64` to get the value out:\n\n``` # use cosmwasm_std::Uint64; let a = Uint64::from(42u64); assert_eq!(a.u64(), 42);\n\nlet b = Uint64::from(70u32); assert_eq!(b.u64(), 70); ```",
       "type": "string"
     },
-    "WhitelistMintInfo": {
+    "WhitelistInfo": {
       "type": "object",
       "required": [
         "addresses_count",
         "addresses_ipfs",
-        "denom",
-        "end_time",
-        "limit_per_address",
-        "merkle_root",
-        "start_time",
-        "unit_price"
+        "addresses_merkle_root"
       ],
       "properties": {
         "addresses_count": {
@@ -551,29 +590,8 @@
         "addresses_ipfs": {
           "type": "string"
         },
-        "denom": {
+        "addresses_merkle_root": {
           "type": "string"
-        },
-        "end_time": {
-          "type": "integer",
-          "format": "uint64",
-          "minimum": 0.0
-        },
-        "limit_per_address": {
-          "type": "integer",
-          "format": "uint32",
-          "minimum": 0.0
-        },
-        "merkle_root": {
-          "type": "string"
-        },
-        "start_time": {
-          "type": "integer",
-          "format": "uint64",
-          "minimum": 0.0
-        },
-        "unit_price": {
-          "$ref": "#/definitions/Uint128"
         }
       },
       "additionalProperties": false

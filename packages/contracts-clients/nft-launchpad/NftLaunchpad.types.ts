@@ -36,8 +36,8 @@ export type ExecuteMsg = {
     [k: string]: unknown;
   };
 };
-export type Addr = string;
 export type Uint128 = string;
+export type Addr = string;
 export interface Collection {
   artwork_desc: string;
   base_token_uri?: string | null;
@@ -45,7 +45,6 @@ export interface Collection {
   contact_email: string;
   cover_img_uri: string;
   dao_whitelist_count: number;
-  denom: string;
   deployed_address?: string | null;
   desc: string;
   escrow_mint_proceeds_period: number;
@@ -59,18 +58,16 @@ export interface Collection {
   is_dox: boolean;
   is_project_derivative: boolean;
   is_ready_for_mint: boolean;
-  limit_per_address: number;
-  merkle_root?: string | null;
+  metadatas_merkle_root?: string | null;
+  mint_periods: MintPeriod[];
   name: string;
   partners: string;
   project_desc: string;
   project_type: string;
-  // TODO: Update client type
-  // reveal_time: number;
+  reveal_time: number;
   roadmap_link: string;
   royalty_address?: Addr | null;
   royalty_percentage?: number | null;
-  start_time: number;
   symbol: string;
   target_network: string;
   team_desc: string;
@@ -78,21 +75,22 @@ export interface Collection {
   tokens_count: number;
   twitter_followers_count: number;
   twitter_profile: string;
-  unit_price: Uint128;
   website_link?: string | null;
-  whitelist_mint_infos: WhitelistMintInfo[];
   whitepaper_link: string;
 }
-export interface WhitelistMintInfo {
-  addresses_count: number;
-  // TODO: Update client type
-  // addresses_ipfs: string;
+export interface MintPeriod {
   denom: string;
-  end_time: number;
-  limit_per_address: number;
-  merkle_root: string;
+  end_time?: number | null;
+  limit_per_address?: number | null;
+  max_tokens?: number | null;
   start_time: number;
   unit_price: Uint128;
+  whitelist_info?: WhitelistInfo | null;
+}
+export interface WhitelistInfo {
+  addresses_count: number;
+  addresses_ipfs: string;
+  addresses_merkle_root: string;
 }
 export type QueryMsg = {
   get_collection_by_id: {

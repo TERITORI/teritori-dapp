@@ -17,15 +17,43 @@
     {
       "type": "object",
       "required": [
+        "minted_count_by_period"
+      ],
+      "properties": {
+        "minted_count_by_period": {
+          "type": "object",
+          "required": [
+            "period_id"
+          ],
+          "properties": {
+            "period_id": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0.0
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
         "minted_count_by_user"
       ],
       "properties": {
         "minted_count_by_user": {
           "type": "object",
           "required": [
+            "period_id",
             "user"
           ],
           "properties": {
+            "period_id": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0.0
+            },
             "user": {
               "type": "string"
             }
@@ -37,21 +65,15 @@
     {
       "type": "object",
       "required": [
-        "whitelist_minted_count_by_user"
+        "total_minted_count_by_user"
       ],
       "properties": {
-        "whitelist_minted_count_by_user": {
+        "total_minted_count_by_user": {
           "type": "object",
           "required": [
-            "period",
             "user"
           ],
           "properties": {
-            "period": {
-              "type": "integer",
-              "format": "uint32",
-              "minimum": 0.0
-            },
             "user": {
               "type": "string"
             }
@@ -75,10 +97,10 @@
     {
       "type": "object",
       "required": [
-        "whitelist_mint_infos"
+        "mint_periods"
       ],
       "properties": {
-        "whitelist_mint_infos": {
+        "mint_periods": {
           "type": "object"
         }
       },
