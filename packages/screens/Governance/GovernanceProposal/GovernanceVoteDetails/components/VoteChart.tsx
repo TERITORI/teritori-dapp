@@ -4,6 +4,7 @@ import { VictoryPie } from "victory-native";
 
 import { VoteChartText } from "./VoteChartText";
 
+import { useIsMobile } from "@/hooks/useIsMobile";
 import {
   additionalRed,
   additionalSuccess,
@@ -22,6 +23,7 @@ export const VoteChart: React.FC<{
   percentageNoWithVeto,
   percentageAbstain,
 }) => {
+  const isMobile = useIsMobile();
   return (
     <>
       <View
@@ -30,6 +32,28 @@ export const VoteChart: React.FC<{
           height: 148,
         }}
       >
+        {isMobile && (
+          <View style={{ flex: 1 }}>
+            <VictoryPie
+              innerRadius={60}
+              colorScale={[
+                additionalSuccess,
+                errorColor,
+                additionalRed,
+                neutral55,
+              ]}
+              data={[
+                { x: "Yes", y: percentageYes },
+                { x: "No", y: percentageNo },
+                { x: "NoWithVeto", y: percentageNoWithVeto },
+                { x: "Abstain", y: percentageAbstain },
+              ]}
+              height={148}
+              width={148}
+              radius={70}
+            />
+          </View>
+        )}
         <View
           style={{
             position: "absolute",
@@ -42,17 +66,26 @@ export const VoteChart: React.FC<{
             percentageAbstain={percentageAbstain}
           />
         </View>
-
-        <VictoryPie
-          innerRadius={750}
-          colorScale={[additionalSuccess, errorColor, additionalRed, neutral55]}
-          data={[
-            { x: "Yes", y: percentageYes },
-            { x: "No", y: percentageNo },
-            { x: "NoWithVeto", y: percentageNoWithVeto },
-            { x: "Abstain", y: percentageAbstain },
-          ]}
-        />
+        {!isMobile && (
+          <VictoryPie
+            innerRadius={60}
+            colorScale={[
+              additionalSuccess,
+              errorColor,
+              additionalRed,
+              neutral55,
+            ]}
+            data={[
+              { x: "Yes", y: percentageYes },
+              { x: "No", y: percentageNo },
+              { x: "NoWithVeto", y: percentageNoWithVeto },
+              { x: "Abstain", y: percentageAbstain },
+            ]}
+            radius={70}
+            height={148}
+            width={148}
+          />
+        )}
       </View>
     </>
   );

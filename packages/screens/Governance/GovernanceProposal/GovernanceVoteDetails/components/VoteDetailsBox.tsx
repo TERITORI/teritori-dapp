@@ -8,6 +8,7 @@ import { VoteModel } from "./VoteModal";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SpacerRow } from "@/components/spacer";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { neutral17 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
 import { FinalTallyResult } from "@/utils/types/gov";
@@ -21,6 +22,7 @@ export const VoteDetailsBox: React.FC<{
   const percentageNoWithVetoValue = parseFloat(result.no_with_veto);
   const percentageNoValue = parseFloat(result.no);
   const percentageAbstainValue = parseFloat(result.abstain);
+  const isMobile = useIsMobile();
 
   const totalUsers =
     percentageYesValue +
@@ -55,16 +57,18 @@ export const VoteDetailsBox: React.FC<{
           borderRadius: layout.spacing_x1_5,
           borderWidth: 0,
           backgroundColor: neutral17,
-          height: 196,
-          width: 1290,
+          width: "98%",
+          flex: isMobile ? 0.8 : 0.4,
           justifyContent: "center",
+          alignItems: "center",
+          paddingVertical: layout.spacing_x2,
         }}
       >
         <View
           style={{
             paddingHorizontal: layout.spacing_x2,
             alignItems: "center",
-            flexDirection: "row",
+            flexDirection: isMobile ? "column" : "row",
           }}
         >
           <VoteChart

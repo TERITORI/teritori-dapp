@@ -5,6 +5,7 @@ import { VoteDetailsText } from "./VoteDetailsText";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import {
   additionalRed,
   additionalSuccess,
@@ -31,9 +32,19 @@ export const VoteDetails: React.FC<{
   percentageNoWithVeto,
   percentageAbstain,
 }) => {
+  const isMobile = useIsMobile();
   return (
     <View>
-      <View style={{ flexDirection: "row" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          width: 154,
+          alignSelf: isMobile ? "center" : "flex-start",
+          marginVertical: isMobile ? layout.spacing_x1_25 : 0,
+          justifyContent: "center",
+          paddingHorizontal: isMobile ? layout.spacing_x1_25 : 0,
+        }}
+      >
         <View
           style={{
             flexDirection: "row",
@@ -45,6 +56,7 @@ export const VoteDetails: React.FC<{
             height: 36,
             gap: layout.spacing_x0_25,
             borderColor: neutral22,
+            alignSelf: "center",
           }}
         >
           <BrandText
@@ -73,7 +85,13 @@ export const VoteDetails: React.FC<{
         <View style={{ flex: 1 }} />
       </View>
       <SpacerColumn size={1} />
-      <View style={{ flexDirection: "row", gap: layout.spacing_x2 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          gap: layout.spacing_x2,
+          flexWrap: "wrap",
+        }}
+      >
         <VoteDetailsText
           title="Yes"
           percentage={percentageYes}
