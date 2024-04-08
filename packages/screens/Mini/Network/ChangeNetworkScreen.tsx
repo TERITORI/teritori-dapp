@@ -74,7 +74,6 @@ export default function ChangeNetworkScreen({
                       isChecked={selectedWallet?.networkId === item?.id}
                       value={item?.displayName}
                       onPress={() => {
-                        goBackTo();
                         if (!selectedWallet) {
                           setToast({
                             mode: "mini",
@@ -94,6 +93,7 @@ export default function ChangeNetworkScreen({
                           type: "success",
                           message: `Now using ${item?.displayName} network`,
                         });
+                        goBackTo();
                       }}
                       checkboxStyle={{
                         borderRadius: 12,
