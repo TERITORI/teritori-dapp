@@ -159,7 +159,7 @@ export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = ({
         >
           <SVG height={16} width={16} source={addSVG} color="#fff" />
           <SpacerRow size={1} />
-          <BrandText style={[fontSemibold15, { lineHeight: 0 }]}>
+          <BrandText style={[fontSemibold15, { lineHeight: 18 }]}>
             {isGroupLink ? "Join group" : "Add"}
           </BrandText>
         </CustomButton>
