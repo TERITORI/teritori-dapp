@@ -170,9 +170,12 @@ const bootSubscribeMessages = () => {
   // console.log(conversations);
 
   conversations.forEach((item, i) => {
-    setTimeout(() => {
-      subscribeMessages(item.id);
-    }, i * 1600);
+    setTimeout(
+      () => {
+        subscribeMessages(item.id);
+      },
+      (i + 1) * 1600,
+    );
   });
 };
 

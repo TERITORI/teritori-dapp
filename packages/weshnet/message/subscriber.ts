@@ -41,13 +41,12 @@ export const subscribeMessages = async (
     console.log("groupPk", groupPk);
     const messages = weshClient.client.GroupMessageList({
       groupPk: bytesFromString(groupPk),
-      untilNow: true,
     });
 
     const newInfo = await weshClient.client.DebugGroup({
       groupPk: bytesFromString(groupPk),
     });
-    console.log('new info', newInfo);
+    console.log("new info", newInfo);
     const observer = {
       next: (data: GroupMessageEvent) => {
         try {

@@ -257,7 +257,7 @@ func GenerateOptsForServer(projectDir string) weshnet.Opts {
 		RootDatastore: ds,
 	}
 
-	opts.ServiceOptsApplyDefaults(context.Background())
+	// opts.ServiceOptsApplyDefaults(context.Background().Deadline())
 
 	return opts
 
