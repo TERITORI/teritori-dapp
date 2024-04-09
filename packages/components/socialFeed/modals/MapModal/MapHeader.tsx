@@ -1,13 +1,14 @@
 import React from "react";
 import { TouchableOpacity, View, ViewStyle } from "react-native";
 
-import chevronLeft from "../../../../../assets/icons/chevron-left.svg";
-import close from "../../../../../assets/icons/close.svg";
 import { neutralA3, secondaryColor } from "../../../../utils/style/colors";
 import { fontMedium16, fontSemibold16 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText";
 import { SVG } from "../../../SVG";
 import { SpacerRow } from "../../../spacer";
+
+import chevronLeft from "@/assets/icons/chevron-left.svg";
+import close from "@/assets/icons/close.svg";
 
 interface TMapHeaderProps {
   onClose: () => void;
