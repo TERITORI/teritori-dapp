@@ -6,17 +6,27 @@
     "$ref": "#/definitions/MintPeriod"
   },
   "definitions": {
+    "Coin": {
+      "type": "object",
+      "required": [
+        "amount",
+        "denom"
+      ],
+      "properties": {
+        "amount": {
+          "$ref": "#/definitions/Uint128"
+        },
+        "denom": {
+          "type": "string"
+        }
+      }
+    },
     "MintPeriod": {
       "type": "object",
       "required": [
-        "denom",
-        "start_time",
-        "unit_price"
+        "start_time"
       ],
       "properties": {
-        "denom": {
-          "type": "string"
-        },
         "end_time": {
           "type": [
             "integer",
@@ -41,13 +51,20 @@
           "format": "uint32",
           "minimum": 0.0
         },
+        "price": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Coin"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "start_time": {
           "type": "integer",
           "format": "uint64",
           "minimum": 0.0
-        },
-        "unit_price": {
-          "$ref": "#/definitions/Uint128"
         },
         "whitelist_info": {
           "anyOf": [

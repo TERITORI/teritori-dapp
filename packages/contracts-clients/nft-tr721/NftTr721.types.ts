@@ -23,13 +23,17 @@ export interface MintInfo {
   tokens_count: number;
 }
 export interface MintPeriod {
-  denom: string;
   end_time?: number | null;
   limit_per_address?: number | null;
   max_tokens?: number | null;
+  price?: Coin | null;
   start_time: number;
-  unit_price: Uint128;
   whitelist_info?: WhitelistInfo | null;
+}
+export interface Coin {
+  amount: Uint128;
+  denom: string;
+  [k: string]: unknown;
 }
 export interface WhitelistInfo {
   addresses_count: number;
@@ -424,11 +428,6 @@ export interface SubMsgForEmpty {
   id: number;
   msg: CosmosMsgForEmpty;
   reply_on: ReplyOn;
-  [k: string]: unknown;
-}
-export interface Coin {
-  amount: Uint128;
-  denom: string;
   [k: string]: unknown;
 }
 export interface Empty {

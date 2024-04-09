@@ -318,6 +318,21 @@
       "description": "Binary is a wrapper around Vec<u8> to add base64 de/serialization with serde. It also adds some helper methods to help encode inline.\n\nThis is only needed as serde-json-{core,wasm} has a horrible encoding for Vec<u8>. See also <https://github.com/CosmWasm/cosmwasm/blob/main/docs/MESSAGE_TYPES.md>.",
       "type": "string"
     },
+    "Coin": {
+      "type": "object",
+      "required": [
+        "amount",
+        "denom"
+      ],
+      "properties": {
+        "amount": {
+          "$ref": "#/definitions/Uint128"
+        },
+        "denom": {
+          "type": "string"
+        }
+      }
+    },
     "Expiration": {
       "description": "Expiration represents a point in time when some event happens. It can compare with a BlockInfo and will return is_expired() == true once the condition is hit (and for every block in the future)",
       "oneOf": [
@@ -483,14 +498,9 @@
     "MintPeriod": {
       "type": "object",
       "required": [
-        "denom",
-        "start_time",
-        "unit_price"
+        "start_time"
       ],
       "properties": {
-        "denom": {
-          "type": "string"
-        },
         "end_time": {
           "type": [
             "integer",
@@ -515,13 +525,20 @@
           "format": "uint32",
           "minimum": 0.0
         },
+        "price": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Coin"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "start_time": {
           "type": "integer",
           "format": "uint64",
           "minimum": 0.0
-        },
-        "unit_price": {
-          "$ref": "#/definitions/Uint128"
         },
         "whitelist_info": {
           "anyOf": [

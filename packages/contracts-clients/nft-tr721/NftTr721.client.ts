@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { Addr, Uint128, InstantiateMsg, MintInfo, MintPeriod, WhitelistInfo, ExecuteMsg, Binary, Expiration, Timestamp, Uint64, Metadata, Trait, WhitelistProof, QueryMsg, AllNftInfoResponseForNullable_Metadata, OwnerOfResponse, Approval, NftInfoResponseForNullable_Metadata, OperatorsResponse, TokensResponse, ApprovalResponse, ApprovalsResponse, CheckRoyaltiesResponse, ContractInfoResponse, ContractVersion, CosmosMsgForEmpty, BankMsg, StakingMsg, DistributionMsg, WasmMsg, ReplyOn, ResponseForEmpty, Attribute, Event, SubMsgForEmpty, Coin, Empty, String, ArrayOfMintPeriod, Uint32, MinterResponse, NumTokensResponse, OperatorResponse, OwnershipForAddr, RoyaltiesInfoResponse } from "./NftTr721.types";
+import { Addr, Uint128, InstantiateMsg, MintInfo, MintPeriod, Coin, WhitelistInfo, ExecuteMsg, Binary, Expiration, Timestamp, Uint64, Metadata, Trait, WhitelistProof, QueryMsg, AllNftInfoResponseForNullable_Metadata, OwnerOfResponse, Approval, NftInfoResponseForNullable_Metadata, OperatorsResponse, TokensResponse, ApprovalResponse, ApprovalsResponse, CheckRoyaltiesResponse, ContractInfoResponse, ContractVersion, CosmosMsgForEmpty, BankMsg, StakingMsg, DistributionMsg, WasmMsg, ReplyOn, ResponseForEmpty, Attribute, Event, SubMsgForEmpty, Empty, String, ArrayOfMintPeriod, Uint32, MinterResponse, NumTokensResponse, OperatorResponse, OwnershipForAddr, RoyaltiesInfoResponse } from "./NftTr721.types";
 export interface NftTr721ReadOnlyInterface {
   contractAddress: string;
   totalMinted: () => Promise<Uint64>;

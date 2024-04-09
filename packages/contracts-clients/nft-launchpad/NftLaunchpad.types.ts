@@ -64,7 +64,7 @@ export interface Collection {
   partners: string;
   project_desc: string;
   project_type: string;
-  reveal_time: number;
+  reveal_time?: number | null;
   roadmap_link: string;
   royalty_address?: Addr | null;
   royalty_percentage?: number | null;
@@ -79,13 +79,17 @@ export interface Collection {
   whitepaper_link: string;
 }
 export interface MintPeriod {
-  denom: string;
   end_time?: number | null;
   limit_per_address?: number | null;
   max_tokens?: number | null;
+  price?: Coin | null;
   start_time: number;
-  unit_price: Uint128;
   whitelist_info?: WhitelistInfo | null;
+}
+export interface Coin {
+  amount: Uint128;
+  denom: string;
+  [k: string]: unknown;
 }
 export interface WhitelistInfo {
   addresses_count: number;

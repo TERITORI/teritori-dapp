@@ -148,6 +148,21 @@
         "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
         "type": "string"
       },
+      "Coin": {
+        "type": "object",
+        "required": [
+          "amount",
+          "denom"
+        ],
+        "properties": {
+          "amount": {
+            "$ref": "#/definitions/Uint128"
+          },
+          "denom": {
+            "type": "string"
+          }
+        }
+      },
       "Collection": {
         "type": "object",
         "required": [
@@ -172,7 +187,6 @@
           "partners",
           "project_desc",
           "project_type",
-          "reveal_time",
           "roadmap_link",
           "symbol",
           "target_network",
@@ -285,7 +299,10 @@
             "type": "string"
           },
           "reveal_time": {
-            "type": "integer",
+            "type": [
+              "integer",
+              "null"
+            ],
             "format": "uint64",
             "minimum": 0.0
           },
@@ -383,14 +400,9 @@
       "MintPeriod": {
         "type": "object",
         "required": [
-          "denom",
-          "start_time",
-          "unit_price"
+          "start_time"
         ],
         "properties": {
-          "denom": {
-            "type": "string"
-          },
           "end_time": {
             "type": [
               "integer",
@@ -415,13 +427,20 @@
             "format": "uint32",
             "minimum": 0.0
           },
+          "price": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Coin"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "start_time": {
             "type": "integer",
             "format": "uint64",
             "minimum": 0.0
-          },
-          "unit_price": {
-            "$ref": "#/definitions/Uint128"
           },
           "whitelist_info": {
             "anyOf": [
@@ -553,7 +572,6 @@
         "partners",
         "project_desc",
         "project_type",
-        "reveal_time",
         "roadmap_link",
         "symbol",
         "target_network",
@@ -666,7 +684,10 @@
           "type": "string"
         },
         "reveal_time": {
-          "type": "integer",
+          "type": [
+            "integer",
+            "null"
+          ],
           "format": "uint64",
           "minimum": 0.0
         },
@@ -732,17 +753,27 @@
           "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
           "type": "string"
         },
+        "Coin": {
+          "type": "object",
+          "required": [
+            "amount",
+            "denom"
+          ],
+          "properties": {
+            "amount": {
+              "$ref": "#/definitions/Uint128"
+            },
+            "denom": {
+              "type": "string"
+            }
+          }
+        },
         "MintPeriod": {
           "type": "object",
           "required": [
-            "denom",
-            "start_time",
-            "unit_price"
+            "start_time"
           ],
           "properties": {
-            "denom": {
-              "type": "string"
-            },
             "end_time": {
               "type": [
                 "integer",
@@ -767,13 +798,20 @@
               "format": "uint32",
               "minimum": 0.0
             },
+            "price": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Coin"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
             "start_time": {
               "type": "integer",
               "format": "uint64",
               "minimum": 0.0
-            },
-            "unit_price": {
-              "$ref": "#/definitions/Uint128"
             },
             "whitelist_info": {
               "anyOf": [
@@ -842,7 +880,6 @@
         "partners",
         "project_desc",
         "project_type",
-        "reveal_time",
         "roadmap_link",
         "symbol",
         "target_network",
@@ -955,7 +992,10 @@
           "type": "string"
         },
         "reveal_time": {
-          "type": "integer",
+          "type": [
+            "integer",
+            "null"
+          ],
           "format": "uint64",
           "minimum": 0.0
         },
@@ -1021,17 +1061,27 @@
           "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
           "type": "string"
         },
+        "Coin": {
+          "type": "object",
+          "required": [
+            "amount",
+            "denom"
+          ],
+          "properties": {
+            "amount": {
+              "$ref": "#/definitions/Uint128"
+            },
+            "denom": {
+              "type": "string"
+            }
+          }
+        },
         "MintPeriod": {
           "type": "object",
           "required": [
-            "denom",
-            "start_time",
-            "unit_price"
+            "start_time"
           ],
           "properties": {
-            "denom": {
-              "type": "string"
-            },
             "end_time": {
               "type": [
                 "integer",
@@ -1056,13 +1106,20 @@
               "format": "uint32",
               "minimum": 0.0
             },
+            "price": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Coin"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
             "start_time": {
               "type": "integer",
               "format": "uint64",
               "minimum": 0.0
-            },
-            "unit_price": {
-              "$ref": "#/definitions/Uint128"
             },
             "whitelist_info": {
               "anyOf": [
