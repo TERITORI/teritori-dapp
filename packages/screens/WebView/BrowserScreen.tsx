@@ -5,8 +5,14 @@ import { useSelector } from "react-redux";
 import ListView from "../Mini/components/ListView";
 import MiniTextInput from "../Mini/components/MiniTextInput";
 
+import daoSVG from "@/assets/icons/dao-gray.svg";
+import governanceSVG from "@/assets/icons/governance-gray.svg";
+import marketSVG from "@/assets/icons/marketplace-gray.svg";
 import teritoriSVG from "@/assets/icons/networks/teritori.svg";
 import searchSVG from "@/assets/icons/search-gray.svg";
+import tnsSVG from "@/assets/icons/tns-gray.svg";
+import walletSVG from "@/assets/icons/wallet-grey.svg";
+import teritoriLoading from "@/assets/splash.png";
 import { BrandText } from "@/components/BrandText";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
 import { ScreenContainer } from "@/components/ScreenContainer";
@@ -19,7 +25,6 @@ import {
   neutral76,
   withAlpha,
 } from "@/utils/style/colors";
-import { fontSemibold14, fontSemibold18 } from "@/utils/style/fonts";
 import { MOBILE_HEADER_HEIGHT, layout } from "@/utils/style/layout";
 import { dAppType } from "@/utils/types/dapp-store";
 
@@ -204,10 +209,10 @@ export const BrowserScreen: ScreenFC<"Browser"> = () => {
                   flexDirection: "row",
                   alignItems: "center",
                   marginHorizontal: layout.spacing_x1_5,
-                  marginBottom: layout.spacing_x2,
-                  marginTop: layout.spacing_x3_5,
+                  marginBottom: layout.spacing_x0_75,
+                  marginTop: layout.spacing_x3,
                   paddingBottom: layout.spacing_x2_5,
-                  borderBottomWidth: 2,
+                  borderBottomWidth: 1,
                   borderBottomColor: neutral22,
                 }}
               >
@@ -215,15 +220,29 @@ export const BrowserScreen: ScreenFC<"Browser"> = () => {
                   icon={teritoriSVG}
                   iconSize={24}
                   style={{
-                    marginRight: layout.spacing_x1_5,
+                    marginRight: layout.spacing_x1_25,
                   }}
                 />
-                <BrandText style={fontSemibold18}>{title}</BrandText>
+                <BrandText style={{ fontSize: 17, fontWeight: "600" }}>
+                  {title}
+                </BrandText>
               </View>
             );
           }}
           stickySectionHeadersEnabled={false}
         />
+        {!showDapps && (
+          <View
+            style={{
+              height: "100%",
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <SVGorImageIcon icon={teritoriLoading} iconSize={300} />
+          </View>
+        )}
       </View>
     </ScreenContainer>
   );
@@ -248,24 +267,50 @@ function SearchedItem({ option }: { option: dAppType }) {
         }
       }}
       style={{
-        paddingHorizontal: layout.spacing_x1_5,
+        marginHorizontal: layout.spacing_x1_5,
+        paddingVertical: layout.spacing_x1,
+        marginVertical: layout.spacing_x0_75,
       }}
       options={{
         label: option?.title,
         labelStyle: {
-          fontSize: 14,
+          fontSize: 15,
+          fontWeight: "600",
         },
         leftIconEnabled: true,
         leftIconOptions: {
           component: (
             <>
-              <SVGorImageIcon icon={option.icon} iconSize={18} />
-              <SpacerRow size={1.5} />
+              <SVGorImageIcon
+                icon={getGrayIcon(option?.title.toLowerCase())}
+                iconSize={24}
+              />
+              <SpacerRow size={1.25} />
             </>
           ),
         },
         iconEnabled: true,
+        iconOptions: {
+          iconSize: 20,
+        },
       }}
     />
   );
+}
+
+function getGrayIcon(name: string) {
+  switch (name) {
+    case "teritori os wallet":
+      return walletSVG;
+    case "governance":
+      return governanceSVG;
+    case "name service":
+    case "toripunks dapp":
+    case "mintscan":
+      return tnsSVG;
+    case "organizations":
+      return daoSVG;
+    default:
+      return marketSVG;
+  }
 }

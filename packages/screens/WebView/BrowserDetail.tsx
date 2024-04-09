@@ -1,27 +1,73 @@
 import { useRef, useState } from "react";
-import { ImageStyle, StyleProp, View, useWindowDimensions } from "react-native";
+import {
+  ImageStyle,
+  Linking,
+  Share,
+  StyleProp,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { SvgProps } from "react-native-svg";
 import WebView from "react-native-webview";
 
-import backSVG from "@/assets/icons/back.svg";
-import lockSVG from "@/assets/icons/marketplace-gray.svg";
+import browseSVG from "@/assets/icons/browse-gray.svg";
+import closeSVG from "@/assets/icons/close.svg";
+import dotSVG from "@/assets/icons/dots.svg";
+import backSVG from "@/assets/icons/forward.svg";
+import lockSVG from "@/assets/icons/lock-solid-gray.svg";
+import reloadSVG from "@/assets/icons/reload.svg";
+import sendSVG from "@/assets/icons/sent-white.svg";
+import shareSVG from "@/assets/icons/share-gray.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { Spinner } from "@/components/Spinner";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { DropdownWithListItem } from "@/components/mini/DropdownWithListItem";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
-import { neutral00, neutral77, secondaryColor } from "@/utils/style/colors";
-import { fontMedium10, fontSemibold12 } from "@/utils/style/fonts";
+import { neutral00, neutral22, neutralA3 } from "@/utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "@/utils/style/fonts";
 import {
   MOBILE_FOOTER_HEIGHT,
   MOBILE_HEADER_HEIGHT,
   layout,
 } from "@/utils/style/layout";
 
-function BrowserHeader({ url }: { url: string }) {
+function BrowserHeader({
+  url,
+  shareLink,
+}: {
+  url: string;
+  shareLink: () => void;
+}) {
   const navigation = useAppNavigation();
+  const { setToast } = useFeedbacks();
+
+  async function openInBrowser() {
+    try {
+      const supported = await Linking.canOpenURL(url);
+
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        setToast({
+          mode: "mini",
+          type: "error",
+          variant: "solid",
+          message: "Error: Link is not valid",
+        });
+      }
+    } catch (error) {
+      setToast({
+        mode: "mini",
+        type: "error",
+        variant: "solid",
+        message: "Error: " + error,
+      });
+    }
+  }
   return (
     <View
       style={{
@@ -36,6 +82,8 @@ function BrowserHeader({ url }: { url: string }) {
         position: "absolute",
         top: 0,
         zIndex: 9999,
+        borderBottomWidth: 1,
+        borderColor: neutral22,
       }}
     >
       <View
@@ -47,21 +95,40 @@ function BrowserHeader({ url }: { url: string }) {
         }}
       >
         <CustomPressable onPress={() => navigation.goBack()}>
-          <SVG source={backSVG} width={25} height={25} />
+          <SVG source={closeSVG} width={28} height={28} />
         </CustomPressable>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 8,
-            flex: 1,
-          }}
-        >
-          <SVG source={lockSVG} width={25} height={25} />
-          <BrandText style={fontSemibold12}>
-            {url.length > 40 ? url.substring(0, 40) + "..." : url}
-          </BrandText>
+        <View style={{ flex: 1, alignItems: "center" }}>
+          <BrandText style={[fontSemibold14]}>Popular Collections</BrandText>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 4,
+              flex: 1,
+            }}
+          >
+            <SVG source={lockSVG} width={12} height={12} />
+            <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
+              {url.length > 40 ? url.substring(0, 30) + "..." : url}
+            </BrandText>
+          </View>
         </View>
+        <DropdownWithListItem
+          items={[
+            {
+              onPress: openInBrowser,
+              name: "Open in browser",
+              icon: browseSVG,
+            },
+            {
+              onPress: shareLink,
+              name: "Share the link",
+              icon: shareSVG,
+            },
+          ]}
+          iconSize={34}
+          icon={dotSVG}
+        />
       </View>
     </View>
   );
@@ -69,40 +136,38 @@ function BrowserHeader({ url }: { url: string }) {
 
 function BrowserFooter({
   browserNav,
-  reload,
-  goBack,
-  goForward,
-  goHome,
+  webViewRef,
+  shareLink,
 }: {
   browserNav: BrowserNavigationType;
-  reload: () => void;
-  goBack: () => void;
-  goForward: () => void;
-  goHome: () => void;
+  webViewRef: WebView | null;
+  shareLink: () => void;
 }) {
   const bottomTabs = [
     {
       name: "back",
       icon: backSVG,
-      onPress: goBack,
-      disabled: !browserNav.canGoBack,
-    },
-    {
-      name: "forward",
-      icon: backSVG,
-      onPress: goForward,
+      onPress: () => webViewRef?.goBack(),
       style: { transform: [{ rotate: "180deg" }] },
       disabled: !browserNav.canGoForward,
     },
     {
-      name: "home",
-      icon: lockSVG,
-      onPress: goHome,
+      name: "forward",
+      icon: backSVG,
+      onPress: () => webViewRef?.goForward(),
+      disabled: !browserNav.canGoBack,
+    },
+    {
+      name: "send",
+      icon: sendSVG,
+      iconSize: 28,
+      onPress: shareLink,
     },
     {
       name: "reload",
-      icon: lockSVG,
-      onPress: reload,
+      icon: reloadSVG,
+      iconSize: 28,
+      onPress: () => webViewRef?.reload(),
     },
   ];
 
@@ -145,58 +210,43 @@ type BrowserNavigationType = {
   url: string;
 };
 
-export const BrowserDetail: ScreenFC<"BrowserDetail"> = ({
-  route,
-  navigation,
-}) => {
+export const BrowserDetail: ScreenFC<"BrowserDetail"> = ({ route }) => {
   const { width, height } = useWindowDimensions();
   const { params } = route;
-  const [initUrl, setInitUrl] = useState(params.root + params.path ?? "");
   const [browserNav, setBrowserNav] = useState<BrowserNavigationType>({
     canGoBack: false,
     canGoForward: false,
     url: params.root + params.path ?? "",
   });
+  const { setToast } = useFeedbacks();
 
   const webViewRef = useRef<WebView>(null);
 
-  const reloadBrowser = () => {
-    if (!webViewRef.current) {
-      return;
+  async function shareLink() {
+    try {
+      await Share.share({
+        message: browserNav.url,
+      });
+    } catch (error) {
+      setToast({
+        mode: "mini",
+        type: "error",
+        variant: "solid",
+        message: "Error sharing: " + error,
+      });
     }
-    webViewRef.current.reload();
-  };
-
-  const goForward = () => {
-    if (!webViewRef.current) {
-      return;
-    }
-    webViewRef.current.goForward();
-  };
-
-  const goBack = () => {
-    if (!webViewRef.current) {
-      return;
-    }
-    webViewRef.current.goBack();
-  };
-
-  const goHome = () => {
-    setInitUrl(params.root);
-  };
+  }
 
   return (
     <ScreenContainer
-      headerMini={<BrowserHeader url={browserNav.url} />}
+      headerMini={<BrowserHeader url={browserNav.url} shareLink={shareLink} />}
       responsive
       fullWidth
       footerChildren={
         <BrowserFooter
-          reload={reloadBrowser}
-          goForward={goForward}
-          goBack={goBack}
+          webViewRef={webViewRef.current}
           browserNav={browserNav}
-          goHome={goHome}
+          shareLink={shareLink}
         />
       }
       noScroll
@@ -211,7 +261,7 @@ export const BrowserDetail: ScreenFC<"BrowserDetail"> = ({
         }}
       >
         <WebView
-          source={{ uri: initUrl }}
+          source={{ uri: params.root + params.path ?? "" }}
           style={{
             width: "100%",
             maxWidth: width,
@@ -269,17 +319,7 @@ function BottomTab({
 }: BottomTabType) {
   return (
     <CustomPressable onPress={onPress} style={{ alignItems: "center", gap: 6 }}>
-      <SVGorImageIcon icon={icon} iconSize={iconSize ?? 22} style={style} />
-      {name && (
-        <BrandText
-          style={[
-            fontMedium10,
-            { color: disabled ? neutral77 : secondaryColor },
-          ]}
-        >
-          {name}
-        </BrandText>
-      )}
+      <SVGorImageIcon icon={icon} iconSize={iconSize ?? 20} style={style} />
     </CustomPressable>
   );
 }
