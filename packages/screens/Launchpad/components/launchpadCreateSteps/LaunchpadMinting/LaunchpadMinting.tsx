@@ -9,7 +9,7 @@ import { BrandText } from "@/components/BrandText";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
-import { MintWhitelistsForm } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/MintWhitelistsForm";
+import { MintPeriodsForm } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintPeriodsForm/MintPeriodsForm";
 import { patternOnlyNumbers } from "@/utils/formRules";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
@@ -34,50 +34,41 @@ export const LaunchpadMinting: React.FC = () => {
         <BrandText style={fontSemibold20}>Minting details</BrandText>
         <SpacerColumn size={1} />
         <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-          Information about your minting settings
+          Configure the global minting settings
         </BrandText>
         <SpacerColumn size={2} />
 
         <TextInputLaunchpad<CollectionFormValues>
           label="Number of Tokens "
           placeHolder="0"
-          name="nbTokens"
+          name="tokensCount"
           control={collectionForm.control}
           rules={{ pattern: patternOnlyNumbers }}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
-          label="Unit Price"
+          label="Reveal Time"
+          placeHolder="dd.mm.yyyy | hh:mm PM"
+          name="revealTime"
           sublabel={
             <View>
               <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-                Price of each token (min. 50 TORI)
+                TODO
               </BrandText>
             </View>
           }
-          placeHolder="0"
-          name="unitPrice"
           control={collectionForm.control}
-          rules={{ pattern: patternOnlyNumbers }}
-        />
-
-        <TextInputLaunchpad<CollectionFormValues>
-          label="Per Address Limit "
-          placeHolder="0"
-          name="perAddressLimit"
-          control={collectionForm.control}
-          rules={{ pattern: patternOnlyNumbers }}
         />
 
         <Separator />
         <SpacerColumn size={2} />
-        <BrandText style={fontSemibold20}>Whitelist Minting Details</BrandText>
+        <BrandText style={fontSemibold20}>Minting Periods</BrandText>
         <SpacerColumn size={1} />
         <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-          Information about your minting settings
+          Configure the minting periods, a whitelist can be applied
         </BrandText>
 
-        <MintWhitelistsForm />
+        <MintPeriodsForm />
 
         <SpacerColumn size={1} />
         <Separator />

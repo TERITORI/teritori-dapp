@@ -8,44 +8,40 @@ import { SVG } from "@/components/SVG";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetworkFeature, NetworkFeature } from "@/networks";
-import { LaunchpadMintWhitelistAccordionForm } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintWhitelistsForm/LaunchpadMintWhitelistAccordionForm";
+import { LaunchpadMintPeriodAccordionForm } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintPeriodsForm/LaunchpadMintPeriodAccordionForm";
 import { secondaryColor } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { CollectionFormValues } from "@/utils/types/launchpad";
 
-export const MintWhitelistsForm: FC = () => {
+export const MintPeriodsForm: FC = () => {
   const selectedWallet = useSelectedWallet();
   const networkId = selectedWallet?.networkId || "";
   const collectionForm = useFormContext<CollectionFormValues>();
 
-  const whitelistMintInfosFieldArray = useFieldArray({
+  const mintPeriodsFieldArray = useFieldArray({
     control: collectionForm.control,
-    name: "whitelistMintInfos",
+    name: "mintPeriods",
   });
   const closeAll = useCallback(() => {
-    whitelistMintInfosFieldArray.fields.map((elem, index) => {
-      whitelistMintInfosFieldArray.update(index, { ...elem, isOpen: false });
+    mintPeriodsFieldArray.fields.map((elem, index) => {
+      mintPeriodsFieldArray.update(index, { ...elem, isOpen: false });
     });
-  }, [whitelistMintInfosFieldArray]);
+  }, [mintPeriodsFieldArray]);
 
-  const createNewWhitelist = useCallback(() => {
+  const createMintPeriod = useCallback(() => {
     closeAll();
-    const feature = getNetworkFeature(
-      networkId,
-      NetworkFeature.CosmWasmPremiumFeed,
-    );
+    const feature = getNetworkFeature(networkId, NetworkFeature.NFTLaunchpad);
     if (!feature) {
-      throw new Error("This network does not support premium feed");
+      throw new Error("This network does not support nft launchpad");
     }
-    whitelistMintInfosFieldArray.append({
+    mintPeriodsFieldArray.append({
       isOpen: true,
-      endTime: 0,
-      perAddressLimit: 0,
-      startTime: 0,
+      denom: "",
+      startTime: "",
       unitPrice: "",
     });
-  }, [networkId, closeAll, whitelistMintInfosFieldArray]);
+  }, [networkId, closeAll, mintPeriodsFieldArray]);
 
   return (
     <View
@@ -59,13 +55,13 @@ export const MintWhitelistsForm: FC = () => {
           width: "100%",
         }}
       >
-        {whitelistMintInfosFieldArray.fields.map((elem, index) => {
+        {mintPeriodsFieldArray.fields.map((elem, index) => {
           return (
             <Fragment key={index}>
               <SpacerColumn size={2} />
-              <LaunchpadMintWhitelistAccordionForm
-                remove={whitelistMintInfosFieldArray.remove}
-                update={whitelistMintInfosFieldArray.update}
+              <LaunchpadMintPeriodAccordionForm
+                remove={mintPeriodsFieldArray.remove}
+                update={mintPeriodsFieldArray.update}
                 closeAll={closeAll}
                 elem={elem}
                 elemIndex={index}
@@ -93,7 +89,7 @@ export const MintWhitelistsForm: FC = () => {
               borderWidth: 1,
               borderColor: secondaryColor,
             }}
-            onPress={createNewWhitelist}
+            onPress={createMintPeriod}
           >
             <SVG source={addSVG} width={10} height={10} />
             <SpacerRow size={1} />
@@ -103,7 +99,7 @@ export const MintWhitelistsForm: FC = () => {
                 { color: secondaryColor, lineHeight: layout.spacing_x2 },
               ]}
             >
-              Add Whitelist
+              Add Minting Period
             </BrandText>
           </TouchableOpacity>
         </View>

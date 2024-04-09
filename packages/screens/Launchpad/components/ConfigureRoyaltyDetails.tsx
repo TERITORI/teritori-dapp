@@ -24,7 +24,7 @@ export const ConfigureRoyaltyDetails: React.FC = () => {
       <BrandText style={fontSemibold20}>Royalty Details</BrandText>
       <SpacerColumn size={1} />
       <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-        Information about royalty
+        Configure royalties
       </BrandText>
       <SpacerColumn size={2} />
 

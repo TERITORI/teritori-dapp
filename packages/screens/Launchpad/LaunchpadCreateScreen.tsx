@@ -55,6 +55,16 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const navigation = useAppNavigation();
   const collectionForm = useForm<CollectionFormValues>({
     mode: "all",
+    defaultValues: {
+      mintPeriods: [
+        {
+          //TODO: default denom and start time here
+          denom: "",
+          startTime: "",
+          isOpen: true,
+        },
+      ],
+    },
   });
   const { createCollection } = useCreateCollection();
   const [selectedStep, setSelectedStep] = useState(1);
