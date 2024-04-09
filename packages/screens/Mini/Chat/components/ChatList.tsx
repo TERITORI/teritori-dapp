@@ -133,11 +133,9 @@ const SingleFriendChatList = ({ data, onPress }: SingleChatListType) => {
     conversation &&
     conversation?.members &&
     Array.isArray(conversation?.members)
-      ? conversation?.type === "contact"
-        ? [conversation?.members[0].avatar]
-        : conversation?.members?.map((_, index) =>
-            getConversationAvatar(conversation, index),
-          )
+      ? conversation?.members?.map((_, index) =>
+          getConversationAvatar(conversation, index),
+        )
       : [""];
 
   return (
