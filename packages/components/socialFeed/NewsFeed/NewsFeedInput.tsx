@@ -34,7 +34,7 @@ import ToggleButton from "@/components/buttons/ToggleButton";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
-import { useAppMode } from "@/hooks/useAppMode";
+import { useIsMiniMode } from "@/hooks/useAppMode";
 import { useIpfs } from "@/hooks/useIpfs";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
@@ -127,7 +127,7 @@ export const NewsFeedInput = React.forwardRef<
     },
     forwardRef,
   ) => {
-    const [appMode] = useAppMode();
+    const isMiniMode = useIsMiniMode();
     const { width: windowWidth } = useWindowDimensions();
     const { width } = useMaxResolution();
     const isMobile = useIsMobile();
@@ -336,7 +336,7 @@ export const NewsFeedInput = React.forwardRef<
         <View style={{ zIndex: 9 }}>
           <PrimaryBox
             style={{
-              backgroundColor: appMode === "mini" ? neutral00 : neutral22,
+              backgroundColor: isMiniMode ? neutral00 : neutral22,
               width: "100%",
             }}
           >
@@ -460,7 +460,7 @@ export const NewsFeedInput = React.forwardRef<
         </View>
         <View
           style={{
-            backgroundColor: appMode === "mini" ? neutral00 : neutral17,
+            backgroundColor: isMiniMode ? neutral00 : neutral17,
 
             paddingVertical: isMobile
               ? layout.spacing_x1_5

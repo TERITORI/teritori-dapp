@@ -10,7 +10,7 @@ import {
   combineFetchFeedPages,
   useFetchFeed,
 } from "../../hooks/feed/useFetchFeed";
-import { useAppMode } from "../../hooks/useAppMode";
+import { useIsMiniMode } from "../../hooks/useAppMode";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature } from "../../networks";
 import { zodTryParseJSON } from "../../utils/sanitize";
@@ -30,7 +30,7 @@ export const FeedVideosList: React.FC<{
   allowUpload?: boolean;
   style?: StyleProp<ViewStyle>;
 }> = ({ title, req, allowUpload, style }) => {
-  const [appMode] = useAppMode();
+  const isMiniMode = useIsMiniMode();
   const selectedWallet = useSelectedWallet();
   const { showConnectWalletModal } = useWalletControl();
   const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
@@ -76,7 +76,7 @@ export const FeedVideosList: React.FC<{
           minWidth: minCardWidth,
         }}
       >
-        {appMode === "mini" && (
+        {isMiniMode && (
           <View
             style={{
               alignItems: "center",
@@ -100,7 +100,7 @@ export const FeedVideosList: React.FC<{
       </View>
       <View
         style={
-          appMode === "mini"
+          isMiniMode
             ? { marginTop: layout.spacing_x2, paddingBottom: 100 } //paddingBottom :100 to make last card visible completely, otherwise gets hidden behind bottom tabs
             : [contentGroupCStyle]
         }

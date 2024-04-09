@@ -11,7 +11,7 @@ import { TipButton } from "../socialFeed/SocialActions/TipButton";
 import { SpacerColumn } from "../spacer";
 
 import { Post } from "@/api/feed/v1/feed";
-import { useAppMode } from "@/hooks/useAppMode";
+import { useIsMiniMode } from "@/hooks/useAppMode";
 import { layout } from "@/utils/style/layout";
 
 const BUTTONS_HEIGHT = 28;
@@ -24,7 +24,7 @@ type Props = {
 
 export const TrackOptionsButton = ({ trackName, post, username }: Props) => {
   const [showMenu, setShowMenu] = useState(false);
-  const [appMode] = useAppMode();
+  const isMiniMode = useIsMiniMode();
 
   const onClose = () => {
     setShowMenu(false);
@@ -52,10 +52,10 @@ export const TrackOptionsButton = ({ trackName, post, username }: Props) => {
         onClose={onClose}
         width={MENU_CONTAINER_MODAL_WIDTH}
         boxStyle={{ height: 240 }}
-        hideMainSeparator={appMode === "mini"}
+        hideMainSeparator={isMiniMode}
         Header={TrackOptionModalHeader}
       >
-        {appMode === "mini" && <Separator />}
+        {isMiniMode && <Separator />}
         <SpacerColumn size={3} />
         <View
           style={{

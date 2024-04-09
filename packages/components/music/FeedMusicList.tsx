@@ -11,7 +11,7 @@ import {
   combineFetchFeedPages,
   useFetchFeed,
 } from "../../hooks/feed/useFetchFeed";
-import { useAppMode } from "../../hooks/useAppMode";
+import { useIsMiniMode } from "../../hooks/useAppMode";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature } from "../../networks";
 import { zodTryParseJSON } from "../../utils/sanitize";
@@ -34,7 +34,7 @@ export const FeedMusicList: React.FC<{
   allowUpload?: boolean;
   style?: StyleProp<ViewStyle>;
 }> = ({ title, authorId, allowUpload, style }) => {
-  const [appMode] = useAppMode();
+  const isMiniMode = useIsMiniMode();
   const selectedWallet = useSelectedWallet();
   const { showConnectWalletModal } = useWalletControl();
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
@@ -90,7 +90,7 @@ export const FeedMusicList: React.FC<{
   if (!data && (isLoading || isFetching))
     return (
       <View style={[{ minWidth: minCardWidth }, style]}>
-        {appMode === "mini" && (
+        {isMiniMode && (
           <View
             style={{
               alignItems: "center",
@@ -113,7 +113,7 @@ export const FeedMusicList: React.FC<{
       </View>
       <View
         style={
-          appMode === "mini"
+          isMiniMode
             ? { marginTop: layout.spacing_x2, paddingBottom: 100 } //paddingBottom :100 to make last card visible completely, otherwise gets hidden behind bottom tabs
             : [contentGroupCStyle]
         }

@@ -15,10 +15,11 @@ import { RichTextProps } from "./RichText.type";
 import { ActionsContainer } from "./Toolbar/ActionsContainer";
 import { ToolbarContainer } from "./Toolbar/ToolbarContainer";
 import { fixLinkOnHTMLString } from "./utils";
-import { useAppMode } from "../../../hooks/useAppMode";
 import { SOCIAL_FEED_BREAKPOINT_M } from "../../../utils/style/layout";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SpacerColumn, SpacerRow } from "../../spacer";
+
+import { useIsMiniMode } from "@/hooks/useAppMode";
 
 // /!\ It will not fully work on mobile
 export const RichText: React.FC<RichTextProps> = ({
@@ -31,7 +32,7 @@ export const RichText: React.FC<RichTextProps> = ({
 }) => {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const richText = useRef(null);
-  const [appMode] = useAppMode();
+  const isMiniMode = useIsMiniMode();
   const [initialHeight, setInitialHeight] = useState(windowHeight);
 
   const handleHeightChange = useCallback((height: number) => {
@@ -54,7 +55,7 @@ export const RichText: React.FC<RichTextProps> = ({
             minHeight: initialHeight,
           }}
           editorStyle={
-            appMode === "mini"
+            isMiniMode
               ? {
                   backgroundColor: "#000",
                   color: "#fff",

@@ -5,30 +5,29 @@ import { getMiniModeScreens } from "./getMiniModeScreens";
 import { getNormalModeScreens } from "./getNormalModeScreens";
 import { getNav } from "./util";
 
-import { useAppMode } from "@/hooks/useAppMode";
+import { useIsMiniMode } from "@/hooks/useAppMode";
 import { useOnboardedStatus } from "@/hooks/useOnboardStatus";
-import { AppMode } from "@/utils/types/app-mode";
 
 export const Navigator: React.FC = () => {
-  const [appMode] = useAppMode();
+  const isMiniMode = useIsMiniMode();
   const [isLoading] = useOnboardedStatus();
 
-  const { Nav, navigatorScreenOptions } = getNav(appMode as AppMode);
+  const { Nav, navigatorScreenOptions } = getNav(isMiniMode);
 
-  if (isLoading && appMode === "mini") {
+  if (isLoading && isMiniMode) {
     return null;
   }
 
   return (
     <Nav.Navigator
-      initialRouteName={appMode === "mini" ? "MiniTabs" : "Home"}
+      initialRouteName={isMiniMode ? "MiniTabs" : "Home"}
       drawerContent={() =>
-        Platform.OS === "web" || appMode === "mini" ? null : <Sidebar />
+        Platform.OS === "web" || isMiniMode ? null : <Sidebar />
       }
       screenOptions={navigatorScreenOptions as any} // FIXME: upgrade to expo-router
     >
-      {getNormalModeScreens({ appMode: appMode as AppMode })}
-      {appMode === "mini" ? getMiniModeScreens() : null}
+      {getNormalModeScreens(isMiniMode)}
+      {isMiniMode ? getMiniModeScreens() : null}
     </Nav.Navigator>
   );
 };

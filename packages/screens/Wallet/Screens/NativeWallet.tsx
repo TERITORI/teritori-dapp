@@ -12,7 +12,7 @@ import { BrandText } from "@/components/BrandText";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
 import { CustomButton } from "@/components/buttons/CustomButton";
 import { SpacerColumn } from "@/components/spacer";
-import { useAppMode } from "@/hooks/useAppMode";
+import { useIsMiniMode } from "@/hooks/useAppMode";
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 import { ScreenFC } from "@/utils/navigation";
 import { fontSemibold12 } from "@/utils/style/fonts";
@@ -20,7 +20,7 @@ import { layout } from "@/utils/style/layout";
 
 const NativeWallet: ScreenFC<"NativeWallet"> = () => {
   const nativeWallet = useSelectedNativeWallet();
-  const [appMode] = useAppMode();
+  const isMiniMode = useIsMiniMode();
 
   return (
     <WalletContainer>
@@ -63,7 +63,7 @@ const NativeWallet: ScreenFC<"NativeWallet"> = () => {
                 marginVertical: layout.spacing_x2,
               }}
               onPress={(_, navigation) => {
-                if (appMode === "mini") {
+                if (isMiniMode) {
                   navigation.navigate("MiniWallets");
                 } else {
                   navigation.navigate("WalletManager");

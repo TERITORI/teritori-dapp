@@ -11,6 +11,7 @@ import { SVG } from "@/components/SVG";
 import { CustomButton } from "@/components/buttons/CustomButton";
 import ToggleButton from "@/components/buttons/ToggleButton";
 import { SpacerColumn } from "@/components/spacer";
+import { useAppMode } from "@/hooks/useAppMode";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral77 } from "@/utils/style/colors";
 import {
@@ -20,7 +21,6 @@ import {
   fontSemibold30,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { AppMode } from "@/utils/types/app-mode";
 
 const totalSlides = 2;
 
@@ -29,7 +29,7 @@ export const ModeSelectionScreen: ScreenFC<"ModeSelection"> = ({
 }) => {
   const { width, height } = useWindowDimensions();
   const [openModal, setModal] = useState(false);
-  const [appMode, setAppMode] = useState<AppMode>("mini");
+  const [appMode, handleSet] = useAppMode();
   const [activeIndex, setActiveIndex] = useState(0);
 
   const onNotNowPress = async () => {
@@ -139,11 +139,11 @@ export const ModeSelectionScreen: ScreenFC<"ModeSelection"> = ({
 
             <ToggleButton
               isActive={appMode === "mini"}
-              onValueChange={(value) => {
+              onValueChange={(value: boolean) => {
                 if (value) {
-                  setAppMode("mini");
+                  handleSet("mini");
                 }
-                setAppMode("web3Addict");
+                handleSet("web3Addict");
               }}
             />
           </View>
