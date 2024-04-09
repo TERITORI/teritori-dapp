@@ -98,7 +98,11 @@ function BrowserHeader({
           <SVG source={closeSVG} width={28} height={28} />
         </CustomPressable>
         <View style={{ flex: 1, alignItems: "center" }}>
-          <BrandText style={[fontSemibold14]}>Popular Collections</BrandText>
+          <BrandText
+            style={[fontSemibold14, { marginTop: 8, marginBottom: -10 }]}
+          >
+            Popular Collections
+          </BrandText>
           <View
             style={{
               flexDirection: "row",
