@@ -1,6 +1,6 @@
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    to_json_binary, Addr, Order, Reply, Response, StdResult, SubMsg, Uint128, WasmMsg,
+    to_json_binary, Addr, Order, Reply, Response, StdResult, SubMsg, WasmMsg,
 };
 use cw_storage_plus::{Item, Map};
 use cw_utils::parse_reply_instantiate_data;
@@ -64,6 +64,11 @@ impl NftLaunchpad {
         collection: Collection,
     ) -> Result<Response, ContractError> {
         let storage = ctx.deps.storage;
+
+        // Reject if collection does not have at least 1 mint period
+        if collection.mint_periods.len() == 0 {
+            return Err(ContractError::MintPeriodRequired);
+        }
 
         // Increase collection id by 1
         let last_collection = self.collections.last(storage).unwrap();
@@ -254,6 +259,7 @@ pub struct Config {
 }
 
 #[cw_serde]
+#[derive(Default)]
 pub struct Collection {
     // Collection info ----------------------------
     pub name: String,
@@ -305,7 +311,7 @@ pub struct Collection {
 
     pub dao_whitelist_count: u32,
 
-    pub reveal_time: u64,
+    pub reveal_time: Option<u64>,
 
     // Minting details ----------------------------
     pub tokens_count: u64,

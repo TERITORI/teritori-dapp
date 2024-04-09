@@ -1,4 +1,4 @@
-use cosmwasm_std::{coin, Addr, Attribute, HexBinary, Uint128};
+use cosmwasm_std::{coin, Addr, Attribute, Coin, HexBinary, Uint128};
 use cw2981_royalties::Metadata;
 use cw721::{Approval, ContractInfoResponse};
 use rs_merkle::{Hasher, MerkleProof, MerkleTree};
@@ -12,9 +12,8 @@ use crate::{
     error::ContractError,
     hasher::TrKeccak256,
     test_helpers::{
-        assert_wasm_attr, get_default_mint_info, get_default_nfts, get_default_period,
-        get_default_periods, get_merkle_tree, get_merkle_tree_info, DEFAULT_BLOCK_TIME,
-        METADATAS_MERKLE_ROOT,
+        assert_wasm_attr, get_default_mint_info, get_default_nfts, get_default_periods,
+        get_merkle_tree_info, DEFAULT_BLOCK_TIME, METADATAS_MERKLE_ROOT,
     },
     utils::proto_encode,
 };
@@ -399,8 +398,10 @@ fn full_flow() {
                 MintPeriod {
                     max_tokens: None,
                     limit_per_address: Some(1),
-                    unit_price: Uint128::new(10),
-                    denom: "utori".to_string(),
+                    price: Some(Coin {
+                        amount: Uint128::new(10),
+                        denom: "utori".to_string(),
+                    }),
                     start_time: DEFAULT_BLOCK_TIME - 10,
                     end_time: Some(DEFAULT_BLOCK_TIME + 10),
                     whitelist_info: Some(WhitelistInfo {
@@ -481,7 +482,10 @@ fn full_flow() {
         // - Reached max token per user
         // => ContractError::MintExceedMaxPerUser
         assert_eq!(
-            contract.request_mint(0, whitelist_proof).call(OWNER).unwrap_err(),
+            contract
+                .request_mint(0, whitelist_proof)
+                .call(OWNER)
+                .unwrap_err(),
             ContractError::MintExceedMaxPerUser
         );
     }
@@ -492,13 +496,18 @@ fn full_flow() {
     // => success
     {
         contract
-            .update_mint_period(1, MintPeriod{
-                start_time: DEFAULT_BLOCK_TIME - 10,
-                denom: "utori".to_string(),
-                unit_price: Uint128::new(10),
-                whitelist_info: None,
-                ..MintPeriod::default()
-            })
+            .update_mint_period(
+                1,
+                MintPeriod {
+                    start_time: DEFAULT_BLOCK_TIME - 10,
+                    price: Some(Coin {
+                        amount: Uint128::new(10),
+                        denom: "utori".to_string(),
+                    }),
+                    whitelist_info: None,
+                    ..MintPeriod::default()
+                },
+            )
             .call(ADMIN)
             .unwrap();
 
@@ -522,8 +531,37 @@ fn full_flow() {
         let minted_by_user = contract.minted_count_by_user(1, OWNER.to_string()).unwrap();
         assert_eq!(minted_by_user, 1);
 
-        let total_minted_by_user = contract.total_minted_count_by_user(OWNER.to_string()).unwrap();
+        let total_minted_by_user = contract
+            .total_minted_count_by_user(OWNER.to_string())
+            .unwrap();
         assert_eq!(total_minted_by_user, 2);
+    }
+
+    // Free mint period
+    {
+        contract
+            .update_mint_period(
+                2,
+                MintPeriod {
+                    start_time: DEFAULT_BLOCK_TIME - 10,
+                    ..MintPeriod::default()
+                },
+            )
+            .call(ADMIN)
+            .unwrap();
+
+        contract.request_mint(2, None).call(OWNER).unwrap();
+
+        let total_minted = contract.total_minted().unwrap();
+        assert_eq!(total_minted, 4);
+
+        let minted_by_user = contract.minted_count_by_user(1, OWNER.to_string()).unwrap();
+        assert_eq!(minted_by_user, 1);
+
+        let total_minted_by_user = contract
+            .total_minted_count_by_user(OWNER.to_string())
+            .unwrap();
+        assert_eq!(total_minted_by_user, 3);
     }
 
     // Query merke root

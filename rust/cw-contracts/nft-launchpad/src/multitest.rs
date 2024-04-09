@@ -1,4 +1,4 @@
-use cosmwasm_std::{Addr, Attribute, Uint128};
+use cosmwasm_std::{Addr, Attribute, Coin, Uint128};
 use sylvia::multitest::App;
 
 use crate::{
@@ -12,8 +12,10 @@ use nft_tr721::contract::{
 
 fn get_default_collection() -> Collection {
     let mint_periods = vec![MintPeriod {
-        unit_price: Uint128::new(10),
-        denom: "denom".to_string(),
+        price: Some(Coin{
+            amount: Uint128::new(10),
+            denom: "denom".to_string(),
+        }),
         limit_per_address: Some(2),
         start_time: u64::default(),
         end_time: Some(u64::default()),
@@ -79,7 +81,7 @@ fn get_default_collection() -> Collection {
 
         // Minting details ----------------------------
         tokens_count: 1000,
-        reveal_time: u64::default(),
+        reveal_time: Some(u64::default()),
 
         // Whitelist minting --------------------------
         mint_periods,
@@ -147,6 +149,19 @@ fn full_flow() {
     // Check instantiated launchpad
     let config = contract.get_config().unwrap();
     assert_eq!(config.name, "teritori launchpad".to_string());
+
+    // Create collection without period -----------------------------------------
+    {
+        let err = contract
+            .submit_collection(Collection {
+                mint_periods: vec![],
+                ..Collection::default()
+            })
+            .call(sender)
+            .unwrap_err();
+
+        assert_eq!(err, ContractError::MintPeriodRequired);
+    }
 
     // Create collection ---------------------------------------------------------
     {

@@ -1,4 +1,4 @@
-use cosmwasm_std::{Attribute, HexBinary, Uint128};
+use cosmwasm_std::{Attribute, Coin, HexBinary, Uint128};
 use cw2981_royalties::{Metadata, Trait};
 use cw_multi_test::AppResponse;
 use rs_merkle::{Hasher, MerkleTree};
@@ -69,8 +69,10 @@ pub fn get_default_nfts() -> Vec<Metadata> {
 
 pub fn get_default_period() -> MintPeriod {
     MintPeriod {
-        unit_price: Uint128::new(1),
-        denom: "denom".to_string(),
+        price: Some(Coin{
+            denom: "denom".to_string(),
+            amount: Uint128::new(1),
+        }),
         limit_per_address: Some(2),
 
         start_time: DEFAULT_BLOCK_TIME,

@@ -16,6 +16,9 @@ pub enum ContractError {
     #[error("Deployer missing.")]
     DeployerMissing,
 
+    #[error("Must provide atleast 1 mint period.")]
+    MintPeriodRequired,
+
     #[error("Collection not found.")]
     CollectionNotFound,
 

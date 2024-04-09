@@ -392,12 +392,15 @@ impl Tr721 {
             }
         }
 
-        // Check sent fund
-        self.assert_funds(
-            &ctx.info.funds,
-            period.to_owned().denom,
-            period.to_owned().unit_price,
-        )?;
+        // If this period is not free mint then check the sent fund
+        if period.price.is_some() {
+            // Check sent fund
+            self.assert_funds(
+                &ctx.info.funds,
+                period.to_owned().price.unwrap().denom,
+                period.to_owned().price.unwrap().amount,
+            )?;
+        }
 
         let sender = ctx.deps.api.addr_validate(ctx.info.sender.as_str())?;
         let token_id = Tr721Contract::default()
@@ -782,8 +785,7 @@ pub struct WhitelistProof {
 #[cw_serde]
 #[derive(Default)]
 pub struct MintPeriod {
-    pub unit_price: Uint128,
-    pub denom: String,
+    pub price: Option<Coin>,
 
     pub max_tokens: Option<u32>, // If not given then there is no limit for minting for this period
     pub limit_per_address: Option<u32>, // If not given then there is no limit
