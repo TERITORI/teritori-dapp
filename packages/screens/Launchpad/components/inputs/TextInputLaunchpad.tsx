@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
 import { TextInputProps } from "react-native";
 
@@ -30,6 +30,7 @@ export const TextInputLaunchpad = <T extends FieldValues>({
   rules,
   onChangeText,
 }: TextInputCustomProps<T>) => {
+  const [value, setValue] = useState("");
   return (
     <TextInputCustom<T>
       rules={{ required: true, ...rules }}
@@ -44,7 +45,11 @@ export const TextInputLaunchpad = <T extends FieldValues>({
       boxMainContainerStyle={{ minHeight: 0 }}
       height={40}
       regexp={regexp}
-      onChange={(e) => onChangeText?.(e.nativeEvent.text)}
+      onChange={(e) => {
+        setValue(e.nativeEvent.text);
+        onChangeText?.(e.nativeEvent.text);
+      }}
+      value={value}
     />
   );
 };
