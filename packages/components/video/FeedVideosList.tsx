@@ -106,7 +106,7 @@ export const FeedVideosList: React.FC<{
         }
       >
         <GridList<Post>
-          keyExtractor={(item) => `video-${item.identifier}`}
+          keyExtractor={(item) => item.id}
           data={videos}
           minElemWidth={minCardWidth}
           renderItem={({ item }, elemSize) => (

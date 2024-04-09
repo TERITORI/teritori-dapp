@@ -7,6 +7,7 @@ import {
   ViewStyle,
   useWindowDimensions,
 } from "react-native";
+import { LatLng } from "react-native-leaflet-view";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
@@ -21,7 +22,6 @@ import FlexRow from "../../FlexRow";
 import { IconBox } from "../../IconBox";
 import { OmniLink } from "../../OmniLink";
 import { SVG } from "../../SVG";
-import { PrimaryBox } from "../../boxes/PrimaryBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../buttons/SecondaryButtonOutline";
 import { FileUploader } from "../../fileUploader";
@@ -29,12 +29,15 @@ import { FeedPostingProgressBar } from "../../loaders/FeedPostingProgressBar";
 import { SpacerColumn } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
+import { MapModal } from "../modals/MapModal/MapModal";
 
+import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import ToggleButton from "@/components/buttons/ToggleButton";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
 import { useIsMiniMode } from "@/hooks/useAppMode";
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { useIpfs } from "@/hooks/useIpfs";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
@@ -145,6 +148,28 @@ export const NewsFeedInput = React.forwardRef<
     const [isUploadLoading, setIsUploadLoading] = useState(false);
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
     const [premium, setPremium] = useState(false);
+    const [isShowMap, setShowMap] = useState(false);
+    const [locationSelected, setLocationSelected] = useState<LatLng>([
+      48.8566, 2.3522,
+    ]);
+    const [description, setDescription] = useState("");
+    const [developerMode] = useDeveloperMode();
+
+    // useEffect(() => {
+    //   if (Platform.OS === "web") {
+    //     navigator.geolocation.getCurrentPosition(
+    //       (position) => {
+    //         setLocationSelected([
+    //           position.coords.latitude,
+    //           position.coords.longitude,
+    //         ]);
+    //       },
+    //       (error) => {
+    //         console.error("Error getting geolocation:", error);
+    //       },
+    //     );
+    //   }
+    // }, []);
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
@@ -333,7 +358,18 @@ export const NewsFeedInput = React.forwardRef<
         style={[{ width }, style]}
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       >
-        <View style={{ zIndex: 9 }}>
+        {isShowMap && (
+          <MapModal
+            handleSubmit={() => handleSubmit(processSubmit)()}
+            visible
+            onClose={() => setShowMap(false)}
+            locationSelected={locationSelected}
+            setLocationSelected={setLocationSelected}
+            description={description}
+            setDescription={setDescription}
+          />
+        )}
+        <View style={{ backgroundColor: neutral22, zIndex: 9 }}>
           <PrimaryBox
             style={{
               backgroundColor: isMiniMode ? neutral00 : neutral22,
@@ -697,7 +733,13 @@ export const NewsFeedInput = React.forwardRef<
                         ? "Comment"
                         : "Publish"
                   }
-                  onPress={handleSubmit(processSubmit)}
+                  onPress={() => {
+                    if (developerMode) {
+                      setShowMap(true);
+                    } else {
+                      handleSubmit(processSubmit)();
+                    }
+                  }}
                 />
               </View>
             </View>

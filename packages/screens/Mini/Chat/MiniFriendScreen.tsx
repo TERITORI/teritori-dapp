@@ -63,7 +63,7 @@ export const MiniFriendScreen: ScreenFC<"MiniFriend"> = ({
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <BlurScreenContainer title="Friends">
+    <BlurScreenContainer title="Friends" noScrollView>
       <View
         style={{
           paddingHorizontal: layout.spacing_x2,

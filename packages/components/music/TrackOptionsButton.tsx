@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import ThreeDotsCircleWhite from "../../../assets/icons/music/three-dot-circle-white.svg";
-import { BrandText } from "../BrandText/BrandText.electron";
+import { BrandText } from "../BrandText/BrandText";
 import { SVG } from "../SVG";
 import ModalBase from "../modals/ModalBase";
 import { Separator } from "../separators/Separator";
@@ -11,18 +10,17 @@ import { TipButton } from "../socialFeed/SocialActions/TipButton";
 import { SpacerColumn } from "../spacer";
 
 import { Post } from "@/api/feed/v1/feed";
+import ThreeDotsCircleWhite from "@/assets/icons/music/three-dot-circle-white.svg";
 import { useIsMiniMode } from "@/hooks/useAppMode";
 import { layout } from "@/utils/style/layout";
 
 const BUTTONS_HEIGHT = 28;
 const MENU_CONTAINER_MODAL_WIDTH = 500;
-type Props = {
+
+export const TrackOptionsButton: FC<{
   trackName: string;
   post: Post;
-  username: string;
-};
-
-export const TrackOptionsButton = ({ trackName, post, username }: Props) => {
+}> = ({ trackName, post }) => {
   const [showMenu, setShowMenu] = useState(false);
   const isMiniMode = useIsMiniMode();
 
@@ -73,7 +71,7 @@ export const TrackOptionsButton = ({ trackName, post, username }: Props) => {
             }}
           >
             <BrandText>Share</BrandText>
-            <ShareButton postId={post.identifier} useAltStyle />
+            <ShareButton postId={post.id} useAltStyle />
           </View>
           <View
             style={{
@@ -83,8 +81,8 @@ export const TrackOptionsButton = ({ trackName, post, username }: Props) => {
           >
             <BrandText>Tip</BrandText>
             <TipButton
-              postId={post.identifier}
-              author={username}
+              postId={post.id}
+              authorId={post.authorId}
               amount={post.tipAmount}
               useAltStyle
             />

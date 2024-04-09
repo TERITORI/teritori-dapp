@@ -148,6 +148,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
               </Pressable>
             );
           }}
+          contentContainerStyle={{ flexGrow: 1 }}
         />
 
         <Separator />

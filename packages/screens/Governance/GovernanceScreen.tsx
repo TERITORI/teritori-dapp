@@ -71,8 +71,9 @@ export const GovernanceScreen: React.FC = () => {
           flexDirection: isMobile ? "column" : "row",
           flexWrap: "wrap",
           marginTop: 24,
-          marginRight: -20,
+          marginRight: isMobile ? 0 : -20,
           zIndex: -1,
+          marginBottom: isMobile ? 60 : 0,
         }}
       >
         {filteredProposals

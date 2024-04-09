@@ -1,7 +1,8 @@
-import React, { useCallback } from "react";
+import React, { useMemo } from "react";
 
 import { ArticlesFeed } from "./components/ArticlesFeed";
 import { FeedHeader } from "./components/FeedHeader";
+import { MapFeed } from "./components/MapFeed";
 import { ModerationFeed } from "./components/ModerationFeed";
 import { MusicFeed } from "./components/MusicFeed";
 import { PicsFeed } from "./components/PicsFeed";
@@ -12,6 +13,7 @@ import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
 import { NewsFeed } from "@/components/socialFeed/NewsFeed/NewsFeed";
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { NetworkFeature } from "@/networks";
@@ -20,11 +22,14 @@ import { ScreenFC } from "@/utils/navigation";
 export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
   useForceNetworkSelection(params?.network);
   const isMobile = useIsMobile();
+  const [developerMode] = useDeveloperMode();
 
-  const FeedContent = useCallback(() => {
+  const feedContent = useMemo(() => {
     switch (params?.tab) {
       case "music":
         return <MusicFeed />;
+      case "map":
+        return developerMode === true ? <MapFeed /> : null;
       case "pics":
         return <PicsFeed />;
       case "videos":
@@ -49,7 +54,7 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
           />
         );
     }
-  }, [params?.tab, isMobile]);
+  }, [params?.tab, isMobile, developerMode]);
 
   return (
     <ScreenContainer
@@ -61,7 +66,7 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
       forceNetworkFeatures={[NetworkFeature.SocialFeed]}
       headerChildren={<BrandText>Social Feed</BrandText>}
     >
-      <FeedContent />
+      {feedContent}
     </ScreenContainer>
   );
 };
