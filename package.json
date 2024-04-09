@@ -81,7 +81,7 @@
     "electron-store": "^8.1.0",
     "eslint-config-universe": "^12.0.0",
     "ethers": "^5.7.2",
-    "expo": "~50.0.14",
+    "expo": "~50.0.15",
     "expo-av": "~13.10.5",
     "expo-blur": "~12.9.2",
     "expo-clipboard": "~5.0.1",
