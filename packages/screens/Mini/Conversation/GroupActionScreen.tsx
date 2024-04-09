@@ -61,13 +61,14 @@ const GroupActionScreen: ScreenFC<"MiniGroupActions"> = ({
   const { setToast } = useFeedbacks();
 
   const groupName = conversation && getConversationName(conversation);
+
   const handleLeaveGroupPress = async () => {
     if (conversation?.id) {
       try {
+        await sendGroupLeaveMessage();
         await weshClient.client.MultiMemberGroupLeave({
           groupPk: bytesFromString(conversation.id),
         });
-        await sendGroupLeaveMessage();
         setToast({
           mode: "mini",
           message: `You left group ${groupName}`,
