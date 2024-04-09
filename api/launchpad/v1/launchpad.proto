@@ -46,16 +46,16 @@ message TokenMetadataResponse {
   repeated string merkle_proof = 3;
 }
 
-message UpdateCollectionWhitelistsRequest {
-  string sender = 1;
-  string network_id = 2;
-  uint32 project_id = 3;
-  repeated WhitelistMintInfo whitelist_mint_infos = 4; 
-}
+// message UpdateCollectionWhitelistsRequest {
+//   string sender = 1;
+//   string network_id = 2;
+//   uint32 project_id = 3;
+//   repeated WhitelistMintInfo whitelist_mint_infos = 4; 
+// }
 
-message UpdateCollectionWhitelistsResponse {
-  repeated string merkle_roots = 1;
-}
+// message UpdateCollectionWhitelistsResponse {
+//   repeated string merkle_roots = 1;
+// }
 
 // message WhitelistedAddressMerkleInfoRequest {
 //   string sender = 1;
@@ -160,12 +160,12 @@ message Trait {
 //   string deployed_address = 39;
 // }
 
-message WhitelistMintInfo {
-  repeated string addresses = 1;
-  uint64 unit_price = 2;
-  string denom = 3;
-  uint32 limit_per_address = 4;
-  uint32 addresses_count = 5;
-  uint64 start_time = 6;
-  uint64 end_time = 7;
-}
+// message WhitelistMintInfo {
+//   repeated string addresses = 1;
+//   uint64 unit_price = 2;
+//   string denom = 3;
+//   uint32 limit_per_address = 4;
+//   uint32 addresses_count = 5;
+//   uint64 start_time = 6;
+//   uint64 end_time = 7;
+// }
