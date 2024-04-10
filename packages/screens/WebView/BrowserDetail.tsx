@@ -47,9 +47,9 @@ function BrowserHeader({
 
   async function openInBrowser() {
     try {
-      const supported = await Linking.canOpenURL(url);
+      const isSupported = await Linking.canOpenURL(url);
 
-      if (supported) {
+      if (isSupported) {
         Linking.openURL(url);
       } else {
         setToast({

@@ -262,7 +262,7 @@ function BrowserSearch({ searchedItem }: { searchedItem: string }) {
     <ListView
       onPress={() => {
         const urlPattern: RegExp =
-          /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?/g;
+          /(https?:\/\/)?(www\.)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})+\/[a-zA-Z0-9]{2,}/g;
         if (urlPattern.test(searchedItem)) {
           const url =
             searchedItem.search("https") !== -1
