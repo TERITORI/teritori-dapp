@@ -41,8 +41,8 @@ interface CurrencyInputCustomProps<T extends FieldValues>
   hideUsdAmount?: boolean;
   networkId: string;
   currencies: MinMaxedCurrency[];
-  selectedCurrency: MinMaxedCurrency;
-  onSelectCurrency: (currency: MinMaxedCurrency) => void;
+  selectedCurrency?: MinMaxedCurrency;
+  onSelectCurrency?: (currency: MinMaxedCurrency) => void;
   onChangeAmountAtomics: (amountAtomics: string) => void;
   boxStyle?: StyleProp<BoxStyle>;
 }
@@ -63,30 +63,29 @@ export const CurrencyInput = <T extends FieldValues>({
   onChangeAmountAtomics,
   boxStyle,
 }: CurrencyInputCustomProps<T>) => {
-  const selectedCurrencyNetwork = allNetworks.find(
-    (network) =>
-      !!network.currencies.find(
-        (currency) => currency.denom === selectedCurrency.denom,
-      ),
-  );
-  const selectedNativeCurrency = getNativeCurrency(
-    networkId,
-    selectedCurrency.denom,
-  );
   const inputRef = useRef<TextInput>(null);
   const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
   const [hovered, setHovered] = useState(false);
   const [boxHeight, setBoxHeight] = useState(0);
-  const { prices } = useCoingeckoPrices([
-    { networkId, denom: selectedCurrency?.denom },
-  ]);
-  const max = selectedCurrency.maxAtomics
+
+  const selectedCurrencyNetwork = allNetworks.find(
+    (network) =>
+      !!network.currencies.find(
+        (currency) => currency.denom === selectedCurrency?.denom,
+      ),
+  );
+  const selectedNativeCurrency = getNativeCurrency(
+    networkId,
+    selectedCurrency?.denom,
+  );
+
+  const max = selectedCurrency?.maxAtomics
     ? Decimal.fromAtomics(
         selectedCurrency.maxAtomics || "",
         selectedNativeCurrency?.decimals || 0,
       ).toFloatApproximation()
     : undefined;
-  const min = selectedCurrency.maxAtomics
+  const min = selectedCurrency?.maxAtomics
     ? Decimal.fromAtomics(
         selectedCurrency.minAtomics || "",
         selectedNativeCurrency?.decimals || 0,
@@ -99,15 +98,9 @@ export const CurrencyInput = <T extends FieldValues>({
     rules: { required, max, min },
   });
 
-  const fieldError = useMemo(() => {
-    if (fieldState.error) {
-      if (fieldState.error.message) {
-        return fieldState.error.message;
-      }
-      return DEFAULT_FORM_ERRORS.required;
-    }
-  }, [fieldState.error]);
-
+  const { prices } = useCoingeckoPrices([
+    { networkId, denom: selectedCurrency?.denom },
+  ]);
   const amountUsd: number =
     useMemo(() => {
       if (
@@ -120,6 +113,15 @@ export const CurrencyInput = <T extends FieldValues>({
         parseFloat(field.value) * prices[selectedNativeCurrency.coingeckoId].usd
       );
     }, [selectedNativeCurrency, field.value, prices]) || 0;
+
+  const fieldError = useMemo(() => {
+    if (fieldState.error) {
+      if (fieldState.error.message) {
+        return fieldState.error.message;
+      }
+      return DEFAULT_FORM_ERRORS.required;
+    }
+  }, [fieldState.error]);
 
   const onChangeText = (text: string) => {
     if (!text) {
@@ -138,7 +140,7 @@ export const CurrencyInput = <T extends FieldValues>({
   };
 
   const onPressMax = () => {
-    if (!selectedNativeCurrency || !selectedCurrency.maxAtomics) return;
+    if (!selectedNativeCurrency || !selectedCurrency?.maxAtomics) return;
 
     field.onChange(
       Decimal.fromAtomics(
@@ -151,7 +153,7 @@ export const CurrencyInput = <T extends FieldValues>({
   };
 
   const onPressMin = () => {
-    if (!selectedNativeCurrency || !selectedCurrency.minAtomics) return;
+    if (!selectedNativeCurrency || !selectedCurrency?.minAtomics) return;
 
     field.onChange(
       Decimal.fromAtomics(
@@ -163,7 +165,7 @@ export const CurrencyInput = <T extends FieldValues>({
   };
 
   const onPressSelectableCurrency = (currency: MinMaxedCurrency) => {
-    onSelectCurrency(currency);
+    onSelectCurrency?.(currency);
     field.onChange("");
     onChangeAmountAtomics("0");
     setDropdownState(false);
@@ -206,8 +208,8 @@ export const CurrencyInput = <T extends FieldValues>({
               justifyContent: "space-between",
               paddingHorizontal: layout.spacing_x1_5,
               paddingVertical:
-                selectedCurrency.maxAtomics ||
-                selectedCurrency.minAtomics ||
+                selectedCurrency?.maxAtomics ||
+                selectedCurrency?.minAtomics ||
                 !hideUsdAmount
                   ? layout.spacing_x1_5
                   : layout.spacing_x1,
@@ -260,7 +262,7 @@ export const CurrencyInput = <T extends FieldValues>({
 
           <View style={{ alignItems: "flex-end" }}>
             {/*---- Min/max buttons*/}
-            {(selectedCurrency.maxAtomics || selectedCurrency.minAtomics) && (
+            {(selectedCurrency?.maxAtomics || selectedCurrency?.minAtomics) && (
               <>
                 <View style={{ flexDirection: "row" }}>
                   {selectedCurrency.maxAtomics && (
