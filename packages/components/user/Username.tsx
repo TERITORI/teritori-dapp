@@ -1,6 +1,6 @@
 import { bech32 } from "bech32";
 import React, { FC, memo } from "react";
-import { StyleProp, TextStyle } from "react-native";
+import { ColorValue, StyleProp, TextStyle } from "react-native";
 
 import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
 import { useValidators } from "../../hooks/useValidators";
@@ -15,39 +15,45 @@ export const Username: FC<{
   userId: string | undefined;
   addressLength?: number;
   textStyle?: StyleProp<TextStyle>;
-}> = memo(({ userId, addressLength, textStyle }) => {
-  const [network, userAddress] = parseUserId(userId);
-  const { primaryAlias } = useNSPrimaryAlias(userId);
-  const {
-    data: { allValidators },
-  } = useValidators(network?.id); // FIXME: this is ineficient
-  const validator = allValidators?.find((val) => val.address === userAddress);
-  if (isUserValidator(userId) && validator) {
+  namedColor?: ColorValue;
+  anonColor?: ColorValue;
+  prefix?: string;
+}> = memo(
+  ({
+    userId,
+    addressLength,
+    textStyle,
+    namedColor = "#16BBFF",
+    anonColor = "white",
+    prefix = "@",
+  }) => {
+    const [network, userAddress] = parseUserId(userId);
+    const { primaryAlias } = useNSPrimaryAlias(userId);
+    const {
+      data: { allValidators },
+    } = useValidators(network?.id); // FIXME: this is ineficient
+    const validator = allValidators?.find((val) => val.address === userAddress);
+    const color = primaryAlias ? namedColor : anonColor;
+    const text = `${prefix}${primaryAlias || tinyAddress(userAddress, addressLength || 14)}`;
+    if (isUserValidator(userId) && validator) {
+      return (
+        <BrandText style={[textStyle, { color }]}>
+          {validator.moniker}
+        </BrandText>
+      );
+    }
     return (
-      <BrandText
-        style={[textStyle, { color: primaryAlias ? "#16BBFF" : "white" }]}
+      <OmniLink
+        to={{
+          screen: "UserPublicProfile",
+          params: { id: userId },
+        }}
       >
-        {validator.moniker}
-      </BrandText>
+        <BrandText style={[textStyle, { color }]}>{text}</BrandText>
+      </OmniLink>
     );
-  }
-  return (
-    <OmniLink
-      to={{
-        screen: "UserPublicProfile",
-        params: { id: userId },
-      }}
-    >
-      <BrandText
-        style={[textStyle, { color: primaryAlias ? "#16BBFF" : "white" }]}
-      >
-        {primaryAlias
-          ? `@${primaryAlias}`
-          : tinyAddress(userAddress, addressLength || 14)}
-      </BrandText>
-    </OmniLink>
-  );
-});
+  },
+);
 
 const isUserValidator = (userId: string | undefined) => {
   const [network, userAddress] = parseUserId(userId);

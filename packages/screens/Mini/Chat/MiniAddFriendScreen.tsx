@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { CustomButton } from "../components/Button/CustomButton";
 import MiniTextInput from "../components/MiniTextInput";
 import { ScanQRToSendRequest } from "../components/ScanQRToSendRequest";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
@@ -10,6 +9,7 @@ import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 import addSVG from "@/assets/icons/add-new.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { selectContactInfo } from "@/store/slices/message";
@@ -111,6 +111,8 @@ export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = ({
           placeholderTextColor={neutralA3}
           value={contactLink}
           onChangeText={setContactLink}
+          returnKeyType="done"
+          onSubmitEditing={handleAddContact}
         />
         <SpacerColumn size={2} />
         {error && (
@@ -157,7 +159,7 @@ export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = ({
         >
           <SVG height={16} width={16} source={addSVG} color="#fff" />
           <SpacerRow size={1} />
-          <BrandText style={[fontSemibold15, { lineHeight: 0 }]}>
+          <BrandText style={[fontSemibold15, { lineHeight: 18 }]}>
             {isGroupLink ? "Join group" : "Add"}
           </BrandText>
         </CustomButton>

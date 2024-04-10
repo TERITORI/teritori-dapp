@@ -68,7 +68,7 @@ export const MediaPlayerBarMobile: FC<{
             onSwipeableRightOpen={canPrev ? prevMedia : undefined}
             onSwipeableLeftOpen={canNext ? nextMedia : undefined}
           >
-            <MediaNameImage style={{ width: "100%" }} />
+            <MediaNameImage media={media} style={{ width: "100%" }} />
           </Swipeable>
         </GestureHandlerRootView>
         <SpacerRow size={2} />

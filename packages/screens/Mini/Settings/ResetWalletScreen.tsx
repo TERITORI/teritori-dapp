@@ -3,11 +3,11 @@ import { View } from "react-native";
 import { useSelector } from "react-redux";
 
 import stopSVG from "../../../../assets/icons/stop.svg";
-import { CustomButton } from "../components/Button/CustomButton";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { SpacerColumn } from "@/components/spacer";
 import {
   resetAllAddressBook,

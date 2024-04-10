@@ -1,6 +1,12 @@
 import { Audio, AVPlaybackStatus } from "expo-av";
 import React, { useEffect, useState } from "react";
-import { Image, View, TouchableOpacity, ActivityIndicator } from "react-native";
+import {
+  Image,
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+  Platform,
+} from "react-native";
 
 import { AudioWaveform } from "./AudioWaveform";
 import { AUDIO_WAVEFORM_MAX_WIDTH } from "./AudioWaveform/AudioWaveform.web";
@@ -18,8 +24,10 @@ import { fontMedium32, fontSemibold12 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { LocalFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
+import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { FileUploader } from "../fileUploader";
+import { SelectPicture } from "../mini/SelectPicture";
 
 interface AudioPreviewProps {
   file: LocalFileData;
@@ -151,49 +159,86 @@ export const EditableAudioPreview: React.FC<AudioPreviewProps> = ({
         )}
       </View>
 
-      <FileUploader
-        onUpload={(files) => {
-          onUploadThumbnail({ ...file, thumbnailFileData: files[0] });
-          setThumbnailFile(files[0]);
-        }}
-        mimeTypes={IMAGE_MIME_TYPES}
-      >
-        {({ onPress }) => (
-          <TouchableOpacity
-            activeOpacity={0.9}
-            style={{
-              height: "100%",
-              width: 80,
-              backgroundColor: neutral44,
-              borderTopRightRadius: 4,
-              borderBottomRightRadius: 4,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            onPress={onPress}
-          >
-            {thumbnailFile?.url ? (
-              <Image
-                source={{ uri: thumbnailFile.url }}
+      {Platform.OS === "web" ? (
+        <FileUploader
+          onUpload={(files) => {
+            onUploadThumbnail({ ...file, thumbnailFileData: files[0] });
+            setThumbnailFile(files[0]);
+          }}
+          mimeTypes={IMAGE_MIME_TYPES}
+        >
+          {({ onPress }) => (
+            <TouchableOpacity
+              activeOpacity={0.9}
+              style={{
+                height: "100%",
+                width: 80,
+                backgroundColor: neutral44,
+                borderTopRightRadius: 4,
+                borderBottomRightRadius: 4,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onPress={onPress}
+            >
+              {thumbnailFile?.url ? (
+                <Image
+                  source={{ uri: thumbnailFile.url }}
+                  style={{
+                    height: 80,
+                    width: 80,
+                    borderTopLeftRadius: 4,
+                    borderBottomLeftRadius: 4,
+                  }}
+                  resizeMode="cover"
+                />
+              ) : (
+                <>
+                  <BrandText style={[fontMedium32]}>+</BrandText>
+                  <BrandText style={[fontSemibold12, { textAlign: "center" }]}>
+                    Image
+                  </BrandText>
+                </>
+              )}
+            </TouchableOpacity>
+          )}
+        </FileUploader>
+      ) : null}
+      {Platform.OS !== "web" && (
+        <View
+          style={{
+            borderColor: "transparent",
+            borderLeftColor: neutral00,
+            borderWidth: 1,
+            width: 70,
+          }}
+        >
+          {thumbnailFile?.url ? (
+            <View style={{ alignItems: "center" }}>
+              <OptimizedImage
+                sourceURI={thumbnailFile?.url}
                 style={{
-                  height: 80,
-                  width: 80,
-                  borderTopLeftRadius: 4,
-                  borderBottomLeftRadius: 4,
+                  width: 70,
+                  height: 70,
+                  borderRadius: layout.spacing_x1,
                 }}
-                resizeMode="cover"
+                width={70}
+                height={70}
               />
-            ) : (
-              <>
-                <BrandText style={[fontMedium32]}>+</BrandText>
-                <BrandText style={[fontSemibold12, { textAlign: "center" }]}>
-                  Image
-                </BrandText>
-              </>
-            )}
-          </TouchableOpacity>
-        )}
-      </FileUploader>
+            </View>
+          ) : (
+            <SelectPicture
+              onSelectFile={(files) => setThumbnailFile(files[0])}
+              files={thumbnailFile ? [thumbnailFile] : []}
+              squareSelector
+              squareSelectorOptions={{
+                placeholder: "",
+                height: 70,
+              }}
+            />
+          )}
+        </View>
+      )}
     </View>
   );
 };

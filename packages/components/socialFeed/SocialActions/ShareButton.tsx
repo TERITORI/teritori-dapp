@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Linking, TouchableOpacity } from "react-native";
+import { View, Linking, TouchableOpacity, Platform } from "react-native";
 
 import shareSVG from "../../../../assets/icons/share.svg";
 import twitterSVG from "../../../../assets/icons/twitter.svg";
@@ -22,16 +22,19 @@ interface ShareButtonProps {
   useAltStyle?: boolean;
 }
 
+const WEBSITE_URL = "https://app.teritori.com";
+
 export const ShareButton = ({ postId, useAltStyle }: ShareButtonProps) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const windowOrigin =
+    Platform.OS === "web" ? window.location.origin : WEBSITE_URL;
 
   const SOCIAL_BUTTONS = [
     {
       text: "Twitter",
       iconSvg: twitterSVG,
       onPress: () => {
-        const message = `${window.location.origin}/feed/post/${postId}
-#Teritori`;
+        const message = `${windowOrigin}/feed/post/${postId}`;
 
         Linking.openURL(
           `https://twitter.com/intent/tweet?text=${encodeURIComponent(
@@ -58,7 +61,9 @@ export const ShareButton = ({ postId, useAltStyle }: ShareButtonProps) => {
             borderWidth: 1,
           },
         ]}
-        onPress={() => setIsModalVisible(true)}
+        onPress={() => {
+          setIsModalVisible(true);
+        }}
       >
         <SVG
           source={shareSVG}

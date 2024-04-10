@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { CustomButton } from "../../components/Button/CustomButton";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import MiniTextInput from "../../components/MiniTextInput";
 import { StepType } from "../ConnectLedgerScreen";
 
 import { BrandText } from "@/components/BrandText";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerColumn } from "@/components/spacer";
 import { neutral22, neutral77, neutralA3 } from "@/utils/style/colors";

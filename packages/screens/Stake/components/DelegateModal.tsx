@@ -55,7 +55,7 @@ export const DelegateModal: React.FC<DelegateModalProps> = ({
   const { triggerError } = useErrorHandler();
   const [network, userAddress] = parseUserId(userId);
   const networkId = network?.id;
-  const balances = useBalances(networkId, userAddress);
+  const { balances } = useBalances(networkId, userAddress);
   const stakingCurrency = getStakingCurrency(networkId);
   const stakingCurrencyBalance =
     stakingCurrency &&

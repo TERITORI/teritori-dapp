@@ -3,6 +3,8 @@ import {
   Audio,
   AVPlaybackStatus,
   AVPlaybackStatusSuccess,
+  InterruptionModeAndroid,
+  InterruptionModeIOS,
   Video,
 } from "expo-av";
 import { shuffle } from "lodash";
@@ -18,8 +20,6 @@ import React, {
 } from "react";
 
 import { useFeedbacks } from "./FeedbacksProvider";
-import { useSelectedNetworkId } from "../hooks/useSelectedNetwork";
-import { getNetworkObjectId } from "../networks";
 import { web3ToWeb2URI } from "../utils/ipfs";
 import { Media } from "../utils/types/mediaPlayer";
 
@@ -76,10 +76,17 @@ const defaultValue: DefaultValue = {
 
 const MediaPlayerContext = createContext(defaultValue);
 
+const AudioModes = {
+  playsInSilentModeIOS: true,
+  staysActiveInBackground: true,
+  interruptionModeIOS: InterruptionModeIOS.DuckOthers,
+  interruptionModeAndroid: InterruptionModeAndroid.DuckOthers,
+  shouldDuckAndroid: true,
+};
+
 export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
   const [videoLastRoute, setVideoLastRoute] = useState<Route<any>>();
   // ------- Only used in UI
@@ -151,7 +158,7 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
           await av?.stopAsync();
           await av?.unloadAsync();
         }
-        await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+        await Audio.setAudioModeAsync(AudioModes);
         await createdSound?.playAsync();
         setAv(createdSound);
         setIsMediaPlayerOpen(true);
@@ -177,7 +184,7 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
         stopOldAv(av);
       }
 
-      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+      await Audio.setAudioModeAsync(AudioModes);
       setAv(video);
       await video.playAsync();
     } catch (e: any) {
@@ -230,7 +237,7 @@ export const MediaPlayerContextProvider: React.FC<{ children: ReactNode }> = ({
     ) {
       if (media?.postId) {
         navigation.navigate("FeedPostView", {
-          id: getNetworkObjectId(selectedNetworkId, media.postId),
+          id: media.postId,
         });
       }
     }

@@ -4,36 +4,40 @@ import moment from "moment";
 
 import { Post } from "@/api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "@/client-creators/socialFeedClient";
-import { NetworkKind, getNetwork, getUserId } from "@/networks";
+import { NetworkKind, getUserId, parseNetworkObjectId } from "@/networks";
 import { decodeGnoPost } from "@/utils/feed/gno";
 import { extractGnoJSONString } from "@/utils/gno";
 import { safeParseJSON, zodTryParseJSON } from "@/utils/sanitize";
 import { zodSocialFeedCommonMetadata } from "@/utils/types/feed";
 
-// FIXME: this is not typed
-export const usePost = (id: string, networkId: string | undefined) => {
-  const { data, ...other } = useQuery<Post>(
-    ["social-post", id, networkId],
+export const usePost = (id: string | undefined) => {
+  const { data, ...other } = useQuery<Post | null>(
+    ["social-post", id],
     async () => {
-      if (!networkId) {
-        throw new Error("networkId is required");
+      if (!id) {
+        return null;
       }
 
-      const network = getNetwork(networkId);
+      const [network, localIdentifier] = parseNetworkObjectId(id);
+
+      if (!network) {
+        return null;
+      }
+
       if (network?.kind === NetworkKind.Gno) {
         const provider = new GnoJSONRPCProvider(network.endpoint);
         const output = await provider.evaluateExpression(
           network.socialFeedsPkgPath || "",
-          `GetPost(1, ${id})`,
+          `GetPost(1, ${localIdentifier})`,
         );
 
         const gnoPost = extractGnoJSONString(output);
-        return decodeGnoPost(networkId, gnoPost);
+        return decodeGnoPost(network.id, gnoPost);
       } else {
         const client = await nonSigningSocialFeedClient({
-          networkId,
+          networkId: network.id,
         });
-        const res = await client.queryPost({ identifier: id });
+        const res = await client.queryPost({ identifier: localIdentifier });
 
         // try to get date from metadata
         // FIXME: fix social feed contract and remove this
@@ -55,12 +59,15 @@ export const usePost = (id: string, networkId: string | undefined) => {
         );
 
         const post: Post = {
-          identifier: id,
+          id,
+          networkId: network.id,
+          identifier: localIdentifier,
+          localIdentifier,
           parentPostIdentifier: res.parent_post_identifier || "",
           category: res.category,
           metadata: res.metadata,
           reactions: res.reactions,
-          authorId: getUserId(networkId, res.post_by),
+          authorId: getUserId(network.id, res.post_by),
           isDeleted: res.deleted,
           subPostLength: res.sub_post_length,
           createdAt,
@@ -70,7 +77,7 @@ export const usePost = (id: string, networkId: string | undefined) => {
         return post;
       }
     },
-    { enabled: !!networkId },
+    { enabled: !!id },
   );
   return { post: data, ...other };
 };

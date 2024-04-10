@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useMemo, useState } from "react";
-import { View } from "react-native";
+import { Platform, View, useWindowDimensions } from "react-native";
 
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 import ModalBase from "../../components/modals/ModalBase";
@@ -89,18 +89,19 @@ const OwnerActions: React.FC<{
   return (
     <View
       style={{
-        flexDirection: "row",
+        flexDirection: Platform.OS === "web" ? "row" : "column",
         alignItems: "center",
         justifyContent: "center",
         marginBottom: layout.spacing_x3,
         alignSelf: "center",
+        gap: Platform.OS === "web" ? 0 : 20,
       }}
     >
       {isPrimary && (
         <SecondaryButton
           size="M"
           text="View Profile"
-          style={{ marginRight: layout.spacing_x3 }}
+          style={{ marginRight: Platform.OS === "web" ? layout.spacing_x3 : 0 }}
           onPress={() => {
             onClose();
             navigation.navigate("UserPublicProfile", { id: ownerId });
@@ -117,7 +118,7 @@ const OwnerActions: React.FC<{
       <SecondaryButton
         size="M"
         text="Burn"
-        style={{ marginLeft: layout.spacing_x3 }}
+        style={{ marginLeft: Platform.OS === "web" ? layout.spacing_x3 : 0 }}
         onPress={() => {
           onClose("TNSBurnName");
         }}
@@ -170,6 +171,8 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
   onClose,
   navigateBackTo,
 }) => {
+  const { width: windowWidth } = useWindowDimensions();
+
   const { name } = useTNS();
   const wallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
@@ -193,6 +196,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
 
   const { primaryAlias } = useNSPrimaryAlias(ownerId);
   const isPrimary = primaryAlias === tokenId;
+  const width = windowWidth < 457 ? windowWidth : 457;
 
   return (
     <ModalBase
@@ -200,7 +204,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
       onBackPress={() => onClose(navigateBackTo)}
       hideMainSeparator
       label={name}
-      width={457}
+      width={width}
       boxStyle={{
         backgroundColor: neutral17,
         borderWidth: 1,
@@ -221,6 +225,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
               style={{ marginBottom: layout.spacing_x3, width: "100%" }}
               name={name}
             />
+
             {!notFound &&
               (isOwnedByUser ? (
                 <OwnerActions

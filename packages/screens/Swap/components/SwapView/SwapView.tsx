@@ -121,7 +121,7 @@ export const SwapView: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const selectedNetwork = useSelectedNetworkInfo();
 
-  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
+  const { balances } = useBalances(selectedNetworkId, selectedWallet?.address);
   const { setToastError, setToastSuccess } = useFeedbacks();
 
   const cosmosNetwork = allNetworks.find(

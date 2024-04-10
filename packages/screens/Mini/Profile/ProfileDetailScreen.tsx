@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 import editProfileSVG from "../../../../assets/icons/input-edit.svg";
 import profileSVG from "../../../../assets/icons/input-profile.svg";
-import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import FileUpload from "../components/FileUpload";
 import MiniTextInput from "../components/MiniTextInput";
@@ -14,6 +13,7 @@ import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 import downloadSVG from "@/assets/icons/download-white.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { selectContactInfo, setContactInfo } from "@/store/slices/message";

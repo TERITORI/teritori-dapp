@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { CustomButton } from "../components/Button/CustomButton";
 import MiniTextInput from "../components/MiniTextInput";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { SpacerColumn } from "@/components/spacer";
 import { ScreenFC } from "@/utils/navigation";
 import { layout } from "@/utils/style/layout";

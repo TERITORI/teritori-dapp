@@ -3,7 +3,6 @@ import { View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { useDispatch, useSelector } from "react-redux";
 
-import { CustomButton } from "../components/Button/CustomButton";
 import { ScanQRToSendRequest } from "../components/ScanQRToSendRequest";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
@@ -14,6 +13,7 @@ import { BrandText } from "@/components/BrandText";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { SVG } from "@/components/SVG";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { SpacerColumn } from "@/components/spacer";
 import Clipboard from "@/modules/Clipboard";
 import { selectContactInfo, setContactInfo } from "@/store/slices/message";

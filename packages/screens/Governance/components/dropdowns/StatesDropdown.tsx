@@ -64,6 +64,8 @@ export const StatesDropdown = ({
           backgroundColor: neutral33,
           borderWidth: 1,
           borderRadius: 8,
+          width: "100%",
+          minWidth: 150,
         }}
       >
         <View
@@ -112,6 +114,7 @@ export const StatesDropdown = ({
                 top: 35,
                 right: 0,
                 width: "100%",
+                minWidth: 148,
                 paddingHorizontal: layout.spacing_x1_5,
                 paddingBottom: layout.spacing_x1,
                 backgroundColor: neutral33,
@@ -129,6 +132,7 @@ export const StatesDropdown = ({
               {objectKeys(def).map((key, index) => {
                 return (
                   <TouchableOpacity
+                    key={key}
                     onPress={() => {
                       onChange(def[key].filter as any);
                       setSelected(key);

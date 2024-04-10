@@ -90,6 +90,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
 
   return (
     <BlurScreenContainer
+      noScrollView
       customHeader={
         <View
           style={{
@@ -142,6 +143,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
               </Pressable>
             );
           }}
+          contentContainerStyle={{ flexGrow: 1 }}
         />
 
         <Separator />

@@ -58,7 +58,7 @@ export const DAppsList = ({ isEditing }: Props) => {
     (item: typeof externalApps) => {
       if (item?.options && Object.values(item?.options).length) {
         return Object.values(item.options).filter(
-          (x) => !selectedOptionsIds.includes(x.id) && !x.alwaysOn,
+          (x: dAppType) => !selectedOptionsIds.includes(x.id) && !x.alwaysOn,
         );
       }
       return [];
@@ -79,7 +79,11 @@ export const DAppsList = ({ isEditing }: Props) => {
         .filter(Boolean) as dAppType[];
 
       if (selected) {
-        setSelectedAppsFromValues(selected);
+        setSelectedAppsFromValues(
+          selected.filter((x) => {
+            return !["External", "Swap"].includes(x.route);
+          }),
+        );
       }
     }
   }, [selectedApps, availableApps]);
@@ -92,12 +96,16 @@ export const DAppsList = ({ isEditing }: Props) => {
         ...getOptions(externalApps),
       ];
       if (remainingToSelectApps) {
-        setRemainingToSelectApps(remainingToSelectApps);
+        setRemainingToSelectApps(
+          remainingToSelectApps.filter((x: dAppType) => {
+            return !["External", "Swap"].includes(x.route);
+          }),
+        );
       }
     }
   }, [topApps, staking, externalApps, selectedApps, getOptions]);
 
-  const alwaysOnApps = Object.values(coreDApps.options)
+  const alwaysOnApps: dAppType[] = Object.values(coreDApps.options)
     .concat(Object.values(topApps.options))
     .filter((x: dAppType) => x.alwaysOn);
 
