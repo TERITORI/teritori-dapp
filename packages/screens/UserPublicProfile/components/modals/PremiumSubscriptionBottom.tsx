@@ -5,8 +5,8 @@ import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import { layout } from "../../../../utils/style/layout";
 
 import { BrandText } from "@/components/BrandText";
-import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
+import { CurrencyIcon } from "@/components/currency/CurrencyIcon";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { MembershipConfig } from "@/contracts-clients/cw721-membership";

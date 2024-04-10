@@ -137,6 +137,11 @@ export type NativeCurrencyInfo = {
 
 export type CurrencyInfo = NativeCurrencyInfo | IBCCurrencyInfo;
 
+export type MinMaxedCurrency = CurrencyInfo & {
+  minAtomics?: string;
+  maxAtomics?: string;
+};
+
 export enum UserKind {
   Single = "Single",
   Multisig = "Multisig",

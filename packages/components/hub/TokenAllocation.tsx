@@ -7,7 +7,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { getNativeCurrency } from "../../networks";
 import { neutral33 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
-import { CurrencyIcon } from "../CurrencyIcon";
+import { CurrencyIcon } from "../currency/CurrencyIcon";
 
 interface TokenAllocationProps {
   style?: ViewStyle;

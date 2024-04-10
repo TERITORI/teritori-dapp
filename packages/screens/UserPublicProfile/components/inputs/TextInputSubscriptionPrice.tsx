@@ -3,7 +3,7 @@ import { Control, FieldValues, Path } from "react-hook-form";
 import { TextInputProps, View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
-import { CurrencyIcon } from "@/components/CurrencyIcon";
+import { CurrencyIcon } from "@/components/currency/CurrencyIcon";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import {
   getNativeCurrency,

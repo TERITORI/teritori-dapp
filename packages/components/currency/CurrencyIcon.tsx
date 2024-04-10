@@ -2,10 +2,11 @@ import { camelCase } from "lodash";
 import React from "react";
 import { Image, View } from "react-native";
 
-import { SVG } from "./SVG";
-import { icons } from "../../assets";
-import { getNativeCurrency } from "../networks";
-import { neutral77 } from "../utils/style/colors";
+import { getNativeCurrency } from "../../networks";
+import { neutral77 } from "../../utils/style/colors";
+import { SVG } from "../SVG";
+
+import { icons } from "@/assets/index";
 export const CurrencyIcon: React.FC<{
   networkId: string;
   denom: string;

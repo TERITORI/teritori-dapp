@@ -21,10 +21,10 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 
 import { NFT } from "@/api/marketplace/v1/marketplace";
 import { BrandText } from "@/components/BrandText";
-import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { SVG } from "@/components/SVG";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { CurrencyIcon } from "@/components/currency/CurrencyIcon";
 import { shortUserAddressFromID } from "@/components/nfts/NFTView";
 import { Separator } from "@/components/separators/Separator";
 import { useFeedbacks } from "@/context/FeedbacksProvider";

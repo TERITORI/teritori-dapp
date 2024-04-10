@@ -1,12 +1,11 @@
 import React, { forwardRef, useMemo } from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import chevronDownSVG from "../../../../../assets/icons/chevron-down.svg";
-import chevronUpSVG from "../../../../../assets/icons/chevron-up.svg";
-
+import chevronDownSVG from "@/assets/icons/chevron-down.svg";
+import chevronUpSVG from "@/assets/icons/chevron-up.svg";
 import { BrandText } from "@/components/BrandText";
-import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { SVG } from "@/components/SVG";
+import { CurrencyIcon } from "@/components/currency/CurrencyIcon";
 import {
   allNetworks,
   CosmosNetworkInfo,

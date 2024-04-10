@@ -2,14 +2,14 @@ import { Decimal } from "@cosmjs/math";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, LayoutChangeEvent, TextInput, View } from "react-native";
 
-import { CurrencyAmount } from "./CurrencyAmount";
-import { SelectedCurrency } from "./SelectedCurrency";
 import { SwapDetail } from "./SwapDetail";
 import { SwapHeader } from "./SwapHeader";
 import { SwapSettings } from "./SwapSettings";
 import { SwapTokensList } from "./SwapTokensList";
 import chevronCircleDown from "../../../../../assets/icons/chevron-circle-down.svg";
 import chevronCircleUp from "../../../../../assets/icons/chevron-circle-up.svg";
+import { CurrencyAmount } from "../../../../components/currency/CurrencyAmount";
+import { SelectedCurrency } from "../../../../components/currency/SelectedCurrency";
 import useSelectedWallet from "../../../../hooks/useSelectedWallet";
 
 import { BrandText } from "@/components/BrandText";

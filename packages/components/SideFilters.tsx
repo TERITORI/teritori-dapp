@@ -25,9 +25,9 @@ import Animated, {
 import { useSelector } from "react-redux";
 
 import { BrandText } from "./BrandText";
-import { CurrencyIcon } from "./CurrencyIcon";
 import { SVG } from "./SVG";
 import { PrimaryButton } from "./buttons/PrimaryButton";
+import { CurrencyIcon } from "./currency/CurrencyIcon";
 import { Separator } from "./separators/Separator";
 import { SearchInput } from "./sorts/SearchInput";
 import { AttributeRarityFloor } from "../api/marketplace/v1/marketplace";
