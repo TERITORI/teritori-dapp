@@ -157,7 +157,9 @@ export const FeedPostDefaultView: FC<{
       responsive
       noMargin
       headerChildren={
-        <BrandText style={fontSemibold20}>{headerLabel}</BrandText>
+        <BrandText style={[fontSemibold20, { width: "18%" }]} numberOfLines={1}>
+          {headerLabel}
+        </BrandText>
       }
       onBackPress={() =>
         post?.parentPostIdentifier
