@@ -2,26 +2,24 @@ import React, { FC } from "react";
 import { useWindowDimensions, View } from "react-native";
 
 import { DateTime } from "./DateTime";
-import { DEFAULT_NAME } from "../../../utils/social-feed";
 import { neutral77 } from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
+import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
-import { BrandText } from "../../BrandText";
 import { OmniLink } from "../../OmniLink";
 import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { UserAvatarWithFrame } from "../../images/AvatarWithFrame";
 import { DotSeparator } from "../../separators/DotSeparator";
 import { SpacerRow } from "../../spacer";
 
+import { UserDisplayName } from "@/components/user/UserDisplayName";
+import { Username } from "@/components/user/Username";
+
 // ====== Handle author image and username, date
 export const SocialCardHeader: FC<{
   authorId: string;
-  authorAddress: string;
   createdAt?: number;
-  authorMetadata?: any;
   isWrapped?: boolean;
-}> = ({ authorId, authorAddress, authorMetadata, createdAt, isWrapped }) => {
+}> = ({ authorId, createdAt, isWrapped }) => {
   const { width } = useWindowDimensions();
   return (
     <View
@@ -35,7 +33,6 @@ export const SocialCardHeader: FC<{
         <OmniLink
           to={{ screen: "UserPublicProfile", params: { id: authorId } }}
         >
-          {/*---- User image */}
           <UserAvatarWithFrame
             style={{
               marginRight:
@@ -57,15 +54,8 @@ export const SocialCardHeader: FC<{
           <OmniLink
             to={{ screen: "UserPublicProfile", params: { id: authorId } }}
           >
-            {/*---- User name */}
             <AnimationFadeIn>
-              <BrandText style={fontSemibold16} numberOfLines={1}>
-                {authorMetadata?.public_name ||
-                  (!authorMetadata?.tokenId
-                    ? DEFAULT_NAME
-                    : authorMetadata.tokenId.split(".")[0]) ||
-                  DEFAULT_NAME}
-              </BrandText>
+              <UserDisplayName userId={authorId} />
             </AnimationFadeIn>
           </OmniLink>
 
@@ -76,26 +66,17 @@ export const SocialCardHeader: FC<{
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             {width >= RESPONSIVE_BREAKPOINT_S && (
               <>
-                {/* ---- User TNS name*/}
-                <OmniLink
-                  to={{ screen: "UserPublicProfile", params: { id: authorId } }}
-                >
-                  <BrandText
-                    style={[
-                      fontSemibold14,
-                      {
-                        color: neutral77,
-                      },
-                    ]}
-                    numberOfLines={1}
-                  >
-                    {" "}
-                    @
-                    {authorMetadata?.tokenId
-                      ? authorMetadata.tokenId
-                      : tinyAddress(authorAddress, 19)}
-                  </BrandText>
-                </OmniLink>
+                <Username
+                  userId={authorId}
+                  namedColor={neutral77}
+                  anonColor={neutral77}
+                  textStyle={[
+                    fontSemibold14,
+                    {
+                      color: neutral77,
+                    },
+                  ]}
+                />
                 <DotSeparator
                   style={{ marginHorizontal: layout.spacing_x0_75 }}
                 />
@@ -111,17 +92,6 @@ export const SocialCardHeader: FC<{
           </View>
         </View>
       </View>
-
-      {/*---- Badges TODO: Handle this later */}
-      {/*{!!communityHashtag && (*/}
-      {/*  <DotBadge*/}
-      {/*    label={communityHashtag.hashtag}*/}
-      {/*    dotColor={communityHashtag.color}*/}
-      {/*    style={{*/}
-      {/*      backgroundColor: isPostConsultation ? neutral00 : neutral17,*/}
-      {/*    }}*/}
-      {/*  />*/}
-      {/*)}*/}
     </View>
   );
 };

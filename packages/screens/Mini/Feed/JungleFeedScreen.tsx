@@ -42,7 +42,7 @@ export const JungleFeedScreen = ({ req }: Props) => {
           {post.category === PostCategory.Article ? (
             <MiniSocialArticle post={post} refetchFeed={refetch} />
           ) : post.category === PostCategory.Video ? (
-            <MiniVideo post={post} refetchFeed={refetch} />
+            <MiniVideo post={post} />
           ) : (
             <MiniThread post={post} refetchFeed={refetch} isPreview />
           )}
@@ -85,7 +85,7 @@ export const JungleFeedScreen = ({ req }: Props) => {
         ListHeaderComponentStyle={{
           zIndex: 1,
         }}
-        keyExtractor={(post: Post, idx: number) => `${post.identifier}-${idx}`}
+        keyExtractor={(post: Post) => post.id}
         onEndReachedThreshold={4}
         onEndReached={onEndReached}
         refreshing={isFetching}

@@ -122,7 +122,7 @@ export default function MiniTextInput({
               fontMedium16,
               {
                 color: "#fff",
-                lineHeight: 0,
+                lineHeight: 18,
                 width: "100%",
               },
               inputStyle,

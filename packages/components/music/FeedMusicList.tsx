@@ -122,7 +122,7 @@ export const FeedMusicList: React.FC<{
           data={tracks}
           minElemWidth={minCardWidth}
           gap={gap}
-          keyExtractor={(item) => `track-${item.identifier}`}
+          keyExtractor={(item) => item.id}
           renderItem={({ item }, elemSize) => (
             <TrackCard post={item} style={{ width: elemSize }} />
           )}

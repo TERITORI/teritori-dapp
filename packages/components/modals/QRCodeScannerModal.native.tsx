@@ -25,17 +25,21 @@ export const QRCodeScannerModal = ({
 
   const onCodeScanned = useCallback(
     (codes: Code[]) => {
+      if (codes.length === 0) {
+        return;
+      }
       const data = codes[0]?.value;
-
       if (
         typeof data === "string" &&
         data.startsWith("https://app.teritori.com/")
       ) {
         onClose(data);
       } else {
+        onClose();
+
         setToast({
-          mode: "normal",
-          title: "QR Error",
+          mode: "mini",
+          type: "info",
           message: "QR is not of Teritori",
         });
       }
@@ -62,7 +66,14 @@ export const QRCodeScannerModal = ({
   }, [cameraPermissionStatus, requestCameraPermission]);
 
   return (
-    <ModalBase label="Scan QR" onClose={onClose} visible width={width}>
+    <ModalBase
+      label="Scan QR"
+      onClose={() => {
+        onClose();
+      }}
+      visible
+      width={width}
+    >
       <View
         style={{
           height: height - 180,
@@ -70,7 +81,7 @@ export const QRCodeScannerModal = ({
         }}
       >
         <>
-          {device !== undefined && (
+          {device !== undefined && cameraPermissionStatus === "granted" && (
             <Camera
               isActive
               device={device}
