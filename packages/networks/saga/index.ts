@@ -28,8 +28,8 @@ export const sagaNetwork: CosmosNetworkInfo = {
   icon: "https://raw.githubusercontent.com/cosmos/chain-registry/master/saga/images/saga.svg",
   testnet: false,
   backendEndpoint: "",
-  restEndpoint: "https://saga-mainnet-lcd.autostake.com:443",
-  rpcEndpoint: "https://rpc-saga.keplr.app",
+  restEndpoint: "https://saga-rest.publicnode.com",
+  rpcEndpoint: "https://saga-rpc.publicnode.com:443",
   stakeCurrency: "saga",
   gasPriceStep: {
     low: 0.01,
