@@ -8,10 +8,14 @@ import websiteSVG from "../../../assets/icons/website.svg";
 import { CollectionInfo } from "../../utils/collection";
 import { SocialButton } from "../buttons/SocialButton";
 
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { layout } from "@/utils/style/layout";
+
 export const CollectionSocialButtons: React.FC<{
   collectionInfo: CollectionInfo;
   hideMintButton?: boolean;
 }> = ({ collectionInfo, hideMintButton }) => {
+  const isMobile = useIsMobile();
   const {
     discord: discordLink,
     twitter: twitterLink,
@@ -19,7 +23,12 @@ export const CollectionSocialButtons: React.FC<{
     isMintable,
   } = collectionInfo;
 
-  const style: ViewStyle = { marginRight: 12, marginVertical: 2 };
+  const style: ViewStyle = {
+    marginRight: 12,
+    marginVertical: isMobile ? layout.spacing_x0_5 : 0,
+    height: 46,
+  };
+
   return (
     <>
       {isMintable && !hideMintButton && (
