@@ -4,7 +4,7 @@ import { getNav, screenTitle } from "./util";
 
 import { RiotGameBridgeScreen } from "@/screens/RiotGame/RiotGameBridgeScreen";
 
-const { Nav } = getNav("normal");
+const { Nav } = getNav(false);
 
 export const platformScreens: JSX.Element = (
   <>

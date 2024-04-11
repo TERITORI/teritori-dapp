@@ -601,7 +601,7 @@ export const NewsFeedInput = React.forwardRef<
                       MAX_IMAGES
                   }
                 />
-                {appMode !== "mini" && (
+                {isMiniMode && (
                   <>
                     <FileUploader
                       onUpload={(files) => setValue("files", [files?.[0]])}

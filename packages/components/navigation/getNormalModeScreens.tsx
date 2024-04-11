@@ -59,7 +59,6 @@ import NativeWallet from "@/screens/Wallet/Screens/NativeWallet";
 import { SuccessScreen } from "@/screens/Wallet/Screens/SucessScreen";
 import { WalletManagerScreen } from "@/screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "@/screens/WalletManager/WalletsScreen";
-import { AppMode } from "@/utils/types/app-mode";
 
 export const getNormalModeScreens = (isMiniMode: boolean) => {
   const { Nav } = getNav(isMiniMode);
