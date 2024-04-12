@@ -8,26 +8,26 @@ import { SVG } from "@/components/SVG";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetworkFeature, NetworkFeature } from "@/networks";
-import { LaunchpadMintPeriodAccordionForm } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintPeriodsForm/LaunchpadMintPeriodAccordionForm";
+import { LaunchpadMintPeriodAccordion } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/LaunchpadMintPeriodAccordion";
 import { secondaryColor } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { CollectionFormValues } from "@/utils/types/launchpad";
 
-export const MintPeriodsForm: FC = () => {
+export const LaunchpadMintPeriods: FC = () => {
   const selectedWallet = useSelectedWallet();
   const networkId = selectedWallet?.networkId || "";
   const collectionForm = useFormContext<CollectionFormValues>();
 
-  const mintPeriodsFieldArray = useFieldArray({
+  const { fields, update, append, remove } = useFieldArray({
     control: collectionForm.control,
     name: "mintPeriods",
   });
   const closeAll = useCallback(() => {
-    mintPeriodsFieldArray.fields.map((elem, index) => {
-      mintPeriodsFieldArray.update(index, { ...elem, isOpen: false });
+    fields.map((elem, index) => {
+      update(index, { ...elem, isOpen: false });
     });
-  }, [mintPeriodsFieldArray]);
+  }, [fields, update]);
 
   const createMintPeriod = useCallback(() => {
     closeAll();
@@ -35,13 +35,10 @@ export const MintPeriodsForm: FC = () => {
     if (!feature) {
       throw new Error("This network does not support nft launchpad");
     }
-    mintPeriodsFieldArray.append({
+    append({
       isOpen: true,
-      denom: "",
-      startTime: "",
-      unitPrice: "",
     });
-  }, [networkId, closeAll, mintPeriodsFieldArray]);
+  }, [networkId, closeAll, append]);
 
   return (
     <View
@@ -55,13 +52,13 @@ export const MintPeriodsForm: FC = () => {
           width: "100%",
         }}
       >
-        {mintPeriodsFieldArray.fields.map((elem, index) => {
+        {fields.map((elem, index) => {
           return (
             <Fragment key={index}>
               <SpacerColumn size={2} />
-              <LaunchpadMintPeriodAccordionForm
-                remove={mintPeriodsFieldArray.remove}
-                update={mintPeriodsFieldArray.update}
+              <LaunchpadMintPeriodAccordion
+                remove={remove}
+                update={update}
                 closeAll={closeAll}
                 elem={elem}
                 elemIndex={index}

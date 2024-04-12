@@ -6,7 +6,7 @@ import { GameBgCard } from "./component/GameBgCard";
 import { GameBgOverlay } from "./component/GameBgOverlay";
 import { RiotGameHeader } from "./component/RiotGameHeader";
 
-import { Metadata, WhitelistMintInfo } from "@/api/launchpad/v1/launchpad";
+import { Metadata } from "@/api/launchpad/v1/launchpad";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
@@ -29,38 +29,6 @@ export const RiotGameScreen = () => {
 
   const gotoEnroll = () => {
     navigation.navigate("RiotGameEnroll");
-  };
-
-  const updateWhitelists = async () => {
-    const client = mustGetLauchpadClient(networkId);
-    const whitelists: WhitelistMintInfo[] = [
-      {
-        addresses: ["addr1", "addr2", "addr3", "addr4", "add5"],
-        unitPrice: 1_000_000,
-        denom: "utori",
-        limitPerAddress: 2,
-        addressesCount: 5,
-        startTime: Date.now(),
-        endTime: Date.now(),
-      },
-      {
-        addresses: ["address2"],
-        unitPrice: 2_000_000,
-        denom: "utori",
-        limitPerAddress: 2,
-        addressesCount: 1,
-        startTime: Date.now(),
-        endTime: Date.now(),
-      },
-    ];
-
-    const res = await client.UpdateCollectionWhitelists({
-      sender: selectedWallet?.address,
-      networkId,
-      projectId: 1,
-      whitelistMintInfos: whitelists,
-    });
-    console.log(res);
   };
 
   const uploadMetadata = async () => {
@@ -125,7 +93,6 @@ export const RiotGameScreen = () => {
 
       <PrimaryButton text="Update tokens metadatas" onPress={uploadMetadata} />
       <PrimaryButton text="Get token metadata" onPress={getTokenMetadata} />
-      <PrimaryButton text="Update whitelists" onPress={updateWhitelists} />
 
       <View style={styles.positionRelative}>
         <FlatList

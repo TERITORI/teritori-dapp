@@ -2,24 +2,22 @@ import React from "react";
 import { useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
-import { SelectFileUploader } from "../../../../components/inputs/selectFileUploader";
 import { CollectionFormValues } from "../../../../utils/types/launchpad";
 
 import { BrandText } from "@/components/BrandText";
 import { NetworkSelectorWithLabel } from "@/components/NetworkSelector/NetworkSelectorWithLabel";
+import { FileUploader } from "@/components/inputs/fileUploader";
 import { SpacerColumn } from "@/components/spacer";
 import { NetworkFeature } from "@/networks";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { patternOnlyUrl } from "@/utils/formRules";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
-import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "@/utils/social-feed";
 import { neutral77, primaryColor } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const LaunchpadBasic: React.FC = () => {
   const collectionForm = useFormContext<CollectionFormValues>();
-  const coverImage = collectionForm.watch("coverImage");
 
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -74,20 +72,16 @@ export const LaunchpadBasic: React.FC = () => {
           control={collectionForm.control}
         />
 
-        <SelectFileUploader
-          files={coverImage ? [coverImage] : []}
+        <FileUploader
           label="Cover Image"
-          fileHeight={ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT}
-          isImageCover
           style={{
             marginBottom: layout.spacing_x2,
-            width: 416,
           }}
-          containerHeight={48}
           onUpload={(files) => {
             collectionForm.setValue("coverImage", files[0]);
           }}
           mimeTypes={IMAGE_MIME_TYPES}
+          required
         />
 
         <TextInputLaunchpad<CollectionFormValues>

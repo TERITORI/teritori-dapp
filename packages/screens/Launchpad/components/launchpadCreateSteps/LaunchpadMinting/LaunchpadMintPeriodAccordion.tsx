@@ -1,8 +1,8 @@
 import React, { FC } from "react";
 import { UseFieldArrayRemove, UseFieldArrayUpdate } from "react-hook-form";
 
-import { LaunchpadMintPeriodAccordionFormBottom } from "./LaunchpadMintPeriodAccordionFormBottom";
-import { LaunchpadMintPeriodAccordionFormTop } from "./LaunchpadMintPeriodAccordionFormTop";
+import { LaunchpadMintPeriodAccordionBottom } from "./LaunchpadMintPeriodAccordionBottom";
+import { LaunchpadMintPeriodAccordionTop } from "./LaunchpadMintPeriodAccordionTop";
 
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { neutral00, neutral22, neutral33 } from "@/utils/style/colors";
@@ -11,11 +11,11 @@ import {
   CollectionMintPeriodFormValues,
 } from "@/utils/types/launchpad";
 
-export const LaunchpadMintPeriodAccordionForm: FC<{
+export const LaunchpadMintPeriodAccordion: FC<{
   elem: CollectionMintPeriodFormValues;
   elemIndex: number;
   remove: UseFieldArrayRemove;
-  update: UseFieldArrayUpdate<CollectionFormValues>;
+  update: UseFieldArrayUpdate<CollectionFormValues, "mintPeriods">;
   closeAll: () => void;
 }> = ({ elem, elemIndex, remove, update, closeAll }) => {
   return (
@@ -26,7 +26,7 @@ export const LaunchpadMintPeriodAccordionForm: FC<{
         borderWidth: 1,
       }}
     >
-      <LaunchpadMintPeriodAccordionFormTop
+      <LaunchpadMintPeriodAccordionTop
         update={update}
         elem={elem}
         elemIndex={elemIndex}
@@ -34,7 +34,7 @@ export const LaunchpadMintPeriodAccordionForm: FC<{
       />
 
       {elem.isOpen && (
-        <LaunchpadMintPeriodAccordionFormBottom
+        <LaunchpadMintPeriodAccordionBottom
           update={update}
           remove={remove}
           elem={elem}

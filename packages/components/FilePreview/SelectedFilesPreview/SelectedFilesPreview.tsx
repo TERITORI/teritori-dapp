@@ -10,25 +10,29 @@ import { PrimaryBox } from "../../boxes/PrimaryBox";
 import { SpacerColumn } from "../../spacer";
 import { AssetsPagination } from "../AssetsPagination/AssetsPagination";
 
+import { DeleteButton } from "@/components/FilePreview/DeleteButton";
+import { layout } from "@/utils/style/layout";
+
 const RowSplitValue = 7;
 const itemsPerPage = 14; // Number of items to display per page
 
 export const SelectedFilesPreview: React.FC<{
-  assets: LocalFileData[];
-  onSelect: (item: LocalFileData) => void;
-}> = ({ assets, onSelect }) => {
+  files: LocalFileData[];
+  onPressItem: (file: LocalFileData, itemIndex: number) => void;
+  onPressDeleteItem: (itemIndex: number) => void;
+}> = ({ files, onPressItem, onPressDeleteItem }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPage, setTotalPage] = useState(1);
 
   useEffect(() => {
-    if (assets) {
-      setTotalPage(Math.ceil(assets.length / itemsPerPage));
+    if (files) {
+      setTotalPage(Math.ceil(files.length / itemsPerPage));
     }
-  }, [assets]);
+  }, [files]);
 
   const indexOfLastItem = currentPage * itemsPerPage + itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = assets.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = files.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <View
@@ -46,24 +50,38 @@ export const SelectedFilesPreview: React.FC<{
           <>
             <View style={{ flexDirection: "row" }}>
               {currentItems.slice(0, RowSplitValue).map((item, index) => (
-                <ItemView
-                  uri={URL.createObjectURL(item.file)}
-                  label={currentPage * itemsPerPage + index + 1}
-                  onPress={() => {
-                    onSelect(item);
-                  }}
-                />
+                <View key={index}>
+                  <DeleteButton
+                    onPress={() => onPressDeleteItem(index)}
+                    style={{ top: 12, right: 0 }}
+                  />
+                  <ItemView
+                    uri={URL.createObjectURL(item.file)}
+                    label={currentPage * itemsPerPage + index + 1}
+                    onPress={() => {
+                      onPressItem(item, index);
+                    }}
+                  />
+                </View>
               ))}
             </View>
             <View style={{ flexDirection: "row" }}>
               {currentItems.slice(RowSplitValue).map((item, index) => (
-                <ItemView
-                  uri={URL.createObjectURL(item.file)}
-                  label={currentPage * itemsPerPage + index + 1 + RowSplitValue}
-                  onPress={() => {
-                    onSelect(item);
-                  }}
-                />
+                <View key={index}>
+                  <DeleteButton
+                    onPress={() => onPressDeleteItem(index)}
+                    style={{ top: 12, right: 0 }}
+                  />
+                  <ItemView
+                    uri={URL.createObjectURL(item.file)}
+                    label={
+                      currentPage * itemsPerPage + index + 1 + RowSplitValue
+                    }
+                    onPress={() => {
+                      onPressItem(item, index);
+                    }}
+                  />
+                </View>
               ))}
             </View>
           </>
@@ -78,17 +96,19 @@ export const SelectedFilesPreview: React.FC<{
             }}
           >
             <BrandText style={[fontSemibold20, { color: neutral55 }]}>
-              Select assets to preview
+              Selected files preview
             </BrandText>
           </PrimaryBox>
         )}
       </View>
-      {assets.length > 0 && (
+
+      {files.length > 0 && (
         <View
           style={{
             justifyContent: "flex-end",
             alignItems: "flex-end",
             flex: 1,
+            marginTop: layout.spacing_x2,
           }}
         >
           <AssetsPagination

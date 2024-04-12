@@ -9,7 +9,7 @@ import { BrandText } from "@/components/BrandText";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
-import { MintPeriodsForm } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintPeriodsForm/MintPeriodsForm";
+import { LaunchpadMintPeriods } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/LaunchpadMintPeriods";
 import { patternOnlyNumbers } from "@/utils/formRules";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
@@ -68,7 +68,7 @@ export const LaunchpadMinting: React.FC = () => {
           Configure the minting periods, a whitelist can be applied
         </BrandText>
 
-        <MintPeriodsForm />
+        <LaunchpadMintPeriods />
 
         <SpacerColumn size={1} />
         <Separator />

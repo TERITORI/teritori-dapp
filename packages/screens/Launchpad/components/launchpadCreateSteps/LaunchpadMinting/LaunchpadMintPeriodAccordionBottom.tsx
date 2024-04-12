@@ -12,6 +12,8 @@ import { SVG } from "@/components/SVG";
 import { CsvTextFileUploader } from "@/components/inputs/CsvTextFileUploader";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { CurrencyInputLaunchpad } from "@/screens/Launchpad/components/inputs/CurrencyInputLaunchpad/CurrencyInputLaunchpad";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { patternOnlyNumbers } from "@/utils/formRules";
 import { errorColor, neutral55, neutral77 } from "@/utils/style/colors";
@@ -26,22 +28,22 @@ import {
   CollectionMintPeriodFormValues,
 } from "@/utils/types/launchpad";
 
-export const LaunchpadMintPeriodAccordionFormBottom: FC<{
+export const LaunchpadMintPeriodAccordionBottom: FC<{
   elem: CollectionMintPeriodFormValues;
-  update: UseFieldArrayUpdate<CollectionFormValues>;
+  update: UseFieldArrayUpdate<CollectionFormValues, "mintPeriods">;
   remove: UseFieldArrayRemove;
   elemIndex: number;
 }> = ({ elem, elemIndex, remove, update }) => {
+  // Since the Collection network is the selected network, we use useSelectedNetworkId (See LaunchpadBasic.tsx)
+  const networkId = useSelectedNetworkId();
   const collectionForm = useFormContext<CollectionFormValues>();
   // TODO: Handle this in collectionForm
-  const unitPriceKey = `mintPeriods.${elemIndex}.unitPrice` as const;
-  const denomKey = `mintPeriods.${elemIndex}.denom` as const;
-  const startTimeKey = `mintPeriods.${elemIndex}.startTime` as const;
-  const endTimeKey = `mintPeriods.${elemIndex}.endTime` as const;
-  const maxTokensKey = `mintPeriods.${elemIndex}.maxTokens` as const;
-  const perAddressLimitKey =
+  const startTimePath = `mintPeriods.${elemIndex}.startTime` as const;
+  const endTimePath = `mintPeriods.${elemIndex}.endTime` as const;
+  const maxTokensPath = `mintPeriods.${elemIndex}.maxTokens` as const;
+  const perAddressLimitPath =
     `mintPeriods.${elemIndex}.perAddressLimit` as const;
-  const mintingPeriods = collectionForm.watch("mintPeriods");
+  const mintPeriods = collectionForm.watch("mintPeriods");
 
   return (
     <View
@@ -52,41 +54,23 @@ export const LaunchpadMintPeriodAccordionFormBottom: FC<{
         paddingBottom: layout.spacing_x1,
       }}
     >
-      {/*TODO: Make an input "currency" that embeds denom + amount (used for unitPriceKey and denomKey here)*/}
-      <TextInputLaunchpad<CollectionFormValues>
-        label="Mint Price"
-        placeHolder="0"
-        name={unitPriceKey}
-        sublabel={
-          <View>
-            <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-              Mint price for this period
-            </BrandText>
-          </View>
+      <CurrencyInputLaunchpad
+        label="Mint Price and Currency"
+        networkId={networkId}
+        onSelectCurrency={(currency) =>
+          update(elemIndex, { ...elem, denom: currency.denom })
         }
-        control={collectionForm.control}
-        rules={{ pattern: patternOnlyNumbers }}
-        onChangeText={(text) => update(elemIndex, { ...elem, unitPrice: text })}
-      />
-      <TextInputLaunchpad<CollectionFormValues>
-        label="Mint Denom"
-        placeHolder="TORI"
-        name={denomKey}
-        sublabel={
-          <View>
-            <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-              Currency used for this mint period
-            </BrandText>
-          </View>
+        onChangeAmountAtomics={(amountAtomics) =>
+          update(elemIndex, { ...elem, unitPrice: amountAtomics })
         }
-        control={collectionForm.control}
       />
+      <SpacerColumn size={2} />
 
       {/*TODO: Make an input "number" that can be sync with CollectionFormValues without having to set onChangeText and value*/}
       <TextInputLaunchpad<CollectionFormValues>
         label="Max Tokens"
         placeHolder="0"
-        name={maxTokensKey}
+        name={maxTokensPath}
         sublabel={
           <View>
             <BrandText style={[fontSemibold13, { color: neutral55 }]}>
@@ -104,7 +88,7 @@ export const LaunchpadMintPeriodAccordionFormBottom: FC<{
       <TextInputLaunchpad<CollectionFormValues>
         label="Per Address Limit"
         placeHolder="0"
-        name={perAddressLimitKey}
+        name={perAddressLimitPath}
         sublabel={
           <View>
             <BrandText style={[fontSemibold13, { color: neutral55 }]}>
@@ -122,7 +106,7 @@ export const LaunchpadMintPeriodAccordionFormBottom: FC<{
       <TextInputLaunchpad<CollectionFormValues>
         label="Start Time"
         placeHolder="dd.mm.yyyy | hh:mm PM"
-        name={startTimeKey}
+        name={startTimePath}
         sublabel={
           <View>
             <BrandText style={[fontSemibold13, { color: neutral55 }]}>
@@ -136,7 +120,7 @@ export const LaunchpadMintPeriodAccordionFormBottom: FC<{
       <TextInputLaunchpad<CollectionFormValues>
         label="End Time"
         placeHolder="dd.mm.yyyy | hh:mm PM"
-        name={endTimeKey}
+        name={endTimePath}
         sublabel={
           <View>
             <BrandText style={[fontSemibold13, { color: neutral55 }]}>
@@ -172,43 +156,36 @@ export const LaunchpadMintPeriodAccordionFormBottom: FC<{
 
       {
         // Can remove periods only if more than one (There will be least one period left)
-        (elemIndex > 0 || mintingPeriods.length > 1) && (
+        (elemIndex > 0 || mintPeriods.length > 1) && (
           <>
             <SpacerColumn size={1} />
             <Separator />
             <SpacerColumn size={2} />
-            <View
+            <TouchableOpacity
               style={{
-                marginBottom: layout.spacing_x1,
+                flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "center",
+                height: 32,
+                paddingHorizontal: layout.spacing_x2,
+                borderRadius: 999,
+                borderWidth: 1,
+                borderColor: errorColor,
+                marginBottom: layout.spacing_x1,
               }}
+              onPress={() => remove(elemIndex)}
             >
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: 32,
-                  paddingHorizontal: layout.spacing_x2,
-                  borderRadius: 999,
-                  borderWidth: 1,
-                  borderColor: errorColor,
-                }}
-                onPress={() => remove(elemIndex)}
+              <SVG source={trashSVG} width={16} height={16} />
+              <SpacerRow size={1} />
+              <BrandText
+                style={[
+                  fontSemibold14,
+                  { color: errorColor, lineHeight: layout.spacing_x2 },
+                ]}
               >
-                <SVG source={trashSVG} width={16} height={16} />
-                <SpacerRow size={1} />
-                <BrandText
-                  style={[
-                    fontSemibold14,
-                    { color: errorColor, lineHeight: layout.spacing_x2 },
-                  ]}
-                >
-                  Remove Minting Period
-                </BrandText>
-              </TouchableOpacity>
-            </View>
+                Remove Mint Period
+              </BrandText>
+            </TouchableOpacity>
           </>
         )
       }

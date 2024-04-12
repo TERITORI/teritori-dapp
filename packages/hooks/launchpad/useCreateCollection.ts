@@ -4,23 +4,27 @@ import { useCallback } from "react";
 import { useSelector } from "react-redux";
 
 import {
+  Metadata,
+  UpdateTokensMetadatasResponse,
+} from "@/api/launchpad/v1/launchpad";
+import {
   Collection,
   MintPeriod,
   NftLaunchpadClient,
 } from "@/contracts-clients/nft-launchpad";
 import { PinataFileProps, useIpfs } from "@/hooks/useIpfs";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import {
-  getNetworkFeature,
-  mustGetCosmosNetwork,
-  NetworkFeature,
-} from "@/networks";
+import { getNetworkFeature, NetworkFeature } from "@/networks";
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
+import { mustGetLauchpadClient } from "@/utils/backend";
 import { generateIpfsKey } from "@/utils/ipfs";
 import { CollectionFormValues } from "@/utils/types/launchpad";
 
 export const useCreateCollection = () => {
+  // Since the Collection network is the selected network, we use useSelectedNetworkId (See LaunchpadBasic.tsx)
+  const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
 
   const userIPFSKey = useSelector(selectNFTStorageAPI);
@@ -29,25 +33,25 @@ export const useCreateCollection = () => {
   const createCollection = useCallback(
     async (collectionFormValues: CollectionFormValues) => {
       if (!selectedWallet) return;
-      const network = mustGetCosmosNetwork(selectedWallet.networkId);
-      const signingComswasmClient = await getKeplrSigningCosmWasmClient(
-        network.id,
-      );
+      const signingComswasmClient =
+        await getKeplrSigningCosmWasmClient(selectedNetworkId);
       const cosmwasmLaunchpadFeature = getNetworkFeature(
-        network.id,
+        selectedNetworkId,
         NetworkFeature.NFTLaunchpad,
       );
       if (!cosmwasmLaunchpadFeature) return;
-      const denom = cosmwasmLaunchpadFeature.defaultMintDenom;
+      const defaultMintDenom = cosmwasmLaunchpadFeature.defaultMintDenom;
 
-      const client = new NftLaunchpadClient(
+      const launchpadClient = mustGetLauchpadClient(selectedWallet.networkId);
+
+      const nftLaunchpadClient = new NftLaunchpadClient(
         signingComswasmClient,
         selectedWallet.address,
         cosmwasmLaunchpadFeature.launchpadContractAddress,
       );
       const pinataJWTKey =
         userIPFSKey ||
-        (await generateIpfsKey(network.id, selectedWallet.userId));
+        (await generateIpfsKey(selectedNetworkId, selectedWallet.userId));
       if (!pinataJWTKey) {
         console.error("upload file err : No Pinata JWT");
         // setToastError({
@@ -79,15 +83,16 @@ export const useCreateCollection = () => {
             const merkleRoot = tree.getRoot().toString("hex");
 
             const mintPeriod: MintPeriod = {
-              denom,
-              // TODO: Remove all parseInt(String()) usages, it's just for tests.
-              //  We could : Get true numbers (and not strings even if the type is number), or get only strings and parse. First choice is better IMO
+              price: {
+                denom: whitelist.denom || defaultMintDenom,
+                amount: whitelist.unitPrice || "0",
+              },
+              // TODO: Remove all parseInt(String()) usages and use a number input ?
               end_time: parseInt(String(whitelist.endTime), 10) || 0,
               max_tokens: parseInt(String(whitelist.maxTokens), 10) || 0,
               limit_per_address:
                 parseInt(String(whitelist.perAddressLimit), 10) || 0,
               start_time: parseInt(String(whitelist.startTime), 10) || 0,
-              unit_price: whitelist.unitPrice || "0",
               whitelist_info: {
                 addresses_count: addresses.length,
                 addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
@@ -99,8 +104,30 @@ export const useCreateCollection = () => {
         );
 
         // ========== Metadata
-        //TODO: Upload images on IPFS, fill Metadata form with text
-        //TODO: UpdateTokensMetadatas, fill Collection form with merkleRoot
+        const metadatas: Metadata[] = collectionFormValues.assetsMetadatas.map(
+          (metadata) => {
+            return {
+              image: "", //TODO:
+              imageData: "",
+              externalUrl: metadata.externalUrl,
+              description: metadata.description,
+              name: metadata.name,
+              youtubeUrl: metadata.youtubeUrl,
+              attributes: [],
+              backgroundColor: "",
+              animationUrl: "",
+              royaltyPercentage: 5,
+              royaltyPaymentAddress: "",
+            };
+          },
+        );
+        const { merkleRoot }: UpdateTokensMetadatasResponse =
+          await launchpadClient.UpdateTokensMetadatas({
+            sender: selectedWallet.address,
+            projectId: 1, //TODO:
+            networkId: selectedNetworkId,
+            metadatas,
+          });
 
         // ========== Final collection
         const collection: Collection = {
@@ -153,20 +180,20 @@ export const useCreateCollection = () => {
             parseInt(String(collectionFormValues.daoWhitelistCount), 10) || 0,
 
           mint_periods,
-          metadatas_merkle_root: "TODO",
+          metadatas_merkle_root: merkleRoot,
 
           royalty_address: collectionFormValues.royaltyAddress || "",
           royalty_percentage:
             parseInt(String(collectionFormValues.royaltyPercentage), 10) || 0,
 
-          target_network: network.id,
+          target_network: selectedNetworkId,
           deployed_address: "None",
           whitepaper_link: "None",
           base_token_uri: "None",
         };
 
         // ========== Submit the collection
-        const result = await client.submitCollection({
+        const result = await nftLaunchpadClient.submitCollection({
           collection,
         });
         console.log("======== createCollection result", result);
@@ -179,7 +206,13 @@ export const useCreateCollection = () => {
         console.error("Error creating a NFT Collection in the Launchpad ", e);
       }
     },
-    [pinataPinFileToIPFS, selectedWallet, userIPFSKey, uploadFilesToPinata],
+    [
+      pinataPinFileToIPFS,
+      selectedWallet,
+      userIPFSKey,
+      uploadFilesToPinata,
+      selectedNetworkId,
+    ],
   );
 
   return {

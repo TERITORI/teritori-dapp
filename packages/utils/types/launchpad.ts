@@ -40,22 +40,28 @@ export interface CollectionFormValues {
   mintPeriods: CollectionMintPeriodFormValues[];
   royaltyAddress?: string;
   royaltyPercentage?: number;
+  assetsMetadatas: CollectionAssetsMetadataFormValues[];
 }
 
 export interface CollectionMintPeriodFormValues {
   unitPrice?: Uint128;
-  denom: string;
+  denom?: string;
   maxTokens?: number;
   perAddressLimit?: number;
-  startTime: string;
+  startTime?: string;
   endTime?: string;
   whitelistAddressesFile?: LocalFileData;
   whitelistAddresses?: string[];
   isOpen: boolean;
 }
 
-export interface NewCollectionAssetsFormValues {
-  nftApiKey?: string;
+export interface CollectionAssetsMetadataFormValues {
+  image?: LocalFileData;
+  externalUrl?: string;
+  description?: string;
+  name?: string;
+  youtubeUrl?: string;
+  attributes?: string;
 }
 
 export interface NewMetadataDetailsFormValues {

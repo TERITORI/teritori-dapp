@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { ExistingBaseUrlFormValues } from "../../../utils/types/launchpad";
+import { ExistingBaseUrlFormValues } from "../../../../../utils/types/launchpad";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";

@@ -11,7 +11,7 @@ import { useCreateCollection } from "@/hooks/launchpad/useCreateCollection";
 import { NetworkFeature } from "@/networks";
 import { LaunchpadSteper } from "@/screens/Launchpad/components/LaunchpadSteper";
 import { LaunchpadAdditional } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadAdditional";
-import { LaunchpadAssetsAndMetadata } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadAssetsAndMetadata";
+import { LaunchpadAssetsAndMetadata } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadAssetsAndMetadata/LaunchpadAssetsAndMetadata";
 import { LaunchpadBasic } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadBasic";
 import { LaunchpadDetails } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadDetails";
 import { LaunchpadMinting } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/LaunchpadMinting";
@@ -92,6 +92,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
       noScroll={false}
       footerChildren={<></>}
       forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+      forceNetworkId="teritori-testnet"
       headerChildren={<BrandText>Launchpad Submission Form</BrandText>}
       onBackPress={() => navigation.navigate("LaunchpadApply")}
     >

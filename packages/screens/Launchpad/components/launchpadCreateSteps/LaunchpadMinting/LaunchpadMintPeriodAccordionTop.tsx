@@ -16,10 +16,10 @@ import {
   CollectionMintPeriodFormValues,
 } from "@/utils/types/launchpad";
 
-export const LaunchpadMintPeriodAccordionFormTop: FC<{
+export const LaunchpadMintPeriodAccordionTop: FC<{
   elem: CollectionMintPeriodFormValues;
   elemIndex: number;
-  update: UseFieldArrayUpdate<CollectionFormValues>;
+  update: UseFieldArrayUpdate<CollectionFormValues, "mintPeriods">;
   closeAll: () => void;
 }> = ({ elem, elemIndex, update, closeAll }) => {
   if (elem.isOpen) {
