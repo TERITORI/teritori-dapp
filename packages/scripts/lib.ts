@@ -6,17 +6,38 @@ import util from "util";
 import { z } from "zod";
 
 import {
-  GrpcWebImpl,
+  GrpcWebImpl as MarketplaceGrpcWebImpl,
   MarketplaceServiceClientImpl,
-} from "../api/marketplace/v1/marketplace";
-import { getNetwork } from "../networks";
+} from "@/api/marketplace/v1/marketplace";
+import {
+  GrpcWebImpl as MultisigGrpcWebImpl,
+  MultisigServiceClientImpl,
+} from "@/api/multisig/v1/multisig";
+import { getNetwork } from "@/networks";
+
+export const mustGetNodeMultisigClient = (networkId: string | undefined) => {
+  const network = getNetwork(networkId);
+  let endpoint = process.env.MULTISIG_BACKEND_URL;
+  if (!endpoint) {
+    if (network?.testnet) {
+      endpoint = "https://multisig.testnet.teritori.com";
+    } else {
+      endpoint = "https://multisig.mainnet.teritori.com";
+    }
+  }
+  const rpc = new MultisigGrpcWebImpl(endpoint, {
+    transport: NodeHttpTransport(),
+    debug: false,
+  });
+  return new MultisigServiceClientImpl(rpc);
+};
 
 export const mustGetNodeMarketplaceClient = (networkId: string) => {
   const network = getNetwork(networkId);
   if (!network) {
     throw new Error("network not found");
   }
-  const rpc = new GrpcWebImpl(network.backendEndpoint, {
+  const rpc = new MarketplaceGrpcWebImpl(network.backendEndpoint, {
     transport: NodeHttpTransport(),
     debug: false,
     // metadata: new grpc.Metadata({ SomeHeader: "bar" }),

@@ -7,7 +7,7 @@ import { useMultisigClient } from "./useMultisigClient";
 
 import { ExecutionState, Transaction } from "@/api/multisig/v1/multisig";
 import { getCosmosNetwork, parseUserId } from "@/networks";
-import { cosmosTypesRegistry } from "@/networks/signer";
+import { cosmosTypesRegistry } from "@/networks/cosmos-types";
 
 const batchSize = 16;
 
@@ -62,6 +62,13 @@ export const useMultisigTransactions = (
       };
 
       const { transactions: txs } = await client.Transactions(req);
+      try {
+        console.log(
+          Buffer.from(txs[0].signatures[0].bodyBytes).toString("utf-8"),
+        );
+      } catch (e) {
+        console.error(e);
+      }
 
       const parsedTxs: ParsedTransaction[] = [];
       for (const tx of txs) {
