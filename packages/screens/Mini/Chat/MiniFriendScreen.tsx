@@ -32,7 +32,7 @@ import {
   activateGroup,
   sendMessage,
 } from "../../../weshnet/services";
-import { bytesFromString } from "../../../weshnet/utils";
+import { bytesFromString, stringFromBytes } from "../../../weshnet/utils";
 import { ChatAvatar } from "../components/ChatAvatar";
 import MiniTextInput from "../components/MiniTextInput";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
@@ -43,6 +43,7 @@ import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { RoundedTabs } from "@/components/tabs/RoundedTabs";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { subscribeMessages } from "@/weshnet/message/subscriber";
 
 const miniFriendTabItems = {
   requests: {
@@ -161,6 +162,7 @@ function FriendRequest({ isOnline, data }: Props) {
       const contactPk = bytesFromString(data?.contactId);
       await acceptFriendRequest(contactPk);
       const groupInfo = await activateGroup({ contactPk });
+      subscribeMessages(stringFromBytes(groupInfo?.group?.publicKey));
       await sendMessage({
         groupPk: groupInfo?.group?.publicKey,
         message: {
@@ -168,7 +170,7 @@ function FriendRequest({ isOnline, data }: Props) {
         },
       });
 
-      navigation.replace("Conversation", { conversationId: data?.id });
+      navigation.replace("MiniTabs", { screen: "MiniChats" });
       setToast({
         mode: "mini",
         message: "Successfully Added Friend.",
