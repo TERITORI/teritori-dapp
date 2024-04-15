@@ -8,6 +8,7 @@ import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SecondaryButton } from "@/components/buttons/SecondaryButton";
 import { SpacerColumn } from "@/components/spacer";
 import { useCreateCollection } from "@/hooks/launchpad/useCreateCollection";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
 import { LaunchpadSteper } from "@/screens/Launchpad/components/LaunchpadSteper";
 import { LaunchpadAdditional } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadAdditional";
@@ -53,13 +54,13 @@ const stepOptions = [
 
 export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const navigation = useAppNavigation();
+  const selectedNetwork = useSelectedNetworkInfo();
   const collectionForm = useForm<CollectionFormValues>({
     mode: "all",
     defaultValues: {
       mintPeriods: [
         {
-          //TODO: default denom and start time here
-          denom: "",
+          denom: selectedNetwork?.currencies[0].denom,
           startTime: "",
           isOpen: true,
         },

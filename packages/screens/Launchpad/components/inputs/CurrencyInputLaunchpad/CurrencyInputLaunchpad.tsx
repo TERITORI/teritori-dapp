@@ -1,5 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import React, { FC, Fragment, useEffect, useRef, useState } from "react";
+import React, { FC, Fragment, useRef, useState } from "react";
 import { StyleProp, TextInput, View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
@@ -14,7 +14,6 @@ import {
   CurrencyInfo,
   getNativeCurrency,
   getNetwork,
-  MinMaxedCurrency,
 } from "@/networks";
 import { SelectableCurrencySmall } from "@/screens/Launchpad/components/inputs/CurrencyInputLaunchpad/SelectableCurrencySmall";
 import { SelectedCurrencySmall } from "@/screens/Launchpad/components/inputs/CurrencyInputLaunchpad/SelectedCurrencySmall";
@@ -37,7 +36,7 @@ export const CurrencyInputLaunchpad: FC<{
   required?: boolean;
   error?: string;
   networkId: string;
-  onSelectCurrency: (currency: MinMaxedCurrency) => void;
+  onSelectCurrency: (currency: CurrencyInfo) => void;
   onChangeAmountAtomics: (amountAtomics: string) => void;
   boxStyle?: StyleProp<BoxStyle>;
 }> = ({
@@ -54,7 +53,9 @@ export const CurrencyInputLaunchpad: FC<{
 }) => {
   const network = getNetwork(networkId);
   const currencies: CurrencyInfo[] = network?.currencies || [];
-  const [selectedCurrency, setSelectedCurrency] = useState(currencies[0]);
+  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyInfo>(
+    currencies[0],
+  );
   const [value, setValue] = useState("");
 
   const inputRef = useRef<TextInput>(null);
@@ -94,16 +95,12 @@ export const CurrencyInputLaunchpad: FC<{
     }
   };
 
-  const onPressSelectableCurrency = (currency: MinMaxedCurrency) => {
+  const onPressSelectableCurrency = (currency: CurrencyInfo) => {
     setValue("");
     setSelectedCurrency(currency);
     onChangeAmountAtomics("");
     setDropdownState(false);
   };
-
-  useEffect(() => {
-    onSelectCurrency(selectedCurrency);
-  }, [selectedCurrency, onSelectCurrency]);
 
   if (!selectedCurrencyNetwork) return <BrandText>Invalid network</BrandText>;
   if (!selectedNativeCurrency)
