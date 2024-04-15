@@ -48,6 +48,9 @@ const browserRoutes = [
   },
 ];
 
+const urlPattern: RegExp =
+  /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*\/?$/i;
+
 function WebViewHeader({
   searchInput,
   onChange,
@@ -61,11 +64,10 @@ function WebViewHeader({
 
   function onSubmit() {
     if (hasNoDapps) {
-      const urlPattern: RegExp =
-        /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?/g;
       if (urlPattern.test(searchInput)) {
         const url =
-          searchInput.search("https") !== -1
+          searchInput.search("https") !== -1 ||
+          searchInput.search("http") !== -1
             ? searchInput
             : "https://" + searchInput;
         navigation.navigate("BrowserDetail", {
@@ -261,8 +263,6 @@ function BrowserSearch({ searchedItem }: { searchedItem: string }) {
   return (
     <ListView
       onPress={() => {
-        const urlPattern: RegExp =
-          /(https?:\/\/)?(www\.)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})+\/[a-zA-Z0-9]{2,}/g;
         if (urlPattern.test(searchedItem)) {
           const url =
             searchedItem.search("https") !== -1
