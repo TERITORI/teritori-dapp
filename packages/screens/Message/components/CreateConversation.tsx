@@ -43,11 +43,14 @@ export const CreateConversation = ({ onClose }: CreateConversationProps) => {
 
     try {
       await weshServices.addContact(link, contactInfo);
+
+      // if (item) {
       setToastSuccess({
         title: "Request sent",
         message: "Contact Request sent successfully",
       });
       onClose();
+      // }
     } catch (err: any) {
       setError(err?.message);
       setToastError({

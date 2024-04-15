@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { grpc } from "@improbable-eng/grpc-web";
+import { AxiosError } from "axios";
 import { BrowserHeaders } from "browser-headers";
 import Long from "long";
 import _m0 from "protobufjs/minimal";
@@ -14551,12 +14552,12 @@ export class ProtocolServiceClientImpl implements ProtocolService {
   GroupMessageList(
     request: DeepPartial<GroupMessageList_Request>,
     metadata?: grpc.Metadata,
-  ): Observable<GroupMessageEvent> {
-    return this.rpc.invoke(
-      ProtocolServiceGroupMessageListDesc,
-      GroupMessageList_Request.fromPartial(request),
-      metadata,
-    );
+  ): Observable<GroupMessageEvent> | any {
+      return this.rpc.invoke(
+        ProtocolServiceGroupMessageListDesc,
+        GroupMessageList_Request.fromPartial(request),
+        metadata,
+      );
   }
 
   GroupInfo(request: DeepPartial<GroupInfo_Request>, metadata?: grpc.Metadata): Promise<GroupInfo_Reply> {

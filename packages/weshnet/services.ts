@@ -142,17 +142,16 @@ export const afterWeshnetConnectionAction = async () => {
       }),
     );
 
-    setTimeout(() => {
-      subscribeMetadata(weshConfig.config?.accountGroupPk);
-    }, 1000);
+    subscribeMetadata(weshConfig.config?.accountGroupPk);
 
     getAndUpdatePeerList();
+    // const getPeerListIntervalId = setInterval(() => {
+    //   getAndUpdatePeerList();
+    // }, 30 * 1000);
+
     // if (getPeerListIntervalId) {
     //   clearInterval(getPeerListIntervalId);
     // }
-    // getPeerListIntervalId = setInterval(() => {
-    //   getAndUpdatePeerList();
-    // }, 30 * 1000);
   } catch (err) {
     console.error("create config err", err);
   }
@@ -170,12 +169,7 @@ const bootSubscribeMessages = () => {
   // console.log(conversations);
 
   conversations.forEach((item, i) => {
-    setTimeout(
-      () => {
-        subscribeMessages(item.id);
-      },
-      (i + 1) * 1600,
-    );
+    subscribeMessages(item.id);
   });
 };
 
@@ -343,12 +337,70 @@ export const addContact = async (
         },
       }),
     });
+
+    const groupInfo = await weshClient.client.GroupInfo({
+      groupPk: contactPk,
+    });
+
+    console.log(groupInfo);
+
+    weshClient.client.ActivateGroup({
+      groupPk: groupInfo.group?.publicKey,
+    });
+    // weshClient.client.AppMessageSend({
+    //   groupPk: groupInfo.group?.publicKey,
+    //   payload: encodeJSON({
+    //     ...{
+    //       type: "contact-request",
+    //       payload: {
+    //         message: "Friend request",
+    //       },
+    //     },
+    //     timestamp: new Date().toISOString(),
+    //     senderId: stringFromBytes(weshConfig.config?.accountPk),
+    //   }),
+    // });
+
+    // sleep(5000).then(() => {
+    //   activateGroupWithSend(
+    //     decodeURIComponent(url?.searchParams.get("accountPk") || ""),
+    //   );
+    // });
   } catch (err: any) {
     if (!err?.message?.includes("ErrContactRequestContactAlreadyAdded")) {
       throw err;
     }
   }
 };
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function activateGroupWithSend(contactPk: string) {
+  const groupInfo = await weshClient.client.GroupInfo({
+    groupPk: bytesFromString(contactPk),
+  });
+
+  if (groupInfo) {
+    await weshClient.client.ActivateGroup({
+      groupPk: groupInfo.group?.publicKey,
+    });
+    weshClient.client.AppMessageSend({
+      groupPk: groupInfo.group?.publicKey,
+      payload: encodeJSON({
+        ...{
+          type: "contact-request",
+          payload: {
+            message: "Friend request",
+          },
+        },
+        timestamp: new Date().toISOString(),
+        senderId: stringFromBytes(weshConfig.config?.accountPk),
+      }),
+    });
+  }
+}
 
 export const acceptFriendRequest = async (contactPk: Uint8Array) => {
   try {

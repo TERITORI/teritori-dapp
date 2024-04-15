@@ -159,14 +159,16 @@ function FriendRequest({ isOnline, data }: Props) {
       const contactPk = bytesFromString(data?.contactId);
       const groupInfo = await acceptFriendRequest(contactPk);
 
-      await sendMessage({
-        groupPk: groupInfo?.group?.publicKey,
-        message: {
-          type: "accept-contact",
-        },
-      });
+      subscribeMessages(stringFromBytes(groupInfo?.group?.publicKey));
 
-      navigation.replace("Conversation", { conversationId: data?.id });
+      // await sendMessage({
+      //   groupPk: groupInfo?.group?.publicKey,
+      //   message: {
+      //     type: "accept-contact",
+      //   },
+      // });
+
+      // navigation.replace("Conversation", { conversationId: data?.id });
       setToast({
         mode: "mini",
         message: "Successfully Added Friend.",

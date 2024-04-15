@@ -31,6 +31,8 @@ export const processMessage = async (
       groupId: groupPk,
     });
 
+    console.log(decodedMessage);
+
     const message: StoreMessage = {
       id: stringFromBytes(data.eventContext?.id),
       ...decodedMessage,

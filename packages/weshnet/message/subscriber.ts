@@ -12,9 +12,35 @@ export const subscribeMessages = async (
   ignoreDuplication?: boolean,
 ) => {
   try {
-    await weshClient.client.ActivateGroup({
+    const activateGroup = await weshClient.client.ActivateGroup({
       groupPk: bytesFromString(groupPk),
     });
+
+    if (typeof activateGroup === "object") {
+      console.log("groupPk", groupPk);
+      const messages = weshClient.client.GroupMessageList({
+        groupPk: bytesFromString(groupPk),
+      });
+
+      // console.log(messages);
+      const observer = {
+        next: (data: GroupMessageEvent) => {
+          try {
+            processMessage(data, groupPk);
+          } catch (err) {
+            console.error("subscribe message next err:", err);
+          }
+        },
+        error: (e: any) => {
+          console.error("get message err", e);
+        },
+        complete: () => {
+          console.log("complete");
+        },
+      };
+
+      messages.subscribe(observer);
+    }
     // const messages = weshClient.client.GroupMessageList(config);
     // console.log('groupPK', groupPk);
     // const groupInfo = weshClient.client.GroupDeviceStatus({ groupPk: bytesFromString(groupPk) });
@@ -38,33 +64,6 @@ export const subscribeMessages = async (
     //   }
     // }
     // groupInfo.subscribe(groupInfoObserver);bytesFromString(
-    console.log("groupPk", groupPk);
-    const messages = weshClient.client.GroupMessageList({
-      groupPk: bytesFromString(groupPk),
-    });
-
-    const newInfo = await weshClient.client.DebugGroup({
-      groupPk: bytesFromString(groupPk),
-    });
-    console.log("new info", newInfo);
-    const observer = {
-      next: (data: GroupMessageEvent) => {
-        try {
-          console.log("message", data);
-          processMessage(data, groupPk);
-        } catch (err) {
-          console.error("subscribe message next err:", err);
-        }
-      },
-      error: (e: any) => {
-        console.error("get message err", e);
-      },
-      complete: () => {
-        console.log("complete");
-      },
-    };
-
-    messages.subscribe(observer);
 
     // messageSubscriptions.push(subscription);
   } catch (err) {
