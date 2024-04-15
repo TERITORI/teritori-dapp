@@ -19,10 +19,8 @@ import {
   parseUserId,
   UserKind,
 } from "@/networks";
-import {
-  cosmosTypesRegistry,
-  getKeplrSigningStargateClient,
-} from "@/networks/signer";
+import { cosmosTypesRegistry } from "@/networks/cosmos-types";
+import { getKeplrSigningStargateClient } from "@/networks/signer";
 import { AppNavigationProp, useAppNavigation } from "@/utils/navigation";
 
 export const useRunOrProposeTransaction = (

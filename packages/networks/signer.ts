@@ -1,21 +1,10 @@
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import {
-  createWasmAminoConverters,
-  wasmTypes,
-} from "@cosmjs/cosmwasm-stargate/build/modules";
-import { Registry } from "@cosmjs/proto-signing";
-import {
-  AminoTypes,
-  createDefaultAminoConverters,
-  defaultRegistryTypes,
-  SigningStargateClient,
-} from "@cosmjs/stargate";
+import { SigningStargateClient } from "@cosmjs/stargate";
+import { KeplrSignOptions } from "@keplr-wallet/types";
 import { Platform } from "react-native";
 
-import {
-  teritoriAminoConverters,
-  teritoriProtoRegistry,
-} from "@/api/teritori-chain";
+import { cosmosTypesRegistry, cosmosAminoTypes } from "./cosmos-types";
+
 import {
   cosmosNetworkGasPrice,
   keplrChainInfoFromNetworkInfo,
@@ -24,16 +13,6 @@ import {
 import { convertKeplrSigner, getKeplr } from "@/utils/keplr";
 import { getNativeWallet } from "@/utils/wallet/getNativeWallet";
 
-export const cosmosTypesRegistry = new Registry([
-  ...defaultRegistryTypes,
-  ...wasmTypes,
-  ...teritoriProtoRegistry,
-]);
-const cosmosAminoTypes = new AminoTypes({
-  ...createDefaultAminoConverters(),
-  ...createWasmAminoConverters(),
-  ...teritoriAminoConverters,
-});
 export const getKeplrSigner = async (networkId: string) => {
   const network = mustGetCosmosNetwork(networkId);
 
@@ -47,7 +26,11 @@ export const getKeplrSigner = async (networkId: string) => {
 
   return convertKeplrSigner(keplrSigner);
 };
-const getKeplrOnlyAminoSigner = async (networkId: string) => {
+
+export const getKeplrOnlyAminoSigner = async (
+  networkId: string,
+  signOptions?: KeplrSignOptions,
+) => {
   const network = mustGetCosmosNetwork(networkId);
 
   const keplr = getKeplr();
@@ -56,8 +39,9 @@ const getKeplrOnlyAminoSigner = async (networkId: string) => {
 
   await keplr.enable(network.chainId);
 
-  return keplr.getOfflineSignerOnlyAmino(network.chainId);
+  return keplr.getOfflineSignerOnlyAmino(network.chainId, signOptions);
 };
+
 export const getKeplrSigningStargateClient = async (
   networkId: string,
   gasPriceKind: "low" | "average" | "high" = "average",
@@ -81,29 +65,7 @@ export const getKeplrSigningStargateClient = async (
     },
   );
 };
-export const getKeplrOnlyAminoStargateClient = async (
-  networkId: string,
-  gasPriceKind: "low" | "average" | "high" = "average",
-) => {
-  const network = mustGetCosmosNetwork(networkId);
 
-  const gasPrice = cosmosNetworkGasPrice(network, gasPriceKind);
-  if (!gasPrice) {
-    throw new Error("gas price not found");
-  }
-
-  const signer = await getKeplrOnlyAminoSigner(networkId);
-
-  return await SigningStargateClient.connectWithSigner(
-    network.rpcEndpoint,
-    signer,
-    {
-      gasPrice,
-      registry: cosmosTypesRegistry,
-      aminoTypes: cosmosAminoTypes,
-    },
-  );
-};
 export const getKeplrSigningCosmWasmClient = async (
   networkId: string,
   gasPriceKind: "low" | "average" | "high" = "average",
