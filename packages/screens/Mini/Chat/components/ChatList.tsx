@@ -129,14 +129,11 @@ const SingleFriendChatList = ({ data, onPress }: SingleChatListType) => {
     onPress();
   };
 
-  const conversationMembers =
-    conversation &&
-    conversation?.members &&
-    Array.isArray(conversation?.members)
-      ? conversation?.members?.map((_, index) =>
-          getConversationAvatar(conversation, index),
-        )
-      : [""];
+  const conversationMembers = Array.isArray(conversation?.members)
+    ? conversation?.members?.map((_, index) =>
+        getConversationAvatar(conversation, index),
+      )
+    : [""];
 
   return (
     <CustomPressable
