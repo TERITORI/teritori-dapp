@@ -7,6 +7,7 @@ import {
   Metadata,
   UpdateTokensMetadatasResponse,
 } from "@/api/launchpad/v1/launchpad";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
   Collection,
   MintPeriod,
@@ -26,7 +27,7 @@ export const useCreateCollection = () => {
   // Since the Collection network is the selected network, we use useSelectedNetworkId (See LaunchpadBasic.tsx)
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
-
+  const { setToast } = useFeedbacks();
   const userIPFSKey = useSelector(selectNFTStorageAPI);
   const { pinataPinFileToIPFS, uploadFilesToPinata } = useIpfs();
 
@@ -40,7 +41,7 @@ export const useCreateCollection = () => {
         NetworkFeature.NFTLaunchpad,
       );
       if (!cosmwasmLaunchpadFeature) return;
-      const defaultMintDenom = cosmwasmLaunchpadFeature.defaultMintDenom;
+      // const defaultMintDenom = cosmwasmLaunchpadFeature.defaultMintDenom;
 
       const launchpadClient = mustGetLauchpadClient(selectedWallet.networkId);
 
@@ -54,10 +55,11 @@ export const useCreateCollection = () => {
         (await generateIpfsKey(selectedNetworkId, selectedWallet.userId));
       if (!pinataJWTKey) {
         console.error("upload file err : No Pinata JWT");
-        // setToastError({
-        //   title: "File upload failed",
-        //   message: "No Pinata JWT",
-        // });
+        setToast({
+          mode: "normal",
+          type: "error",
+          title: "Files upload failed",
+        });
         return;
       }
 
@@ -83,16 +85,17 @@ export const useCreateCollection = () => {
             const merkleRoot = tree.getRoot().toString("hex");
 
             const mintPeriod: MintPeriod = {
-              price: {
-                denom: whitelist.denom || defaultMintDenom,
-                amount: whitelist.unitPrice || "0",
-              },
-              // TODO: Remove all parseInt(String()) usages and use a number input ?
-              end_time: parseInt(String(whitelist.endTime), 10) || 0,
-              max_tokens: parseInt(String(whitelist.maxTokens), 10) || 0,
-              limit_per_address:
-                parseInt(String(whitelist.perAddressLimit), 10) || 0,
-              start_time: parseInt(String(whitelist.startTime), 10) || 0,
+              price: whitelist.price,
+              end_time: whitelist.endTime ? parseInt(whitelist.endTime, 10) : 0,
+              max_tokens: whitelist.maxTokens
+                ? parseInt(whitelist.maxTokens, 10)
+                : 0,
+              limit_per_address: whitelist.perAddressLimit
+                ? parseInt(whitelist.perAddressLimit, 10)
+                : 0,
+              start_time: whitelist.startTime
+                ? parseInt(whitelist.startTime, 10)
+                : 0,
               whitelist_info: {
                 addresses_count: addresses.length,
                 addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
@@ -137,16 +140,19 @@ export const useCreateCollection = () => {
           external_link: collectionFormValues.externalLink || "",
           website_link: collectionFormValues.websiteLink || "",
           twitter_profile: collectionFormValues.twitterProfileUrl || "",
-          twitter_followers_count:
-            parseInt(String(collectionFormValues.nbTwitterFollowers), 10) || 0,
+          twitter_followers_count: collectionFormValues.nbTwitterFollowers
+            ? parseInt(collectionFormValues.nbTwitterFollowers, 10)
+            : 0,
           contact_discord_name: collectionFormValues.discordName || "",
           contact_email: collectionFormValues.email || "",
           project_type: collectionFormValues.projectTypes?.join() || "",
           project_desc: collectionFormValues.projectDescription || "",
-          tokens_count:
-            parseInt(String(collectionFormValues.tokensCount), 10) || 0,
-          reveal_time:
-            parseInt(String(collectionFormValues.revealTime), 10) || 0,
+          tokens_count: collectionFormValues.tokensCount
+            ? parseInt(collectionFormValues.tokensCount, 10)
+            : 0,
+          reveal_time: collectionFormValues.revealTime
+            ? parseInt(collectionFormValues.revealTime, 10)
+            : 0,
           team_desc: collectionFormValues.teamDescription || "",
           team_link: collectionFormValues.teamLink || "",
           partners: collectionFormValues.partnersDescription || "",
@@ -154,15 +160,16 @@ export const useCreateCollection = () => {
           investment_link: collectionFormValues.investLink || "",
           roadmap_link: collectionFormValues.roadmapLink || "",
           artwork_desc: collectionFormValues.artworkDescription || "",
-          expected_supply:
-            parseInt(String(collectionFormValues.expectedSupply), 10) || 0,
+          expected_supply: collectionFormValues.expectedSupply
+            ? parseInt(collectionFormValues.expectedSupply, 10)
+            : 0,
           expected_public_mint_price:
-            parseInt(
-              String(collectionFormValues.expectedPublicMintPrice),
-              10,
-            ) || 0,
-          expected_mint_date:
-            parseInt(String(collectionFormValues.expectedMintDate), 10) || 0,
+            collectionFormValues.expectedPublicMintPrice
+              ? parseInt(collectionFormValues.expectedPublicMintPrice, 10)
+              : 0,
+          expected_mint_date: collectionFormValues.expectedMintDate
+            ? parseInt(collectionFormValues.expectedMintDate, 10)
+            : 0,
 
           cover_img_uri: coverImageIpfsHash || "",
           is_applied_previously:
@@ -172,19 +179,20 @@ export const useCreateCollection = () => {
           is_ready_for_mint: collectionFormValues.isReadyForMint || false,
           is_dox: collectionFormValues.isDox || false,
           escrow_mint_proceeds_period:
-            parseInt(
-              String(collectionFormValues.escrowMintProceedsPeriod),
-              10,
-            ) || 0,
-          dao_whitelist_count:
-            parseInt(String(collectionFormValues.daoWhitelistCount), 10) || 0,
+            collectionFormValues.escrowMintProceedsPeriod
+              ? parseInt(collectionFormValues.escrowMintProceedsPeriod, 10)
+              : 0,
+          dao_whitelist_count: collectionFormValues.daoWhitelistCount
+            ? parseInt(collectionFormValues.daoWhitelistCount, 10)
+            : 0,
 
           mint_periods,
           metadatas_merkle_root: merkleRoot,
 
           royalty_address: collectionFormValues.royaltyAddress || "",
-          royalty_percentage:
-            parseInt(String(collectionFormValues.royaltyPercentage), 10) || 0,
+          royalty_percentage: collectionFormValues.royaltyPercentage
+            ? parseInt(collectionFormValues.royaltyPercentage, 10)
+            : 0,
 
           target_network: selectedNetworkId,
           deployed_address: "None",
@@ -199,11 +207,12 @@ export const useCreateCollection = () => {
         console.log("======== createCollection result", result);
         return result;
       } catch (e) {
-        // if (e instanceof Error && e.message.includes("Token Name Invalid")) {
-        //   return { denom: info.native_denom, amount: "0", invalid: true };
-        // }
-        // throw e;
         console.error("Error creating a NFT Collection in the Launchpad ", e);
+        setToast({
+          mode: "normal",
+          type: "error",
+          title: "Error creating a NFT Collection in the Launchpad",
+        });
       }
     },
     [
@@ -212,6 +221,7 @@ export const useCreateCollection = () => {
       userIPFSKey,
       uploadFilesToPinata,
       selectedNetworkId,
+      setToast
     ],
   );
 

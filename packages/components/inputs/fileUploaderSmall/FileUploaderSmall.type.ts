@@ -16,4 +16,6 @@ export interface FileUploaderSmallProps {
   setIsLoading?: Dispatch<SetStateAction<boolean>>;
   required?: boolean;
   boxStyle?: StyleProp<BoxStyle>;
+  uploadedImage?: LocalFileData;
+  onPressDelete?: () => void;
 }

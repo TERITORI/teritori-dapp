@@ -1,4 +1,4 @@
-import { Uint128 } from "@/contracts-clients/nft-launchpad";
+import { Coin } from "@/contracts-clients/nft-launchpad";
 import { LocalFileData } from "@/utils/types/files";
 
 export interface ExistingBaseUrlFormValues {
@@ -13,12 +13,12 @@ export interface CollectionFormValues {
   externalLink?: string;
   websiteLink?: string;
   twitterProfileUrl: string;
-  nbTwitterFollowers: number;
+  nbTwitterFollowers: string;
   discordName: string;
   email: string;
   projectTypes: string[];
   projectDescription: string;
-  tokensCount: number;
+  tokensCount: string;
   revealTime?: string;
   teamDescription: string;
   teamLink: string;
@@ -27,47 +27,38 @@ export interface CollectionFormValues {
   investLink: string;
   roadmapLink: string;
   artworkDescription: string;
-  expectedSupply: number;
-  expectedPublicMintPrice: number;
+  expectedSupply: string;
+  expectedPublicMintPrice: string;
   expectedMintDate: string;
-  coverImage?: LocalFileData;
+  coverImage: LocalFileData;
   isPreviouslyApplied: boolean;
   isDerivativeProject: boolean;
   isReadyForMint: boolean;
   isDox: boolean;
-  escrowMintProceedsPeriod: number;
-  daoWhitelistCount: number;
+  escrowMintProceedsPeriod: string;
+  daoWhitelistCount: string;
   mintPeriods: CollectionMintPeriodFormValues[];
   royaltyAddress?: string;
-  royaltyPercentage?: number;
+  royaltyPercentage?: string;
   assetsMetadatas: CollectionAssetsMetadataFormValues[];
 }
 
 export interface CollectionMintPeriodFormValues {
-  unitPrice?: Uint128;
-  denom?: string;
-  maxTokens?: number;
-  perAddressLimit?: number;
-  startTime?: string;
-  endTime?: string;
+  price: Coin;
+  maxTokens: string;
+  perAddressLimit: string;
+  startTime: string;
+  endTime: string;
   whitelistAddressesFile?: LocalFileData;
   whitelistAddresses?: string[];
   isOpen: boolean;
 }
 
 export interface CollectionAssetsMetadataFormValues {
-  image?: LocalFileData;
-  externalUrl?: string;
+  image: LocalFileData;
+  externalUrl: string;
   description?: string;
-  name?: string;
-  youtubeUrl?: string;
-  attributes?: string;
-}
-
-export interface NewMetadataDetailsFormValues {
   name: string;
-  description: string;
-  externalURL: string;
-  youtubeURL: string;
+  youtubeUrl?: string;
   attributes: string;
 }

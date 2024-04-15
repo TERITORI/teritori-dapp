@@ -79,6 +79,7 @@ export const AssetsTab: React.FC = () => {
                       description: "",
                       externalUrl: "",
                       youtubeUrl: "",
+                      attributes: "",
                     });
                   });
                 }}

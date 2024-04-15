@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import {
+  Controller,
   UseFieldArrayRemove,
   UseFieldArrayUpdate,
   useFormContext,
@@ -13,6 +14,7 @@ import { CsvTextFileUploader } from "@/components/inputs/CsvTextFileUploader";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getCurrency } from "@/networks";
 import { CurrencyInputLaunchpad } from "@/screens/Launchpad/components/inputs/CurrencyInputLaunchpad/CurrencyInputLaunchpad";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { patternOnlyNumbers } from "@/utils/formRules";
@@ -37,13 +39,14 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
   // Since the Collection network is the selected network, we use useSelectedNetworkId (See LaunchpadBasic.tsx)
   const networkId = useSelectedNetworkId();
   const collectionForm = useFormContext<CollectionFormValues>();
-  // TODO: Handle this in collectionForm
+  const amountPath = `mintPeriods.${elemIndex}.price.amount` as const;
   const startTimePath = `mintPeriods.${elemIndex}.startTime` as const;
   const endTimePath = `mintPeriods.${elemIndex}.endTime` as const;
   const maxTokensPath = `mintPeriods.${elemIndex}.maxTokens` as const;
   const perAddressLimitPath =
     `mintPeriods.${elemIndex}.perAddressLimit` as const;
   const mintPeriods = collectionForm.watch("mintPeriods");
+  const selectedCurrency = getCurrency(networkId, elem.price.denom);
 
   return (
     <View
@@ -54,19 +57,32 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
         paddingBottom: layout.spacing_x1,
       }}
     >
-      <CurrencyInputLaunchpad
-        label="Mint Price and Currency"
-        networkId={networkId}
-        onSelectCurrency={(currency) =>
-          update(elemIndex, { ...elem, denom: currency.denom })
-        }
-        onChangeAmountAtomics={(amountAtomics) =>
-          update(elemIndex, { ...elem, unitPrice: amountAtomics })
-        }
+      <Controller
+        name={amountPath}
+        control={collectionForm.control}
+        rules={{
+          required: true,
+        }}
+        render={({ field: { onChange, value } }) => (
+          <CurrencyInputLaunchpad
+            label="Mint Price and Currency"
+            networkId={networkId}
+            amountAtomics={value}
+            currency={selectedCurrency}
+            onSelectCurrency={(currency) => {
+              update(elemIndex, {
+                ...elem,
+                price: { ...elem.price, denom: currency.denom },
+              });
+            }}
+            onChangeAmountAtomics={(amountAtomics) => {
+              onChange(amountAtomics);
+            }}
+          />
+        )}
       />
       <SpacerColumn size={2} />
 
-      {/*TODO: Make an input "number" that can be sync with CollectionFormValues without having to set onChangeText and value*/}
       <TextInputLaunchpad<CollectionFormValues>
         label="Max Tokens"
         placeHolder="0"
@@ -80,9 +96,6 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
         }
         control={collectionForm.control}
         rules={{ pattern: patternOnlyNumbers }}
-        onChangeText={(text) =>
-          update(elemIndex, { ...elem, maxTokens: parseInt(text, 10) })
-        }
       />
 
       <TextInputLaunchpad<CollectionFormValues>
@@ -98,9 +111,6 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
         }
         control={collectionForm.control}
         rules={{ pattern: patternOnlyNumbers }}
-        onChangeText={(text) =>
-          update(elemIndex, { ...elem, perAddressLimit: parseInt(text, 10) })
-        }
       />
 
       <TextInputLaunchpad<CollectionFormValues>

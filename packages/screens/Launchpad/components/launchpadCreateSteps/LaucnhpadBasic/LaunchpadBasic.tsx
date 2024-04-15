@@ -1,12 +1,12 @@
 import React from "react";
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
-import { CollectionFormValues } from "../../../../utils/types/launchpad";
+import { CollectionFormValues } from "../../../../../utils/types/launchpad";
 
 import { BrandText } from "@/components/BrandText";
 import { NetworkSelectorWithLabel } from "@/components/NetworkSelector/NetworkSelectorWithLabel";
-import { FileUploader } from "@/components/inputs/fileUploader";
+import { FileUploaderSmall } from "@/components/inputs/fileUploaderSmall";
 import { SpacerColumn } from "@/components/spacer";
 import { NetworkFeature } from "@/networks";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
@@ -18,6 +18,7 @@ import { layout } from "@/utils/style/layout";
 
 export const LaunchpadBasic: React.FC = () => {
   const collectionForm = useFormContext<CollectionFormValues>();
+  const coverImage = collectionForm.watch("coverImage");
 
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -72,17 +73,28 @@ export const LaunchpadBasic: React.FC = () => {
           control={collectionForm.control}
         />
 
-        <FileUploader
-          label="Cover Image"
-          style={{
-            marginBottom: layout.spacing_x2,
+        <Controller<CollectionFormValues>
+          name="coverImage"
+          control={collectionForm.control}
+          rules={{
+            required: true,
           }}
-          onUpload={(files) => {
-            collectionForm.setValue("coverImage", files[0]);
-          }}
-          mimeTypes={IMAGE_MIME_TYPES}
-          required
+          render={({ field: { onChange } }) => (
+            <FileUploaderSmall
+              label="Cover Image"
+              onUpload={(files) => {
+                onChange(files[0]);
+              }}
+              nbAddedFiles={coverImage ? 1 : 0}
+              mimeTypes={IMAGE_MIME_TYPES}
+              required
+              uploadedImage={coverImage}
+              onPressDelete={() => onChange(undefined)}
+            />
+          )}
         />
+
+        <SpacerColumn size={2} />
 
         <TextInputLaunchpad<CollectionFormValues>
           label="External Link"

@@ -1,5 +1,5 @@
 import React from "react";
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
 import { CollectionFormValues } from "../../../../utils/types/launchpad";
@@ -18,12 +18,9 @@ import {
 
 export const LaunchpadAdditional: React.FC = () => {
   const collectionForm = useFormContext<CollectionFormValues>();
-  const isReadyForMint = collectionForm.watch("isReadyForMint");
   const escrowMintProceedsPeriod = collectionForm.watch(
     "escrowMintProceedsPeriod",
   );
-  const isDox = collectionForm.watch("isDox");
-
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
       <View style={{ width: 416 }}>
@@ -55,20 +52,23 @@ export const LaunchpadAdditional: React.FC = () => {
           multiline
         />
 
-        <SelectInputLaunchpad
-          dropdownOptions={["Yes", "No"]}
-          placeHolder="Select Option"
-          item={
-            isReadyForMint === true
-              ? "Yes"
-              : isReadyForMint === false
-                ? "No"
-                : ""
-          }
-          setItem={(item) => {
-            collectionForm.setValue("isReadyForMint", item === "Yes");
+        <Controller<CollectionFormValues>
+          name="isReadyForMint"
+          control={collectionForm.control}
+          rules={{
+            required: true,
           }}
-          label="Is your collection ready for the mint?"
+          render={({ field: { onChange, value } }) => (
+            <SelectInputLaunchpad
+              dropdownOptions={["Yes", "No"]}
+              placeHolder="Select Option"
+              item={value === true ? "Yes" : value === false ? "No" : ""}
+              onPressItem={(item) => {
+                onChange(() => item === "Yes");
+              }}
+              label="Is your collection ready for the mint?"
+            />
+          )}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -76,6 +76,7 @@ export const LaunchpadAdditional: React.FC = () => {
           placeHolder="Type here..."
           name="expectedSupply"
           control={collectionForm.control}
+          rules={{ pattern: patternOnlyNumbers }}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -93,7 +94,7 @@ export const LaunchpadAdditional: React.FC = () => {
           rules={{ pattern: patternOnlyNumbers }}
         />
 
-        {/*TODO: Control, format ? hat is this data ?*/}
+        {/*TODO: Datetime input*/}
         <TextInputLaunchpad<CollectionFormValues>
           label="What is your expected mint date?"
           placeHolder="dd.mm.yyyy | hh:mm PM"
@@ -101,32 +102,46 @@ export const LaunchpadAdditional: React.FC = () => {
           control={collectionForm.control}
         />
 
-        <SelectInputLaunchpad
-          dropdownOptions={["1", "2", "3"]}
-          placeHolder="Select Option"
-          item={escrowMintProceedsPeriod?.toString()}
-          setItem={(item) => {
-            collectionForm.setValue(
-              "escrowMintProceedsPeriod",
-              parseInt(item, 10),
-            );
+        <Controller<CollectionFormValues>
+          name="escrowMintProceedsPeriod"
+          control={collectionForm.control}
+          rules={{
+            required: true,
           }}
-          label="If selected for the launchpad, You will escrow mint proceeds for this time period:"
-          style={{ zIndex: 2 }}
+          render={({ field: { onChange } }) => (
+            <SelectInputLaunchpad
+              dropdownOptions={["1", "2", "3"]}
+              placeHolder="Select Option"
+              item={escrowMintProceedsPeriod?.toString()}
+              onPressItem={(item) => {
+                onChange(() => item);
+              }}
+              label="If selected for the launchpad, You will escrow mint proceeds for this time period:"
+              style={{ zIndex: 2 }}
+            />
+          )}
         />
 
-        <SelectInputLaunchpad
-          dropdownOptions={["Yes", "No"]}
-          placeHolder="Select Option"
-          item={isDox === true ? "Yes" : isDox === false ? "No" : ""}
-          setItem={(item) => {
-            collectionForm.setValue("isDox", item === "Yes");
+        <Controller<CollectionFormValues>
+          name="isDox"
+          control={collectionForm.control}
+          rules={{
+            required: true,
           }}
-          label="Are you dox or have you planned to dox?"
-          style={{ zIndex: 1 }}
+          render={({ field: { onChange, value } }) => (
+            <SelectInputLaunchpad
+              dropdownOptions={["Yes", "No"]}
+              placeHolder="Select Option"
+              item={value === true ? "Yes" : value === false ? "No" : ""}
+              onPressItem={(item) => {
+                onChange(() => item === "Yes");
+              }}
+              label="Are you dox or have you planned to dox?"
+              style={{ zIndex: 1 }}
+            />
+          )}
         />
 
-        {/*FIXME: Our text inputs returns always strings. It's bad because daoWhitelistCount is a number, and there is no error here*/}
         <TextInputLaunchpad<CollectionFormValues>
           label="We'd love to offer TeritoriDAO members 10% of your whitelist supply if your project is willing. Please let us know how many whitelist spots you'd be willing to allocate our DAO: "
           placeHolder="0"

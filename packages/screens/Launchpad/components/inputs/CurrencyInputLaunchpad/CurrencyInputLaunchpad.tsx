@@ -19,6 +19,7 @@ import { SelectableCurrencySmall } from "@/screens/Launchpad/components/inputs/C
 import { SelectedCurrencySmall } from "@/screens/Launchpad/components/inputs/CurrencyInputLaunchpad/SelectedCurrencySmall";
 import { validateFloatWithDecimals } from "@/utils/formRules";
 import {
+  errorColor,
   neutral17,
   neutral22,
   neutral33,
@@ -38,6 +39,8 @@ export const CurrencyInputLaunchpad: FC<{
   networkId: string;
   onSelectCurrency: (currency: CurrencyInfo) => void;
   onChangeAmountAtomics: (amountAtomics: string) => void;
+  amountAtomics?: string;
+  currency?: CurrencyInfo;
   boxStyle?: StyleProp<BoxStyle>;
 }> = ({
   label,
@@ -50,19 +53,14 @@ export const CurrencyInputLaunchpad: FC<{
   onSelectCurrency,
   onChangeAmountAtomics,
   boxStyle,
+  amountAtomics,
+  currency,
 }) => {
   const network = getNetwork(networkId);
   const currencies: CurrencyInfo[] = network?.currencies || [];
   const [selectedCurrency, setSelectedCurrency] = useState<CurrencyInfo>(
-    currencies[0],
+    currency || currencies[0],
   );
-  const [value, setValue] = useState("");
-
-  const inputRef = useRef<TextInput>(null);
-  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
-  const [hovered, setHovered] = useState(false);
-  const boxHeight = 40;
-
   const selectedCurrencyNetwork = allNetworks.find(
     (network) =>
       !!network.currencies.find(
@@ -70,9 +68,22 @@ export const CurrencyInputLaunchpad: FC<{
       ),
   );
   const selectedNativeCurrency = getNativeCurrency(
-    networkId,
+    selectedCurrencyNetwork?.id,
     selectedCurrency?.denom,
   );
+  const [value, setValue] = useState(
+    selectedNativeCurrency && amountAtomics
+      ? Decimal.fromAtomics(
+          amountAtomics,
+          selectedNativeCurrency.decimals,
+        ).toString()
+      : "",
+  );
+
+  const inputRef = useRef<TextInput>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
+  const [hovered, setHovered] = useState(false);
+  const boxHeight = 40;
 
   const onChangeText = (text: string) => {
     if (!text) {
@@ -99,12 +110,18 @@ export const CurrencyInputLaunchpad: FC<{
     setValue("");
     setSelectedCurrency(currency);
     onChangeAmountAtomics("");
+    onSelectCurrency(currency);
     setDropdownState(false);
   };
 
-  if (!selectedCurrencyNetwork) return <BrandText>Invalid network</BrandText>;
+  if (!selectedCurrencyNetwork)
+    return <BrandText style={{ color: errorColor }}>Invalid network</BrandText>;
   if (!selectedNativeCurrency)
-    return <BrandText>Invalid native currency</BrandText>;
+    return (
+      <BrandText style={{ color: errorColor }}>
+        Invalid native currency
+      </BrandText>
+    );
   return (
     <CustomPressable
       onHoverIn={() => setHovered(true)}

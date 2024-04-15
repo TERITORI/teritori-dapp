@@ -14,6 +14,7 @@ import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { Separator } from "@/components/separators/Separator";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
+import { patternOnlyUrl } from "@/utils/formRules";
 import { neutral77, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold16, fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -91,7 +92,7 @@ export const MetadataUpdateModal: React.FC<{
           >
             <PrimaryButton
               size="XS"
-              text="Update Metadata"
+              text="Close"
               boxStyle={{
                 marginVertical: 20,
               }}
@@ -112,12 +113,10 @@ export const MetadataUpdateModal: React.FC<{
       >
         <Separator style={{ marginBottom: layout.spacing_x3 }} />
 
-        <TextInputLaunchpad
+        <TextInputLaunchpad<CollectionFormValues>
           name={namePath}
           label="Name"
           control={collectionForm.control}
-          // FIXME: The value is not get from collectionForm. Don't know why. So I have to set value={elem.name}
-          value={elem.name}
           placeHolder="Token name"
         />
 
@@ -125,24 +124,24 @@ export const MetadataUpdateModal: React.FC<{
           name={descriptionPath}
           label="Description"
           control={collectionForm.control}
-          value={elem.description}
           placeHolder="Token description"
+          rules={{ required: false }}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
           name={externalUrlPath}
           label="External URL"
           control={collectionForm.control}
-          value={elem.externalUrl}
           placeHolder="https://"
+          rules={{ pattern: patternOnlyUrl }}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
           name={youtubeUrlPath}
           label="Youtube URL"
           control={collectionForm.control}
-          value={elem.youtubeUrl}
           placeHolder="https://"
+          rules={{ required: false, pattern: patternOnlyUrl }}
         />
 
         {/*TODO: Attributes selection ?*/}

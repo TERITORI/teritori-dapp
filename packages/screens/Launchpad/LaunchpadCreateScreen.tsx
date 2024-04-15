@@ -11,9 +11,9 @@ import { useCreateCollection } from "@/hooks/launchpad/useCreateCollection";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
 import { LaunchpadSteper } from "@/screens/Launchpad/components/LaunchpadSteper";
+import { LaunchpadBasic } from "@/screens/Launchpad/components/launchpadCreateSteps/LaucnhpadBasic/LaunchpadBasic";
 import { LaunchpadAdditional } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadAdditional";
 import { LaunchpadAssetsAndMetadata } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadAssetsAndMetadata/LaunchpadAssetsAndMetadata";
-import { LaunchpadBasic } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadBasic";
 import { LaunchpadDetails } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadDetails";
 import { LaunchpadMinting } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/LaunchpadMinting";
 import { LaunchpadTeamAndInvestment } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadTeamAndInvestment";
@@ -58,10 +58,39 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const collectionForm = useForm<CollectionFormValues>({
     mode: "all",
     defaultValues: {
+      name: "",
+      description: "",
+      symbol: "",
+      externalLink: "",
+      websiteLink: "",
+      twitterProfileUrl: "",
+      nbTwitterFollowers: "",
+      discordName: "",
+      email: "",
+      projectDescription: "",
+      tokensCount: "",
+      revealTime: "",
+      teamDescription: "",
+      teamLink: "",
+      partnersDescription: "",
+      investDescription: "",
+      investLink: "",
+      roadmapLink: "",
+      artworkDescription: "",
+      expectedSupply: "",
+      expectedPublicMintPrice: "",
+      expectedMintDate: "",
+      escrowMintProceedsPeriod: "",
+      daoWhitelistCount: "",
+      royaltyAddress: "",
+      royaltyPercentage: "",
       mintPeriods: [
         {
-          denom: selectedNetwork?.currencies[0].denom,
+          price: { denom: selectedNetwork?.currencies[0].denom, amount: "" },
+          maxTokens: "",
+          perAddressLimit: "",
           startTime: "",
+          endTime: "",
           isOpen: true,
         },
       ],
@@ -154,14 +183,12 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
                 text="Submit"
                 loader
                 isLoading={isLoading}
-                disabled={!collectionForm.formState.isValid || !coverImage}
-                // WIP TODO: handleSubmit
-                onPress={
-                  onSubmit
-                  // () => {
-                  //   collectionForm.handleSubmit(onSubmit);
-                  // }
+                disabled={
+                  !collectionForm.formState.isValid ||
+                  !coverImage ||
+                  !!Object.keys(collectionForm.formState.errors).length
                 }
+                onPress={() => collectionForm.handleSubmit(onSubmit)()}
               />
             ) : (
               <PrimaryButton

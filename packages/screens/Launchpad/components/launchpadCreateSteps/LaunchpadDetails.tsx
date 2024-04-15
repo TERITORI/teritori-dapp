@@ -1,5 +1,5 @@
 import React from "react";
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
 import { CollectionFormValues } from "../../../../utils/types/launchpad";
@@ -23,8 +23,6 @@ import {
 
 export const LaunchpadDetails: React.FC = () => {
   const collectionForm = useFormContext<CollectionFormValues>();
-  const isDerivativeProject = collectionForm.watch("isDerivativeProject");
-  const isPreviouslyApplied = collectionForm.watch("isPreviouslyApplied");
   const projectTypes = collectionForm.watch("projectTypes") || [];
 
   return (
@@ -76,40 +74,52 @@ export const LaunchpadDetails: React.FC = () => {
           rules={{ pattern: patternOnlyEmail }}
         />
 
-        <SelectInputLaunchpad
-          dropdownOptions={["Yes", "No"]}
-          placeHolder="Select Option"
-          item={
-            isDerivativeProject === true
-              ? "Yes"
-              : isDerivativeProject === false
-                ? "No"
-                : ""
-          }
-          setItem={(item) => {
-            collectionForm.setValue("isDerivativeProject", item === "Yes");
+        <Controller<CollectionFormValues>
+          name="isDerivativeProject"
+          control={collectionForm.control}
+          rules={{
+            required: true,
           }}
-          label="Is your project a derivative project?"
-          style={{ zIndex: 3 }}
+          render={({ field: { onChange, value } }) => (
+            <SelectInputLaunchpad
+              dropdownOptions={["Yes", "No"]}
+              placeHolder="Select Option"
+              item={value === true ? "Yes" : value === false ? "No" : ""}
+              onPressItem={(item) => {
+                onChange(() => item === "Yes");
+              }}
+              label="Is your project a derivative project?"
+              style={{ zIndex: 3 }}
+            />
+          )}
         />
 
-        <MultipleSelectInput
-          dropdownOptions={["PFP", "Utility", "Metaverse", "P2E", "Other"]}
-          placeHolder="Select Option"
-          items={projectTypes}
-          setItems={(item) => {
-            const selectedProjectTypes = projectTypes.includes(item)
-              ? projectTypes.filter((data) => data !== item)
-              : [...projectTypes, item];
-            collectionForm.setValue("projectTypes", selectedProjectTypes);
+        <Controller<CollectionFormValues>
+          name="projectTypes"
+          control={collectionForm.control}
+          rules={{
+            required: true,
           }}
-          label="Project type:"
-          sublabel={
-            <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-              Multiple answers allowed
-            </BrandText>
-          }
-          style={{ zIndex: 2 }}
+          render={({ field: { onChange } }) => (
+            <MultipleSelectInput
+              dropdownOptions={["PFP", "Utility", "Metaverse", "P2E", "Other"]}
+              placeHolder="Select Option"
+              items={projectTypes}
+              onPressItem={(item) => {
+                const selectedProjectTypes = projectTypes.includes(item)
+                  ? projectTypes.filter((data) => data !== item)
+                  : [...projectTypes, item];
+                onChange(() => selectedProjectTypes);
+              }}
+              label="Project type:"
+              sublabel={
+                <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+                  Multiple answers allowed
+                </BrandText>
+              }
+              style={{ zIndex: 2 }}
+            />
+          )}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -132,21 +142,24 @@ export const LaunchpadDetails: React.FC = () => {
           control={collectionForm.control}
         />
 
-        <SelectInputLaunchpad
-          dropdownOptions={["Yes", "No"]}
-          placeHolder="Select Option"
-          item={
-            isPreviouslyApplied === true
-              ? "Yes"
-              : isPreviouslyApplied === false
-                ? "No"
-                : ""
-          }
-          setItem={(item) => {
-            collectionForm.setValue("isPreviouslyApplied", item === "Yes");
+        <Controller<CollectionFormValues>
+          name="isPreviouslyApplied"
+          control={collectionForm.control}
+          rules={{
+            required: true,
           }}
-          label="Have you previously applied for the same project before?"
-          style={{ zIndex: 1 }}
+          render={({ field: { onChange, value } }) => (
+            <SelectInputLaunchpad
+              dropdownOptions={["Yes", "No"]}
+              placeHolder="Select Option"
+              item={value === true ? "Yes" : value === false ? "No" : ""}
+              onPressItem={(item) => {
+                onChange(() => item === "Yes");
+              }}
+              label="Have you previously applied for the same project before?"
+              style={{ zIndex: 1 }}
+            />
+          )}
         />
       </View>
     </View>

@@ -11,12 +11,8 @@ import { SpacerColumn } from "@/components/spacer";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { LaunchpadMintPeriods } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/LaunchpadMintPeriods";
 import { patternOnlyNumbers } from "@/utils/formRules";
-import { neutral55, neutral77 } from "@/utils/style/colors";
-import {
-  fontSemibold13,
-  fontSemibold14,
-  fontSemibold20,
-} from "@/utils/style/fonts";
+import { neutral77 } from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const LaunchpadMinting: React.FC = () => {
@@ -50,13 +46,6 @@ export const LaunchpadMinting: React.FC = () => {
           label="Reveal Time"
           placeHolder="dd.mm.yyyy | hh:mm PM"
           name="revealTime"
-          sublabel={
-            <View>
-              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-                TODO
-              </BrandText>
-            </View>
-          }
           control={collectionForm.control}
         />
 
