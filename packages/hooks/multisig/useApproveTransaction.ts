@@ -62,7 +62,11 @@ export const useApproveTransaction = () => {
           return;
         }
 
-        const signer = await getKeplrOnlyAminoSigner(selectedNetworkId);
+        const signer = await getKeplrOnlyAminoSigner(selectedNetworkId, {
+          disableBalanceCheck: true,
+          preferNoSetFee: true,
+          preferNoSetMemo: true,
+        });
         const signerAddress = walletAccount.address;
 
         const sd: StdSignDoc = {

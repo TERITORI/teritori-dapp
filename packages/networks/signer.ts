@@ -1,5 +1,6 @@
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { SigningStargateClient } from "@cosmjs/stargate";
+import { KeplrSignOptions } from "@keplr-wallet/types";
 import { Platform } from "react-native";
 
 import { cosmosTypesRegistry, cosmosAminoTypes } from "./cosmos-types";
@@ -26,7 +27,10 @@ export const getKeplrSigner = async (networkId: string) => {
   return convertKeplrSigner(keplrSigner);
 };
 
-export const getKeplrOnlyAminoSigner = async (networkId: string) => {
+export const getKeplrOnlyAminoSigner = async (
+  networkId: string,
+  signOptions?: KeplrSignOptions,
+) => {
   const network = mustGetCosmosNetwork(networkId);
 
   const keplr = getKeplr();
@@ -35,7 +39,7 @@ export const getKeplrOnlyAminoSigner = async (networkId: string) => {
 
   await keplr.enable(network.chainId);
 
-  return keplr.getOfflineSignerOnlyAmino(network.chainId);
+  return keplr.getOfflineSignerOnlyAmino(network.chainId, signOptions);
 };
 
 export const getKeplrSigningStargateClient = async (
