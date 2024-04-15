@@ -62,13 +62,6 @@ export const useMultisigTransactions = (
       };
 
       const { transactions: txs } = await client.Transactions(req);
-      try {
-        console.log(
-          Buffer.from(txs[0].signatures[0].bodyBytes).toString("utf-8"),
-        );
-      } catch (e) {
-        console.error(e);
-      }
 
       const parsedTxs: ParsedTransaction[] = [];
       for (const tx of txs) {
