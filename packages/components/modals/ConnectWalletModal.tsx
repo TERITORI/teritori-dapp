@@ -15,6 +15,7 @@ import { ConnectAdenaButton } from "../connectWallet/ConnectAdenaButton";
 import { ConnectKeplrButton } from "../connectWallet/ConnectKeplrButton";
 import { ConnectLeapButton } from "../connectWallet/ConnectLeapButton";
 import { ConnectMetamaskButton } from "../connectWallet/ConnectMetamaskButton";
+import { ConnectTeritoriButton } from "../connectWallet/ConnectTeritoriButton";
 import { ConnectWalletButton } from "../connectWallet/components/ConnectWalletButton";
 import { SeparatorGradient } from "../separators/SeparatorGradient";
 import { SpacerColumn } from "../spacer";
@@ -46,6 +47,8 @@ export const ConnectWalletModal: FC<{
     <ModalBase visible={visible} onClose={onClose} width={480} label={label}>
       {canConnectWallet(NetworkKind.Cosmos) && (
         <>
+          <ConnectTeritoriButton onDone={onClose} />
+          <SpacerColumn size={1.5} />
           <ConnectKeplrButton onDone={onClose} />
           <SpacerColumn size={1.5} />
           <ConnectLeapButton onDone={onClose} />

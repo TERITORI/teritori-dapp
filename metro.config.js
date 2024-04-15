@@ -21,9 +21,12 @@ module.exports = (() => {
   config.resolver.resolveRequest = (context, moduleName, platform) => {
     if (
       platform !== "web" &&
-      ["redux-persist-electron-storage", "electron", "electron-store"].includes(
-        moduleName,
-      )
+      [
+        "redux-persist-electron-storage",
+        "electron",
+        "electron-store",
+        "react-native-vision-camera",
+      ].includes(moduleName)
     ) {
       return {
         type: "empty",
