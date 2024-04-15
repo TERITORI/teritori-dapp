@@ -1,6 +1,7 @@
 import { StdSignDoc } from "@cosmjs/amino";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useQueryClient } from "@tanstack/react-query";
+import { isEqual } from "lodash";
 import { useCallback } from "react";
 
 import { useMultisigAuthToken } from "./useMultisigAuthToken";
@@ -80,11 +81,16 @@ export const useApproveTransaction = () => {
           memo: "",
         };
 
-        console.log("will sign", sd);
-
         const {
+          signed,
           signature: { signature },
         } = await signer.signAmino(signerAddress, sd);
+
+        if (!isEqual(sd, signed)) {
+          throw new Error(
+            "Tx modified by signer, you can't change the fee or memo in a multisig transaction!",
+          );
+        }
 
         await multisigClient.SignTransaction({
           authToken,
