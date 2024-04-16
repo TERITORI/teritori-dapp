@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import defaultThumbnailImage from "../../../../../../assets/default-images/default-article-thumbnail.png";
 import CustomAppBar from "../../../components/AppBar/CustomAppBar";
@@ -41,6 +42,7 @@ type Props = {
 
 export const MiniArticlePostDetails = ({ post, refetchPost }: Props) => {
   const { width: windowWidth } = useWindowDimensions();
+  const safeAreaInsets = useSafeAreaInsets();
 
   const aref = useAnimatedRef<Animated.ScrollView>();
   const feedInputRef = useRef<MiniCommentInputInputHandle>(null);
@@ -123,7 +125,9 @@ export const MiniArticlePostDetails = ({ post, refetchPost }: Props) => {
   if (!metadataToUse) return null;
 
   return (
-    <KeyboardAvoidingView extraVerticalOffset={-100}>
+    <KeyboardAvoidingView
+      extraVerticalOffset={30 - safeAreaInsets.top - safeAreaInsets.bottom}
+    >
       <ScreenContainer
         forceNetworkId={post.networkId}
         fullWidth
@@ -139,6 +143,7 @@ export const MiniArticlePostDetails = ({ post, refetchPost }: Props) => {
           style={{
             flexDirection: "column",
             justifyContent: "space-between",
+            flex: 1,
           }}
         >
           <Animated.ScrollView
