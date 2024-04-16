@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 interface OmniLinkToType {
-  screen: string | never | undefined;
+  screen: string | never;
   params?: object;
 }
 
