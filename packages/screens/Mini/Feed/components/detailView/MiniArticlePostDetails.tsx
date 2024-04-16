@@ -1,18 +1,16 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions, KeyboardAvoidingView } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import defaultThumbnailImage from "../../../../../../assets/default-images/default-article-thumbnail.png";
 import CustomAppBar from "../../../components/AppBar/CustomAppBar";
 
 import { Post } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
-import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { CommentsContainer } from "@/components/cards/CommentsContainer";
@@ -42,7 +40,6 @@ type Props = {
 
 export const MiniArticlePostDetails = ({ post, refetchPost }: Props) => {
   const { width: windowWidth } = useWindowDimensions();
-  const safeAreaInsets = useSafeAreaInsets();
 
   const aref = useAnimatedRef<Animated.ScrollView>();
   const feedInputRef = useRef<MiniCommentInputInputHandle>(null);
@@ -126,7 +123,9 @@ export const MiniArticlePostDetails = ({ post, refetchPost }: Props) => {
 
   return (
     <KeyboardAvoidingView
-      extraVerticalOffset={30 - safeAreaInsets.top - safeAreaInsets.bottom}
+      behavior={"padding"}
+      style={{ flex: 1, backgroundColor: "#000" }}
+      keyboardVerticalOffset={30}
     >
       <ScreenContainer
         forceNetworkId={post.networkId}
