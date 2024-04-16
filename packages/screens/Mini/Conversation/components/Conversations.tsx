@@ -144,7 +144,7 @@ export const Conversations = ({
             },
           ]}
         >
-          {moment(separatorDate).format("YYYY, MMM DD")}
+          {moment(separatorDate).format("L")}
         </BrandText>
       </View>
     );
@@ -167,8 +167,8 @@ export const Conversations = ({
               index < messages.length - 1 ? messages[index + 1] : undefined;
 
             const separatorDate = previousMessage
-              ? moment(item.timestamp).format("DD/MM/YYYY") ===
-                moment(previousMessage.timestamp).format("DD/MM/YYYY")
+              ? moment(item.timestamp).format("L") ===
+                moment(previousMessage.timestamp).format("L")
                 ? false
                 : item?.timestamp
               : item.timestamp;
