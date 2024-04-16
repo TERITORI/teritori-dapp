@@ -387,7 +387,7 @@ const CollectionRow: React.FC<{
       }}
       disabled={!target}
       to={{
-        screen: target || "",
+        screen: target,
         params: { id: collection.id },
       }}
     >

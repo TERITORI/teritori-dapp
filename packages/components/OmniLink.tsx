@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 interface OmniLinkToType {
-  screen: string | never;
+  screen: string | never | undefined;
   params?: object;
 }
 
@@ -64,7 +64,12 @@ export const OmniLink: React.FC<{
   }
 
   return (
-    <TouchableOpacity style={style} onPress={onPress} {...props}>
+    <TouchableOpacity
+      style={style}
+      onPress={onPress}
+      disabled={disabled}
+      {...props}
+    >
       {children}
     </TouchableOpacity>
   );
