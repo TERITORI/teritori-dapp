@@ -10,6 +10,16 @@ const banList = [
   "coreum",
   "seitestnet2",
   "lavatestnet2",
+  "celestiatestnet2",
+  "babylontestnet",
+  "bitcannadevnet",
+  "bitcannadevnet2",
+  "celestiatestnet",
+  "chain4energy",
+  "cheqdtestnet",
+  "chimba",
+  "chimbatestnet",
+  "chronicnetwork",
 ];
 
 export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
