@@ -30,7 +30,7 @@ export const sagaNetwork: CosmosNetworkInfo = {
   backendEndpoint: "",
   restEndpoint: "https://saga-rest.publicnode.com",
   rpcEndpoint: "https://saga-rpc.publicnode.com:443",
-  stakeCurrency: "saga",
+  stakeCurrency: "usaga",
   gasPriceStep: {
     low: 0.01,
     average: 0.025,
