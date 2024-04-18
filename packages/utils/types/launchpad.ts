@@ -1,14 +1,13 @@
 import { z } from "zod";
 
 import { DEFAULT_FORM_ERRORS } from "@/utils/errors";
-import { EMAIL_REGEXP, NUMBERS_REGEXP, URL_REGEX } from "@/utils/regex";
+import {
+  EMAIL_REGEXP,
+  IPFS_URI_REGEX,
+  NUMBERS_REGEXP,
+  URL_REGEX,
+} from "@/utils/regex";
 import { ZodLocalFileData } from "@/utils/types/files";
-
-// TODO: ?
-export interface ExistingBaseUrlFormValues {
-  baseTokenUri?: string;
-  coverImageUrl?: string;
-}
 
 export const ZodCoin = z.object({
   amount: z.string().min(1, DEFAULT_FORM_ERRORS.required),
@@ -139,6 +138,22 @@ export const ZodCollectionFormValues = z.object({
   royaltyAddress: z.string().optional(),
   royaltyPercentage: z.string().optional(),
   assetsMetadatas: z.array(ZodCollectionAssetsMetadataFormValues).optional(),
+  baseTokenUri: z
+    .string()
+    .refine(
+      (value) => !value || IPFS_URI_REGEX.test(value),
+      DEFAULT_FORM_ERRORS.onlyIpfsUri,
+    )
+    .optional()
+    .optional(),
+  coverImageUri: z
+    .string()
+    .refine(
+      (value) => !value || IPFS_URI_REGEX.test(value),
+      DEFAULT_FORM_ERRORS.onlyIpfsUri,
+    )
+    .optional()
+    .optional(),
 });
 
 export type CollectionFormValues = z.infer<typeof ZodCollectionFormValues>;

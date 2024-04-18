@@ -1,8 +1,8 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
-import { ExistingBaseUrlFormValues } from "../../../../../utils/types/launchpad";
+import { CollectionFormValues } from "../../../../../utils/types/launchpad";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
@@ -12,13 +12,7 @@ import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const UriTab: React.FC = () => {
-  const { control } = useForm<ExistingBaseUrlFormValues>({
-    defaultValues: {
-      baseTokenUri: "",
-      coverImageUrl: "",
-    },
-    mode: "all",
-  });
+  const collectionForm = useFormContext<CollectionFormValues>();
 
   return (
     <View style={{ width: "100%", flex: 1 }}>
@@ -43,21 +37,22 @@ export const UriTab: React.FC = () => {
             such as IPFS. You may head over to NFT.Storage and upload your
             assets & metadata manually to get a base URI for your collection.
           </BrandText>
-
           <SpacerColumn size={2} />
 
-          <TextInputLaunchpad<ExistingBaseUrlFormValues>
+          <TextInputLaunchpad<CollectionFormValues>
             label="Base Token URI"
             placeHolder="ipfs://"
             name="baseTokenUri"
-            control={control}
+            form={collectionForm}
+            required={false}
           />
 
-          <TextInputLaunchpad<ExistingBaseUrlFormValues>
-            name="coverImageUrl"
-            label="Cover Image URL"
+          <TextInputLaunchpad<CollectionFormValues>
+            name="coverImageUri"
+            label="Cover Image URI"
             placeHolder="ipfs://"
-            control={control}
+            form={collectionForm}
+            required={false}
           />
         </View>
       </View>

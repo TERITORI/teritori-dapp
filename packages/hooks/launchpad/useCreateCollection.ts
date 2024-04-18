@@ -107,30 +107,33 @@ export const useCreateCollection = () => {
         );
 
         // ========== Metadata
-        const metadatas: Metadata[] = collectionFormValues.assetsMetadatas.map(
-          (metadata) => {
-            return {
-              image: "", //TODO:
-              imageData: "",
-              externalUrl: metadata.externalUrl,
-              description: metadata.description,
-              name: metadata.name,
-              youtubeUrl: metadata.youtubeUrl,
-              attributes: [],
-              backgroundColor: "",
-              animationUrl: "",
-              royaltyPercentage: 5,
-              royaltyPaymentAddress: "",
-            };
-          },
-        );
-        const { merkleRoot }: UpdateTokensMetadatasResponse =
-          await launchpadClient.UpdateTokensMetadatas({
-            sender: selectedWallet.address,
-            projectId: 1, //TODO:
-            networkId: selectedNetworkId,
-            metadatas,
-          });
+        let metadatas_merkle_root: string | null = null;
+        if (collectionFormValues.assetsMetadatas?.length) {
+          const metadatas: Metadata[] =
+            collectionFormValues.assetsMetadatas.map((metadata) => {
+              return {
+                image: "", //TODO:
+                imageData: "",
+                externalUrl: metadata.externalUrl,
+                description: metadata.description,
+                name: metadata.name,
+                youtubeUrl: metadata.youtubeUrl,
+                attributes: [],
+                backgroundColor: "",
+                animationUrl: "",
+                royaltyPercentage: 5,
+                royaltyPaymentAddress: "",
+              };
+            }) || [];
+          const updateTokensMetadatasResponse: UpdateTokensMetadatasResponse =
+            await launchpadClient.UpdateTokensMetadatas({
+              sender: selectedWallet.address,
+              projectId: 1, //TODO:
+              networkId: selectedNetworkId,
+              metadatas,
+            });
+          metadatas_merkle_root = updateTokensMetadatasResponse.merkleRoot;
+        }
 
         // ========== Final collection
         const collection: Collection = {
@@ -187,7 +190,7 @@ export const useCreateCollection = () => {
             : 0,
 
           mint_periods,
-          metadatas_merkle_root: merkleRoot,
+          metadatas_merkle_root,
 
           royalty_address: collectionFormValues.royaltyAddress || "",
           royalty_percentage: collectionFormValues.royaltyPercentage
