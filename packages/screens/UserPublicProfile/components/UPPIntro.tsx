@@ -8,8 +8,8 @@ import defaultUserProfileBannerPNG from "@/assets/default-images/default-user-pr
 import discordSVG from "@/assets/icons/discord.svg";
 import infoSVG from "@/assets/icons/info_black.svg";
 import shareSVG from "@/assets/icons/share.svg";
-import twitterSVG from "@/assets/icons/twitter.svg";
 import websiteSVG from "@/assets/icons/website.svg";
+import twitterSVG from "@/assets/icons/x-logo.svg";
 import { BrandText } from "@/components/BrandText";
 import { useCopyToClipboard } from "@/components/CopyToClipboard";
 import { CopyToClipboardSecondary } from "@/components/CopyToClipboardSecondary";
@@ -42,6 +42,7 @@ import {
 import { fontBold16, fontMedium14 } from "@/utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
+import { normalizeTwitterId } from "@/utils/twitter";
 
 export const UPPIntro: React.FC<{
   userId: string;
@@ -124,9 +125,11 @@ export const UPPIntro: React.FC<{
           {!!metadata?.twitter_id && (
             <SocialButton
               iconSvg={twitterSVG}
-              text="Twitter"
               style={socialButtonStyle}
-              onPress={() => Linking.openURL(metadata.twitter_id || "")}
+              onPress={() => {
+                if (!metadata.twitter_id) return;
+                Linking.openURL(normalizeTwitterId(metadata.twitter_id));
+              }}
             />
           )}
           <SocialButtonSecondary

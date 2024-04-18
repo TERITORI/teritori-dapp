@@ -1,6 +1,6 @@
 import { teritoriTestnetCurrencies } from "./currencies";
 import { CosmWasmPremiumFeed, NetworkFeature } from "../features";
-import { NetworkInfo, NetworkKind } from "../types";
+import { CosmosNetworkInfo, NetworkKind } from "../types";
 
 const nameServiceContractAddress =
   "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys";
@@ -16,7 +16,7 @@ const riotContractAddressGen0 =
   "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc";
 const riotContractAddressGen1 = "";
 
-export const teritoriTestnetNetwork: NetworkInfo = {
+export const teritoriTestnetNetwork: CosmosNetworkInfo = {
   id: "teritori-testnet",
   kind: NetworkKind.Cosmos,
   chainId: "teritori-test-6",

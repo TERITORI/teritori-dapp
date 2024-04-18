@@ -28,7 +28,7 @@ import { SocialMessageContent } from "../socialFeed/SocialCard/SocialMessageCont
 import { SpacerColumn } from "../spacer";
 import { Username } from "../user/Username";
 
-import { cosmosTypesRegistry } from "@/networks/signer";
+import { cosmosTypesRegistry } from "@/networks/cosmos-types";
 
 // once we gather enough different messages here, we should try to establish meaningful abstractions and split this func
 

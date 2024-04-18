@@ -17,8 +17,8 @@ export const ChartText: React.FC<{
           width: 148,
           justifyContent: "center",
           alignItems: "center",
-          display: "flex",
           textAlign: "center",
+          paddingTop: 55,
         },
       ]}
     >
