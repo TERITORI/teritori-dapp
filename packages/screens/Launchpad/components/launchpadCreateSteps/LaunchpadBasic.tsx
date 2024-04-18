@@ -2,15 +2,15 @@ import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
-import { CollectionFormValues } from "../../../../../utils/types/launchpad";
+import { CollectionFormValues } from "../../../../utils/types/launchpad";
 
 import { BrandText } from "@/components/BrandText";
+import { ErrorText } from "@/components/ErrorText";
 import { NetworkSelectorWithLabel } from "@/components/NetworkSelector/NetworkSelectorWithLabel";
 import { FileUploaderSmall } from "@/components/inputs/fileUploaderSmall";
 import { SpacerColumn } from "@/components/spacer";
 import { NetworkFeature } from "@/networks";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
-import { patternOnlyUrl } from "@/utils/formRules";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { neutral77, primaryColor } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
@@ -56,52 +56,52 @@ export const LaunchpadBasic: React.FC = () => {
           label="Name"
           placeHolder="My Awesome Collection"
           name="name"
-          control={collectionForm.control}
+          form={collectionForm}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
           label="Description"
           placeHolder="My Awesome Collection Description"
           name="description"
-          control={collectionForm.control}
+          form={collectionForm}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
           label="Symbol"
           placeHolder="Symbol"
           name="symbol"
-          control={collectionForm.control}
+          form={collectionForm}
         />
 
         <Controller<CollectionFormValues>
-          name="coverImage"
-          control={collectionForm.control}
-          rules={{
-            required: true,
-          }}
+          {...collectionForm.register("coverImage")}
           render={({ field: { onChange } }) => (
-            <FileUploaderSmall
-              label="Cover Image"
-              onUpload={(files) => {
-                onChange(files[0]);
-              }}
-              nbAddedFiles={coverImage ? 1 : 0}
-              mimeTypes={IMAGE_MIME_TYPES}
-              required
-              uploadedImage={coverImage}
-              onPressDelete={() => onChange(undefined)}
-            />
+            <>
+              <FileUploaderSmall
+                label="Cover Image"
+                onUpload={(files) => {
+                  onChange(files[0]);
+                }}
+                nbAddedFiles={coverImage ? 1 : 0}
+                mimeTypes={IMAGE_MIME_TYPES}
+                required
+                uploadedImage={coverImage}
+                onPressDelete={() => onChange(undefined)}
+              />
+              <ErrorText>
+                {collectionForm.getFieldState("coverImage").error?.message}
+              </ErrorText>
+            </>
           )}
         />
-
         <SpacerColumn size={2} />
 
         <TextInputLaunchpad<CollectionFormValues>
           label="External Link"
           placeHolder="https://collection..."
           name="externalLink"
-          control={collectionForm.control}
-          rules={{ pattern: patternOnlyUrl }}
+          form={collectionForm}
+          required={false}
         />
 
         <NetworkSelectorWithLabel

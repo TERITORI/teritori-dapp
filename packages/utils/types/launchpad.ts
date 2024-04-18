@@ -1,64 +1,154 @@
-import { Coin } from "@/contracts-clients/nft-launchpad";
-import { LocalFileData } from "@/utils/types/files";
+import { z } from "zod";
 
+import { DEFAULT_FORM_ERRORS } from "@/utils/errors";
+import { EMAIL_REGEXP, NUMBERS_REGEXP, URL_REGEX } from "@/utils/regex";
+import { ZodLocalFileData } from "@/utils/types/files";
+
+// TODO: ?
 export interface ExistingBaseUrlFormValues {
   baseTokenUri?: string;
   coverImageUrl?: string;
 }
 
-export interface CollectionFormValues {
-  name?: string;
-  description?: string;
-  symbol?: string;
-  externalLink?: string;
-  websiteLink?: string;
-  twitterProfileUrl: string;
-  nbTwitterFollowers: string;
-  discordName: string;
-  email: string;
-  projectTypes: string[];
-  projectDescription: string;
-  tokensCount: string;
-  revealTime?: string;
-  teamDescription: string;
-  teamLink: string;
-  partnersDescription: string;
-  investDescription: string;
-  investLink: string;
-  roadmapLink: string;
-  artworkDescription: string;
-  expectedSupply: string;
-  expectedPublicMintPrice: string;
-  expectedMintDate: string;
-  coverImage: LocalFileData;
-  isPreviouslyApplied: boolean;
-  isDerivativeProject: boolean;
-  isReadyForMint: boolean;
-  isDox: boolean;
-  escrowMintProceedsPeriod: string;
-  daoWhitelistCount: string;
-  mintPeriods: CollectionMintPeriodFormValues[];
-  royaltyAddress?: string;
-  royaltyPercentage?: string;
-  assetsMetadatas: CollectionAssetsMetadataFormValues[];
-}
+export const ZodCoin = z.object({
+  amount: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  denom: z.string(),
+});
 
-export interface CollectionMintPeriodFormValues {
-  price: Coin;
-  maxTokens: string;
-  perAddressLimit: string;
-  startTime: string;
-  endTime: string;
-  whitelistAddressesFile?: LocalFileData;
-  whitelistAddresses?: string[];
-  isOpen: boolean;
-}
+export const ZodCollectionMintPeriodFormValues = z.object({
+  price: ZodCoin,
+  maxTokens: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  perAddressLimit: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  startTime: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  endTime: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  whitelistAddressesFile: ZodLocalFileData.optional(),
+  whitelistAddresses: z.array(z.string()).optional(),
+  isOpen: z.boolean(),
+});
 
-export interface CollectionAssetsMetadataFormValues {
-  image: LocalFileData;
-  externalUrl: string;
-  description?: string;
-  name: string;
-  youtubeUrl?: string;
-  attributes: string;
-}
+export const ZodCollectionAssetsMetadataFormValues = z.object({
+  image: ZodLocalFileData,
+  externalUrl: z
+    .string()
+    .refine(
+      (value) => !value || URL_REGEX.test(value),
+      DEFAULT_FORM_ERRORS.onlyUrl,
+    )
+    .optional(),
+  description: z.string().optional(),
+  name: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  youtubeUrl: z
+    .string()
+    .refine(
+      (value) => !value || URL_REGEX.test(value),
+      DEFAULT_FORM_ERRORS.onlyUrl,
+    )
+    .optional(),
+  attributes: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+});
+
+export const ZodCollectionFormValues = z.object({
+  name: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  description: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  symbol: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  externalLink: z
+    .string()
+    .refine(
+      (value) => !value || URL_REGEX.test(value),
+      DEFAULT_FORM_ERRORS.onlyUrl,
+    )
+    .optional(),
+  websiteLink: z
+    .string()
+    .refine(
+      (value) => !value || URL_REGEX.test(value),
+      DEFAULT_FORM_ERRORS.onlyUrl,
+    )
+    .optional(),
+  twitterProfileUrl: z
+    .string()
+    .min(1, DEFAULT_FORM_ERRORS.required)
+    .refine((value) => URL_REGEX.test(value), DEFAULT_FORM_ERRORS.onlyUrl),
+  nbTwitterFollowers: z
+    .string()
+    .min(1, DEFAULT_FORM_ERRORS.required)
+    .refine(
+      (value) => NUMBERS_REGEXP.test(value),
+      DEFAULT_FORM_ERRORS.onlyNumbers,
+    ),
+  discordName: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  email: z
+    .string()
+    .min(1, DEFAULT_FORM_ERRORS.required)
+    .refine((value) => EMAIL_REGEXP.test(value), DEFAULT_FORM_ERRORS.onlyEmail),
+  projectTypes: z.array(z.string()).min(1, DEFAULT_FORM_ERRORS.required),
+  projectDescription: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  tokensCount: z
+    .string()
+    .min(1, DEFAULT_FORM_ERRORS.required)
+    .refine(
+      (value) => NUMBERS_REGEXP.test(value),
+      DEFAULT_FORM_ERRORS.onlyNumbers,
+    ),
+  revealTime: z.string().optional(),
+  teamDescription: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  teamLink: z
+    .string()
+    .min(1, DEFAULT_FORM_ERRORS.required)
+    .refine((value) => URL_REGEX.test(value), DEFAULT_FORM_ERRORS.onlyUrl),
+  partnersDescription: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  investDescription: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  investLink: z
+    .string()
+    .min(1, DEFAULT_FORM_ERRORS.required)
+    .refine((value) => URL_REGEX.test(value), DEFAULT_FORM_ERRORS.onlyUrl),
+  roadmapLink: z
+    .string()
+    .min(1, DEFAULT_FORM_ERRORS.required)
+    .refine((value) => URL_REGEX.test(value), DEFAULT_FORM_ERRORS.onlyUrl),
+  artworkDescription: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  expectedSupply: z
+    .string()
+    .min(1, DEFAULT_FORM_ERRORS.required)
+    .refine(
+      (value) => NUMBERS_REGEXP.test(value),
+      DEFAULT_FORM_ERRORS.onlyNumbers,
+    ),
+  expectedPublicMintPrice: z
+    .string()
+    .min(1, DEFAULT_FORM_ERRORS.required)
+    .refine(
+      (value) => NUMBERS_REGEXP.test(value),
+      DEFAULT_FORM_ERRORS.onlyNumbers,
+    ),
+  expectedMintDate: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  coverImage: ZodLocalFileData,
+  isPreviouslyApplied: z.boolean(),
+  isDerivativeProject: z.boolean(),
+  isReadyForMint: z.boolean(),
+  isDox: z.boolean(),
+  escrowMintProceedsPeriod: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  daoWhitelistCount: z
+    .string()
+    .min(1, DEFAULT_FORM_ERRORS.required)
+    .refine(
+      (value) => NUMBERS_REGEXP.test(value),
+      DEFAULT_FORM_ERRORS.onlyNumbers,
+    ),
+  mintPeriods: z.array(ZodCollectionMintPeriodFormValues).nonempty(),
+  royaltyAddress: z.string().optional(),
+  royaltyPercentage: z.string().optional(),
+  assetsMetadatas: z.array(ZodCollectionAssetsMetadataFormValues).optional(),
+});
+
+export type CollectionFormValues = z.infer<typeof ZodCollectionFormValues>;
+
+export type CollectionMintPeriodFormValues = z.infer<
+  typeof ZodCollectionMintPeriodFormValues
+>;
+
+export type CollectionAssetsMetadataFormValues = z.infer<
+  typeof ZodCollectionAssetsMetadataFormValues
+>;
+
+export type Coin = z.infer<typeof ZodCoin>;

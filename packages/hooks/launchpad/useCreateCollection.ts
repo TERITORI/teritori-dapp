@@ -221,7 +221,7 @@ export const useCreateCollection = () => {
       userIPFSKey,
       uploadFilesToPinata,
       selectedNetworkId,
-      setToast
+      setToast,
     ],
   );
 

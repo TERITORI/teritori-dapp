@@ -56,7 +56,6 @@ export const MultipleSelectInput: FC<Props> = ({
           zIndex: 1,
           width: "100%",
           minHeight: 40,
-          marginBottom: layout.spacing_x2,
         },
         style,
       ]}

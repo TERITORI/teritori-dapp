@@ -1,6 +1,7 @@
 import { bech32 } from "bech32";
 import { ValidationRule } from "react-hook-form";
 
+import { DEFAULT_FORM_ERRORS } from "@/utils/errors";
 import {
   EMAIL_REGEXP,
   LETTERS_REGEXP,
@@ -21,22 +22,22 @@ export const validateAddress = (value: string) => {
 
 export const patternOnlyLetters: ValidationRule<RegExp> = {
   value: LETTERS_REGEXP,
-  message: "Only letters are allowed",
+  message: DEFAULT_FORM_ERRORS.onlyLetters,
 };
 
 export const patternOnlyNumbers: ValidationRule<RegExp> = {
   value: NUMBERS_REGEXP,
-  message: "Only numbers are allowed",
+  message: DEFAULT_FORM_ERRORS.onlyNumbers,
 };
 
 export const patternOnlyEmail: ValidationRule<RegExp> = {
   value: EMAIL_REGEXP,
-  message: "Only email address is allowed",
+  message: DEFAULT_FORM_ERRORS.onlyEmail,
 };
 
 export const patternOnlyUrl: ValidationRule<RegExp> = {
   value: URL_REGEX,
-  message: "Only URL is allowed",
+  message: DEFAULT_FORM_ERRORS.onlyUrl,
 };
 
 export const validateMaxNumber = (value: string, max: number) => {

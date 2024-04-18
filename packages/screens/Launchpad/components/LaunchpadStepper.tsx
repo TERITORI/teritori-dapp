@@ -15,17 +15,22 @@ import {
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-interface LaunchpadSteperProps {
-  step: number;
-  onStepPress: (item: number) => void;
-  stepOptions: { key: number; title: string }[];
+export interface StepOption {
+  key: number;
+  title: string;
 }
 
-export const LaunchpadSteper = ({
+interface LaunchpadStepperProps {
+  step: number;
+  onStepPress: (item: number) => void;
+  stepOptions: StepOption[];
+}
+
+export const LaunchpadStepper = ({
   step,
   onStepPress,
   stepOptions,
-}: LaunchpadSteperProps) => {
+}: LaunchpadStepperProps) => {
   return (
     <PrimaryBox
       style={{
@@ -55,6 +60,15 @@ export const LaunchpadSteper = ({
             },
           ]}
         >
+          {/*TODO: Get which step has invalid fields, show the warning and hide it when the step's fields are valid*/}
+          {/*{!!item.invalidFields.length && (*/}
+          {/*  <SVG*/}
+          {/*    source={warningSVG}*/}
+          {/*    height={24}*/}
+          {/*    width={24}*/}
+          {/*    style={{ position: "absolute", top: 0, left: 0, zIndex: 1 }}*/}
+          {/*  />*/}
+          {/*)}*/}
           <View
             style={{
               width: layout.iconButton,

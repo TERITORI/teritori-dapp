@@ -51,7 +51,7 @@ export const LaunchpadTeamAndInvestment: React.FC = () => {
           }
           placeHolder="Describe here..."
           name="teamDescription"
-          control={collectionForm.control}
+          form={collectionForm}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -66,7 +66,7 @@ export const LaunchpadTeamAndInvestment: React.FC = () => {
           }
           placeHolder="Type here..."
           name="teamLink"
-          control={collectionForm.control}
+          form={collectionForm}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -80,7 +80,7 @@ export const LaunchpadTeamAndInvestment: React.FC = () => {
           }
           placeHolder="Type here..."
           name="partnersDescription"
-          control={collectionForm.control}
+          form={collectionForm}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -103,7 +103,7 @@ export const LaunchpadTeamAndInvestment: React.FC = () => {
           }
           placeHolder="Type here..."
           name="investDescription"
-          control={collectionForm.control}
+          form={collectionForm}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -118,7 +118,7 @@ export const LaunchpadTeamAndInvestment: React.FC = () => {
           }
           placeHolder="Type here..."
           name="investLink"
-          control={collectionForm.control}
+          form={collectionForm}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -133,7 +133,7 @@ export const LaunchpadTeamAndInvestment: React.FC = () => {
           }
           placeHolder="Type here..."
           name="roadmapLink"
-          control={collectionForm.control}
+          form={collectionForm}
         />
       </View>
     </View>

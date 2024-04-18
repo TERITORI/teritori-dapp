@@ -10,7 +10,6 @@ import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { LaunchpadMintPeriods } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/LaunchpadMintPeriods";
-import { patternOnlyNumbers } from "@/utils/formRules";
 import { neutral77 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -38,15 +37,15 @@ export const LaunchpadMinting: React.FC = () => {
           label="Number of Tokens "
           placeHolder="0"
           name="tokensCount"
-          control={collectionForm.control}
-          rules={{ pattern: patternOnlyNumbers }}
+          form={collectionForm}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
           label="Reveal Time"
           placeHolder="dd.mm.yyyy | hh:mm PM"
           name="revealTime"
-          control={collectionForm.control}
+          form={collectionForm}
+          required={false}
         />
 
         <Separator />

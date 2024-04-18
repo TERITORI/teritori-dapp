@@ -2,11 +2,11 @@ import React from "react";
 import { UseFieldArrayUpdate, useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
-import ModalBase from "../../../../components/modals/ModalBase";
+import ModalBase from "../../../../../components/modals/ModalBase";
 import {
   CollectionAssetsMetadataFormValues,
   CollectionFormValues,
-} from "../../../../utils/types/launchpad";
+} from "../../../../../utils/types/launchpad";
 
 import { BrandText } from "@/components/BrandText";
 import { OptimizedImage } from "@/components/OptimizedImage";
@@ -14,7 +14,6 @@ import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { Separator } from "@/components/separators/Separator";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
-import { patternOnlyUrl } from "@/utils/formRules";
 import { neutral77, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold16, fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -53,7 +52,7 @@ export const MetadataUpdateModal: React.FC<{
           >
             {elem.image && (
               <OptimizedImage
-                sourceURI={URL.createObjectURL(elem.image.file)}
+                sourceURI={elem.image.url}
                 style={{
                   height: 54,
                   width: 54,
@@ -116,39 +115,39 @@ export const MetadataUpdateModal: React.FC<{
         <TextInputLaunchpad<CollectionFormValues>
           name={namePath}
           label="Name"
-          control={collectionForm.control}
+          form={collectionForm}
           placeHolder="Token name"
         />
 
         <TextInputLaunchpad<CollectionFormValues>
           name={descriptionPath}
           label="Description"
-          control={collectionForm.control}
+          form={collectionForm}
           placeHolder="Token description"
-          rules={{ required: false }}
+          required={false}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
           name={externalUrlPath}
           label="External URL"
-          control={collectionForm.control}
+          form={collectionForm}
           placeHolder="https://"
-          rules={{ pattern: patternOnlyUrl }}
+          required={false}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
           name={youtubeUrlPath}
           label="Youtube URL"
-          control={collectionForm.control}
+          form={collectionForm}
           placeHolder="https://"
-          rules={{ required: false, pattern: patternOnlyUrl }}
+          required={false}
         />
 
         {/*TODO: Attributes selection ?*/}
         <TextInputLaunchpad<CollectionFormValues>
           name={attributesPath}
           label="Attributes"
-          control={collectionForm.control}
+          form={collectionForm}
           placeHolder="Enter trait types and values"
         />
       </View>

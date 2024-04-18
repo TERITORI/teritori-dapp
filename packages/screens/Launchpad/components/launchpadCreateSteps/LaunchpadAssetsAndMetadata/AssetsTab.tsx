@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { SafeAreaView, TouchableOpacity, View } from "react-native";
 
+import { MetadataUpdateModal } from "./MetadataUpdateModal";
 import { FileUploaderSmall } from "../../../../../components/inputs/fileUploaderSmall";
 import { CollectionFormValues } from "../../../../../utils/types/launchpad";
-import { MetadataUpdateModal } from "../../modals/MetadataUpdateModal";
 
 import trashSVG from "@/assets/icons/trash.svg";
 import { BrandText } from "@/components/BrandText";

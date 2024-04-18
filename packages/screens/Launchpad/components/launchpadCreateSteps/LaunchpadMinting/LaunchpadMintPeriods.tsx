@@ -6,6 +6,7 @@ import addSVG from "@/assets/icons/add-secondary.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetworkFeature, NetworkFeature } from "@/networks";
 import { LaunchpadMintPeriodAccordion } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/LaunchpadMintPeriodAccordion";
@@ -18,6 +19,7 @@ export const LaunchpadMintPeriods: FC = () => {
   const selectedWallet = useSelectedWallet();
   const networkId = selectedWallet?.networkId || "";
   const collectionForm = useFormContext<CollectionFormValues>();
+  const selectedNetwork = useSelectedNetworkInfo();
 
   const { fields, update, append, remove } = useFieldArray({
     control: collectionForm.control,
@@ -30,15 +32,21 @@ export const LaunchpadMintPeriods: FC = () => {
   }, [fields, update]);
 
   const createMintPeriod = useCallback(() => {
+    if (!selectedNetwork) return;
     closeAll();
     const feature = getNetworkFeature(networkId, NetworkFeature.NFTLaunchpad);
     if (!feature) {
       throw new Error("This network does not support nft launchpad");
     }
     append({
+      price: { denom: selectedNetwork.currencies[0].denom, amount: "" },
+      maxTokens: "",
+      perAddressLimit: "",
+      startTime: "",
+      endTime: "",
       isOpen: true,
     });
-  }, [networkId, closeAll, append]);
+  }, [networkId, closeAll, append, selectedNetwork]);
 
   return (
     <View

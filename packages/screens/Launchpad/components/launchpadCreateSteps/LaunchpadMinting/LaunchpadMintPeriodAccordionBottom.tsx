@@ -9,6 +9,7 @@ import { View, TouchableOpacity } from "react-native";
 
 import trashSVG from "@/assets/icons/trash.svg";
 import { BrandText } from "@/components/BrandText";
+import { ErrorText } from "@/components/ErrorText";
 import { SVG } from "@/components/SVG";
 import { CsvTextFileUploader } from "@/components/inputs/CsvTextFileUploader";
 import { Separator } from "@/components/separators/Separator";
@@ -17,7 +18,6 @@ import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { getCurrency } from "@/networks";
 import { CurrencyInputLaunchpad } from "@/screens/Launchpad/components/inputs/CurrencyInputLaunchpad/CurrencyInputLaunchpad";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
-import { patternOnlyNumbers } from "@/utils/formRules";
 import { errorColor, neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -58,27 +58,28 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
       }}
     >
       <Controller
-        name={amountPath}
-        control={collectionForm.control}
-        rules={{
-          required: true,
-        }}
+        {...collectionForm.register(amountPath)}
         render={({ field: { onChange, value } }) => (
-          <CurrencyInputLaunchpad
-            label="Mint Price and Currency"
-            networkId={networkId}
-            amountAtomics={value}
-            currency={selectedCurrency}
-            onSelectCurrency={(currency) => {
-              update(elemIndex, {
-                ...elem,
-                price: { ...elem.price, denom: currency.denom },
-              });
-            }}
-            onChangeAmountAtomics={(amountAtomics) => {
-              onChange(amountAtomics);
-            }}
-          />
+          <>
+            <CurrencyInputLaunchpad
+              label="Mint Price and Currency"
+              networkId={networkId}
+              amountAtomics={value}
+              currency={selectedCurrency}
+              onSelectCurrency={(currency) => {
+                update(elemIndex, {
+                  ...elem,
+                  price: { ...elem.price, denom: currency.denom },
+                });
+              }}
+              onChangeAmountAtomics={(amountAtomics) => {
+                onChange(amountAtomics);
+              }}
+            />
+            <ErrorText>
+              {collectionForm.getFieldState(amountPath).error?.message}
+            </ErrorText>
+          </>
         )}
       />
       <SpacerColumn size={2} />
@@ -94,8 +95,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
             </BrandText>
           </View>
         }
-        control={collectionForm.control}
-        rules={{ pattern: patternOnlyNumbers }}
+        form={collectionForm}
       />
 
       <TextInputLaunchpad<CollectionFormValues>
@@ -109,8 +109,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
             </BrandText>
           </View>
         }
-        control={collectionForm.control}
-        rules={{ pattern: patternOnlyNumbers }}
+        form={collectionForm}
       />
 
       <TextInputLaunchpad<CollectionFormValues>
@@ -124,7 +123,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
             </BrandText>
           </View>
         }
-        control={collectionForm.control}
+        form={collectionForm}
       />
 
       <TextInputLaunchpad<CollectionFormValues>
@@ -138,7 +137,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
             </BrandText>
           </View>
         }
-        control={collectionForm.control}
+        form={collectionForm}
       />
 
       <Separator />

@@ -6,9 +6,9 @@ import { CollectionFormValues } from "../../../../utils/types/launchpad";
 import { SelectInputLaunchpad } from "../inputs/selectInputs/SelectInputLaunchpad";
 
 import { BrandText } from "@/components/BrandText";
+import { ErrorText } from "@/components/ErrorText";
 import { SpacerColumn } from "@/components/spacer";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
-import { patternOnlyNumbers } from "@/utils/formRules";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -48,35 +48,36 @@ export const LaunchpadAdditional: React.FC = () => {
           }
           placeHolder="Describe here..."
           name="artworkDescription"
-          control={collectionForm.control}
+          form={collectionForm}
           multiline
         />
 
         <Controller<CollectionFormValues>
-          name="isReadyForMint"
-          control={collectionForm.control}
-          rules={{
-            required: true,
-          }}
+          {...collectionForm.register("isReadyForMint")}
           render={({ field: { onChange, value } }) => (
-            <SelectInputLaunchpad
-              dropdownOptions={["Yes", "No"]}
-              placeHolder="Select Option"
-              item={value === true ? "Yes" : value === false ? "No" : ""}
-              onPressItem={(item) => {
-                onChange(() => item === "Yes");
-              }}
-              label="Is your collection ready for the mint?"
-            />
+            <>
+              <SelectInputLaunchpad
+                dropdownOptions={["Yes", "No"]}
+                placeHolder="Select Option"
+                item={value === true ? "Yes" : value === false ? "No" : ""}
+                onPressItem={(item) => {
+                  onChange(item === "Yes");
+                }}
+                label="Is your collection ready for the mint?"
+              />
+              <ErrorText>
+                {collectionForm.getFieldState("isReadyForMint").error?.message}
+              </ErrorText>
+            </>
           )}
         />
+        <SpacerColumn size={2} />
 
         <TextInputLaunchpad<CollectionFormValues>
           label="What is your expected collection supply?"
           placeHolder="Type here..."
           name="expectedSupply"
-          control={collectionForm.control}
-          rules={{ pattern: patternOnlyNumbers }}
+          form={collectionForm}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -90,8 +91,7 @@ export const LaunchpadAdditional: React.FC = () => {
           }
           placeHolder="0"
           name="expectedPublicMintPrice"
-          control={collectionForm.control}
-          rules={{ pattern: patternOnlyNumbers }}
+          form={collectionForm}
         />
 
         {/*TODO: Datetime input*/}
@@ -99,55 +99,61 @@ export const LaunchpadAdditional: React.FC = () => {
           label="What is your expected mint date?"
           placeHolder="dd.mm.yyyy | hh:mm PM"
           name="expectedMintDate"
-          control={collectionForm.control}
+          form={collectionForm}
         />
 
         <Controller<CollectionFormValues>
-          name="escrowMintProceedsPeriod"
-          control={collectionForm.control}
-          rules={{
-            required: true,
-          }}
+          {...collectionForm.register("escrowMintProceedsPeriod")}
           render={({ field: { onChange } }) => (
-            <SelectInputLaunchpad
-              dropdownOptions={["1", "2", "3"]}
-              placeHolder="Select Option"
-              item={escrowMintProceedsPeriod?.toString()}
-              onPressItem={(item) => {
-                onChange(() => item);
-              }}
-              label="If selected for the launchpad, You will escrow mint proceeds for this time period:"
-              style={{ zIndex: 2 }}
-            />
+            <>
+              <SelectInputLaunchpad
+                dropdownOptions={["1", "2", "3"]}
+                placeHolder="Select Option"
+                item={escrowMintProceedsPeriod?.toString()}
+                onPressItem={(item) => {
+                  onChange(item);
+                }}
+                label="If selected for the launchpad, You will escrow mint proceeds for this time period:"
+                style={{ zIndex: 2 }}
+              />
+              <ErrorText>
+                {
+                  collectionForm.getFieldState("escrowMintProceedsPeriod").error
+                    ?.message
+                }
+              </ErrorText>
+            </>
           )}
         />
+        <SpacerColumn size={2} />
 
         <Controller<CollectionFormValues>
-          name="isDox"
-          control={collectionForm.control}
-          rules={{
-            required: true,
-          }}
+          {...collectionForm.register("isDox")}
           render={({ field: { onChange, value } }) => (
-            <SelectInputLaunchpad
-              dropdownOptions={["Yes", "No"]}
-              placeHolder="Select Option"
-              item={value === true ? "Yes" : value === false ? "No" : ""}
-              onPressItem={(item) => {
-                onChange(() => item === "Yes");
-              }}
-              label="Are you dox or have you planned to dox?"
-              style={{ zIndex: 1 }}
-            />
+            <>
+              <SelectInputLaunchpad
+                dropdownOptions={["Yes", "No"]}
+                placeHolder="Select Option"
+                item={value === true ? "Yes" : value === false ? "No" : ""}
+                onPressItem={(item) => {
+                  onChange(item === "Yes");
+                }}
+                label="Are you dox or have you planned to dox?"
+                style={{ zIndex: 1 }}
+              />
+              <ErrorText>
+                {collectionForm.getFieldState("isDox").error?.message}
+              </ErrorText>
+            </>
           )}
         />
+        <SpacerColumn size={2} />
 
         <TextInputLaunchpad<CollectionFormValues>
           label="We'd love to offer TeritoriDAO members 10% of your whitelist supply if your project is willing. Please let us know how many whitelist spots you'd be willing to allocate our DAO: "
           placeHolder="0"
           name="daoWhitelistCount"
-          control={collectionForm.control}
-          rules={{ pattern: patternOnlyNumbers }}
+          form={collectionForm}
         />
       </View>
     </View>
