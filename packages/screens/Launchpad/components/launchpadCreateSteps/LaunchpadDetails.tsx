@@ -44,7 +44,6 @@ export const LaunchpadDetails: React.FC = () => {
           placeHolder="https://twitter..."
           name="twitterProfileUrl"
           form={collectionForm}
-          required={false}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -52,7 +51,6 @@ export const LaunchpadDetails: React.FC = () => {
           placeHolder="10,000"
           name="nbTwitterFollowers"
           form={collectionForm}
-          required={false}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -67,11 +65,11 @@ export const LaunchpadDetails: React.FC = () => {
           placeHolder="contact@email.com"
           name="email"
           form={collectionForm}
-          required={false}
         />
 
         <Controller<CollectionFormValues>
-          {...collectionForm.register("isDerivativeProject")}
+          name="isDerivativeProject"
+          control={collectionForm.control}
           render={({ field: { onChange, value } }) => (
             <>
               <SelectInputLaunchpad
@@ -96,7 +94,8 @@ export const LaunchpadDetails: React.FC = () => {
         <SpacerColumn size={2} />
 
         <Controller<CollectionFormValues>
-          {...collectionForm.register("projectTypes")}
+          name="projectTypes"
+          control={collectionForm.control}
           render={({ field: { onChange } }) => (
             <>
               <MultipleSelectInput
@@ -152,7 +151,8 @@ export const LaunchpadDetails: React.FC = () => {
         />
 
         <Controller<CollectionFormValues>
-          {...collectionForm.register("isPreviouslyApplied")}
+          name="isPreviouslyApplied"
+          control={collectionForm.control}
           render={({ field: { onChange, value } }) => (
             <>
               <SelectInputLaunchpad

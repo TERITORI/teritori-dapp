@@ -5,7 +5,7 @@ import {
   useController,
   UseFormReturn,
 } from "react-hook-form";
-import { TextInput, TextInputProps, TextStyle, View } from "react-native";
+import { TextInput, TextInputProps, TextStyle } from "react-native";
 
 import { ErrorText } from "@/components/ErrorText";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
@@ -47,17 +47,9 @@ export const TextInputLaunchpad = <T extends FieldValues>({
       onPress={() => form.setFocus(name)}
       style={{ width: "100%", marginBottom: layout.spacing_x2 }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "flex-end",
-        }}
-      >
-        <Label hovered={hovered} isRequired={required}>
-          {label}
-        </Label>
-      </View>
+      <Label hovered={hovered} isRequired={required}>
+        {label}
+      </Label>
       {sublabel && sublabel}
       <SpacerColumn size={1.5} />
       <TertiaryBox

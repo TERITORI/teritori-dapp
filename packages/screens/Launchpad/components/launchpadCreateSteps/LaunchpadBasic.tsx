@@ -74,7 +74,8 @@ export const LaunchpadBasic: React.FC = () => {
         />
 
         <Controller<CollectionFormValues>
-          {...collectionForm.register("coverImage")}
+          control={collectionForm.control}
+          name="coverImage"
           render={({ field: { onChange } }) => (
             <>
               <FileUploaderSmall

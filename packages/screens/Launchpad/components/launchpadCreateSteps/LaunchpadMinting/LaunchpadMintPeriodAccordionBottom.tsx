@@ -57,14 +57,15 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
         paddingBottom: layout.spacing_x1,
       }}
     >
-      <Controller
-        {...collectionForm.register(amountPath)}
+      <Controller<CollectionFormValues>
+        name={amountPath}
+        control={collectionForm.control}
         render={({ field: { onChange, value } }) => (
           <>
             <CurrencyInputLaunchpad
               label="Mint Price and Currency"
               networkId={networkId}
-              amountAtomics={value}
+              amountAtomics={value?.toString()}
               currency={selectedCurrency}
               onSelectCurrency={(currency) => {
                 update(elemIndex, {

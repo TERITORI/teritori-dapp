@@ -53,7 +53,8 @@ export const LaunchpadAdditional: React.FC = () => {
         />
 
         <Controller<CollectionFormValues>
-          {...collectionForm.register("isReadyForMint")}
+          name="isReadyForMint"
+          control={collectionForm.control}
           render={({ field: { onChange, value } }) => (
             <>
               <SelectInputLaunchpad
@@ -103,7 +104,8 @@ export const LaunchpadAdditional: React.FC = () => {
         />
 
         <Controller<CollectionFormValues>
-          {...collectionForm.register("escrowMintProceedsPeriod")}
+          name="escrowMintProceedsPeriod"
+          control={collectionForm.control}
           render={({ field: { onChange } }) => (
             <>
               <SelectInputLaunchpad
@@ -128,7 +130,8 @@ export const LaunchpadAdditional: React.FC = () => {
         <SpacerColumn size={2} />
 
         <Controller<CollectionFormValues>
-          {...collectionForm.register("isDox")}
+          name="isDox"
+          control={collectionForm.control}
           render={({ field: { onChange, value } }) => (
             <>
               <SelectInputLaunchpad

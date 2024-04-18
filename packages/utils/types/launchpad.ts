@@ -10,14 +10,32 @@ import {
 import { ZodLocalFileData } from "@/utils/types/files";
 
 export const ZodCoin = z.object({
-  amount: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  amount: z
+    .string()
+    .min(1, DEFAULT_FORM_ERRORS.required)
+    .refine(
+      (value) => NUMBERS_REGEXP.test(value),
+      DEFAULT_FORM_ERRORS.onlyNumbers,
+    ),
   denom: z.string(),
 });
 
 export const ZodCollectionMintPeriodFormValues = z.object({
   price: ZodCoin,
-  maxTokens: z.string().min(1, DEFAULT_FORM_ERRORS.required),
-  perAddressLimit: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  maxTokens: z
+    .string()
+    .min(1, DEFAULT_FORM_ERRORS.required)
+    .refine(
+      (value) => NUMBERS_REGEXP.test(value),
+      DEFAULT_FORM_ERRORS.onlyNumbers,
+    ),
+  perAddressLimit: z
+    .string()
+    .min(1, DEFAULT_FORM_ERRORS.required)
+    .refine(
+      (value) => NUMBERS_REGEXP.test(value),
+      DEFAULT_FORM_ERRORS.onlyNumbers,
+    ),
   startTime: z.string().min(1, DEFAULT_FORM_ERRORS.required),
   endTime: z.string().min(1, DEFAULT_FORM_ERRORS.required),
   whitelistAddressesFile: ZodLocalFileData.optional(),
@@ -97,14 +115,8 @@ export const ZodCollectionFormValues = z.object({
     .refine((value) => URL_REGEX.test(value), DEFAULT_FORM_ERRORS.onlyUrl),
   partnersDescription: z.string().min(1, DEFAULT_FORM_ERRORS.required),
   investDescription: z.string().min(1, DEFAULT_FORM_ERRORS.required),
-  investLink: z
-    .string()
-    .min(1, DEFAULT_FORM_ERRORS.required)
-    .refine((value) => URL_REGEX.test(value), DEFAULT_FORM_ERRORS.onlyUrl),
-  roadmapLink: z
-    .string()
-    .min(1, DEFAULT_FORM_ERRORS.required)
-    .refine((value) => URL_REGEX.test(value), DEFAULT_FORM_ERRORS.onlyUrl),
+  investLink: z.string().min(1, DEFAULT_FORM_ERRORS.required),
+  roadmapLink: z.string().min(1, DEFAULT_FORM_ERRORS.required),
   artworkDescription: z.string().min(1, DEFAULT_FORM_ERRORS.required),
   expectedSupply: z
     .string()
