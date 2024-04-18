@@ -563,7 +563,7 @@ impl Cw721MembershipContract {
         start_after: Option<Uint64>,
         limit: Option<u32>,
     ) -> Result<Vec<Uint64>, ContractError> {
-        let limit = limit.map(|limit| limit as usize).unwrap_or(DEFAULT_LIMIT);
+        let limit = input_limit_into_range_limit(limit);
         let channel_ids: Result<Vec<_>, ContractError> = self
             .channels_by_owner
             .prefix(Addr::unchecked(owner_address))
@@ -918,14 +918,8 @@ impl Cw721MembershipContract {
         limit: Option<u32>,
     ) -> Result<TokensResponse, ContractError> {
         let owner_addr = ctx.deps.api.addr_validate(owner.as_str())?;
-        let limit = limit.map(|limit| limit as usize).unwrap_or(DEFAULT_LIMIT);
-        let min_bound = match start_after {
-            Some(start_after) => {
-                let (channel_id, nft_index) = parse_token_id(&start_after)?;
-                Some(Bound::exclusive((channel_id, nft_index)))
-            }
-            None => None,
-        };
+        let limit = input_limit_into_range_limit(limit);
+        let min_bound = token_id_start_after_into_bound(&start_after)?;
 
         let tokens: Result<Vec<_>, _> = self
             .nfts_by_owner
@@ -950,15 +944,8 @@ impl Cw721MembershipContract {
         start_after: Option<String>,
         limit: Option<u32>,
     ) -> Result<TokensResponse, ContractError> {
-        let limit = limit.map(|limit| limit as usize).unwrap_or(DEFAULT_LIMIT);
-
-        let min_bound = match start_after {
-            Some(start_after) => {
-                let (channel_id, nft_index) = parse_token_id(&start_after)?;
-                Some(Bound::exclusive((channel_id, nft_index)))
-            }
-            None => None,
-        };
+        let limit = input_limit_into_range_limit(limit);
+        let min_bound = token_id_start_after_into_bound(&start_after)?;
 
         let tokens: Result<Vec<_>, _> = self
             .nfts
@@ -1145,4 +1132,21 @@ pub fn validate_tiers(tiers: &Vec<MembershipConfig>) -> bool {
         }
     }
     true
+}
+
+pub fn token_id_start_after_into_bound(
+    start_after: &Option<String>,
+) -> Result<Option<Bound<(u64, u64)>>, ContractError> {
+    let bound = match start_after {
+        Some(start_after) => {
+            let (channel_id, nft_index) = parse_token_id(&start_after)?;
+            Some(Bound::exclusive((channel_id, nft_index)))
+        }
+        None => None,
+    };
+    Ok(bound)
+}
+
+pub fn input_limit_into_range_limit(limit: Option<u32>) -> usize {
+    limit.map(|limit| limit as usize).unwrap_or(DEFAULT_LIMIT)
 }
