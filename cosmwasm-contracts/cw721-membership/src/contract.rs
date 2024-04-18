@@ -173,9 +173,7 @@ impl Cw721MembershipContract {
         trade_royalties_per10k: u16, // 0-10000 = 0%-100%
         trade_royalties_addr: Option<String>,
     ) -> Result<Response, ContractError> {
-        if !validate_tiers(&memberships_config) {
-            return Err(ContractError::InvalidTiers);
-        }
+        assert_valid_tiers(&memberships_config)?;
 
         let owner_addr = ctx.info.sender;
 
@@ -236,9 +234,7 @@ impl Cw721MembershipContract {
                     let mut changed = false;
 
                     if let Some(memberships_config) = memberships_config {
-                        if !validate_tiers(&memberships_config) {
-                            return Err(ContractError::InvalidTiers);
-                        }
+                        assert_valid_tiers(&memberships_config)?;
                         channel.memberships_config = memberships_config;
                         changed = true;
                     }
@@ -1067,7 +1063,7 @@ impl Cw721MembershipContract {
     }
 }
 
-pub fn assert_exact_funds(ctx: &ExecCtx, amount: Coin) -> Result<Response, ContractError> {
+pub fn assert_exact_funds(ctx: &ExecCtx, amount: Coin) -> Result<(), ContractError> {
     let mut total_funds_amount = Uint128::zero();
     for coin in ctx.info.funds.iter() {
         if coin.denom == amount.denom {
@@ -1079,7 +1075,7 @@ pub fn assert_exact_funds(ctx: &ExecCtx, amount: Coin) -> Result<Response, Contr
     if total_funds_amount != amount.amount {
         return Err(ContractError::InvalidFunds);
     }
-    Ok(Response::default())
+    Ok(())
 }
 
 pub fn parse_token_id(token_id: &String) -> Result<(u64, u64), ContractError> {
@@ -1105,33 +1101,33 @@ pub fn checked_expiry(
     Ok(Timestamp::from_nanos(end_nanos.u64()))
 }
 
-pub fn validate_tiers(tiers: &Vec<MembershipConfig>) -> bool {
+pub fn assert_valid_tiers(tiers: &Vec<MembershipConfig>) -> Result<(), ContractError> {
     for tier in tiers.iter() {
         if tier.price.amount.is_zero() {
-            return false;
+            return Err(ContractError::InvalidTiers);
         }
         if tier.price.denom.is_empty() {
-            return false;
+            return Err(ContractError::InvalidTiers);
         }
         if tier.duration_seconds.is_zero()
             || tier.duration_seconds > Uint64::from(MAX_DURATION_SECONDS)
         {
-            return false;
+            return Err(ContractError::InvalidTiers);
         }
         if tier.display_name.is_empty() {
-            return false;
+            return Err(ContractError::InvalidTiers);
         }
         if tier.description.is_empty() {
-            return false;
+            return Err(ContractError::InvalidTiers);
         }
         if tier.nft_name_prefix.is_empty() {
-            return false;
+            return Err(ContractError::InvalidTiers);
         }
         if tier.nft_image_uri.is_empty() {
-            return false;
+            return Err(ContractError::InvalidTiers);
         }
     }
-    true
+    Ok(())
 }
 
 pub fn token_id_start_after_into_bound(
