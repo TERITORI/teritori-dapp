@@ -173,6 +173,10 @@ impl Cw721MembershipContract {
         trade_royalties_per10k: u16, // 0-10000 = 0%-100%
         trade_royalties_addr: Option<String>,
     ) -> Result<Response, ContractError> {
+        if !validate_tiers(&memberships_config) {
+            return Err(ContractError::InvalidTiers);
+        }
+
         let owner_addr = ctx.info.sender;
 
         let channel_id = self
@@ -232,6 +236,9 @@ impl Cw721MembershipContract {
                     let mut changed = false;
 
                     if let Some(memberships_config) = memberships_config {
+                        if !validate_tiers(&memberships_config) {
+                            return Err(ContractError::InvalidTiers);
+                        }
                         channel.memberships_config = memberships_config;
                         changed = true;
                     }
@@ -1111,7 +1118,7 @@ pub fn checked_expiry(
     Ok(Timestamp::from_nanos(end_nanos.u64()))
 }
 
-pub fn validate_tiers(tiers: Vec<MembershipConfig>) -> bool {
+pub fn validate_tiers(tiers: &Vec<MembershipConfig>) -> bool {
     for tier in tiers.iter() {
         if tier.price.amount.is_zero() {
             return false;

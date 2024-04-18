@@ -56,4 +56,7 @@ pub enum ContractError {
 
     #[error("Expiry overflow.")]
     ExpiryOverflow,
+
+    #[error("Invalid tiers.")]
+    InvalidTiers,
 }
