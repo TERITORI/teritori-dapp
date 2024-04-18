@@ -3,8 +3,8 @@ use base64::engine::general_purpose::URL_SAFE_NO_PAD;
 use base64::Engine;
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    Addr, BankMsg, Binary, Coin, CosmosMsg, Order, Response, StdResult, Storage, Timestamp,
-    Uint128, Uint64,
+    Addr, BankMsg, Binary, Coin, CosmosMsg, Order, OverflowError, Response, StdResult, Storage,
+    Timestamp, Uint128, Uint64,
 };
 use cw2981_royalties::msg::{CheckRoyaltiesResponse, Cw2981QueryMsg, RoyaltiesInfoResponse};
 use cw721::{
@@ -20,6 +20,8 @@ use sylvia::{contract, entry_points};
 pub type NftExtension = Metadata;
 
 pub const DEFAULT_LIMIT: usize = 10;
+pub const MAX_DURATION_SECONDS: u64 = 2 * 365 * 24 * 60 * 60; // 2 "years"
+
 // MAX_LIMIT is infinity, query gas restrictions should handle this, this allows protected nodes to return big batches if needed
 
 pub struct Cw721MembershipContract {
@@ -27,12 +29,12 @@ pub struct Cw721MembershipContract {
     pub(crate) num_tokens: Item<'static, Uint64>,
     pub(crate) num_channels: Item<'static, Uint64>,
     pub(crate) channels: Map<'static, u64, Channel>,
-    pub(crate) channels_by_addr: Map<'static, Addr, u64>,
+    pub(crate) channels_by_owner: Map<'static, (Addr, u64), ()>,
     pub(crate) nfts: Map<'static, (u64, u64), Nft>,
-    pub(crate) by_owner: Map<'static, (Addr, u64, u64), ()>,
-    pub(crate) by_expiration: Map<'static, (String, u64, u64), ()>,
+    pub(crate) nfts_by_owner: Map<'static, (Addr, u64, u64), ()>,
+    pub(crate) nfts_by_expiration: Map<'static, (String, u64, u64), ()>,
     pub(crate) mint_platform_fees: Map<'static, String, Uint128>,
-    pub(crate) mint_funds: Map<'static, (Addr, String), Uint128>,
+    pub(crate) mint_funds: Map<'static, (u64, String), Uint128>,
 }
 
 #[cw_serde]
@@ -68,8 +70,8 @@ pub struct ChannelFundsResponse {
 #[cw_serde]
 pub struct Channel {
     memberships_config: Vec<MembershipConfig>,
-    mint_royalties_per10k: u16,  // 0-10000 = 0%-100%
-    trade_royalties_per10k: u16, // 0-10000 = 0%-100%
+    mint_royalties_per10k: Option<u16>, // 0-10000 = 0%-100%
+    trade_royalties_per10k: u16,        // 0-10000 = 0%-100%
     trade_royalties_addr: Addr,
     next_index: Uint64,
     owner_addr: Addr,
@@ -122,12 +124,12 @@ impl Cw721MembershipContract {
         Self {
             config: Item::new("config"),
             channels: Map::new("channels"),
-            channels_by_addr: Map::new("channels_by_addr"),
+            channels_by_owner: Map::new("channels_by_owner"),
             nfts: Map::new("nfts"),
             num_tokens: Item::new("num_tokens"),
             num_channels: Item::new("num_channels"),
-            by_owner: Map::new("by_owner"),
-            by_expiration: Map::new("by_expiration"),
+            nfts_by_owner: Map::new("nfts_by_owner"),
+            nfts_by_expiration: Map::new("nfts_by_expiration"),
             mint_platform_fees: Map::new("mint_platform_fees"),
             mint_funds: Map::new("mint_funds"),
         }
@@ -171,30 +173,18 @@ impl Cw721MembershipContract {
         trade_royalties_per10k: u16, // 0-10000 = 0%-100%
         trade_royalties_addr: Option<String>,
     ) -> Result<Response, ContractError> {
-        let config = self.config.load(ctx.deps.storage)?;
-
         let owner_addr = ctx.info.sender;
 
-        let channel_id_opt = self
-            .channels_by_addr
-            .may_load(ctx.deps.storage, owner_addr.to_owned())?;
-
-        let channel_id: u64 = match channel_id_opt {
-            Some(_) => Err(ContractError::ChannelExists),
-            None => {
-                let channel_id = self
-                    .num_channels
-                    .update::<_, ContractError>(ctx.deps.storage, |num_channels| {
-                        Ok(num_channels.checked_add(Uint64::one())?)
-                    })?;
-                self.channels_by_addr.save(
-                    ctx.deps.storage,
-                    owner_addr.to_owned(),
-                    &channel_id.u64(),
-                )?;
-                Ok(channel_id.u64())
-            }
-        }?;
+        let channel_id = self
+            .num_channels
+            .update::<_, ContractError>(ctx.deps.storage, |num_channels| {
+                Ok(num_channels.checked_add(Uint64::one())?)
+            })?;
+        self.channels_by_owner.save(
+            ctx.deps.storage,
+            (owner_addr.to_owned(), channel_id.u64()),
+            &(),
+        )?;
 
         let royalties_addr = match trade_royalties_addr {
             Some(royalties_addr) => ctx.deps.api.addr_validate(royalties_addr.as_str())?,
@@ -209,15 +199,17 @@ impl Cw721MembershipContract {
                 None => Ok(Channel {
                     memberships_config,
                     next_index: Uint64::one(),
-                    mint_royalties_per10k: config.mint_royalties_per10k_default,
+                    mint_royalties_per10k: None,
                     trade_royalties_per10k,
-                    owner_addr: owner_addr,
+                    owner_addr,
                     trade_royalties_addr: royalties_addr,
                 }),
             },
         )?;
 
-        Ok(Response::default().add_attribute("channel_id", channel_id.to_string()))
+        Ok(Response::default()
+            .add_attribute("action", "create_channel")
+            .add_attribute("channel_id", channel_id.to_string()))
     }
 
     #[msg(exec)]
@@ -228,10 +220,8 @@ impl Cw721MembershipContract {
         memberships_config: Option<Vec<MembershipConfig>>,
         trade_royalties_per10k: Option<u16>,
         trade_royalties_addr: Option<String>,
-        owner: Option<String>,
+        // owner: Option<String>, TODO: allow transfer
     ) -> Result<Response, ContractError> {
-        let new_owner = owner;
-
         self.channels
             .update(ctx.deps.storage, id.into(), |channel| match channel {
                 Some(mut channel) => {
@@ -257,12 +247,6 @@ impl Cw721MembershipContract {
                         changed = true;
                     }
 
-                    if let Some(new_owner) = new_owner {
-                        let new_owner = ctx.deps.api.addr_validate(new_owner.as_str())?;
-                        channel.owner_addr = new_owner;
-                        changed = true;
-                    }
-
                     if !changed {
                         return Err(ContractError::NoChanges);
                     }
@@ -278,18 +262,11 @@ impl Cw721MembershipContract {
     pub fn subscribe(
         &self,
         ctx: ExecCtx,
-        channel_addr: String,
+        channel_id: Uint64,
         recipient_addr: String,
         membership_kind: u8,
     ) -> Result<Response, ContractError> {
         let recipient_addr = ctx.deps.api.addr_validate(recipient_addr.as_str())?;
-
-        let unchecked_channel_addr = Addr::unchecked(channel_addr.as_str()); // we don't need to validate the address because we won't find a channel if the address is invalid
-        let channel_id = self
-            .channels_by_addr
-            .load(ctx.deps.storage, unchecked_channel_addr.to_owned())
-            .map_err(|_| ContractError::UnknownChannelAddress)?;
-        let channel_addr = unchecked_channel_addr;
 
         let mut channel = self
             .channels
@@ -303,14 +280,16 @@ impl Cw721MembershipContract {
 
         assert_exact_funds(&ctx, membership.price.to_owned())?;
 
+        let config = self.config.load(ctx.deps.storage)?;
+
+        let mint_royalties = channel
+            .mint_royalties_per10k
+            .unwrap_or(config.mint_royalties_per10k_default);
+
         let royalties_amount = membership
             .price
             .amount
-            .checked_mul(Uint128::from(
-                self.config
-                    .load(ctx.deps.storage)?
-                    .mint_royalties_per10k_default,
-            ))?
+            .checked_mul(Uint128::from(mint_royalties))?
             .checked_div(Uint128::from(10000u16))?;
         self.mint_platform_fees.update::<_, ContractError>(
             ctx.deps.storage,
@@ -325,7 +304,7 @@ impl Cw721MembershipContract {
         let creator_amount = membership.price.amount.checked_sub(royalties_amount)?;
         self.mint_funds.update::<_, ContractError>(
             ctx.deps.storage,
-            (channel_addr.to_owned(), membership.price.denom.to_owned()),
+            (channel_id.u64(), membership.price.denom.to_owned()),
             |funds| {
                 Ok(funds
                     .unwrap_or(Uint128::zero())
@@ -350,7 +329,7 @@ impl Cw721MembershipContract {
         )?;
 
         // save in index
-        self.by_owner.save(
+        self.nfts_by_owner.save(
             ctx.deps.storage,
             (
                 recipient_addr.to_owned(),
@@ -359,8 +338,8 @@ impl Cw721MembershipContract {
             ),
             &(),
         )?;
-        let expiry = nft.start_time.plus_seconds(nft.duration_seconds.u64());
-        self.by_expiration.save(
+        let expiry = checked_expiry(nft.start_time, nft.duration_seconds)?;
+        self.nfts_by_expiration.save(
             ctx.deps.storage,
             (
                 recipient_addr.to_string() + &channel_id.to_string(),
@@ -379,9 +358,10 @@ impl Cw721MembershipContract {
                 Ok(num_tokens.checked_add(Uint64::one())?)
             })?;
 
-        // we need these for efficient indexing
+        // we need this for efficient indexing
         let token_id = format_token_id(channel_id.into(), nft_index.into());
-        let nft_info = self.internal_nft_info(ctx.deps.storage, channel_id, nft_index.u64())?;
+        let nft_info =
+            self.internal_nft_info(ctx.deps.storage, channel_id.u64(), nft_index.u64())?;
         let json_nft_info =
             serde_json::to_string(&nft_info).map_err(|_| ContractError::SerializationError)?;
 
@@ -440,19 +420,14 @@ impl Cw721MembershipContract {
     pub fn update_channel_mint_platform_fee(
         &self,
         ctx: ExecCtx,
-        channel_addr: String,
-        mint_royalties: u16,
+        channel_id: Uint64,
+        mint_royalties: Option<u16>,
     ) -> Result<Response, ContractError> {
         let config = self.config.load(ctx.deps.storage)?;
         if ctx.info.sender != config.admin_addr {
             return Err(ContractError::Unauthorized);
         }
 
-        let unchecked_channel_addr = Addr::unchecked(channel_addr.as_str()); // we don't need to validate the address because we won't find a channel if the address is invalid
-        let channel_id = self
-            .channels_by_addr
-            .load(ctx.deps.storage, unchecked_channel_addr.to_owned())
-            .map_err(|_| ContractError::UnknownChannelAddress)?;
         let mut channel = self
             .channels
             .load(ctx.deps.storage, channel_id.into())
@@ -504,20 +479,12 @@ impl Cw721MembershipContract {
     pub fn withdraw_mint_funds(
         &self,
         ctx: ExecCtx,
-        channel_addr: String,
+        channel_id: Uint64,
         destination_addr: Option<String>,
     ) -> Result<Response, ContractError> {
-        let unchecked_channel_addr = Addr::unchecked(channel_addr.as_str()); // we don't need to validate the address because we won't find a channel if the address is invalid
-        let channel_id = self
-            .channels_by_addr
-            .load(ctx.deps.storage, unchecked_channel_addr.to_owned())
-            .map_err(|_| ContractError::UnknownChannelAddress)?;
-        if !self.channels.has(ctx.deps.storage, channel_id.into()) {
-            return Err(ContractError::ChannelNotFound);
-        }
-        let channel_addr = unchecked_channel_addr;
+        let channel = self.channels.load(ctx.deps.storage, channel_id.into())?;
 
-        if ctx.info.sender != channel_addr {
+        if ctx.info.sender != channel.owner_addr {
             return Err(ContractError::Unauthorized);
         }
 
@@ -528,7 +495,7 @@ impl Cw721MembershipContract {
 
         let coins: Result<Vec<Coin>, ContractError> = self
             .mint_funds
-            .prefix(channel_addr.to_owned())
+            .prefix(channel_id.u64())
             .range(ctx.deps.storage, None, None, Order::Ascending)
             .map(|item| {
                 let (denom, amount) = item?;
@@ -542,7 +509,7 @@ impl Cw721MembershipContract {
         }));
 
         self.mint_funds
-            .prefix(channel_addr)
+            .prefix(channel_id.u64())
             .clear(ctx.deps.storage, None);
 
         Ok(response)
@@ -560,13 +527,9 @@ impl Cw721MembershipContract {
     pub fn channel(
         &self,
         ctx: QueryCtx,
-        channel_addr: String,
+        channel_id: Uint64,
     ) -> Result<ChannelResponse, ContractError> {
-        let unchecked_channel_addr = Addr::unchecked(channel_addr.as_str()); // we don't need to validate the address because we won't find a channel if the address is invalid
-        let channel_id = self
-            .channels_by_addr
-            .load(ctx.deps.storage, unchecked_channel_addr.to_owned())
-            .map_err(|_| ContractError::UnknownChannelAddress)?;
+        let config = self.config.load(ctx.deps.storage)?;
 
         let channel = self
             .channels
@@ -577,10 +540,39 @@ impl Cw721MembershipContract {
             id: channel_id.into(),
             owner_addr: channel.owner_addr,
             memberships_config: channel.memberships_config,
-            mint_royalties_per10k: channel.mint_royalties_per10k,
+            mint_royalties_per10k: channel
+                .mint_royalties_per10k
+                .unwrap_or(config.mint_royalties_per10k_default),
             trade_royalties_per10k: channel.trade_royalties_per10k,
             trade_royalties_addr: channel.trade_royalties_addr,
         })
+    }
+
+    #[msg(query)]
+    pub fn channels_by_owner(
+        &self,
+        ctx: QueryCtx,
+        owner_address: String,
+        start_after: Option<Uint64>,
+        limit: Option<u32>,
+    ) -> Result<Vec<Uint64>, ContractError> {
+        let limit = limit.map(|limit| limit as usize).unwrap_or(DEFAULT_LIMIT);
+        let channel_ids: Result<Vec<_>, ContractError> = self
+            .channels_by_owner
+            .prefix(Addr::unchecked(owner_address))
+            .range(
+                ctx.deps.storage,
+                start_after.map(|sa| Bound::exclusive(sa)),
+                None,
+                Order::Ascending,
+            )
+            .map(|r| {
+                let (id, _) = r?;
+                Ok(Uint64::from(id))
+            })
+            .take(limit)
+            .collect();
+        Ok(channel_ids?)
     }
 
     #[msg(query)]
@@ -600,13 +592,11 @@ impl Cw721MembershipContract {
     pub fn channel_funds(
         &self,
         ctx: QueryCtx,
-        channel_addr: String,
+        channel_id: Uint64,
     ) -> Result<ChannelFundsResponse, ContractError> {
-        let unchecked_channel_addr = Addr::unchecked(channel_addr.as_str()); // we don't need to validate the address because we won't find a channel if the address is invalid
-        let channel_addr = unchecked_channel_addr;
         let funds: Result<Vec<Coin>, ContractError> = self
             .mint_funds
-            .prefix(channel_addr.to_owned())
+            .prefix(channel_id.u64())
             .range(ctx.deps.storage, None, None, Order::Ascending)
             .map(|item| {
                 let (denom, amount) = item?;
@@ -621,19 +611,14 @@ impl Cw721MembershipContract {
         &self,
         ctx: QueryCtx,
         sub_addr: String,
-        channel_addr: String,
+        channel_id: Uint64,
     ) -> Result<SubscriptionResponse, ContractError> {
         let sub_addr = Addr::unchecked(sub_addr.as_str());
-        let unchecked_channel_addr = Addr::unchecked(channel_addr.as_str());
-        let channel_id = self
-            .channels_by_addr
-            .load(ctx.deps.storage, unchecked_channel_addr.to_owned())
-            .map_err(|_| ContractError::UnknownChannelAddress)?;
         let mut subscription: Option<Subscription> = None;
         let mut level: u16 = 0;
         // only iterate over unexpired tokens
         for entry in self
-            .by_expiration
+            .nfts_by_expiration
             .sub_prefix(sub_addr.to_string() + &channel_id.to_string())
             .range(
                 ctx.deps.storage,
@@ -649,12 +634,12 @@ impl Cw721MembershipContract {
 
             // we don't need to check that we're past start time since it can't be in the future
 
-            let expiration = nft.start_time.plus_seconds(nft.duration_seconds.into());
+            let expiration = checked_expiry(nft.start_time, nft.duration_seconds)?;
             if expiration <= ctx.env.block.time {
                 continue;
             }
 
-            level += 1;
+            level = level.checked_add(1).ok_or(ContractError::InternalError)?;
 
             match &subscription {
                 Some(value) => {
@@ -768,7 +753,7 @@ impl Cw721MembershipContract {
             return Err(ContractError::Unauthorized);
         }
         self.nfts.remove(ctx.deps.storage, (channel_id, nft_index));
-        self.by_owner
+        self.nfts_by_owner
             .remove(ctx.deps.storage, (ctx.info.sender, channel_id, nft_index));
         self.num_tokens
             .update::<_, ContractError>(ctx.deps.storage, |num_tokens| {
@@ -936,7 +921,7 @@ impl Cw721MembershipContract {
         };
 
         let tokens: Result<Vec<_>, _> = self
-            .by_owner
+            .nfts_by_owner
             .sub_prefix(owner_addr)
             .range(ctx.deps.storage, min_bound, None, Order::Ascending)
             .take(limit)
@@ -1001,8 +986,6 @@ impl Cw721MembershipContract {
     ) -> Result<NftInfoResponse<NftExtension>, ContractError> {
         let nft = self.nfts.load(storage, (channel_id, nft_index))?;
 
-        // TODO: improve info
-
         Ok(NftInfoResponse {
             token_uri: None,
             extension: NftExtension {
@@ -1060,30 +1043,27 @@ impl Cw721MembershipContract {
                 None => Err(ContractError::NftNotFound),
             })?;
 
-        self.by_owner
+        self.nfts_by_owner
             .remove(ctx.deps.storage, (ctx.info.sender, channel_id, nft_index));
-        self.by_owner.save(
+        self.nfts_by_owner.save(
             ctx.deps.storage,
             (recipient.to_owned(), channel_id, nft_index),
             &(),
         )?;
-        let expiry = nft
-            .start_time
-            .plus_seconds(nft.duration_seconds.u64())
-            .seconds();
-        self.by_expiration.remove(
+        let expiry_seconds = checked_expiry(nft.start_time, nft.duration_seconds)?.seconds();
+        self.nfts_by_expiration.remove(
             ctx.deps.storage,
             (
                 sender.to_string() + &channel_id.to_string(),
-                expiry,
+                expiry_seconds,
                 nft_index,
             ),
         );
-        self.by_expiration.save(
+        self.nfts_by_expiration.save(
             ctx.deps.storage,
             (
                 recipient.to_string() + &channel_id.to_string(),
-                expiry,
+                expiry_seconds,
                 nft_index,
             ),
             &(),
@@ -1110,13 +1090,52 @@ pub fn assert_exact_funds(ctx: &ExecCtx, amount: Coin) -> Result<Response, Contr
 
 pub fn parse_token_id(token_id: &String) -> Result<(u64, u64), ContractError> {
     let bytes = URL_SAFE_NO_PAD.decode(token_id)?;
-    let (nft_index, nft_index_len) =
+    let (channel_id, channel_id_len) =
         u64::decode_var(bytes.as_slice()).ok_or(ContractError::InvalidTokenId)?;
-    let (channel_id, _) =
-        u64::decode_var(&bytes[nft_index_len..]).ok_or(ContractError::InvalidTokenId)?;
+    let (nft_index, _) =
+        u64::decode_var(&bytes[channel_id_len..]).ok_or(ContractError::InvalidTokenId)?;
     Ok((channel_id, nft_index))
 }
 
 pub fn format_token_id(channel_id: u64, nft_index: u64) -> String {
-    URL_SAFE_NO_PAD.encode([nft_index.encode_var_vec(), channel_id.encode_var_vec()].concat())
+    URL_SAFE_NO_PAD.encode([channel_id.encode_var_vec(), nft_index.encode_var_vec()].concat())
+}
+
+pub fn checked_expiry(
+    start: Timestamp,
+    duration_seconds: Uint64,
+) -> Result<Timestamp, OverflowError> {
+    let start_nanos = Uint64::from(start.nanos());
+    let durations_nanos = duration_seconds.checked_mul(Uint64::from(1_000_000_000u64))?;
+    let end_nanos = start_nanos.checked_add(durations_nanos)?;
+    Ok(Timestamp::from_nanos(end_nanos.u64()))
+}
+
+pub fn validate_tiers(tiers: Vec<MembershipConfig>) -> bool {
+    for tier in tiers.iter() {
+        if tier.price.amount.is_zero() {
+            return false;
+        }
+        if tier.price.denom.is_empty() {
+            return false;
+        }
+        if tier.duration_seconds.is_zero()
+            || tier.duration_seconds > Uint64::from(MAX_DURATION_SECONDS)
+        {
+            return false;
+        }
+        if tier.display_name.is_empty() {
+            return false;
+        }
+        if tier.description.is_empty() {
+            return false;
+        }
+        if tier.nft_name_prefix.is_empty() {
+            return false;
+        }
+        if tier.nft_image_uri.is_empty() {
+            return false;
+        }
+    }
+    true
 }

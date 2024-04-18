@@ -1,4 +1,6 @@
-use cosmwasm_std::{from_json, Addr, BalanceResponse, BankQuery, Coin, Timestamp, Uint128, Uint64};
+use cosmwasm_std::{
+    from_json, Addr, BalanceResponse, BankQuery, Coin, Event, Timestamp, Uint128, Uint64,
+};
 use cw2981_royalties::msg::{CheckRoyaltiesResponse, Cw2981QueryMsg, RoyaltiesInfoResponse};
 use cw721::{NftInfoResponse, TokensResponse};
 use cw721_metadata_onchain::{Metadata, Trait};
@@ -115,7 +117,12 @@ fn basic_full_flow() {
         .call(channel_owner)
         .unwrap();
 
-    let channel_response = contract.channel(channel_owner.to_string()).unwrap();
+    let ev_values = get_events_values(res.events, "wasm".to_string(), "channel_id".to_string());
+    assert_eq!(ev_values.len(), 1);
+    let channel_id = Uint64::from(ev_values[0].parse::<u64>().unwrap());
+    assert_eq!(channel_id, Uint64::from(1u64));
+
+    let channel_response = contract.channel(channel_id).unwrap();
     assert_eq!(channel_response.memberships_config, memberships_config);
     assert_eq!(channel_response.mint_royalties_per10k, mint_royalties);
     assert_eq!(
@@ -128,11 +135,11 @@ fn basic_full_flow() {
     );
 
     contract
-        .update_channel(channel_response.id, None, Some(trade_royalties), None, None)
+        .update_channel(channel_response.id, None, Some(trade_royalties), None)
         .call(channel_owner)
         .unwrap();
 
-    let channel_response = contract.channel(channel_owner.to_string()).unwrap();
+    let channel_response = contract.channel(channel_id).unwrap();
     assert_eq!(channel_response.owner_addr, channel_owner);
     assert_eq!(channel_response.memberships_config, memberships_config);
     assert_eq!(channel_response.mint_royalties_per10k, mint_royalties);
@@ -145,7 +152,7 @@ fn basic_full_flow() {
     // ------- mint a nft
 
     contract
-        .subscribe(channel_owner.to_string(), sub_user.to_string(), 0)
+        .subscribe(channel_response.id, sub_user.to_string(), 0)
         .with_funds(&[Coin {
             denom: "utori".to_string(),
             amount: Uint128::from(1000000u32),
@@ -294,7 +301,7 @@ fn basic_full_flow() {
     });
 
     let subscription = contract
-        .subscription(sub_user.to_string(), channel_owner.to_string())
+        .subscription(sub_user.to_string(), channel_response.id)
         .unwrap();
     assert_eq!(
         subscription,
@@ -313,7 +320,7 @@ fn basic_full_flow() {
     });
 
     let subscription = contract
-        .subscription(sub_user.to_string(), channel_owner.to_string())
+        .subscription(sub_user.to_string(), channel_response.id)
         .unwrap();
     assert_eq!(
         subscription,
@@ -325,7 +332,7 @@ fn basic_full_flow() {
 
     // check withdraw
     contract
-        .withdraw_mint_funds(channel_owner.to_string(), Some(channel_vault.to_string()))
+        .withdraw_mint_funds(channel_id, Some(channel_vault.to_string()))
         .call(channel_owner)
         .unwrap();
     let channel_balance = get_balance(channel_vault.to_string());
@@ -339,4 +346,18 @@ fn basic_full_flow() {
 
     let platform_balance = get_balance(platform_vault.to_string());
     assert_eq!(platform_balance.amount.amount, Uint128::from(50000u32));
+}
+
+fn get_events_values(ev: Vec<Event>, ty: String, key: String) -> Vec<String> {
+    ev.iter()
+        .filter(|v| v.ty == ty)
+        .map(|v| {
+            v.attributes
+                .iter()
+                .find(|vv| vv.key == key)
+                .unwrap()
+                .value
+                .clone()
+        })
+        .collect()
 }

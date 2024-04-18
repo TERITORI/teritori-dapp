@@ -53,4 +53,7 @@ pub enum ContractError {
 
     #[error("No changes.")]
     NoChanges,
+
+    #[error("Expiry overflow.")]
+    ExpiryOverflow,
 }
