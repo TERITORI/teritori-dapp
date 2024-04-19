@@ -7,7 +7,7 @@ import { useMultisigClient } from "./useMultisigClient";
 
 import { ExecutionState, Transaction } from "@/api/multisig/v1/multisig";
 import { getCosmosNetwork, parseUserId } from "@/networks";
-import { cosmosTypesRegistry } from "@/networks/signer";
+import { cosmosTypesRegistry } from "@/networks/cosmos-types";
 
 const batchSize = 16;
 

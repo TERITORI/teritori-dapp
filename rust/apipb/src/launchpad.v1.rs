@@ -1,7 +1,35 @@
 // @generated
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UpdateTokensMetadatasRequest {
+pub struct UploadMetadataInfo {
+    #[prost(string, tag="1")]
+    pub sender: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub network_id: ::prost::alloc::string::String,
+    #[prost(uint32, tag="3")]
+    pub project_id: u32,
+    #[prost(uint32, tag="4")]
+    pub token_id: u32,
+    #[prost(message, optional, tag="5")]
+    pub metadata: ::core::option::Option<Metadata>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UploadMetadataRequest {
+    #[prost(message, optional, tag="1")]
+    pub info: ::core::option::Option<UploadMetadataInfo>,
+    #[prost(bytes="vec", tag="2")]
+    pub image_data: ::prost::alloc::vec::Vec<u8>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UploadMetadataResponse {
+    #[prost(uint32, tag="1")]
+    pub token_id: u32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UploadMetadatasRequest {
     #[prost(string, tag="1")]
     pub sender: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
@@ -13,7 +41,7 @@ pub struct UpdateTokensMetadatasRequest {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UpdateTokensMetadatasResponse {
+pub struct UploadMetadatasResponse {
     #[prost(string, tag="1")]
     pub merkle_root: ::prost::alloc::string::String,
 }

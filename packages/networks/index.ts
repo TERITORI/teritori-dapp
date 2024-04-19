@@ -19,6 +19,7 @@ import { osmosisTestnetNetwork } from "./osmosis-testnet";
 // import { solanaNetwork } from "./solana";
 import { polygonNetwork } from "./polygon";
 import { polygonMumbaiNetwork } from "./polygon-mumbai";
+import { sagaNetwork } from "./saga";
 import { sagaTest2 } from "./saga-test2";
 import { teritoriNetwork } from "./teritori";
 import { teritoriLocalnetNetwork } from "./teritori-localnet";
@@ -51,6 +52,7 @@ const packageNetworks = [
   polygonMumbaiNetwork,
   polygonNetwork,
   sagaTest2,
+  sagaNetwork,
 ];
 
 export const defaultEnabledNetworks = [

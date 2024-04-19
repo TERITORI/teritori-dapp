@@ -18,8 +18,8 @@ export const cosmosNetwork: NetworkInfo = {
   testnet: false,
   backendEndpoint: "https://dapp-backend.mainnet.teritori.com",
   addressPrefix: "cosmos",
-  restEndpoint: "https://api-cosmoshub-ia.cosmosia.notional.ventures",
-  rpcEndpoint: "https://rpc-cosmoshub-ia.cosmosia.notional.ventures",
+  restEndpoint: "https://rest-cosmoshub.ecostake.com",
+  rpcEndpoint: "https://rpc-cosmoshub.ecostake.com",
   stakeCurrency: "uatom",
   gasPriceStep: {
     low: 0.01,

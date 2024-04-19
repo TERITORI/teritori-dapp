@@ -29,9 +29,53 @@ func NewLaunchpadService(ctx context.Context, conf *Config) launchpadpb.Launchpa
 	}
 }
 
+// func (s *Launchpad) UploadMetadata(stream launchpadpb.LaunchpadService_UploadMetadataServer) error {
+// 	MAX_SIZE := 100
+
+// 	image_data := bytes.Buffer{}
+// 	image_size := 0
+
+// 	for {
+// 		req, err := stream.Recv()
+// 		if err == io.EOF {
+// 			log.Print("no more data")
+// 			break
+// 		}
+// 		if err != nil {
+// 			return errors.Wrap(err, "failed to upload file to backend")
+// 		}
+
+// 		chunk := req.GetImageChunkData()
+// 		size := len(chunk)
+
+// 		image_size += size
+// 		if image_size > MAX_SIZE {
+// 			return errors.Wrap(err, "max size allowed is: "+strconv.Itoa(MAX_SIZE))
+// 		}
+// 		_, err = image_data.Write(chunk)
+// 		if err != nil {
+// 			return errors.Wrap(err, "failed to write file data")
+// 		}
+// 	}
+
+// 	resp := &launchpadpb.UploadMetadataResponse{
+// 		TokenId: 1,
+// 	}
+// 	err := stream.SendAndClose(resp)
+// 	if err != nil {
+// 		return errors.Wrap(err, "failed to send and close stream")
+// 	}
+
+// 	return nil
+// }
+
+func (s *Launchpad) UploadMetadata(ctx context.Context, req *launchpadpb.UploadMetadataRequest) (*launchpadpb.UploadMetadataResponse, error) {
+
+}
+
 // Upload collection metadatas and generate corresponding merkle root
 // This will delete all existing tokens metadatas and replace by new ones
-func (s *Launchpad) UpdateTokensMetadatas(ctx context.Context, req *launchpadpb.UpdateTokensMetadatasRequest) (*launchpadpb.UpdateTokensMetadatasResponse, error) {
+func (s *Launchpad) UploadMetadatas(ctx context.Context, req *launchpadpb.UploadMetadatasRequest) (*launchpadpb.UploadMetadatasResponse, error) {
 	if err := s.verifySender(req.Sender); err != nil {
 		return nil, errors.Wrap(err, "failed to verify sender")
 	}
@@ -92,7 +136,7 @@ func (s *Launchpad) UpdateTokensMetadatas(ctx context.Context, req *launchpadpb.
 		return nil, errors.Wrap(err, "fail to process")
 	}
 
-	return &launchpadpb.UpdateTokensMetadatasResponse{MerkleRoot: hex_root}, nil
+	return &launchpadpb.UploadMetadatasResponse{MerkleRoot: hex_root}, nil
 }
 
 // Calculate collection merkle root

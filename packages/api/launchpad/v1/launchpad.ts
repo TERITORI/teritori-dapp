@@ -6,14 +6,31 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "launchpad.v1";
 
-export interface UpdateTokensMetadatasRequest {
+export interface UploadMetadataInfo {
+  sender: string;
+  networkId: string;
+  projectId: number;
+  tokenId: number;
+  metadata: Metadata | undefined;
+}
+
+export interface UploadMetadataRequest {
+  info: UploadMetadataInfo | undefined;
+  imageData: Uint8Array;
+}
+
+export interface UploadMetadataResponse {
+  tokenId: number;
+}
+
+export interface UploadMetadatasRequest {
   sender: string;
   networkId: string;
   projectId: number;
   metadatas: Metadata[];
 }
 
-export interface UpdateTokensMetadatasResponse {
+export interface UploadMetadatasResponse {
   merkleRoot: string;
 }
 
@@ -59,12 +76,266 @@ export interface Trait {
   value: string;
 }
 
-function createBaseUpdateTokensMetadatasRequest(): UpdateTokensMetadatasRequest {
+function createBaseUploadMetadataInfo(): UploadMetadataInfo {
+  return { sender: "", networkId: "", projectId: 0, tokenId: 0, metadata: undefined };
+}
+
+export const UploadMetadataInfo = {
+  encode(message: UploadMetadataInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(18).string(message.networkId);
+    }
+    if (message.projectId !== 0) {
+      writer.uint32(24).uint32(message.projectId);
+    }
+    if (message.tokenId !== 0) {
+      writer.uint32(32).uint32(message.tokenId);
+    }
+    if (message.metadata !== undefined) {
+      Metadata.encode(message.metadata, writer.uint32(42).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UploadMetadataInfo {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUploadMetadataInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.projectId = reader.uint32();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.tokenId = reader.uint32();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.metadata = Metadata.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UploadMetadataInfo {
+    return {
+      sender: isSet(object.sender) ? globalThis.String(object.sender) : "",
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      projectId: isSet(object.projectId) ? globalThis.Number(object.projectId) : 0,
+      tokenId: isSet(object.tokenId) ? globalThis.Number(object.tokenId) : 0,
+      metadata: isSet(object.metadata) ? Metadata.fromJSON(object.metadata) : undefined,
+    };
+  },
+
+  toJSON(message: UploadMetadataInfo): unknown {
+    const obj: any = {};
+    if (message.sender !== "") {
+      obj.sender = message.sender;
+    }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    if (message.projectId !== 0) {
+      obj.projectId = Math.round(message.projectId);
+    }
+    if (message.tokenId !== 0) {
+      obj.tokenId = Math.round(message.tokenId);
+    }
+    if (message.metadata !== undefined) {
+      obj.metadata = Metadata.toJSON(message.metadata);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UploadMetadataInfo>, I>>(base?: I): UploadMetadataInfo {
+    return UploadMetadataInfo.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UploadMetadataInfo>, I>>(object: I): UploadMetadataInfo {
+    const message = createBaseUploadMetadataInfo();
+    message.sender = object.sender ?? "";
+    message.networkId = object.networkId ?? "";
+    message.projectId = object.projectId ?? 0;
+    message.tokenId = object.tokenId ?? 0;
+    message.metadata = (object.metadata !== undefined && object.metadata !== null)
+      ? Metadata.fromPartial(object.metadata)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseUploadMetadataRequest(): UploadMetadataRequest {
+  return { info: undefined, imageData: new Uint8Array(0) };
+}
+
+export const UploadMetadataRequest = {
+  encode(message: UploadMetadataRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.info !== undefined) {
+      UploadMetadataInfo.encode(message.info, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.imageData.length !== 0) {
+      writer.uint32(18).bytes(message.imageData);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UploadMetadataRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUploadMetadataRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.info = UploadMetadataInfo.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.imageData = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UploadMetadataRequest {
+    return {
+      info: isSet(object.info) ? UploadMetadataInfo.fromJSON(object.info) : undefined,
+      imageData: isSet(object.imageData) ? bytesFromBase64(object.imageData) : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: UploadMetadataRequest): unknown {
+    const obj: any = {};
+    if (message.info !== undefined) {
+      obj.info = UploadMetadataInfo.toJSON(message.info);
+    }
+    if (message.imageData.length !== 0) {
+      obj.imageData = base64FromBytes(message.imageData);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UploadMetadataRequest>, I>>(base?: I): UploadMetadataRequest {
+    return UploadMetadataRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UploadMetadataRequest>, I>>(object: I): UploadMetadataRequest {
+    const message = createBaseUploadMetadataRequest();
+    message.info = (object.info !== undefined && object.info !== null)
+      ? UploadMetadataInfo.fromPartial(object.info)
+      : undefined;
+    message.imageData = object.imageData ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseUploadMetadataResponse(): UploadMetadataResponse {
+  return { tokenId: 0 };
+}
+
+export const UploadMetadataResponse = {
+  encode(message: UploadMetadataResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.tokenId !== 0) {
+      writer.uint32(8).uint32(message.tokenId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UploadMetadataResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseUploadMetadataResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.tokenId = reader.uint32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UploadMetadataResponse {
+    return { tokenId: isSet(object.tokenId) ? globalThis.Number(object.tokenId) : 0 };
+  },
+
+  toJSON(message: UploadMetadataResponse): unknown {
+    const obj: any = {};
+    if (message.tokenId !== 0) {
+      obj.tokenId = Math.round(message.tokenId);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<UploadMetadataResponse>, I>>(base?: I): UploadMetadataResponse {
+    return UploadMetadataResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<UploadMetadataResponse>, I>>(object: I): UploadMetadataResponse {
+    const message = createBaseUploadMetadataResponse();
+    message.tokenId = object.tokenId ?? 0;
+    return message;
+  },
+};
+
+function createBaseUploadMetadatasRequest(): UploadMetadatasRequest {
   return { sender: "", networkId: "", projectId: 0, metadatas: [] };
 }
 
-export const UpdateTokensMetadatasRequest = {
-  encode(message: UpdateTokensMetadatasRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const UploadMetadatasRequest = {
+  encode(message: UploadMetadatasRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.sender !== "") {
       writer.uint32(10).string(message.sender);
     }
@@ -80,10 +351,10 @@ export const UpdateTokensMetadatasRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateTokensMetadatasRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UploadMetadatasRequest {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUpdateTokensMetadatasRequest();
+    const message = createBaseUploadMetadatasRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -124,7 +395,7 @@ export const UpdateTokensMetadatasRequest = {
     return message;
   },
 
-  fromJSON(object: any): UpdateTokensMetadatasRequest {
+  fromJSON(object: any): UploadMetadatasRequest {
     return {
       sender: isSet(object.sender) ? globalThis.String(object.sender) : "",
       networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
@@ -135,7 +406,7 @@ export const UpdateTokensMetadatasRequest = {
     };
   },
 
-  toJSON(message: UpdateTokensMetadatasRequest): unknown {
+  toJSON(message: UploadMetadatasRequest): unknown {
     const obj: any = {};
     if (message.sender !== "") {
       obj.sender = message.sender;
@@ -152,11 +423,11 @@ export const UpdateTokensMetadatasRequest = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<UpdateTokensMetadatasRequest>, I>>(base?: I): UpdateTokensMetadatasRequest {
-    return UpdateTokensMetadatasRequest.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<UploadMetadatasRequest>, I>>(base?: I): UploadMetadatasRequest {
+    return UploadMetadatasRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<UpdateTokensMetadatasRequest>, I>>(object: I): UpdateTokensMetadatasRequest {
-    const message = createBaseUpdateTokensMetadatasRequest();
+  fromPartial<I extends Exact<DeepPartial<UploadMetadatasRequest>, I>>(object: I): UploadMetadatasRequest {
+    const message = createBaseUploadMetadatasRequest();
     message.sender = object.sender ?? "";
     message.networkId = object.networkId ?? "";
     message.projectId = object.projectId ?? 0;
@@ -165,22 +436,22 @@ export const UpdateTokensMetadatasRequest = {
   },
 };
 
-function createBaseUpdateTokensMetadatasResponse(): UpdateTokensMetadatasResponse {
+function createBaseUploadMetadatasResponse(): UploadMetadatasResponse {
   return { merkleRoot: "" };
 }
 
-export const UpdateTokensMetadatasResponse = {
-  encode(message: UpdateTokensMetadatasResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const UploadMetadatasResponse = {
+  encode(message: UploadMetadatasResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.merkleRoot !== "") {
       writer.uint32(10).string(message.merkleRoot);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateTokensMetadatasResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UploadMetadatasResponse {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseUpdateTokensMetadatasResponse();
+    const message = createBaseUploadMetadatasResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -200,11 +471,11 @@ export const UpdateTokensMetadatasResponse = {
     return message;
   },
 
-  fromJSON(object: any): UpdateTokensMetadatasResponse {
+  fromJSON(object: any): UploadMetadatasResponse {
     return { merkleRoot: isSet(object.merkleRoot) ? globalThis.String(object.merkleRoot) : "" };
   },
 
-  toJSON(message: UpdateTokensMetadatasResponse): unknown {
+  toJSON(message: UploadMetadatasResponse): unknown {
     const obj: any = {};
     if (message.merkleRoot !== "") {
       obj.merkleRoot = message.merkleRoot;
@@ -212,13 +483,11 @@ export const UpdateTokensMetadatasResponse = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<UpdateTokensMetadatasResponse>, I>>(base?: I): UpdateTokensMetadatasResponse {
-    return UpdateTokensMetadatasResponse.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<UploadMetadatasResponse>, I>>(base?: I): UploadMetadatasResponse {
+    return UploadMetadatasResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<UpdateTokensMetadatasResponse>, I>>(
-    object: I,
-  ): UpdateTokensMetadatasResponse {
-    const message = createBaseUpdateTokensMetadatasResponse();
+  fromPartial<I extends Exact<DeepPartial<UploadMetadatasResponse>, I>>(object: I): UploadMetadatasResponse {
+    const message = createBaseUploadMetadatasResponse();
     message.merkleRoot = object.merkleRoot ?? "";
     return message;
   },
@@ -877,10 +1146,14 @@ export const Trait = {
 };
 
 export interface LaunchpadService {
-  UpdateTokensMetadatas(
-    request: DeepPartial<UpdateTokensMetadatasRequest>,
+  UploadMetadatas(
+    request: DeepPartial<UploadMetadatasRequest>,
     metadata?: grpc.Metadata,
-  ): Promise<UpdateTokensMetadatasResponse>;
+  ): Promise<UploadMetadatasResponse>;
+  UploadMetadata(
+    request: DeepPartial<UploadMetadataRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<UploadMetadataResponse>;
   CalculateCollectionMerkleRoot(
     request: DeepPartial<CalculateCollectionMerkleRootRequest>,
     metadata?: grpc.Metadata,
@@ -893,20 +1166,24 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
 
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.UpdateTokensMetadatas = this.UpdateTokensMetadatas.bind(this);
+    this.UploadMetadatas = this.UploadMetadatas.bind(this);
+    this.UploadMetadata = this.UploadMetadata.bind(this);
     this.CalculateCollectionMerkleRoot = this.CalculateCollectionMerkleRoot.bind(this);
     this.TokenMetadata = this.TokenMetadata.bind(this);
   }
 
-  UpdateTokensMetadatas(
-    request: DeepPartial<UpdateTokensMetadatasRequest>,
+  UploadMetadatas(
+    request: DeepPartial<UploadMetadatasRequest>,
     metadata?: grpc.Metadata,
-  ): Promise<UpdateTokensMetadatasResponse> {
-    return this.rpc.unary(
-      LaunchpadServiceUpdateTokensMetadatasDesc,
-      UpdateTokensMetadatasRequest.fromPartial(request),
-      metadata,
-    );
+  ): Promise<UploadMetadatasResponse> {
+    return this.rpc.unary(LaunchpadServiceUploadMetadatasDesc, UploadMetadatasRequest.fromPartial(request), metadata);
+  }
+
+  UploadMetadata(
+    request: DeepPartial<UploadMetadataRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<UploadMetadataResponse> {
+    return this.rpc.unary(LaunchpadServiceUploadMetadataDesc, UploadMetadataRequest.fromPartial(request), metadata);
   }
 
   CalculateCollectionMerkleRoot(
@@ -927,19 +1204,42 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
 
 export const LaunchpadServiceDesc = { serviceName: "launchpad.v1.LaunchpadService" };
 
-export const LaunchpadServiceUpdateTokensMetadatasDesc: UnaryMethodDefinitionish = {
-  methodName: "UpdateTokensMetadatas",
+export const LaunchpadServiceUploadMetadatasDesc: UnaryMethodDefinitionish = {
+  methodName: "UploadMetadatas",
   service: LaunchpadServiceDesc,
   requestStream: false,
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return UpdateTokensMetadatasRequest.encode(this).finish();
+      return UploadMetadatasRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = UpdateTokensMetadatasResponse.decode(data);
+      const value = UploadMetadatasResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const LaunchpadServiceUploadMetadataDesc: UnaryMethodDefinitionish = {
+  methodName: "UploadMetadata",
+  service: LaunchpadServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return UploadMetadataRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = UploadMetadataResponse.decode(data);
       return {
         ...value,
         toObject() {
@@ -1061,6 +1361,31 @@ export class GrpcWebImpl {
         },
       });
     });
+  }
+}
+
+function bytesFromBase64(b64: string): Uint8Array {
+  if (globalThis.Buffer) {
+    return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
+  } else {
+    const bin = globalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
+  }
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+  if (globalThis.Buffer) {
+    return globalThis.Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(globalThis.String.fromCharCode(byte));
+    });
+    return globalThis.btoa(bin.join(""));
   }
 }
 
