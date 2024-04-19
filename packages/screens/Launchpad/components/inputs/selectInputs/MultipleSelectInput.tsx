@@ -29,7 +29,7 @@ interface Props {
   onDropdownClosed?: () => void;
   dropdownOptions: string[];
   placeHolder?: string;
-  setItems: (item: string) => void;
+  onPressItem: (item: string) => void;
   items: string[];
   label: string;
   sublabel?: React.ReactElement;
@@ -42,7 +42,7 @@ export const MultipleSelectInput: FC<Props> = ({
   placeHolder,
   items,
   label,
-  setItems,
+  onPressItem,
   sublabel,
   required = true,
 }) => {
@@ -56,7 +56,6 @@ export const MultipleSelectInput: FC<Props> = ({
           zIndex: 1,
           width: "100%",
           minHeight: 40,
-          marginBottom: layout.spacing_x2,
         },
         style,
       ]}
@@ -132,7 +131,7 @@ export const MultipleSelectInput: FC<Props> = ({
               {dropdownOptions.map((item, index) => (
                 <TouchableOpacity
                   onPress={() => {
-                    setItems(item);
+                    onPressItem(item);
                   }}
                   key={index}
                   style={{

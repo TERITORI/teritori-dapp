@@ -1,55 +1,85 @@
 import React, { useState } from "react";
-import { Control, FieldValues, Path } from "react-hook-form";
-import { TextInputProps } from "react-native";
-
 import {
-  TextInputCustom,
-  TextInputCustomRules,
-} from "@/components/inputs/TextInputCustom";
+  FieldValues,
+  Path,
+  useController,
+  UseFormReturn,
+} from "react-hook-form";
+import { TextInput, TextInputProps, TextStyle } from "react-native";
+
+import { ErrorText } from "@/components/ErrorText";
+import { TertiaryBox } from "@/components/boxes/TertiaryBox";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { Label } from "@/components/inputs/TextInputCustom";
+import { SpacerColumn } from "@/components/spacer";
+import { neutral22, neutral77, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-interface TextInputCustomProps<T extends FieldValues>
+interface TextInputLaunchpadProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
   placeHolder: string;
-  control: Control<T>;
+  form: UseFormReturn<T>;
   name: Path<T>;
   sublabel?: React.ReactElement;
-  rules?: TextInputCustomRules;
-  regexp?: RegExp;
-  onChangeText?: (value: string) => void;
+  required?: boolean;
 }
 
 export const TextInputLaunchpad = <T extends FieldValues>({
-  control,
+  form,
   name,
   label,
   placeHolder,
   sublabel,
-  regexp,
-  rules,
-  onChangeText,
-}: TextInputCustomProps<T>) => {
-  const [value, setValue] = useState("");
+  required = true,
+}: TextInputLaunchpadProps<T>) => {
+  const [hovered, setHovered] = useState(false);
+  const { fieldState, field } = useController<T>({
+    name,
+    control: form.control,
+    rules: { required },
+  });
   return (
-    <TextInputCustom<T>
-      rules={{ required: true, ...rules }}
-      labelStyle={{ maxWidth: 416 }}
-      label={label}
-      placeHolder={placeHolder}
-      sublabel={sublabel}
-      name={name}
-      control={control}
-      variant="labelOutside"
-      containerStyle={{ marginBottom: layout.spacing_x2 }}
-      boxMainContainerStyle={{ minHeight: 0 }}
-      height={40}
-      regexp={regexp}
-      onChange={(e) => {
-        setValue(e.nativeEvent.text);
-        onChangeText?.(e.nativeEvent.text);
-      }}
-      value={value}
-    />
+    <CustomPressable
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
+      onPress={() => form.setFocus(name)}
+      style={{ width: "100%", marginBottom: layout.spacing_x2 }}
+    >
+      <Label hovered={hovered} isRequired={required}>
+        {label}
+      </Label>
+      {sublabel && sublabel}
+      <SpacerColumn size={1.5} />
+      <TertiaryBox
+        style={[
+          {
+            backgroundColor: neutral22,
+            justifyContent: "center",
+            paddingHorizontal: layout.spacing_x1_5,
+            height: 40,
+          },
+          hovered && { borderColor: secondaryColor },
+        ]}
+      >
+        <TextInput
+          placeholder={placeHolder}
+          placeholderTextColor={neutral77}
+          style={[
+            fontSemibold14,
+            {
+              color: secondaryColor,
+              width: "100%",
+            },
+            { outlineStyle: "none" } as TextStyle,
+          ]}
+          onChangeText={(text) => field.onChange(text)}
+          {...form.register(name)}
+        />
+      </TertiaryBox>
+
+      <ErrorText>{fieldState.error?.message}</ErrorText>
+    </CustomPressable>
   );
 };

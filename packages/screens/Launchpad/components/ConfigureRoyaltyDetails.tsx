@@ -7,7 +7,6 @@ import { CollectionFormValues } from "../../../utils/types/launchpad";
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
-import { patternOnlyNumbers } from "@/utils/formRules";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -29,7 +28,6 @@ export const ConfigureRoyaltyDetails: React.FC = () => {
       <SpacerColumn size={2} />
 
       <TextInputLaunchpad<CollectionFormValues>
-        rules={{ required: false }}
         label="Payment Address "
         placeHolder="teritori123456789qwertyuiopasdfghjklzxcvbnm"
         name="royaltyAddress"
@@ -40,11 +38,11 @@ export const ConfigureRoyaltyDetails: React.FC = () => {
             </BrandText>
           </View>
         }
-        control={collectionForm.control}
+        form={collectionForm}
+        required={false}
       />
 
       <TextInputLaunchpad<CollectionFormValues>
-        rules={{ required: false, pattern: patternOnlyNumbers }}
         label="Share Percentage "
         placeHolder="8%"
         name="royaltyPercentage"
@@ -55,7 +53,8 @@ export const ConfigureRoyaltyDetails: React.FC = () => {
             </BrandText>
           </View>
         }
-        control={collectionForm.control}
+        form={collectionForm}
+        required={false}
       />
     </View>
   );

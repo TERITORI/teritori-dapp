@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { AssetsTab } from "../AssetsTab";
-import { UriTab } from "../UriTab";
+import { AssetsTab } from "./AssetsTab";
+import { UriTab } from "./UriTab";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";

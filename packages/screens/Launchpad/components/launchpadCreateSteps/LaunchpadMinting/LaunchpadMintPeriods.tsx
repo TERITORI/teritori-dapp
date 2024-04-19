@@ -6,42 +6,47 @@ import addSVG from "@/assets/icons/add-secondary.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetworkFeature, NetworkFeature } from "@/networks";
-import { LaunchpadMintPeriodAccordionForm } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintPeriodsForm/LaunchpadMintPeriodAccordionForm";
+import { LaunchpadMintPeriodAccordion } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/LaunchpadMintPeriodAccordion";
 import { secondaryColor } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { CollectionFormValues } from "@/utils/types/launchpad";
 
-export const MintPeriodsForm: FC = () => {
+export const LaunchpadMintPeriods: FC = () => {
   const selectedWallet = useSelectedWallet();
   const networkId = selectedWallet?.networkId || "";
   const collectionForm = useFormContext<CollectionFormValues>();
+  const selectedNetwork = useSelectedNetworkInfo();
 
-  const mintPeriodsFieldArray = useFieldArray({
+  const { fields, update, append, remove } = useFieldArray({
     control: collectionForm.control,
     name: "mintPeriods",
   });
   const closeAll = useCallback(() => {
-    mintPeriodsFieldArray.fields.map((elem, index) => {
-      mintPeriodsFieldArray.update(index, { ...elem, isOpen: false });
+    fields.map((elem, index) => {
+      update(index, { ...elem, isOpen: false });
     });
-  }, [mintPeriodsFieldArray]);
+  }, [fields, update]);
 
   const createMintPeriod = useCallback(() => {
+    if (!selectedNetwork) return;
     closeAll();
     const feature = getNetworkFeature(networkId, NetworkFeature.NFTLaunchpad);
     if (!feature) {
       throw new Error("This network does not support nft launchpad");
     }
-    mintPeriodsFieldArray.append({
-      isOpen: true,
-      denom: "",
+    append({
+      price: { denom: selectedNetwork.currencies[0].denom, amount: "" },
+      maxTokens: "",
+      perAddressLimit: "",
       startTime: "",
-      unitPrice: "",
+      endTime: "",
+      isOpen: true,
     });
-  }, [networkId, closeAll, mintPeriodsFieldArray]);
+  }, [networkId, closeAll, append, selectedNetwork]);
 
   return (
     <View
@@ -55,13 +60,13 @@ export const MintPeriodsForm: FC = () => {
           width: "100%",
         }}
       >
-        {mintPeriodsFieldArray.fields.map((elem, index) => {
+        {fields.map((elem, index) => {
           return (
             <Fragment key={index}>
               <SpacerColumn size={2} />
-              <LaunchpadMintPeriodAccordionForm
-                remove={mintPeriodsFieldArray.remove}
-                update={mintPeriodsFieldArray.update}
+              <LaunchpadMintPeriodAccordion
+                remove={remove}
+                update={update}
                 closeAll={closeAll}
                 elem={elem}
                 elemIndex={index}

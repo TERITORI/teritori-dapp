@@ -14,4 +14,5 @@ export interface FileUploaderProps {
   children?: ({ onPress }: { onPress: () => void }) => React.ReactNode;
   maxUpload?: number;
   setIsLoading?: (value: boolean) => void;
+  required?: boolean;
 }

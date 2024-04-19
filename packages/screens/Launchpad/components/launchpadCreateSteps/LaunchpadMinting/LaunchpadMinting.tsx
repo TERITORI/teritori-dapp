@@ -9,14 +9,9 @@ import { BrandText } from "@/components/BrandText";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
-import { MintPeriodsForm } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/mintPeriodsForm/MintPeriodsForm";
-import { patternOnlyNumbers } from "@/utils/formRules";
-import { neutral55, neutral77 } from "@/utils/style/colors";
-import {
-  fontSemibold13,
-  fontSemibold14,
-  fontSemibold20,
-} from "@/utils/style/fonts";
+import { LaunchpadMintPeriods } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/LaunchpadMintPeriods";
+import { neutral77 } from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const LaunchpadMinting: React.FC = () => {
@@ -42,22 +37,15 @@ export const LaunchpadMinting: React.FC = () => {
           label="Number of Tokens "
           placeHolder="0"
           name="tokensCount"
-          control={collectionForm.control}
-          rules={{ pattern: patternOnlyNumbers }}
+          form={collectionForm}
         />
 
         <TextInputLaunchpad<CollectionFormValues>
           label="Reveal Time"
           placeHolder="dd.mm.yyyy | hh:mm PM"
           name="revealTime"
-          sublabel={
-            <View>
-              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-                TODO
-              </BrandText>
-            </View>
-          }
-          control={collectionForm.control}
+          form={collectionForm}
+          required={false}
         />
 
         <Separator />
@@ -68,7 +56,7 @@ export const LaunchpadMinting: React.FC = () => {
           Configure the minting periods, a whitelist can be applied
         </BrandText>
 
-        <MintPeriodsForm />
+        <LaunchpadMintPeriods />
 
         <SpacerColumn size={1} />
         <Separator />

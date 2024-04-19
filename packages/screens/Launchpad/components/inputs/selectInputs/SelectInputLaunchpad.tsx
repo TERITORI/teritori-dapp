@@ -27,7 +27,7 @@ interface Props {
   onDropdownClosed?: () => void;
   dropdownOptions: string[];
   placeHolder?: string;
-  setItem: (item: string) => void;
+  onPressItem: (item: string) => void;
   item?: string;
   label: string;
   required?: boolean;
@@ -39,7 +39,7 @@ export const SelectInputLaunchpad: FC<Props> = ({
   placeHolder,
   item,
   label,
-  setItem,
+  onPressItem,
   required = true,
 }) => {
   const [isDropdownOpen, setDropdownState, ref] = useDropdowns();
@@ -51,7 +51,6 @@ export const SelectInputLaunchpad: FC<Props> = ({
         {
           zIndex: 1,
           width: "100%",
-          marginBottom: layout.spacing_x2,
         },
         style,
       ]}
@@ -130,7 +129,7 @@ export const SelectInputLaunchpad: FC<Props> = ({
                 <TouchableOpacity
                   onPress={() => {
                     setDropdownState(false);
-                    setItem(item);
+                    onPressItem(item);
                   }}
                   key={index}
                   style={{

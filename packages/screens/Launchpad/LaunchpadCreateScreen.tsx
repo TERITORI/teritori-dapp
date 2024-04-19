@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import React, { FC, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { View } from "react-native";
@@ -7,11 +8,16 @@ import { ScreenContainer } from "@/components/ScreenContainer";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SecondaryButton } from "@/components/buttons/SecondaryButton";
 import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useCreateCollection } from "@/hooks/launchpad/useCreateCollection";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
-import { LaunchpadSteper } from "@/screens/Launchpad/components/LaunchpadSteper";
+import {
+  LaunchpadStepper,
+  StepOption,
+} from "@/screens/Launchpad/components/LaunchpadStepper";
 import { LaunchpadAdditional } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadAdditional";
-import { LaunchpadAssetsAndMetadata } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadAssetsAndMetadata";
+import { LaunchpadAssetsAndMetadata } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadAssetsAndMetadata/LaunchpadAssetsAndMetadata";
 import { LaunchpadBasic } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadBasic";
 import { LaunchpadDetails } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadDetails";
 import { LaunchpadMinting } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/LaunchpadMinting";
@@ -19,7 +25,10 @@ import { LaunchpadTeamAndInvestment } from "@/screens/Launchpad/components/launc
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral33 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
-import { CollectionFormValues } from "@/utils/types/launchpad";
+import {
+  CollectionFormValues,
+  ZodCollectionFormValues,
+} from "@/utils/types/launchpad";
 
 const StepContent: FC<{
   step: number;
@@ -42,36 +51,56 @@ const StepContent: FC<{
   }
 };
 
-const stepOptions = [
-  { key: 1, title: "Basic" },
-  { key: 2, title: "Details" },
-  { key: 3, title: "Team & Investments" },
-  { key: 4, title: "Additional" },
-  { key: 5, title: "Minting" },
-  { key: 6, title: "Assets & Metadata" },
-];
-
 export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const navigation = useAppNavigation();
+  const selectedNetwork = useSelectedNetworkInfo();
+  const { setToast } = useFeedbacks();
   const collectionForm = useForm<CollectionFormValues>({
     mode: "all",
     defaultValues: {
       mintPeriods: [
         {
-          //TODO: default denom and start time here
-          denom: "",
-          startTime: "",
+          price: {
+            denom: selectedNetwork?.currencies[0].denom,
+          },
           isOpen: true,
         },
       ],
     },
+    resolver: zodResolver(ZodCollectionFormValues),
   });
   const { createCollection } = useCreateCollection();
   const [selectedStep, setSelectedStep] = useState(1);
   const [isLoading, setLoading] = useState(false);
-  const coverImage = collectionForm.watch("coverImage");
 
-  const onSubmit = async () => {
+  const stepOptions: StepOption[] = [
+    {
+      key: 1,
+      title: "Basic",
+    },
+    {
+      key: 2,
+      title: "Details",
+    },
+    {
+      key: 3,
+      title: "Team & Investments",
+    },
+    {
+      key: 4,
+      title: "Additional",
+    },
+    {
+      key: 5,
+      title: "Minting",
+    },
+    {
+      key: 6,
+      title: "Assets & Metadata",
+    },
+  ];
+
+  const onValid = async () => {
     setLoading(true);
     try {
       await createCollection(collectionForm.getValues());
@@ -85,6 +114,17 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
     }, 1000);
   };
 
+  const onInvalid = () => {
+    setToast({
+      mode: "normal",
+      type: "error",
+      title: "Unable to create the collection",
+      message: "Some fields are not correctly filled",
+    });
+  };
+
+  const onPressSubmit = () => collectionForm.handleSubmit(onValid, onInvalid)();
+
   return (
     <ScreenContainer
       fullWidth
@@ -92,6 +132,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
       noScroll={false}
       footerChildren={<></>}
       forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+      forceNetworkId="teritori-testnet"
       headerChildren={<BrandText>Launchpad Submission Form</BrandText>}
       onBackPress={() => navigation.navigate("LaunchpadApply")}
     >
@@ -100,7 +141,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
           marginTop: layout.spacing_x3,
         }}
       >
-        <LaunchpadSteper
+        <LaunchpadStepper
           stepOptions={stepOptions}
           step={selectedStep}
           onStepPress={setSelectedStep}
@@ -152,14 +193,13 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
                 text="Submit"
                 loader
                 isLoading={isLoading}
-                disabled={!collectionForm.formState.isValid || !coverImage}
-                // WIP TODO: handleSubmit
-                onPress={
-                  onSubmit
-                  // () => {
-                  //   collectionForm.handleSubmit(onSubmit);
-                  // }
-                }
+                // TODO: disabled or let the user press and see the error ?
+                // disabled={
+                //   !collectionForm.formState.isValid ||
+                //   !coverImage ||
+                //   !!Object.keys(collectionForm.formState.errors).length
+                // }
+                onPress={onPressSubmit}
               />
             ) : (
               <PrimaryButton

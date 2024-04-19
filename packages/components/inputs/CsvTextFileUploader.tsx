@@ -4,7 +4,7 @@ import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
 import { DeleteButton } from "@/components/FilePreview/DeleteButton";
-import { SelectFileUploader } from "@/components/inputs/selectFileUploader";
+import { FileUploaderSmall } from "@/components/inputs/fileUploaderSmall";
 import { TXT_CSV_MIME_TYPES } from "@/utils/mime";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
@@ -71,11 +71,11 @@ export const CsvTextFileUploader: FC<{
     );
   }
   return (
-    <SelectFileUploader
-      containerHeight={48}
+    <FileUploaderSmall
+      boxStyle={{ height: 48 }}
       onUpload={onUploadFiles}
       mimeTypes={TXT_CSV_MIME_TYPES}
-      files={localFile ? [localFile] : undefined}
+      nbAddedFiles={localFile ? 1 : 0}
     />
   );
 };
