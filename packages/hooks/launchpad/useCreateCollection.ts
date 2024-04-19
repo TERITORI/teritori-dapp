@@ -11,7 +11,7 @@ import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
   Collection,
   MintPeriod,
-  NftLaunchpadClient,
+  NftLaunchpadClient, WhitelistInfo,
 } from "@/contracts-clients/nft-launchpad";
 import { PinataFileProps, useIpfs } from "@/hooks/useIpfs";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
@@ -21,7 +21,8 @@ import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { mustGetLauchpadClient } from "@/utils/backend";
 import { generateIpfsKey } from "@/utils/ipfs";
-import { CollectionFormValues } from "@/utils/types/launchpad";
+import {CollectionFormValues, CollectionMintPeriodFormValues} from "@/utils/types/launchpad";
+import {LocalFileData} from "@/utils/types/files";
 
 export const useCreateCollection = () => {
   // Since the Collection network is the selected network, we use useSelectedNetworkId (See LaunchpadBasic.tsx)
@@ -71,38 +72,42 @@ export const useCreateCollection = () => {
         } as PinataFileProps);
 
         // ========== Whitelists
+        const whitelistAddressesFilesToUpload: LocalFileData[] = []
+        collectionFormValues.mintPeriods.forEach(mintPeriod => {
+          if(mintPeriod.whitelistAddressesFile) whitelistAddressesFilesToUpload.push(mintPeriod.whitelistAddressesFile)
+        })
         const remoteWhitelistAddressesFiles = await uploadFilesToPinata({
           pinataJWTKey,
-          files: collectionFormValues.mintPeriods.map(
-            (mintPeriod) => mintPeriod.whitelistAddressesFile!,
-          ),
+          files: whitelistAddressesFilesToUpload,
         });
         const mint_periods: MintPeriod[] = collectionFormValues.mintPeriods.map(
-          (whitelist, index) => {
-            const addresses: string[] = whitelist.whitelistAddresses || [];
-            const leaves = addresses.map(keccak256);
-            const tree = new MerkleTree(leaves, keccak256);
-            const merkleRoot = tree.getRoot().toString("hex");
-
-            const mintPeriod: MintPeriod = {
-              price: whitelist.price,
-              end_time: whitelist.endTime ? parseInt(whitelist.endTime, 10) : 0,
-              max_tokens: whitelist.maxTokens
-                ? parseInt(whitelist.maxTokens, 10)
-                : 0,
-              limit_per_address: whitelist.perAddressLimit
-                ? parseInt(whitelist.perAddressLimit, 10)
-                : 0,
-              start_time: whitelist.startTime
-                ? parseInt(whitelist.startTime, 10)
-                : 0,
-              whitelist_info: {
+          (mintPeriod: CollectionMintPeriodFormValues, index) => {
+            let whitelist_info: WhitelistInfo|null = null;
+            if(mintPeriod.whitelistAddresses?.length && remoteWhitelistAddressesFiles[index].url) {
+              const addresses: string[] = mintPeriod.whitelistAddresses;
+              const leaves = addresses.map(keccak256);
+              const tree = new MerkleTree(leaves, keccak256);
+              const merkleRoot = tree.getRoot().toString("hex");
+              whitelist_info = {
                 addresses_count: addresses.length,
                 addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
                 addresses_merkle_root: merkleRoot,
-              },
+              }
+            }
+            return {
+              price: mintPeriod.price,
+              end_time: mintPeriod.endTime ? parseInt(mintPeriod.endTime, 10) : 0,
+              max_tokens: mintPeriod.maxTokens
+                ? parseInt(mintPeriod.maxTokens, 10)
+                : 0,
+              limit_per_address: mintPeriod.perAddressLimit
+                ? parseInt(mintPeriod.perAddressLimit, 10)
+                : 0,
+              start_time: mintPeriod.startTime
+                ? parseInt(mintPeriod.startTime, 10)
+                : 0,
+              whitelist_info,
             };
-            return mintPeriod;
           },
         );
 
@@ -202,6 +207,8 @@ export const useCreateCollection = () => {
           whitepaper_link: "None",
           base_token_uri: "None",
         };
+
+        console.log('========= collection', collection)
 
         // ========== Submit the collection
         const result = await nftLaunchpadClient.submitCollection({

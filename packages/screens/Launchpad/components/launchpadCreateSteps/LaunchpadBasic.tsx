@@ -71,6 +71,7 @@ export const LaunchpadBasic: React.FC = () => {
           placeHolder="Symbol"
           name="symbol"
           form={collectionForm}
+          valueModifier={value => value.toUpperCase()}
         />
 
         <Controller<CollectionFormValues>

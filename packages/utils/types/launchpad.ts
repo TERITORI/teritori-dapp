@@ -3,7 +3,7 @@ import { z } from "zod";
 import { DEFAULT_FORM_ERRORS } from "@/utils/errors";
 import {
   EMAIL_REGEXP,
-  IPFS_URI_REGEX,
+  LETTERS_REGEXP,
   NUMBERS_REGEXP,
   URL_REGEX,
 } from "@/utils/regex";
@@ -37,8 +37,14 @@ export const ZodCollectionMintPeriodFormValues = z.object({
       (value) => NUMBERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyNumbers,
     ),
-  startTime: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
-  endTime: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
+  startTime: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required).refine(
+    (value) => NUMBERS_REGEXP.test(value),
+    DEFAULT_FORM_ERRORS.onlyNumbers,
+  ),
+  endTime: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required).refine(
+    (value) => NUMBERS_REGEXP.test(value),
+    DEFAULT_FORM_ERRORS.onlyNumbers,
+  ),
   whitelistAddressesFile: ZodLocalFileData.optional(),
   whitelistAddresses: z.array(z.string()).optional(),
   isOpen: z.boolean(),
@@ -68,7 +74,10 @@ export const ZodCollectionAssetsMetadataFormValues = z.object({
 export const ZodCollectionFormValues = z.object({
   name: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   description: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
-  symbol: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
+  symbol: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required).refine(
+    (value) => LETTERS_REGEXP.test(value),
+    DEFAULT_FORM_ERRORS.onlyLetters,
+  ),
   externalLink: z
     .string()
     .trim()
@@ -113,12 +122,14 @@ export const ZodCollectionFormValues = z.object({
       (value) => NUMBERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyNumbers,
     ),
-  revealTime: z.string().trim().optional(),
+  revealTime: z.string().trim().refine(
+    (value) => !value || NUMBERS_REGEXP.test(value),
+    DEFAULT_FORM_ERRORS.onlyNumbers,
+  ).optional(),
   teamDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   teamLink: z
     .string().trim()
-    .min(1, DEFAULT_FORM_ERRORS.required)
-    .refine((value) => URL_REGEX.test(value), DEFAULT_FORM_ERRORS.onlyUrl),
+    .min(1, DEFAULT_FORM_ERRORS.required),
   partnersDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   investDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   investLink: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
@@ -138,7 +149,10 @@ export const ZodCollectionFormValues = z.object({
       (value) => NUMBERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyNumbers,
     ),
-  expectedMintDate: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
+  expectedMintDate: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required).refine(
+    (value) => NUMBERS_REGEXP.test(value),
+    DEFAULT_FORM_ERRORS.onlyNumbers,
+  ),
   coverImage: ZodLocalFileData,
   isPreviouslyApplied: z.boolean(),
   isDerivativeProject: z.boolean(),
