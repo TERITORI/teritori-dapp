@@ -21,7 +21,7 @@ import { SocialButton } from "@/components/buttons/SocialButton";
 import { SocialButtonSecondary } from "@/components/buttons/SocialButtonSecondary";
 import { ProfileButton } from "@/components/hub/ProfileButton";
 import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
-import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
+import { useMainPremiumChannel } from "@/hooks/feed/usePremiumChannel";
 import { usePremiumIsSubscribed } from "@/hooks/feed/usePremiumIsSubscribed";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
@@ -56,7 +56,7 @@ export const UPPIntro: React.FC<{
   const [network, userAddress] = parseUserId(userId);
   const { width } = useMaxResolution();
   const { width: windowWidth } = useWindowDimensions();
-  const { data: premiumChannel } = usePremiumChannel(network?.id, userAddress);
+  const { data: premiumChannel } = useMainPremiumChannel(userId);
   const networkHasPremiumFeature = !!getNetworkFeature(
     network?.id,
     NetworkFeature.CosmWasmPremiumFeed,

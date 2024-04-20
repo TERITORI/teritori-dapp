@@ -25,14 +25,13 @@ export type ExecMsg = {
   update_channel: {
     id: Uint64;
     memberships_config?: MembershipConfig[] | null;
-    owner?: string | null;
     trade_royalties_addr?: string | null;
     trade_royalties_per10k?: number | null;
     [k: string]: unknown;
   };
 } | {
   subscribe: {
-    channel_addr: string;
+    channel_id: Uint64;
     membership_kind: number;
     recipient_addr: string;
     [k: string]: unknown;
@@ -49,8 +48,8 @@ export type ExecMsg = {
   };
 } | {
   update_channel_mint_platform_fee: {
-    channel_addr: string;
-    mint_royalties: number;
+    channel_id: Uint64;
+    mint_royalties?: number | null;
     [k: string]: unknown;
   };
 } | {
@@ -60,7 +59,7 @@ export type ExecMsg = {
   };
 } | {
   withdraw_mint_funds: {
-    channel_addr: string;
+    channel_id: Uint64;
     destination_addr?: string | null;
     [k: string]: unknown;
   };
@@ -106,7 +105,14 @@ export type QueryMsg1 = {
   };
 } | {
   channel: {
-    channel_addr: string;
+    channel_id: Uint64;
+    [k: string]: unknown;
+  };
+} | {
+  channels_by_owner: {
+    limit?: number | null;
+    owner_address: string;
+    start_after?: Uint64 | null;
     [k: string]: unknown;
   };
 } | {
@@ -115,12 +121,12 @@ export type QueryMsg1 = {
   };
 } | {
   channel_funds: {
-    channel_addr: string;
+    channel_id: Uint64;
     [k: string]: unknown;
   };
 } | {
   subscription: {
-    channel_addr: string;
+    channel_id: Uint64;
     sub_addr: string;
     [k: string]: unknown;
   };
@@ -234,6 +240,7 @@ export interface ChannelResponse {
 export interface ChannelFundsResponse {
   funds: Coin[];
 }
+export type ArrayOfUint64 = Uint64[];
 export interface Config {
   admin_addr: Addr;
   description: string;

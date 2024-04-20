@@ -6,26 +6,35 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { InstantiateMsg, ExecuteMsg, ExecMsg, Uint64, Uint128, Binary, MembershipConfig, Coin, QueryMsg, QueryMsg1, Cw2981QueryMsg, AdminFundsResponse, Expiration, Timestamp, AllNftInfoResponseForMetadata, OwnerOfResponse, Approval, NftInfoResponseForMetadata, Metadata, Trait, TokensResponse, Addr, ChannelResponse, ChannelFundsResponse, Config, ContractInfoResponse, Cw2981Response, CheckRoyaltiesResponse, RoyaltiesInfoResponse, NumTokensResponse, SubscriptionResponse, Subscription } from "./Cw721Membership.types";
+import { InstantiateMsg, ExecuteMsg, ExecMsg, Uint64, Uint128, Binary, MembershipConfig, Coin, QueryMsg, QueryMsg1, Cw2981QueryMsg, AdminFundsResponse, Expiration, Timestamp, AllNftInfoResponseForMetadata, OwnerOfResponse, Approval, NftInfoResponseForMetadata, Metadata, Trait, TokensResponse, Addr, ChannelResponse, ChannelFundsResponse, ArrayOfUint64, Config, ContractInfoResponse, Cw2981Response, CheckRoyaltiesResponse, RoyaltiesInfoResponse, NumTokensResponse, SubscriptionResponse, Subscription } from "./Cw721Membership.types";
 export interface Cw721MembershipReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<Config>;
   channel: ({
-    channelAddr
+    channelId
   }: {
-    channelAddr: string;
+    channelId: Uint64;
   }) => Promise<ChannelResponse>;
+  channelsByOwner: ({
+    limit,
+    ownerAddress,
+    startAfter
+  }: {
+    limit?: number;
+    ownerAddress: string;
+    startAfter?: Uint64;
+  }) => Promise<ArrayOfUint64>;
   adminFunds: () => Promise<AdminFundsResponse>;
   channelFunds: ({
-    channelAddr
+    channelId
   }: {
-    channelAddr: string;
+    channelId: Uint64;
   }) => Promise<ChannelFundsResponse>;
   subscription: ({
-    channelAddr,
+    channelId,
     subAddr
   }: {
-    channelAddr: string;
+    channelId: Uint64;
     subAddr: string;
   }) => Promise<SubscriptionResponse>;
   extension: ({
@@ -80,6 +89,7 @@ export class Cw721MembershipQueryClient implements Cw721MembershipReadOnlyInterf
     this.contractAddress = contractAddress;
     this.config = this.config.bind(this);
     this.channel = this.channel.bind(this);
+    this.channelsByOwner = this.channelsByOwner.bind(this);
     this.adminFunds = this.adminFunds.bind(this);
     this.channelFunds = this.channelFunds.bind(this);
     this.subscription = this.subscription.bind(this);
@@ -99,13 +109,30 @@ export class Cw721MembershipQueryClient implements Cw721MembershipReadOnlyInterf
     });
   };
   channel = async ({
-    channelAddr
+    channelId
   }: {
-    channelAddr: string;
+    channelId: Uint64;
   }): Promise<ChannelResponse> => {
     return this.client.queryContractSmart(this.contractAddress, {
       channel: {
-        channel_addr: channelAddr
+        channel_id: channelId
+      }
+    });
+  };
+  channelsByOwner = async ({
+    limit,
+    ownerAddress,
+    startAfter
+  }: {
+    limit?: number;
+    ownerAddress: string;
+    startAfter?: Uint64;
+  }): Promise<ArrayOfUint64> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      channels_by_owner: {
+        limit,
+        owner_address: ownerAddress,
+        start_after: startAfter
       }
     });
   };
@@ -115,26 +142,26 @@ export class Cw721MembershipQueryClient implements Cw721MembershipReadOnlyInterf
     });
   };
   channelFunds = async ({
-    channelAddr
+    channelId
   }: {
-    channelAddr: string;
+    channelId: Uint64;
   }): Promise<ChannelFundsResponse> => {
     return this.client.queryContractSmart(this.contractAddress, {
       channel_funds: {
-        channel_addr: channelAddr
+        channel_id: channelId
       }
     });
   };
   subscription = async ({
-    channelAddr,
+    channelId,
     subAddr
   }: {
-    channelAddr: string;
+    channelId: Uint64;
     subAddr: string;
   }): Promise<SubscriptionResponse> => {
     return this.client.queryContractSmart(this.contractAddress, {
       subscription: {
-        channel_addr: channelAddr,
+        channel_id: channelId,
         sub_addr: subAddr
       }
     });
@@ -246,22 +273,20 @@ export interface Cw721MembershipInterface extends Cw721MembershipReadOnlyInterfa
   updateChannel: ({
     id,
     membershipsConfig,
-    owner,
     tradeRoyaltiesAddr,
     tradeRoyaltiesPer10k
   }: {
     id: Uint64;
     membershipsConfig?: MembershipConfig[];
-    owner?: string;
     tradeRoyaltiesAddr?: string;
     tradeRoyaltiesPer10k?: number;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   subscribe: ({
-    channelAddr,
+    channelId,
     membershipKind,
     recipientAddr
   }: {
-    channelAddr: string;
+    channelId: Uint64;
     membershipKind: number;
     recipientAddr: string;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
@@ -281,11 +306,11 @@ export interface Cw721MembershipInterface extends Cw721MembershipReadOnlyInterfa
     symbol?: string;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   updateChannelMintPlatformFee: ({
-    channelAddr,
+    channelId,
     mintRoyalties
   }: {
-    channelAddr: string;
-    mintRoyalties: number;
+    channelId: Uint64;
+    mintRoyalties?: number;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   withdrawMintPlatformFee: ({
     destinationAddr
@@ -293,10 +318,10 @@ export interface Cw721MembershipInterface extends Cw721MembershipReadOnlyInterfa
     destinationAddr?: string;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   withdrawMintFunds: ({
-    channelAddr,
+    channelId,
     destinationAddr
   }: {
-    channelAddr: string;
+    channelId: Uint64;
     destinationAddr?: string;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   transferNft: ({
@@ -363,13 +388,11 @@ export class Cw721MembershipClient extends Cw721MembershipQueryClient implements
   updateChannel = async ({
     id,
     membershipsConfig,
-    owner,
     tradeRoyaltiesAddr,
     tradeRoyaltiesPer10k
   }: {
     id: Uint64;
     membershipsConfig?: MembershipConfig[];
-    owner?: string;
     tradeRoyaltiesAddr?: string;
     tradeRoyaltiesPer10k?: number;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
@@ -377,24 +400,23 @@ export class Cw721MembershipClient extends Cw721MembershipQueryClient implements
       update_channel: {
         id,
         memberships_config: membershipsConfig,
-        owner,
         trade_royalties_addr: tradeRoyaltiesAddr,
         trade_royalties_per10k: tradeRoyaltiesPer10k
       }
     }, fee, memo, _funds);
   };
   subscribe = async ({
-    channelAddr,
+    channelId,
     membershipKind,
     recipientAddr
   }: {
-    channelAddr: string;
+    channelId: Uint64;
     membershipKind: number;
     recipientAddr: string;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       subscribe: {
-        channel_addr: channelAddr,
+        channel_id: channelId,
         membership_kind: membershipKind,
         recipient_addr: recipientAddr
       }
@@ -427,15 +449,15 @@ export class Cw721MembershipClient extends Cw721MembershipQueryClient implements
     }, fee, memo, _funds);
   };
   updateChannelMintPlatformFee = async ({
-    channelAddr,
+    channelId,
     mintRoyalties
   }: {
-    channelAddr: string;
-    mintRoyalties: number;
+    channelId: Uint64;
+    mintRoyalties?: number;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       update_channel_mint_platform_fee: {
-        channel_addr: channelAddr,
+        channel_id: channelId,
         mint_royalties: mintRoyalties
       }
     }, fee, memo, _funds);
@@ -452,15 +474,15 @@ export class Cw721MembershipClient extends Cw721MembershipQueryClient implements
     }, fee, memo, _funds);
   };
   withdrawMintFunds = async ({
-    channelAddr,
+    channelId,
     destinationAddr
   }: {
-    channelAddr: string;
+    channelId: Uint64;
     destinationAddr?: string;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       withdraw_mint_funds: {
-        channel_addr: channelAddr,
+        channel_id: channelId,
         destination_addr: destinationAddr
       }
     }, fee, memo, _funds);

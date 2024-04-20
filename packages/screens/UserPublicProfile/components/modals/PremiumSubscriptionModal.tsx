@@ -10,7 +10,7 @@ import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
 import ModalBase from "@/components/modals/ModalBase";
 import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
-import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
+import { useMainPremiumChannel } from "@/hooks/feed/usePremiumChannel";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getUserId, parseUserId } from "@/networks";
@@ -26,8 +26,8 @@ export const PremiumSubscriptionModal: React.FC<{
   userId: string;
 }> = ({ onClose, isVisible, userId }) => {
   const { metadata } = useNSUserInfo(userId);
-  const [network, channelAddress] = parseUserId(userId);
-  const { data: channel } = usePremiumChannel(network?.id, channelAddress);
+  const [network, channelOwnerAddress] = parseUserId(userId);
+  const { data: channel } = useMainPremiumChannel(userId);
   const selectedWallet = useSelectedWallet();
   const { wrapWithFeedback } = useFeedbacks();
 
@@ -62,7 +62,7 @@ export const PremiumSubscriptionModal: React.FC<{
               );
               await client.subscribe(
                 {
-                  channelAddr: channelAddress,
+                  channelId: channel.id,
                   membershipKind: selectedItemIndex,
                   recipientAddr: selectedWallet.address,
                 },
@@ -97,7 +97,7 @@ export const PremiumSubscriptionModal: React.FC<{
           <SpacerColumn size={2} />
 
           <UserAvatarWithFrame
-            userId={getUserId(network.id, channelAddress)}
+            userId={getUserId(network.id, channelOwnerAddress)}
             size="XL"
           />
           <SpacerColumn size={2} />
@@ -105,7 +105,7 @@ export const PremiumSubscriptionModal: React.FC<{
             {metadata?.tokenId ? metadata?.public_name : DEFAULT_NAME}
           </BrandText>
           <BrandText style={[fontMedium14, { color: neutral55, marginTop: 2 }]}>
-            @{metadata?.tokenId ? metadata.tokenId : channelAddress}
+            @{metadata?.tokenId ? metadata.tokenId : channelOwnerAddress}
           </BrandText>
         </View>
       </View>

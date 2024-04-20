@@ -87,12 +87,6 @@
                     "$ref": "#/definitions/MembershipConfig"
                   }
                 },
-                "owner": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
-                },
                 "trade_royalties_addr": {
                   "type": [
                     "string",
@@ -121,13 +115,13 @@
             "subscribe": {
               "type": "object",
               "required": [
-                "channel_addr",
+                "channel_id",
                 "membership_kind",
                 "recipient_addr"
               ],
               "properties": {
-                "channel_addr": {
-                  "type": "string"
+                "channel_id": {
+                  "$ref": "#/definitions/Uint64"
                 },
                 "membership_kind": {
                   "type": "integer",
@@ -203,15 +197,17 @@
             "update_channel_mint_platform_fee": {
               "type": "object",
               "required": [
-                "channel_addr",
-                "mint_royalties"
+                "channel_id"
               ],
               "properties": {
-                "channel_addr": {
-                  "type": "string"
+                "channel_id": {
+                  "$ref": "#/definitions/Uint64"
                 },
                 "mint_royalties": {
-                  "type": "integer",
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
                   "format": "uint16",
                   "minimum": 0.0
                 }
@@ -249,11 +245,11 @@
             "withdraw_mint_funds": {
               "type": "object",
               "required": [
-                "channel_addr"
+                "channel_id"
               ],
               "properties": {
-                "channel_addr": {
-                  "type": "string"
+                "channel_id": {
+                  "$ref": "#/definitions/Uint64"
                 },
                 "destination_addr": {
                   "type": [
