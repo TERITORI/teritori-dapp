@@ -20,7 +20,7 @@ import {
   ChannelResponse,
   MembershipConfig,
 } from "@/contracts-clients/cw721-membership";
-import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
+import { useMainPremiumChannel } from "@/hooks/feed/usePremiumChannel";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNativeCurrency, getNetworkFeature, parseUserId } from "@/networks";
 import { NetworkFeature } from "@/networks/features";
@@ -45,10 +45,10 @@ export const SubscriptionSetupModal: React.FC<{
   isVisible: boolean;
   onClose: () => void;
 }> = ({ userId, isVisible, onClose }) => {
-  const [network, channelAddress] = parseUserId(userId);
+  const [network] = parseUserId(userId);
   const networkId = network?.id;
 
-  const { data: channel } = usePremiumChannel(networkId, channelAddress);
+  const { data: channel } = useMainPremiumChannel(userId);
 
   if (!networkId || channel === undefined) {
     return null;

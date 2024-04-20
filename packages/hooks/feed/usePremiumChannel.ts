@@ -1,22 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { parseUserId } from "@/networks";
 import { mustGetCw721MembershipQueryClient } from "@/utils/feed/client";
 
-export const usePremiumChannel = (
+const usePremiumChannel = (
   networkId: string | undefined,
-  channelAddress: string | undefined,
+  channelId: string | undefined,
+  enabled?: boolean,
 ) => {
   return useQuery(
-    ["feed-premium-channel", networkId, channelAddress],
+    ["feed-premium-channel", networkId, channelId],
     async () => {
-      if (!networkId || !channelAddress) {
+      if (!networkId || !channelId) {
         return null;
       }
 
       const client = await mustGetCw721MembershipQueryClient(networkId);
 
       try {
-        const channel = await client.channel({ channelAddr: channelAddress });
+        const channel = await client.channel({ channelId });
         return channel;
       } catch (error) {
         if (
@@ -29,8 +31,46 @@ export const usePremiumChannel = (
       }
     },
     {
-      enabled: !!networkId && !!channelAddress,
+      enabled: (enabled ?? true) && !!networkId && !!channelId,
       staleTime: Infinity,
     },
   );
+};
+
+const usePremiumChannelsByOwner = (
+  userId: string | undefined,
+  enabled?: boolean,
+) => {
+  return useQuery(
+    ["feed-premium-channels", userId],
+    async () => {
+      if (!userId) {
+        return [];
+      }
+      const [, userAddress] = parseUserId(userId);
+      if (!userAddress) {
+        return [];
+      }
+
+      const client = await mustGetCw721MembershipQueryClient(userId);
+
+      const channels = await client.channelsByOwner({
+        ownerAddress: userAddress,
+      });
+      return channels;
+    },
+    {
+      enabled: (enabled ?? true) && !!userId,
+      staleTime: Infinity,
+    },
+  );
+};
+
+export const useMainPremiumChannel = (
+  userId: string | undefined,
+  enabled?: boolean,
+) => {
+  const [network] = parseUserId(userId);
+  const { data: channels } = usePremiumChannelsByOwner(userId, enabled);
+  return usePremiumChannel(network?.id, channels?.[0], enabled);
 };
