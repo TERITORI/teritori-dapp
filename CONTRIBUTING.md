@@ -212,7 +212,7 @@ Here are the steps to follow:
 
 The Teritori dApp is a multi-networks app. Meaning it can be used with multiple blockchains and web3 stacks. We use the term `Network` because the underlying distributed ledger technology could be something else than a blockchain.
 
-It's important to understand the implications of that and not hardcode `tori` everywhere. Even when we only talk avout Teritori, there is currently two official Teritori chains, the Teritori mainnet, with chain id `teritori-1` and the Teritori testnet with chain id `teritori-test-6` and it's important to support both in all code.
+It's important to understand the implications of that and not hardcode `tori` everywhere. Even when we only talk avout Teritori, there is currently two official Teritori chains, the Teritori mainnet, with chain id `teritori-1` and the Teritori testnet with chain id `teritori-test-7` and it's important to support both in all code.
 
 We define network-related constants in the [networks package](packages/networks) and generate code from it for go programs. You should get all network information from this packages and add any new network-related information there.
 

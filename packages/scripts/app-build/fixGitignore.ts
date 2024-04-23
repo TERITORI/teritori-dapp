@@ -2,7 +2,11 @@ import fs from "fs";
 
 const FILE_PATH = "./.gitignore";
 
-const TO_REMOVE_ITEMS = ["/weshd/ios/Frameworks/", "/weshd/android/libs/"];
+const TO_REMOVE_ITEMS = [
+  "/weshd/ios/Frameworks/",
+  "/weshd/android/libs/",
+  "/ios",
+];
 
 fs.readFile(FILE_PATH, "utf8", (err, data) => {
   if (err) {
