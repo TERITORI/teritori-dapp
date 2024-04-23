@@ -2140,33 +2140,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chain-registry/types@npm:^0.17.1":
-  version: 0.17.1
-  resolution: "@chain-registry/types@npm:0.17.1"
-  dependencies:
-    "@babel/runtime": ^7.21.0
-  checksum: be3c52d22e0b835aead431718f2282e722632e626d84402ab55fef8227392ae155125a6b3002a9a2dcb7438602b14da2a241423a9a8e28fab5552d0a496eb2ab
+"@chain-registry/types@npm:^0.25.7":
+  version: 0.25.7
+  resolution: "@chain-registry/types@npm:0.25.7"
+  checksum: 4f9477b6d6a5760a99ce38b1682dd569ec51606342647823bd195e314aa46ca8a0537c0466f38e9ed427dbeee4fc292b2dafebfd82e8a0f2cb1cc69903871314
   languageName: node
   linkType: hard
 
-"@chain-registry/types@npm:^0.18.0":
-  version: 0.18.0
-  resolution: "@chain-registry/types@npm:0.18.0"
+"@chain-registry/utils@npm:1.26.7":
+  version: 1.26.7
+  resolution: "@chain-registry/utils@npm:1.26.7"
   dependencies:
-    "@babel/runtime": ^7.21.0
-  checksum: 420bc6fc93389cd52f7f744349f0d453322b4f83fcd18a3c379f9bc7731822abf8f1442ae20298518f1a15bd1c442a4942d1bb16becc874215acea86204d715e
-  languageName: node
-  linkType: hard
-
-"@chain-registry/utils@npm:1.18.0":
-  version: 1.18.0
-  resolution: "@chain-registry/utils@npm:1.18.0"
-  dependencies:
-    "@babel/runtime": ^7.21.0
-    "@chain-registry/types": ^0.18.0
+    "@chain-registry/types": ^0.25.7
     bignumber.js: 9.1.1
     sha.js: ^2.4.11
-  checksum: 5a4b9b4af5ed880a972fbab8282ad13f3c260bc1df5af448c26634584c728a0fcbbf336b4dda29f7e408f77821ac0a18a5d45f878d8b90936d43e9ae10223ca9
+  checksum: 5a427856cdd60885d043496e98b623414ed50aa7881fd8045d06a1f2b7cd8d239409879e874c71e54818cd2fcbdc1075300b481f222af7023f121281e2692c23
   languageName: node
   linkType: hard
 
@@ -8578,13 +8566,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chain-registry@npm:^1.25.4":
-  version: 1.27.0
-  resolution: "chain-registry@npm:1.27.0"
+"chain-registry@npm:^1.41.9":
+  version: 1.41.9
+  resolution: "chain-registry@npm:1.41.9"
   dependencies:
-    "@babel/runtime": ^7.21.0
-    "@chain-registry/types": ^0.18.0
-  checksum: cfe13f3e2d1ba08785fdb4c14e7525c5956adf54b93d2e18118499502dbd8c015df330ba73bc32f3a40ca2360c31f59b7613feee5a197e37225b02e3ef1054aa
+    "@chain-registry/types": ^0.25.7
+  checksum: f85c5b397d118f6d5d06eb5b5816b276d1e613ecd70963a466cedfc0d2d65768cbc4fd92dda68cd798512a72647e856ac040fa260bf5a14580bbe5677f26da98
   languageName: node
   linkType: hard
 
@@ -19307,8 +19294,8 @@ __metadata:
     "@babel/plugin-transform-arrow-functions": ^7.23.3
     "@babel/plugin-transform-shorthand-properties": ^7.23.3
     "@babel/plugin-transform-template-literals": ^7.23.3
-    "@chain-registry/types": ^0.17.1
-    "@chain-registry/utils": 1.18.0
+    "@chain-registry/types": ^0.25.7
+    "@chain-registry/utils": 1.26.7
     "@cosmjs/amino": 0.32.2
     "@cosmjs/cosmwasm-stargate": 0.32.2
     "@cosmjs/encoding": ^0.32.2
@@ -19370,7 +19357,7 @@ __metadata:
     bip39: ^3.1.0
     browser-headers: ^0.4.1
     buffer: ^6.0.3
-    chain-registry: ^1.25.4
+    chain-registry: ^1.41.9
     commander: ^10.0.1
     cors-anywhere: ^0.4.4
     cosmos-endpoints-scorer: ^0.1.0
