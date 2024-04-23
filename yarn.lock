@@ -4272,7 +4272,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-typed-document-node/core@npm:^3.1.0":
+"@graphql-typed-document-node/core@npm:^3.1.0, @graphql-typed-document-node/core@npm:^3.1.1":
   version: 3.2.0
   resolution: "@graphql-typed-document-node/core@npm:3.2.0"
   peerDependencies:
@@ -9219,6 +9219,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cosmos-endpoints-scorer@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "cosmos-endpoints-scorer@npm:0.1.0"
+  dependencies:
+    graphql: ^16.8.1
+  checksum: fdbec159676bcf176ab275971e63ec7256c831b892affb5b8a81244f691b531893731d341041380251ee057d9ed52083a9042764402a6d5a10ecad29efd6a9f0
+  languageName: node
+  linkType: hard
+
 "create-ecdh@npm:^4.0.0":
   version: 4.0.4
   resolution: "create-ecdh@npm:4.0.4"
@@ -11380,6 +11389,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"extract-files@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "extract-files@npm:9.0.0"
+  checksum: c31781d090f8d8f62cc541f1023b39ea863f24bd6fb3d4011922d71cbded70cef8191f2b70b43ec6cb5c5907cdad1dc5e9f29f78228936c10adc239091d8ab64
+  languageName: node
+  linkType: hard
+
 "extract-zip@npm:^2.0.1":
   version: 2.0.1
   resolution: "extract-zip@npm:2.0.1"
@@ -11786,7 +11802,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data@npm:^3.0.1":
+"form-data@npm:^3.0.0, form-data@npm:^3.0.1":
   version: 3.0.1
   resolution: "form-data@npm:3.0.1"
   dependencies:
@@ -12270,6 +12286,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"graphql-request@npm:5.2.0":
+  version: 5.2.0
+  resolution: "graphql-request@npm:5.2.0"
+  dependencies:
+    "@graphql-typed-document-node/core": ^3.1.1
+    cross-fetch: ^3.1.5
+    extract-files: ^9.0.0
+    form-data: ^3.0.0
+  peerDependencies:
+    graphql: 14 - 16
+  checksum: a8aa37816378898e6fc8c4db04a1c114c98f98d90718cf1680bd96b22724bd43b1210619f9b0d328b5c1acb4f7b76d2227a2537cd5ab059bb54cf0debecb33bf
+  languageName: node
+  linkType: hard
+
+"graphql-request@patch:graphql-request@npm%3A5.2.0#./.yarn/patches/graphql-request-npm-5.2.0-31dd65ab47.patch::locator=teritori-dapp%40workspace%3A.":
+  version: 5.2.0
+  resolution: "graphql-request@patch:graphql-request@npm%3A5.2.0#./.yarn/patches/graphql-request-npm-5.2.0-31dd65ab47.patch::version=5.2.0&hash=331b7c&locator=teritori-dapp%40workspace%3A."
+  dependencies:
+    "@graphql-typed-document-node/core": ^3.1.1
+    cross-fetch: ^3.1.5
+    extract-files: ^9.0.0
+    form-data: ^3.0.0
+  peerDependencies:
+    graphql: 14 - 16
+  checksum: d14a69da314e06bcc3b5bce43344e2429b5ac475c9f64c5dca2cdffa54135aa8b4624afb160daf913b42c78038a541b6fdaad5d179b48313c5ed39da1d2272e5
+  languageName: node
+  linkType: hard
+
 "graphql-tag@npm:^2.10.1":
   version: 2.12.6
   resolution: "graphql-tag@npm:2.12.6"
@@ -12285,6 +12329,13 @@ __metadata:
   version: 15.8.0
   resolution: "graphql@npm:15.8.0"
   checksum: 423325271db8858428641b9aca01699283d1fe5b40ef6d4ac622569ecca927019fce8196208b91dd1d8eb8114f00263fe661d241d0eb40c10e5bfd650f86ec5e
+  languageName: node
+  linkType: hard
+
+"graphql@npm:^16.8.1":
+  version: 16.8.1
+  resolution: "graphql@npm:16.8.1"
+  checksum: 8d304b7b6f708c8c5cc164b06e92467dfe36aff6d4f2cf31dd19c4c2905a0e7b89edac4b7e225871131fd24e21460836b369de0c06532644d15b461d55b1ccc0
   languageName: node
   linkType: hard
 
@@ -19322,6 +19373,7 @@ __metadata:
     chain-registry: ^1.25.4
     commander: ^10.0.1
     cors-anywhere: ^0.4.4
+    cosmos-endpoints-scorer: ^0.1.0
     cross-env: ^7.0.3
     crypto-browserify: ^3.12.0
     depcheck: ^1.4.7
@@ -19352,6 +19404,7 @@ __metadata:
     expo-status-bar: ~1.11.1
     glob: ^10.3.10
     google-protobuf: ^3.21.2
+    graphql-request: ^5
     html-to-draftjs: ^1.5.0
     immutable: ^4.0.0
     kubernetes-models: ^4.3.1
