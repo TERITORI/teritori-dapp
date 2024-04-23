@@ -6,13 +6,11 @@ import {
 } from "../features";
 import { CosmosNetworkInfo, NetworkKind } from "../types";
 
-const nameServiceContractAddress =
-  "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys";
+const nameServiceContractAddress = "";
 
 const premiumFeedFeature: CosmWasmPremiumFeed = {
   type: NetworkFeature.CosmWasmPremiumFeed,
-  membershipContractAddress:
-    "tori1rs244rjrhap2v4setxlugkh8ungxlrsh8asvh0trsgvqvplvkd5q7752l6",
+  membershipContractAddress: "",
   mintDenom: "utori",
 };
 
@@ -25,12 +23,13 @@ const cosmwasmLaunchpadFeature: CosmWasmLaunchpad = {
 
 const riotContractAddressGen0 =
   "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc";
+
 const riotContractAddressGen1 = "";
 
 export const teritoriTestnetNetwork: CosmosNetworkInfo = {
   id: "teritori-testnet",
   kind: NetworkKind.Cosmos,
-  chainId: "teritori-test-6",
+  chainId: "teritori-test-7",
   displayName: "Teritori Testnet",
   registryName: "teritoritestnet",
   icon: "teritori.svg",
@@ -76,8 +75,7 @@ export const teritoriTestnetNetwork: CosmosNetworkInfo = {
   nameServiceDefaultImage:
     "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
   nameServiceTLD: ".tori",
-  vaultContractAddress:
-    "tori17p9rzwnnfxcjp32un9ug7yhhzgtkhvl9jfksztgw5uh69wac2pgs9ezf0j",
+  vaultContractAddress: "",
   riotContractAddressGen0,
   riotContractAddressGen1,
   riotSquadStakingContractAddressV1: "",
@@ -91,14 +89,12 @@ export const teritoriTestnetNetwork: CosmosNetworkInfo = {
     riotContractAddressGen1,
   ],
   excludeFromLaunchpadList: [riotContractAddressGen1],
-  socialFeedContractAddress:
-    "tori1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrqazuvxk",
-  daoCoreCodeId: 4,
-  daoPreProposeSingleCodeId: 5,
-  daoProposalSingleCodeId: 6,
-  daoCw4GroupCodeId: 7,
-  daoVotingCw4CodeId: 8,
-  daoFactoryCodeId: 9,
-  daoFactoryContractAddress:
-    "tori1s85asu5dckeelmgzrwqakxc8tc4gllutjq4uq3a4lwak2hfp9c3q4spguf",
+  socialFeedContractAddress: "",
+  daoCoreCodeId: -1,
+  daoPreProposeSingleCodeId: -1,
+  daoProposalSingleCodeId: -1,
+  daoCw4GroupCodeId: -1,
+  daoVotingCw4CodeId: -1,
+  daoFactoryCodeId: -1,
+  daoFactoryContractAddress: "",
 };

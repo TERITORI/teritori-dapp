@@ -6,7 +6,6 @@ import (
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
-	"github.com/ipfs/kubo/core/coreapi"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"gorm.io/datatypes"
@@ -47,10 +46,6 @@ func (s *Launchpad) UploadMetadatas(ctx context.Context, req *launchpadpb.Upload
 	if err := s.verifySender(req.Sender); err != nil {
 		return nil, errors.Wrap(err, "failed to verify sender")
 	}
-
-	// Check ipfs
-	// "Connect" to local node
-	coreapi.PinAPI()
 
 	// At this step, LaunchpadProject has to be created by indexer when collection has been submitted on-chain
 	project := indexerdb.LaunchpadProject{
