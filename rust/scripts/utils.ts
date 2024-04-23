@@ -27,14 +27,14 @@ const getClientInfos = async () => {
 };
 
 const getWasmFile = (wasmFile: string) => {
-  return fs.readFileSync(
-    path.join(
-      __dirname,
-      "../../../..",
-      "target/wasm32-unknown-unknown/release/",
-      wasmFile,
-    ),
+  const filePath = path.join(
+    __dirname,
+    "../..",
+    "target/wasm32-unknown-unknown/release/",
+    wasmFile,
   );
+  console.log({ filePath });
+  return fs.readFileSync(filePath);
 };
 
 export const deploy = async (wasmFile: string) => {

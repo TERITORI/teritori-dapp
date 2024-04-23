@@ -284,7 +284,7 @@ impl Tr721 {
         Ok(Response::new().add_attribute("action", "update_mint_info"))
     }
 
-    // NOTE: Normally we should not update whitelist, this endpoint exists mostly for testing or used in very urgent/critical case
+    // NOTE: Normally we should not update mint period, this endpoint exists mostly for testing or used in very urgent/critical case
     #[msg(exec)]
     pub fn update_mint_period(
         &self,
@@ -492,7 +492,7 @@ impl Tr721 {
         }
 
         // Merkle verification is ok then mint NFT to sender
-        // In default mint, only contract owner can mint so we have to change to logic here instead of proxy call to default method
+        // In default mint, only contract owner can mint so we have to change that logic here: instead of proxy call to default method
         // Create the token
         let token = TokenInfo {
             owner: sender.clone(),

@@ -682,7 +682,4 @@ fn full_flow() {
         assert_eq!(resp.token_uri, None);
         assert_eq!(resp.extension.unwrap().name, nft2.name);
     }
-
-    // Claim a token: (generated from golang backend)
-    {}
 }

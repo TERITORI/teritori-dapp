@@ -48,9 +48,6 @@ pub enum ContractError {
     #[error("Exceed max per user")]
     MintExceedMaxPerUser,
 
-    #[error("Exceed max per whitelisted user")]
-    WhitelistMintExceedMaxPerUser,
-
     #[error("Invalid fund")]
     InvalidFund,
 
