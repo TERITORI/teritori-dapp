@@ -9,6 +9,11 @@ import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 import { BrandText } from "@/components/BrandText";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
+import { CosmosNetworkInfo, getCosmosNetwork } from "@/networks";
+import { updateWallet } from "@/store/slices/wallets";
+import { useAppDispatch } from "@/store/store";
 import { RootStackParamList } from "@/utils/navigation";
 import { neutralA3 } from "@/utils/style/colors";
 import { fontNormal15 } from "@/utils/style/fonts";
@@ -18,30 +23,18 @@ type ChangeNetworkScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "ChangeNetwork">;
 };
 
-type ChangeNetworkType = {
-  id: string;
-  label: string;
-  url: string;
-};
-
 export default function ChangeNetworkScreen({
   navigation,
 }: ChangeNetworkScreenProps) {
   const goBackTo = () => navigation.replace("MiniSettings");
+  const selectedWallet = useSelectedNativeWallet();
 
-  const addresses: ChangeNetworkType[] = [
-    {
-      id: "asdfdasd",
-      label: "Testnet 3",
-      url: "https://rpc.test3.teritori.com",
-    },
-    { id: "asdfdasd8989", label: "Local", url: "https://127.0.0.1:27000" },
-    {
-      id: "asdfdasd8989909",
-      label: "Teritori-Testnet",
-      url: "https://testnet.teritori.com:27000",
-    },
+  const addresses: CosmosNetworkInfo[] = [
+    getCosmosNetwork("teritori")!,
+    getCosmosNetwork("teritori-testnet")!,
   ];
+  const { setToast } = useFeedbacks();
+  const dispatch = useAppDispatch();
 
   return (
     <BlurScreenContainer
@@ -73,14 +66,35 @@ export default function ChangeNetworkScreen({
                 paddingHorizontal: layout.spacing_x1_5,
               }}
               options={{
-                label: item?.label,
+                label: item?.displayName,
                 iconEnabled: false,
                 rightLabel: (
                   <View>
                     <Checkbox
-                      isChecked
-                      value={item?.label}
-                      onPress={() => {}}
+                      isChecked={selectedWallet?.networkId === item?.id}
+                      value={item?.displayName}
+                      onPress={() => {
+                        if (!selectedWallet) {
+                          setToast({
+                            mode: "mini",
+                            type: "error",
+                            message: "No wallet selected",
+                          });
+                          return;
+                        }
+                        dispatch(
+                          updateWallet({
+                            ...selectedWallet,
+                            networkId: item?.id,
+                          }),
+                        );
+                        setToast({
+                          mode: "mini",
+                          type: "success",
+                          message: `Now using ${item?.displayName} network`,
+                        });
+                        goBackTo();
+                      }}
                       checkboxStyle={{
                         borderRadius: 12,
                         width: 24,
@@ -89,7 +103,7 @@ export default function ChangeNetworkScreen({
                     />
                   </View>
                 ),
-                bottomLabel: item?.url,
+                bottomLabel: item?.rpcEndpoint,
               }}
             />
           )}

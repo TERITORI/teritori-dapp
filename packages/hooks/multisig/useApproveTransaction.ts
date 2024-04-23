@@ -1,6 +1,7 @@
-import { toBase64 } from "@cosmjs/encoding";
+import { StdSignDoc } from "@cosmjs/amino";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useQueryClient } from "@tanstack/react-query";
+import { isEqual } from "lodash";
 import { useCallback } from "react";
 
 import { useMultisigAuthToken } from "./useMultisigAuthToken";
@@ -14,7 +15,8 @@ import useSelectedWallet from "../useSelectedWallet";
 import { Signature } from "@/api/multisig/v1/multisig";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { getUserId } from "@/networks";
-import { getKeplrOnlyAminoStargateClient } from "@/networks/signer";
+import { cosmosAminoTypes, cosmosTypesRegistry } from "@/networks/cosmos-types";
+import { getKeplrOnlyAminoSigner } from "@/networks/signer";
 
 export const useApproveTransaction = () => {
   const { setToastError } = useFeedbacks();
@@ -61,30 +63,42 @@ export const useApproveTransaction = () => {
           return;
         }
 
-        const client = await getKeplrOnlyAminoStargateClient(selectedNetworkId);
-
+        const signer = await getKeplrOnlyAminoSigner(selectedNetworkId, {
+          disableBalanceCheck: true,
+          preferNoSetFee: true,
+          preferNoSetMemo: true,
+        });
         const signerAddress = walletAccount.address;
-        const signerData = {
-          accountNumber: tx.accountNumber,
-          sequence: tx.sequence,
-          chainId: tx.chainId,
+
+        const sd: StdSignDoc = {
+          chain_id: tx.chainId,
+          account_number: tx.accountNumber.toString(),
+          sequence: tx.sequence.toString(),
+          fee: tx.fee,
+          msgs: tx.msgs.map((m) => {
+            return cosmosAminoTypes.toAmino(m);
+          }),
+          memo: "",
         };
 
-        const { bodyBytes, signatures } = await client.sign(
-          signerAddress,
-          tx.msgs,
-          tx.fee,
-          tx.memo,
-          signerData,
-        );
+        const {
+          signed,
+          signature: { signature },
+        } = await signer.signAmino(signerAddress, sd);
 
-        const bases64EncodedSignature = toBase64(signatures[0]);
+        if (!isEqual(sd, signed)) {
+          throw new Error(
+            "Tx modified by signer, you can't change the fee or memo in a multisig transaction!",
+          );
+        }
 
         await multisigClient.SignTransaction({
           authToken,
-          signature: bases64EncodedSignature,
+          signature,
           transactionId,
-          bodyBytes,
+          bodyBytes: cosmosTypesRegistry.encodeTxBody({
+            messages: tx.msgs,
+          }),
         });
 
         await queryClient.invalidateQueries(
