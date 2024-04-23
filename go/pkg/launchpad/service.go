@@ -6,6 +6,7 @@ import (
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
+	"github.com/ipfs/kubo/core/coreapi"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"gorm.io/datatypes"
@@ -29,49 +30,16 @@ func NewLaunchpadService(ctx context.Context, conf *Config) launchpadpb.Launchpa
 	}
 }
 
-// func (s *Launchpad) UploadMetadata(stream launchpadpb.LaunchpadService_UploadMetadataServer) error {
-// 	MAX_SIZE := 100
-
-// 	image_data := bytes.Buffer{}
-// 	image_size := 0
-
-// 	for {
-// 		req, err := stream.Recv()
-// 		if err == io.EOF {
-// 			log.Print("no more data")
-// 			break
-// 		}
-// 		if err != nil {
-// 			return errors.Wrap(err, "failed to upload file to backend")
-// 		}
-
-// 		chunk := req.GetImageChunkData()
-// 		size := len(chunk)
-
-// 		image_size += size
-// 		if image_size > MAX_SIZE {
-// 			return errors.Wrap(err, "max size allowed is: "+strconv.Itoa(MAX_SIZE))
-// 		}
-// 		_, err = image_data.Write(chunk)
-// 		if err != nil {
-// 			return errors.Wrap(err, "failed to write file data")
-// 		}
-// 	}
-
-// 	resp := &launchpadpb.UploadMetadataResponse{
-// 		TokenId: 1,
-// 	}
-// 	err := stream.SendAndClose(resp)
-// 	if err != nil {
-// 		return errors.Wrap(err, "failed to send and close stream")
-// 	}
-
-// 	return nil
-// }
-
-func (s *Launchpad) UploadMetadata(ctx context.Context, req *launchpadpb.UploadMetadataRequest) (*launchpadpb.UploadMetadataResponse, error) {
-
-}
+// IMPORTANT !!! TODO !!!
+// For now, for simplicity, we upload images to ipfs from client side then this backend will
+// only check if images have been pinnned correctly.
+//
+// This approche has 1 downside:
+// User can query ipfs node to get all existing images of collection (AI to detect similar images for example)
+// then guest what are the remainning NFT then decide if it's interesting to mint.
+//
+// For now it's not a big problem but in the future, the more secure solution will be handling image upload by backend.
+// We dont do it for now yet because grpc-web does not support bidi stream so handle client send image => backend => ipfs properly can take time
 
 // Upload collection metadatas and generate corresponding merkle root
 // This will delete all existing tokens metadatas and replace by new ones
@@ -79,6 +47,10 @@ func (s *Launchpad) UploadMetadatas(ctx context.Context, req *launchpadpb.Upload
 	if err := s.verifySender(req.Sender); err != nil {
 		return nil, errors.Wrap(err, "failed to verify sender")
 	}
+
+	// Check ipfs
+	// "Connect" to local node
+	coreapi.PinAPI()
 
 	// At this step, LaunchpadProject has to be created by indexer when collection has been submitted on-chain
 	project := indexerdb.LaunchpadProject{
