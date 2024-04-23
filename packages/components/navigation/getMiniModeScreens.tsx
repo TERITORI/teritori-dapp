@@ -16,7 +16,7 @@ import AddressBookScreen from "@/screens/Mini/AddressBook/AddressBookScreen";
 import EditAddressBookScreen from "@/screens/Mini/AddressBook/EditAddressBookScreen";
 import { MiniAddFriendScreen } from "@/screens/Mini/Chat/MiniAddFriendScreen";
 import { MiniChatProfileScreen } from "@/screens/Mini/Chat/MiniChatProfile";
-import { MiniChatScreen } from "@/screens/Mini/Chat/MiniChatScreen";
+// import { MiniChatScreen } from "@/screens/Mini/Chat/MiniChatScreen";
 import { MiniCreateAccount } from "@/screens/Mini/Chat/MiniCreateAccount";
 import { MiniFriendScreen } from "@/screens/Mini/Chat/MiniFriendScreen";
 import { NewConversationScreen } from "@/screens/Mini/Chat/NewConversationScreen";
@@ -26,7 +26,7 @@ import { ConversationScreeen } from "@/screens/Mini/Conversation/ConversationScr
 import GroupActionScreen from "@/screens/Mini/Conversation/GroupActionScreen";
 import { DAppStoreScreen } from "@/screens/Mini/DAppStore/DAppStoreScreen";
 import MiniCreatePostScreen from "@/screens/Mini/Feed/MiniCreatePostScreen";
-import { MiniFeedScreen } from "@/screens/Mini/Feed/MiniFeedScreen";
+// import { MiniFeedScreen } from "@/screens/Mini/Feed/MiniFeedScreen";
 import ChangeNetworkScreen from "@/screens/Mini/Network/ChangeNetworkScreen";
 import NotificationScreen from "@/screens/Mini/Notifications/NotificationScreen";
 import { AccountDetailsScreen } from "@/screens/Mini/Profile/AccountDetailsScreen";
@@ -46,13 +46,15 @@ import { ModeSelectionScreen } from "@/screens/Mini/StartScreens/ModeSelectionSc
 import AddCustomTokenScreen from "@/screens/Mini/Wallet/AddCustomTokenScreen";
 import { DepositTORIScreen } from "@/screens/Mini/Wallet/DepositTORIScreen";
 import { ManageTokensScreen } from "@/screens/Mini/Wallet/ManageTokensScreen";
-import { MiniWalletScreen } from "@/screens/Mini/Wallet/MiniWalletScreen";
+// import { MiniWalletScreen } from "@/screens/Mini/Wallet/MiniWalletScreen";
 import SelectTokenScreen from "@/screens/Mini/Wallet/SelectTokenScreen";
 import SendToriScreen from "@/screens/Mini/Wallet/SendToriScreen";
 import SendingToriScreen from "@/screens/Mini/Wallet/SendingToriScreen";
 import TransactionDetailScreen from "@/screens/Mini/Wallet/TransactionDetailScreen";
 import { CreatePasswordWallet } from "@/screens/Wallet/Screens/CreatePasswordWallet";
 import { CreateWalletScreen } from "@/screens/Wallet/Screens/CreateWalletScreen";
+import { BrowserDetail } from "@/screens/WebView/BrowserDetail";
+import { BrowserScreen } from "@/screens/WebView/BrowserScreen";
 import { selectIsChatActivated } from "@/store/slices/message";
 import { RootStackParamList } from "@/utils/navigation";
 
@@ -77,7 +79,7 @@ const MainTab = () => {
       })}
       initialRouteName={isChatActivated ? "MiniChats" : "MiniFeeds"}
     >
-      <Tab.Screen
+      {/* <Tab.Screen
         name="MiniChats"
         options={{ header: () => null, title: "Chats" }}
         component={MiniChatScreen}
@@ -91,6 +93,11 @@ const MainTab = () => {
         name="MiniWallets"
         options={{ header: () => null, title: "Wallets" }}
         component={MiniWalletScreen}
+      /> */}
+      <Tab.Screen
+        name="Browser"
+        options={{ header: () => null, title: "Browser" }}
+        component={BrowserScreen}
       />
     </Tab.Navigator>
   );
@@ -445,6 +452,14 @@ export const getMiniModeScreens = () => {
       <Stack.Screen
         name="MiniGroupActions"
         component={GroupActionScreen}
+        options={{
+          header: () => null,
+          title: "",
+        }}
+      />
+      <Stack.Screen
+        name="BrowserDetail"
+        component={BrowserDetail}
         options={{
           header: () => null,
           title: "",
