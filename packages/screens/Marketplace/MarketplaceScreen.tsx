@@ -60,15 +60,15 @@ import { arrayIncludes } from "@/utils/typescript";
 const TABLE_COLUMNS = {
   rank: {
     label: "Rank",
-    flex: 0.5,
+    flex: 0.6,
   },
   collectionNameData: {
     label: "Collection",
-    flex: 2.5,
+    flex: 2.4,
   },
   tradeVolume: {
     label: "",
-    flex: 1.8,
+    flex: 1.9,
   },
   tradeVolumeDiff: {
     label: "",
@@ -76,7 +76,7 @@ const TABLE_COLUMNS = {
   },
   sales: {
     label: "",
-    flex: 1,
+    flex: 1.1,
   },
   floorPrice: {
     label: "Floor Price",
@@ -88,11 +88,11 @@ const TABLE_COLUMNS = {
   },
   supply: {
     label: "Supply",
-    flex: 1,
+    flex: 1.2,
   },
   mintVolume: {
     label: "",
-    flex: 1.8,
+    flex: 1.5,
   },
 };
 
@@ -328,8 +328,11 @@ const PrettyPriceWithCurrency: React.FC<{
               style={[
                 isMobile ? fontSemibold9 : fontSemibold11,
                 {
-                  marginLeft: layout.spacing_x1,
+                  marginLeft: isMobile
+                    ? layout.spacing_x0_5
+                    : layout.spacing_x1,
                   color: neutral77,
+                  width: isMobile ? layout.spacing_x3 : "auto",
                 },
               ]}
               numberOfLines={1}
@@ -391,9 +394,7 @@ const CollectionRow: React.FC<{
         params: { id: collection.id },
       }}
     >
-      <InnerCell style={{ flex: TABLE_COLUMNS.rank.flex }}>
-        {rowData.rank}
-      </InnerCell>
+      <InnerCell style={{ flex: 0.4 }}>{rowData.rank}</InnerCell>
 
       <View
         style={{
@@ -410,7 +411,10 @@ const CollectionRow: React.FC<{
           style={{ marginRight: isMobile ? 8 : layout.spacing_x1_5 }}
         />
         <BrandText
-          style={isMobile ? fontSemibold11 : fontSemibold13}
+          style={[
+            isMobile ? fontSemibold11 : fontSemibold13,
+            { width: isMobile ? 80 : "auto" },
+          ]}
           numberOfLines={1}
         >
           {rowData.collectionNameData.collectionName}
@@ -418,12 +422,15 @@ const CollectionRow: React.FC<{
       </View>
       <PrettyPriceWithCurrency
         data={rowData["tradeVolume"]}
-        style={{ flex: TABLE_COLUMNS.tradeVolume.flex }}
+        style={{
+          flex: TABLE_COLUMNS.tradeVolume.flex,
+        }}
       />
       <InnerCell
         style={{ flex: TABLE_COLUMNS.tradeVolumeDiff.flex }}
         textStyle={{
           color: tradeDiffColor,
+          marginLeft: isMobile ? layout.spacing_x1_5 : 0,
         }}
       >
         {tradeDiffText}
