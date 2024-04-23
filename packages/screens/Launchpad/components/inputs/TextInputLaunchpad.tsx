@@ -23,6 +23,7 @@ interface TextInputLaunchpadProps<T extends FieldValues>
   form: UseFormReturn<T>;
   name: Path<T>;
   sublabel?: React.ReactElement;
+  valueModifier?: (value: string) => string
   required?: boolean;
 }
 
@@ -31,14 +32,13 @@ export const TextInputLaunchpad = <T extends FieldValues>({
   name,
   label,
   placeHolder,
-  sublabel,
+  sublabel,valueModifier,
   required = true,
 }: TextInputLaunchpadProps<T>) => {
   const [hovered, setHovered] = useState(false);
   const { fieldState, field } = useController<T>({
     name,
     control: form.control,
-    rules: { required },
   });
   return (
     <CustomPressable
@@ -74,8 +74,8 @@ export const TextInputLaunchpad = <T extends FieldValues>({
             },
             { outlineStyle: "none" } as TextStyle,
           ]}
-          onChangeText={(text) => field.onChange(text)}
-          {...form.register(name)}
+          onChangeText={(text) => valueModifier ? field.onChange(valueModifier(text)) : field.onChange(text)}
+          value={field.value || ""}
         />
       </TertiaryBox>
 
