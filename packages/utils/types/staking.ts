@@ -12,6 +12,7 @@ export type ValidatorInfo = {
   address: string;
   jailed: boolean;
   consensusPubKey: { type: string; key: string };
+  serviceScore?: number | null;
 };
 
 export type StakeFormValuesType = {

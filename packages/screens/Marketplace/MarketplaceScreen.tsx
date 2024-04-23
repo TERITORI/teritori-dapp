@@ -250,8 +250,8 @@ const CollectionTable: React.FC<{
       <TableRow
         headings={
           !isMobile
-            ? Object.values(columns)
-            : Object.values(columns).slice(0, -5)
+            ? columns
+            : Object.fromEntries(Object.entries(columns).slice(0, -5))
         }
       />
       <FlatList

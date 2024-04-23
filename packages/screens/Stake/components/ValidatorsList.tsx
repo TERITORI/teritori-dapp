@@ -1,6 +1,12 @@
 import { Decimal } from "@cosmjs/math";
 import React from "react";
-import { FlatList, StyleProp, View, ViewStyle } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleProp,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import { BrandText } from "@/components/BrandText";
 import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
@@ -15,10 +21,19 @@ import { Reward, rewardsPrice, useRewards } from "@/hooks/useRewards";
 import { UserKind, getStakingCurrency, parseUserId } from "@/networks";
 import { prettyPrice } from "@/utils/coins";
 import { removeObjectKey, removeObjectKeys } from "@/utils/object";
-import { mineShaftColor } from "@/utils/style/colors";
+import {
+  errorColor,
+  mineShaftColor,
+  neutral33,
+  orangeDefault,
+  successColor,
+  yellowDefault,
+} from "@/utils/style/colors";
 import { fontSemibold11, fontSemibold13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { ValidatorInfo } from "@/utils/types/staking";
+
+const serviceScoreSize = 24;
 
 const TABLE_ROWS = {
   rank: {
@@ -33,6 +48,10 @@ const TABLE_ROWS = {
     label: "Voting Power",
     flex: 3,
   } as TableRowHeading,
+  serviceScore: {
+    label: "Service Score",
+    flex: 2,
+  },
   commission: {
     label: "Commission",
     flex: 2,
@@ -63,8 +82,19 @@ export const ValidatorsTable: React.FC<{
   style?: StyleProp<ViewStyle>;
   userId: string | undefined;
   userKind: UserKind;
-}> = ({ validators, actions, style, userId, userKind }) => {
+}> = ({ validators: validatorsProp, actions, style, userId, userKind }) => {
   const isMobile = useIsMobile();
+
+  const [sortBy, setSortBy] = React.useState<string>("rank");
+
+  const validators = [...validatorsProp].sort((a, b) => {
+    switch (sortBy) {
+      case "serviceScore":
+        return (b.serviceScore || 0) - (a.serviceScore || 0);
+      default:
+        return Number(a.rank || Infinity) - Number(b.rank || Infinity);
+    }
+  });
 
   const ROWS_TMP =
     actions && !isMobile ? TABLE_ROWS : removeObjectKey(TABLE_ROWS, "actions");
@@ -75,7 +105,11 @@ export const ValidatorsTable: React.FC<{
 
   return (
     <>
-      <TableRow headings={Object.values(ROWS)} />
+      <TableRow
+        headings={ROWS}
+        allowSelect={["rank", "serviceScore"]}
+        onPressItem={(key) => setSortBy(key)}
+      />
       <FlatList
         data={validators}
         style={style}
@@ -178,6 +212,42 @@ const ValidatorRow: React.FC<{
                 stakingCurrency?.denom,
               )}
         </BrandText>
+        <View
+          style={{
+            flex: TABLE_ROWS.serviceScore.flex,
+            paddingRight: layout.spacing_x1,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+          }}
+        >
+          {validator.serviceScore === undefined ? (
+            <ActivityIndicator size={serviceScoreSize} />
+          ) : (
+            <>
+              <View
+                style={{
+                  width: serviceScoreSize,
+                  height: serviceScoreSize,
+                  backgroundColor: mapScoreToColor(validator.serviceScore),
+                  borderRadius: serviceScoreSize / 2,
+                  marginRight: layout.spacing_x1,
+                }}
+              />
+
+              <BrandText
+                style={[
+                  isMobile ? fontSemibold11 : fontSemibold13,
+                  { color: mapScoreToColor(validator.serviceScore) },
+                ]}
+              >
+                {validator.serviceScore === null
+                  ? "¯\\_(ツ)_/¯"
+                  : (validator.serviceScore * 100).toFixed(1)}
+              </BrandText>
+            </>
+          )}
+        </View>
         <BrandText
           style={[
             fontSemibold13,
@@ -304,4 +374,20 @@ const ValidatorRow: React.FC<{
       )}
     </>
   );
+};
+
+const mapScoreToColor = (score: number | null) => {
+  if (score === null) {
+    return neutral33;
+  }
+  if (score >= 0.9) {
+    return successColor;
+  }
+  if (score >= 0.7) {
+    return yellowDefault;
+  }
+  if (score >= 0.4) {
+    return orangeDefault;
+  }
+  return errorColor;
 };

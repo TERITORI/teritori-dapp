@@ -74,7 +74,7 @@ export const ActivityTable: React.FC<{
         width: "100%",
       }}
     >
-      <TableRow headings={Object.values(TABLE_ROWS)} />
+      <TableRow headings={TABLE_ROWS} />
       <FlatList
         data={activities}
         renderItem={({ item }) => <ActivityRow activity={item} />}
