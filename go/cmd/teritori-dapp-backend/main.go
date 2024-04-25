@@ -135,6 +135,7 @@ func main() {
 	launchpadSvc := launchpad.NewLaunchpadService(context.Background(), &launchpad.Config{
 		Logger:    logger,
 		IndexerDB: indexerDB,
+		PinataJWT: *pinataJWT,
 	})
 
 	server := grpc.NewServer()

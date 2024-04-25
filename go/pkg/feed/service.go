@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/internal/pinata"
 	"github.com/TERITORI/teritori-dapp/go/pkg/feedpb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/dgraph-io/ristretto"
@@ -62,15 +63,15 @@ func (s *FeedService) IPFSKey(ctx context.Context, req *feedpb.IPFSKeyRequest) (
 		}, nil
 	}
 
-	pinata := NewPinataService(s.conf.PinataJWT)
-	credential, err := pinata.GenerateAPIKey()
+	pinataService := pinata.NewPinataService(s.conf.PinataJWT)
+	credential, err := pinataService.GenerateAPIKey()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to generate api key")
 	}
 
 	// With normal upload flow, suppose that time between posts always > TTL => we always generate a new key
 	// In abnormal case, time < TTL then we return the cached key, the worst case user still have 4s to make the upload request
-	s.cache.SetWithTTL(cacheKey, credential.JWT, 0, time.Second*(KEY_TTL-4))
+	s.cache.SetWithTTL(cacheKey, credential.JWT, 0, time.Second*(pinata.KEY_TTL-4))
 
 	return &feedpb.IPFSKeyResponse{
 		Jwt: credential.JWT,

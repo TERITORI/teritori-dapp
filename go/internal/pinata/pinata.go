@@ -1,4 +1,4 @@
-package feed
+package pinata
 
 import (
 	"encoding/json"
@@ -6,6 +6,8 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
@@ -38,6 +40,32 @@ type PinataApiKeysResponse struct {
 	Keys  []PinataKeyData `json:"keys"`
 	Count int             `json:"count"`
 }
+
+type PinataFileMetadata struct {
+	Name      string `json:"name"`
+	Keyvalues string `json:"keyvalues"`
+}
+type PinataFileInfo struct {
+	ID           string             `json:"id"`
+	IpfsPinHash  string             `json:"ipfs_pin_hash"`
+	Size         uint32             `json:"size"`
+	UserID       string             `json:"user_id"`
+	DatePinned   string             `json:"date_pinned"`
+	DateUnpinned string             `json:"date_unpinned"`
+	Metadata     PinataFileMetadata `json:"metadata"`
+}
+
+type PinListResponse struct {
+	Rows []PinataFileInfo `json:"rows"`
+}
+
+type PinStatus string
+
+const (
+	All      PinStatus = "all"
+	Pinned   PinStatus = "pinned"
+	Unpinned PinStatus = "unpinned"
+)
 
 func NewPinataService(JWT string) *PinataService {
 	return &PinataService{
@@ -88,6 +116,55 @@ func (ps *PinataService) RevokeAPIKey(apiKey string) error {
 	}
 
 	return nil
+}
+
+func (ps *PinataService) pinList(args url.Values) ([]PinataFileInfo, error) {
+	url := fmt.Sprintf("https://api.pinata.cloud/data/pinList?%s", args.Encode())
+	method := "GET"
+
+	respBytes, err := ps.makeRequest(method, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var resp *PinListResponse
+
+	if err := json.Unmarshal(respBytes, &resp); err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("failed to parse Pinata pinList response for URL: %s", url))
+	}
+
+	return resp.Rows, nil
+}
+
+func (ps *PinataService) ListFiles() ([]PinataFileInfo, error) {
+	const PAGE_LIMIT = 1000
+	pageOffset := 0
+
+	args := url.Values{}
+	args.Set("status", "pinned")
+	args.Set("pageLimit", strconv.Itoa(PAGE_LIMIT))
+
+	files := []PinataFileInfo{}
+	end := false
+	loop := 0
+
+	for !end {
+		args.Set("pageOffset", strconv.Itoa(pageOffset+PAGE_LIMIT*loop))
+
+		items, err := ps.pinList(args)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get pinList")
+		}
+
+		if len(items) < PAGE_LIMIT {
+			end = true
+		}
+
+		files = append(files, items...)
+		loop += 1
+	}
+
+	return files, nil
 }
 
 func (ps *PinataService) GenerateAPIKey() (*PinataCredential, error) {

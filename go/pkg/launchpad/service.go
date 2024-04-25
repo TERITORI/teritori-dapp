@@ -3,8 +3,10 @@ package launchpad
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/internal/pinata"
 	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -20,6 +22,7 @@ type Launchpad struct {
 type Config struct {
 	Logger    *zap.Logger
 	IndexerDB *gorm.DB
+	PinataJWT string
 }
 
 func NewLaunchpadService(ctx context.Context, conf *Config) launchpadpb.LaunchpadServiceServer {
@@ -46,6 +49,21 @@ func (s *Launchpad) UploadMetadatas(ctx context.Context, req *launchpadpb.Upload
 	if err := s.verifySender(req.Sender); err != nil {
 		return nil, errors.Wrap(err, "failed to verify sender")
 	}
+
+	// Check pinning
+	jwt := s.conf.PinataJWT
+	if jwt == "" {
+		return nil, errors.New("JWT key is required for this endpoint")
+	}
+
+	pinataService := pinata.NewPinataService(jwt)
+	data, err := pinataService.ListFiles()
+
+	fmt.Println(err)
+	for _, item := range data {
+		fmt.Println("pinned", item.DatePinned, "ID:", item.ID)
+	}
+	fmt.Println(data)
 
 	// At this step, LaunchpadProject has to be created by indexer when collection has been submitted on-chain
 	project := indexerdb.LaunchpadProject{
