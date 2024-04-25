@@ -185,6 +185,16 @@ fn full_flow() {
         assert_eq!(commited_collection.name, default_collection.name);
     }
 
+    // Submit collection with same name
+    {
+        let err = contract
+        .submit_collection(default_collection.clone())
+        .call(sender)
+        .unwrap_err();
+        
+        assert_eq!(err, ContractError::CollectionSymbolExists);
+    }
+
     // Deploy when deployer missing  ---------------------------------------------------------
     {
         let err = contract.deploy_collection("SYMBOL_NOT_EXIST".to_string()).call(sender).unwrap_err();
