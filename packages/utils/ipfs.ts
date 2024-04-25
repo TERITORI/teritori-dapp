@@ -36,14 +36,14 @@ const ipfsPathToWeb2URL = (path: string) => {
 
 export const isIpfsPathValid = (path: string) => {
   try {
-    path = path.substring("ipfs://".length)
+    path = path.substring("ipfs://".length);
     const separatorIndex = path.indexOf("/");
     const cidString =
       separatorIndex === -1 ? path : path.substring(0, separatorIndex);
     const cid = CID.parse(cidString);
-    return  !!cid.toV1().toString();
+    return !!cid.toV1().toString();
   } catch {
-    return false
+    return false;
   }
 };
 

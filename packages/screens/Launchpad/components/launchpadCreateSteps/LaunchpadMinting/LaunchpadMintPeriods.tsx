@@ -42,8 +42,8 @@ export const LaunchpadMintPeriods: FC = () => {
       price: { denom: selectedNetwork.currencies[0].denom, amount: "" },
       maxTokens: "",
       perAddressLimit: "",
-      startTime: "",
-      endTime: "",
+      startTime: 0,
+      endTime: 0,
       isOpen: true,
     });
   }, [networkId, closeAll, append, selectedNetwork]);

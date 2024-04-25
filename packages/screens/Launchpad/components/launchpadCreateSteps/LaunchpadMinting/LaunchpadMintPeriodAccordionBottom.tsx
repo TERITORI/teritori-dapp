@@ -17,6 +17,7 @@ import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { getCurrency } from "@/networks";
 import { CurrencyInputLaunchpad } from "@/screens/Launchpad/components/inputs/CurrencyInputLaunchpad/CurrencyInputLaunchpad";
+import { DateTimeInputLaunchpad } from "@/screens/Launchpad/components/inputs/DateTimeInputLaunchpad";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { errorColor, neutral55, neutral77 } from "@/utils/style/colors";
 import {
@@ -46,6 +47,9 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
   const perAddressLimitPath =
     `mintPeriods.${elemIndex}.perAddressLimit` as const;
   const mintPeriods = collectionForm.watch("mintPeriods");
+  const amount = collectionForm.watch(amountPath);
+  const startTime = collectionForm.watch(startTimePath);
+  const endTime = collectionForm.watch(endTimePath);
   const selectedCurrency = getCurrency(networkId, elem.price.denom);
 
   return (
@@ -60,12 +64,12 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
       <Controller<CollectionFormValues>
         name={amountPath}
         control={collectionForm.control}
-        render={({ field: { onChange, value } }) => (
+        render={({ field: { onChange } }) => (
           <>
             <CurrencyInputLaunchpad
               label="Mint Price and Currency"
               networkId={networkId}
-              amountAtomics={value?.toString()}
+              amountAtomics={amount}
               currency={selectedCurrency}
               onSelectCurrency={(currency) => {
                 update(elemIndex, {
@@ -113,33 +117,31 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
         form={collectionForm}
       />
 
-      <TextInputLaunchpad<CollectionFormValues>
-        label="Start Time"
-        placeHolder="dd.mm.yyyy | hh:mm PM"
+      <Controller<CollectionFormValues>
         name={startTimePath}
-        sublabel={
-          <View>
-            <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-              Start time for minting tokens
-            </BrandText>
-          </View>
-        }
-        form={collectionForm}
+        control={collectionForm.control}
+        render={({ field: { onChange } }) => (
+          <DateTimeInputLaunchpad
+            label="Start Time"
+            onChange={onChange}
+            timestamp={startTime}
+          />
+        )}
       />
+      <SpacerColumn size={2} />
 
-      <TextInputLaunchpad<CollectionFormValues>
-        label="End Time"
-        placeHolder="dd.mm.yyyy | hh:mm PM"
+      <Controller<CollectionFormValues>
         name={endTimePath}
-        sublabel={
-          <View>
-            <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-              End time for minting tokens
-            </BrandText>
-          </View>
-        }
-        form={collectionForm}
+        control={collectionForm.control}
+        render={({ field: { onChange } }) => (
+          <DateTimeInputLaunchpad
+            label="End Time"
+            onChange={onChange}
+            timestamp={endTime}
+          />
+        )}
       />
+      <SpacerColumn size={2} />
 
       <Separator />
       <SpacerColumn size={2} />

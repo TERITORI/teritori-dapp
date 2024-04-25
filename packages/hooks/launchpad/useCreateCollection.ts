@@ -3,15 +3,13 @@ import { MerkleTree } from "merkletreejs";
 import { useCallback } from "react";
 import { useSelector } from "react-redux";
 
-import {
-  Metadata,
-  UpdateTokensMetadatasResponse,
-} from "@/api/launchpad/v1/launchpad";
+import { Metadata } from "@/api/launchpad/v1/launchpad";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
   Collection,
   MintPeriod,
-  NftLaunchpadClient, WhitelistInfo,
+  NftLaunchpadClient,
+  WhitelistInfo,
 } from "@/contracts-clients/nft-launchpad";
 import { PinataFileProps, useIpfs } from "@/hooks/useIpfs";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
@@ -21,8 +19,11 @@ import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { mustGetLauchpadClient } from "@/utils/backend";
 import { generateIpfsKey } from "@/utils/ipfs";
-import {CollectionFormValues, CollectionMintPeriodFormValues} from "@/utils/types/launchpad";
-import {LocalFileData} from "@/utils/types/files";
+import { LocalFileData } from "@/utils/types/files";
+import {
+  CollectionFormValues,
+  CollectionMintPeriodFormValues,
+} from "@/utils/types/launchpad";
 
 export const useCreateCollection = () => {
   // Since the Collection network is the selected network, we use useSelectedNetworkId (See LaunchpadBasic.tsx)
@@ -72,18 +73,24 @@ export const useCreateCollection = () => {
         } as PinataFileProps);
 
         // ========== Whitelists
-        const whitelistAddressesFilesToUpload: LocalFileData[] = []
-        collectionFormValues.mintPeriods.forEach(mintPeriod => {
-          if(mintPeriod.whitelistAddressesFile) whitelistAddressesFilesToUpload.push(mintPeriod.whitelistAddressesFile)
-        })
+        const whitelistAddressesFilesToUpload: LocalFileData[] = [];
+        collectionFormValues.mintPeriods.forEach((mintPeriod) => {
+          if (mintPeriod.whitelistAddressesFile)
+            whitelistAddressesFilesToUpload.push(
+              mintPeriod.whitelistAddressesFile,
+            );
+        });
         const remoteWhitelistAddressesFiles = await uploadFilesToPinata({
           pinataJWTKey,
           files: whitelistAddressesFilesToUpload,
         });
         const mint_periods: MintPeriod[] = collectionFormValues.mintPeriods.map(
           (mintPeriod: CollectionMintPeriodFormValues, index) => {
-            let whitelist_info: WhitelistInfo|null = null;
-            if(mintPeriod.whitelistAddresses?.length && remoteWhitelistAddressesFiles[index].url) {
+            let whitelist_info: WhitelistInfo | null = null;
+            if (
+              mintPeriod.whitelistAddresses?.length &&
+              remoteWhitelistAddressesFiles[index].url
+            ) {
               const addresses: string[] = mintPeriod.whitelistAddresses;
               const leaves = addresses.map(keccak256);
               const tree = new MerkleTree(leaves, keccak256);
@@ -92,53 +99,49 @@ export const useCreateCollection = () => {
                 addresses_count: addresses.length,
                 addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
                 addresses_merkle_root: merkleRoot,
-              }
+              };
             }
             return {
               price: mintPeriod.price,
-              end_time: mintPeriod.endTime ? parseInt(mintPeriod.endTime, 10) : 0,
+              end_time: mintPeriod.endTime,
               max_tokens: mintPeriod.maxTokens
                 ? parseInt(mintPeriod.maxTokens, 10)
                 : 0,
               limit_per_address: mintPeriod.perAddressLimit
                 ? parseInt(mintPeriod.perAddressLimit, 10)
                 : 0,
-              start_time: mintPeriod.startTime
-                ? parseInt(mintPeriod.startTime, 10)
-                : 0,
+              start_time: mintPeriod.startTime,
               whitelist_info,
             };
           },
         );
 
         // ========== Metadata
-        let metadatas_merkle_root: string | null = null;
+        const metadatas: Metadata[] = [];
         if (collectionFormValues.assetsMetadatas?.length) {
-          const metadatas: Metadata[] =
-            collectionFormValues.assetsMetadatas.map((metadata) => {
-              return {
-                image: "", //TODO:
-                imageData: "",
-                externalUrl: metadata.externalUrl,
-                description: metadata.description,
-                name: metadata.name,
-                youtubeUrl: metadata.youtubeUrl,
-                attributes: [],
-                backgroundColor: "",
-                animationUrl: "",
-                royaltyPercentage: 5,
-                royaltyPaymentAddress: "",
-              };
-            }) || [];
-          const updateTokensMetadatasResponse: UpdateTokensMetadatasResponse =
-            await launchpadClient.UpdateTokensMetadatas({
-              sender: selectedWallet.address,
-              projectId: 1, //TODO:
-              networkId: selectedNetworkId,
-              metadatas,
+          collectionFormValues.assetsMetadatas.forEach((metadata) => {
+            metadatas.push({
+              image: "", //TODO:
+              imageData: "",
+              externalUrl: metadata.externalUrl,
+              description: metadata.description,
+              name: metadata.name,
+              youtubeUrl: metadata.youtubeUrl,
+              attributes: [],
+              backgroundColor: "",
+              animationUrl: "",
+              royaltyPercentage: 5,
+              royaltyPaymentAddress: "",
             });
-          metadatas_merkle_root = updateTokensMetadatasResponse.merkleRoot;
+          });
         }
+
+        const { merkleRoot } = await launchpadClient.UploadMetadatas({
+          sender: selectedWallet?.address,
+          projectId: collectionFormValues.symbol,
+          networkId: selectedNetworkId,
+          metadatas,
+        });
 
         // ========== Final collection
         const collection: Collection = {
@@ -158,9 +161,7 @@ export const useCreateCollection = () => {
           tokens_count: collectionFormValues.tokensCount
             ? parseInt(collectionFormValues.tokensCount, 10)
             : 0,
-          reveal_time: collectionFormValues.revealTime
-            ? parseInt(collectionFormValues.revealTime, 10)
-            : 0,
+          reveal_time: collectionFormValues.revealTime,
           team_desc: collectionFormValues.teamDescription || "",
           team_link: collectionFormValues.teamLink || "",
           partners: collectionFormValues.partnersDescription || "",
@@ -195,7 +196,7 @@ export const useCreateCollection = () => {
             : 0,
 
           mint_periods,
-          metadatas_merkle_root,
+          metadatas_merkle_root: merkleRoot,
 
           royalty_address: collectionFormValues.royaltyAddress || "",
           royalty_percentage: collectionFormValues.royaltyPercentage
@@ -208,7 +209,7 @@ export const useCreateCollection = () => {
           base_token_uri: "None",
         };
 
-        console.log('========= collection', collection)
+        console.log("========= collection", collection);
 
         // ========== Submit the collection
         const result = await nftLaunchpadClient.submitCollection({

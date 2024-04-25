@@ -8,6 +8,7 @@ import { SelectInputLaunchpad } from "../inputs/selectInputs/SelectInputLaunchpa
 import { BrandText } from "@/components/BrandText";
 import { ErrorText } from "@/components/ErrorText";
 import { SpacerColumn } from "@/components/spacer";
+import { DateTimeInputLaunchpad } from "@/screens/Launchpad/components/inputs/DateTimeInputLaunchpad";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
@@ -21,6 +22,9 @@ export const LaunchpadAdditional: React.FC = () => {
   const escrowMintProceedsPeriod = collectionForm.watch(
     "escrowMintProceedsPeriod",
   );
+  const isReadyForMint = collectionForm.watch("isReadyForMint");
+  const isDox = collectionForm.watch("isDox");
+  const expectedMintDate = collectionForm.watch("expectedMintDate");
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
       <View style={{ width: 416 }}>
@@ -49,18 +53,23 @@ export const LaunchpadAdditional: React.FC = () => {
           placeHolder="Describe here..."
           name="artworkDescription"
           form={collectionForm}
-          multiline
         />
 
         <Controller<CollectionFormValues>
           name="isReadyForMint"
           control={collectionForm.control}
-          render={({ field: { onChange, value } }) => (
+          render={({ field: { onChange } }) => (
             <>
               <SelectInputLaunchpad
                 dropdownOptions={["Yes", "No"]}
                 placeHolder="Select Option"
-                item={value === true ? "Yes" : value === false ? "No" : ""}
+                item={
+                  isReadyForMint === true
+                    ? "Yes"
+                    : isReadyForMint === false
+                      ? "No"
+                      : ""
+                }
                 onPressItem={(item) => {
                   onChange(item === "Yes");
                 }}
@@ -95,13 +104,18 @@ export const LaunchpadAdditional: React.FC = () => {
           form={collectionForm}
         />
 
-        {/*TODO: Datetime input*/}
-        <TextInputLaunchpad<CollectionFormValues>
-          label="What is your expected mint date?"
-          placeHolder="dd.mm.yyyy | hh:mm PM"
+        <Controller<CollectionFormValues>
           name="expectedMintDate"
-          form={collectionForm}
+          control={collectionForm.control}
+          render={({ field: { onChange } }) => (
+            <DateTimeInputLaunchpad
+              label="What is your expected mint date?"
+              onChange={onChange}
+              timestamp={expectedMintDate}
+            />
+          )}
         />
+        <SpacerColumn size={2} />
 
         <Controller<CollectionFormValues>
           name="escrowMintProceedsPeriod"
@@ -132,12 +146,12 @@ export const LaunchpadAdditional: React.FC = () => {
         <Controller<CollectionFormValues>
           name="isDox"
           control={collectionForm.control}
-          render={({ field: { onChange, value } }) => (
+          render={({ field: { onChange } }) => (
             <>
               <SelectInputLaunchpad
                 dropdownOptions={["Yes", "No"]}
                 placeHolder="Select Option"
-                item={value === true ? "Yes" : value === false ? "No" : ""}
+                item={isDox === true ? "Yes" : isDox === false ? "No" : ""}
                 onPressItem={(item) => {
                   onChange(item === "Yes");
                 }}

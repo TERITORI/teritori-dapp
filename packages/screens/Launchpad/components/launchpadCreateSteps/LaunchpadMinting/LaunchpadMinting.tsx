@@ -1,5 +1,5 @@
 import React from "react";
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
 import { CollectionFormValues } from "../../../../../utils/types/launchpad";
@@ -8,6 +8,7 @@ import { ConfigureRoyaltyDetails } from "../../ConfigureRoyaltyDetails";
 import { BrandText } from "@/components/BrandText";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
+import { DateTimeInputLaunchpad } from "@/screens/Launchpad/components/inputs/DateTimeInputLaunchpad";
 import { TextInputLaunchpad } from "@/screens/Launchpad/components/inputs/TextInputLaunchpad";
 import { LaunchpadMintPeriods } from "@/screens/Launchpad/components/launchpadCreateSteps/LaunchpadMinting/LaunchpadMintPeriods";
 import { neutral77 } from "@/utils/style/colors";
@@ -16,7 +17,7 @@ import { layout } from "@/utils/style/layout";
 
 export const LaunchpadMinting: React.FC = () => {
   const collectionForm = useFormContext<CollectionFormValues>();
-
+  const revealTime = collectionForm.watch("revealTime");
   return (
     <View
       style={{
@@ -40,13 +41,18 @@ export const LaunchpadMinting: React.FC = () => {
           form={collectionForm}
         />
 
-        <TextInputLaunchpad<CollectionFormValues>
-          label="Reveal Time"
-          placeHolder="dd.mm.yyyy | hh:mm PM"
+        <Controller<CollectionFormValues>
           name="revealTime"
-          form={collectionForm}
-          required={false}
+          control={collectionForm.control}
+          render={({ field: { onChange } }) => (
+            <DateTimeInputLaunchpad
+              label="Reveal Time"
+              onChange={onChange}
+              timestamp={revealTime}
+            />
+          )}
         />
+        <SpacerColumn size={2} />
 
         <Separator />
         <SpacerColumn size={2} />

@@ -1,5 +1,6 @@
 import React from "react";
 import { FlatList, StyleSheet, useWindowDimensions, View } from "react-native";
+import { Observable } from "rxjs";
 
 import { CenterSection } from "./component/CenterSection";
 import { GameBgCard } from "./component/GameBgCard";
@@ -13,17 +14,16 @@ import {
   UploadMetadataRequest,
 } from "@/api/launchpad/v1/launchpad";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { FileUploader } from "@/components/inputs/fileUploader";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { mustGetLauchpadClient } from "@/utils/backend";
 import { gameBgData } from "@/utils/game";
+import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { neutral00 } from "@/utils/style/colors";
 import { headerHeight } from "@/utils/style/layout";
-import { FileUploader } from "@/components/inputs/fileUploader";
-import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { LocalFileData } from "@/utils/types/files";
-import { Observable } from "rxjs";
 
 export const RiotGameScreen = () => {
   const navigation = useAppNavigation();
@@ -149,7 +149,7 @@ export const RiotGameScreen = () => {
       royaltyPaymentAddress: "",
     };
 
-    const info: UploadMetadataInfo = {
+    const c: UploadMetadataInfo = {
       sender: selectedWallet?.address || "",
       projectId: 1,
       networkId,
@@ -157,21 +157,23 @@ export const RiotGameScreen = () => {
       metadata: nft0,
     };
 
-    const reqObs = new Observable<DeepPartial<UploadMetadataRequest>>(function subscribe(subscriber) {
-      // Keep track of the interval resource
-      let count = 0;
-      const intervalId = setInterval(() => {
-        if (count >= 10) {
-          subscriber.complete();
-          clearInterval(intervalId);
-        }
+    const reqObs = new Observable<DeepPartial<UploadMetadataRequest>>(
+      function subscribe(subscriber) {
+        // Keep track of the interval resource
+        let count = 0;
+        const intervalId = setInterval(() => {
+          if (count >= 10) {
+            subscriber.complete();
+            clearInterval(intervalId);
+          }
 
-        subscriber.next(
-          UploadMetadataRequest.fromPartial({ info: { sender: "test" } }),
-        );
-        count++;
-      }, 1000);
-    });
+          subscriber.next(
+            UploadMetadataRequest.fromPartial({ info: { sender: "test" } }),
+          );
+          count++;
+        }, 1000);
+      },
+    );
 
     const resp = await client.UploadMetadata(reqObs);
     console.log(resp);

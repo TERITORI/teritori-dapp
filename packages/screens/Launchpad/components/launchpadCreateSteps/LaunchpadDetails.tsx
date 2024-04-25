@@ -20,6 +20,8 @@ import {
 export const LaunchpadDetails: React.FC = () => {
   const collectionForm = useFormContext<CollectionFormValues>();
   const projectTypes = collectionForm.watch("projectTypes") || [];
+  const isDerivativeProject = collectionForm.watch("isDerivativeProject");
+  const isPreviouslyApplied = collectionForm.watch("isPreviouslyApplied");
 
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -70,12 +72,18 @@ export const LaunchpadDetails: React.FC = () => {
         <Controller<CollectionFormValues>
           name="isDerivativeProject"
           control={collectionForm.control}
-          render={({ field: { onChange, value } }) => (
+          render={({ field: { onChange } }) => (
             <>
               <SelectInputLaunchpad
                 dropdownOptions={["Yes", "No"]}
                 placeHolder="Select Option"
-                item={value === true ? "Yes" : value === false ? "No" : ""}
+                item={
+                  isDerivativeProject === true
+                    ? "Yes"
+                    : isDerivativeProject === false
+                      ? "No"
+                      : ""
+                }
                 onPressItem={(item) => {
                   onChange(item === "Yes");
                 }}
@@ -153,12 +161,18 @@ export const LaunchpadDetails: React.FC = () => {
         <Controller<CollectionFormValues>
           name="isPreviouslyApplied"
           control={collectionForm.control}
-          render={({ field: { onChange, value } }) => (
+          render={({ field: { onChange } }) => (
             <>
               <SelectInputLaunchpad
                 dropdownOptions={["Yes", "No"]}
                 placeHolder="Select Option"
-                item={value === true ? "Yes" : value === false ? "No" : ""}
+                item={
+                  isPreviouslyApplied === true
+                    ? "Yes"
+                    : isPreviouslyApplied === false
+                      ? "No"
+                      : ""
+                }
                 onPressItem={(item) => {
                   onChange(item === "Yes");
                 }}

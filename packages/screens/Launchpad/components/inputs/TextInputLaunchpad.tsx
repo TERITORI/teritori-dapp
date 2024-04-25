@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   FieldValues,
   Path,
@@ -23,7 +23,7 @@ interface TextInputLaunchpadProps<T extends FieldValues>
   form: UseFormReturn<T>;
   name: Path<T>;
   sublabel?: React.ReactElement;
-  valueModifier?: (value: string) => string
+  valueModifier?: (value: string) => string;
   required?: boolean;
 }
 
@@ -32,9 +32,12 @@ export const TextInputLaunchpad = <T extends FieldValues>({
   name,
   label,
   placeHolder,
-  sublabel,valueModifier,
+  sublabel,
+  valueModifier,
   required = true,
+  ...restProps
 }: TextInputLaunchpadProps<T>) => {
+  const inputRef = useRef<TextInput>(null);
   const [hovered, setHovered] = useState(false);
   const { fieldState, field } = useController<T>({
     name,
@@ -44,7 +47,7 @@ export const TextInputLaunchpad = <T extends FieldValues>({
     <CustomPressable
       onHoverIn={() => setHovered(true)}
       onHoverOut={() => setHovered(false)}
-      onPress={() => form.setFocus(name)}
+      onPress={() => inputRef?.current?.focus()}
       style={{ width: "100%", marginBottom: layout.spacing_x2 }}
     >
       <Label hovered={hovered} isRequired={required}>
@@ -74,8 +77,14 @@ export const TextInputLaunchpad = <T extends FieldValues>({
             },
             { outlineStyle: "none" } as TextStyle,
           ]}
-          onChangeText={(text) => valueModifier ? field.onChange(valueModifier(text)) : field.onChange(text)}
+          onChangeText={(text) =>
+            valueModifier
+              ? field.onChange(valueModifier(text))
+              : field.onChange(text)
+          }
           value={field.value || ""}
+          ref={inputRef}
+          {...restProps}
         />
       </TertiaryBox>
 
