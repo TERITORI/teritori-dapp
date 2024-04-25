@@ -38,6 +38,8 @@ pub struct UploadMetadatasRequest {
     pub project_id: u32,
     #[prost(message, repeated, tag="4")]
     pub metadatas: ::prost::alloc::vec::Vec<Metadata>,
+    #[prost(string, optional, tag="5")]
+    pub pinata_jwt: ::core::option::Option<::prost::alloc::string::String>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

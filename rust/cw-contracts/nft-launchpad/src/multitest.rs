@@ -181,13 +181,13 @@ fn full_flow() {
         );
 
         // Check created collection
-        let commited_collection = contract.get_collection_by_id(1).unwrap();
+        let commited_collection = contract.get_collection_by_id("SYMBOL".to_string()).unwrap();
         assert_eq!(commited_collection.name, default_collection.name);
     }
 
     // Deploy when deployer missing  ---------------------------------------------------------
     {
-        let err = contract.deploy_collection(999).call(sender).unwrap_err();
+        let err = contract.deploy_collection("SYMBOL_NOT_EXIST".to_string()).call(sender).unwrap_err();
         assert_eq!(err, ContractError::DeployerMissing)
     }
 
@@ -203,7 +203,7 @@ fn full_flow() {
             .call(sender)
             .unwrap();
 
-        let err = contract.deploy_collection(999).call(sender).unwrap_err();
+        let err = contract.deploy_collection("SYMBOL_NOT_EXIST".to_string()).call(sender).unwrap_err();
         assert_eq!(err, ContractError::Forbidden)
     }
 
@@ -219,13 +219,13 @@ fn full_flow() {
             .call(sender)
             .unwrap();
 
-        let err = contract.deploy_collection(999).call(sender).unwrap_err();
+        let err = contract.deploy_collection("SYMBOL_NOT_EXIST".to_string()).call(sender).unwrap_err();
         assert_eq!(err, ContractError::CollectionNotFound)
     }
 
     // Deploy collection without merkle root  ---------------------------------------------------------
     {
-        let err = contract.deploy_collection(1).call(sender).unwrap_err();
+        let err = contract.deploy_collection("SYMBOL".to_string()).call(sender).unwrap_err();
         assert_eq!(err, ContractError::MerkleRootMissing)
     }
 
@@ -233,11 +233,11 @@ fn full_flow() {
     {
         let new_merkle_root = "new merkle root";
         contract
-            .update_merkle_root(1, new_merkle_root.to_string())
+            .update_merkle_root("SYMBOL".to_string(), new_merkle_root.to_string())
             .call(sender)
             .unwrap();
 
-        let collection_after = contract.get_collection_by_id(1).unwrap();
+        let collection_after = contract.get_collection_by_id("SYMBOL".to_string()).unwrap();
 
         assert_eq!(
             collection_after.metadatas_merkle_root,
@@ -247,7 +247,7 @@ fn full_flow() {
 
     // Deploy collection with merkle root but dont have nft code id  ---------------------------------------------------------
     {
-        let err = contract.deploy_collection(1).call(sender).unwrap_err();
+        let err = contract.deploy_collection("SYMBOL".to_string()).call(sender).unwrap_err();
         assert_eq!(err, ContractError::NftCodeIdMissing)
     }
 
@@ -269,9 +269,9 @@ fn full_flow() {
 
     // Deploy completed collection after update merkle root + nft code id  ---------------------------------------------------------
     {
-        let collection_id = 1;
+        let collection_id = "SYMBOL".to_string();
         let resp = contract
-            .deploy_collection(collection_id)
+            .deploy_collection(collection_id.to_owned())
             .call(sender)
             .unwrap();
         let attrs = resp.custom_attrs(1);
@@ -279,7 +279,7 @@ fn full_flow() {
             attrs[1],
             Attribute {
                 key: "collection_id".to_string(),
-                value: "1".to_string()
+                value: "SYMBOL".to_string()
             }
         );
 

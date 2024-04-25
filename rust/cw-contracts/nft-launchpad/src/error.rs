@@ -19,6 +19,9 @@ pub enum ContractError {
     #[error("Must provide atleast 1 mint period.")]
     MintPeriodRequired,
 
+    #[error("Collection symbol exists.")]
+    CollectionSymbolExists,
+
     #[error("Collection not found.")]
     CollectionNotFound,
 

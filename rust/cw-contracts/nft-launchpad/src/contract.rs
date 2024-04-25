@@ -21,9 +21,9 @@ const INSTANTIATE_REPLY_ID: u64 = 1u64;
 // Contract states ------------------------------------------------------
 pub struct NftLaunchpad {
     pub(crate) config: Item<'static, Config>, // nft launchpad config
-    pub(crate) collections: Map<'static, u64, Collection>, // collection id => collection info
+    pub(crate) collections: Map<'static, String, Collection>, // collection id => collection info
 
-    pub(crate) instantiating_collection_id: Item<'static, u64>,
+    pub(crate) instantiating_collection_id: Item<'static, String>,
 }
 
 // Contract implement -----------------------------------------------------
@@ -70,33 +70,34 @@ impl NftLaunchpad {
             return Err(ContractError::MintPeriodRequired);
         }
 
-        // Increase collection id by 1
-        let last_collection = self.collections.last(storage).unwrap();
-        let new_id: u64 = match last_collection {
-            Some(item) => item.0 + 1,
-            None => 1,
-        };
+        // Check if collection symbol exists ?
+        let symbol_exist = self.collections.has(storage, collection.symbol.to_owned());
+        if symbol_exist {
+            return Err(ContractError::CollectionSymbolExists);
+        }
+
+        let collection_id = collection.to_owned().symbol;
 
         // Add new collection
-        self.collections.save(storage, new_id, &collection)?;
+        self.collections.save(storage, collection_id.to_owned(), &collection)?;
 
         Ok(Response::new()
             .add_attribute("action", "submit_collection")
-            .add_attribute("collection_id", new_id.to_string()))
+            .add_attribute("collection_id", collection_id))
     }
 
     #[msg(exec)]
     pub fn update_merkle_root(
         &self,
         ctx: ExecCtx,
-        collection_id: u64,
+        collection_id: String,
         merkle_root: String,
     ) -> Result<Response, ContractError> {
         let storage = ctx.deps.storage;
 
         let mut collection = self
             .collections
-            .load(storage, collection_id)
+            .load(storage, collection_id.to_owned())
             .map_err(|_| ContractError::CollectionNotFound)?;
 
         // Do not allow to update merke root if the collection has been deployed already
@@ -119,7 +120,7 @@ impl NftLaunchpad {
     pub fn deploy_collection(
         &self,
         ctx: ExecCtx,
-        collection_id: u64,
+        collection_id: String,
     ) -> Result<Response, ContractError> {
         let sender = ctx.info.sender.to_string();
         let config = self.config.load(ctx.deps.storage)?;
@@ -135,7 +136,7 @@ impl NftLaunchpad {
 
         let collection = self
             .collections
-            .load(ctx.deps.storage, collection_id)
+            .load(ctx.deps.storage, collection_id.to_owned())
             .map_err(|_| ContractError::CollectionNotFound)?;        
 
         // Do not allow to deploy collection if merkle root is not set
@@ -186,11 +187,11 @@ impl NftLaunchpad {
         Ok(Response::new()
             .add_submessage(submessage)
             .add_attribute("action", "collection_deployed")
-            .add_attribute("collection_id", collection_id.to_string()))
+            .add_attribute("collection_id", collection_id))
     }
 
     #[msg(query)]
-    pub fn get_collection_by_id(&self, ctx: QueryCtx, collection_id: u64) -> StdResult<Collection> {
+    pub fn get_collection_by_id(&self, ctx: QueryCtx, collection_id: String) -> StdResult<Collection> {
         let collection = self.collections.load(ctx.deps.storage, collection_id)?;
         Ok(collection)
     }
@@ -235,13 +236,13 @@ impl NftLaunchpad {
             let collection_id = self.instantiating_collection_id.load(storage)?;
 
             // Update collection states
-            let mut collection = self.collections.load(storage, collection_id)?;
+            let mut collection = self.collections.load(storage, collection_id.to_owned())?;
             collection.deployed_address = Some(deployed_addr.clone());
-            self.collections.save(storage, collection_id, &collection)?;
+            self.collections.save(storage, collection_id.to_owned(), &collection)?;
 
             return Ok(Response::new()
                 .add_attribute("action", "collection_instantiated")
-                .add_attribute("collection_id", collection_id.to_string())
+                .add_attribute("collection_id", collection_id)
                 .add_attribute("collection_addr", deployed_addr));
         }
 
@@ -264,7 +265,7 @@ pub struct Collection {
     // Collection info ----------------------------
     pub name: String,
     pub desc: String,
-    pub symbol: String,
+    pub symbol: String,  // Unique
     pub cover_img_uri: String,
     pub target_network: String,
     pub external_link: Option<String>,
