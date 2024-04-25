@@ -140,61 +140,6 @@ func (s *Launchpad) CalculateCollectionMerkleRoot(ctx context.Context, req *laun
 	return &launchpadpb.CalculateCollectionMerkleRootResponse{MerkleRoot: hex_root}, nil
 }
 
-// Update collection whitelists and generate merkle root for each whitelist
-// This will flush all existing whitelists and replace by new one
-// UPDATE: normally we dont use this endpoint anymore as we will store addresses by ipfs so the frontend
-// can calculate merkle tree/root/path without need of backend.
-// But for now, we let is here just to keep the code in case where we need it later
-// To re-activate this, please update the api proto
-// func (s *Launchpad) UpdateCollectionWhitelists(ctx context.Context, req *launchpadpb.UpdateCollectionWhitelistsRequest) (*launchpadpb.UpdateCollectionWhitelistsResponse, error) {
-// 	if err := s.verifySender(req.Sender); err != nil {
-// 		return nil, errors.Wrap(err, "failed to verify sender")
-// 	}
-
-// 	var roots []string
-// 	if err := s.conf.IndexerDB.Transaction(func(tx *gorm.DB) error {
-// 		// Flush all existing whitelists
-// 		if err := s.conf.IndexerDB.Delete(&indexerdb.LaunchpadWhitelist{}, "network_id = ? AND project_id = ?", req.NetworkId, req.ProjectId).Error; err != nil {
-// 			return errors.Wrap(err, "failed to flush existing whitelists")
-// 		}
-
-// 		var whitelistInfos []indexerdb.LaunchpadWhitelist
-
-// 		for id, info := range req.WhitelistMintInfos {
-// 			infoJson, err := json.Marshal(info)
-// 			if err != nil {
-// 				return errors.Wrap(err, "failed to marshal data to json")
-// 			}
-
-// 			// Calculate merkle root
-// 			tree, err := s.buildWhitelistMerkleTree(info.Addresses)
-// 			if err != nil {
-// 				return errors.Wrap(err, "failed to build merkle tree for whitelist addresses")
-// 			}
-
-// 			root := tree.GetHexRootWithoutPrefix()
-// 			roots = append(roots, root)
-
-// 			whitelistInfos = append(whitelistInfos, indexerdb.LaunchpadWhitelist{
-// 				NetworkID:   req.NetworkId,
-// 				ProjectID:   req.ProjectId,
-// 				WhitelistID: uint32(id),
-// 				MerkleRoot:  root,
-// 				Data:        datatypes.JSON([]byte(infoJson)),
-// 			})
-// 		}
-
-// 		if err := s.conf.IndexerDB.Create(whitelistInfos).Error; err != nil {
-// 			return errors.Wrap(err, "failed to save whitelist infos")
-// 		}
-// 		return nil
-// 	}); err != nil {
-// 		return nil, errors.Wrap(err, "fail to process")
-// 	}
-
-// 	return &launchpadpb.UpdateCollectionWhitelistsResponse{MerkleRoots: roots}, nil
-// }
-
 // Get token metadata, merkle root, merke proof to be used for claiming the on-chain token
 func (s *Launchpad) TokenMetadata(ctx context.Context, req *launchpadpb.TokenMetadataRequest) (*launchpadpb.TokenMetadataResponse, error) {
 	if err := s.verifySender(req.Sender); err != nil {
