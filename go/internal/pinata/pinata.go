@@ -42,8 +42,8 @@ type PinataApiKeysResponse struct {
 }
 
 type PinataFileMetadata struct {
-	Name      string `json:"name"`
-	Keyvalues string `json:"keyvalues"`
+	Name      string                 `json:"name"`
+	Keyvalues map[string]interface{} `json:"keyvalues"`
 }
 type PinataFileInfo struct {
 	ID           string             `json:"id"`
@@ -136,13 +136,17 @@ func (ps *PinataService) pinList(args url.Values) ([]PinataFileInfo, error) {
 	return resp.Rows, nil
 }
 
-func (ps *PinataService) ListFiles() ([]PinataFileInfo, error) {
+func (ps *PinataService) ListFiles(metadataName string) ([]PinataFileInfo, error) {
 	const PAGE_LIMIT = 1000
 	pageOffset := 0
 
 	args := url.Values{}
 	args.Set("status", "pinned")
 	args.Set("pageLimit", strconv.Itoa(PAGE_LIMIT))
+	// Filter only files containning given name
+	if metadataName != "" {
+		args.Set("metadata[name]", metadataName)
+	}
 
 	files := []PinataFileInfo{}
 	end := false

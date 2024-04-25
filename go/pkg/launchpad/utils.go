@@ -101,3 +101,7 @@ func (m *Metadata) Equals(other merkletree.Content) (bool, error) {
 func (m *Metadata) ToJSONB() interface{} {
 	return map[string]interface{}{}
 }
+
+func extractCID(imageURL string) string {
+	return imageURL
+}

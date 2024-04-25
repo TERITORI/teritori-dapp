@@ -36,6 +36,7 @@ message UploadMetadatasRequest {
   string network_id = 2;
   uint32 project_id = 3;
   repeated Metadata metadatas = 4;
+  optional string pinata_jwt = 5;
 }
 
 message UploadMetadatasResponse {

@@ -10,6 +10,7 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+	"golang.org/x/exp/slices"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -50,22 +51,39 @@ func (s *Launchpad) UploadMetadatas(ctx context.Context, req *launchpadpb.Upload
 		return nil, errors.Wrap(err, "failed to verify sender")
 	}
 
+	// Check if client sent pinata jwt along with the payload
+	pinataJwt := req.GetPinataJwt()
+	if pinataJwt == "" {
+		// If pinataJwt is not sent then try to use the system key
+		pinataJwt = s.conf.PinataJWT
+
+		// If system does not have JWT then throw error
+		if pinataJwt == "" {
+			return nil, errors.New("JWT key is required for this endpoint")
+		}
+	}
+
 	// Check pinning
-	jwt := s.conf.PinataJWT
-	if jwt == "" {
-		return nil, errors.New("JWT key is required for this endpoint")
+	pinataService := pinata.NewPinataService(pinataJwt)
+	data, err := pinataService.ListFiles(fmt.Sprintf("%d-", req.GetProjectId()))
+
+	if err != nil {
+		return nil, errors.New("failed to get pinned files")
 	}
 
-	pinataService := pinata.NewPinataService(jwt)
-	data, err := pinataService.ListFiles()
-
-	fmt.Println(err)
+	pinnedCIDs := []string{}
 	for _, item := range data {
-		fmt.Println("pinned", item.DatePinned, "ID:", item.ID)
+		pinnedCIDs = append(pinnedCIDs, item.IpfsPinHash)
 	}
-	fmt.Println(data)
 
-	// At this step, LaunchpadProject has to be created by indexer when collection has been submitted on-chain
+	// Check if all files have been pinned correctly
+	for _, metadata := range req.Metadatas {
+		if !slices.Contains(pinnedCIDs, extractCID(*metadata.Image)) {
+			return nil, errors.New(fmt.Sprintf("image %s has not been pinned correctly", *metadata.Image))
+		}
+	}
+
+	// At this step, LaunchpadProject must be created by indexer when collection has been submitted on-chain
 	project := indexerdb.LaunchpadProject{
 		ProjectID: req.ProjectId,
 		NetworkID: req.NetworkId,

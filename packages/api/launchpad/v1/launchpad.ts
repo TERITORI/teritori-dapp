@@ -28,6 +28,7 @@ export interface UploadMetadatasRequest {
   networkId: string;
   projectId: number;
   metadatas: Metadata[];
+  pinataJwt?: string | undefined;
 }
 
 export interface UploadMetadatasResponse {
@@ -331,7 +332,7 @@ export const UploadMetadataResponse = {
 };
 
 function createBaseUploadMetadatasRequest(): UploadMetadatasRequest {
-  return { sender: "", networkId: "", projectId: 0, metadatas: [] };
+  return { sender: "", networkId: "", projectId: 0, metadatas: [], pinataJwt: undefined };
 }
 
 export const UploadMetadatasRequest = {
@@ -347,6 +348,9 @@ export const UploadMetadatasRequest = {
     }
     for (const v of message.metadatas) {
       Metadata.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.pinataJwt !== undefined) {
+      writer.uint32(42).string(message.pinataJwt);
     }
     return writer;
   },
@@ -386,6 +390,13 @@ export const UploadMetadatasRequest = {
 
           message.metadatas.push(Metadata.decode(reader, reader.uint32()));
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.pinataJwt = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -403,6 +414,7 @@ export const UploadMetadatasRequest = {
       metadatas: globalThis.Array.isArray(object?.metadatas)
         ? object.metadatas.map((e: any) => Metadata.fromJSON(e))
         : [],
+      pinataJwt: isSet(object.pinataJwt) ? globalThis.String(object.pinataJwt) : undefined,
     };
   },
 
@@ -420,6 +432,9 @@ export const UploadMetadatasRequest = {
     if (message.metadatas?.length) {
       obj.metadatas = message.metadatas.map((e) => Metadata.toJSON(e));
     }
+    if (message.pinataJwt !== undefined) {
+      obj.pinataJwt = message.pinataJwt;
+    }
     return obj;
   },
 
@@ -432,6 +447,7 @@ export const UploadMetadatasRequest = {
     message.networkId = object.networkId ?? "";
     message.projectId = object.projectId ?? 0;
     message.metadatas = object.metadatas?.map((e) => Metadata.fromPartial(e)) || [];
+    message.pinataJwt = object.pinataJwt ?? undefined;
     return message;
   },
 };
