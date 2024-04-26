@@ -50,6 +50,12 @@ export const SIDEBAR_LIST: SidebarRecordType = {
         icon: launchpadApplySVG,
         route: "LaunchpadApply",
       },
+      admin: {
+        title: "Admin Dashboard",
+        id: "admin",
+        icon: gridSVG,
+        route: "LaunchpadAdministrationDashboard",
+      },
     },
   },
   "multisig-wallet": {

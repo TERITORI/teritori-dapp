@@ -17,7 +17,7 @@ import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetworkFeature, NetworkFeature } from "@/networks";
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
-import { mustGetLauchpadClient } from "@/utils/backend";
+import { mustGetLaunchpadClient } from "@/utils/backend";
 import { generateIpfsKey } from "@/utils/ipfs";
 import { LocalFileData } from "@/utils/types/files";
 import {
@@ -45,7 +45,7 @@ export const useCreateCollection = () => {
       if (!cosmwasmLaunchpadFeature) return;
       // const defaultMintDenom = cosmwasmLaunchpadFeature.defaultMintDenom;
 
-      const launchpadClient = mustGetLauchpadClient(selectedWallet.networkId);
+      const launchpadClient = mustGetLaunchpadClient(selectedWallet.networkId);
 
       const nftLaunchpadClient = new NftLaunchpadClient(
         signingComswasmClient,
@@ -116,33 +116,6 @@ export const useCreateCollection = () => {
           },
         );
 
-        // ========== Metadata
-        const metadatas: Metadata[] = [];
-        if (collectionFormValues.assetsMetadatas?.length) {
-          collectionFormValues.assetsMetadatas.forEach((metadata) => {
-            metadatas.push({
-              image: "", //TODO:
-              imageData: "",
-              externalUrl: metadata.externalUrl,
-              description: metadata.description,
-              name: metadata.name,
-              youtubeUrl: metadata.youtubeUrl,
-              attributes: [],
-              backgroundColor: "",
-              animationUrl: "",
-              royaltyPercentage: 5,
-              royaltyPaymentAddress: "",
-            });
-          });
-        }
-
-        const { merkleRoot } = await launchpadClient.UploadMetadatas({
-          sender: selectedWallet?.address,
-          projectId: collectionFormValues.symbol,
-          networkId: selectedNetworkId,
-          metadatas,
-        });
-
         // ========== Final collection
         const collection: Collection = {
           name: collectionFormValues.name || "",
@@ -176,9 +149,7 @@ export const useCreateCollection = () => {
             collectionFormValues.expectedPublicMintPrice
               ? parseInt(collectionFormValues.expectedPublicMintPrice, 10)
               : 0,
-          expected_mint_date: collectionFormValues.expectedMintDate
-            ? parseInt(collectionFormValues.expectedMintDate, 10)
-            : 0,
+          expected_mint_date: collectionFormValues.expectedMintDate,
 
           cover_img_uri: coverImageIpfsHash || "",
           is_applied_previously:
@@ -196,7 +167,7 @@ export const useCreateCollection = () => {
             : 0,
 
           mint_periods,
-          metadatas_merkle_root: merkleRoot,
+          // metadatas_merkle_root: merkleRoot,
 
           royalty_address: collectionFormValues.royaltyAddress || "",
           royalty_percentage: collectionFormValues.royaltyPercentage
@@ -216,6 +187,48 @@ export const useCreateCollection = () => {
           collection,
         });
         console.log("======== createCollection result", result);
+
+
+
+
+
+
+
+
+        // ========== Metadata
+        const metadatas: Metadata[] = [];
+        if (collectionFormValues.assetsMetadatas?.length) {
+          collectionFormValues.assetsMetadatas.forEach((metadata) => {
+            metadatas.push({
+              image: "", //TODO:
+              imageData: "",
+              externalUrl: metadata.externalUrl,
+              description: metadata.description,
+              name: metadata.name,
+              youtubeUrl: metadata.youtubeUrl,
+              attributes: [],
+              backgroundColor: "",
+              animationUrl: "",
+              royaltyPercentage: 5,
+              royaltyPaymentAddress: "",
+            });
+          });
+        }
+
+        const { merkleRoot } = await launchpadClient.UploadMetadatas({
+          sender: selectedWallet?.address,
+          // projectId: TODO,
+          networkId: selectedNetworkId,
+          metadatas,
+        });
+
+
+
+
+
+
+
+
         return result;
       } catch (e) {
         console.error("Error creating a NFT Collection in the Launchpad ", e);

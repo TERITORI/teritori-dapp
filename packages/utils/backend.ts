@@ -129,7 +129,7 @@ export const getLaunchpadClient = (networkId: string | undefined) => {
   return launchpadClients[network.id];
 };
 
-export const mustGetLauchpadClient = (networkId: string | undefined) => {
+export const mustGetLaunchpadClient = (networkId: string | undefined) => {
   const client = getLaunchpadClient(networkId);
   if (!client) {
     throw new Error(`failed to get feed client for network '${networkId}'`);

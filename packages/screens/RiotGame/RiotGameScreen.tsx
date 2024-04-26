@@ -18,7 +18,7 @@ import { FileUploader } from "@/components/inputs/fileUploader";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { mustGetLauchpadClient } from "@/utils/backend";
+import { mustGetLaunchpadClient } from "@/utils/backend";
 import { gameBgData } from "@/utils/game";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { neutral00 } from "@/utils/style/colors";
@@ -41,7 +41,7 @@ export const RiotGameScreen = () => {
   };
 
   // const updateWhitelists = async () => {
-  //   const client = mustGetLauchpadClient(networkId);
+  //   const client = mustGetLaunchpadClient(networkId);
   //   const whitelists: WhitelistMintInfo[] = [
   //     {
   //       addresses: ["addr1", "addr2", "addr3", "addr4", "add5"],
@@ -73,7 +73,7 @@ export const RiotGameScreen = () => {
   // };
 
   const uploadMetadatas = async () => {
-    const client = mustGetLauchpadClient(networkId);
+    const client = mustGetLaunchpadClient(networkId);
 
     const nft0 = {
       image: "image0",
@@ -118,7 +118,7 @@ export const RiotGameScreen = () => {
   };
 
   const getTokenMetadata = async () => {
-    const client = mustGetLauchpadClient(networkId);
+    const client = mustGetLaunchpadClient(networkId);
     const resp = await client.TokenMetadata({
       sender: selectedWallet?.address,
       projectId: 1,
@@ -130,7 +130,7 @@ export const RiotGameScreen = () => {
 
   const uploadMetadata = async (data: LocalFileData[]) => {
     const file = data[0];
-    const client = mustGetLauchpadClient(networkId);
+    const client = mustGetLaunchpadClient(networkId);
 
     const nft0 = {
       image: "image0",
