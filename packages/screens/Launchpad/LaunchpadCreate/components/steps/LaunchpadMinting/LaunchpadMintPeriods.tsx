@@ -21,15 +21,17 @@ export const LaunchpadMintPeriods: FC = () => {
   const collectionForm = useFormContext<CollectionFormValues>();
   const selectedNetwork = useSelectedNetworkInfo();
 
-  const { fields, update, append, remove } = useFieldArray({
+  const { update, append, remove } = useFieldArray({
     control: collectionForm.control,
     name: "mintPeriods",
   });
+  const mintPeriods = collectionForm.watch("mintPeriods");
+
   const closeAll = useCallback(() => {
-    fields.map((elem, index) => {
+    mintPeriods.map((elem, index) => {
       update(index, { ...elem, isOpen: false });
     });
-  }, [fields, update]);
+  }, [mintPeriods, update]);
 
   const createMintPeriod = useCallback(() => {
     if (!selectedNetwork) return;
@@ -60,7 +62,7 @@ export const LaunchpadMintPeriods: FC = () => {
           width: "100%",
         }}
       >
-        {fields.map((elem, index) => {
+        {mintPeriods.map((elem, index) => {
           return (
             <Fragment key={index}>
               <SpacerColumn size={2} />

@@ -185,7 +185,6 @@ const navConfig: {
     UserPublicProfile: "user/:id/:tab?",
     RiotersFooter: "rioters-footer",
 
-
     // === RiotGame
     RiotGame: "riot-game",
     RiotGameEnroll: "riot-game/enroll",

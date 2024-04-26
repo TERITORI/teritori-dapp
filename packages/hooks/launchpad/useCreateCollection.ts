@@ -116,6 +116,32 @@ export const useCreateCollection = () => {
           },
         );
 
+        // ========== Metadata TODO: For now, handle metadata using this way
+        // const metadatas: Metadata[] = [];
+        // if (collectionFormValues.assetsMetadatas?.length) {
+        //   collectionFormValues.assetsMetadatas.forEach((metadata) => {
+        //     metadatas.push({
+        //       image: "", //TODO:
+        //       imageData: "",
+        //       externalUrl: metadata.externalUrl,
+        //       description: metadata.description,
+        //       name: metadata.name,
+        //       youtubeUrl: metadata.youtubeUrl,
+        //       attributes: [],
+        //       backgroundColor: "",
+        //       animationUrl: "",
+        //       royaltyPercentage: 5,
+        //       royaltyPaymentAddress: "",
+        //     });
+        //   });
+        // }
+        // const { merkleRoot } = await launchpadClient.UploadMetadatas({
+        //   sender: selectedWallet?.address,
+        //   // projectId: collectionFormValues.symbol,
+        //   networkId: selectedNetworkId,
+        //   metadatas,
+        // });
+
         // ========== Final collection
         const collection: Collection = {
           name: collectionFormValues.name || "",
@@ -188,46 +214,32 @@ export const useCreateCollection = () => {
         });
         console.log("======== createCollection result", result);
 
-
-
-
-
-
-
-
-        // ========== Metadata
-        const metadatas: Metadata[] = [];
-        if (collectionFormValues.assetsMetadatas?.length) {
-          collectionFormValues.assetsMetadatas.forEach((metadata) => {
-            metadatas.push({
-              image: "", //TODO:
-              imageData: "",
-              externalUrl: metadata.externalUrl,
-              description: metadata.description,
-              name: metadata.name,
-              youtubeUrl: metadata.youtubeUrl,
-              attributes: [],
-              backgroundColor: "",
-              animationUrl: "",
-              royaltyPercentage: 5,
-              royaltyPaymentAddress: "",
-            });
-          });
-        }
-
-        const { merkleRoot } = await launchpadClient.UploadMetadatas({
-          sender: selectedWallet?.address,
-          // projectId: TODO,
-          networkId: selectedNetworkId,
-          metadatas,
-        });
-
-
-
-
-
-
-
+        // ========== Metadata TODO: LATER: Use this way: Files will be uploaded on backend. We'll get the projectId from collection, and UploadMetadatas
+        // const metadatas: Metadata[] = [];
+        // if (collectionFormValues.assetsMetadatas?.length) {
+        //   collectionFormValues.assetsMetadatas.forEach((metadata) => {
+        //     metadatas.push({
+        //       image: "", //TODO:
+        //       imageData: "",
+        //       externalUrl: metadata.externalUrl,
+        //       description: metadata.description,
+        //       name: metadata.name,
+        //       youtubeUrl: metadata.youtubeUrl,
+        //       attributes: [],
+        //       backgroundColor: "",
+        //       animationUrl: "",
+        //       royaltyPercentage: 5,
+        //       royaltyPaymentAddress: "",
+        //     });
+        //   });
+        // }
+        //
+        // const { merkleRoot } = await launchpadClient.UploadMetadatas({
+        //   sender: selectedWallet?.address,
+        //   // projectId: TODO,
+        //   networkId: selectedNetworkId,
+        //   metadatas,
+        // });
 
         return result;
       } catch (e) {
