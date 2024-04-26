@@ -35,7 +35,7 @@ const BUTTONS: LaunchpadButtonProps[] = [
   {
     title: "My Collections",
     description: "Manage your collections with available actions and queries.",
-    buttonTitle: "Coming soon",
+    buttonTitle: "Open",
   },
 ];
 
@@ -71,7 +71,9 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
           <LaunchpadButton {...BUTTONS[1]} />
         </OmniLink>
         <SpacerRow size={1.2} />
-        <LaunchpadButton {...BUTTONS[2]} />
+        <OmniLink noHoverEffect to={{ screen: "LaunchpadMyCollections" }}>
+          <LaunchpadButton {...BUTTONS[2]} />
+        </OmniLink>
       </View>
     </ScreenContainer>
   );

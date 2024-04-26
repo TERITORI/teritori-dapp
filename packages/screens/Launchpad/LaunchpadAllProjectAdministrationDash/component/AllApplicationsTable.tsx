@@ -40,7 +40,7 @@ const TABLE_ROWS = {
   },
 };
 
-export const AllApplicationTable: React.FC<{
+export const AllApplicationsTable: React.FC<{
   rows: any[];
 }> = ({ rows }) => {
   const isMobile = useIsMobile();

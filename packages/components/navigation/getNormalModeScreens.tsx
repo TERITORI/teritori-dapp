@@ -21,6 +21,7 @@ import { LaunchpadApplicationReview } from "@/screens/Launchpad/LaunchpadApplica
 import { LaunchpadApplicationsScreen } from "@/screens/Launchpad/LaunchpadApplications/LaunchpadApplicationsScreen";
 import { LaunchpadApplyScreen } from "@/screens/Launchpad/LaunchpadApplyScreen";
 import { LaunchpadCreateScreen } from "@/screens/Launchpad/LaunchpadCreate/LaunchpadCreateScreen";
+import { LaunchpadMyCollectionsScreen } from "@/screens/Launchpad/LaunchpadMyCollections/LaunchpadMyCollectionsScreen";
 import { LaunchpadReadyApplicationsScreen } from "@/screens/Launchpad/LaunchpadReadyApplications/LaunchpadReadyApplicationsScreen";
 import { LaunchpadScreen } from "@/screens/Launchpad/LaunchpadScreen";
 import { MintCollectionScreen } from "@/screens/Launchpad/MintCollectionScreen";
@@ -115,55 +116,6 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         name="RiotersFooter"
         component={RiotersFooterScreen}
         options={{ header: () => null, title: screenTitle("Rioters Footer") }}
-      />
-      <Nav.Screen
-        name="LaunchpadAdministrationDashboard"
-        component={LaunchpadAdministrationDashboardScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Launchpad Administration Dashboard"),
-        }}
-      />
-      <Nav.Screen
-        name="LaunchpadApplications"
-        component={LaunchpadApplicationsScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Launchpad Applications"),
-        }}
-      />
-      <Nav.Screen
-        name="LaunchpadReadyApplications"
-        component={LaunchpadReadyApplicationsScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Launchpad Ready Applications"),
-        }}
-      />
-      <Nav.Screen
-        name="LaunchpadAllProjectAdministrationDash"
-        component={LaunchpadAllProjectAdministrationDashScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Launchpad All Applications"),
-        }}
-      />
-      <Nav.Screen
-        name="LaunchpadApplicationReview"
-        component={LaunchpadApplicationReview}
-        options={{
-          header: () => null,
-          title: screenTitle("Launchpad Application Review"),
-        }}
-      />
-
-      <Nav.Screen
-        name="MarketplaceLeaderboard"
-        component={MarketplaceLeaderboardScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Launchpad Application Review"),
-        }}
       />
 
       {/* === Riot Game */}
@@ -267,9 +219,66 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         }}
       />
       <Nav.Screen
+        name="LaunchpadMyCollections"
+        component={LaunchpadMyCollectionsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("My Collections"),
+        }}
+      />
+      <Nav.Screen
         name="MintCollection"
         component={MintCollectionScreen}
         options={{ header: () => null, title: screenTitle("Mint Collection") }}
+      />
+      <Nav.Screen
+        name="LaunchpadAdministrationDashboard"
+        component={LaunchpadAdministrationDashboardScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Administration Dashboard"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadApplications"
+        component={LaunchpadApplicationsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Applications"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadReadyApplications"
+        component={LaunchpadReadyApplicationsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Ready Applications"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadAllProjectAdministrationDash"
+        component={LaunchpadAllProjectAdministrationDashScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad All Applications"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadApplicationReview"
+        component={LaunchpadApplicationReview}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Application Review"),
+        }}
+      />
+
+      <Nav.Screen
+        name="MarketplaceLeaderboard"
+        component={MarketplaceLeaderboardScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Application Review"),
+        }}
       />
 
       {/* ==== Multisig */}

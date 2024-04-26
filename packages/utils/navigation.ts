@@ -35,6 +35,7 @@ export type RootStackParamList = {
   Launchpad: undefined;
   LaunchpadApply: undefined;
   LaunchpadCreate: undefined;
+  LaunchpadMyCollections: undefined;
   LaunchpadAdministrationDashboard: undefined;
   LaunchpadApplications: undefined;
   LaunchpadApplicationReview: undefined;
@@ -200,11 +201,12 @@ const navConfig: {
     Launchpad: "launchpad",
     LaunchpadApply: "launchpad/apply",
     LaunchpadCreate: "launchpad/create",
+    LaunchpadMyCollections: "launchpad/my-collections",
     LaunchpadAdministrationDashboard: "launchpad/admin",
-    LaunchpadApplications: "launchpad/applications",
-    LaunchpadApplicationReview: "launchpad/application-review",
-    LaunchpadReadyApplications: "launchpad/ready-applications",
-    LaunchpadAllProjectAdministrationDash: "launchpad/all-projects",
+    LaunchpadApplications: "launchpad/admin/applications",
+    LaunchpadApplicationReview: "launchpad/admin/application-review",
+    LaunchpadReadyApplications: "launchpad/admin/ready-applications",
+    LaunchpadAllProjectAdministrationDash: "launchpad/admin/all-projects",
 
     // Mint NFT collection
     MintCollection: "collection/:id/mint",

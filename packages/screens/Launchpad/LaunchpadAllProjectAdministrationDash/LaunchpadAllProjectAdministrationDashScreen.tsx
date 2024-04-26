@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { AllApplicationTable } from "./component/AllApplicationTable";
+import { AllApplicationsTable } from "./component/AllApplicationsTable";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
@@ -9,6 +9,7 @@ import { HighVolSortButton } from "@/components/sorts/HighVolSortButton";
 import { Tabs } from "@/components/tabs/Tabs";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { NetworkFeature } from "@/networks";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -85,6 +86,7 @@ export const LaunchpadAllProjectAdministrationDashScreen: React.FC = () => {
       }
       responsive
       onBackPress={() => navigation.goBack()}
+      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
     >
       <View
         style={{
@@ -139,7 +141,7 @@ export const LaunchpadAllProjectAdministrationDashScreen: React.FC = () => {
             marginTop: layout.spacing_x4,
           }}
         >
-          <AllApplicationTable rows={dummyData} />
+          <AllApplicationsTable rows={dummyData} />
         </View>
       </View>
     </ScreenContainer>

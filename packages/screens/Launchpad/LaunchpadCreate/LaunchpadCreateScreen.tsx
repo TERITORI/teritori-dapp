@@ -132,6 +132,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
       noScroll={false}
       footerChildren={<></>}
       forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+      // TODO: Remove after tests
       forceNetworkId="teritori-testnet"
       headerChildren={<BrandText>Collection Creation</BrandText>}
       onBackPress={() => navigation.navigate("LaunchpadApply")}

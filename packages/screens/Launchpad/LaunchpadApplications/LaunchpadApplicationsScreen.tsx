@@ -9,6 +9,7 @@ import { HighVolSortButton } from "@/components/sorts/HighVolSortButton";
 import { Tabs } from "@/components/tabs/Tabs";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { NetworkFeature } from "@/networks";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -57,6 +58,7 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
       }
       responsive
       onBackPress={() => navigation.goBack()}
+      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
     >
       <View style={{ marginTop: layout.spacing_x4 }}>
         <View

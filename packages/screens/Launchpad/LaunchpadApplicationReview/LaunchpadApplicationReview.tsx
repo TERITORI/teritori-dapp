@@ -10,6 +10,7 @@ import { TeamInformation } from "./component/TeamInformation";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { NetworkFeature } from "@/networks";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
@@ -24,6 +25,7 @@ export const LaunchpadApplicationReview: React.FC = () => {
       }
       responsive
       onBackPress={() => navigation.goBack()}
+      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
     >
       <View style={{ marginTop: layout.spacing_x4 }}>
         <ApplicationDetail />

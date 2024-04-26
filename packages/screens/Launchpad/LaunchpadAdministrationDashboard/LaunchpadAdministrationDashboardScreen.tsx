@@ -11,6 +11,7 @@ import { ScreenContainer } from "@/components/ScreenContainer";
 import { SecondaryBox } from "@/components/boxes/SecondaryBox";
 import { Tabs } from "@/components/tabs/Tabs";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { NetworkFeature } from "@/networks";
 import { primaryColor } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -110,6 +111,7 @@ export const LaunchpadAdministrationDashboardScreen: React.FC = () => {
         <BrandText style={fontSemibold20}>NFT Launchpad</BrandText>
       }
       responsive
+      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
     >
       <View style={{ marginTop: layout.spacing_x4 }}>
         <View
