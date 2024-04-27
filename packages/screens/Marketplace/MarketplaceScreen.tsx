@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { cloneDeep } from "lodash";
 import React, { ReactNode, useMemo, useState } from "react";
 import {
@@ -24,6 +23,7 @@ import { SearchInput } from "@/components/sorts/SearchInput";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { TableRow } from "@/components/table/TableRow";
 import { Tabs } from "@/components/tabs/Tabs";
+import { usePopularCollections } from "@/hooks/marketplace/usePopularCollections";
 import { useCoingeckoPrices } from "@/hooks/useCoingeckoPrices";
 import { useEnabledNetworks } from "@/hooks/useEnabledNetworks";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -31,7 +31,6 @@ import { useCollectionNavigationTarget } from "@/hooks/useNavigateToCollection";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature, parseCollectionId } from "@/networks";
 import { selectTimePeriod } from "@/store/slices/marketplaceFilters";
-import { getMarketplaceClient } from "@/utils/backend";
 import {
   CoingeckoCoin,
   CoingeckoPrices,
@@ -587,26 +586,4 @@ const getDelta = (collection: PopularCollection) => {
     return "+" + res.toFixed(0) + "%";
   }
   return res.toFixed(0) + "%";
-};
-
-const usePopularCollections = (
-  networkId: string | undefined,
-  periodHours: number,
-) => {
-  return useQuery(["popular-collections", networkId, periodHours], async () => {
-    const client = getMarketplaceClient(networkId);
-    if (!client) {
-      return [];
-    }
-    const collections: PopularCollection[] = [];
-    await client
-      .PopularCollections({ networkId, periodHours, limit: 100 })
-      .forEach(({ collection }) => {
-        if (!collection) {
-          return;
-        }
-        collections.push(collection);
-      });
-    return collections;
-  });
 };

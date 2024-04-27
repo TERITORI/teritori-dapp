@@ -159,7 +159,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`
     WITH count_by_collection AS (
-      SELECT count(1), collection_id FROM nfts GROUP BY nfts.collection_id
+      SELECT count(1), collection_id FROM nfts WHERE burnt = false GROUP BY nfts.collection_id
     ),
     tori_collections AS (
       SELECT c.*, tc.* FROM collections AS c
@@ -170,7 +170,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
     ),
     nft_by_collection AS (
       SELECT  tc.id,n.id  nft_id  FROM tori_collections AS tc
-      INNER JOIN nfts AS n ON tc.id = n.collection_id
+      INNER JOIN nfts AS n ON tc.id = n.collection_id AND burnt = false
     ),
     activities_on_period AS (
       SELECT * FROM activities a2 WHERE a2."time" > ?
@@ -194,7 +194,7 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
         group by c.id),
     current_num_owners AS (
         select count (DISTINCT owner_id) num_owners, collection_id, min(price_amount) floor_price
-        from nfts
+        from nfts where burnt = false
         group by collection_id),
     trades_by_collection AS (
       SELECT SUM(t.price::bigint) volume, nbc.id FROM trades_on_period AS t
@@ -532,13 +532,13 @@ func (s *MarkteplaceService) NFTCollectionAttributes(req *marketplacepb.NFTColle
 	if err := s.conf.IndexerDB.Raw(fmt.Sprintf(
 		`
 WITH count_by_collection AS (
-    SELECT count(1) as total, collection_id FROM nfts GROUP BY nfts.collection_id
+    SELECT count(1) as total, collection_id FROM nfts WHERE burnt = false GROUP BY nfts.collection_id
 ),
     with_attributes as (
 select trait_type, value, counta, floor, collection_id  from (
       select trait_type, value, count(*) as counta, min(price_amount) as floor, collection_id from (SELECT attr.trait_type as trait_type, attr.value, price_amount, collection_id FROM nfts t,
            jsonb_to_recordset(t.attributes) as attr(value varchar, trait_type varchar)
-           where collection_id = ?
+           where collection_id = ? and burnt = false
       ) as sorted
        %s
       group by trait_type, value, collection_id
@@ -852,7 +852,7 @@ func (s *MarkteplaceService) CollectionStats(ctx context.Context, req *marketpla
 		var stats CollectionStats
 		err = queries.Raw(`with 
       nfts_in_collection as (
-        SELECT  *  FROM nfts n where n.collection_id = $1
+        SELECT  *  FROM nfts n where n.collection_id = $1 AND burnt = false
       ),
       listed_nfts as (
         SELECT * from nfts_in_collection nic where is_listed = true
@@ -993,7 +993,7 @@ func (s *MarkteplaceService) SearchCollections(ctx context.Context, req *marketp
 		Preload("TeritoriCollection").
 		Joins("JOIN teritori_collections ON teritori_collections.collection_id = collections.id").
 		Where("name ~* ?", req.Input).
-		Where("id IN ?", s.conf.Whitelist).
+		// Where("id IN ?", s.conf.Whitelist).
 		Limit(int(limit)).
 		Find(&collections).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to read db")

@@ -6,6 +6,7 @@ import { getNav, screenTitle } from "./util";
 import { AdministrationDashboardScreen } from "@/screens/AdministrationDashboard/AdministrationDashboardScreen";
 import { AllProjectAdministrationDashScreen } from "@/screens/AllProjectAdministrationDash/AllProjectAdministrationDashScreen";
 import { ApplicationRewiewScreen } from "@/screens/ApplicationRewiew/ApplicationRewiew";
+import { BurnCapitalScreen } from "@/screens/BurnCapital/BurnCapitalScreen";
 import { ComingSoonScreen } from "@/screens/ComingSoon/ComingSoon";
 import { CoreDAOScreen } from "@/screens/CoreDAO/CoreDAOScreen";
 import { DAppStoreScreen } from "@/screens/DAppStore/DAppStoreScreen";
@@ -450,6 +451,11 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
           header: () => null,
           title: screenTitle("All Set"),
         }}
+      />
+      <Nav.Screen
+        name="BurnCapital"
+        component={BurnCapitalScreen}
+        options={{ header: () => null, title: screenTitle("Burn Capital") }}
       />
       {platformScreens}
     </>
