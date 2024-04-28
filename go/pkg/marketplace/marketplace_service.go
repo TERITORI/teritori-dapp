@@ -993,7 +993,7 @@ func (s *MarkteplaceService) SearchCollections(ctx context.Context, req *marketp
 		Preload("TeritoriCollection").
 		Joins("JOIN teritori_collections ON teritori_collections.collection_id = collections.id").
 		Where("name ~* ?", req.Input).
-		// Where("id IN ?", s.conf.Whitelist).
+		Where("id IN ?", s.conf.Whitelist).
 		Limit(int(limit)).
 		Find(&collections).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to read db")
