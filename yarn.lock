@@ -3849,7 +3849,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/config-plugins@npm:~7.8.0, @expo/config-plugins@npm:~7.8.2":
+"@expo/config-plugins@npm:~7.8.2":
   version: 7.8.4
   resolution: "@expo/config-plugins@npm:7.8.4"
   dependencies:
@@ -4119,26 +4119,6 @@ __metadata:
     base64-js: ^1.2.3
     xmlbuilder: ^14.0.0
   checksum: 49b647c4858d9669126ccc26ab09d8e93c38c3add1ed6944532dd0513671bd36b2ea6484f988087622e12c5513e9d3a5b3a5d0361abf701616f377b5bde97294
-  languageName: node
-  linkType: hard
-
-"@expo/prebuild-config@npm:6.7.4":
-  version: 6.7.4
-  resolution: "@expo/prebuild-config@npm:6.7.4"
-  dependencies:
-    "@expo/config": ~8.5.0
-    "@expo/config-plugins": ~7.8.0
-    "@expo/config-types": ^50.0.0-alpha.1
-    "@expo/image-utils": ^0.4.0
-    "@expo/json-file": ^8.2.37
-    debug: ^4.3.1
-    fs-extra: ^9.0.0
-    resolve-from: ^5.0.0
-    semver: 7.5.3
-    xml2js: 0.6.0
-  peerDependencies:
-    expo-modules-autolinking: ">=0.8.1"
-  checksum: 97f4f86b6df419955628d1c0c4a66f17e32af8ebb6fd261598d4bbb82acf6851bcd7b7523f97a6f805873acfa64e9cd7188219d6ef4676c6a7789c56d21fb62d
   languageName: node
   linkType: hard
 
@@ -11292,14 +11272,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-splash-screen@npm:~0.26.4":
-  version: 0.26.4
-  resolution: "expo-splash-screen@npm:0.26.4"
+"expo-splash-screen@npm:~0.26.5":
+  version: 0.26.5
+  resolution: "expo-splash-screen@npm:0.26.5"
   dependencies:
-    "@expo/prebuild-config": 6.7.4
+    "@expo/prebuild-config": 6.8.1
   peerDependencies:
     expo: "*"
-  checksum: b8bd28e00b6bbdc4d1b926dda8dde29a2c54451bb26099ac1e44dcfa07a9dcd9fad0d0b6a9ecb8b2419e7c049befcfeb75a79ce761553d30686f9962c9d9db78
+  checksum: 8db35fa492e525ecddb783a677be7b33220c27865ecb08003a438457467dab1f3fb9ea2d1ae636883e3707775d74327f4e491669ce80e72a3f5d90f35505d7bc
   languageName: node
   linkType: hard
 
@@ -19400,7 +19380,7 @@ __metadata:
     expo-optimize: ^0.2.20
     expo-secure-store: ~12.8.1
     expo-sharing: ~11.10.0
-    expo-splash-screen: ~0.26.4
+    expo-splash-screen: ~0.26.5
     expo-status-bar: ~1.11.1
     glob: ^10.3.10
     google-protobuf: ^3.21.2

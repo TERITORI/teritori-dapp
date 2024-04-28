@@ -93,6 +93,8 @@ nft_counts as (
     count(distinct n.owner_id) as oc
   from
     nfts n
+  where
+    burnt = false
   group by
     n.collection_id
 ),
@@ -105,6 +107,7 @@ floor_prices as (
     nfts n
   where
     nullif(n.price_denom, '') is not null
+    and burnt = false
   group by
     (n.collection_id, n.price_denom)
 ),

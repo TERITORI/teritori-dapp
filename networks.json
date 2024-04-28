@@ -10888,7 +10888,14 @@
       "NameService",
       "BurnTokens",
       "NFTLaunchpad",
-      "NFTMarketplaceLeaderboard"
+      "NFTMarketplaceLeaderboard",
+      "CosmWasmNFTsBurner"
+    ],
+    "featureObjects": [
+      {
+        "type": "CosmWasmNFTsBurner",
+        "burnerContractAddress": "tori16tlfw7uq73d5n8j5tl0zl367c58f032j50jgxr3e7f09gez3xq5qvcrxy7"
+      }
     ],
     "registryName": "teritori",
     "overrides": "cosmos-registry:teritori",
@@ -11057,13 +11064,18 @@
       "BurnTokens",
       "NFTLaunchpad",
       "CosmWasmPremiumFeed",
-      "NFTMarketplaceLeaderboard"
+      "NFTMarketplaceLeaderboard",
+      "CosmWasmNFTsBurner"
     ],
     "featureObjects": [
       {
         "type": "CosmWasmPremiumFeed",
         "membershipContractAddress": "",
         "mintDenom": "utori"
+      },
+      {
+        "type": "CosmWasmNFTsBurner",
+        "burnerContractAddress": "tori1qyl0j7a24amk8k8gcmvv07y2zjx7nkcwpk73js24euh64hkja6esd2p2xp"
       }
     ],
     "currencies": [
@@ -11109,11 +11121,11 @@
       "no-legacy-stdTx",
       "ibc-go"
     ],
-    "nameServiceContractAddress": "",
+    "nameServiceContractAddress": "tori1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgsjscd88",
     "nameServiceDefaultImage": "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
     "nameServiceTLD": ".tori",
-    "vaultContractAddress": "",
-    "riotContractAddressGen0": "",
+    "vaultContractAddress": "tori1wn625s4jcmvk0szpl85rj5azkfc6suyvf75q6vrddscjdphtve8s2f76jm",
+    "riotContractAddressGen0": "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0",
     "riotContractAddressGen1": "",
     "riotSquadStakingContractAddressV1": "",
     "riotSquadStakingContractAddressV2": "",
@@ -11121,14 +11133,14 @@
     "riotersFooterContractAddress": "",
     "secondaryDuringMintList": [
       "",
-      "",
-      "",
+      "tori1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgsjscd88",
+      "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0",
       ""
     ],
     "excludeFromLaunchpadList": [
       ""
     ],
-    "socialFeedContractAddress": "",
+    "socialFeedContractAddress": "tori1mf6ptkssddfmxvhdx0ech0k03ktp6kf9yk59renau2gvht3nq2gqg87tkw",
     "daoCoreCodeId": -1,
     "daoPreProposeSingleCodeId": -1,
     "daoProposalSingleCodeId": -1,
