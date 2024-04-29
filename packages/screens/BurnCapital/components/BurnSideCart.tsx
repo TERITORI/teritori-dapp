@@ -428,7 +428,7 @@ export const BurnSideCart: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
   ) : null;
 };
 
-export const useShowCart = () => {
+const useShowCart = () => {
   const selected = useSelector(selectSelectedNFTIds);
   return useSelector(selectShowCart) && selected.length > 0;
 };
