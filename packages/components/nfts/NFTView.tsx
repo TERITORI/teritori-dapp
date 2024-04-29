@@ -50,6 +50,7 @@ import { SecondaryButton } from "../buttons/SecondaryButton";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { TeritoriNftClient } from "@/contracts-clients/teritori-nft/TeritoriNft.client";
 import { popularCollectionsQueryKey } from "@/hooks/marketplace/usePopularCollections";
@@ -59,6 +60,12 @@ import { nftBurnerUserCountQueryKey } from "@/hooks/nft-burner/useNFTBurnerUserC
 import { collectionStatsQueryKey } from "@/hooks/useCollectionStats";
 import { nftsQueryKey } from "@/hooks/useNFTs";
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
+import {
+  addSelectedToBurn,
+  setShowBurnCart,
+  selectSelectedNFTIds as selectSelectedNFTIdsForBurn,
+  removeSelectedFromBurn,
+} from "@/store/slices/burnCartItems";
 
 // NOTE: we put content in a memoized component to only rerender the container when the window width changes
 
@@ -434,6 +441,23 @@ const NFTViewFooter: React.FC<{ nft: NFT; localSelected: boolean }> = memo(
   ({ nft, localSelected }) => {
     const selectedWallet = useSelectedWallet();
     const isOwner = nft.ownerId === selectedWallet?.userId;
+    const dispatch = useAppDispatch();
+
+    // const burnerFeature = getNetworkFeature(
+    //   "teritori",
+    //   NetworkFeature.CosmWasmNFTsBurner,
+    // );
+    // const { data: authorizedCollections } =
+    //   useNFTBurnerAuthorizedCollections("teritori");
+    // const queryClient = useQueryClient();
+
+    const showRecycle = true;
+    // !!burnerFeature &&
+    // (authorizedCollections || []).includes(nft.nftContractAddress);
+
+    const selectedForBurn = useSelector(selectSelectedNFTIdsForBurn).includes(
+      nft.id,
+    );
     return (
       <View
         style={{
@@ -473,14 +497,30 @@ const NFTViewFooter: React.FC<{ nft: NFT; localSelected: boolean }> = memo(
               </BrandText>
             </>
           ) : (
-            <BrandText
-              style={{
-                fontSize: 12,
-                color: neutral77,
-              }}
-            >
-              Not listed
-            </BrandText>
+            <>
+              {showRecycle ? (
+                <PrimaryButton
+                  onPress={() => {
+                    dispatch(setShowBurnCart(true));
+                    if (!selectedForBurn) {
+                      dispatch(addSelectedToBurn(nft));
+                    } else {
+                      dispatch(removeSelectedFromBurn(nft.id));
+                    }
+                  }}
+                  text={selectedForBurn ? "Added to the burn 🔥" : "Burnable"}
+                />
+              ) : (
+                <BrandText
+                  style={{
+                    fontSize: 12,
+                    color: neutral77,
+                  }}
+                >
+                  Not listed
+                </BrandText>
+              )}
+            </>
           )}
         </View>
         <SpacerRow size={2} />

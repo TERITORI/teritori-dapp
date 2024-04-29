@@ -1,7 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { Platform } from "react-native";
 import { useDispatch } from "react-redux";
-import { persistStore, persistReducer, createMigrate } from "redux-persist";
+import { createMigrate, persistReducer, persistStore } from "redux-persist";
 
 import { dAppsReducer, dAppsReducerPersisted } from "./slices/dapps-store";
 import {
@@ -29,6 +29,10 @@ import {
 import { storage } from "./storage";
 import { defaultEnabledNetworks } from "../networks";
 
+import {
+  burnCapitalCartItems,
+  burnCapitalCartItemsUI,
+} from "@/store/slices/burnCartItems";
 import { checkAndBootWeshModule } from "@/weshnet/services";
 
 const migrations = {
@@ -140,6 +144,8 @@ const rootReducer = combineReducers({
   dAppsStore: dAppsReducer,
   marketplaceCartItems,
   marketplaceCartItemsUI,
+  burnCapitalCartItems,
+  burnCapitalCartItemsUI,
   marketplaceFilters,
   marketplaceFilterUI,
   search: searchReducer,

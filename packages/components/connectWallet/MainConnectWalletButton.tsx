@@ -16,6 +16,7 @@ export const MainConnectWalletButton: React.FC<{
     <View style={style}>
       <PrimaryButton
         size={size}
+        fullWidth
         text="Connect wallet"
         onPress={() => setIsConnectWalletVisible(true)}
       />

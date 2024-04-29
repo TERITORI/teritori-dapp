@@ -1,27 +1,115 @@
+import React, { useState } from "react";
+import { View } from "react-native";
+
 import { BrandText } from "@/components/BrandText";
+import { OwnedNFTs } from "@/components/OwnedNFTs";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { CollectionContent } from "@/components/collections/CollectionContent";
+import { Tabs } from "@/components/tabs/Tabs";
 import { useNFTBurnerTotal } from "@/hooks/nft-burner/useNFTBurnerTotal";
 import { useNFTBurnerUserCount } from "@/hooks/nft-burner/useNFTBurnerUserCount";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { teritoriNetwork } from "@/networks/teritori";
-import { ScreenFC } from "@/utils/navigation";
+import { BurnSideCart } from "@/screens/BurnCapital/components/BurnSideCart";
+import { BurnableNFTs } from "@/screens/BurnCapital/components/BurnableNFTs";
+import { TopSectionConnectWallet } from "@/screens/BurnCapital/components/TopSectionConnectWallet";
+import { SideCart } from "@/screens/Marketplace/SideCart";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { neutral00, neutral33 } from "@/utils/style/colors";
+import { fontSemibold20 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+
+const tabs = [
+  { id: "burn", name: "Burn NFTs" },
+  { id: "leaderboard", name: "Leaderboard" },
+];
 
 export const BurnCapitalScreen: ScreenFC<"BurnCapital"> = ({ route }) => {
   const inputNetwork = route.params?.network || teritoriNetwork.id;
   const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
+  const navigation = useAppNavigation();
+  const isMobile = useIsMobile();
+
+  const tabsKeys = Object.keys(tabs);
+  const [selectedTab, setSelectedTab] = useState(tabsKeys[0]);
+
   const { data: count } = useNFTBurnerUserCount(selectedWallet?.userId);
   const { data: total } = useNFTBurnerTotal(selectedNetworkId);
   return (
-    <ScreenContainer fullWidth forceNetworkId={inputNetwork}>
-      <BrandText>Burn Capital</BrandText>
-      {typeof total === "number" && (
-        <BrandText>Total burned: {total}</BrandText>
-      )}
-      {typeof count === "number" && (
-        <BrandText>Burned by you: {count}</BrandText>
-      )}
+    <ScreenContainer
+      isLarge
+      footerChildren={<></>}
+      fullWidth
+      forceNetworkId={inputNetwork}
+      headerChildren={
+        <BrandText style={fontSemibold20}>BURN Capital 🔥</BrandText>
+      }
+      responsive
+      onBackPress={() => navigation.navigate("Marketplace")}
+    >
+      <View
+        style={{
+          marginTop: layout.spacing_x4,
+        }}
+      >
+        <View
+          style={{
+            flexWrap: "nowrap",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Tabs
+            items={tabs}
+            selected={selectedTab}
+            style={{ height: 48 }}
+            onSelect={setSelectedTab}
+          />
+
+          <TopSectionConnectWallet />
+          {typeof total === "number" && (
+            <BrandText>Total burned: {total}</BrandText>
+          )}
+          {typeof count === "number" && (
+            <BrandText>Burned by you: {count}</BrandText>
+          )}
+          {/*{nftCollectionToBurn.map((nft) => (*/}
+          {/*  <CollectionContent*/}
+          {/*    key={nft.id}*/}
+          {/*    id={nft.id}*/}
+          {/*    selectedTab="owned"*/}
+          {/*    sortDirection={1}*/}
+          {/*    style={{ marginHorizontal: layout.spacing_x3 }}*/}
+          {/*  />*/}
+          {/*))}*/}
+
+          <BurnableNFTs
+            ownerId={selectedWallet?.userId || ""}
+            style={{ marginHorizontal: layout.spacing_x3 }}
+          />
+          <BurnSideCart
+            style={{
+              position: "absolute",
+              right: 50,
+              top: 500,
+              marginTop: layout.spacing_x4,
+              flexDirection: "column",
+              width: 245,
+              marginBottom: layout.spacing_x2_5,
+              backgroundColor: neutral00,
+              borderRadius: layout.spacing_x2,
+              borderColor: neutral33,
+              borderWidth: 1,
+              paddingVertical: layout.spacing_x1,
+              paddingHorizontal: layout.spacing_x1_5,
+              borderStyle: "solid",
+            }}
+          />
+        </View>
+      </View>
     </ScreenContainer>
   );
 };
