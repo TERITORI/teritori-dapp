@@ -221,13 +221,6 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
   const { setToastError, setLoadingFullScreen, setToastSuccess } =
     useFeedbacks();
 
-  const { balances } = useBalances(wallet?.networkId, wallet?.address);
-  const hasEnoughMoney = selectedNFTData.every((nft) => {
-    const balance =
-      balances.find((bal) => bal.denom === nft.denom)?.amount || "0";
-    return parseInt(balance, 10) > parseInt(nft.price, 10);
-  });
-
   const cosmosMultiBuy = useCallback(
     async (wallet: Wallet) => {
       const sender = wallet.address;
@@ -353,8 +346,8 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
         <PrimaryButton
           fullWidth
           size="SM"
-          disabled={!hasEnoughMoney}
-          text={hasEnoughMoney ? "Buy Now" : "Not Enough Funds"}
+          disabled={Object.values(grouped).length > 0}
+          text="Burn 🫡"
           onPress={() => onBuyButtonPress()}
         />
       </View>
