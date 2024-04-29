@@ -3,6 +3,10 @@ import { Platform } from "react-native";
 import { useDispatch } from "react-redux";
 import { createMigrate, persistReducer, persistStore } from "redux-persist";
 
+import {
+  burnCapitalCartItems,
+  burnCapitalCartItemsUI,
+} from "./slices/burnCartItems";
 import { dAppsReducer, dAppsReducerPersisted } from "./slices/dapps-store";
 import {
   marketplaceCartItems,
@@ -29,10 +33,6 @@ import {
 import { storage } from "./storage";
 import { defaultEnabledNetworks } from "../networks";
 
-import {
-  burnCapitalCartItems,
-  burnCapitalCartItemsUI,
-} from "@/store/slices/burnCartItems";
 import { checkAndBootWeshModule } from "@/weshnet/services";
 
 const migrations = {
