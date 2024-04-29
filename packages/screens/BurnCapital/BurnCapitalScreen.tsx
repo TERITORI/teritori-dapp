@@ -18,10 +18,14 @@ import { neutral00, neutral33 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-const tabs = [
-  { id: "burn", name: "Burn NFTs" },
-  { id: "leaderboard", name: "Leaderboard" },
-];
+const tabs = {
+  burn: {
+    name: "Burn NFTs",
+  },
+  leaderboard: {
+    name: "Leaderboard",
+  },
+};
 
 export const BurnCapitalScreen: ScreenFC<"BurnCapital"> = ({ route }) => {
   const inputNetwork = route.params?.network || teritoriNetwork.id;
@@ -30,8 +34,9 @@ export const BurnCapitalScreen: ScreenFC<"BurnCapital"> = ({ route }) => {
   const navigation = useAppNavigation();
   const isMobile = useIsMobile();
 
-  const tabsKeys = Object.keys(tabs);
-  const [selectedTab, setSelectedTab] = useState(tabsKeys[0]);
+  const [selectedTab, setSelectedTab] = useState<"burn" | "leaderboard">(
+    "burn",
+  );
 
   const { data: count } = useNFTBurnerUserCount(selectedWallet?.userId);
   const { data: total } = useNFTBurnerTotal(selectedNetworkId);

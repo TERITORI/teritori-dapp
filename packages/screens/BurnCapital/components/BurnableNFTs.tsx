@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { View, ActivityIndicator, ViewStyle, StyleProp } from "react-native";
 
@@ -11,14 +10,9 @@ import {
 import { NetworkIcon } from "@/components/NetworkIcon";
 import { Section } from "@/components/Section";
 import { NFTView } from "@/components/nfts/NFTView";
-import { useNFTBurnerAuthorizedCollections } from "@/hooks/nft-burner/useNFTBurnerAuthorizedCollections";
 import { useCollections } from "@/hooks/useCollections";
 import { useNFTs } from "@/hooks/useNFTs";
-import {
-  getNetworkFeature,
-  NetworkFeature,
-  parseNetworkObjectId,
-} from "@/networks";
+import { parseNetworkObjectId } from "@/networks";
 import { layout } from "@/utils/style/layout";
 
 const gridHalfGutter = 12;

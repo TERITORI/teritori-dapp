@@ -341,6 +341,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
       selectedNFTData,
       setLoadingFullScreen,
       setToast,
+      queryClient,
       setToastError,
       setToastSuccess,
     ],

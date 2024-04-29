@@ -1,21 +1,15 @@
 import React from "react";
-import { TouchableOpacity, View } from "react-native";
-import { SvgProps } from "react-native-svg";
+import { View } from "react-native";
 
 import dappCardSVG from "@/assets/cards/dapp-card.svg";
 import iconSVG from "@/assets/icons/fire.svg";
 import { BrandText } from "@/components/BrandText";
-import { OmniLink } from "@/components/OmniLink";
 import { SVG } from "@/components/SVG";
-import { ConnectWalletButton } from "@/components/TopMenu/ConnectWalletButton";
-import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { MainConnectWalletButton } from "@/components/connectWallet/MainConnectWalletButton";
 import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
 import { shortUserAddressFromID } from "@/components/nfts/NFTView";
-import { useTNS } from "@/context/TNSProvider";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { neutral77 } from "@/utils/style/colors";
 import { fontBold16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
