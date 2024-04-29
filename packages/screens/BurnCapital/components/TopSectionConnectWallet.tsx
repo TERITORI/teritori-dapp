@@ -5,16 +5,25 @@ import { SvgProps } from "react-native-svg";
 import dappCardSVG from "@/assets/cards/dapp-card.svg";
 import iconSVG from "@/assets/icons/fire.svg";
 import { BrandText } from "@/components/BrandText";
+import { OmniLink } from "@/components/OmniLink";
 import { SVG } from "@/components/SVG";
 import { ConnectWalletButton } from "@/components/TopMenu/ConnectWalletButton";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { MainConnectWalletButton } from "@/components/connectWallet/MainConnectWalletButton";
+import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
+import { shortUserAddressFromID } from "@/components/nfts/NFTView";
+import { useTNS } from "@/context/TNSProvider";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { neutral77 } from "@/utils/style/colors";
+import { fontBold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const gridHalfGutter = 12;
 
 export const TopSectionConnectWallet: React.FC<object> = () => {
   const selectedWallet = useSelectedWallet();
+  const userInfo = useNSUserInfo(selectedWallet?.userId);
 
   const label = "The Great Cleansing";
   const description =
@@ -24,7 +33,6 @@ export const TopSectionConnectWallet: React.FC<object> = () => {
   const borderRadius = 20;
   const width = 528;
   const height = 302;
-  console.log("selectedWallet", selectedWallet);
 
   return (
     <View style={{ margin: gridHalfGutter }}>
@@ -94,12 +102,52 @@ export const TopSectionConnectWallet: React.FC<object> = () => {
           </View>
         </View>
       </View>
-      {/*<ConnectWalletButton/>*/}
-      <MainConnectWalletButton
-        style={{
-          width: 528,
-        }}
-      />
+
+      {selectedWallet?.address ? (
+        <View
+          style={{
+            // flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            zIndex: 1000,
+            height: 130,
+          }}
+        >
+          {userInfo.metadata.tokenId && (
+            <>
+              <BrandText
+                style={[fontBold16, { marginRight: layout.spacing_x2 }]}
+              >
+                Connected As
+              </BrandText>
+              <UserAvatarWithFrame
+                userId={selectedWallet?.userId || ""}
+                size="M"
+                style={{
+                  marginRight: 6,
+                }}
+              />
+              <>
+                <BrandText
+                  style={{
+                    fontSize: layout.spacing_x2,
+                    lineHeight: 16,
+                  }}
+                >
+                  {userInfo.metadata?.tokenId ||
+                    shortUserAddressFromID(userInfo.metadata.tokenId, 10)}
+                </BrandText>
+              </>
+            </>
+          )}
+        </View>
+      ) : (
+        <MainConnectWalletButton
+          style={{
+            width: 528,
+          }}
+        />
+      )}
     </View>
   );
 };

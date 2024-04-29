@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
-import { OwnedNFTs } from "@/components/OwnedNFTs";
 import { ScreenContainer } from "@/components/ScreenContainer";
-import { CollectionContent } from "@/components/collections/CollectionContent";
 import { Tabs } from "@/components/tabs/Tabs";
 import { useNFTBurnerTotal } from "@/hooks/nft-burner/useNFTBurnerTotal";
 import { useNFTBurnerUserCount } from "@/hooks/nft-burner/useNFTBurnerUserCount";
@@ -15,7 +13,6 @@ import { teritoriNetwork } from "@/networks/teritori";
 import { BurnSideCart } from "@/screens/BurnCapital/components/BurnSideCart";
 import { BurnableNFTs } from "@/screens/BurnCapital/components/BurnableNFTs";
 import { TopSectionConnectWallet } from "@/screens/BurnCapital/components/TopSectionConnectWallet";
-import { SideCart } from "@/screens/Marketplace/SideCart";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral00, neutral33 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
