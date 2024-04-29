@@ -92,9 +92,9 @@ export const BurnCapitalScreen: ScreenFC<"BurnCapital"> = ({ route }) => {
           />
           <BurnSideCart
             style={{
-              position: "absolute",
-              right: 50,
-              top: 500,
+              position: isMobile ? "relative" : "absolute",
+              right: isMobile ? 0 : 50,
+              top: isMobile ? 0 : 500,
               marginTop: layout.spacing_x4,
               flexDirection: "column",
               width: 245,
