@@ -47,6 +47,12 @@ export const BurnableNFTs: React.FC<{
     "tori-tori1ss9a0rs5m603g8m7f3pwen8g9mpqypg908rs0g4ml2zzqjupx25syne2jn", // Starbois
   ];
 
+  // const { data: authorizedCollections } =
+  //   useNFTBurnerAuthorizedCollections("teritori");
+  //
+  // const torifyIds =
+  //   authorizedCollections?.map((collection) => `tori-${collection}`) || [];
+
   const burnableCollections = collections.filter((collection) =>
     burnableIds.includes(collection.id),
   );

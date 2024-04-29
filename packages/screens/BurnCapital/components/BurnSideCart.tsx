@@ -2,6 +2,7 @@ import { toUtf8 } from "@cosmjs/encoding";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { EntityId } from "@reduxjs/toolkit";
+import { useQueryClient } from "@tanstack/react-query";
 import { groupBy } from "lodash";
 import React, { useCallback } from "react";
 import {
@@ -25,9 +26,19 @@ import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { Separator } from "@/components/separators/Separator";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { Wallet } from "@/context/WalletsProvider";
-import { useBalances } from "@/hooks/useBalances";
+import { popularCollectionsQueryKey } from "@/hooks/marketplace/usePopularCollections";
+import { nftBurnerTotalQueryKey } from "@/hooks/nft-burner/useNFTBurnerTotal";
+import { nftBurnerUserCountQueryKey } from "@/hooks/nft-burner/useNFTBurnerUserCount";
+import { collectionStatsQueryKey } from "@/hooks/useCollectionStats";
+import { nftsQueryKey } from "@/hooks/useNFTs";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { parseNftId, txExplorerLink } from "@/networks";
+import {
+  getCollectionId,
+  getNetworkFeature,
+  NetworkFeature,
+  parseNftId,
+  txExplorerLink,
+} from "@/networks";
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import {
   emptyBurnCart,
@@ -220,6 +231,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
   const selectedNFTData = useSelector(selectAllSelectedNFTData);
   const { setToastError, setLoadingFullScreen, setToastSuccess } =
     useFeedbacks();
+  const queryClient = useQueryClient();
 
   const cosmosMultiBuy = useCallback(
     async (wallet: Wallet) => {
@@ -233,7 +245,12 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
       selectedNFTData.map((nft) => {
         const [network, , tokenId] = parseNftId(nft.id);
 
-        if (nft.networkId !== "teritori" || !network) {
+        const burnerFeature = getNetworkFeature(
+          nft.networkId,
+          NetworkFeature.CosmWasmNFTsBurner,
+        );
+
+        if (!burnerFeature || !network) {
           setToast({
             title: `${nft.networkId} multi-burn is not supported`,
             duration: 5000,
@@ -249,13 +266,13 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
             sender,
             msg: toUtf8(
               JSON.stringify({
-                burn: {
-                  nft_contract_addr: nft.nftContractAddress,
-                  nft_token_id: tokenId,
+                transfer_nft: {
+                  recipient: burnerFeature.burnerContractAddress, //nft.nftContractAddress,
+                  token_id: tokenId,
                 },
               }),
             ),
-            contract: network.vaultContractAddress,
+            contract: nft.nftContractAddress,
             funds: [],
           },
         };
@@ -265,6 +282,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
       if (msgs.length > 0) {
         setLoadingFullScreen(true);
         const cosmwasmClient = await getKeplrSigningCosmWasmClient("teritori");
+
         try {
           const tx = await cosmwasmClient.signAndBroadcast(
             sender,
@@ -274,7 +292,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
           if (isDeliverTxFailure(tx)) {
             throw Error(tx.transactionHash);
           }
-          selectedNFTData.map((nft) => {
+          selectedNFTData.map(async (nft) => {
             setToastSuccess({
               title: "Burned",
               message: "View TX",
@@ -284,6 +302,29 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
               },
             });
             dispatch(removeSelectedFromBurn(nft.id)); //remove items from cart
+
+            // invalidate cache
+            const [, mintContractAddress] = parseNftId(nft.id);
+
+            await Promise.all([
+              queryClient.invalidateQueries(nftsQueryKey()),
+              queryClient.invalidateQueries(
+                nftBurnerTotalQueryKey(nft.networkId),
+              ),
+              queryClient.invalidateQueries(
+                nftBurnerUserCountQueryKey(wallet.userId),
+              ),
+              queryClient.invalidateQueries(
+                collectionStatsQueryKey(
+                  getCollectionId(nft.networkId, mintContractAddress),
+                ),
+              ),
+              queryClient.invalidateQueries(
+                popularCollectionsQueryKey(nft.networkId),
+              ),
+            ]);
+            // end of invalidate cache
+
             setLoadingFullScreen(false);
           });
         } catch (e: any) {
@@ -346,7 +387,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
         <PrimaryButton
           fullWidth
           size="SM"
-          disabled={Object.values(grouped).length > 0}
+          disabled={Object.values(grouped).length === 0}
           text="Burn 🫡"
           onPress={() => onBuyButtonPress()}
         />
