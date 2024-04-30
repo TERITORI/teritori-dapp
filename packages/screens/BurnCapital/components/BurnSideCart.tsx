@@ -266,8 +266,8 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
             sender,
             msg: toUtf8(
               JSON.stringify({
-                transfer_nft: {
-                  recipient: burnerFeature.burnerContractAddress, //nft.nftContractAddress,
+                send_nft: {
+                  contract: burnerFeature.burnerContractAddress, //nft.nftContractAddress,
                   token_id: tokenId,
                 },
               }),
