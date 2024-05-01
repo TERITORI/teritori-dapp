@@ -443,17 +443,17 @@ const NFTViewFooter: React.FC<{ nft: NFT; localSelected: boolean }> = memo(
     const isOwner = nft.ownerId === selectedWallet?.userId;
     const dispatch = useAppDispatch();
 
-    // const burnerFeature = getNetworkFeature(
-    //   "teritori",
-    //   NetworkFeature.CosmWasmNFTsBurner,
-    // );
-    // const { data: authorizedCollections } =
-    //   useNFTBurnerAuthorizedCollections("teritori");
-    // const queryClient = useQueryClient();
+    const burnerFeature = getNetworkFeature(
+      "teritori",
+      NetworkFeature.CosmWasmNFTsBurner,
+    );
+    const { data: authorizedCollections } =
+      useNFTBurnerAuthorizedCollections("teritori");
+    const queryClient = useQueryClient();
 
-    const showRecycle = true;
-    // !!burnerFeature &&
-    // (authorizedCollections || []).includes(nft.nftContractAddress);
+    const showRecycle =
+      !!burnerFeature &&
+      (authorizedCollections || []).includes(nft.nftContractAddress);
 
     const selectedForBurn = useSelector(selectSelectedNFTIdsForBurn).includes(
       nft.id,
