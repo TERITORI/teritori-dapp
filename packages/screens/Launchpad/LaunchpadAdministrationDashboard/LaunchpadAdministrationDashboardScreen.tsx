@@ -21,7 +21,7 @@ import {
 import { layout } from "@/utils/style/layout";
 
 const MD_BREAKPOINT = 820;
-type TabsListType = "pendingApllications" | "pendingConfirmations";
+type TabsListType = "pendingApplications" | "pendingConfirmations";
 type SecTabsListType =
   | "highlightedNewsHero"
   | "upcomingProjectsCarousel"
@@ -68,8 +68,8 @@ export const LaunchpadAdministrationDashboardScreen: React.FC = () => {
   const { width } = useWindowDimensions();
 
   const tabs = {
-    pendingApllications: {
-      name: "Pending Apllications",
+    pendingApplications: {
+      name: "Pending Applications",
       badgeCount: 32,
     },
     pendingConfirmations: {
@@ -94,7 +94,7 @@ export const LaunchpadAdministrationDashboardScreen: React.FC = () => {
   };
 
   const [selectedTab, setSelectedTab] = useState<TabsListType>(
-    "pendingApllications",
+    "pendingApplications",
   );
 
   const [selectedSecTab, setSelectedSecTab] = useState<SecTabsListType>(

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { FC, useState } from "react";
+import { useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { View } from "react-native";
 
@@ -7,14 +7,13 @@ import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SecondaryButton } from "@/components/buttons/SecondaryButton";
-import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useCreateCollection } from "@/hooks/launchpad/useCreateCollection";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
 import {
-  LaunchpadStepper,
-  StepOption,
+  LaunchpadCreateStep,
+  LaunchpadCreateStepKey,
 } from "@/screens/Launchpad/LaunchpadCreate/components/LaunchpadStepper";
 import { LaunchpadAdditional } from "@/screens/Launchpad/LaunchpadCreate/components/steps/LaunchpadAdditional";
 import { LaunchpadAssetsAndMetadata } from "@/screens/Launchpad/LaunchpadCreate/components/steps/LaunchpadAssetsAndMetadata/LaunchpadAssetsAndMetadata";
@@ -30,26 +29,32 @@ import {
   ZodCollectionFormValues,
 } from "@/utils/types/launchpad";
 
-const StepContent: FC<{
-  step: number;
-}> = ({ step }) => {
-  switch (step) {
-    case 1:
-      return <LaunchpadBasic />;
-    case 2:
-      return <LaunchpadDetails />;
-    case 3:
-      return <LaunchpadTeamAndInvestment />;
-    case 4:
-      return <LaunchpadAdditional />;
-    case 5:
-      return <LaunchpadMinting />;
-    case 6:
-      return <LaunchpadAssetsAndMetadata />;
-    default:
-      return <></>;
-  }
-};
+const steps: LaunchpadCreateStep[] = [
+  {
+    key: 1,
+    title: "Basic",
+  },
+  {
+    key: 2,
+    title: "Details",
+  },
+  {
+    key: 3,
+    title: "Team & Investments",
+  },
+  {
+    key: 4,
+    title: "Additional",
+  },
+  {
+    key: 5,
+    title: "Minting",
+  },
+  {
+    key: 6,
+    title: "Assets & Metadata",
+  },
+];
 
 export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const navigation = useAppNavigation();
@@ -70,35 +75,63 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
     resolver: zodResolver(ZodCollectionFormValues),
   });
   const { createCollection } = useCreateCollection();
-  const [selectedStep, setSelectedStep] = useState(1);
+  const [selectedStepKey, setSelectedStepKey] =
+    useState<LaunchpadCreateStepKey>(1);
   const [isLoading, setLoading] = useState(false);
 
-  const stepOptions: StepOption[] = [
-    {
-      key: 1,
-      title: "Basic",
-    },
-    {
-      key: 2,
-      title: "Details",
-    },
-    {
-      key: 3,
-      title: "Team & Investments",
-    },
-    {
-      key: 4,
-      title: "Additional",
-    },
-    {
-      key: 5,
-      title: "Minting",
-    },
-    {
-      key: 6,
-      title: "Assets & Metadata",
-    },
-  ];
+  const stepContent = useMemo(() => {
+    switch (selectedStepKey) {
+      case 1:
+        return (
+          <LaunchpadBasic
+            steps={steps}
+            setSelectedStepKey={setSelectedStepKey}
+          />
+        );
+      case 2:
+        return (
+          <LaunchpadDetails
+            steps={steps}
+            setSelectedStepKey={setSelectedStepKey}
+          />
+        );
+      case 3:
+        return (
+          <LaunchpadTeamAndInvestment
+            steps={steps}
+            setSelectedStepKey={setSelectedStepKey}
+          />
+        );
+      case 4:
+        return (
+          <LaunchpadAdditional
+            steps={steps}
+            setSelectedStepKey={setSelectedStepKey}
+          />
+        );
+      case 5:
+        return (
+          <LaunchpadMinting
+            steps={steps}
+            setSelectedStepKey={setSelectedStepKey}
+          />
+        );
+      case 6:
+        return (
+          <LaunchpadAssetsAndMetadata
+            steps={steps}
+            setSelectedStepKey={setSelectedStepKey}
+          />
+        );
+      default:
+        return (
+          <LaunchpadBasic
+            steps={steps}
+            setSelectedStepKey={setSelectedStepKey}
+          />
+        );
+    }
+  }, [selectedStepKey]);
 
   const onValid = async () => {
     setLoading(true);
@@ -128,8 +161,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   return (
     <ScreenContainer
       fullWidth
-      noMargin
-      noScroll={false}
+      responsive
       footerChildren={<></>}
       forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
       // TODO: Remove after tests
@@ -142,24 +174,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
           marginTop: layout.spacing_x3,
         }}
       >
-        <LaunchpadStepper
-          stepOptions={stepOptions}
-          step={selectedStep}
-          onStepPress={setSelectedStep}
-        />
-
-        <View
-          style={{
-            paddingHorizontal: layout.spacing_x3_5,
-            zIndex: 1,
-          }}
-        >
-          <SpacerColumn size={4} />
-          <FormProvider {...collectionForm}>
-            <StepContent step={selectedStep} />
-          </FormProvider>
-        </View>
-
+        <FormProvider {...collectionForm}>{stepContent}</FormProvider>
         <View
           style={{
             borderTopWidth: 1,
@@ -172,22 +187,21 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
               marginVertical: layout.spacing_x2,
               marginLeft: layout.spacing_x4,
               marginRight: layout.spacing_x2,
-              justifyContent: selectedStep === 1 ? "flex-end" : "space-between",
+              justifyContent:
+                selectedStepKey === 1 ? "flex-end" : "space-between",
             }}
           >
-            {selectedStep !== 1 && (
+            {selectedStepKey !== 1 && (
               <SecondaryButton
                 width={136}
                 size="M"
                 text="Back"
                 loader
-                onPress={() => {
-                  setSelectedStep(selectedStep - 1);
-                }}
+                onPress={() => setSelectedStepKey(selectedStepKey - 1)}
               />
             )}
 
-            {stepOptions.length === selectedStep ? (
+            {selectedStepKey === steps.length ? (
               <PrimaryButton
                 width={220}
                 size="M"
@@ -209,7 +223,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
                 text="Next"
                 loader
                 isLoading={isLoading}
-                onPress={() => setSelectedStep(selectedStep + 1)}
+                onPress={() => setSelectedStepKey(selectedStepKey + 1)}
               />
             )}
           </View>

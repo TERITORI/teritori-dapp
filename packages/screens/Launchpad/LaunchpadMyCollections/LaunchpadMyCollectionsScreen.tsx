@@ -22,7 +22,9 @@ import {
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-export const LaunchpadMyCollectionsScreen: ScreenFC<"LaunchpadCreate"> = () => {
+export const LaunchpadMyCollectionsScreen: ScreenFC<
+  "LaunchpadMyCollections"
+> = () => {
   const navigation = useAppNavigation();
 
   return (

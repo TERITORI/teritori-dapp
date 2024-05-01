@@ -14,7 +14,7 @@ import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-type TabsListType = "pendingApllications" | "pendingConfirmations";
+type TabsListType = "pendingApplications" | "pendingConfirmations";
 
 const dummyData = {
   id: 1,
@@ -33,8 +33,8 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
   const isMobile = useIsMobile();
 
   const tabs = {
-    pendingApllications: {
-      name: "Pending Apllications",
+    pendingApplications: {
+      name: "Pending Applications",
       badgeCount: 32,
     },
     pendingConfirmations: {
@@ -44,7 +44,7 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
   };
 
   const [selectedTab, setSelectedTab] = useState<TabsListType>(
-    "pendingApllications",
+    "pendingApplications",
   );
 
   return (
