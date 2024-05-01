@@ -449,7 +449,6 @@ const NFTViewFooter: React.FC<{ nft: NFT; localSelected: boolean }> = memo(
     );
     const { data: authorizedCollections } =
       useNFTBurnerAuthorizedCollections("teritori");
-    const queryClient = useQueryClient();
 
     const showRecycle =
       !!burnerFeature &&

@@ -41,6 +41,7 @@ export const BurnableNFTs: React.FC<{
     "tori-tori1ss9a0rs5m603g8m7f3pwen8g9mpqypg908rs0g4ml2zzqjupx25syne2jn", // Starbois
   ];
 
+  // Using hardcoded values instead of the following code: The reason is that the minter contract and the nft contract are different
   // const { data: authorizedCollections } =
   //   useNFTBurnerAuthorizedCollections("teritori");
   //
