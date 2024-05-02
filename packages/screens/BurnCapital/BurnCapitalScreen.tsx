@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
+import { useDispatch } from "react-redux";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
@@ -9,10 +10,11 @@ import { useNFTBurnerUserCount } from "@/hooks/nft-burner/useNFTBurnerUserCount"
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { teritoriNetwork } from "@/networks/teritori";
+import { NetworkFeature, getNetwork } from "@/networks";
 import { BurnSideCart } from "@/screens/BurnCapital/components/BurnSideCart";
 import { BurnableNFTs } from "@/screens/BurnCapital/components/BurnableNFTs";
 import { TopSectionConnectWallet } from "@/screens/BurnCapital/components/TopSectionConnectWallet";
+import { setSelectedNetworkId } from "@/store/slices/settings";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral00, neutral33 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
@@ -28,11 +30,23 @@ const tabs = {
 };
 
 export const BurnCapitalScreen: ScreenFC<"BurnCapital"> = ({ route }) => {
-  const inputNetwork = route.params?.network || teritoriNetwork.id;
+  const inputNetwork = route.params?.network;
   const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
+  const dispatch = useDispatch();
   const navigation = useAppNavigation();
   const isMobile = useIsMobile();
+
+  useEffect(() => {
+    if (!inputNetwork) {
+      return;
+    }
+    const network = getNetwork(inputNetwork);
+    if (!network) {
+      return;
+    }
+    dispatch(setSelectedNetworkId(network.id));
+  }, [dispatch, inputNetwork]);
 
   const [selectedTab, setSelectedTab] = useState<"burn" | "leaderboard">(
     "burn",
@@ -45,7 +59,7 @@ export const BurnCapitalScreen: ScreenFC<"BurnCapital"> = ({ route }) => {
       isLarge
       footerChildren={<></>}
       fullWidth
-      forceNetworkId={inputNetwork}
+      forceNetworkFeatures={[NetworkFeature.CosmWasmNFTsBurner]}
       headerChildren={
         <BrandText style={fontSemibold20}>BURN Capital 🔥</BrandText>
       }

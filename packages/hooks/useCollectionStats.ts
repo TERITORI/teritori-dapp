@@ -5,11 +5,14 @@ import { parseNetworkObjectId, NetworkKind } from "@/networks";
 import { getMarketplaceClient } from "@/utils/backend";
 
 export const collectionStatsQueryKey = (
-  collectionId: string,
+  collectionId?: string,
   ownerId?: string,
 ) => {
-  const qk = ["collectionStats", collectionId];
-  if (ownerId) {
+  const qk = ["collectionStats"];
+  if (collectionId) {
+    qk.push(collectionId);
+  }
+  if (collectionId && ownerId) {
     qk.push(ownerId);
   }
   return qk;

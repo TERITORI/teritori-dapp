@@ -1,9 +1,9 @@
+import { MsgExecuteContractEncodeObject } from "@cosmjs/cosmwasm-stargate";
 import { toUtf8 } from "@cosmjs/encoding";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import { EntityId } from "@reduxjs/toolkit";
 import { useQueryClient } from "@tanstack/react-query";
-import { groupBy } from "lodash";
 import React, { useCallback } from "react";
 import {
   FlatList,
@@ -19,21 +19,21 @@ import { useSelector } from "react-redux";
 
 import closeSVG from "@/assets/icons/close.svg";
 import { BrandText } from "@/components/BrandText";
-import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { SVG } from "@/components/SVG";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { Separator } from "@/components/separators/Separator";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { Wallet } from "@/context/WalletsProvider";
+import { ExecuteMsg } from "@/contracts-clients/teritori-nft/TeritoriNft.types";
 import { popularCollectionsQueryKey } from "@/hooks/marketplace/usePopularCollections";
 import { nftBurnerTotalQueryKey } from "@/hooks/nft-burner/useNFTBurnerTotal";
 import { nftBurnerUserCountQueryKey } from "@/hooks/nft-burner/useNFTBurnerUserCount";
 import { collectionStatsQueryKey } from "@/hooks/useCollectionStats";
 import { nftsQueryKey } from "@/hooks/useNFTs";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import {
-  getCollectionId,
   getNetworkFeature,
   NetworkFeature,
   parseNftId,
@@ -186,10 +186,8 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
 const ItemTotal: React.FC<{
   textLeft: string;
   networkId: string;
-  denom: string;
-  showLogo?: boolean;
   textRight: string | number;
-}> = ({ textLeft, showLogo = false, textRight, networkId, denom }) => {
+}> = ({ textLeft, textRight, networkId }) => {
   return (
     <View
       style={{
@@ -215,135 +213,121 @@ const ItemTotal: React.FC<{
         >
           {typeof textRight === "number" ? textRight.toFixed(0) : textRight}
         </BrandText>
-        {showLogo && (
-          <CurrencyIcon networkId={networkId} denom={denom} size={16} />
-        )}
       </View>
     </View>
   );
 };
 
-const Footer: React.FC<{ items: any[] }> = ({ items }) => {
-  const { setToast } = useFeedbacks();
+const Footer: React.FC = () => {
   const wallet = useSelectedWallet();
   const dispatch = useAppDispatch();
-
   const selectedNFTData = useSelector(selectAllSelectedNFTData);
-  const { setToastError, setLoadingFullScreen, setToastSuccess } =
-    useFeedbacks();
+  const { setToast, setLoadingFullScreen } = useFeedbacks();
   const queryClient = useQueryClient();
+  const selectedNetworkId = useSelectedNetworkId();
 
-  const cosmosMultiBuy = useCallback(
+  const cosmosMultiBurn = useCallback(
     async (wallet: Wallet) => {
-      const sender = wallet.address;
-      if (!sender) {
-        throw Error("invalid buy args");
-      }
-
-      const msgs: EncodeObject[] = [];
-
-      selectedNFTData.map((nft) => {
-        const [network, , tokenId] = parseNftId(nft.id);
+      setLoadingFullScreen(true);
+      try {
+        const sender = wallet.address;
+        if (!sender) {
+          throw Error("invalid wallet");
+        }
 
         const burnerFeature = getNetworkFeature(
-          nft.networkId,
+          selectedNetworkId,
           NetworkFeature.CosmWasmNFTsBurner,
         );
 
-        if (!burnerFeature || !network) {
-          setToast({
-            title: `${nft.networkId} multi-burn is not supported`,
-            duration: 5000,
-            mode: "normal",
-            type: "error",
-          });
+        if (!burnerFeature) {
+          throw new Error("invalid network");
+        }
+
+        const msgs: EncodeObject[] = [];
+
+        selectedNFTData.map((nft) => {
+          const [, , tokenId] = parseNftId(nft.id);
+
+          const payload: ExecuteMsg = {
+            send_nft: {
+              contract: burnerFeature.burnerContractAddress,
+              token_id: tokenId,
+              msg: "",
+            },
+          };
+
+          const msg: MsgExecuteContractEncodeObject = {
+            typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+            value: {
+              sender,
+              msg: toUtf8(JSON.stringify(payload)),
+              contract: nft.nftContractAddress,
+              funds: [],
+            },
+          };
+
+          msgs.push(msg);
+        });
+
+        if (!msgs.length) {
           return;
         }
 
-        const msg = {
-          typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
-          value: {
-            sender,
-            msg: toUtf8(
-              JSON.stringify({
-                send_nft: {
-                  contract: burnerFeature.burnerContractAddress, //nft.nftContractAddress,
-                  token_id: tokenId,
-                },
-              }),
-            ),
-            contract: nft.nftContractAddress,
-            funds: [],
-          },
-        };
+        const cosmwasmClient =
+          await getKeplrSigningCosmWasmClient(selectedNetworkId);
 
-        msgs.push(msg);
-      });
-      if (msgs.length > 0) {
-        setLoadingFullScreen(true);
-        const cosmwasmClient = await getKeplrSigningCosmWasmClient("teritori");
-
-        try {
-          const tx = await cosmwasmClient.signAndBroadcast(
-            sender,
-            msgs,
-            "auto",
-          );
-          if (isDeliverTxFailure(tx)) {
-            throw Error(tx.transactionHash);
-          }
-          selectedNFTData.map(async (nft) => {
-            setToastSuccess({
-              title: "Burned",
-              message: "View TX",
-              duration: 10000,
-              onPress: () => {
-                Linking.openURL(txExplorerLink("teritori", tx.transactionHash)); // test it further
-              },
-            });
-            dispatch(removeSelectedFromBurn(nft.id)); //remove items from cart
-
-            // invalidate cache
-            const [, mintContractAddress] = parseNftId(nft.id);
-
-            await Promise.all([
-              queryClient.invalidateQueries(nftsQueryKey()),
-              queryClient.invalidateQueries(
-                nftBurnerTotalQueryKey(nft.networkId),
-              ),
-              queryClient.invalidateQueries(
-                nftBurnerUserCountQueryKey(wallet.userId),
-              ),
-              queryClient.invalidateQueries(
-                collectionStatsQueryKey(
-                  getCollectionId(nft.networkId, mintContractAddress),
-                ),
-              ),
-              queryClient.invalidateQueries(
-                popularCollectionsQueryKey(nft.networkId),
-              ),
-            ]);
-            // end of invalidate cache
-
-            setLoadingFullScreen(false);
-          });
-        } catch (e: any) {
-          setToastError({
-            title: "Error",
-            message: `${e}`,
-            duration: 30000,
-          });
+        const tx = await cosmwasmClient.signAndBroadcast(sender, msgs, "auto");
+        if (isDeliverTxFailure(tx)) {
+          throw new Error(tx.transactionHash);
         }
+
+        setToast({
+          title: `Burned ${msgs.length} NFTs!`,
+          message: tx.transactionHash,
+          mode: "normal",
+          duration: 10000,
+          onPress: () => {
+            Linking.openURL(
+              txExplorerLink(selectedNetworkId, tx.transactionHash),
+            );
+          },
+        });
+
+        dispatch(emptyBurnCart()); //remove items from cart
+
+        await Promise.all([
+          queryClient.invalidateQueries(nftsQueryKey()),
+          queryClient.invalidateQueries(
+            nftBurnerTotalQueryKey(selectedNetworkId),
+          ),
+          queryClient.invalidateQueries(
+            nftBurnerUserCountQueryKey(wallet.userId),
+          ),
+          queryClient.invalidateQueries(collectionStatsQueryKey()),
+          queryClient.invalidateQueries(
+            popularCollectionsQueryKey(selectedNetworkId),
+          ),
+        ]);
+      } catch (e: any) {
+        setToast({
+          title: "Error",
+          message: `${e instanceof Error ? e.message : e}`,
+          duration: 30000,
+          mode: "normal",
+          type: "error",
+        });
+      } finally {
+        setLoadingFullScreen(false);
       }
     },
     [
       dispatch,
+      queryClient,
       selectedNFTData,
+      selectedNetworkId,
       setLoadingFullScreen,
       setToast,
-      queryClient,
-      setToastError,
-      setToastSuccess,
     ],
   );
 
@@ -357,27 +341,17 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
       });
       return;
     }
-    await cosmosMultiBuy(wallet);
+    await cosmosMultiBurn(wallet);
   };
-
-  const grouped = groupBy(selectedNFTData, (e) => {
-    return e.denom;
-  });
 
   return (
     <View>
-      {Object.values(grouped).map((totals, index) => {
-        return (
-          <ItemTotal
-            textLeft="Total Burn"
-            showLogo={false}
-            key={index}
-            textRight={totals.length}
-            networkId={totals[0].networkId}
-            denom={totals[0].denom}
-          />
-        );
-      })}
+      <ItemTotal
+        textLeft="Total Burn"
+        textRight={selectedNFTData.length}
+        networkId={selectedNetworkId}
+      />
+
       <Separator />
 
       <View
@@ -388,7 +362,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
         <PrimaryButton
           fullWidth
           size="SM"
-          disabled={Object.values(grouped).length === 0}
+          disabled={selectedNFTData.length === 0}
           text="Burn 🫡"
           onPress={() => onBuyButtonPress()}
         />
@@ -423,7 +397,7 @@ export const BurnSideCart: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
         }}
       />
       <Separator />
-      <Footer items={selected} />
+      <Footer />
     </View>
   ) : null;
 };

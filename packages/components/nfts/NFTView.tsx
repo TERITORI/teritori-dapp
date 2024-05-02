@@ -444,11 +444,12 @@ const NFTViewFooter: React.FC<{ nft: NFT; localSelected: boolean }> = memo(
     const dispatch = useAppDispatch();
 
     const burnerFeature = getNetworkFeature(
-      "teritori",
+      nft.networkId,
       NetworkFeature.CosmWasmNFTsBurner,
     );
-    const { data: authorizedCollections } =
-      useNFTBurnerAuthorizedCollections("teritori");
+    const { data: authorizedCollections } = useNFTBurnerAuthorizedCollections(
+      nft.networkId,
+    );
 
     const showRecycle =
       !!burnerFeature &&

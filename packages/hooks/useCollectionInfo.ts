@@ -35,6 +35,7 @@ import { isLinkBanned } from "@/utils/link-ban";
 export const useCollectionInfo = (
   id: string,
   forceInterval?: number,
+  enabled: boolean = true,
 ): {
   collectionInfo: CollectionInfo;
   notFound: boolean;
