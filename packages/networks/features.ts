@@ -14,7 +14,10 @@ export enum NetworkFeature {
   NFTBridge = "NFTBridge",
   CosmWasmPremiumFeed = "CosmWasmPremiumFeed",
   NFTMarketplaceLeaderboard = "NFTMarketplaceLeaderboard",
+  CosmWasmNFTsBurner = "CosmWasmNFTsBurner",
 }
+
+// CosmWasm Premium Feed
 
 const zodCosmWasmPremiumFeed = z.object({
   type: z.literal(NetworkFeature.CosmWasmPremiumFeed),
@@ -24,23 +27,28 @@ const zodCosmWasmPremiumFeed = z.object({
 
 export type CosmWasmPremiumFeed = z.infer<typeof zodCosmWasmPremiumFeed>;
 
+// CosmWasm NFTs Burner
+
+const zodCosmWasmNFTsBurner = z.object({
+  type: z.literal(NetworkFeature.CosmWasmNFTsBurner),
+  burnerContractAddress: z.string(),
+});
+
+export type CosmWasmNFTsBurner = z.infer<typeof zodCosmWasmNFTsBurner>;
+
+// CosmWasm Social Feed
+
 type CosmWasmSocialFeed = {
   type: NetworkFeature.SocialFeed;
   feedContractAddress: string;
 };
 
-const zodCosmWasmLaunchpad = z.object({
-  type: z.literal(NetworkFeature.NFTLaunchpad),
-  launchpadContractAddress: z.string(),
-  defaultMintDenom: z.string(),
-  // allowedMintDenoms: z.array(z.string()), // for future
-});
-
-export type CosmWasmLaunchpad = z.infer<typeof zodCosmWasmLaunchpad>;
-
-export const allFeatureObjects = [zodCosmWasmPremiumFeed, zodCosmWasmLaunchpad];
+export const allFeatureObjects = [
+  zodCosmWasmPremiumFeed,
+  zodCosmWasmNFTsBurner,
+];
 
 export type NetworkFeatureObject =
   | CosmWasmPremiumFeed
   | CosmWasmSocialFeed
-  | CosmWasmLaunchpad;
+  | CosmWasmNFTsBurner;

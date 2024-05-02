@@ -64,8 +64,8 @@ export const ApplicationTable: React.FC<{
       <TableRow
         headings={
           !isMobile
-            ? Object.values(TABLE_ROWS)
-            : Object.values(TABLE_ROWS).slice(0, -5)
+            ? TABLE_ROWS
+            : Object.fromEntries(Object.entries(TABLE_ROWS).slice(0, -5))
         }
       />
 

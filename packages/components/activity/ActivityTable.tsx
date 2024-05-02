@@ -14,6 +14,7 @@ import {
   primaryColor,
   reefColor,
   neutral77,
+  errorColor,
 } from "../../utils/style/colors";
 import { fontMedium14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -74,7 +75,7 @@ export const ActivityTable: React.FC<{
         width: "100%",
       }}
     >
-      <TableRow headings={Object.values(TABLE_ROWS)} />
+      <TableRow headings={TABLE_ROWS} />
       <FlatList
         data={activities}
         renderItem={({ item }) => <ActivityRow activity={item} />}
@@ -226,6 +227,10 @@ const prettyActivityName = (kind: string) => {
 
 const activityNameStyle = (kind: string): TextStyle => {
   switch (kind) {
+    case "burn":
+      return {
+        color: errorColor,
+      };
     case "mint":
       return {
         color: primaryColor,
