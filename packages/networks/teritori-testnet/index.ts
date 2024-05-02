@@ -15,10 +15,11 @@ const premiumFeedFeature: CosmWasmPremiumFeed = {
   mintDenom: "utori",
 };
 
-const nftsBurnerFeature: CosmWasmNFTsBurner = {
-  type: NetworkFeature.CosmWasmNFTsBurner,
-  burnerContractAddress:
-    "tori1qyl0j7a24amk8k8gcmvv07y2zjx7nkcwpk73js24euh64hkja6esd2p2xp",
+const cosmwasmLaunchpadFeature: CosmWasmLaunchpad = {
+  type: NetworkFeature.NFTLaunchpad,
+  launchpadContractAddress:
+    "tori1wug8sewp6cedgkmrmvhl3lf3tulagm9hnvy8p0rppz9yjw0g4wtqfxt3j6",
+  defaultMintDenom: "utori",
 };
 
 const riotContractAddressGen0 =

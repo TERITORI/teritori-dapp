@@ -3,9 +3,6 @@ import React from "react";
 import { platformScreens } from "./platformSpecific";
 import { getNav, screenTitle } from "./util";
 
-import { AdministrationDashboardScreen } from "@/screens/AdministrationDashboard/AdministrationDashboardScreen";
-import { AllProjectAdministrationDashScreen } from "@/screens/AllProjectAdministrationDash/AllProjectAdministrationDashScreen";
-import { ApplicationRewiewScreen } from "@/screens/ApplicationRewiew/ApplicationRewiew";
 import { BurnCapitalScreen } from "@/screens/BurnCapital/BurnCapitalScreen";
 import { ComingSoonScreen } from "@/screens/ComingSoon/ComingSoon";
 import { CoreDAOScreen } from "@/screens/CoreDAO/CoreDAOScreen";
@@ -19,11 +16,16 @@ import { GovernanceScreen } from "@/screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "@/screens/Guardians/GuardiansScreen";
 import { HashtagFeedScreen } from "@/screens/HashtagFeed/HashtagFeedScreen";
 import { HomeScreen } from "@/screens/Home/HomeScreen";
+import { LaunchpadAdministrationDashboardScreen } from "@/screens/Launchpad/LaunchpadAdministrationDashboard/LaunchpadAdministrationDashboardScreen";
+import { LaunchpadAllProjectAdministrationDashScreen } from "@/screens/Launchpad/LaunchpadAllProjectAdministrationDash/LaunchpadAllProjectAdministrationDashScreen";
+import { LaunchpadApplicationReview } from "@/screens/Launchpad/LaunchpadApplicationReview/LaunchpadApplicationReview";
+import { LaunchpadApplicationsScreen } from "@/screens/Launchpad/LaunchpadApplications/LaunchpadApplicationsScreen";
 import { LaunchpadApplyScreen } from "@/screens/Launchpad/LaunchpadApplyScreen";
-import { LaunchpadCreateScreen } from "@/screens/Launchpad/LaunchpadCreateScreen";
+import { LaunchpadCreateScreen } from "@/screens/Launchpad/LaunchpadCreate/LaunchpadCreateScreen";
+import { LaunchpadMyCollectionsScreen } from "@/screens/Launchpad/LaunchpadMyCollections/LaunchpadMyCollectionsScreen";
+import { LaunchpadReadyApplicationsScreen } from "@/screens/Launchpad/LaunchpadReadyApplications/LaunchpadReadyApplicationsScreen";
 import { LaunchpadScreen } from "@/screens/Launchpad/LaunchpadScreen";
 import { MintCollectionScreen } from "@/screens/Launchpad/MintCollectionScreen";
-import { LaunchpadApplicationsScreen } from "@/screens/LaunchpadApplications/LaunchpadApplicationsScreen";
 import { CollectionScreen } from "@/screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "@/screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "@/screens/Marketplace/MarketplaceScreen";
@@ -39,7 +41,6 @@ import { MultisigWalletDashboardScreen } from "@/screens/Multisig/MultisigWallet
 import { MyCollectionScreen } from "@/screens/MyCollection/MyCollectionScreen";
 import { OrganizationDeployerScreen } from "@/screens/Organizations/OrganizationDeployerScreen";
 import { OrganizationsScreen } from "@/screens/Organizations/OrganizationsScreen";
-import { ReadyLaunchpadApplicationsScreen } from "@/screens/ReadyLaunchpadApplications/ReadyLaunchpadApplicationsScreen";
 import { RiotGameBreedingScreen } from "@/screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "@/screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "@/screens/RiotGame/RiotGameFightScreen";
@@ -116,55 +117,6 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         name="RiotersFooter"
         component={RiotersFooterScreen}
         options={{ header: () => null, title: screenTitle("Rioters Footer") }}
-      />
-      <Nav.Screen
-        name="AdministrationDashboard"
-        component={AdministrationDashboardScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Administration Dashboard"),
-        }}
-      />
-      <Nav.Screen
-        name="LaunchpadApplications"
-        component={LaunchpadApplicationsScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Launchpad Applications"),
-        }}
-      />
-      <Nav.Screen
-        name="ReadyLaunchpadApplications"
-        component={ReadyLaunchpadApplicationsScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Ready Launchpad Applications"),
-        }}
-      />
-      <Nav.Screen
-        name="AllProjectAdministrationDash"
-        component={AllProjectAdministrationDashScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("All Launchpad Applications"),
-        }}
-      />
-      <Nav.Screen
-        name="ApplicationReview"
-        component={ApplicationRewiewScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Application Review"),
-        }}
-      />
-
-      <Nav.Screen
-        name="MarketplaceLeaderboard"
-        component={MarketplaceLeaderboardScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Application Review"),
-        }}
       />
 
       {/* === Riot Game */}
@@ -256,7 +208,7 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         component={LaunchpadApplyScreen}
         options={{
           header: () => null,
-          title: screenTitle("Launchpad (Apply)"),
+          title: screenTitle("Apply to Launchpad"),
         }}
       />
       <Nav.Screen
@@ -264,13 +216,70 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         component={LaunchpadCreateScreen}
         options={{
           header: () => null,
-          title: screenTitle("Launchpad (Apply)"),
+          title: screenTitle("Create Collection"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadMyCollections"
+        component={LaunchpadMyCollectionsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("My Collections"),
         }}
       />
       <Nav.Screen
         name="MintCollection"
         component={MintCollectionScreen}
         options={{ header: () => null, title: screenTitle("Mint Collection") }}
+      />
+      <Nav.Screen
+        name="LaunchpadAdministrationDashboard"
+        component={LaunchpadAdministrationDashboardScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Administration Dashboard"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadApplications"
+        component={LaunchpadApplicationsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Applications"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadReadyApplications"
+        component={LaunchpadReadyApplicationsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Ready Applications"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadAllProjectAdministrationDash"
+        component={LaunchpadAllProjectAdministrationDashScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad All Applications"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadApplicationReview"
+        component={LaunchpadApplicationReview}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Application Review"),
+        }}
+      />
+
+      <Nav.Screen
+        name="MarketplaceLeaderboard"
+        component={MarketplaceLeaderboardScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Application Review"),
+        }}
       />
 
       {/* ==== Multisig */}

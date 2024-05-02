@@ -37,7 +37,7 @@ import {
   getCoingeckoPrice,
 } from "@/utils/coingecko";
 import { prettyPrice } from "@/utils/coins";
-import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { ScreenFC } from "@/utils/navigation";
 import { prettyNumber } from "@/utils/numbers";
 import {
   errorColor,
@@ -96,7 +96,6 @@ const TABLE_COLUMNS = {
 };
 
 export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
-  const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const enabledNetworks = useEnabledNetworks();
   const timePeriod = useSelector(selectTimePeriod);
@@ -140,7 +139,6 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
         <BrandText style={fontSemibold20}>NFT Marketplace</BrandText>
       }
       responsive
-      onBackPress={() => navigation.navigate("Marketplace")}
     >
       <View
         style={{

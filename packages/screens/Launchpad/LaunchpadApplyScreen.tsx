@@ -1,19 +1,24 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { LaunchpadBanner } from "./components/LaunchpadBanner";
+import { LaunchpadBanner } from "./LaunchpadCreate/components/LaunchpadBanner";
 import {
   LaunchpadButton,
   LaunchpadButtonProps,
-} from "./components/LaunchpadButton";
+} from "./LaunchpadCreate/components/LaunchpadButton";
 
 import { BrandText } from "@/components/BrandText";
 import { OmniLink } from "@/components/OmniLink";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { NetworkFeature } from "@/networks";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral77 } from "@/utils/style/colors";
-import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
+import {
+  fontSemibold14,
+  fontSemibold20,
+  fontSemibold28,
+} from "@/utils/style/fonts";
 
 const BUTTONS: LaunchpadButtonProps[] = [
   {
@@ -30,13 +35,18 @@ const BUTTONS: LaunchpadButtonProps[] = [
   {
     title: "My Collections",
     description: "Manage your collections with available actions and queries.",
-    buttonTitle: "Coming soon",
+    buttonTitle: "Open",
   },
 ];
 
 export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
   return (
-    <ScreenContainer>
+    <ScreenContainer
+      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+      headerChildren={
+        <BrandText style={fontSemibold20}>NFT Launchpad</BrandText>
+      }
+    >
       <LaunchpadBanner />
       <SpacerColumn size={2} />
       <BrandText style={fontSemibold28}>Welcome</BrandText>
@@ -61,7 +71,9 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
           <LaunchpadButton {...BUTTONS[1]} />
         </OmniLink>
         <SpacerRow size={1.2} />
-        <LaunchpadButton {...BUTTONS[2]} />
+        <OmniLink noHoverEffect to={{ screen: "LaunchpadMyCollections" }}>
+          <LaunchpadButton {...BUTTONS[2]} />
+        </OmniLink>
       </View>
     </ScreenContainer>
   );

@@ -31,15 +31,16 @@ export type RootStackParamList = {
     id: string;
   };
   RiotersFooter: undefined;
-  AdministrationDashboard: undefined;
-  LaunchpadApplications: undefined;
-  ApplicationReview: undefined;
-  ReadyLaunchpadApplications: undefined;
-  AllProjectAdministrationDash: undefined;
 
   Launchpad: undefined;
   LaunchpadApply: undefined;
   LaunchpadCreate: undefined;
+  LaunchpadMyCollections: undefined;
+  LaunchpadAdministrationDashboard: undefined;
+  LaunchpadApplications: undefined;
+  LaunchpadApplicationReview: undefined;
+  LaunchpadReadyApplications: undefined;
+  LaunchpadAllProjectAdministrationDash: undefined;
 
   MintCollection: { id: string };
   TNSHome: { modal: string; name?: string } | undefined;
@@ -184,11 +185,6 @@ const navConfig: {
     GovernanceProposal: "governance/:id",
     UserPublicProfile: "user/:id/:tab?",
     RiotersFooter: "rioters-footer",
-    AdministrationDashboard: "launchpad/admin",
-    LaunchpadApplications: "launchpad/applications",
-    ApplicationReview: "launchpad/application-review",
-    ReadyLaunchpadApplications: "launchpad/ready-applications",
-    AllProjectAdministrationDash: "launchpad/all-projects",
 
     // === RiotGame
     RiotGame: "riot-game",
@@ -205,6 +201,12 @@ const navConfig: {
     Launchpad: "launchpad",
     LaunchpadApply: "launchpad/apply",
     LaunchpadCreate: "launchpad/create",
+    LaunchpadMyCollections: "launchpad/my-collections",
+    LaunchpadAdministrationDashboard: "launchpad/admin",
+    LaunchpadApplications: "launchpad/admin/applications",
+    LaunchpadApplicationReview: "launchpad/admin/application-review",
+    LaunchpadReadyApplications: "launchpad/admin/ready-applications",
+    LaunchpadAllProjectAdministrationDash: "launchpad/admin/all-projects",
 
     // Mint NFT collection
     MintCollection: "collection/:id/mint",
