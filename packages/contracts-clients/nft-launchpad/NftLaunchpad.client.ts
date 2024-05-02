@@ -12,7 +12,7 @@ export interface NftLaunchpadReadOnlyInterface {
   getCollectionById: ({
     collectionId
   }: {
-    collectionId: number;
+    collectionId: string;
   }) => Promise<Collection>;
   getCollectionByAddr: ({
     collectionAddr
@@ -36,7 +36,7 @@ export class NftLaunchpadQueryClient implements NftLaunchpadReadOnlyInterface {
   getCollectionById = async ({
     collectionId
   }: {
-    collectionId: number;
+    collectionId: string;
   }): Promise<Collection> => {
     return this.client.queryContractSmart(this.contractAddress, {
       get_collection_by_id: {
@@ -78,13 +78,13 @@ export interface NftLaunchpadInterface extends NftLaunchpadReadOnlyInterface {
     collectionId,
     merkleRoot
   }: {
-    collectionId: number;
+    collectionId: string;
     merkleRoot: string;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   deployCollection: ({
     collectionId
   }: {
-    collectionId: number;
+    collectionId: string;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
 }
 export class NftLaunchpadClient extends NftLaunchpadQueryClient implements NftLaunchpadInterface {
@@ -129,7 +129,7 @@ export class NftLaunchpadClient extends NftLaunchpadQueryClient implements NftLa
     collectionId,
     merkleRoot
   }: {
-    collectionId: number;
+    collectionId: string;
     merkleRoot: string;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
@@ -142,7 +142,7 @@ export class NftLaunchpadClient extends NftLaunchpadQueryClient implements NftLa
   deployCollection = async ({
     collectionId
   }: {
-    collectionId: number;
+    collectionId: string;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       deploy_collection: {

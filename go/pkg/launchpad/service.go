@@ -6,8 +6,9 @@ import (
 	"fmt"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
-	"github.com/TERITORI/teritori-dapp/go/internal/pinata"
 	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+	"github.com/TERITORI/teritori-dapp/go/pkg/pinata"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"golang.org/x/exp/slices"
@@ -21,9 +22,10 @@ type Launchpad struct {
 }
 
 type Config struct {
-	Logger    *zap.Logger
-	IndexerDB *gorm.DB
-	PinataJWT string
+	Logger       *zap.Logger
+	IndexerDB    *gorm.DB
+	PinataJWT    string
+	NetworkStore networks.NetworkStore
 }
 
 func NewLaunchpadService(ctx context.Context, conf *Config) launchpadpb.LaunchpadServiceServer {

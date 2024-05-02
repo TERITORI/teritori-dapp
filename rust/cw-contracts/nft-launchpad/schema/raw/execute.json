@@ -56,9 +56,7 @@
           ],
           "properties": {
             "collection_id": {
-              "type": "integer",
-              "format": "uint64",
-              "minimum": 0.0
+              "type": "string"
             },
             "merkle_root": {
               "type": "string"
@@ -81,9 +79,7 @@
           ],
           "properties": {
             "collection_id": {
-              "type": "integer",
-              "format": "uint64",
-              "minimum": 0.0
+              "type": "string"
             }
           }
         }

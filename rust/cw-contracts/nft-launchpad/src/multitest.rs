@@ -163,6 +163,19 @@ fn full_flow() {
         assert_eq!(err, ContractError::MintPeriodRequired);
     }
 
+    // Create collection with invalid symbol ---------------------------------------------------------
+    {
+        let err = contract
+            .submit_collection(Collection{
+                symbol: "a_123".to_string(),
+                ..default_collection.clone()
+            } )
+            .call(sender)
+            .unwrap_err();
+
+        assert_eq!(err, ContractError::CollectionSymbolInvalid)
+    }
+    
     // Create collection ---------------------------------------------------------
     {
         let submit_collection_resp = contract

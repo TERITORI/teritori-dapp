@@ -17,7 +17,7 @@ const premiumFeedFeature: CosmWasmPremiumFeed = {
 const cosmwasmLaunchpadFeature: CosmWasmLaunchpad = {
   type: NetworkFeature.NFTLaunchpad,
   launchpadContractAddress:
-    "tori14q3el3uekvvhtg6af4wz89e8muqdsmz3yx37pw74w06luvsehwlsmh9q4e",
+    "tori1wug8sewp6cedgkmrmvhl3lf3tulagm9hnvy8p0rppz9yjw0g4wtqfxt3j6",
   defaultMintDenom: "utori",
 };
 

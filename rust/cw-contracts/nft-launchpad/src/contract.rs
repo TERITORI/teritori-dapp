@@ -65,12 +65,17 @@ impl NftLaunchpad {
     ) -> Result<Response, ContractError> {
         let storage = ctx.deps.storage;
 
-        // Reject if collection does not have at least 1 mint period
+        // Check if collection symbol is alphanumeric
+        if !collection.to_owned().symbol.chars().all(|char| char.is_numeric() || char.is_uppercase()) {
+            return Err(ContractError::CollectionSymbolInvalid);
+        }
+
+        // Check if collection have at least 1 mint period
         if collection.mint_periods.len() == 0 {
             return Err(ContractError::MintPeriodRequired);
         }
 
-        // Check if collection symbol exists ?
+        // Check if collection symbol exists
         let symbol_exist = self.collections.has(storage, collection.symbol.to_owned());
         if symbol_exist {
             return Err(ContractError::CollectionSymbolExists);

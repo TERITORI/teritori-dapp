@@ -1,4 +1,4 @@
-package indexerdb
+package main
 
 import "gorm.io/datatypes"
 

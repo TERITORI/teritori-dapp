@@ -26,13 +26,13 @@ export type ExecuteMsg = {
   };
 } | {
   update_merkle_root: {
-    collection_id: number;
+    collection_id: string;
     merkle_root: string;
     [k: string]: unknown;
   };
 } | {
   deploy_collection: {
-    collection_id: number;
+    collection_id: string;
     [k: string]: unknown;
   };
 };
@@ -98,7 +98,7 @@ export interface WhitelistInfo {
 }
 export type QueryMsg = {
   get_collection_by_id: {
-    collection_id: number;
+    collection_id: string;
     [k: string]: unknown;
   };
 } | {

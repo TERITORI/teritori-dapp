@@ -22,6 +22,9 @@ pub enum ContractError {
     #[error("Collection symbol exists.")]
     CollectionSymbolExists,
 
+    #[error("Collection symbol invalid. Only accept upper alphanumeric chars")]
+    CollectionSymbolInvalid,
+
     #[error("Collection not found.")]
     CollectionNotFound,
 

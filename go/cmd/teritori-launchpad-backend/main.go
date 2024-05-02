@@ -7,9 +7,10 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/launchpad"
+	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
-	"github.com/TERITORI/teritori-dapp/teritori-launchpad/internal/indexerdb"
-	"github.com/TERITORI/teritori-dapp/teritori-launchpad/pkg/launchpad"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
@@ -59,25 +60,38 @@ func main() {
 	if dbPath == nil {
 		panic(errors.New("missing Database configuration"))
 	}
+
+	// Setup the DB + auto migrate
+	var launchpadModels = []interface{}{
+		// users
+		&indexerdb.User{},
+
+		// launchpad
+		&LaunchpadProject{},
+		&LaunchpadToken{},
+		&LaunchpadWhitelist{},
+	}
+
 	launchpadDB, err := indexerdb.NewSQLiteDB(*dbPath)
 	if err != nil {
 		panic(errors.Wrap(err, "failed to access db"))
 	}
+	launchpadDB.AutoMigrate(launchpadModels...)
 
-	port := 9070
+	port := 9080
 	if *enableTls {
-		port = 9071
+		port = 9081
 	}
 
 	launchpadSvc := launchpad.NewLaunchpadService(context.Background(), &launchpad.Config{
 		Logger:       logger,
-		IndexerDB:    indexerDB,
+		IndexerDB:    launchpadDB,
 		PinataJWT:    *pinataJWT,
 		NetworkStore: netstore,
 	})
 
 	server := grpc.NewServer()
-	// launchpadpb.RegisterLaunchpadServiceServer(server, launchpadSvc)
+	launchpadpb.RegisterLaunchpadServiceServer(server, launchpadSvc)
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),

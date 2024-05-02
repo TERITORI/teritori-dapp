@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
-	"github.com/TERITORI/teritori-dapp/go/internal/pinata"
 	"github.com/TERITORI/teritori-dapp/go/pkg/feedpb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+	"github.com/TERITORI/teritori-dapp/go/pkg/pinata"
 	"github.com/dgraph-io/ristretto"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"

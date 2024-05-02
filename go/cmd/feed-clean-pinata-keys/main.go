@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TERITORI/teritori-dapp/go/internal/pinata"
+	"github.com/TERITORI/teritori-dapp/go/pkg/pinata"
 	"github.com/go-co-op/gocron"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"

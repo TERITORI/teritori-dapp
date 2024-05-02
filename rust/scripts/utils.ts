@@ -9,9 +9,9 @@ import { MNEMONIC } from "./mnemonic";
 const GAS_PRICE = GasPrice.fromString("0.025utori");
 
 const NODE_RPC = "https://rpc.testnet.teritori.com:443";
-const CHAIN_ID = "teritori-test-6";
+const CHAIN_ID = "teritori-test-7";
 
-const getClientInfos = async () => {
+export const getClientInfos = async () => {
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(MNEMONIC, {
     prefix: "tori",
   });
@@ -23,6 +23,9 @@ const getClientInfos = async () => {
   );
 
   const sender = await wallet.getAccounts().then((res) => res[0]?.address);
+
+  console.log("Sender:", sender);
+
   return { wallet, client, sender };
 };
 
@@ -30,16 +33,15 @@ const getWasmFile = (wasmFile: string) => {
   const filePath = path.join(
     __dirname,
     "../..",
-    "target/wasm32-unknown-unknown/release/",
+    "artifacts",
     wasmFile,
   );
-  console.log({ filePath });
+  console.log("filePath:", filePath);
   return fs.readFileSync(filePath);
 };
 
 export const deploy = async (wasmFile: string) => {
   const { client, sender } = await getClientInfos();
-
   const uploadRes = await client.upload(sender, getWasmFile(wasmFile), "auto");
 
   return uploadRes.codeId;

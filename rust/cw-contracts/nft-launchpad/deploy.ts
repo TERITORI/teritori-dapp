@@ -1,12 +1,12 @@
 import { deploy, instantiate } from "../../scripts/utils";
 
-const WASM_FILE = "nft_launchpad.wasm";
-const DEPLOYER = "tori1jy6umm9k0zhlte4gefmxneqgr4kpltxw6uew3x";
+const WASM_FILE = "nft_launchpad-aarch64.wasm";
+const DEPLOYER = "tori1zsgm6hvx4a3t08vsanwdcvvnv2xca9faavzccm";
 
 const main = async () => {
   const codeId = await deploy(WASM_FILE);
   const initMsg = {
-    config: { name: "Teritori launchpad", supported_networks: [], nft_code_id: 12, deployer: DEPLOYER },
+    config: { name: "Teritori launchpad", supported_networks: [], nft_code_id: 1, deployer: DEPLOYER },
   };
   const contractAddress = await instantiate(
     codeId,
