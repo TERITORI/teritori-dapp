@@ -1,5 +1,6 @@
 import { teritoriTestnetCurrencies } from "./currencies";
 import {
+  CosmWasmLaunchpad,
   CosmWasmNFTsBurner,
   CosmWasmPremiumFeed,
   NetworkFeature,
@@ -22,8 +23,14 @@ const cosmwasmLaunchpadFeature: CosmWasmLaunchpad = {
   defaultMintDenom: "utori",
 };
 
+const nftsBurnerFeature: CosmWasmNFTsBurner = {
+  type: NetworkFeature.CosmWasmNFTsBurner,
+  burnerContractAddress:
+    "tori1qyl0j7a24amk8k8gcmvv07y2zjx7nkcwpk73js24euh64hkja6esd2p2xp",
+};
+
 const riotContractAddressGen0 =
-  "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0";
+  "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc";
 const riotContractAddressGen1 = "";
 
 export const teritoriTestnetNetwork: CosmosNetworkInfo = {
@@ -46,7 +53,7 @@ export const teritoriTestnetNetwork: CosmosNetworkInfo = {
     NetworkFeature.NFTMarketplaceLeaderboard,
     NetworkFeature.CosmWasmNFTsBurner,
   ],
-  featureObjects: [premiumFeedFeature, nftsBurnerFeature],
+  featureObjects: [premiumFeedFeature, nftsBurnerFeature, cosmwasmLaunchpadFeature],
   currencies: teritoriTestnetCurrencies,
   txExplorer: "https://explorer.teritori.com/teritori-testnet/tx/$hash",
   accountExplorer:

@@ -43,12 +43,25 @@ type CosmWasmSocialFeed = {
   feedContractAddress: string;
 };
 
+// CosmWasm Launchpad
+
+const zodCosmWasmLaunchpad = z.object({
+  type: z.literal(NetworkFeature.NFTLaunchpad),
+  launchpadContractAddress: z.string(),
+  defaultMintDenom: z.string(),
+  // allowedMintDenoms: z.array(z.string()), // for future
+});
+
+export type CosmWasmLaunchpad = z.infer<typeof zodCosmWasmLaunchpad>;
+
 export const allFeatureObjects = [
   zodCosmWasmPremiumFeed,
   zodCosmWasmNFTsBurner,
+  zodCosmWasmLaunchpad,
 ];
 
 export type NetworkFeatureObject =
   | CosmWasmPremiumFeed
   | CosmWasmSocialFeed
-  | CosmWasmNFTsBurner;
+  | CosmWasmNFTsBurner
+  | CosmWasmLaunchpad;
