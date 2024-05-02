@@ -12,6 +12,7 @@ import { SelectedFilesPreview } from "@/components/FilePreview/SelectedFilesPrev
 import { SVG } from "@/components/SVG";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { errorColor, neutral33 } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
@@ -19,6 +20,8 @@ import { layout } from "@/utils/style/layout";
 import { LocalFileData } from "@/utils/types/files";
 
 export const AssetsTab: React.FC = () => {
+  const isMobile = useIsMobile();
+
   const [selectedElemIndex, setSelectedElemIndex] = useState<number>();
   const collectionForm = useFormContext<CollectionFormValues>();
   const { fields, remove, append, update, replace } = useFieldArray({
@@ -34,13 +37,11 @@ export const AssetsTab: React.FC = () => {
     <SafeAreaView
       style={{
         width: "100%",
-        flex: 1,
       }}
     >
       <View
         style={{
-          flex: 1,
-          flexDirection: "row",
+          flexDirection: isMobile ? "column" : "row",
         }}
       >
         {/* ===== Left container */}
@@ -48,17 +49,22 @@ export const AssetsTab: React.FC = () => {
           style={{
             justifyContent: "center",
             alignItems: "center",
+            minWidth: 300,
           }}
         >
           <View
             style={{
               justifyContent: "flex-start",
               alignItems: "center",
-              width: 416,
-              margin: layout.spacing_x2,
+              width: "100%",
+              padding: layout.spacing_x2,
             }}
           >
-            <View style={{ width: "100%" }}>
+            <View
+              style={{
+                width: "100%",
+              }}
+            >
               {/*TODO: What's this field ?*/}
               {/*<TextInputLaunchpad<CollectionFormValues>*/}
               {/*  label="NFT.Storage API Key"*/}
@@ -87,7 +93,7 @@ export const AssetsTab: React.FC = () => {
                 multiple
               />
 
-              {fields.length && (
+              {!!fields.length && (
                 <>
                   <SpacerColumn size={2} />
                   <Separator />
@@ -114,7 +120,7 @@ export const AssetsTab: React.FC = () => {
                         { color: errorColor, lineHeight: layout.spacing_x2 },
                       ]}
                     >
-                      Remove all Assets
+                      Remove all assets
                     </BrandText>
                   </TouchableOpacity>
                 </>
@@ -137,19 +143,21 @@ export const AssetsTab: React.FC = () => {
           </View>
         </View>
 
+        {/* ---- Separator*/}
         <View
-          style={{
-            width: 1,
-            backgroundColor: neutral33,
-            margin: layout.spacing_x2,
-          }}
+          style={[
+            {
+              backgroundColor: neutral33,
+              margin: isMobile ? 0 : layout.spacing_x2,
+            },
+            isMobile ? { height: 1 } : { width: 1 },
+          ]}
         />
 
         {/* ===== Right container */}
         <View
           style={{
             justifyContent: "flex-start",
-            width: "100%",
             flex: 1,
             margin: layout.spacing_x2,
           }}

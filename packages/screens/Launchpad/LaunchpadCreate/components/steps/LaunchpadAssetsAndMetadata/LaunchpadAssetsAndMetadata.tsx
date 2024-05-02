@@ -7,13 +7,15 @@ import { UriTab } from "./UriTab";
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import {
   LaunchpadCreateStep,
   LaunchpadCreateStepKey,
   LaunchpadStepper,
 } from "@/screens/Launchpad/LaunchpadCreate/components/LaunchpadStepper";
-import { neutral77, primaryColor } from "@/utils/style/colors";
+import { neutral33, neutral77, primaryColor } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const AssetsAndMetadataTabItems = {
   assets: {
@@ -28,6 +30,7 @@ export const LaunchpadAssetsAndMetadata: FC<{
   steps: LaunchpadCreateStep[];
   setSelectedStepKey: Dispatch<React.SetStateAction<LaunchpadCreateStepKey>>;
 }> = ({ steps, setSelectedStepKey }) => {
+  const isMobile = useIsMobile();
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof AssetsAndMetadataTabItems>("assets");
 
@@ -44,6 +47,8 @@ export const LaunchpadAssetsAndMetadata: FC<{
         style={{
           width: "100%",
           flex: 1,
+          paddingHorizontal: isMobile ? 0 : layout.spacing_x3,
+          marginBottom: 100,
         }}
       >
         <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -89,6 +94,13 @@ export const LaunchpadAssetsAndMetadata: FC<{
         />
         {selectedTab === "assets" && <AssetsTab />}
         {selectedTab === "uri" && <UriTab />}
+
+        <View
+          style={{
+            borderBottomColor: neutral33,
+            borderBottomWidth: 1,
+          }}
+        />
       </View>
     </>
   );

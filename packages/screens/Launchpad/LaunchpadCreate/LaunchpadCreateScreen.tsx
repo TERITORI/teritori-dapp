@@ -78,6 +78,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const [selectedStepKey, setSelectedStepKey] =
     useState<LaunchpadCreateStepKey>(1);
   const [isLoading, setLoading] = useState(false);
+  const {setLoadingFullScreen} = useFeedbacks()
 
   const stepContent = useMemo(() => {
     switch (selectedStepKey) {
@@ -135,15 +136,19 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
 
   const onValid = async () => {
     setLoading(true);
+    setLoadingFullScreen(true)
     try {
       await createCollection(collectionForm.getValues());
       setLoading(false);
+      setLoadingFullScreen(false);
     } catch (e) {
       console.error("Error creating a NFT collection", e);
       setLoading(false);
+      setLoadingFullScreen(false);
     }
     setTimeout(() => {
       setLoading(false);
+      setLoadingFullScreen(false);
     }, 1000);
   };
 
@@ -171,7 +176,8 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
     >
       <View
         style={{
-          marginTop: layout.spacing_x3,
+          paddingTop: layout.spacing_x3,
+          height: "100%",
         }}
       >
         <FormProvider {...collectionForm}>{stepContent}</FormProvider>
@@ -208,6 +214,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
                 text="Submit Collection"
                 loader
                 isLoading={isLoading}
+                disabled={isLoading}
                 // TODO: disabled or let the user press and see the error ?
                 // disabled={
                 //   !collectionForm.formState.isValid ||
