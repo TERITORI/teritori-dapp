@@ -99,6 +99,7 @@ export const Profile = ({ onClose }: ProfileProps) => {
                 value={contactInfo.shareLink}
                 logo={logoHexagonPNG}
                 logoSize={40}
+                quietZone={8}
               />
             )}
             <SpacerColumn size={3} />

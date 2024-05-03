@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { SafeAreaView, View } from "react-native";
+import { Platform, SafeAreaView, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 
-import { ChatHeader } from "./ChatHeader";
-import { Conversations } from "./Conversations";
+import { ChatHeader } from "./components/ChatHeader";
+import { Conversations } from "./components/Conversations";
 
 import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
 import { SpacerRow } from "@/components/spacer";
@@ -25,6 +26,7 @@ export const ConversationScreeen: ScreenFC<"Conversation"> = ({
 }) => {
   const { conversationId } = route.params;
   const dispatch = useDispatch();
+  const safeAreaInsets = useSafeAreaInsets();
 
   const [lastReadProcessedId, setLastReadProcessedId] = useState("");
   const conversationItem = useSelector((state: RootState) =>
@@ -97,10 +99,15 @@ export const ConversationScreeen: ScreenFC<"Conversation"> = ({
         flex: 1,
         width: "100%",
         backgroundColor: "#000000",
+        paddingTop: safeAreaInsets.top,
       }}
     >
       <View style={{ paddingHorizontal: layout.spacing_x2, flex: 1 }}>
-        <KeyboardAvoidingView extraVerticalOffset={-10}>
+        <KeyboardAvoidingView
+          extraVerticalOffset={
+            Platform.OS === "ios" ? -10 : safeAreaInsets.top - 10
+          }
+        >
           <ChatHeader navigation={navigation} conversation={conversationItem} />
           <SpacerRow size={4} />
           <Conversations

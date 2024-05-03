@@ -363,11 +363,10 @@ check-android-weshframework:
 build-android-weshframework:
 	mkdir -p ./weshd/android/libs
 	$(MAKE) init-weshd-go
-	CGO_CPPFLAGS="-Wno-error -Wno-nullability-completeness -Wno-expansion-to-defined -DHAVE_GETHOSTUUID=0"
 	cd ./weshd && gomobile bind \
 	-javapkg=com.weshnet \
 	-o ./android/libs/WeshFramework.aar \
-	-tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target android -androidapi 21 \
+    -tags 'nowatchdog' -target android -androidapi 23 \
 	./go/app
 
 .PHONY: init-weshd-go

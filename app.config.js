@@ -27,15 +27,26 @@ const config = {
         NSPhotoLibraryUsageDescription:
           "Access to your photo library is required for image upload functionality.",
         ITSAppUsesNonExemptEncryption: false,
+        UIBackgroundModes: ["audio"],
       },
     },
     android: {
-      adaptiveIcon: {
-        foregroundImage: "./assets/icon.png",
-        backgroundColor: "#FFFFFF",
-      },
       package: "com.teritori",
       versionCode: "6",
+      permissions: [
+        "WAKE_LOCK",
+        "BLUETOOTH",
+        "BLUETOOTH_ADMIN",
+        "BLUETOOTH_ADVERTISE",
+        "BLUETOOTH_SCAN",
+        "BLUETOOTH_CONNECT",
+        "ACCESS_NETWORK_STATE",
+        "CHANGE_NETWORK_STATE",
+        "CHANGE_WIFI_STATE",
+        "ACCESS_WIFI_STATE",
+        "CHANGE_WIFI_MULTICAST_STATE",
+        "NFC",
+      ],
     },
     web: {
       bundler: "metro",
@@ -58,6 +69,7 @@ const config = {
         "react-native-vision-camera",
         {
           cameraPermissionText: "$(PRODUCT_NAME) needs access to your Camera.",
+          enableCodeScanner: true,
         },
       ],
     ],

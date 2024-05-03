@@ -3,8 +3,6 @@ import {
   MsgSendEncodeObject,
   StdFee,
 } from "@cosmjs/stargate";
-import { cosmos } from "osmojs";
-import { TxRaw } from "osmojs/dist/codegen/cosmos/tx/v1beta1/tx";
 import React, { useState } from "react";
 import { View } from "react-native";
 
@@ -12,7 +10,6 @@ import chevronDownSVG from "../../../../assets/icons/chevron-down-white.svg";
 import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
 import questionSVG from "../../../../assets/icons/question-gray.svg";
 import teritoriCircleSVG from "../../../../assets/icons/tori-circle.svg";
-import { CustomButton } from "../components/Button/CustomButton";
 import MobileModal from "../components/MobileModal";
 import MiniTable from "../components/Table/MiniTable";
 import MiniTableRow from "../components/Table/MiniTableRow";
@@ -24,8 +21,10 @@ import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { Dropdown } from "@/components/Dropdown";
 import { SVG } from "@/components/SVG";
 import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useGetAssets } from "@/hooks/wallet/useGetAssets";
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 import { getCosmosNetwork, getStakingCurrency } from "@/networks";
@@ -50,7 +49,6 @@ const getTxData = (denom: string, amount: string, userId: string) => {
       label: "Token",
       value: <CurrencyIcon networkId={networkId} denom={denom} size={28} />,
       icon: "link",
-      onPress: () => alert("Token"),
     },
     {
       label: "Amount",
@@ -186,6 +184,7 @@ type SendingModalProps = {
 };
 
 function SendingModal({ visible, onClose, txData, msg }: SendingModalProps) {
+  const feedbacks = useFeedbacks();
   const navigation = useAppNavigation();
   const [isInProcess, setIsInProcess] = useState(false);
   const selectedWallet = useSelectedNativeWallet();
@@ -234,16 +233,29 @@ function SendingModal({ visible, onClose, txData, msg }: SendingModalProps) {
             title={isInProcess ? "Sending" : "Sign"}
             isDisabled={isInProcess}
             onPress={async () => {
-              let signed: TxRaw;
-
+              setIsInProcess(true);
               if (selectedWallet === undefined) return;
               const client = await getNativeSigner(selectedWallet);
-              if (client === undefined) return;
+              if (!client) {
+                feedbacks.setToast({
+                  message: "Error: Wallet not found",
+                  duration: 5000,
+                  mode: "mini",
+                  type: "error",
+                });
+                setIsInProcess(false);
+                return;
+              }
 
               try {
+                const simulation = await client.simulate(
+                  selectedWallet.address,
+                  [msg],
+                  "",
+                );
+
                 const gasEstimate =
-                  (await client.simulate(selectedWallet.address, [msg], "")) *
-                  1.3; // 30% buffer
+                  simulation < 200000 ? 200000 : simulation * 1.3;
                 const fee: StdFee = {
                   gas: gasEstimate.toFixed(0),
                   amount: [
@@ -255,24 +267,38 @@ function SendingModal({ visible, onClose, txData, msg }: SendingModalProps) {
                     },
                   ],
                 };
-                signed = await client.sign(
+                const txResponse = await client.signAndBroadcast(
                   selectedWallet.address,
                   [msg],
                   fee,
                   "",
                 );
-                const txRaw = cosmos.tx.v1beta1.TxRaw;
-                const txResponse = await client.broadcastTx(
-                  Uint8Array.from(txRaw.encode(signed).finish()),
-                );
                 if (isDeliverTxFailure(txResponse)) {
-                  throw new Error(txResponse.rawLog);
+                  feedbacks.setToast({
+                    message: `Transaction failed: ${txResponse.rawLog}}`,
+                    duration: 5000,
+                    mode: "mini",
+                    type: "error",
+                  });
+                  setIsInProcess(false);
+                  return;
                 }
-                setIsInProcess(true);
-                console.log("Tx sent", txResponse);
+                feedbacks.setToast({
+                  message: `Transaction sent ${txResponse.transactionHash}`,
+                  duration: 5000,
+                  mode: "mini",
+                  type: "success",
+                });
                 navigation.navigate("MiniTabs", { screen: "MiniWallets" });
               } catch (e: any) {
+                feedbacks.setToast({
+                  message: `Error: ${e.message}`,
+                  duration: 5000,
+                  mode: "mini",
+                  type: "error",
+                });
                 console.error(e);
+                setIsInProcess(false);
               }
             }}
             style={{ flex: 1 }}

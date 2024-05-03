@@ -1,6 +1,12 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
-import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
+import {
+  Platform,
+  StyleProp,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 import logoSVG from "../../../assets/logos/logo.svg";
@@ -52,7 +58,9 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
       label={` Welcome back, ${primaryAlias} !`}
       width={457}
     >
-      <View style={{ flex: 1, alignItems: "center" }}>
+      <View
+        style={{ flex: Platform.OS === "web" ? 1 : 0, alignItems: "center" }}
+      >
         {!tokens.length ? (
           <BrandText style={{ marginVertical: 40 }}>No token</BrandText>
         ) : (
@@ -119,6 +127,7 @@ const NameCard: React.FC<{
           borderWidth: 1,
           borderColor: neutral33,
           borderRadius: 8,
+          height: 90,
         },
         style,
       ]}

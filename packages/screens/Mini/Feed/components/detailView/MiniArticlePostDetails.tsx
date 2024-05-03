@@ -19,10 +19,7 @@ import { RichText } from "@/components/socialFeed/RichText";
 import { SocialCardHeader } from "@/components/socialFeed/SocialCard/SocialCardHeader";
 import { SocialCardWrapper } from "@/components/socialFeed/SocialCard/SocialCardWrapper";
 import { SpacerColumn } from "@/components/spacer";
-import {
-  combineFetchCommentPages,
-  useFetchComments,
-} from "@/hooks/feed/useFetchComments";
+import { useFetchComments } from "@/hooks/feed/useFetchComments";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
 import {
@@ -38,18 +35,11 @@ import { tinyAddress } from "@/utils/text";
 import { ReplyToType, ZodSocialFeedArticleMetadata } from "@/utils/types/feed";
 
 type Props = {
-  networkId: string;
   post: Post;
   refetchPost: () => Promise<any>;
-  isLoading?: boolean;
 };
 
-export const MiniArticlePostDetails = ({
-  networkId,
-  post,
-  refetchPost,
-  isLoading,
-}: Props) => {
+export const MiniArticlePostDetails = ({ post, refetchPost }: Props) => {
   const { width: windowWidth } = useWindowDimensions();
 
   const aref = useAnimatedRef<Animated.ScrollView>();
@@ -81,23 +71,18 @@ export const MiniArticlePostDetails = ({
   const [, authorAddress] = parseUserId(localPost.authorId);
 
   const {
-    data,
+    data: comments,
     refetch: refetchComments,
     hasNextPage,
     fetchNextPage,
     // isLoading: isLoadingComments,
   } = useFetchComments({
-    parentId: post?.identifier,
-    totalCount: post?.subPostLength,
+    parentId: post.id,
+    totalCount: post.subPostLength,
     enabled: true,
   });
 
   const isNextPageAvailable = useSharedValue(hasNextPage);
-  const comments = useMemo(
-    () => (data ? combineFetchCommentPages(data.pages) : []),
-    [data],
-  );
-  const postId = post.identifier;
   const authorId = post?.authorId;
   const username =
     authorNSInfo?.metadata?.tokenId ||
@@ -127,7 +112,7 @@ export const MiniArticlePostDetails = ({
         }
       },
     },
-    [postId],
+    [post.id],
   );
 
   const handleSubmitInProgress = () => {
@@ -140,7 +125,7 @@ export const MiniArticlePostDetails = ({
   return (
     <KeyboardAvoidingView extraVerticalOffset={-100}>
       <ScreenContainer
-        forceNetworkId={networkId}
+        forceNetworkId={post.networkId}
         fullWidth
         responsive
         noMargin
@@ -150,92 +135,93 @@ export const MiniArticlePostDetails = ({
           <CustomAppBar backEnabled title={`Article by ${username}`} />
         }
       >
-        <Animated.ScrollView
-          ref={aref}
-          onScroll={scrollHandler}
-          scrollEventThrottle={1}
-        >
-          <View style={{ flex: 1, width: windowWidth - 20 }}>
-            <SocialCardWrapper post={localPost} refetchFeed={refetchPost}>
-              {!!coverImage && (
-                <>
-                  <OptimizedImage
-                    width={windowWidth}
-                    height={200}
-                    sourceURI={thumbnailURI}
-                    fallbackURI={defaultThumbnailImage}
-                    style={{
-                      zIndex: -1,
-                      width: windowWidth,
-                      height: 200 - 2,
-                      borderTopRightRadius: 20,
-                      borderBottomRightRadius: 20,
-                    }}
-                  />
-                  <SpacerColumn size={3} />
-                </>
-              )}
-              {!!metadataToUse?.title && (
-                <>
-                  <BrandText style={[fontSemibold16]}>
-                    {metadataToUse.title}
-                  </BrandText>
-                  <SpacerColumn size={1.5} />
-                </>
-              )}
-
-              <SocialCardHeader
-                authorAddress={authorAddress}
-                authorId={localPost.authorId}
-                createdAt={post.createdAt}
-                authorMetadata={authorNSInfo?.metadata}
-              />
-
-              {/*========== Article content */}
-              <View>
-                <RichText
-                  initialValue={metadataToUse.message}
-                  isPostConsultation
-                  audioFiles={audioFiles}
-                  postId={postId}
-                  authorId={authorId}
-                />
-              </View>
-              <SpacerColumn size={1.5} />
-            </SocialCardWrapper>
-            <View>
-              <SpacerColumn size={4} />
-              <CommentsContainer
-                cardWidth={windowWidth}
-                comments={comments}
-                onPressReply={() => {}}
-              />
-            </View>
-          </View>
-        </Animated.ScrollView>
         <View
           style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: neutral00,
-            paddingVertical: layout.spacing_x0_75,
+            flexDirection: "column",
+            justifyContent: "space-between",
           }}
         >
-          <MiniCommentInput
+          <Animated.ScrollView
+            ref={aref}
+            onScroll={scrollHandler}
+            scrollEventThrottle={1}
+          >
+            <View style={{ flex: 1, width: windowWidth - 20 }}>
+              <SocialCardWrapper post={localPost} refetchFeed={refetchPost}>
+                {!!coverImage && (
+                  <>
+                    <OptimizedImage
+                      width={windowWidth}
+                      height={200}
+                      sourceURI={thumbnailURI}
+                      fallbackURI={defaultThumbnailImage}
+                      style={{
+                        zIndex: -1,
+                        width: windowWidth,
+                        height: 200 - 2,
+                        borderTopRightRadius: 20,
+                        borderBottomRightRadius: 20,
+                      }}
+                    />
+                    <SpacerColumn size={3} />
+                  </>
+                )}
+                {!!metadataToUse?.title && (
+                  <>
+                    <BrandText style={[fontSemibold16]}>
+                      {metadataToUse.title}
+                    </BrandText>
+                    <SpacerColumn size={1.5} />
+                  </>
+                )}
+
+                <SocialCardHeader
+                  authorId={localPost.authorId}
+                  createdAt={post.createdAt}
+                />
+
+                {/*========== Article content */}
+                <View>
+                  <RichText
+                    initialValue={metadataToUse.message}
+                    isPostConsultation
+                    audioFiles={audioFiles}
+                    postId={post.id}
+                    authorId={authorId}
+                  />
+                </View>
+                <SpacerColumn size={1.5} />
+              </SocialCardWrapper>
+              <View>
+                <SpacerColumn size={4} />
+                <CommentsContainer
+                  cardWidth={windowWidth}
+                  comments={comments}
+                  onPressReply={() => {}}
+                />
+              </View>
+            </View>
+          </Animated.ScrollView>
+          <View
             style={{
-              alignSelf: "center",
+              backgroundColor: neutral00,
+              paddingVertical: layout.spacing_x0_75,
             }}
-            ref={feedInputRef}
-            replyTo={replyTo}
-            parentId={post.identifier}
-            onSubmitInProgress={handleSubmitInProgress}
-            onSubmitSuccess={() => {
-              setReplyTo(undefined);
-              refetchComments();
-            }}
-          />
+          >
+            <MiniCommentInput
+              style={{
+                alignSelf: "center",
+              }}
+              ref={feedInputRef}
+              replyTo={replyTo}
+              parentId={post.id}
+              onSubmitInProgress={handleSubmitInProgress}
+              onSubmitSuccess={() => {
+                setReplyTo(undefined);
+                refetchComments();
+              }}
+            />
+          </View>
         </View>
       </ScreenContainer>
     </KeyboardAvoidingView>

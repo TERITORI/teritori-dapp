@@ -4,12 +4,13 @@ import { View } from "react-native";
 import { useSelector } from "react-redux";
 
 import addSVG from "../../../../assets/icons/add-circle-outline.svg";
-import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import MiniTextInput from "../components/MiniTextInput";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
   addEntry,
   removeEntry,
@@ -23,6 +24,7 @@ const EditAddressBookScreen: ScreenFC<"EditAddressBook"> = ({
   navigation,
   route,
 }) => {
+  const { setToast } = useFeedbacks();
   const goBackTo = () =>
     navigation.replace("AddressBook", { back: "EditAddressBook" });
 
@@ -114,7 +116,12 @@ const EditAddressBookScreen: ScreenFC<"EditAddressBook"> = ({
                     back: "AddAddressBook",
                   });
                 } catch (e) {
-                  alert(`Invalid address ${e} ${address}`); // TODO: make a better UI FIXME
+                  setToast({
+                    message: `Invalid address ${e} ${address}`,
+                    duration: 5000,
+                    mode: "mini",
+                    type: "error",
+                  });
                 }
               }
             }

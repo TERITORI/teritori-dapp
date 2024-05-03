@@ -2,11 +2,11 @@ import React from "react";
 import { View } from "react-native";
 
 import requestingPermissionPNG from "../../../../../assets/icons/loader.png";
-import { CustomButton } from "../../components/Button/CustomButton";
 import { StepType } from "../ConnectLedgerScreen";
 
 import { BrandText } from "@/components/BrandText";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { SpacerColumn } from "@/components/spacer";
 import { neutral77 } from "@/utils/style/colors";
 import { fontMedium16, fontSemibold30 } from "@/utils/style/fonts";

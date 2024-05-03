@@ -15,7 +15,10 @@ export enum NetworkFeature {
   CosmWasmPremiumFeed = "CosmWasmPremiumFeed",
   GnoProjectManager = "GnoProjectManager",
   NFTMarketplaceLeaderboard = "NFTMarketplaceLeaderboard",
+  CosmWasmNFTsBurner = "CosmWasmNFTsBurner",
 }
+
+// CosmWasm Premium Feed
 
 const zodCosmWasmPremiumFeed = z.object({
   type: z.literal(NetworkFeature.CosmWasmPremiumFeed),
@@ -25,10 +28,23 @@ const zodCosmWasmPremiumFeed = z.object({
 
 export type CosmWasmPremiumFeed = z.infer<typeof zodCosmWasmPremiumFeed>;
 
+// CosmWasm NFTs Burner
+
+const zodCosmWasmNFTsBurner = z.object({
+  type: z.literal(NetworkFeature.CosmWasmNFTsBurner),
+  burnerContractAddress: z.string(),
+});
+
+export type CosmWasmNFTsBurner = z.infer<typeof zodCosmWasmNFTsBurner>;
+
+// CosmWasm Social Feed
+
 type CosmWasmSocialFeed = {
   type: NetworkFeature.SocialFeed;
   feedContractAddress: string;
 };
+
+// Gno Project Manager
 
 const zodGnoProjectManager = z.object({
   type: z.literal(NetworkFeature.GnoProjectManager),
@@ -38,9 +54,16 @@ const zodGnoProjectManager = z.object({
 
 type GnoProjectManager = z.infer<typeof zodGnoProjectManager>;
 
-export const allFeatureObjects = [zodCosmWasmPremiumFeed, zodGnoProjectManager];
+// Registry
+
+export const allFeatureObjects = [
+  zodCosmWasmPremiumFeed,
+  zodCosmWasmNFTsBurner,
+  zodGnoProjectManager,
+];
 
 export type NetworkFeatureObject =
   | CosmWasmPremiumFeed
   | CosmWasmSocialFeed
+  | CosmWasmNFTsBurner
   | GnoProjectManager;

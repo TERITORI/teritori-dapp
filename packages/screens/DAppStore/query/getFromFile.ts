@@ -255,8 +255,8 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: false,
           alwaysOn: false,
         },
-        teritori: {
-          id: "teritori",
+        "teritori-explorer": {
+          id: "teritori-explorer",
           title: "Teritori Explorer",
           description: "by Ping.pub + Core Team",
           icon: pingpubLogo,
@@ -307,8 +307,8 @@ export function getAvailableApps(): dAppGroup {
           selectedByDefault: false,
           alwaysOn: false,
         },
-        teritori: {
-          id: "teritori",
+        "teritori-staking": {
+          id: "teritori-staking",
           title: "Staking",
           description: "by Teritori Team",
           icon: staking,

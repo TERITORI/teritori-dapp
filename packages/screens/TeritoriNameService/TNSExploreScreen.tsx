@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { Platform, View, useWindowDimensions } from "react-native";
 
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 import GradientModalBase from "../../components/modals/GradientModalBase";
@@ -23,6 +23,8 @@ interface TNSExploreScreenProps extends TNSModalCommonProps {}
 export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
   onClose,
 }) => {
+  const { width: windowWidth } = useWindowDimensions();
+
   const [sendFundsModalVisible, setSendFundsModalVisible] = useState(false);
   const { name, setName } = useTNS();
   const selectedWallet = useSelectedWallet();
@@ -39,6 +41,7 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
     networkId,
     tokenId,
   );
+  const width = windowWidth < 457 ? windowWidth : 457;
 
   return (
     <GradientModalBase
@@ -46,7 +49,11 @@ export const TNSExploreScreen: React.FC<TNSExploreScreenProps> = ({
       hideMainSeparator
       onClose={() => onClose()}
       modalStatus={name && nameAvailable ? "success" : "danger"}
-      width={457}
+      width={width}
+      scrollable
+      contentStyle={{
+        marginTop: Platform.OS === "web" ? 0 : 60,
+      }}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
       <FindAName

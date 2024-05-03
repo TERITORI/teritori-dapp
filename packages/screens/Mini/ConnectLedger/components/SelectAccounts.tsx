@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import circularPlusSVG from "../../../../../assets/icons/plus-white-circular.svg";
-import { CustomButton } from "../../components/Button/CustomButton";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import { StepType } from "../ConnectLedgerScreen";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { neutral17, neutral39, neutral77 } from "@/utils/style/colors";
 import {

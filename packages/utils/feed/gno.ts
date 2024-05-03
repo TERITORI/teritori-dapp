@@ -1,5 +1,5 @@
 import { Post, Reaction } from "../../api/feed/v1/feed";
-import { getUserId } from "../../networks";
+import { getNetworkObjectId, getUserId } from "../../networks";
 
 type GnoPost = {
   id: number;
@@ -26,10 +26,15 @@ export const decodeGnoPost = (networkId: string, gnoPost: GnoPost): Post => {
     reactions.push({ icon, count, ownState: false }); // FIXME: find a way to get the user's reaction state from on-chain post
   }
 
+  const localIdentifier = gnoPost.id ? "" + gnoPost.id : "";
+
   const post: Post = {
     category: gnoPost.category,
     isDeleted: gnoPost.deleted,
-    identifier: gnoPost.id ? "" + gnoPost.id : "",
+    networkId,
+    identifier: localIdentifier,
+    localIdentifier,
+    id: getNetworkObjectId(networkId, localIdentifier),
     metadata: gnoPost.metadata,
     parentPostIdentifier: gnoPost.parentID ? "" + gnoPost.parentID : "",
     subPostLength: gnoPost.commentsCount,

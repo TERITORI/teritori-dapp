@@ -77,8 +77,8 @@ export const MarketplaceLeaderboardTable: React.FC<{
       <TableRow
         headings={
           !isMobile
-            ? Object.values(TABLE_ROWS)
-            : Object.values(TABLE_ROWS).slice(0, -4)
+            ? TABLE_ROWS
+            : Object.fromEntries(Object.entries(TABLE_ROWS).slice(0, -4))
         }
       />
 

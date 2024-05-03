@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { cloneDeep } from "lodash";
 import React, { ReactNode, useMemo, useState } from "react";
 import {
@@ -24,6 +23,7 @@ import { SearchInput } from "@/components/sorts/SearchInput";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { TableRow } from "@/components/table/TableRow";
 import { Tabs } from "@/components/tabs/Tabs";
+import { usePopularCollections } from "@/hooks/marketplace/usePopularCollections";
 import { useCoingeckoPrices } from "@/hooks/useCoingeckoPrices";
 import { useEnabledNetworks } from "@/hooks/useEnabledNetworks";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -31,7 +31,6 @@ import { useCollectionNavigationTarget } from "@/hooks/useNavigateToCollection";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature, parseCollectionId } from "@/networks";
 import { selectTimePeriod } from "@/store/slices/marketplaceFilters";
-import { getMarketplaceClient } from "@/utils/backend";
 import {
   CoingeckoCoin,
   CoingeckoPrices,
@@ -250,8 +249,8 @@ const CollectionTable: React.FC<{
       <TableRow
         headings={
           !isMobile
-            ? Object.values(columns)
-            : Object.values(columns).slice(0, -5)
+            ? columns
+            : Object.fromEntries(Object.entries(columns).slice(0, -5))
         }
       />
       <FlatList
@@ -265,6 +264,9 @@ const CollectionTable: React.FC<{
           minHeight: 248,
           borderTopColor: mineShaftColor,
           borderTopWidth: 1,
+        }}
+        contentContainerStyle={{
+          paddingBottom: 150, //just to make last element visible on mobile
         }}
       />
       {filteredCollections.length > 50 && (
@@ -584,26 +586,4 @@ const getDelta = (collection: PopularCollection) => {
     return "+" + res.toFixed(0) + "%";
   }
   return res.toFixed(0) + "%";
-};
-
-const usePopularCollections = (
-  networkId: string | undefined,
-  periodHours: number,
-) => {
-  return useQuery(["popular-collections", networkId, periodHours], async () => {
-    const client = getMarketplaceClient(networkId);
-    if (!client) {
-      return [];
-    }
-    const collections: PopularCollection[] = [];
-    await client
-      .PopularCollections({ networkId, periodHours, limit: 100 })
-      .forEach(({ collection }) => {
-        if (!collection) {
-          return;
-        }
-        collections.push(collection);
-      });
-    return collections;
-  });
 };

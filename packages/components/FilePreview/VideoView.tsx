@@ -65,7 +65,6 @@ export const VideoView: React.FC<VideoPreviewProps> = ({
             height: showSmallPreview ? 120 : 400,
           }}
           resizeMode={ResizeMode.CONTAIN}
-          authorId={authorId}
           postId={postId}
         />
       )}

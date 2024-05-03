@@ -1,5 +1,12 @@
 import React from "react";
-import { StyleSheet, View, TextStyle } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TextStyle,
+  Pressable,
+  ColorValue,
+  ViewStyle,
+} from "react-native";
 
 import { codGrayColor, secondaryColor } from "../../utils/style/colors";
 import { fontSemibold12 } from "../../utils/style/fonts";
@@ -9,30 +16,49 @@ import { BrandText } from "../BrandText";
 export type TableRowHeading = { label: string; flex: number };
 
 interface TableRowProps {
-  headings: TableRowHeading[];
+  headings: { [key: string]: TableRowHeading };
   labelStyle?: TextStyle;
+  allowSelect?: string[];
+  onPressItem?: (key: string) => void;
+  selectedColor?: ColorValue;
 }
 
-export const TableRow: React.FC<TableRowProps> = ({ headings, labelStyle }) => {
+export const TableRow: React.FC<TableRowProps> = ({
+  headings,
+  labelStyle,
+  allowSelect = [],
+  onPressItem,
+}) => {
+  const entries = Object.entries(headings);
   return (
     <View style={styles.row}>
-      {headings.map(({ label, flex }, index) => (
-        <BrandText
-          key={label}
-          style={[
-            styles.labelText,
-            {
-              flex,
-              paddingRight:
-                headings.length - 1 === index ? 0 : layout.spacing_x1,
-            },
-            labelStyle,
-          ]}
-          numberOfLines={1}
-        >
-          {label}
-        </BrandText>
-      ))}
+      {entries.map(([key, { label, flex }], index) => {
+        const containerStyle: ViewStyle = {
+          flex,
+          paddingRight: entries.length - 1 === index ? 0 : layout.spacing_x1,
+        };
+        const content = (
+          <BrandText style={[styles.labelText, labelStyle]} numberOfLines={1}>
+            {label}
+          </BrandText>
+        );
+        if (onPressItem && allowSelect.includes(key)) {
+          return (
+            <Pressable
+              style={containerStyle}
+              key={key}
+              onPress={() => onPressItem(key)}
+            >
+              {content}
+            </Pressable>
+          );
+        }
+        return (
+          <View style={containerStyle} key={key}>
+            {content}
+          </View>
+        );
+      })}
     </View>
   );
 };

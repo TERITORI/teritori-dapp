@@ -11,6 +11,7 @@ require (
 	github.com/peterbourgon/ff/v3 v3.4.0
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
 	github.com/pkg/errors v0.9.1
+	github.com/sakul-budhathoki/go-store v0.0.0-20240330051705-f41a0c8527b1
 	go.uber.org/zap v1.26.0
 	google.golang.org/grpc v1.61.0
 	moul.io/srand v1.6.1
@@ -157,13 +158,13 @@ require (
 	github.com/jbenet/goprocess v0.1.4 // indirect
 	github.com/kilic/bls12-381 v0.1.1-0.20210503002446-7b7597926c69 // indirect
 	github.com/klauspost/compress v1.16.4 // indirect
-	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
+	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/koron/go-ssdp v0.0.4 // indirect
 	github.com/libp2p/go-buffer-pool v0.1.0 // indirect
 	github.com/libp2p/go-cidranger v1.1.0 // indirect
 	github.com/libp2p/go-doh-resolver v0.4.0 // indirect
 	github.com/libp2p/go-flow-metrics v0.1.0 // indirect
-	github.com/libp2p/go-libp2p v0.27.6 // indirect
+	github.com/libp2p/go-libp2p v0.27.8 // indirect
 	github.com/libp2p/go-libp2p-asn-util v0.3.0 // indirect
 	github.com/libp2p/go-libp2p-gostream v0.5.0 // indirect
 	github.com/libp2p/go-libp2p-http v0.4.0 // indirect
@@ -191,7 +192,7 @@ require (
 	github.com/miekg/dns v1.1.53 // indirect
 	github.com/mikioh/tcpinfo v0.0.0-20190314235526-30a79bb1804b // indirect
 	github.com/mikioh/tcpopt v0.0.0-20190314235656-172688c1accc // indirect
-	github.com/minio/sha256-simd v1.0.0 // indirect
+	github.com/minio/sha256-simd v1.0.1 // indirect
 	github.com/mr-tron/base58 v1.2.0 // indirect
 	github.com/multiformats/go-base32 v0.1.0 // indirect
 	github.com/multiformats/go-base36 v0.2.0 // indirect
@@ -200,7 +201,7 @@ require (
 	github.com/multiformats/go-multiaddr-fmt v0.1.0 // indirect
 	github.com/multiformats/go-multibase v0.2.0 // indirect
 	github.com/multiformats/go-multicodec v0.8.1 // indirect
-	github.com/multiformats/go-multihash v0.2.1 // indirect
+	github.com/multiformats/go-multihash v0.2.3 // indirect
 	github.com/multiformats/go-multistream v0.4.1 // indirect
 	github.com/multiformats/go-varint v0.0.7 // indirect
 	github.com/mutecomm/go-sqlcipher/v4 v4.4.2 // indirect
@@ -219,8 +220,8 @@ require (
 	github.com/prometheus/procfs v0.9.0 // indirect
 	github.com/prometheus/statsd_exporter v0.21.0 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
-	github.com/quic-go/qtls-go1-19 v0.3.2 // indirect
-	github.com/quic-go/qtls-go1-20 v0.2.2 // indirect
+	github.com/quic-go/qtls-go1-19 v0.3.3 // indirect
+	github.com/quic-go/qtls-go1-20 v0.2.3 // indirect
 	github.com/quic-go/quic-go v0.33.0 // indirect
 	github.com/quic-go/webtransport-go v0.5.2 // indirect
 	github.com/raulk/go-watchdog v1.3.0 // indirect
@@ -260,15 +261,15 @@ require (
 	go.uber.org/fx v1.19.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go4.org v0.0.0-20200411211856-f5505b9728dd // indirect
-	golang.org/x/crypto v0.19.0 // indirect
-	golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
-	golang.org/x/mod v0.15.0 // indirect
-	golang.org/x/net v0.21.0 // indirect
+	golang.org/x/crypto v0.21.0 // indirect
+	golang.org/x/exp v0.0.0-20230725012225-302865e7556b // indirect
+	golang.org/x/mod v0.16.0 // indirect
+	golang.org/x/net v0.22.0 // indirect
 	golang.org/x/oauth2 v0.14.0 // indirect
 	golang.org/x/sync v0.6.0 // indirect
-	golang.org/x/sys v0.17.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	golang.org/x/tools v0.18.0 // indirect
+	golang.org/x/tools v0.19.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto v0.0.0-20231106174013-bbf56f31fb17 // indirect
@@ -278,7 +279,7 @@ require (
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	lukechampine.com/blake3 v1.1.7 // indirect
+	lukechampine.com/blake3 v1.2.1 // indirect
 	moul.io/openfiles v1.2.0 // indirect
 	moul.io/u v1.27.0 // indirect
 	moul.io/zapfilter v1.7.0 // indirect
@@ -286,4 +287,7 @@ require (
 	nhooyr.io/websocket v1.8.7 // indirect
 )
 
-replace berty.tech/weshnet => github.com/TERITORI/weshnet v0.0.0-20240115113859-64c2bc3a8307
+replace (
+	berty.tech/weshnet => github.com/TERITORI/weshnet v1.0.1-0.20240327075722-f029b5cff9c1
+	github.com/multiformats/go-multiaddr => github.com/TERITORI/go-multiaddr v0.0.0-20240330185833-d71bc7a9f3ae
+)

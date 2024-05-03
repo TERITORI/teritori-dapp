@@ -327,8 +327,8 @@ const instantiateContract = async (
   return contractAddress;
 };
 
-const storeWASM = async (
-  opts: { home: string; binaryPath: string },
+export const storeWASM = async (
+  opts: { home: string; binaryPath: string; keyringBackend?: string },
   wallet: string,
   network: CosmosNetworkInfo,
   wasmFilePath: string,
@@ -339,7 +339,7 @@ const storeWASM = async (
     network.chainId
   } --node ${injectRPCPort(
     network.rpcEndpoint,
-  )} --yes --keyring-backend test -o json --home ${opts.home}`;
+  )} --yes --keyring-backend ${opts.keyringBackend || "test"} -o json --home ${opts.home}`;
   console.log("⚙️  " + cmd);
   let { stdout: out } = await retry(5, async () => {
     return await execPromise(cmd, {

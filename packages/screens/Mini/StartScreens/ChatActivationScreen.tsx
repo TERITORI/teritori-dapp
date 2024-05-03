@@ -2,10 +2,10 @@ import React from "react";
 import { SafeAreaView, useWindowDimensions, View } from "react-native";
 
 import messengerSVG from "../../../../assets/icons/messenger.svg";
-import { CustomButton } from "../components/Button/CustomButton";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { useAppMode } from "@/hooks/useAppMode";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral77 } from "@/utils/style/colors";

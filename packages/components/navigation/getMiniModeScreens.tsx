@@ -23,6 +23,7 @@ import { NewConversationScreen } from "@/screens/Mini/Chat/NewConversationScreen
 import { NewGroupScreen } from "@/screens/Mini/Chat/NewGroupScreen";
 import { ConnectLedgerScreen } from "@/screens/Mini/ConnectLedger/ConnectLedgerScreen";
 import { ConversationScreeen } from "@/screens/Mini/Conversation/ConversationScreen";
+import GroupActionScreen from "@/screens/Mini/Conversation/GroupActionScreen";
 import { DAppStoreScreen } from "@/screens/Mini/DAppStore/DAppStoreScreen";
 import MiniCreatePostScreen from "@/screens/Mini/Feed/MiniCreatePostScreen";
 import { MiniFeedScreen } from "@/screens/Mini/Feed/MiniFeedScreen";
@@ -34,7 +35,6 @@ import ProfileDetailScreen from "@/screens/Mini/Profile/ProfileDetailScreen";
 import { ProfileScreen } from "@/screens/Mini/Profile/ProfileScreen";
 import { ChangePasswordScreen } from "@/screens/Mini/Settings/ChangePasswordScreen";
 import { ChatSettingScreen } from "@/screens/Mini/Settings/ChatSettingScreen";
-import { ExportPrivateKeyScreen } from "@/screens/Mini/Settings/ExportPrivateKeyScreen";
 import FaceIdLoginScreen from "@/screens/Mini/Settings/FaceIdLoginScreen";
 import { PreferencesSettingScreen } from "@/screens/Mini/Settings/PreferencesSetttingScreen";
 import { ResetWalletScreen } from "@/screens/Mini/Settings/ResetWalletScreen";
@@ -160,7 +160,7 @@ export const getMiniModeScreens = () => {
         options={{
           header: () => null,
           title: "Profile",
-          presentation: "transparentModal",
+          presentation: "containedTransparentModal",
         }}
       />
       <Stack.Screen
@@ -169,7 +169,7 @@ export const getMiniModeScreens = () => {
         options={{
           header: () => null,
           title: "Profile",
-          presentation: "transparentModal",
+          presentation: "containedTransparentModal",
         }}
       />
       <Stack.Screen
@@ -205,7 +205,7 @@ export const getMiniModeScreens = () => {
         options={{
           header: () => null,
           title: "Friends",
-          presentation: "transparentModal",
+          presentation: "containedTransparentModal",
         }}
       />
       <Stack.Screen
@@ -214,7 +214,7 @@ export const getMiniModeScreens = () => {
         options={{
           header: () => null,
           title: "New Group",
-          presentation: "transparentModal",
+          presentation: "containedTransparentModal",
         }}
       />
       <Stack.Screen
@@ -249,7 +249,7 @@ export const getMiniModeScreens = () => {
         options={{
           header: () => null,
           title: "Settings",
-          presentation: "transparentModal",
+          presentation: "containedTransparentModal",
         }}
       />
       <Stack.Screen
@@ -335,15 +335,6 @@ export const getMiniModeScreens = () => {
         options={{
           header: () => null,
           title: "Reveal Seed Phrase",
-          presentation: "transparentModal",
-        }}
-      />
-      <Stack.Screen
-        name="MiniExportPrivateKey"
-        component={ExportPrivateKeyScreen}
-        options={{
-          header: () => null,
-          title: "Export Private Key",
           presentation: "transparentModal",
         }}
       />
@@ -446,6 +437,14 @@ export const getMiniModeScreens = () => {
       <Stack.Screen
         name="ConnectLedger"
         component={ConnectLedgerScreen}
+        options={{
+          header: () => null,
+          title: "",
+        }}
+      />
+      <Stack.Screen
+        name="MiniGroupActions"
+        component={GroupActionScreen}
         options={{
           header: () => null,
           title: "",

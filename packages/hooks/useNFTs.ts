@@ -6,11 +6,14 @@ import { parseNetworkObjectId } from "@/networks";
 import { getMarketplaceClient } from "@/utils/backend";
 import { addNftListMetadata } from "@/utils/ethereum";
 
+export const nftsQueryKey = (req?: NFTsRequest) =>
+  req ? ["nfts", req] : ["nfts"];
+
 export const useNFTs = (req: NFTsRequest) => {
   const baseOffset = useRef(req.offset);
 
   const { data, fetchNextPage, isLoading } = useInfiniteQuery(
-    ["nfts", { ...req, offset: baseOffset.current }],
+    nftsQueryKey({ ...req, offset: baseOffset.current }),
     async ({ pageParam = 0 }) => {
       let nfts: NFT[] = [];
 

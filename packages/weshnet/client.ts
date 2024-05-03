@@ -19,14 +19,7 @@ const createWeshClient = (url: string) => {
 };
 
 export const getWeshnetAddress = (port: number) => {
-  switch (Platform.OS) {
-    case "android":
-      return `10.0.2.2:${port}`;
-    case "ios":
-      return `http://127.0.0.1:${port}`;
-    default:
-      return `http://localhost:${port}`;
-  }
+  return `http://127.0.0.1:${port}`;
 };
 
 class WeshClient {

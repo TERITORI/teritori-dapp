@@ -6,6 +6,7 @@ import { getNav, screenTitle } from "./util";
 import { AdministrationDashboardScreen } from "@/screens/AdministrationDashboard/AdministrationDashboardScreen";
 import { AllProjectAdministrationDashScreen } from "@/screens/AllProjectAdministrationDash/AllProjectAdministrationDashScreen";
 import { ApplicationRewiewScreen } from "@/screens/ApplicationRewiew/ApplicationRewiew";
+import { BurnCapitalScreen } from "@/screens/BurnCapital/BurnCapitalScreen";
 import { ComingSoonScreen } from "@/screens/ComingSoon/ComingSoon";
 import { CoreDAOScreen } from "@/screens/CoreDAO/CoreDAOScreen";
 import { DAppStoreScreen } from "@/screens/DAppStore/DAppStoreScreen";
@@ -13,6 +14,7 @@ import { ToriPunks } from "@/screens/DAppStore/apps/toripunks/HomeScreen";
 import { FeedScreen } from "@/screens/Feed/FeedScreen";
 import { FeedNewArticleScreen } from "@/screens/FeedNewArticle/FeedNewArticleScreen";
 import { FeedPostViewScreen } from "@/screens/FeedPostView/FeedPostViewScreen";
+import { GovernanceProposalScreen } from "@/screens/Governance/GovernanceProposal/GovernanceProposalScreen";
 import { GovernanceScreen } from "@/screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "@/screens/Guardians/GuardiansScreen";
 import { HashtagFeedScreen } from "@/screens/HashtagFeed/HashtagFeedScreen";
@@ -106,6 +108,11 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         name="Governance"
         component={GovernanceScreen}
         options={{ header: () => null, title: screenTitle("Governance") }}
+      />
+      <Nav.Screen
+        name="GovernanceProposal"
+        component={GovernanceProposalScreen}
+        options={{ header: () => null }}
       />
       <Nav.Screen
         name="UserPublicProfile"
@@ -512,6 +519,11 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
           header: () => null,
           title: screenTitle("All Set"),
         }}
+      />
+      <Nav.Screen
+        name="BurnCapital"
+        component={BurnCapitalScreen}
+        options={{ header: () => null, title: screenTitle("Burn Capital") }}
       />
       {platformScreens}
     </>

@@ -16,7 +16,10 @@ interface TokenAllocationProps {
 export const TokenAllocation: React.FC<TokenAllocationProps> = ({ style }) => {
   const selectedWallet = useSelectedWallet();
   const selectedNetWorkId = selectedWallet?.networkId || "";
-  const allBalances = useBalances(selectedNetWorkId, selectedWallet?.address);
+  const { balances: allBalances } = useBalances(
+    selectedNetWorkId,
+    selectedWallet?.address,
+  );
   const balances = allBalances.filter(
     (bal) => bal.usdAmount && bal.usdAmount > 0,
   );

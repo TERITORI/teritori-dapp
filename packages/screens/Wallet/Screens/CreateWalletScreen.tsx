@@ -6,12 +6,12 @@ import { useSelector } from "react-redux";
 import rightArrowSVG from "../../../../assets/icons/arrow-right.svg";
 import CustomAppBar from "../../Mini/components/AppBar/CustomAppBar";
 import BlurViewWrapper from "../../Mini/components/BlurViewWrapper";
-import { CustomButton } from "../../Mini/components/Button/CustomButton";
 import Checkbox from "../../Mini/components/Checkbox/Checkbox";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";

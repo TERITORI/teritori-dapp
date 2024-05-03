@@ -2719,8 +2719,8 @@
     "testnet": false,
     "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
     "addressPrefix": "cosmos",
-    "restEndpoint": "https://api-cosmoshub-ia.cosmosia.notional.ventures",
-    "rpcEndpoint": "https://rpc-cosmoshub-ia.cosmosia.notional.ventures",
+    "restEndpoint": "https://rest-cosmoshub.ecostake.com",
+    "rpcEndpoint": "https://rpc-cosmoshub.ecostake.com",
     "stakeCurrency": "uatom",
     "gasPriceStep": {
       "low": 0.01,
@@ -9880,6 +9880,45 @@
     "cosmosFeatures": []
   },
   {
+    "id": "saga",
+    "displayName": "Saga",
+    "chainId": "ssc-1",
+    "registryName": "saga",
+    "overrides": "cosmos-registry:saga",
+    "kind": "Cosmos",
+    "currencies": [
+      {
+        "kind": "native",
+        "denom": "usaga",
+        "decimals": 6,
+        "displayName": "SAGA",
+        "coingeckoId": "saga-2",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/saga/images/saga.svg",
+        "color": "TODO"
+      }
+    ],
+    "features": [],
+    "featureObjects": [],
+    "idPrefix": "saga",
+    "addressPrefix": "saga",
+    "txExplorer": "https://www.mintscan.io/saga/transactions/$hash",
+    "accountExplorer": "https://www.mintscan.io/saga/accounts/$address",
+    "contractExplorer": "https://www.mintscan.io/saga/accounts/$address",
+    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/saga/images/saga.svg",
+    "testnet": false,
+    "backendEndpoint": "",
+    "restEndpoint": "https://saga-rest.publicnode.com",
+    "rpcEndpoint": "https://saga-rpc.publicnode.com:443",
+    "stakeCurrency": "usaga",
+    "gasPriceStep": {
+      "low": 0.01,
+      "average": 0.025,
+      "high": 0.04
+    },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/saga/images/saga.svg",
+    "cosmosFeatures": []
+  },
+  {
     "id": "cosmos-registry:sagatestnet",
     "displayName": "Saga Testnet",
     "chainId": "ssc-testnet-1",
@@ -9909,6 +9948,44 @@
     "backendEndpoint": "",
     "restEndpoint": "https://testnet-ssc-lcd.sagarpc.io/",
     "rpcEndpoint": "https://testnet-ssc.sagarpc.io/",
+    "stakeCurrency": "utsaga",
+    "gasPriceStep": {
+      "low": 0.0025,
+      "average": 0.025,
+      "high": 0.04
+    },
+    "nameServiceDefaultImage": "https://raw.githubusercontent.com/cosmos/chain-registry/master/saga/images/saga.png",
+    "cosmosFeatures": []
+  },
+  {
+    "id": "sagatestnet2",
+    "displayName": "Saga Testnet 2",
+    "chainId": "ssc-testnet-2",
+    "registryName": "sagatestnet2",
+    "kind": "Cosmos",
+    "currencies": [
+      {
+        "kind": "native",
+        "denom": "utsaga",
+        "decimals": 6,
+        "displayName": "TSAGA",
+        "coingeckoId": "not-found",
+        "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/saga/images/saga.svg",
+        "color": "TODO"
+      }
+    ],
+    "features": [],
+    "featureObjects": [],
+    "idPrefix": "sagatestnet2",
+    "addressPrefix": "saga",
+    "txExplorer": "https://www.mintscan.io/saga-testnet/tx/$hash",
+    "accountExplorer": "https://mintscan.io/saga-testnet/address/$address",
+    "contractExplorer": "https://mintscan.io/saga-testnet/address/$address",
+    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/saga/images/saga.png",
+    "testnet": true,
+    "backendEndpoint": "",
+    "restEndpoint": "https://testnet2-keplr-lcd.sagarpc.io",
+    "rpcEndpoint": "https://testnet2-keplr.sagarpc.io",
     "stakeCurrency": "utsaga",
     "gasPriceStep": {
       "low": 0.0025,
@@ -11335,7 +11412,14 @@
       "NameService",
       "BurnTokens",
       "NFTLaunchpad",
-      "NFTMarketplaceLeaderboard"
+      "NFTMarketplaceLeaderboard",
+      "CosmWasmNFTsBurner"
+    ],
+    "featureObjects": [
+      {
+        "type": "CosmWasmNFTsBurner",
+        "burnerContractAddress": "tori16tlfw7uq73d5n8j5tl0zl367c58f032j50jgxr3e7f09gez3xq5qvcrxy7"
+      }
     ],
     "registryName": "teritori",
     "overrides": "cosmos-registry:teritori",
@@ -11492,7 +11576,7 @@
   {
     "id": "teritori-testnet",
     "kind": "Cosmos",
-    "chainId": "teritori-test-6",
+    "chainId": "teritori-test-7",
     "displayName": "Teritori Testnet",
     "registryName": "teritoritestnet",
     "icon": "teritori.svg",
@@ -11506,13 +11590,18 @@
       "BurnTokens",
       "NFTLaunchpad",
       "CosmWasmPremiumFeed",
-      "NFTMarketplaceLeaderboard"
+      "NFTMarketplaceLeaderboard",
+      "CosmWasmNFTsBurner"
     ],
     "featureObjects": [
       {
         "type": "CosmWasmPremiumFeed",
-        "membershipContractAddress": "tori1rs244rjrhap2v4setxlugkh8ungxlrsh8asvh0trsgvqvplvkd5q7752l6",
+        "membershipContractAddress": "",
         "mintDenom": "utori"
+      },
+      {
+        "type": "CosmWasmNFTsBurner",
+        "burnerContractAddress": "tori1qyl0j7a24amk8k8gcmvv07y2zjx7nkcwpk73js24euh64hkja6esd2p2xp"
       }
     ],
     "currencies": [
@@ -11559,33 +11648,33 @@
       "no-legacy-stdTx",
       "ibc-go"
     ],
-    "nameServiceContractAddress": "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys",
+    "nameServiceContractAddress": "tori1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgsjscd88",
     "nameServiceDefaultImage": "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
     "nameServiceTLD": ".tori",
-    "vaultContractAddress": "tori17p9rzwnnfxcjp32un9ug7yhhzgtkhvl9jfksztgw5uh69wac2pgs9ezf0j",
-    "riotContractAddressGen0": "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc",
+    "vaultContractAddress": "tori1wn625s4jcmvk0szpl85rj5azkfc6suyvf75q6vrddscjdphtve8s2f76jm",
+    "riotContractAddressGen0": "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0",
     "riotContractAddressGen1": "",
     "riotSquadStakingContractAddressV1": "",
     "riotSquadStakingContractAddressV2": "",
     "distributorContractAddress": "",
     "riotersFooterContractAddress": "",
     "secondaryDuringMintList": [
-      "tori1rs244rjrhap2v4setxlugkh8ungxlrsh8asvh0trsgvqvplvkd5q7752l6",
-      "tori14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s3hewys",
-      "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc",
+      "",
+      "tori1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgsjscd88",
+      "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0",
       ""
     ],
     "excludeFromLaunchpadList": [
       ""
     ],
-    "socialFeedContractAddress": "tori1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrqazuvxk",
-    "daoCoreCodeId": 4,
-    "daoPreProposeSingleCodeId": 5,
-    "daoProposalSingleCodeId": 6,
-    "daoCw4GroupCodeId": 7,
-    "daoVotingCw4CodeId": 8,
-    "daoFactoryCodeId": 9,
-    "daoFactoryContractAddress": "tori1s85asu5dckeelmgzrwqakxc8tc4gllutjq4uq3a4lwak2hfp9c3q4spguf"
+    "socialFeedContractAddress": "tori1mf6ptkssddfmxvhdx0ech0k03ktp6kf9yk59renau2gvht3nq2gqg87tkw",
+    "daoCoreCodeId": -1,
+    "daoPreProposeSingleCodeId": -1,
+    "daoProposalSingleCodeId": -1,
+    "daoCw4GroupCodeId": -1,
+    "daoVotingCw4CodeId": -1,
+    "daoFactoryCodeId": -1,
+    "daoFactoryContractAddress": ""
   },
   {
     "id": "cosmos-registry:terpnettestnet",
