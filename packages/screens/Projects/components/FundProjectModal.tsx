@@ -50,7 +50,10 @@ export const FundProjectModal: React.FC<FundProjectModalProps> = ({
     NetworkFeature.GnoProjectManager,
   );
 
-  const balances = useBalances(selectedNetwork?.id, selectedWallet?.address);
+  const { balances } = useBalances(
+    selectedNetwork?.id,
+    selectedWallet?.address,
+  );
   const bal = balances?.find((b) => b.denom === pmFeature?.paymentsDenom);
 
   const [isSubmitting, setIsSubmitting] = useState(false);

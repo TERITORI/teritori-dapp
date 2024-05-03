@@ -167,10 +167,7 @@ export const ContractorCandidates: React.FC = () => {
 
   return (
     <View>
-      <TableRow
-        headings={Object.values(TABLE_COLS)}
-        labelStyle={{ textAlign: "center" }}
-      />
+      <TableRow headings={TABLE_COLS} labelStyle={{ textAlign: "center" }} />
 
       <FlexRow
         style={{

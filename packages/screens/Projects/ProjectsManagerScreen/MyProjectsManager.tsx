@@ -201,7 +201,7 @@ export const MyProjectsManager: React.FC<{
       <SpacerColumn size={2} />
 
       <TableRow
-        headings={Object.values(getTableCols(type))}
+        headings={getTableCols(type)}
         labelStyle={{ textAlign: "center" }}
       />
 

@@ -63,7 +63,10 @@ export const ConfirmAndSign: React.FC = () => {
 
   const selectedWallet = useSelectedWallet();
   const selectedNetwork = useSelectedNetworkInfo();
-  const balances = useBalances(selectedNetwork?.id, selectedWallet?.address);
+  const { balances } = useBalances(
+    selectedNetwork?.id,
+    selectedWallet?.address,
+  );
   const bal = balances?.find((b) => b.denom === pmFeature?.paymentsDenom);
 
   const [isUploadingImage, setIsUploadingImage] = useState(false);
