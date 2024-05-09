@@ -1,57 +1,29 @@
-import { cloneDeep } from "lodash";
-import React, { FC, ReactNode, useMemo, useState } from "react";
-import {
-  FlatList,
-  Platform,
-  ScrollView,
-  StyleProp,
-  TextStyle,
-  View,
-  ViewStyle,
-} from "react-native";
-import { useSelector } from "react-redux";
+import {cloneDeep} from "lodash";
+import React, {FC, ReactNode, useMemo, useState} from "react";
+import {FlatList, Platform, ScrollView, StyleProp, TextStyle, View, ViewStyle,} from "react-native";
+import {useSelector} from "react-redux";
 
-import { PopularCollection } from "@/api/marketplace/v1/marketplace";
-import { BrandText } from "@/components/BrandText";
-import { CurrencyIcon } from "@/components/CurrencyIcon";
-import { OmniLink } from "@/components/OmniLink";
-import { Pagination } from "@/components/Pagination";
-import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
-import { SpacerColumn } from "@/components/spacer";
-import {
-  TableColumns,
-  TableHeaderNew,
-} from "@/components/table/TableHeaderNew";
-import { useCoingeckoPrices } from "@/hooks/useCoingeckoPrices";
-import { useIsMobile } from "@/hooks/useIsMobile";
-import { useMaxResolution } from "@/hooks/useMaxResolution";
-import { useCollectionNavigationTarget } from "@/hooks/useNavigateToCollection";
-import { parseCollectionId } from "@/networks";
-import { selectTimePeriod } from "@/store/slices/marketplaceFilters";
-import {
-  CoingeckoCoin,
-  CoingeckoPrices,
-  getCoingeckoPrice,
-} from "@/utils/coingecko";
-import { prettyPrice } from "@/utils/coins";
-import { prettyNumber } from "@/utils/numbers";
-import {
-  errorColor,
-  mineShaftColor,
-  neutral77,
-  successColor,
-} from "@/utils/style/colors";
-import {
-  fontSemibold11,
-  fontSemibold13,
-  fontSemibold9,
-} from "@/utils/style/fonts";
-import {
-  layout,
-  screenContentMaxWidth,
-  screenContentMaxWidthLarge,
-} from "@/utils/style/layout";
-import { PrettyPrint } from "@/utils/types/marketplace";
+import {PopularCollection} from "@/api/marketplace/v1/marketplace";
+import {BrandText} from "@/components/BrandText";
+import {CurrencyIcon} from "@/components/CurrencyIcon";
+import {OmniLink} from "@/components/OmniLink";
+import {Pagination} from "@/components/Pagination";
+import {RoundedGradientImage} from "@/components/images/RoundedGradientImage";
+import {SpacerColumn} from "@/components/spacer";
+import {TableColumns, TableHeaderNew,} from "@/components/table/TableHeaderNew";
+import {useCoingeckoPrices} from "@/hooks/useCoingeckoPrices";
+import {useIsMobile} from "@/hooks/useIsMobile";
+import {useMaxResolution} from "@/hooks/useMaxResolution";
+import {useCollectionNavigationTarget} from "@/hooks/useNavigateToCollection";
+import {parseCollectionId} from "@/networks";
+import {selectTimePeriod} from "@/store/slices/marketplaceFilters";
+import {CoingeckoCoin, CoingeckoPrices, getCoingeckoPrice,} from "@/utils/coingecko";
+import {prettyPrice} from "@/utils/coins";
+import {prettyNumber} from "@/utils/numbers";
+import {errorColor, mineShaftColor, neutral77, successColor,} from "@/utils/style/colors";
+import {fontSemibold11, fontSemibold13, fontSemibold9,} from "@/utils/style/fonts";
+import {layout, screenContentMaxWidth, screenContentMaxWidthLarge,} from "@/utils/style/layout";
+import {PrettyPrint} from "@/utils/types/marketplace";
 
 interface RowData {
   id: string;
@@ -88,17 +60,17 @@ const staticColumns: TableColumns = {
 
 const scrollableColumns: TableColumns = {
   tradeVolume: {
-    label: "Trade vol",
+    label: "",
     minWidth: 160,
     flex: 1.8,
   },
   tradeVolumeDiff: {
-    label: "Trade vol diff",
+    label: "",
     minWidth: 80,
     flex: 1,
   },
   sales: {
-    label: "Sales",
+    label: "",
     minWidth: 60,
     flex: 1,
   },
@@ -118,7 +90,7 @@ const scrollableColumns: TableColumns = {
     flex: 1,
   },
   mintVolume: {
-    label: "Mint vol",
+    label: "",
     minWidth: 160,
     flex: 1.8,
   },
@@ -134,7 +106,6 @@ export const CollectionTable: FC<{
 
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [pageIndex, setPageIndex] = useState(0);
-  const timePeriod = useSelector(selectTimePeriod);
   const filteredCollections = rows.filter(({ name: collectionName }) =>
     collectionName?.toLowerCase().includes(filterText.toLowerCase()),
   );
@@ -153,11 +124,10 @@ export const CollectionTable: FC<{
               if (acc[key]) {
                 return;
               }
-              const c: CoingeckoCoin = {
+              acc[key] = {
                 networkId: network.id,
                 denom: fp.denom,
               };
-              acc[key] = c;
             });
             return acc;
           },
@@ -168,15 +138,6 @@ export const CollectionTable: FC<{
   );
 
   const { prices: floorPrices } = useCoingeckoPrices(floorCoins);
-
-  const fixedScrollableColumns = cloneDeep(scrollableColumns);
-  fixedScrollableColumns.tradeVolume.label =
-    timePeriod.shortLabel + " Trade Volume";
-  fixedScrollableColumns.mintVolume.label =
-    timePeriod.shortLabel + " Mint Volume";
-  fixedScrollableColumns.sales.label = timePeriod.shortLabel + " Sales";
-  fixedScrollableColumns.tradeVolumeDiff.label =
-    timePeriod.shortLabel + " Trade %";
 
   const maxPage = Math.max(Math.ceil(rows.length / itemsPerPage), 1);
 
@@ -298,9 +259,19 @@ const StaticHeader: FC = () => {
 };
 
 const ScrollableHeader: FC = () => {
+  const timePeriod = useSelector(selectTimePeriod);
+  const fixedScrollableColumns = cloneDeep(scrollableColumns);
+  fixedScrollableColumns.tradeVolume.label =
+    timePeriod.shortLabel + " Trade Volume";
+  fixedScrollableColumns.mintVolume.label =
+    timePeriod.shortLabel + " Mint Volume";
+  fixedScrollableColumns.sales.label = timePeriod.shortLabel + " Sales";
+  fixedScrollableColumns.tradeVolumeDiff.label =
+    timePeriod.shortLabel + " Trade %";
+
   return (
     <TableHeaderNew
-      columns={scrollableColumns}
+      columns={fixedScrollableColumns}
       style={{
         marginRight: layout.spacing_x1,
         borderTopLeftRadius: 0,
