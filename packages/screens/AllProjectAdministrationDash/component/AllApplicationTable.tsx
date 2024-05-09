@@ -8,7 +8,7 @@ import { SVG } from "@/components/SVG";
 import { CollectionNameCell } from "@/components/applicationTable/CollectionNameCell";
 import { InnerCellText } from "@/components/applicationTable/InnerCellText";
 import { PercentageVolumeCell } from "@/components/applicationTable/PercentageVolumeCell";
-import { TableRow } from "@/components/table/TableRow";
+import { TableHeader } from "@/components/table/TableHeader";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { mineShaftColor } from "@/utils/style/colors";
 import { fontSemibold11, fontSemibold13 } from "@/utils/style/fonts";
@@ -54,7 +54,7 @@ export const AllApplicationTable: React.FC<{
         maxWidth: screenContentMaxWidthLarge,
       }}
     >
-      <TableRow
+      <TableHeader
         headings={
           !isMobile
             ? TABLE_ROWS

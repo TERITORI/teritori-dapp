@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  StyleSheet,
   View,
   TextStyle,
   Pressable,
@@ -23,7 +22,7 @@ interface TableRowProps {
   selectedColor?: ColorValue;
 }
 
-export const TableRow: React.FC<TableRowProps> = ({
+export const TableHeader: React.FC<TableRowProps> = ({
   headings,
   labelStyle,
   allowSelect = [],
@@ -31,14 +30,36 @@ export const TableRow: React.FC<TableRowProps> = ({
 }) => {
   const entries = Object.entries(headings);
   return (
-    <View style={styles.row}>
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%",
+        backgroundColor: codGrayColor,
+        minHeight: layout.contentSpacing,
+        paddingHorizontal: layout.spacing_x2_5,
+        borderTopLeftRadius: layout.borderRadius,
+        borderTopRightRadius: layout.borderRadius,
+      }}
+    >
       {entries.map(([key, { label, flex }], index) => {
         const containerStyle: ViewStyle = {
           flex,
           paddingRight: entries.length - 1 === index ? 0 : layout.spacing_x1,
         };
         const content = (
-          <BrandText style={[styles.labelText, labelStyle]} numberOfLines={1}>
+          <BrandText
+            style={[
+              fontSemibold12,
+              {
+                color: secondaryColor,
+                opacity: 0.4,
+              },
+              labelStyle,
+            ]}
+            numberOfLines={1}
+          >
             {label}
           </BrandText>
         );
@@ -62,26 +83,3 @@ export const TableRow: React.FC<TableRowProps> = ({
     </View>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    backgroundColor: codGrayColor,
-    minHeight: layout.contentSpacing,
-    paddingHorizontal: layout.spacing_x2_5,
-    borderTopLeftRadius: layout.borderRadius,
-    borderTopRightRadius: layout.borderRadius,
-  },
-  labelText: StyleSheet.flatten([
-    fontSemibold12,
-    {
-      color: secondaryColor,
-      opacity: 0.4,
-    },
-  ]),
-});

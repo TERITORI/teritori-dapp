@@ -22,7 +22,7 @@ import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
 import { Pagination } from "../Pagination";
 import { SpacerColumn } from "../spacer";
-import { TableRowHeading, TableRow } from "../table/TableRow";
+import { TableRowHeading, TableHeader } from "../table/TableHeader";
 
 const TABLE_ROWS: { [key: string]: TableRowHeading } = {
   transactionId: {
@@ -75,7 +75,7 @@ export const ActivityTable: React.FC<{
         width: "100%",
       }}
     >
-      <TableRow headings={TABLE_ROWS} />
+      <TableHeader headings={TABLE_ROWS} />
       <FlatList
         data={activities}
         renderItem={({ item }) => <ActivityRow activity={item} />}

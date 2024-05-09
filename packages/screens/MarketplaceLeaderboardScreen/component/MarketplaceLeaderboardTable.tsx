@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { FlatList, View } from "react-native";
 
 import { InnerCellText } from "../../../components/applicationTable/InnerCellText";
-import { TableRow } from "../../../components/table/TableRow";
+import { TableHeader } from "../../../components/table/TableHeader";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { mineShaftColor } from "../../../utils/style/colors";
 import {
@@ -74,7 +74,7 @@ export const MarketplaceLeaderboardTable: React.FC<{
         maxWidth: screenContentMaxWidthLarge,
       }}
     >
-      <TableRow
+      <TableHeader
         headings={
           !isMobile
             ? TABLE_ROWS

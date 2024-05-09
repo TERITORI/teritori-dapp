@@ -1,5 +1,5 @@
 import { useLinkProps } from "@react-navigation/native";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import {
   Platform,
   TouchableOpacity,
@@ -20,11 +20,22 @@ export const OmniLink: React.FC<{
   style?: TouchableOpacityProps["style"];
   disabled?: boolean;
   noHoverEffect?: boolean;
-}> = ({ to, action, children, style, disabled, noHoverEffect }) => {
+  onHover?: (isHovered: boolean) => void;
+  isHovered?: boolean;
+}> = ({
+  to,
+  action,
+  children,
+  style,
+  disabled,
+  noHoverEffect,
+  onHover,
+  isHovered = false,
+}) => {
   // @ts-expect-error: description todo
   const { onPress, ...props } = useLinkProps({ to, action });
 
-  const [isHovered, setIsHovered] = React.useState(false);
+  const [localIsHovered, setLocalIsHovered] = React.useState(isHovered);
 
   const handlePress = (e: any) => {
     if (Platform.OS === "web") {
@@ -38,6 +49,10 @@ export const OmniLink: React.FC<{
     }
   };
 
+  useEffect(() => {
+    onHover?.(localIsHovered);
+  }, [onHover, localIsHovered]);
+
   if (Platform.OS === "web") {
     // It's important to use a `View` or `Text` on web instead of `TouchableX`
     // Otherwise React Native for Web omits the `onClick` prop that's passed
@@ -47,11 +62,14 @@ export const OmniLink: React.FC<{
       <View
         // @ts-expect-error: description todo
         onClick={!disabled ? handlePress : null}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={() => setLocalIsHovered(true)}
+        onMouseLeave={() => setLocalIsHovered(false)}
         style={[
           {
-            opacity: isHovered && !disabled && !noHoverEffect ? 0.5 : 1,
+            opacity:
+              (isHovered || localIsHovered) && !disabled && !noHoverEffect
+                ? 0.5
+                : 1,
           },
           { transitionDuration: "150ms" } as ViewStyle, // browser specific
           style,

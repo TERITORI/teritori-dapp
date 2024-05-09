@@ -13,7 +13,7 @@ import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline"
 import { SecondaryButtonOutline } from "@/components/buttons/SecondaryButtonOutline";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
 import { SpacerRow } from "@/components/spacer";
-import { TableRow, TableRowHeading } from "@/components/table/TableRow";
+import { TableHeader, TableRowHeading } from "@/components/table/TableHeader";
 import { useCosmosValidatorBondedAmount } from "@/hooks/useCosmosValidatorBondedAmount";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useKeybaseAvatarURL } from "@/hooks/useKeybaseAvatarURL";
@@ -105,7 +105,7 @@ export const ValidatorsTable: React.FC<{
 
   return (
     <>
-      <TableRow
+      <TableHeader
         headings={ROWS}
         allowSelect={["rank", "serviceScore"]}
         onPressItem={(key) => setSortBy(key)}

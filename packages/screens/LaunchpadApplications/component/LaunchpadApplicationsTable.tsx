@@ -8,7 +8,7 @@ import { SVG } from "@/components/SVG";
 import { CollectionNameCell } from "@/components/applicationTable/CollectionNameCell";
 import { InnerCellText } from "@/components/applicationTable/InnerCellText";
 import { LinkIconAndRedirect } from "@/components/applicationTable/LinkIconAndRedirect";
-import { TableRow } from "@/components/table/TableRow";
+import { TableHeader } from "@/components/table/TableHeader";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { mineShaftColor } from "@/utils/style/colors";
 import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
@@ -61,7 +61,7 @@ export const LaunchpadApplicationsTable: React.FC<{
         maxWidth: screenContentMaxWidthLarge,
       }}
     >
-      <TableRow
+      <TableHeader
         headings={
           !isMobile
             ? TABLE_ROWS
