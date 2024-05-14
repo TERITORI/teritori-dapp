@@ -1,4 +1,4 @@
-import { Decimal } from "@cosmjs/math";
+import {Decimal} from "@cosmjs/math";
 import React from "react";
 import {
   ActivityIndicator,
@@ -8,19 +8,19 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { BrandText } from "@/components/BrandText";
-import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
-import { SecondaryButtonOutline } from "@/components/buttons/SecondaryButtonOutline";
-import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
-import { SpacerRow } from "@/components/spacer";
-import { TableColumns, TableHeader } from "@/components/table/TableHeader";
-import { useCosmosValidatorBondedAmount } from "@/hooks/useCosmosValidatorBondedAmount";
-import { useIsMobile } from "@/hooks/useIsMobile";
-import { useKeybaseAvatarURL } from "@/hooks/useKeybaseAvatarURL";
-import { Reward, rewardsPrice, useRewards } from "@/hooks/useRewards";
-import { UserKind, getStakingCurrency, parseUserId } from "@/networks";
-import { prettyPrice } from "@/utils/coins";
-import { removeObjectKey, removeObjectKeys } from "@/utils/object";
+import {BrandText} from "@/components/BrandText";
+import {PrimaryButtonOutline} from "@/components/buttons/PrimaryButtonOutline";
+import {SecondaryButtonOutline} from "@/components/buttons/SecondaryButtonOutline";
+import {RoundedGradientImage} from "@/components/images/RoundedGradientImage";
+import {SpacerRow} from "@/components/spacer";
+import {TableColumns, TableHeader} from "@/components/table/TableHeader";
+import {useCosmosValidatorBondedAmount} from "@/hooks/useCosmosValidatorBondedAmount";
+import {useIsMobile} from "@/hooks/useIsMobile";
+import {useKeybaseAvatarURL} from "@/hooks/useKeybaseAvatarURL";
+import {Reward, rewardsPrice, useRewards} from "@/hooks/useRewards";
+import {UserKind, getStakingCurrency, parseUserId} from "@/networks";
+import {prettyPrice} from "@/utils/coins";
+import {removeObjectKey, removeObjectKeys} from "@/utils/object";
 import {
   errorColor,
   mineShaftColor,
@@ -29,9 +29,9 @@ import {
   successColor,
   yellowDefault,
 } from "@/utils/style/colors";
-import { fontSemibold11, fontSemibold13 } from "@/utils/style/fonts";
-import { layout } from "@/utils/style/layout";
-import { ValidatorInfo } from "@/utils/types/staking";
+import {fontSemibold11, fontSemibold13} from "@/utils/style/fonts";
+import {layout} from "@/utils/style/layout";
+import {ValidatorInfo} from "@/utils/types/staking";
 
 const serviceScoreSize = 24;
 
@@ -82,7 +82,7 @@ export const ValidatorsTable: React.FC<{
   style?: StyleProp<ViewStyle>;
   userId: string | undefined;
   userKind: UserKind;
-}> = ({ validators: validatorsProp, actions, style, userId, userKind }) => {
+}> = ({validators: validatorsProp, actions, style, userId, userKind}) => {
   const isMobile = useIsMobile();
 
   const [sortBy, setSortBy] = React.useState<string>("rank");
@@ -103,20 +103,21 @@ export const ValidatorsTable: React.FC<{
   const COLUMNS = userId
     ? COLUMNS_TMP
     : removeObjectKeys(COLUMNS_TMP, ["staked", "claimable"]);
-  const { rewards, claimReward } = useRewards(userId, userKind);
+  const {rewards, claimReward} = useRewards(userId, userKind);
 
   return (
     <>
       <TableHeader
         columns={COLUMNS}
-        allowSelect={["rank", "serviceScore"]}
-        onPressItem={(key) => setSortBy(key)}
+        style={{
+          paddingHorizontal: layout.spacing_x2_5,
+        }}
       />
       <FlatList
         data={validators}
         style={style}
         keyExtractor={(item) => item.address}
-        renderItem={({ item }) => (
+        renderItem={({item}) => (
           <ValidatorRow
             validator={item}
             userId={userId}
@@ -138,14 +139,14 @@ const ValidatorRow: React.FC<{
   claimReward: (validatorAddress: string) => Promise<void>;
   actions?: (validator: ValidatorInfo) => ValidatorsListAction[];
   userId: string | undefined;
-}> = ({ validator, claimReward, pendingRewards, actions, userId }) => {
+}> = ({validator, claimReward, pendingRewards, actions, userId}) => {
   const isMobile = useIsMobile();
   const imageURL = useKeybaseAvatarURL(validator.identity);
   const [network, userAddress] = parseUserId(userId);
   // Rewards price with all denoms
   const claimablePrice = rewardsPrice(pendingRewards);
   const stakingCurrency = getStakingCurrency(network?.id);
-  const { bondedTokens } = useCosmosValidatorBondedAmount(
+  const {bondedTokens} = useCosmosValidatorBondedAmount(
     userId,
     validator?.address,
   );
@@ -168,7 +169,7 @@ const ValidatorRow: React.FC<{
         <BrandText
           style={[
             isMobile ? fontSemibold11 : fontSemibold13,
-            { flex: TABLE_COLUMNS.rank.flex, paddingRight: layout.spacing_x1 },
+            {flex: TABLE_COLUMNS.rank.flex, paddingRight: layout.spacing_x1},
           ]}
         >
           {validator.rank}
@@ -182,9 +183,9 @@ const ValidatorRow: React.FC<{
             paddingRight: layout.spacing_x1,
           }}
         >
-          <RoundedGradientImage size="XS" sourceURI={imageURL} />
+          <RoundedGradientImage size="XS" sourceURI={imageURL}/>
 
-          <SpacerRow size={1} />
+          <SpacerRow size={1}/>
           <BrandText
             style={[isMobile ? fontSemibold11 : fontSemibold13]}
             numberOfLines={1}
@@ -205,14 +206,14 @@ const ValidatorRow: React.FC<{
           {validator.votingPowerPercent.toFixed(2)}%
           {!!stakingCurrency &&
             " - " +
-              prettyPrice(
-                network?.id,
-                Decimal.fromUserInput(
-                  validator.votingPower,
-                  stakingCurrency?.decimals,
-                ).atomics,
-                stakingCurrency?.denom,
-              )}
+            prettyPrice(
+              network?.id,
+              Decimal.fromUserInput(
+                validator.votingPower,
+                stakingCurrency?.decimals,
+              ).atomics,
+              stakingCurrency?.denom,
+            )}
         </BrandText>
         <View
           style={{
@@ -224,7 +225,7 @@ const ValidatorRow: React.FC<{
           }}
         >
           {validator.serviceScore === undefined ? (
-            <ActivityIndicator size={serviceScoreSize} />
+            <ActivityIndicator size={serviceScoreSize}/>
           ) : (
             <>
               <View
@@ -240,7 +241,7 @@ const ValidatorRow: React.FC<{
               <BrandText
                 style={[
                   isMobile ? fontSemibold11 : fontSemibold13,
-                  { color: mapScoreToColor(validator.serviceScore) },
+                  {color: mapScoreToColor(validator.serviceScore)},
                 ]}
               >
                 {validator.serviceScore === null
@@ -303,8 +304,8 @@ const ValidatorRow: React.FC<{
                   size={isMobile ? "XXS" : "XS"}
                   style={
                     isMobile
-                      ? { paddingTop: layout.spacing_x1 }
-                      : { paddingLeft: layout.spacing_x2 }
+                      ? {paddingTop: layout.spacing_x1}
+                      : {paddingLeft: layout.spacing_x2}
                   }
                   text="Claim"
                   disabled={!userAddress}
