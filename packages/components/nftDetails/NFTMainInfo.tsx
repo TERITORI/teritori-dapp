@@ -7,8 +7,6 @@ import { NFTAttributes } from "./NFTAttributes";
 import starSVG from "../../../assets/icons/star.svg";
 import { BrandText } from "../BrandText";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
-import { ActivityTable } from "../activity/ActivityTable";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { NFTModifyListingCard } from "../cards/NFTModifyListingCard";
 import { NFTPriceBuyCard } from "../cards/NFTPriceBuyCard";
 import { NFTSellCard } from "../cards/NFTSellCard";
@@ -22,6 +20,8 @@ import {
   AttributeRarityFloor,
   NFTCollectionAttributesRequest,
 } from "@/api/marketplace/v1/marketplace";
+import { ActivityTable } from "@/components/activity/ActivityTable";
+import { TertiaryBox } from "@/components/boxes/TertiaryBox";
 import { useTransactionModals } from "@/context/TransactionModalsProvider";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
@@ -269,10 +269,10 @@ export const NFTMainInfo: React.FC<{
         }}
       >
         {/*---- Image NFT */}
-        <LegacyTertiaryBox
-          width={isMobile && width < 464 ? width : 464}
-          height={isMobile && width < 464 ? width : 464}
+        <TertiaryBox
           style={{
+            width: isMobile && width < 464 ? width : 464,
+            height: isMobile && width < 464 ? width : 464,
             marginRight: isMobile && width < 464 ? 0 : 28,
             marginBottom: 40,
           }}
@@ -283,7 +283,7 @@ export const NFTMainInfo: React.FC<{
             sourceSize={462}
             style={{ borderRadius: 8 }}
           />
-        </LegacyTertiaryBox>
+        </TertiaryBox>
         {/*---- Info NFT */}
         <View
           style={{
@@ -352,26 +352,22 @@ export const NFTMainInfo: React.FC<{
         </View>
       </View>
 
-      {!isMobile && (
-        <>
-          {showMarketplace && (
-            <Target style={collapsableContainerStyles} name="price-history">
-              <Suspense fallback={<></>}>
-                <CollapsablePriceHistory nftId={nftId} />
-              </Suspense>
-            </Target>
-          )}
-          <Target name="activity" style={collapsableContainerStyles}>
-            <CollapsableSection
-              icon={starSVG}
-              title="Activity"
-              isExpandedByDefault
-            >
-              <ActivityTable nftId={nftId} />
-            </CollapsableSection>
-          </Target>
-        </>
+      {/*{!isMobile && (*/}
+      {/*  <>*/}
+      {showMarketplace && (
+        <Target style={collapsableContainerStyles} name="price-history">
+          <Suspense fallback={<></>}>
+            <CollapsablePriceHistory nftId={nftId} />
+          </Suspense>
+        </Target>
       )}
+      <Target name="activity" style={collapsableContainerStyles}>
+        <CollapsableSection icon={starSVG} title="Activity" isExpandedByDefault>
+          <ActivityTable nftId={nftId} />
+        </CollapsableSection>
+      </Target>
+      {/*</>*/}
+      {/*)}*/}
       {/* ====== "Buy this NFT" three modals*/}
       <TransactionModals
         startTransaction={buy}

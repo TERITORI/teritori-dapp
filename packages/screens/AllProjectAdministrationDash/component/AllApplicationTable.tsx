@@ -8,13 +8,13 @@ import { SVG } from "@/components/SVG";
 import { CollectionNameCell } from "@/components/applicationTable/CollectionNameCell";
 import { InnerCellText } from "@/components/applicationTable/InnerCellText";
 import { PercentageVolumeCell } from "@/components/applicationTable/PercentageVolumeCell";
-import { TableHeader } from "@/components/table/TableHeader";
+import { TableColumns, TableHeader } from "@/components/table/TableHeader";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { mineShaftColor } from "@/utils/style/colors";
 import { fontSemibold11, fontSemibold13 } from "@/utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
 
-const TABLE_ROWS = {
+const TABLE_COLUMNS: TableColumns = {
   rank: {
     label: "#",
     flex: 1,
@@ -55,10 +55,13 @@ export const AllApplicationTable: React.FC<{
       }}
     >
       <TableHeader
-        headings={
+        style={{
+          paddingHorizontal: layout.spacing_x2_5,
+        }}
+        columns={
           !isMobile
-            ? TABLE_ROWS
-            : Object.fromEntries(Object.entries(TABLE_ROWS).slice(0, -5))
+            ? TABLE_COLUMNS
+            : Object.fromEntries(Object.entries(TABLE_COLUMNS).slice(0, -5))
         }
       />
       <FlatList
@@ -93,7 +96,7 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
     >
       <BrandText
         style={[
-          { flex: TABLE_ROWS.rank.flex },
+          { flex: TABLE_COLUMNS.rank.flex },
           isMobile ? fontSemibold11 : fontSemibold13,
         ]}
       >
@@ -101,25 +104,25 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
       </BrandText>
       <CollectionNameCell
         rowData={rowData}
-        style={{ flex: TABLE_ROWS.collectionNameData.flex }}
+        style={{ flex: TABLE_COLUMNS.collectionNameData.flex }}
       />
-      <InnerCellText isCryptoLogo style={{ flex: TABLE_ROWS.floor.flex }}>
+      <InnerCellText isCryptoLogo style={{ flex: TABLE_COLUMNS.floor.flex }}>
         {rowData.floor}
       </InnerCellText>
       {!isMobile && (
         <>
           <InnerCellText
             isCryptoLogo
-            style={{ flex: TABLE_ROWS.totalVol.flex }}
+            style={{ flex: TABLE_COLUMNS.totalVol.flex }}
           >
             {rowData.totalVol}
           </InnerCellText>
-          <InnerCellText isCryptoLogo style={{ flex: TABLE_ROWS.vol.flex }}>
+          <InnerCellText isCryptoLogo style={{ flex: TABLE_COLUMNS.vol.flex }}>
             {rowData.vol}
           </InnerCellText>
           <View
             style={{
-              flex: TABLE_ROWS.volPerctage.flex,
+              flex: TABLE_COLUMNS.volPerctage.flex,
               flexDirection: "row",
             }}
           >

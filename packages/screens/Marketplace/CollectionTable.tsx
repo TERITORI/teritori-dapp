@@ -1,29 +1,54 @@
-import {cloneDeep} from "lodash";
-import React, {FC, ReactNode, useMemo, useState} from "react";
-import {FlatList, Platform, ScrollView, StyleProp, TextStyle, View, ViewStyle,} from "react-native";
-import {useSelector} from "react-redux";
+import { cloneDeep } from "lodash";
+import React, { FC, useMemo, useState } from "react";
+import {
+  FlatList,
+  Platform,
+  ScrollView,
+  StyleProp,
+  View,
+  ViewStyle,
+} from "react-native";
+import { useSelector } from "react-redux";
 
-import {PopularCollection} from "@/api/marketplace/v1/marketplace";
-import {BrandText} from "@/components/BrandText";
-import {CurrencyIcon} from "@/components/CurrencyIcon";
-import {OmniLink} from "@/components/OmniLink";
-import {Pagination} from "@/components/Pagination";
-import {RoundedGradientImage} from "@/components/images/RoundedGradientImage";
-import {SpacerColumn} from "@/components/spacer";
-import {TableColumns, TableHeaderNew,} from "@/components/table/TableHeaderNew";
-import {useCoingeckoPrices} from "@/hooks/useCoingeckoPrices";
-import {useIsMobile} from "@/hooks/useIsMobile";
-import {useMaxResolution} from "@/hooks/useMaxResolution";
-import {useCollectionNavigationTarget} from "@/hooks/useNavigateToCollection";
-import {parseCollectionId} from "@/networks";
-import {selectTimePeriod} from "@/store/slices/marketplaceFilters";
-import {CoingeckoCoin, CoingeckoPrices, getCoingeckoPrice,} from "@/utils/coingecko";
-import {prettyPrice} from "@/utils/coins";
-import {prettyNumber} from "@/utils/numbers";
-import {errorColor, mineShaftColor, neutral77, successColor,} from "@/utils/style/colors";
-import {fontSemibold11, fontSemibold13, fontSemibold9,} from "@/utils/style/fonts";
-import {layout, screenContentMaxWidth, screenContentMaxWidthLarge,} from "@/utils/style/layout";
-import {PrettyPrint} from "@/utils/types/marketplace";
+import { PopularCollection } from "@/api/marketplace/v1/marketplace";
+import { BrandText } from "@/components/BrandText";
+import { CurrencyIcon } from "@/components/CurrencyIcon";
+import { OmniLink } from "@/components/OmniLink";
+import { Pagination } from "@/components/Pagination";
+import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
+import { SpacerColumn } from "@/components/spacer";
+import { TableColumns } from "@/components/table/TableHeader";
+import { TableScrollableHeader } from "@/components/table/TableScrollableHeader";
+import { TableScrollableRow } from "@/components/table/TableScrollableRow";
+import { TableStaticHeader } from "@/components/table/TableStaticHeader";
+import { TableStaticRow } from "@/components/table/TableStaticRow";
+import { TableTextCell } from "@/components/table/TableTextCell";
+import { useCoingeckoPrices } from "@/hooks/useCoingeckoPrices";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { useCollectionNavigationTarget } from "@/hooks/useNavigateToCollection";
+import { parseCollectionId } from "@/networks";
+import { selectTimePeriod } from "@/store/slices/marketplaceFilters";
+import {
+  CoingeckoCoin,
+  CoingeckoPrices,
+  getCoingeckoPrice,
+} from "@/utils/coingecko";
+import { prettyPrice } from "@/utils/coins";
+import { prettyNumber } from "@/utils/numbers";
+import {
+  errorColor,
+  mineShaftColor,
+  neutral77,
+  successColor,
+} from "@/utils/style/colors";
+import {
+  fontSemibold11,
+  fontSemibold13,
+  fontSemibold9,
+} from "@/utils/style/fonts";
+import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
+import { PrettyPrint } from "@/utils/types/marketplace";
 
 interface RowData {
   id: string;
@@ -96,6 +121,8 @@ const scrollableColumns: TableColumns = {
   },
 };
 
+const breakpointM = 1092;
+
 export const CollectionTable: FC<{
   rows: PopularCollection[];
   filterText: string;
@@ -141,23 +168,31 @@ export const CollectionTable: FC<{
 
   const maxPage = Math.max(Math.ceil(rows.length / itemsPerPage), 1);
 
+  const timePeriod = useSelector(selectTimePeriod);
+  const fixedScrollableColumns = cloneDeep(scrollableColumns);
+  fixedScrollableColumns.tradeVolume.label =
+    timePeriod.shortLabel + " Trade Volume";
+  fixedScrollableColumns.mintVolume.label =
+    timePeriod.shortLabel + " Mint Volume";
+  fixedScrollableColumns.sales.label = timePeriod.shortLabel + " Sales";
+  fixedScrollableColumns.tradeVolumeDiff.label =
+    timePeriod.shortLabel + " Trade %";
+
   return (
     <View
       style={{
-        justifyContent: "space-between",
         width: "100%",
         maxWidth: screenContentMaxWidthLarge,
       }}
     >
       <View style={{ flexDirection: "row", width: "100%" }}>
         <View>
-          <StaticHeader />
+          <TableStaticHeader staticColumns={staticColumns} />
 
           <FlatList
-            scrollEnabled={Platform.OS === "web"}
             data={rows}
             renderItem={({ item, index }) => (
-              <StaticRow
+              <CollectionTableStaticRow
                 collection={item}
                 rank={index}
                 prices={floorPrices}
@@ -172,7 +207,6 @@ export const CollectionTable: FC<{
               minHeight: 248,
               borderTopColor: mineShaftColor,
               borderTopWidth: 1,
-              minWidth: 200,
             }}
             contentContainerStyle={{
               paddingBottom: 150, //just to make last element visible on mobile
@@ -183,12 +217,7 @@ export const CollectionTable: FC<{
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={[
-            {
-              justifyContent: "space-between",
-            },
-            width >= screenContentMaxWidth && { width: "100%" },
-          ]}
+          contentContainerStyle={[width >= breakpointM && { width: "100%" }]}
         >
           <View
             style={{
@@ -196,13 +225,13 @@ export const CollectionTable: FC<{
               width: "100%",
             }}
           >
-            <ScrollableHeader />
+            <TableScrollableHeader scrollableColumns={fixedScrollableColumns} />
 
             <FlatList
               scrollEnabled={Platform.OS === "web"}
               data={rows}
               renderItem={({ item, index }) => (
-                <ScrollableRow
+                <CollectionTableScrollableRow
                   collection={item}
                   rank={index}
                   prices={floorPrices}
@@ -245,42 +274,7 @@ export const CollectionTable: FC<{
   );
 };
 
-const StaticHeader: FC = () => {
-  const isMobile = useIsMobile();
-  return (
-    <TableHeaderNew
-      columns={staticColumns}
-      style={{
-        paddingLeft: isMobile ? layout.spacing_x1 : layout.spacing_x2_5,
-        borderTopRightRadius: 0,
-      }}
-    />
-  );
-};
-
-const ScrollableHeader: FC = () => {
-  const timePeriod = useSelector(selectTimePeriod);
-  const fixedScrollableColumns = cloneDeep(scrollableColumns);
-  fixedScrollableColumns.tradeVolume.label =
-    timePeriod.shortLabel + " Trade Volume";
-  fixedScrollableColumns.mintVolume.label =
-    timePeriod.shortLabel + " Mint Volume";
-  fixedScrollableColumns.sales.label = timePeriod.shortLabel + " Sales";
-  fixedScrollableColumns.tradeVolumeDiff.label =
-    timePeriod.shortLabel + " Trade %";
-
-  return (
-    <TableHeaderNew
-      columns={fixedScrollableColumns}
-      style={{
-        marginRight: layout.spacing_x1,
-        borderTopLeftRadius: 0,
-      }}
-    />
-  );
-};
-
-const StaticRow: React.FC<{
+const CollectionTableStaticRow: React.FC<{
   collection: PopularCollection;
   rank: number;
   prices: CoingeckoPrices;
@@ -293,15 +287,6 @@ const StaticRow: React.FC<{
 
   return (
     <OmniLink
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        width: "100%",
-        borderColor: mineShaftColor,
-        borderBottomWidth: 1,
-        paddingHorizontal: isMobile ? layout.spacing_x1 : layout.spacing_x2_5,
-        height: 50,
-      }}
       disabled={!target}
       to={{
         screen: target || "",
@@ -310,43 +295,44 @@ const StaticRow: React.FC<{
       onHover={(isHovered) => onHover(isHovered, rank)}
       isHovered={isHovered}
     >
-      <InnerCell
-        style={{
-          minWidth: staticColumns.rank.minWidth * (isMobile ? 0.9 : 1),
-          flex: staticColumns.rank.flex,
-        }}
-      >
-        {rowData.rank}
-      </InnerCell>
-
-      <View
-        style={{
-          minWidth:
-            staticColumns.collectionNameData.minWidth * (isMobile ? 0.9 : 1),
-          flex: staticColumns.collectionNameData.flex,
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <RoundedGradientImage
-          size="XS"
-          sourceURI={rowData.collectionNameData.image}
+      <TableStaticRow>
+        <TableTextCell
           style={{
-            marginRight: isMobile ? layout.spacing_x1 : layout.spacing_x1_5,
+            minWidth: staticColumns.rank.minWidth,
+            flex: staticColumns.rank.flex,
           }}
-        />
-        <BrandText
-          style={isMobile ? fontSemibold11 : fontSemibold13}
-          numberOfLines={1}
         >
-          {rowData.collectionNameData.collectionName}
-        </BrandText>
-      </View>
+          {rowData.rank}
+        </TableTextCell>
+
+        <View
+          style={{
+            minWidth: staticColumns.collectionNameData.minWidth,
+            flex: staticColumns.collectionNameData.flex,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <RoundedGradientImage
+            size="XS"
+            sourceURI={rowData.collectionNameData.image}
+            style={{
+              marginRight: isMobile ? layout.spacing_x1 : layout.spacing_x1_5,
+            }}
+          />
+          <BrandText
+            style={isMobile ? fontSemibold11 : fontSemibold13}
+            numberOfLines={1}
+          >
+            {rowData.collectionNameData.collectionName}
+          </BrandText>
+        </View>
+      </TableStaticRow>
     </OmniLink>
   );
 };
 
-const ScrollableRow: React.FC<{
+const CollectionTableScrollableRow: React.FC<{
   collection: PopularCollection;
   rank: number;
   prices: CoingeckoPrices;
@@ -366,16 +352,6 @@ const ScrollableRow: React.FC<{
 
   return (
     <OmniLink
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        width: "100%",
-        borderColor: mineShaftColor,
-        borderBottomWidth: 1,
-        paddingVertical: layout.spacing_x2,
-        height: 50,
-      }}
       disabled={!target}
       to={{
         screen: target || "",
@@ -384,112 +360,85 @@ const ScrollableRow: React.FC<{
       onHover={(isHovered) => onHover(isHovered, rank)}
       isHovered={isHovered}
     >
-      <PrettyPriceWithCurrency
-        data={rowData["tradeVolume"]}
-        style={{
-          minWidth:
-            scrollableColumns.tradeVolume.minWidth * (isMobile ? 0.9 : 1),
-          flex: scrollableColumns.tradeVolume.flex,
-        }}
-      />
-      <InnerCell
-        style={{
-          minWidth:
-            scrollableColumns.tradeVolumeDiff.minWidth * (isMobile ? 0.9 : 1),
-          flex: scrollableColumns.tradeVolumeDiff.flex,
-        }}
-        textStyle={{
-          color: tradeDiffColor,
-        }}
-      >
-        {tradeDiffText}
-      </InnerCell>
+      <TableScrollableRow>
+        <PrettyPriceWithCurrency
+          data={rowData["tradeVolume"]}
+          style={{
+            minWidth: scrollableColumns.tradeVolume.minWidth,
+            flex: scrollableColumns.tradeVolume.flex,
+          }}
+        />
+        <TableTextCell
+          style={{
+            minWidth: scrollableColumns.tradeVolumeDiff.minWidth,
+            flex: scrollableColumns.tradeVolumeDiff.flex,
+          }}
+          textStyle={{
+            color: tradeDiffColor,
+          }}
+        >
+          {tradeDiffText}
+        </TableTextCell>
 
-      <InnerCell
-        style={{
-          minWidth: scrollableColumns.sales.minWidth * (isMobile ? 0.9 : 1),
-          flex: scrollableColumns.sales.flex,
-        }}
-      >
-        {rowData.sales}
-      </InnerCell>
+        <TableTextCell
+          style={{
+            minWidth: scrollableColumns.sales.minWidth,
+            flex: scrollableColumns.sales.flex,
+          }}
+        >
+          {rowData.sales}
+        </TableTextCell>
 
-      <PrettyPriceWithCurrency
-        data={rowData.floorPrice}
-        style={{
-          minWidth:
-            scrollableColumns.floorPrice.minWidth * (isMobile ? 0.9 : 1),
-          flex: scrollableColumns.floorPrice.flex,
-        }}
-      />
-      <InnerCell
-        style={{
-          minWidth: scrollableColumns.owners.minWidth * (isMobile ? 0.9 : 1),
-          flex: scrollableColumns.owners.flex,
-        }}
-      >
-        {rowData.owners}
-      </InnerCell>
-      <InnerCell
-        style={{
-          minWidth: scrollableColumns.supply.minWidth * (isMobile ? 0.9 : 1),
-          flex: scrollableColumns.supply.flex,
-        }}
-      >
-        {rowData.supply.current === rowData.supply.max ? (
-          rowData.supply.current
-        ) : (
-          <>
-            {rowData.supply.current}
-            <BrandText
-              style={[
-                isMobile ? fontSemibold11 : fontSemibold13,
-                {
-                  color: neutral77,
-                  marginHorizontal: 2,
-                },
-              ]}
-            >
-              /
-            </BrandText>
-            {rowData.supply.max === -1 ? "∞" : rowData.supply.max}
-          </>
-        )}
-      </InnerCell>
-      <PrettyPriceWithCurrency
-        data={rowData.mintVolume}
-        style={{
-          minWidth:
-            scrollableColumns.mintVolume.minWidth * (isMobile ? 0.9 : 1),
-          flex: scrollableColumns.mintVolume.flex,
-        }}
-      />
+        <PrettyPriceWithCurrency
+          data={rowData.floorPrice}
+          style={{
+            minWidth: scrollableColumns.floorPrice.minWidth,
+            flex: scrollableColumns.floorPrice.flex,
+          }}
+        />
+        <TableTextCell
+          style={{
+            minWidth: scrollableColumns.owners.minWidth,
+            flex: scrollableColumns.owners.flex,
+          }}
+        >
+          {rowData.owners}
+        </TableTextCell>
+        <TableTextCell
+          style={{
+            minWidth: scrollableColumns.supply.minWidth,
+            flex: scrollableColumns.supply.flex,
+          }}
+        >
+          {rowData.supply.current === rowData.supply.max ? (
+            rowData.supply.current
+          ) : (
+            <>
+              {rowData.supply.current}
+              <BrandText
+                style={[
+                  isMobile ? fontSemibold11 : fontSemibold13,
+                  {
+                    color: neutral77,
+                    marginHorizontal: 2,
+                  },
+                ]}
+              >
+                /
+              </BrandText>
+              {rowData.supply.max === -1 ? "∞" : rowData.supply.max}
+            </>
+          )}
+        </TableTextCell>
+        <PrettyPriceWithCurrency
+          data={rowData.mintVolume}
+          style={{
+            minWidth: scrollableColumns.mintVolume.minWidth,
+            flex: scrollableColumns.mintVolume.flex,
+          }}
+        />
+      </TableScrollableRow>
     </OmniLink>
-  );
-};
-
-const InnerCell: FC<{
-  style?: StyleProp<ViewStyle>;
-  textStyle?: StyleProp<TextStyle>;
-  children: ReactNode;
-}> = ({ children, style, textStyle }) => {
-  const isMobile = useIsMobile();
-  return (
-    <View
-      style={[
-        {
-          marginRight: layout.spacing_x1,
-        },
-        style,
-      ]}
-    >
-      <BrandText
-        style={[isMobile ? fontSemibold11 : fontSemibold13, textStyle]}
-        numberOfLines={1}
-      >
-        {children}
-      </BrandText>
-    </View>
   );
 };
 
@@ -498,7 +447,6 @@ const PrettyPriceWithCurrency: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ data, style }) => {
   const isMobile = useIsMobile();
-
   return (
     <View
       style={[

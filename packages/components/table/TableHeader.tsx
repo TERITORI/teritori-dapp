@@ -1,85 +1,58 @@
-import React from "react";
-import {
-  View,
-  TextStyle,
-  Pressable,
-  ColorValue,
-  ViewStyle,
-} from "react-native";
+import React, { FC } from "react";
+import { StyleProp, View, ViewStyle } from "react-native";
 
-import { codGrayColor, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold12 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { BrandText } from "../BrandText";
+import { BrandText } from "@/components/BrandText";
+import { codGrayColor, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold12 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
-export type TableRowHeading = { label: string; flex: number };
-
-interface TableRowProps {
-  headings: { [key: string]: TableRowHeading };
-  labelStyle?: TextStyle;
-  allowSelect?: string[];
-  onPressItem?: (key: string) => void;
-  selectedColor?: ColorValue;
+export interface TableColumns {
+  [key: string]: { label: string; flex: number; minWidth?: number };
 }
 
-export const TableHeader: React.FC<TableRowProps> = ({
-  headings,
-  labelStyle,
-  allowSelect = [],
-  onPressItem,
-}) => {
-  const entries = Object.entries(headings);
+export const TableHeader: FC<{
+  columns: TableColumns;
+  style?: StyleProp<ViewStyle>;
+}> = ({ columns, style }) => {
   return (
     <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        width: "100%",
-        backgroundColor: codGrayColor,
-        minHeight: layout.contentSpacing,
-        paddingHorizontal: layout.spacing_x2_5,
-        borderTopLeftRadius: layout.borderRadius,
-        borderTopRightRadius: layout.borderRadius,
-      }}
+      style={[
+        {
+          flexDirection: "row",
+          alignItems: "center",
+          backgroundColor: codGrayColor,
+          minHeight: layout.contentSpacing,
+          borderTopLeftRadius: layout.borderRadius,
+          borderTopRightRadius: layout.borderRadius,
+        },
+        style,
+      ]}
     >
-      {entries.map(([key, { label, flex }], index) => {
-        const containerStyle: ViewStyle = {
-          flex,
-          paddingRight: entries.length - 1 === index ? 0 : layout.spacing_x1,
-        };
-        const content = (
-          <BrandText
-            style={[
-              fontSemibold12,
-              {
-                color: secondaryColor,
-                opacity: 0.4,
-              },
-              labelStyle,
-            ]}
-            numberOfLines={1}
+      {Object.entries(columns).map(
+        ([key, { label, minWidth = 0, flex }], index) => (
+          <View
+            style={{
+              flex,
+              marginRight: layout.spacing_x1,
+              minWidth,
+            }}
+            key={index}
           >
-            {label}
-          </BrandText>
-        );
-        if (onPressItem && allowSelect.includes(key)) {
-          return (
-            <Pressable
-              style={containerStyle}
-              key={key}
-              onPress={() => onPressItem(key)}
+            <BrandText
+              style={[
+                fontSemibold12,
+                {
+                  color: secondaryColor,
+                  opacity: 0.4,
+                },
+              ]}
+              numberOfLines={1}
             >
-              {content}
-            </Pressable>
-          );
-        }
-        return (
-          <View style={containerStyle} key={key}>
-            {content}
+              {label}
+            </BrandText>
           </View>
-        );
-      })}
+        ),
+      )}
     </View>
   );
 };
