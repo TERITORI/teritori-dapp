@@ -89,6 +89,7 @@ const Content: React.FC<{
         message: `Unsupported network kind ${network?.kind}`,
         title: "Error",
         type: "error",
+        mode: "normal",
       });
       return;
     }
@@ -108,6 +109,7 @@ const Content: React.FC<{
           title: "Failed to buy NFT",
           message: e.message,
           type: "error",
+          mode: "normal",
         });
       }
     }
