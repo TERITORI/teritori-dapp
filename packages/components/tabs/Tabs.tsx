@@ -155,8 +155,10 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                       </BrandText>
                     )}
 
-                    {!!item.badgeCount && <SpacerRow size={1} />}
-                    {item.badgeCount ? (
+                    {(item.badgeCount || item.badgeCount === 0) && (
+                      <SpacerRow size={1} />
+                    )}
+                    {item.badgeCount || item.badgeCount === 0 ? (
                       isSelected ? (
                         <PrimaryBadge
                           size="SM"
