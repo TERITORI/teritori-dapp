@@ -78,7 +78,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const [selectedStepKey, setSelectedStepKey] =
     useState<LaunchpadCreateStepKey>(1);
   const [isLoading, setLoading] = useState(false);
-  const {setLoadingFullScreen} = useFeedbacks()
+  const { setLoadingFullScreen } = useFeedbacks();
 
   const stepContent = useMemo(() => {
     switch (selectedStepKey) {
@@ -136,7 +136,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
 
   const onValid = async () => {
     setLoading(true);
-    setLoadingFullScreen(true)
+    setLoadingFullScreen(true);
     try {
       await createCollection(collectionForm.getValues());
       setLoading(false);
@@ -183,6 +183,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
         <FormProvider {...collectionForm}>{stepContent}</FormProvider>
         <View
           style={{
+            zIndex: 1,
             borderTopWidth: 1,
             borderColor: neutral33,
           }}
@@ -190,16 +191,14 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
           <View
             style={{
               flexDirection: "row",
-              marginVertical: layout.spacing_x2,
-              marginLeft: layout.spacing_x4,
-              marginRight: layout.spacing_x2,
+              margin: layout.spacing_x2,
               justifyContent:
                 selectedStepKey === 1 ? "flex-end" : "space-between",
             }}
           >
             {selectedStepKey !== 1 && (
               <SecondaryButton
-                width={136}
+                width={120}
                 size="M"
                 text="Back"
                 loader
@@ -209,7 +208,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
 
             {selectedStepKey === steps.length ? (
               <PrimaryButton
-                width={220}
+                width={160}
                 size="M"
                 text="Submit Collection"
                 loader

@@ -40,7 +40,9 @@ export const LaunchpadDetails: FC<{
       />
       <SpacerColumn size={4} />
 
-      <View style={{ justifyContent: "center", alignItems: "center" }}>
+      <View
+        style={{ justifyContent: "center", alignItems: "center", zIndex: 2 }}
+      >
         <View style={{ maxWidth: 416, width: "100%" }}>
           <BrandText style={fontSemibold20}>Collection details</BrandText>
           <SpacerColumn size={1} />
