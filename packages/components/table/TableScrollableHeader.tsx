@@ -11,6 +11,7 @@ export const TableScrollableHeader: FC<{ scrollableColumns: TableColumns }> = ({
     <TableHeader
       columns={scrollableColumns}
       style={{
+        width: "100%",
         marginRight: layout.spacing_x1,
         borderTopLeftRadius: 0,
       }}

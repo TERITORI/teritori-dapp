@@ -68,7 +68,7 @@ const scrollableColumns: TableColumns = {
   },
 };
 
-const breakpointM = 740;
+const breakpointM = 800;
 
 export const ActivityTable: React.FC<{
   nftId?: string;
