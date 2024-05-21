@@ -86,6 +86,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		hashtags        []string
 		premiumLevelMin int32
 		premiumLevelMax int32
+		hasLocation     bool
 	)
 
 	if filter != nil {
@@ -95,6 +96,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		mentions = filter.Mentions
 		premiumLevelMin = filter.PremiumLevelMin
 		premiumLevelMax = filter.PremiumLevelMax
+		hasLocation = filter.HasLocation
 	}
 
 	queryUserID := req.GetQueryUserId()
@@ -151,6 +153,9 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	}
 	if premiumLevelMax >= 0 {
 		query = query.Where("premium_level <= ?", premiumLevelMax)
+	}
+	if hasLocation {
+		query = query.Where("array_length(array_remove(location, NULL), 1) = 2")
 	}
 
 	query = query.
@@ -209,6 +214,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 			Reactions:            reactions,
 			TipAmount:            dbPost.TipAmount,
 			PremiumLevel:         dbPost.PremiumLevel,
+			Location:             dbPost.Location,
 		}
 	}
 
