@@ -15,6 +15,7 @@ type Post struct {
 	UserReactions        ObjectJSONB     `gorm:"type:jsonb;default:'{}'"`
 	AuthorId             networks.UserID `gorm:"index"`
 	PremiumLevel         uint32          `gorm:"index"`
+	Location             []float32       `gorm:"index"`
 	CreatedAt            int64
 	IsDeleted            bool
 	IsFree               bool
