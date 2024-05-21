@@ -77,10 +77,12 @@ export const GovernanceScreen: React.FC = () => {
         }}
       >
         {filteredProposals
-          .filter((value) =>
-            value.content.title
-              .toLowerCase()
-              .includes(searchInput.toLowerCase()),
+          .filter(
+            (value) =>
+              value.content.title &&
+              value.content.title
+                .toLowerCase()
+                .includes(searchInput.toLowerCase()),
           )
           .map((proposals) => (
             <GovernanceBox proposal={proposals} isMobile={isMobile} />
