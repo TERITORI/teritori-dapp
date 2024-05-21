@@ -40,6 +40,7 @@ export interface Post {
   id: string;
   localIdentifier: string;
   networkId: string;
+  location: number[];
 }
 
 export interface PostFilter {
@@ -51,6 +52,7 @@ export interface PostFilter {
   premiumLevelMin: number;
   /** inclusive, -1 means infinity */
   premiumLevelMax: number;
+  hasLocation: boolean;
 }
 
 export interface PostsRequest {
@@ -283,6 +285,7 @@ function createBasePost(): Post {
     id: "",
     localIdentifier: "",
     networkId: "",
+    location: [],
   };
 }
 
@@ -330,6 +333,11 @@ export const Post = {
     if (message.networkId !== "") {
       writer.uint32(114).string(message.networkId);
     }
+    writer.uint32(122).fork();
+    for (const v of message.location) {
+      writer.float(v);
+    }
+    writer.ldelim();
     return writer;
   },
 
@@ -438,6 +446,23 @@ export const Post = {
 
           message.networkId = reader.string();
           continue;
+        case 15:
+          if (tag === 125) {
+            message.location.push(reader.float());
+
+            continue;
+          }
+
+          if (tag === 122) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.location.push(reader.float());
+            }
+
+            continue;
+          }
+
+          break;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -465,6 +490,7 @@ export const Post = {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       localIdentifier: isSet(object.localIdentifier) ? globalThis.String(object.localIdentifier) : "",
       networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      location: globalThis.Array.isArray(object?.location) ? object.location.map((e: any) => globalThis.Number(e)) : [],
     };
   },
 
@@ -512,6 +538,9 @@ export const Post = {
     if (message.networkId !== "") {
       obj.networkId = message.networkId;
     }
+    if (message.location?.length) {
+      obj.location = message.location;
+    }
     return obj;
   },
 
@@ -534,12 +563,21 @@ export const Post = {
     message.id = object.id ?? "";
     message.localIdentifier = object.localIdentifier ?? "";
     message.networkId = object.networkId ?? "";
+    message.location = object.location?.map((e) => e) || [];
     return message;
   },
 };
 
 function createBasePostFilter(): PostFilter {
-  return { user: "", mentions: [], categories: [], hashtags: [], premiumLevelMin: 0, premiumLevelMax: 0 };
+  return {
+    user: "",
+    mentions: [],
+    categories: [],
+    hashtags: [],
+    premiumLevelMin: 0,
+    premiumLevelMax: 0,
+    hasLocation: false,
+  };
 }
 
 export const PostFilter = {
@@ -563,6 +601,9 @@ export const PostFilter = {
     }
     if (message.premiumLevelMax !== 0) {
       writer.uint32(48).int32(message.premiumLevelMax);
+    }
+    if (message.hasLocation === true) {
+      writer.uint32(56).bool(message.hasLocation);
     }
     return writer;
   },
@@ -626,6 +667,13 @@ export const PostFilter = {
 
           message.premiumLevelMax = reader.int32();
           continue;
+        case 7:
+          if (tag !== 56) {
+            break;
+          }
+
+          message.hasLocation = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -645,6 +693,7 @@ export const PostFilter = {
       hashtags: globalThis.Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => globalThis.String(e)) : [],
       premiumLevelMin: isSet(object.premiumLevelMin) ? globalThis.Number(object.premiumLevelMin) : 0,
       premiumLevelMax: isSet(object.premiumLevelMax) ? globalThis.Number(object.premiumLevelMax) : 0,
+      hasLocation: isSet(object.hasLocation) ? globalThis.Boolean(object.hasLocation) : false,
     };
   },
 
@@ -668,6 +717,9 @@ export const PostFilter = {
     if (message.premiumLevelMax !== 0) {
       obj.premiumLevelMax = Math.round(message.premiumLevelMax);
     }
+    if (message.hasLocation === true) {
+      obj.hasLocation = message.hasLocation;
+    }
     return obj;
   },
 
@@ -682,6 +734,7 @@ export const PostFilter = {
     message.hashtags = object.hashtags?.map((e) => e) || [];
     message.premiumLevelMin = object.premiumLevelMin ?? 0;
     message.premiumLevelMax = object.premiumLevelMax ?? 0;
+    message.hasLocation = object.hasLocation ?? false;
     return message;
   },
 };
