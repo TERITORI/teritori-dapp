@@ -14,7 +14,8 @@ import { LeaderboardEntry } from "@/api/marketplace/v1/marketplace";
 import { Pagination } from "@/components/Pagination";
 import { UserNameInline } from "@/components/UserNameInline";
 import { SpacerColumn } from "@/components/spacer";
-import { TableColumns, TableHeader } from "@/components/table/TableHeader";
+import { TableHeader } from "@/components/table/TableHeader";
+import { TableColumns } from "@/components/table/utils";
 import { getMarketplaceClient } from "@/utils/backend";
 
 const TABLE_COLUMNS: TableColumns = {
@@ -100,7 +101,7 @@ export const MarketplaceLeaderboardTable: React.FC<{
         currentPage={pageIndex}
         maxPage={maxPage}
         itemsPerPage={itemsPerPage}
-        dropdownOptions={[100]}
+        nbItemsOptions={[100]}
         setItemsPerPage={setItemsPerPage}
         onChangePage={setPageIndex}
       />

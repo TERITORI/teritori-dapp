@@ -13,7 +13,8 @@ import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline"
 import { SecondaryButtonOutline } from "@/components/buttons/SecondaryButtonOutline";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
 import { SpacerRow } from "@/components/spacer";
-import { TableColumns, TableHeader } from "@/components/table/TableHeader";
+import { TableHeader } from "@/components/table/TableHeader";
+import { TableColumns } from "@/components/table/utils";
 import { useCosmosValidatorBondedAmount } from "@/hooks/useCosmosValidatorBondedAmount";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useKeybaseAvatarURL } from "@/hooks/useKeybaseAvatarURL";

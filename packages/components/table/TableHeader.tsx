@@ -2,13 +2,19 @@ import React, { FC } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
-import { codGrayColor, secondaryColor } from "@/utils/style/colors";
-import { fontSemibold12 } from "@/utils/style/fonts";
+import {
+  TableColumns,
+  tableColumnsGap,
+  tableHeaderHeight,
+  tableHeaderTextStyle,
+  tablePaddingHorizontal,
+} from "@/components/table/utils";
+import {
+  codGrayColor,
+  mineShaftColor,
+  secondaryColor,
+} from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
-
-export interface TableColumns {
-  [key: string]: { label: string; flex: number; minWidth?: number };
-}
 
 export const TableHeader: FC<{
   columns: TableColumns;
@@ -21,26 +27,29 @@ export const TableHeader: FC<{
           flexDirection: "row",
           alignItems: "center",
           backgroundColor: codGrayColor,
-          minHeight: layout.contentSpacing,
+          height: tableHeaderHeight,
           borderTopLeftRadius: layout.borderRadius,
           borderTopRightRadius: layout.borderRadius,
+          borderBottomColor: mineShaftColor,
+          borderBottomWidth: 1,
+          paddingHorizontal: tablePaddingHorizontal,
         },
         style,
       ]}
     >
       {Object.entries(columns).map(
-        ([key, { label, minWidth = 0, flex }], index) => (
+        ([key, { label, minWidth, flex }], index) => (
           <View
             style={{
               flex,
-              marginRight: layout.spacing_x1,
+              marginRight: tableColumnsGap,
               minWidth,
             }}
             key={index}
           >
             <BrandText
               style={[
-                fontSemibold12,
+                tableHeaderTextStyle,
                 {
                   color: secondaryColor,
                   opacity: 0.4,

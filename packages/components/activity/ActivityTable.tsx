@@ -1,7 +1,7 @@
 import { Link } from "@react-navigation/native";
 import moment from "moment";
 import React, { useState } from "react";
-import { FlatList, ScrollView, TextStyle, View } from "react-native";
+import { FlatList, TextStyle, View } from "react-native";
 
 import { Activity } from "../../api/marketplace/v1/marketplace";
 import { useActivity } from "../../hooks/useActivity";
@@ -10,29 +10,24 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseActivityId, parseUserId, txExplorerLink } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import {
-  mineShaftColor,
   primaryColor,
   reefColor,
   neutral77,
   errorColor,
 } from "../../utils/style/colors";
-import { fontMedium14 } from "../../utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
-import { BrandText } from "../BrandText";
 import { ExternalLink } from "../ExternalLink";
-import { Pagination } from "../Pagination";
-import { SpacerColumn } from "../spacer";
+import { SpacerRow } from "../spacer";
 
-import { TableColumns } from "@/components/table/TableHeader";
-import { TableScrollableHeader } from "@/components/table/TableScrollableHeader";
-import { TableScrollableRow } from "@/components/table/TableScrollableRow";
-import { TableStaticHeader } from "@/components/table/TableStaticHeader";
-import { TableStaticRow } from "@/components/table/TableStaticRow";
-import { TableTextCell } from "@/components/table/TableTextCell";
-import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { TableCell } from "@/components/table/TableCell";
+import { TableHeader } from "@/components/table/TableHeader";
+import { TableRow } from "@/components/table/TableRow";
+import { CellBrandText, TableTextCell } from "@/components/table/TableTextCell";
+import { TableWrapper } from "@/components/table/TableWrapper";
+import { tableCellTextStyle, TableColumns } from "@/components/table/utils";
 import { tinyAddress } from "@/utils/text";
 
-const staticColumns: TableColumns = {
+const columns: TableColumns = {
   transactionId: {
     label: "Transaction ID",
     flex: 0.65,
@@ -43,9 +38,6 @@ const staticColumns: TableColumns = {
     flex: 0.65,
     minWidth: 140,
   },
-};
-
-const scrollableColumns: TableColumns = {
   time: {
     label: "Time",
     flex: 0.65,
@@ -74,7 +66,6 @@ export const ActivityTable: React.FC<{
   nftId?: string;
   collectionId?: string;
 }> = ({ nftId, collectionId }) => {
-  const { width } = useMaxResolution();
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [pageIndex, setPageIndex] = useState(0);
   const { total, activities } = useActivity({
@@ -92,189 +83,133 @@ export const ActivityTable: React.FC<{
         maxWidth: screenContentMaxWidthLarge,
       }}
     >
-      <View style={{ flexDirection: "row", width: "100%" }}>
-        <View
-          style={{
-            maxWidth: 264,
-          }}
-        >
-          <TableStaticHeader staticColumns={staticColumns} />
-
-          <FlatList
-            data={activities}
-            renderItem={({ item }) => (
-              <ActivityTableStaticRow activity={item} />
-            )}
-            keyExtractor={(item) => item.id}
-            style={{
-              minHeight: 248,
-              borderTopColor: mineShaftColor,
-              borderTopWidth: 1,
-            }}
-          />
-        </View>
-
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={[width >= breakpointM && { width: "100%" }]}
-        >
-          <View
-            style={{
-              alignItems: "flex-start",
-              width: "100%",
-            }}
-          >
-            <TableScrollableHeader scrollableColumns={scrollableColumns} />
-
-            <FlatList
-              data={activities}
-              renderItem={({ item }) => (
-                <ActivityTableScrollableRow activity={item} />
-              )}
-              keyExtractor={(item) => item.id}
-              style={{
-                minHeight: 248,
-                width: "100%",
-                borderTopColor: mineShaftColor,
-                borderTopWidth: 1,
-              }}
-            />
-          </View>
-        </ScrollView>
-      </View>
-
-      <SpacerColumn size={2} />
-      <Pagination
-        currentPage={pageIndex}
-        maxPage={maxPage}
-        itemsPerPage={itemsPerPage}
-        dropdownOptions={[50, 100, 200]}
-        setItemsPerPage={setItemsPerPage}
-        onChangePage={setPageIndex}
-      />
-      <SpacerColumn size={2} />
+      <TableWrapper
+        showPagination
+        paginationProps={{
+          currentPage: pageIndex,
+          maxPage,
+          itemsPerPage,
+          nbItemsOptions: [50, 100, 200],
+          setItemsPerPage,
+          onChangePage: setPageIndex,
+        }}
+        horizontalScrollBreakpoint={breakpointM}
+      >
+        <TableHeader columns={columns} />
+        <FlatList
+          data={activities}
+          renderItem={({ item }) => <ActivityTableRow activity={item} />}
+          keyExtractor={(item) => item.id}
+        />
+      </TableWrapper>
     </View>
   );
 };
 
-const ActivityTableStaticRow: React.FC<{
+const ActivityTableRow: React.FC<{
   activity: Activity;
 }> = ({ activity }) => {
+  const isMobile = useIsMobile();
   const [network, txHash] = parseActivityId(activity.id);
+  const [, buyerAddress] = parseUserId(activity.buyerId);
+  const [, sellerAddress] = parseUserId(activity.sellerId);
+  const buyerInfo = useNSUserInfo(activity.buyerId);
+  const sellerInfo = useNSUserInfo(activity.sellerId);
+  const hasAmount = !!(activity.amount && activity.amount !== "0");
 
   return (
-    <TableStaticRow>
-      <View
+    <TableRow>
+      <TableCell
         style={{
-          minWidth: staticColumns.transactionId.minWidth,
-          flex: staticColumns.transactionId.flex,
-          marginRight: layout.spacing_x1,
+          minWidth: columns.transactionId.minWidth,
+          flex: columns.transactionId.flex,
         }}
       >
         <ExternalLink
           externalUrl={txExplorerLink(network?.id, txHash)}
-          style={[fontMedium14, { width: "100%" }]}
+          style={[tableCellTextStyle, { width: "100%" }]}
           ellipsizeMode="middle"
           numberOfLines={1}
         >
           {tinyAddress(txHash, 12)}
         </ExternalLink>
-      </View>
+      </TableCell>
 
       <TableTextCell
         style={[
           {
-            minWidth: staticColumns.transactionType.minWidth,
-            flex: staticColumns.transactionType.flex,
+            minWidth: columns.transactionType.minWidth,
+            flex: columns.transactionType.flex,
           },
           activityNameStyle(activity.transactionKind),
         ]}
       >
         {prettyActivityName(activity.transactionKind)}
       </TableTextCell>
-    </TableStaticRow>
-  );
-};
 
-const ActivityTableScrollableRow: React.FC<{
-  activity: Activity;
-}> = ({ activity }) => {
-  const isMobile = useIsMobile();
-
-  const [network] = parseActivityId(activity.id);
-  const [, buyerAddress] = parseUserId(activity.buyerId);
-  const [, sellerAddress] = parseUserId(activity.sellerId);
-  const buyerInfo = useNSUserInfo(activity.buyerId);
-  const sellerInfo = useNSUserInfo(activity.sellerId);
-
-  const hasAmount = !!(activity.amount && activity.amount !== "0");
-
-  return (
-    <TableScrollableRow>
       <TableTextCell
         style={[
           {
-            minWidth: scrollableColumns.time.minWidth,
-            flex: scrollableColumns.time.flex,
+            minWidth: columns.time.minWidth,
+            flex: columns.time.flex,
           },
         ]}
       >
         {moment(activity.time).fromNow()}
       </TableTextCell>
 
-      <View
+      <TableCell
         style={{
           flexDirection: "row",
           alignItems: "center",
-          minWidth: scrollableColumns.totalAmount.minWidth,
-          flex: scrollableColumns.totalAmount.flex,
+          minWidth: columns.totalAmount.minWidth,
+          flex: columns.totalAmount.flex,
           marginRight: isMobile ? layout.spacing_x1 : layout.spacing_x1_5,
         }}
       >
-        <BrandText style={[fontMedium14, { marginRight: layout.spacing_x1 }]}>
-          {hasAmount &&
-            `${prettyPrice(network?.id || "", activity.amount, activity.denom)}`}
-        </BrandText>
-        <BrandText style={[fontMedium14, { color: neutral77 }]}>
-          {hasAmount && `≈ $${activity.usdPrice.toFixed(2)}`}
-        </BrandText>
-      </View>
+        <CellBrandText>
+          {hasAmount
+            ? `${prettyPrice(network?.id || "", activity.amount, activity.denom)}`
+            : ""}
+        </CellBrandText>
+        <SpacerRow size={1} />
+        <CellBrandText style={{ color: neutral77 }}>
+          {hasAmount ? `≈ $${activity.usdPrice.toFixed(2)}` : ""}
+        </CellBrandText>
+      </TableCell>
 
-      <View
+      <TableCell
         style={{
-          marginRight: isMobile ? layout.spacing_x1 : layout.spacing_x1_5,
-          minWidth: scrollableColumns.buyer.minWidth,
-          flex: scrollableColumns.buyer.flex,
+          minWidth: columns.buyer.minWidth,
+          flex: columns.buyer.flex,
         }}
       >
         <Link
           to={`/user/${activity.buyerId}`}
-          style={[fontMedium14, { color: primaryColor }]}
+          style={[tableCellTextStyle, { color: primaryColor }]}
           numberOfLines={1}
           ellipsizeMode="middle"
         >
           {buyerInfo.metadata?.tokenId || tinyAddress(buyerAddress, 18)}
         </Link>
-      </View>
+      </TableCell>
 
-      <View
+      <TableCell
         style={{
-          marginRight: isMobile ? layout.spacing_x1 : layout.spacing_x1_5,
-          minWidth: scrollableColumns.seller.minWidth,
-          flex: scrollableColumns.seller.flex,
+          minWidth: columns.seller.minWidth,
+          flex: columns.seller.flex,
         }}
       >
         <Link
           to={`/user/${activity.sellerId}`}
-          style={[fontMedium14, { color: primaryColor }]}
+          style={[tableCellTextStyle, { color: primaryColor }]}
           numberOfLines={1}
           ellipsizeMode="middle"
         >
           {sellerInfo.metadata?.tokenId || tinyAddress(sellerAddress, 18)}
         </Link>
-      </View>
-    </TableScrollableRow>
+      </TableCell>
+    </TableRow>
   );
 };
 

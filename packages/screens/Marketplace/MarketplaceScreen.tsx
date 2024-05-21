@@ -14,7 +14,7 @@ import { useEnabledNetworks } from "@/hooks/useEnabledNetworks";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
-import { CollectionTable } from "@/screens/Marketplace/CollectionTable";
+import { CollectionsTable } from "@/screens/Marketplace/CollectionsTable";
 import { selectTimePeriod } from "@/store/slices/marketplaceFilters";
 import { ScreenFC } from "@/utils/navigation";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
@@ -108,7 +108,10 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
           <PeriodFilter />
         </View>
 
-        <CollectionTable rows={collections || []} filterText={filterText} />
+        <CollectionsTable
+          collections={collections || []}
+          filterText={filterText}
+        />
       </View>
     </ScreenContainer>
   );

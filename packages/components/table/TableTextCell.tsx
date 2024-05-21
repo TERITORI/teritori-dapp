@@ -1,27 +1,29 @@
-import React, { FC, ReactNode } from "react";
-import { StyleProp, TextStyle, View, ViewStyle } from "react-native";
+import React, { FC } from "react";
+import { StyleProp, TextStyle, ViewStyle } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
-import { fontSemibold13 } from "@/utils/style/fonts";
-import { layout } from "@/utils/style/layout";
+import { TableCell } from "@/components/table/TableCell";
+import { tableCellTextStyle } from "@/components/table/utils";
 
 export const TableTextCell: FC<{
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
-  children: ReactNode;
-}> = ({ children, style, textStyle }) => {
+  children?: string;
+}> = ({ children = "", style, textStyle }) => {
   return (
-    <View
-      style={[
-        {
-          marginRight: layout.spacing_x1,
-        },
-        style,
-      ]}
-    >
-      <BrandText style={[fontSemibold13, textStyle]} numberOfLines={1}>
-        {children}
-      </BrandText>
-    </View>
+    <TableCell style={style}>
+      <CellBrandText style={textStyle}>{children}</CellBrandText>
+    </TableCell>
+  );
+};
+
+export const CellBrandText: FC<{
+  children?: string;
+  style?: StyleProp<TextStyle>;
+}> = ({ children = "", style }) => {
+  return (
+    <BrandText style={[tableCellTextStyle, style]} numberOfLines={1}>
+      {children}
+    </BrandText>
   );
 };
