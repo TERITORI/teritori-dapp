@@ -1,5 +1,6 @@
 import { teritoriTestnetCurrencies } from "./currencies";
 import {
+  CosmWasmLaunchpad,
   CosmWasmNFTsBurner,
   CosmWasmPremiumFeed,
   NetworkFeature,
@@ -13,6 +14,12 @@ const premiumFeedFeature: CosmWasmPremiumFeed = {
   type: NetworkFeature.CosmWasmPremiumFeed,
   membershipContractAddress: "",
   mintDenom: "utori",
+};
+
+const nftsBurnerFeature: CosmWasmNFTsBurner = {
+  type: NetworkFeature.CosmWasmNFTsBurner,
+  burnerContractAddress:
+    "tori1qyl0j7a24amk8k8gcmvv07y2zjx7nkcwpk73js24euh64hkja6esd2p2xp",
 };
 
 const cosmwasmLaunchpadFeature: CosmWasmLaunchpad = {

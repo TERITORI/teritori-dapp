@@ -121,7 +121,7 @@ export const getLaunchpadClient = (networkId: string | undefined) => {
     return undefined;
   }
   if (!launchpadClients[network.id]) {
-    const rpc = new LaunchpadGrpcWebImpl(network.backendEndpoint, {
+    const rpc = new LaunchpadGrpcWebImpl(network.launchpadEndpoint, {
       debug: false,
     });
     launchpadClients[network.id] = new LaunchpadServiceClientImpl(rpc);

@@ -8,7 +8,6 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
-	"github.com/TERITORI/teritori-dapp/go/pkg/pinata"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"golang.org/x/exp/slices"
@@ -65,17 +64,19 @@ func (s *Launchpad) UploadMetadatas(ctx context.Context, req *launchpadpb.Upload
 		}
 	}
 
-	// Check pinning
-	pinataService := pinata.NewPinataService(pinataJwt)
-	data, err := pinataService.ListFiles(fmt.Sprintf("%d-", req.GetProjectId()))
-
-	if err != nil {
-		return nil, errors.New("failed to get pinned files")
+	pinnedCIDs := []string{}
+	for _, item := range req.Metadatas {
+		pinnedCIDs = append(pinnedCIDs, *item.Image)
 	}
 
-	pinnedCIDs := []string{}
-	for _, item := range data {
-		pinnedCIDs = append(pinnedCIDs, item.IpfsPinHash)
+	// Check pinning
+	pinningSrv, err := NewPinningService(Pinata, pinataJwt)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get pinning service")
+	}
+
+	if _, err := pinningSrv.VerifyPinned(pinnedCIDs...); err != nil {
+		return nil, errors.Wrap(err, "failed to verify pinned images")
 	}
 
 	// Check if all files have been pinned correctly
@@ -204,5 +205,27 @@ func (s *Launchpad) TokenMetadata(ctx context.Context, req *launchpadpb.TokenMet
 		Metadata:    tokenMetadata,
 		MerkleRoot:  tree.GetHexRootWithoutPrefix(),
 		MerkleProof: proof,
+	}, nil
+}
+
+func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.CollectionsByCreatorRequest) (*launchpadpb.CollectionsByCreatorResponse, error) {
+	creatorID := req.GetCreator()
+
+	if creatorID == "" {
+		return nil, errors.New("creatorID is mandatory")
+	}
+
+	var projects []indexerdb.LaunchpadProject
+	if err := s.conf.IndexerDB.Find(&projects, "creator_id = ?", creatorID).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to get collection data")
+	}
+
+	res := make([]string, len(projects))
+	for idx, pj := range projects {
+		res[idx] = pj.CollectionData.String()
+	}
+
+	return &launchpadpb.CollectionsByCreatorResponse{
+		Collections: res,
 	}, nil
 }

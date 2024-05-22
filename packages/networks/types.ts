@@ -25,6 +25,7 @@ interface NetworkInfoBase {
   contractExplorer: string;
   testnet: boolean;
   backendEndpoint: string;
+  launchpadEndpoint: string;
   secondaryDuringMintList?: string[];
   excludeFromLaunchpadList?: string[];
 
