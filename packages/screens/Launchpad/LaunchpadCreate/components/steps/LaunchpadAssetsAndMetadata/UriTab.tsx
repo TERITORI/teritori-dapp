@@ -15,7 +15,7 @@ export const UriTab: React.FC = () => {
   const collectionForm = useFormContext<CollectionFormValues>();
 
   return (
-    <View style={{ width: "100%", flex: 1 }}>
+    <View style={{ width: "100%", marginTop: layout.spacing_x2 }}>
       <View
         style={{
           flexDirection: "row",

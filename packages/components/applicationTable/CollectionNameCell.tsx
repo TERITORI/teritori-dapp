@@ -29,7 +29,7 @@ export const CollectionNameCell = ({ rowData, style }: Props) => {
         },
       ]}
       to={{
-        screen: "ApplicationReview",
+        screen: "LaunchpadApplicationReview",
       }}
     >
       <RoundedGradientImage
