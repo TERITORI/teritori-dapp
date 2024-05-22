@@ -2,27 +2,19 @@ import React, { useState } from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 
 import { FileUploaderProps } from "./FileUploader.type";
-import {
-  gradientColorBlue,
-  gradientColorDarkerBlue,
-  gradientColorTurquoise,
-  neutral17,
-  neutral77,
-  withAlpha,
-} from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { BrandText } from "../../BrandText";
-import { DeleteButton } from "../../FilePreview/DeleteButton";
-import { SVG } from "../../SVG";
-import { LegacyPrimaryBox } from "../../boxes/LegacyPrimaryBox";
-import { GradientText } from "../../gradientText";
-import { Label } from "../TextInputCustom";
 
 import uploadSVG from "@/assets/icons/upload.svg";
+import { BrandText } from "@/components/BrandText";
+import { DeleteButton } from "@/components/FilePreview/DeleteButton";
+import { SVG } from "@/components/SVG";
+import { PrimaryBox } from "@/components/boxes/PrimaryBox";
+import { GradientText } from "@/components/gradientText";
+import { Label } from "@/components/inputs/TextInputCustom";
+import { neutral17, neutral77 } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
-//FIXME: Doesn't work for now =>  Only the .web version is used
-
+//FIXME: Doesn't work for now =>  Consider only the .web version
 export const FileUploader: React.FC<FileUploaderProps> = ({
   label,
   style,
@@ -67,16 +59,9 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
               />
             </>
           ) : (
-            <LegacyPrimaryBox
-              noBrokenCorners
-              fullWidth
-              colors={[
-                withAlpha(gradientColorDarkerBlue, 0.5),
-                withAlpha(gradientColorBlue, 0.5),
-                withAlpha(gradientColorTurquoise, 0.5),
-              ]}
-              style={{ flex: 1 }}
-              mainContainerStyle={{
+            <PrimaryBox
+              style={{
+                flex: 1,
                 height: 80,
                 alignItems: "center",
                 padding: layout.spacing_x2_5,
@@ -113,7 +98,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                   </BrandText>
                 </View>
               </View>
-            </LegacyPrimaryBox>
+            </PrimaryBox>
           )}
         </View>
       </TouchableOpacity>

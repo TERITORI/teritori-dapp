@@ -3,23 +3,19 @@ import { View } from "react-native";
 
 import { FileUploaderProps } from "./FileUploader.type";
 import { formatFile } from "./formatFile";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import {
-  neutral17,
-  neutral77,
-  secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { BrandText } from "../../BrandText";
-import { DeleteButton } from "../../FilePreview/DeleteButton";
-import { SVG } from "../../SVG";
-import { GradientText } from "../../gradientText";
-import { Label } from "../TextInputCustom";
 
 import uploadSVG from "@/assets/icons/upload.svg";
+import { BrandText } from "@/components/BrandText";
+import { DeleteButton } from "@/components/FilePreview/DeleteButton";
+import { SVG } from "@/components/SVG";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { GradientText } from "@/components/gradientText";
+import { Label } from "@/components/inputs/TextInputCustom";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { neutral17, neutral77, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const FileUploader: FC<FileUploaderProps> = ({
   label,
