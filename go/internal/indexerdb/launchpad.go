@@ -1,18 +1,22 @@
 package indexerdb
 
-import "gorm.io/datatypes"
+import (
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+	"gorm.io/datatypes"
+)
 
 type LaunchpadProject struct {
-	NetworkID string `gorm:"primaryKey"`
-	ProjectID uint32 `gorm:"primaryKey"`
+	NetworkID string          `gorm:"primaryKey"`
+	ProjectID string          `gorm:"primaryKey"`
+	CreatorID networks.UserID `gorm:"index"`
 
 	MerkleRoot     string
-	CollectionName string
+	CollectionData datatypes.JSON
 }
 
 type LaunchpadToken struct {
 	NetworkID string `gorm:"primaryKey"`
-	ProjectID uint32 `gorm:"primaryKey"`
+	ProjectID string `gorm:"primaryKey"`
 	TokenID   uint32 `gorm:"primaryKey"`
 
 	Metadata datatypes.JSON
@@ -20,7 +24,7 @@ type LaunchpadToken struct {
 
 type LaunchpadWhitelist struct {
 	NetworkID   string `gorm:"primaryKey"`
-	ProjectID   uint32 `gorm:"primaryKey"`
+	ProjectID   string `gorm:"primaryKey"`
 	WhitelistID uint32 `gorm:"primaryKey"`
 
 	MerkleRoot string

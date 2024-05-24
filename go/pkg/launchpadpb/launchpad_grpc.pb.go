@@ -23,9 +23,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LaunchpadServiceClient interface {
 	UploadMetadatas(ctx context.Context, in *UploadMetadatasRequest, opts ...grpc.CallOption) (*UploadMetadatasResponse, error)
-	UploadMetadata(ctx context.Context, in *UploadMetadataRequest, opts ...grpc.CallOption) (*UploadMetadataResponse, error)
 	CalculateCollectionMerkleRoot(ctx context.Context, in *CalculateCollectionMerkleRootRequest, opts ...grpc.CallOption) (*CalculateCollectionMerkleRootResponse, error)
 	TokenMetadata(ctx context.Context, in *TokenMetadataRequest, opts ...grpc.CallOption) (*TokenMetadataResponse, error)
+	CollectionsByCreator(ctx context.Context, in *CollectionsByCreatorRequest, opts ...grpc.CallOption) (*CollectionsByCreatorResponse, error)
 }
 
 type launchpadServiceClient struct {
@@ -39,15 +39,6 @@ func NewLaunchpadServiceClient(cc grpc.ClientConnInterface) LaunchpadServiceClie
 func (c *launchpadServiceClient) UploadMetadatas(ctx context.Context, in *UploadMetadatasRequest, opts ...grpc.CallOption) (*UploadMetadatasResponse, error) {
 	out := new(UploadMetadatasResponse)
 	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/UploadMetadatas", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *launchpadServiceClient) UploadMetadata(ctx context.Context, in *UploadMetadataRequest, opts ...grpc.CallOption) (*UploadMetadataResponse, error) {
-	out := new(UploadMetadataResponse)
-	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/UploadMetadata", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -72,14 +63,23 @@ func (c *launchpadServiceClient) TokenMetadata(ctx context.Context, in *TokenMet
 	return out, nil
 }
 
+func (c *launchpadServiceClient) CollectionsByCreator(ctx context.Context, in *CollectionsByCreatorRequest, opts ...grpc.CallOption) (*CollectionsByCreatorResponse, error) {
+	out := new(CollectionsByCreatorResponse)
+	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/CollectionsByCreator", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LaunchpadServiceServer is the server API for LaunchpadService service.
 // All implementations must embed UnimplementedLaunchpadServiceServer
 // for forward compatibility
 type LaunchpadServiceServer interface {
 	UploadMetadatas(context.Context, *UploadMetadatasRequest) (*UploadMetadatasResponse, error)
-	UploadMetadata(context.Context, *UploadMetadataRequest) (*UploadMetadataResponse, error)
 	CalculateCollectionMerkleRoot(context.Context, *CalculateCollectionMerkleRootRequest) (*CalculateCollectionMerkleRootResponse, error)
 	TokenMetadata(context.Context, *TokenMetadataRequest) (*TokenMetadataResponse, error)
+	CollectionsByCreator(context.Context, *CollectionsByCreatorRequest) (*CollectionsByCreatorResponse, error)
 	mustEmbedUnimplementedLaunchpadServiceServer()
 }
 
@@ -90,14 +90,14 @@ type UnimplementedLaunchpadServiceServer struct {
 func (UnimplementedLaunchpadServiceServer) UploadMetadatas(context.Context, *UploadMetadatasRequest) (*UploadMetadatasResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UploadMetadatas not implemented")
 }
-func (UnimplementedLaunchpadServiceServer) UploadMetadata(context.Context, *UploadMetadataRequest) (*UploadMetadataResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UploadMetadata not implemented")
-}
 func (UnimplementedLaunchpadServiceServer) CalculateCollectionMerkleRoot(context.Context, *CalculateCollectionMerkleRootRequest) (*CalculateCollectionMerkleRootResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CalculateCollectionMerkleRoot not implemented")
 }
 func (UnimplementedLaunchpadServiceServer) TokenMetadata(context.Context, *TokenMetadataRequest) (*TokenMetadataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TokenMetadata not implemented")
+}
+func (UnimplementedLaunchpadServiceServer) CollectionsByCreator(context.Context, *CollectionsByCreatorRequest) (*CollectionsByCreatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CollectionsByCreator not implemented")
 }
 func (UnimplementedLaunchpadServiceServer) mustEmbedUnimplementedLaunchpadServiceServer() {}
 
@@ -126,24 +126,6 @@ func _LaunchpadService_UploadMetadatas_Handler(srv interface{}, ctx context.Cont
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LaunchpadServiceServer).UploadMetadatas(ctx, req.(*UploadMetadatasRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _LaunchpadService_UploadMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UploadMetadataRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LaunchpadServiceServer).UploadMetadata(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/launchpad.v1.LaunchpadService/UploadMetadata",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LaunchpadServiceServer).UploadMetadata(ctx, req.(*UploadMetadataRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -184,6 +166,24 @@ func _LaunchpadService_TokenMetadata_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LaunchpadService_CollectionsByCreator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CollectionsByCreatorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LaunchpadServiceServer).CollectionsByCreator(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/launchpad.v1.LaunchpadService/CollectionsByCreator",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LaunchpadServiceServer).CollectionsByCreator(ctx, req.(*CollectionsByCreatorRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LaunchpadService_ServiceDesc is the grpc.ServiceDesc for LaunchpadService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -196,16 +196,16 @@ var LaunchpadService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LaunchpadService_UploadMetadatas_Handler,
 		},
 		{
-			MethodName: "UploadMetadata",
-			Handler:    _LaunchpadService_UploadMetadata_Handler,
-		},
-		{
 			MethodName: "CalculateCollectionMerkleRoot",
 			Handler:    _LaunchpadService_CalculateCollectionMerkleRoot_Handler,
 		},
 		{
 			MethodName: "TokenMetadata",
 			Handler:    _LaunchpadService_TokenMetadata_Handler,
+		},
+		{
+			MethodName: "CollectionsByCreator",
+			Handler:    _LaunchpadService_CollectionsByCreator_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

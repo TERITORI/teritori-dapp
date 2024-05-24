@@ -7,12 +7,7 @@ import { GameBgCard } from "./component/GameBgCard";
 import { GameBgOverlay } from "./component/GameBgOverlay";
 import { RiotGameHeader } from "./component/RiotGameHeader";
 
-import {
-  DeepPartial,
-  Metadata,
-  UploadMetadataInfo,
-  UploadMetadataRequest,
-} from "@/api/launchpad/v1/launchpad";
+import { Metadata } from "@/api/launchpad/v1/launchpad";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { FileUploader } from "@/components/inputs/fileUploader";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
@@ -110,7 +105,7 @@ export const RiotGameScreen = () => {
 
     const resp = await client.UploadMetadatas({
       sender: selectedWallet?.address,
-      projectId: 1,
+      projectId: "TORI",
       networkId,
       metadatas,
     });
@@ -121,7 +116,7 @@ export const RiotGameScreen = () => {
     const client = mustGetLaunchpadClient(networkId);
     const resp = await client.TokenMetadata({
       sender: selectedWallet?.address,
-      projectId: 1,
+      projectId: "TORI",
       networkId,
       tokenId: 1,
     });
@@ -149,35 +144,14 @@ export const RiotGameScreen = () => {
       royaltyPaymentAddress: "",
     };
 
-    const c: UploadMetadataInfo = {
+    console.log("==================before",);
+    const resp = await client.UploadMetadatas({
       sender: selectedWallet?.address || "",
-      projectId: 1,
       networkId,
-      tokenId: 1,
-      metadata: nft0,
-    };
-
-    const reqObs = new Observable<DeepPartial<UploadMetadataRequest>>(
-      function subscribe(subscriber) {
-        // Keep track of the interval resource
-        let count = 0;
-        const intervalId = setInterval(() => {
-          if (count >= 10) {
-            subscriber.complete();
-            clearInterval(intervalId);
-          }
-
-          subscriber.next(
-            UploadMetadataRequest.fromPartial({ info: { sender: "test" } }),
-          );
-          count++;
-        }, 1000);
-      },
-    );
-
-    const resp = await client.UploadMetadata(reqObs);
+      projectId: "TORI",
+      metadatas: [nft0],
+    });
     console.log(resp);
-    // obsv.pipe<DeepPartial<UploadMetadataRequest>>({});
   };
 
   return (

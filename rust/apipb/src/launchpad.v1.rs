@@ -1,31 +1,15 @@
 // @generated
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UploadMetadataInfo {
+pub struct CollectionsByCreatorRequest {
     #[prost(string, tag="1")]
-    pub sender: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
-    pub network_id: ::prost::alloc::string::String,
-    #[prost(uint32, tag="3")]
-    pub project_id: u32,
-    #[prost(uint32, tag="4")]
-    pub token_id: u32,
-    #[prost(message, optional, tag="5")]
-    pub metadata: ::core::option::Option<Metadata>,
+    pub creator: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UploadMetadataRequest {
-    #[prost(message, optional, tag="1")]
-    pub info: ::core::option::Option<UploadMetadataInfo>,
-    #[prost(bytes="vec", tag="2")]
-    pub image_data: ::prost::alloc::vec::Vec<u8>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct UploadMetadataResponse {
-    #[prost(uint32, tag="1")]
-    pub token_id: u32,
+pub struct CollectionsByCreatorResponse {
+    #[prost(string, repeated, tag="1")]
+    pub collections: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -34,8 +18,8 @@ pub struct UploadMetadatasRequest {
     pub sender: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
     pub network_id: ::prost::alloc::string::String,
-    #[prost(uint32, tag="3")]
-    pub project_id: u32,
+    #[prost(string, tag="3")]
+    pub project_id: ::prost::alloc::string::String,
     #[prost(message, repeated, tag="4")]
     pub metadatas: ::prost::alloc::vec::Vec<Metadata>,
     #[prost(string, optional, tag="5")]
@@ -68,8 +52,8 @@ pub struct TokenMetadataRequest {
     pub sender: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
     pub network_id: ::prost::alloc::string::String,
-    #[prost(uint32, tag="3")]
-    pub project_id: u32,
+    #[prost(string, tag="3")]
+    pub project_id: ::prost::alloc::string::String,
     #[prost(uint32, tag="4")]
     pub token_id: u32,
 }
