@@ -36,6 +36,10 @@ export const useCreateCollection = () => {
   const createCollection = useCallback(
     async (collectionFormValues: CollectionFormValues) => {
       if (!selectedWallet) return;
+      const userId = selectedWallet.userId;
+      const walletAddress = selectedWallet.address;
+      const networkId = selectedWallet.networkId;
+
       const signingComswasmClient =
         await getKeplrSigningCosmWasmClient(selectedNetworkId);
       const cosmwasmLaunchpadFeature = getNetworkFeature(
@@ -45,16 +49,15 @@ export const useCreateCollection = () => {
       if (!cosmwasmLaunchpadFeature) return;
       // const defaultMintDenom = cosmwasmLaunchpadFeature.defaultMintDenom;
 
-      const launchpadClient = mustGetLaunchpadClient(selectedWallet.networkId);
+      const launchpadBackendClient = mustGetLaunchpadClient(networkId);
 
-      const nftLaunchpadClient = new NftLaunchpadClient(
+      const nftLaunchpadContractClient = new NftLaunchpadClient(
         signingComswasmClient,
-        selectedWallet.address,
+        walletAddress,
         cosmwasmLaunchpadFeature.launchpadContractAddress,
       );
       const pinataJWTKey =
-        userIPFSKey ||
-        (await generateIpfsKey(selectedNetworkId, selectedWallet.userId));
+        userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
       if (!pinataJWTKey) {
         console.error("upload file err : No Pinata JWT");
         setToast({
@@ -116,33 +119,6 @@ export const useCreateCollection = () => {
           },
         );
 
-        // ========== Metadata TODO: For now, handle metadata using this way
-        const metadatas: Metadata[] = [];
-        if (collectionFormValues.assetsMetadatas?.length) {
-          collectionFormValues.assetsMetadatas.forEach((metadata) => {
-            metadatas.push({
-              // image: "", //TODO: Why string ?
-              // imageData: "", //TODO: What is this ?
-              externalUrl: metadata.externalUrl,
-              description: metadata.description,
-              name: metadata.name,
-              youtubeUrl: metadata.youtubeUrl,
-              attributes: [],
-              backgroundColor: "",
-              animationUrl: "",
-              royaltyPercentage: 5,
-              royaltyPaymentAddress: "",
-            });
-          });
-        }
-        const { merkleRoot } = await launchpadClient.UploadMetadatas({
-          sender: selectedWallet?.address,
-          // projectId: collectionFormValues.symbol, // TODO: What to do with this ?
-          pinataJwt: userIPFSKey,
-          networkId: selectedNetworkId,
-          metadatas,
-        });
-
         // ========== Final collection
         const collection: Collection = {
           name: collectionFormValues.name || "",
@@ -194,7 +170,6 @@ export const useCreateCollection = () => {
             : 0,
 
           mint_periods,
-          metadatas_merkle_root: merkleRoot,
 
           royalty_address: collectionFormValues.royaltyAddress || "",
           royalty_percentage: collectionFormValues.royaltyPercentage
@@ -209,40 +184,62 @@ export const useCreateCollection = () => {
 
         console.log("========= collection", collection);
 
-        // ========== Submit the collection
-        const result = await nftLaunchpadClient.submitCollection({
-          collection,
+        // ========== Submit the collection through the contract
+        const submitCollectionResult =
+          await nftLaunchpadContractClient.submitCollection({
+            collection,
+          });
+        console.log("======== submitCollection result", submitCollectionResult);
+
+        // Collection status: SUBMITTED
+
+        // ========== Retrieve de submitted collection from the backend
+        const { collections } =
+          await launchpadBackendClient.CollectionsByCreator({
+            creator: userId,
+          }); // TODO: ==> So we get projectID
+
+        // ========== Send Metadata of this collection to the backend
+        const metadatas: Metadata[] = [];
+        if (collectionFormValues.assetsMetadatas?.length) {
+          collectionFormValues.assetsMetadatas.forEach((metadata) => {
+            metadatas.push({
+              // image: "", //TODO: Why string ?
+              // imageData: "", //TODO: What is this ?
+              externalUrl: metadata.externalUrl,
+              description: metadata.description,
+              name: metadata.name,
+              youtubeUrl: metadata.youtubeUrl,
+              attributes: [],
+              backgroundColor: "",
+              animationUrl: "",
+              royaltyPercentage: 5,
+              royaltyPaymentAddress: "",
+            });
+          });
+        }
+        const { merkleRoot } = await launchpadBackendClient.UploadMetadatas({
+          sender: walletAddress,
+          projectId: "TODO", // TODO: ==> Put here projectID from CollectionsByCreator
+          pinataJwt: userIPFSKey,
+          networkId: selectedNetworkId,
+          metadatas,
         });
-        console.log("======== createCollection result", result);
 
-        // ========== Metadata TODO: LATER: Use this way: Files will be uploaded on backend. We'll get the projectId from collection, and UploadMetadatas
-        // const metadatas: Metadata[] = [];
-        // if (collectionFormValues.assetsMetadatas?.length) {
-        //   collectionFormValues.assetsMetadatas.forEach((metadata) => {
-        //     metadatas.push({
-        //       image: "", //TODO:
-        //       imageData: "",
-        //       externalUrl: metadata.externalUrl,
-        //       description: metadata.description,
-        //       name: metadata.name,
-        //       youtubeUrl: metadata.youtubeUrl,
-        //       attributes: [],
-        //       backgroundColor: "",
-        //       animationUrl: "",
-        //       royaltyPercentage: 5,
-        //       royaltyPaymentAddress: "",
-        //     });
-        //   });
-        // }
-        //
-        // const { merkleRoot } = await launchpadClient.UploadMetadatas({
-        //   sender: selectedWallet?.address,
-        //   // projectId: TODO,
-        //   networkId: selectedNetworkId,
-        //   metadatas,
-        // });
+        // ========== Provide the merkle root through the contract
+        const updateMerkleRootResult =
+          await nftLaunchpadContractClient.updateMerkleRoot({
+            collectionId: "TODO", // TODO: ==> Put here projectID from CollectionsByCreator
+            merkleRoot,
+          });
+        console.log(
+          "======== updateMerkleRootResult result",
+          updateMerkleRootResult,
+        );
 
-        return result;
+        // Collection status: READY TO DEPLOY
+
+        return { submitCollectionResult, updateMerkleRootResult };
       } catch (e) {
         console.error("Error creating a NFT Collection in the Launchpad ", e);
         setToast({
