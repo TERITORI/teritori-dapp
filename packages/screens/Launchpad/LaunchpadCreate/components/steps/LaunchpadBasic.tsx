@@ -100,10 +100,10 @@ export const LaunchpadBasic: FC<{
                   onUpload={(files) => {
                     onChange(files[0]);
                   }}
-                  nbAddedFiles={coverImage ? 1 : 0}
+                  filesCount={coverImage ? 1 : 0}
                   mimeTypes={IMAGE_MIME_TYPES}
                   required
-                  uploadedImage={coverImage}
+                  imageToShow={coverImage}
                   onPressDelete={() => onChange(undefined)}
                 />
                 <ErrorText>

@@ -122,9 +122,7 @@ export const LaunchpadAdministrationDashboardScreen: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <BrandText style={fontSemibold28}>
-            Launchpad Administration Dashboard
-          </BrandText>
+          <BrandText style={fontSemibold28}>Administration Dashboard</BrandText>
         </View>
 
         <View

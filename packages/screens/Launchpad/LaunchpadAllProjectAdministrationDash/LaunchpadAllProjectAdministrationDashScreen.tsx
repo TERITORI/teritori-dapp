@@ -80,9 +80,7 @@ export const LaunchpadAllProjectAdministrationDashScreen: React.FC = () => {
       isLarge
       footerChildren={<></>}
       headerChildren={
-        <BrandText style={fontSemibold20}>
-          Launchpad Administration Dashboard
-        </BrandText>
+        <BrandText style={fontSemibold20}>NFT Launchpad</BrandText>
       }
       responsive
       onBackPress={() => navigation.goBack()}

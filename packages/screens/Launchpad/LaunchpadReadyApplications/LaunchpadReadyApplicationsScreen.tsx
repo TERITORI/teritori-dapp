@@ -32,11 +32,11 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
 
   const tabs = {
     readyForListing: {
-      name: "Ready for listing",
+      name: "Ready for Listing",
       badgeCount: 32,
     },
     waitingForApproval: {
-      name: "Waiting for approval",
+      name: "Waiting for Approval",
       badgeCount: 42,
     },
   };
@@ -49,9 +49,7 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
       isLarge
       footerChildren={<></>}
       headerChildren={
-        <BrandText style={fontSemibold20}>
-          Launchpad Administration Dashboard
-        </BrandText>
+        <BrandText style={fontSemibold20}>NFT Launchpad</BrandText>
       }
       responsive
       onBackPress={() => navigation.goBack()}
@@ -70,7 +68,7 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <BrandText style={fontSemibold28}>Ready Applications</BrandText>
+          <BrandText style={fontSemibold28}>Ready to Launch</BrandText>
         </View>
 
         <View

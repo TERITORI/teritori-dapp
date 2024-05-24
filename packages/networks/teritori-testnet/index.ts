@@ -53,7 +53,11 @@ export const teritoriTestnetNetwork: CosmosNetworkInfo = {
     NetworkFeature.NFTMarketplaceLeaderboard,
     NetworkFeature.CosmWasmNFTsBurner,
   ],
-  featureObjects: [premiumFeedFeature, nftsBurnerFeature, cosmwasmLaunchpadFeature],
+  featureObjects: [
+    premiumFeedFeature,
+    nftsBurnerFeature,
+    cosmwasmLaunchpadFeature,
+  ],
   currencies: teritoriTestnetCurrencies,
   txExplorer: "https://explorer.teritori.com/teritori-testnet/tx/$hash",
   accountExplorer:

@@ -30,12 +30,7 @@ export const getClientInfos = async () => {
 };
 
 const getWasmFile = (wasmFile: string) => {
-  const filePath = path.join(
-    __dirname,
-    "../..",
-    "artifacts",
-    wasmFile,
-  );
+  const filePath = path.join(__dirname, "../..", "artifacts", wasmFile);
   console.log("filePath:", filePath);
   return fs.readFileSync(filePath);
 };

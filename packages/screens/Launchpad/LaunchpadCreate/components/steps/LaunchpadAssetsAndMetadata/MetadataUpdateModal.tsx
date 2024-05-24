@@ -1,5 +1,5 @@
 import React from "react";
-import { UseFieldArrayUpdate, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
 import ModalBase from "../../../../../../components/modals/ModalBase";
@@ -23,7 +23,6 @@ export const MetadataUpdateModal: React.FC<{
   isVisible: boolean;
   elem: CollectionAssetsMetadataFormValues;
   elemIndex: number;
-  update: UseFieldArrayUpdate<CollectionFormValues, "assetsMetadatas">;
 }> = ({ onClose, isVisible, elem, elemIndex }) => {
   const collectionForm = useFormContext<CollectionFormValues>();
   const namePath = `assetsMetadatas.${elemIndex}.name` as const;
@@ -71,7 +70,7 @@ export const MetadataUpdateModal: React.FC<{
               style={[fontSemibold16, { color: neutral77, width: 300 }]}
               numberOfLines={2}
             >
-              Asset filename: {elem.image?.fileName}
+              File name: {elem.image?.fileName}
             </BrandText>
           </View>
         </View>

@@ -18,25 +18,27 @@ import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { formatFile } from "@/components/inputs/fileUploader/formatFile";
 import { FileUploaderSmallProps } from "@/components/inputs/fileUploaderSmall/FileUploaderSmall.type";
 import { SpacerRow } from "@/components/spacer";
-import { pluralOrNot } from "@/utils/text";
+import { LocalFileData } from "@/utils/types/files";
 
 export const FileUploaderSmall: FC<FileUploaderSmallProps> = ({
   label,
   style,
   onUpload,
-  nbAddedFiles,
   multiple,
   mimeTypes,
   maxUpload,
+  filesCount,
   setIsLoading,
   required,
   boxStyle,
-  uploadedImage,
+  imageToShow,
   onPressDelete,
+  disabled,
 }) => {
   const { setToast } = useFeedbacks();
   const hiddenFileInput = useRef<HTMLInputElement>(null);
   const [hovered, setHovered] = useState(false);
+  const [addedFiles, setAddedFiles] = useState<LocalFileData[]>([]);
 
   const handleFiles = async (files: File[]) => {
     const _files = multiple ? files : [files[0]];
@@ -62,6 +64,7 @@ export const FileUploaderSmall: FC<FileUploaderSmallProps> = ({
     const formattedFiles = await Promise.all(
       supportedFiles.map(async (file) => await formatFile(file)),
     );
+    setAddedFiles(formattedFiles);
     onUpload(formattedFiles);
   };
 
@@ -86,15 +89,17 @@ export const FileUploaderSmall: FC<FileUploaderSmallProps> = ({
       onChange={handleChange}
       multiple={multiple}
       accept={mimeTypes?.join(",")}
+      disabled={disabled}
     />
   );
 
   return (
     <CustomPressable
-      style={style}
+      style={[disabled && { opacity: 0.5 }, style]}
       onHoverIn={() => setHovered(true)}
       onHoverOut={() => setHovered(false)}
       onPress={handleClick}
+      disabled={disabled}
     >
       {!!label && (
         <Label
@@ -106,7 +111,7 @@ export const FileUploaderSmall: FC<FileUploaderSmallProps> = ({
         </Label>
       )}
 
-      {uploadedImage ? (
+      {imageToShow ? (
         <View style={{ alignItems: "center" }}>
           {onPressDelete && (
             <DeleteButton
@@ -115,7 +120,7 @@ export const FileUploaderSmall: FC<FileUploaderSmallProps> = ({
             />
           )}
           <OptimizedImage
-            sourceURI={uploadedImage.url}
+            sourceURI={imageToShow.url}
             width={250}
             height={250}
             resizeMode="cover"
@@ -132,7 +137,9 @@ export const FileUploaderSmall: FC<FileUploaderSmallProps> = ({
           style={[
             {
               width: "100%",
-              height: 80,
+              minHeight: 80,
+              flex: 1,
+              paddingHorizontal: layout.spacing_x1_5,
               alignItems: "center",
               flexDirection: "row",
               justifyContent: "center",
@@ -143,18 +150,28 @@ export const FileUploaderSmall: FC<FileUploaderSmallProps> = ({
             boxStyle,
           ]}
         >
-          <SVGorImageIcon
-            icon={nbAddedFiles > 0 ? filesSVG : addSVG}
-            iconSize={32}
-          />
-          <SpacerRow size={1} />
-          <View>
-            <BrandText style={[fontSemibold14, { color: secondaryColor }]}>
-              {nbAddedFiles
-                ? nbAddedFiles + pluralOrNot(" file", nbAddedFiles) + " added"
-                : "Select" + (multiple ? " files" : " file")}
-            </BrandText>
+          <View style={{ height: 32, width: 32 }}>
+            <SVGorImageIcon
+              icon={filesCount > 0 ? filesSVG : addSVG}
+              iconSize={32}
+            />
           </View>
+
+          <SpacerRow size={1} />
+          <BrandText
+            style={[fontSemibold14, { color: secondaryColor }]}
+            numberOfLines={1}
+          >
+            {!multiple && filesCount && filesCount === addedFiles.length
+              ? addedFiles[0].file.name
+              : !multiple && !filesCount
+                ? "Select file"
+                : multiple && filesCount
+                  ? filesCount + " files added"
+                  : multiple && !filesCount
+                    ? "Select files"
+                    : ""}
+          </BrandText>
         </PrimaryBox>
       )}
 

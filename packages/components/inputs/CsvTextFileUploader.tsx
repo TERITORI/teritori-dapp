@@ -26,11 +26,11 @@ export const CsvTextFileUploader: FC<{
       setLocalFile(files[0]);
 
       parse<string[]>(files[0].file, {
-        complete: (results) => {
-          setLocalRows(results.data.map((rowData) => rowData[0]));
+        complete: (parseResults) => {
+          setLocalRows(parseResults.data.map((rowData) => rowData[0]));
           onUpload(
             files[0],
-            results.data.map((rowData) => rowData[0]),
+            parseResults.data.map((rowData) => rowData[0]),
           );
         },
       });
@@ -75,7 +75,7 @@ export const CsvTextFileUploader: FC<{
       boxStyle={{ height: 48 }}
       onUpload={onUploadFiles}
       mimeTypes={TXT_CSV_MIME_TYPES}
-      nbAddedFiles={localFile ? 1 : 0}
+      filesCount={localFile ? 1 : 0}
     />
   );
 };

@@ -117,30 +117,31 @@ export const useCreateCollection = () => {
         );
 
         // ========== Metadata TODO: For now, handle metadata using this way
-        // const metadatas: Metadata[] = [];
-        // if (collectionFormValues.assetsMetadatas?.length) {
-        //   collectionFormValues.assetsMetadatas.forEach((metadata) => {
-        //     metadatas.push({
-        //       image: "", //TODO:
-        //       imageData: "",
-        //       externalUrl: metadata.externalUrl,
-        //       description: metadata.description,
-        //       name: metadata.name,
-        //       youtubeUrl: metadata.youtubeUrl,
-        //       attributes: [],
-        //       backgroundColor: "",
-        //       animationUrl: "",
-        //       royaltyPercentage: 5,
-        //       royaltyPaymentAddress: "",
-        //     });
-        //   });
-        // }
-        // const { merkleRoot } = await launchpadClient.UploadMetadatas({
-        //   sender: selectedWallet?.address,
-        //   // projectId: collectionFormValues.symbol,
-        //   networkId: selectedNetworkId,
-        //   metadatas,
-        // });
+        const metadatas: Metadata[] = [];
+        if (collectionFormValues.assetsMetadatas?.length) {
+          collectionFormValues.assetsMetadatas.forEach((metadata) => {
+            metadatas.push({
+              // image: "", //TODO: Why string ?
+              // imageData: "", //TODO: What is this ?
+              externalUrl: metadata.externalUrl,
+              description: metadata.description,
+              name: metadata.name,
+              youtubeUrl: metadata.youtubeUrl,
+              attributes: [],
+              backgroundColor: "",
+              animationUrl: "",
+              royaltyPercentage: 5,
+              royaltyPaymentAddress: "",
+            });
+          });
+        }
+        const { merkleRoot } = await launchpadClient.UploadMetadatas({
+          sender: selectedWallet?.address,
+          // projectId: collectionFormValues.symbol, // TODO: What to do with this ?
+          pinataJwt: userIPFSKey,
+          networkId: selectedNetworkId,
+          metadatas,
+        });
 
         // ========== Final collection
         const collection: Collection = {
@@ -193,7 +194,7 @@ export const useCreateCollection = () => {
             : 0,
 
           mint_periods,
-          // metadatas_merkle_root: merkleRoot,
+          metadatas_merkle_root: merkleRoot,
 
           royalty_address: collectionFormValues.royaltyAddress || "",
           royalty_percentage: collectionFormValues.royaltyPercentage
