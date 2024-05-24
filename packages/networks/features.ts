@@ -27,14 +27,6 @@ const zodCosmWasmPremiumFeed = z.object({
 
 export type CosmWasmPremiumFeed = z.infer<typeof zodCosmWasmPremiumFeed>;
 
-const zodCosmWasmLaunchpad = z.object({
-  type: z.literal(NetworkFeature.NFTLaunchpad),
-  launchpadContractAddress: z.string(),
-  defaultMintDenom: z.string(),
-  // allowedMintDenoms: z.array(z.string()), // for future
-});
-export type CosmWasmLaunchpad = z.infer<typeof zodCosmWasmLaunchpad>;
-
 // CosmWasm NFTs Burner
 
 const zodCosmWasmNFTsBurner = z.object({

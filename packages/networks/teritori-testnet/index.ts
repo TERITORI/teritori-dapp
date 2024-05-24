@@ -29,12 +29,6 @@ const cosmwasmLaunchpadFeature: CosmWasmLaunchpad = {
   defaultMintDenom: "utori",
 };
 
-const nftsBurnerFeature: CosmWasmNFTsBurner = {
-  type: NetworkFeature.CosmWasmNFTsBurner,
-  burnerContractAddress:
-    "tori1qyl0j7a24amk8k8gcmvv07y2zjx7nkcwpk73js24euh64hkja6esd2p2xp",
-};
-
 const riotContractAddressGen0 =
   "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc";
 const riotContractAddressGen1 = "";

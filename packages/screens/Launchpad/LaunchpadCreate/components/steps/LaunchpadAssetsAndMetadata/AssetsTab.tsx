@@ -94,6 +94,8 @@ export const AssetsTab: React.FC = () => {
 
   const onUploadImages = (images: LocalFileData[]) => {
     if (!mappingFileParseResults) return;
+    collectionForm.setValue("assetsMetadatas", []);
+
     const dataRows = mappingFileParseResults.data;
     const mappedAssets: CollectionAssetsMetadataFormValues[] = [];
 
@@ -119,10 +121,10 @@ export const AssetsTab: React.FC = () => {
 
     if (mappedAssets.length < images.length) {
       const nbIgnoredImages = images.length - mappedAssets.length;
-      const message = `${nbIgnoredImages} selected ${pluralOrNot("image", nbIgnoredImages)} ${pluralOrNot("is", nbIgnoredImages)} not present on the mapping file.\nIt has been ignored.\nCheck the description for more information.`;
+      const message = `${nbIgnoredImages} added ${pluralOrNot("image", nbIgnoredImages)} ${pluralOrNot("is", nbIgnoredImages)} not expected in the mapping file and has been ignored.\nCheck the description for more information.`;
       console.warn(message);
       setToast({
-        title: "Ignored images",
+        title: "Unknown images",
         message,
         mode: "normal",
         type: "warning",
@@ -135,7 +137,7 @@ export const AssetsTab: React.FC = () => {
       console.log("dataRows.length - 1", dataRows.length - 1);
       console.log("mappedAssets.length", mappedAssets.length);
       const nbMissingImages = dataRows.length - 1 - mappedAssets.length;
-      const message = `${nbMissingImages} selected ${pluralOrNot("image", nbMissingImages)} expected on the mapping file ${pluralOrNot("is", nbMissingImages)} missing.\nCheck the description for more information.`;
+      const message = `${nbMissingImages} added ${pluralOrNot("image", nbMissingImages)} expected in the mapping file ${pluralOrNot("is", nbMissingImages)} missing.\nCheck the description for more information.`;
       console.warn(message);
       setToast({
         title: "Missing images",
@@ -237,20 +239,6 @@ export const AssetsTab: React.FC = () => {
                   </TouchableOpacity>
                 </>
               )}
-
-              {/*TODO: metadata file ? */}
-              {/*<SelectFileUploader*/}
-              {/*  label="Metadata selection"*/}
-              {/*  style={{*/}
-              {/*    marginVertical: layout.spacing_x3,*/}
-              {/*    width: 416,*/}
-              {/*  }}*/}
-              {/*  containerHeight={100}*/}
-              {/*  multiple*/}
-              {/*  onUpload={(files) => {}}*/}
-              {/*  mimeTypes={IMAGE_MIME_TYPES}*/}
-              {/*  isRequired={false}*/}
-              {/*/>*/}
             </View>
           </View>
         </View>
