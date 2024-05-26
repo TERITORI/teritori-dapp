@@ -15,7 +15,7 @@ service LaunchpadService {
 }
 
 message CollectionsByCreatorRequest {
-  string creator = 1;
+  string creator_id = 1;
 }
 
 message CollectionsByCreatorResponse {
