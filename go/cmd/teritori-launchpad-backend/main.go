@@ -20,6 +20,8 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+// FIXME: for now, I dont find how to add reflection on grpc wrapped by http server
+// so to enable Postman reflection, I'm using this DEBUG const to switch on/off that capacity
 const DEBUG = false
 
 func main() {
