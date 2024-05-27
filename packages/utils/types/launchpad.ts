@@ -10,7 +10,7 @@ import {
 } from "@/utils/regex";
 import { ZodLocalFileData } from "@/utils/types/files";
 
-export const ZodCoin = z.object({
+const ZodCoin = z.object({
   amount: z
     .string()
     .trim()
@@ -22,7 +22,10 @@ export const ZodCoin = z.object({
   denom: z.string().trim(),
 });
 
-export const ZodCollectionMintPeriodFormValues = z.object({
+export type Coin = z.infer<typeof ZodCoin>;
+
+// ===== Shapes to build front objects
+const ZodCollectionMintPeriodFormValues = z.object({
   price: ZodCoin,
   maxTokens: z
     .string()
@@ -47,7 +50,7 @@ export const ZodCollectionMintPeriodFormValues = z.object({
   isOpen: z.boolean(),
 });
 
-export const ZodCollectionAssetsMetadataFormValues = z.object({
+const ZodCollectionAssetsMetadataFormValues = z.object({
   image: ZodLocalFileData,
   externalUrl: z
     .string()
@@ -203,4 +206,61 @@ export type CollectionAssetsMetadataFormValues = z.infer<
   typeof ZodCollectionAssetsMetadataFormValues
 >;
 
-export type Coin = z.infer<typeof ZodCoin>;
+// ===== Shapes to build objects from api
+const ZodWhitelistInfoResult = z.object({
+  addresses_count: z.number(),
+  addresses_ipfs: z.string(),
+  addresses_merkle_root: z.string(),
+});
+
+const ZodMintPeriodResult = z.object({
+  end_time: z.number().optional(),
+  limit_per_address: z.number().optional(),
+  max_tokens: z.number().optional(),
+  price: ZodCoin.optional(),
+  start_time: z.number(),
+  whitelist_info: ZodWhitelistInfoResult.optional(),
+});
+
+export const ZodCollectionDataResult = z.object({
+  artwork_desc: z.string(),
+  base_token_uri: z.string().optional(),
+  contact_discord_name: z.string(),
+  contact_email: z.string(),
+  cover_img_uri: z.string(),
+  dao_whitelist_count: z.number(),
+  deployed_address: z.string().optional(),
+  desc: z.string(),
+  escrow_mint_proceeds_period: z.number(),
+  expected_mint_date: z.number(),
+  expected_public_mint_price: z.number(),
+  expected_supply: z.number(),
+  external_link: z.string().optional(),
+  investment_desc: z.string(),
+  investment_link: z.string(),
+  is_applied_previously: z.boolean(),
+  is_dox: z.boolean(),
+  is_project_derivative: z.boolean(),
+  is_ready_for_mint: z.boolean(),
+  metadatas_merkle_root: z.string().optional(),
+  mint_periods: z.array(ZodMintPeriodResult),
+  name: z.string(),
+  partners: z.string(),
+  project_desc: z.string(),
+  project_type: z.string(),
+  reveal_time: z.number().optional(),
+  roadmap_link: z.string(),
+  royalty_address: z.string().optional(),
+  royalty_percentage: z.number().optional(),
+  symbol: z.string(),
+  target_network: z.string(),
+  team_desc: z.string(),
+  team_link: z.string(),
+  tokens_count: z.number(),
+  twitter_followers_count: z.number(),
+  twitter_profile: z.string(),
+  website_link: z.string().optional(),
+  whitepaper_link: z.string(),
+});
+
+export type CollectionDataResult = z.infer<typeof ZodCollectionDataResult>;

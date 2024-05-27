@@ -193,11 +193,17 @@ export const useCreateCollection = () => {
 
         // Collection status: SUBMITTED
 
+        console.log("userIduserId", userId);
+
         // ========== Retrieve de submitted collection from the backend
         const { collections } =
           await launchpadBackendClient.CollectionsByCreator({
-            creator: userId,
+            creatorId: userId,
           }); // TODO: ==> So we get projectID
+
+        console.log("======= CollectionsByCreator ", collections);
+
+        const collectionId = collections[collections.length - 1];
 
         // ========== Send Metadata of this collection to the backend
         const metadatas: Metadata[] = [];

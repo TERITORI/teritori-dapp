@@ -144,7 +144,7 @@ export const RiotGameScreen = () => {
       royaltyPaymentAddress: "",
     };
 
-    console.log("==================before",);
+    console.log("==================before");
     const resp = await client.UploadMetadatas({
       sender: selectedWallet?.address || "",
       networkId,

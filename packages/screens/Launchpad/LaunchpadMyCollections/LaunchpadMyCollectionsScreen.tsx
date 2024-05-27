@@ -7,6 +7,9 @@ import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { Box } from "@/components/boxes/Box";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useCollectionsByCreator } from "@/hooks/launchpad/useCollectionsByCreator";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import {
@@ -26,6 +29,13 @@ export const LaunchpadMyCollectionsScreen: ScreenFC<
   "LaunchpadMyCollections"
 > = () => {
   const navigation = useAppNavigation();
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const userId = selectedWallet?.userId;
+  const { data: collections } = useCollectionsByCreator(
+    selectedNetworkId,
+    userId,
+  );
 
   return (
     <ScreenContainer
@@ -68,34 +78,49 @@ export const LaunchpadMyCollectionsScreen: ScreenFC<
 
         <SpacerColumn size={3} />
 
-        <Box
-          style={{
-            borderWidth: 1,
-            borderColor: primaryColor,
-            backgroundColor: neutral17,
-            flexDirection: "row",
-            alignItems: "center",
-            height: 72,
-            paddingHorizontal: layout.spacing_x2_5,
-          }}
-        >
-          <View
+        {/*TODO: Refacto CollectionsTable*/}
+        {/*<CollectionsTable rows={collections}/>*/}
+
+        {collections?.length ? (
+          collections.map((collection) => (
+            <BrandText>{collection.name}</BrandText>
+          ))
+        ) : (
+          // {!collections?.length &&
+          <Box
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: 999,
-              justifyContent: "center",
+              borderWidth: 1,
+              borderColor: primaryColor,
+              backgroundColor: neutral17,
+              flexDirection: "row",
               alignItems: "center",
-              backgroundColor: withAlpha(primaryColor, 0.1),
+              height: 72,
+              paddingHorizontal: layout.spacing_x2_5,
             }}
           >
-            <SVG source={infoSVG} width={16} height={16} color={primaryColor} />
-          </View>
-          <SpacerRow size={2.5} />
-          <BrandText style={fontSemibold13}>
-            You haven’t created any collections so far
-          </BrandText>
-        </Box>
+            <View
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 999,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: withAlpha(primaryColor, 0.1),
+              }}
+            >
+              <SVG
+                source={infoSVG}
+                width={16}
+                height={16}
+                color={primaryColor}
+              />
+            </View>
+            <SpacerRow size={2.5} />
+            <BrandText style={fontSemibold13}>
+              You haven’t created any collections so far
+            </BrandText>
+          </Box>
+        )}
       </View>
     </ScreenContainer>
   );
