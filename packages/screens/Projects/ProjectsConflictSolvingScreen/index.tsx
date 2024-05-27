@@ -1,11 +1,9 @@
 import React from "react";
 
 import { useProject } from "../hooks/useProjects";
-import { ContractStatus } from "../types";
 
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
-import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NewConflictSection } from "@/screens/Projects/ProjectsConflictSolvingScreen/NewConflictSection";
 import { OngoingConflictSection } from "@/screens/Projects/ProjectsConflictSolvingScreen/OngoingConflictSection";
@@ -16,11 +14,10 @@ export const ProjectsConflictSolvingScreen: ScreenFC<
   "ProjectsConflictSolving"
 > = ({ route }) => {
   const projectId = route.params.projectId;
-  const networkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
   const userId = selectedWallet?.userId;
   const userAddress = selectedWallet?.address;
-  const { data: project } = useProject(networkId, projectId);
+  const { data: project } = useProject(projectId);
   const userIsParty =
     !!project &&
     !!userAddress &&
@@ -28,11 +25,11 @@ export const ProjectsConflictSolvingScreen: ScreenFC<
   return (
     <ScreenContainer isLarge>
       <SpacerColumn size={4} />
-      {project?.status === ContractStatus.ACCEPTED && userIsParty && (
+      {project?.status === "ACCEPTED" && userIsParty && (
         <NewConflictSection projectId={projectId} userId={userId} />
       )}
 
-      {project?.status === ContractStatus.CONFLICT && (
+      {project?.status === "CONFLICT" && (
         <OngoingConflictSection
           userId={selectedWallet?.userId}
           projectId={projectId}
@@ -41,14 +38,8 @@ export const ProjectsConflictSolvingScreen: ScreenFC<
 
       {(project?.conflicts?.length || 0) > 0 &&
         !(
-          project?.conflicts?.length === 1 &&
-          project.status === ContractStatus.CONFLICT
-        ) && (
-          <SettledConflictsSection
-            networkId={networkId}
-            projectId={projectId}
-          />
-        )}
+          project?.conflicts?.length === 1 && project.status === "CONFLICT"
+        ) && <SettledConflictsSection projectId={projectId} />}
     </ScreenContainer>
   );
 };

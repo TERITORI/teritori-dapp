@@ -23,7 +23,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   stakeCurrency: "ugnot",
   idPrefix: "gnodev",
   chainId: "dev",
-  endpoint: "http://127.0.0.1:36657",
+  endpoint: "http://127.0.0.1:26657",
   txExplorer: "https://gnoscan.io/transactions/details?txhash=$hash",
   accountExplorer: "https://gnoscan.io/accounts/$address",
   contractExplorer: "https://gnoscan.io/realms/details?path=$address",

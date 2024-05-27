@@ -82,12 +82,12 @@ export type RootStackParamList = {
 
   Settings: undefined;
 
-  Projects: undefined;
+  Projects: { network?: string };
   ProjectsManager: { view?: string };
   ProjectsPayment: { projectId: string; milestoneId: string };
-  ProjectsCompleteMilestone: { projectId: number; milestoneId: number };
+  ProjectsCompleteMilestone: { projectId: string; milestoneId: string };
   ProjectsMakeRequest: { step?: number };
-  ProjectsDetail: { id: number };
+  ProjectsDetail: { id: string };
   ProjectsConflictSolving: { projectId: string };
 
   OrganizationDeployer: undefined;

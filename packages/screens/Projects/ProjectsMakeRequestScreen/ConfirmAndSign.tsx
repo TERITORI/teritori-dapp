@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useMemo, useState } from "react";
 import { Image, View } from "react-native";
 
@@ -8,6 +9,7 @@ import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { Tag } from "../components/Milestone";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 import { useUtils } from "../hooks/useUtils";
+import { ProjectShortDescData, ProjectTeamAndLinkData } from "../types";
 
 import { BrandText } from "@/components/BrandText";
 import FlexRow from "@/components/FlexRow";
@@ -50,7 +52,11 @@ export const ConfirmAndSign: React.FC = () => {
   const [isShowConfirmModal, setIsShowConfirmModal] = useState(true);
 
   const navigation = useAppNavigation();
-  const { shortDescData, milestones, teamAndLinkData } = useMakeRequestState();
+  const {
+    projectFormData,
+    milestones,
+    teamAndLinkData: teamAndLinkFormData,
+  } = useMakeRequestState();
   const networkId = useSelectedNetworkId();
   const wallet = useSelectedWallet();
   const { mustGetValue } = useUtils();
@@ -78,6 +84,8 @@ export const ConfirmAndSign: React.FC = () => {
     selectedWallet?.address,
   );
 
+  const queryClient = useQueryClient();
+
   const uploadFile = async (fileToUpload: LocalFileData) => {
     setIsUploadingImage(true);
     try {
@@ -93,49 +101,49 @@ export const ConfirmAndSign: React.FC = () => {
 
   const cancel = async () => {
     setIsShowConfirmModal(false);
-    navigation.replace("Projects");
+    navigation.replace("Projects", { network: networkId });
   };
 
   const confirmAndSign = async () => {
-    if (!shortDescData._coverImgFile) {
-      setIsShowConfirmModal(false);
-      setToastError({
-        title: "Warning",
-        message: "Cover Image is mandatory",
-      });
-      throw Error("cover image file is required");
-    }
-
     try {
-      const coverImg = await uploadFile(shortDescData._coverImgFile);
+      if (!projectFormData.coverImg) {
+        setIsShowConfirmModal(false);
+        throw Error("Cover image file is required");
+      }
 
-      const caller = mustGetValue(wallet?.address, "caller");
       if (!pmFeature) {
         throw Error("Project manager feature not found");
       }
 
-      const milestoneTitles = milestones.map((m) => m.title).join(",");
-      const milestoneAmounts = milestones.map((m) => m.amount).join(",");
-      const milestoneDescs = milestones.map((m) => m.desc).join(",");
-      const milestoneDurations = milestones.map((m) => m.duration).join(",");
-      const milestoneLinks = milestones.map((m) => m.link).join(",");
-      const milestonePriorities = milestones.map((m) => m.priority).join(",");
+      const coverImg = await uploadFile(projectFormData.coverImg);
 
+      const caller = mustGetValue(wallet?.address, "caller");
       const expiryDuration =
-        "" + milestoneDurations.split(",").reduce((total, m) => total + +m, 0);
+        "" + milestones.reduce((total, m) => total + +m.duration, 0);
 
-      // Update the coverImg
-      shortDescData.coverImg = coverImg || "";
-      shortDescData._coverImgFile = undefined;
+      const shortDescData: ProjectShortDescData = {
+        name: projectFormData.name,
+        desc: projectFormData.desc,
+        coverImg,
+        tags: projectFormData.tags || "",
+      };
+
+      const teamAndLinkData: ProjectTeamAndLinkData = {
+        websiteLink: teamAndLinkFormData.websiteLink,
+        twitterProfile: teamAndLinkFormData.twitterProfile,
+        discordLink: teamAndLinkFormData.discordLink,
+        githubLink: teamAndLinkFormData.githubLink,
+        teamDesc: teamAndLinkFormData.teamDesc,
+      };
 
       const metadata = JSON.stringify({
         shortDescData,
         teamAndLinkData,
       });
 
-      const contractor = shortDescData.contractor;
-      const funder = shortDescData.funder;
-      const conflictHandler = shortDescData.arbitrator;
+      const contractor = projectFormData.contractor;
+      const funder = projectFormData.funder;
+      const conflictHandler = projectFormData.arbitrator;
 
       if (!contractor && !funder) {
         return setToastError({
@@ -150,24 +158,24 @@ export const ConfirmAndSign: React.FC = () => {
         send = totalFunding + pmFeature.paymentsDenom;
       }
 
+      console.log("executing contract creation");
+
       await execEscrowMethod(
-        "CreateContract",
+        "CreateContractJSON",
         [
           contractor,
           funder,
           pmFeature.paymentsDenom,
           metadata,
           expiryDuration,
-          milestoneTitles,
-          milestoneDescs,
-          milestoneAmounts,
-          milestoneDurations,
-          milestoneLinks,
-          milestonePriorities,
+          JSON.stringify(milestones),
           conflictHandler,
         ],
         send,
+        10_000_000,
       );
+
+      await queryClient.invalidateQueries(["projects"]);
 
       setIsShowConfirmModal(false);
       setIsShowModal(true);
@@ -259,6 +267,7 @@ export const ConfirmAndSign: React.FC = () => {
           fullWidth
           disabled={isUploadingImage}
           text="Confirm and Sign"
+          testID="confirm-and-sign"
           onPress={confirmAndSign}
         />
 
@@ -292,7 +301,7 @@ export const ConfirmAndSign: React.FC = () => {
           />
 
           <BrandText style={[fontSemibold16, { color: neutral77 }]}>
-            You have successfully created Project: {shortDescData?.name}
+            You have successfully created Project: {projectFormData?.name}
           </BrandText>
 
           <View
@@ -312,7 +321,7 @@ export const ConfirmAndSign: React.FC = () => {
               backgroundColor={neutral00}
               onPress={() => {
                 setIsShowModal(false);
-                navigation.navigate("Projects");
+                navigation.navigate("Projects", { network: networkId });
               }}
             />
             <PrimaryButton

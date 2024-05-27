@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { View } from "react-native";
 
@@ -14,6 +15,7 @@ import {
   useSelectedNetworkInfo,
 } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { getNetworkObjectId } from "@/networks";
 import { Tag } from "@/screens/Projects/components/Milestone";
 import { useEscrowContract } from "@/screens/Projects/hooks/useEscrowContract";
 import { Project } from "@/screens/Projects/types";
@@ -38,6 +40,7 @@ export const SubmitContractorCandidateModal: React.FC<
   const networkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
   const selectedNetwork = useSelectedNetworkInfo();
+  const queryClient = useQueryClient();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -49,9 +52,13 @@ export const SubmitContractorCandidateModal: React.FC<
   const submitContractorCandidate = async () => {
     setIsSubmitting(true);
 
-    await execEscrowMethod("SubmitContractorCandidate", [
-      project?.id?.toString(),
-    ]);
+    const localIdentifier = project?.id?.toString();
+
+    await execEscrowMethod("SubmitContractorCandidate", [localIdentifier]);
+
+    const projectId = getNetworkObjectId(networkId, localIdentifier);
+
+    await queryClient.invalidateQueries(["project", projectId]);
 
     onClose();
     setIsSubmitting(false);
@@ -102,6 +109,7 @@ export const SubmitContractorCandidateModal: React.FC<
         disabled={isSubmitting}
         text="Confirm and Sign"
         onPress={() => submitContractorCandidate()}
+        testID="confirm-and-sign"
       />
 
       <SpacerColumn size={2} />

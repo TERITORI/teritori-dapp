@@ -1,6 +1,9 @@
-import { ShortDescData, TeamAndLinkData } from "./types";
+import {
+  ProjectFormData,
+  ProjectTeamAndLinkFormData,
+} from "./hooks/useMakeRequestHook";
 
-export const emptyTeamAndLink: TeamAndLinkData = {
+export const emptyTeamAndLink: ProjectTeamAndLinkFormData = {
   websiteLink: "",
   twitterProfile: "",
   discordLink: "",
@@ -8,17 +11,14 @@ export const emptyTeamAndLink: TeamAndLinkData = {
   teamDesc: "",
 };
 
-export const emptyShortDesc: ShortDescData = {
+export const emptyProjectFormData: ProjectFormData = {
   name: "",
   desc: "",
-  budget: 0,
   arbitrator: "",
-  duration: 0,
-  coverImg: "",
   tags: "",
   funder: "",
   contractor: "",
-  _coverImgFile: undefined,
+  coverImg: {},
 };
 
 // Used only when dev, for quickly goto next step
@@ -35,7 +35,7 @@ export const fakeShortDesc: ShortDescData = {
   tags: "tag1,tag2,tag3",
 };
 */
-export const fakeTeamAndLink: TeamAndLinkData = {
+export const fakeTeamAndLink: ProjectTeamAndLinkFormData = {
   websiteLink: "https://website.com",
   twitterProfile: "https://twitter.com",
   discordLink: "https://discord.com",

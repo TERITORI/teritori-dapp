@@ -43,7 +43,7 @@ const ListItem: React.FC<AssetRatioData> = ({ title, icon, percent }) => {
         {title}
       </BrandText>
       <ProgressLine
-        percent={percent}
+        gain={percent}
         width={width < OVERVIEW_FLEX_BREAK_WIDTH ? width - 540 : 200}
       />
       <BrandText

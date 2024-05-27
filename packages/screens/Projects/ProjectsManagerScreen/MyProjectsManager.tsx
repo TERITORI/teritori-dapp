@@ -2,58 +2,102 @@ import moment from "moment";
 import React, { useMemo, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
-import filterSVG from "../../../../assets/icons/filter.svg";
-import FlexRow from "../../../components/FlexRow";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { ProjectStatusTag } from "../components/ProjectStatusTag";
 import { ProjectsStatusFilterButtons } from "../components/ProjectsStatusFilterButtons";
-import { useProjects } from "../hooks/useProjects";
-import { ContractStatus, Project } from "../types";
+import { ProjectFilter, useProjects } from "../hooks/useProjects";
+import { ContractStatusFilter, Project } from "../types";
 import { getProjectStats } from "../utils";
 
 import { BrandText } from "@/components/BrandText";
 import { ProgressLine } from "@/components/ProgressLine";
-import { SearchBarInput } from "@/components/Search/SearchBarInput";
-import { IconButton } from "@/components/buttons/IconButton";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
-import { SpacerColumn, SpacerRow } from "@/components/spacer";
-import { TableRow } from "@/components/table/TableRow";
+import { SpacerColumn } from "@/components/spacer";
+import { TableCell, TableRow } from "@/components/table/TableRow";
 import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { getUserId } from "@/networks";
+import { getNetworkObjectId, getUserId } from "@/networks";
+import { prettyPrice } from "@/utils/coins";
 import { useAppNavigation } from "@/utils/navigation";
 import { neutral33, neutralFF } from "@/utils/style/colors";
 import { fontSemibold13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
+export const MyProjectsManager: React.FC<{
+  type: ProjectType;
+}> = ({ type }) => {
+  const networkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+
+  let filter: ProjectFilter;
+  switch (type) {
+    case "myInvestments": {
+      filter = { byFunder: { funder: selectedWallet?.address || "" } };
+      break;
+    }
+    case "myProjects": {
+      filter = { byContractor: { contractor: selectedWallet?.address || "" } };
+    }
+  }
+  const { projects } = useProjects(networkId, filter);
+
+  const [statusFilter, setStatusFilter] = useState<ContractStatusFilter>("ALL");
+
+  const filteredProjects = useMemo(() => {
+    if (!selectedWallet?.address) return [];
+
+    return projects.filter(
+      (p) => statusFilter === "ALL" || p.status === statusFilter,
+    );
+  }, [projects, statusFilter, selectedWallet?.address]);
+
+  return (
+    <View>
+      <ProjectsStatusFilterButtons
+        status={statusFilter}
+        onChange={setStatusFilter}
+      />
+
+      <SpacerColumn size={2} />
+
+      <TableRow headings={getTableCols(type)} />
+      {filteredProjects.map((project) => (
+        <ProjectRow key={project.id} project={project} projectType={type} />
+      ))}
+    </View>
+  );
+};
+
 const getTableCols = (projectType: ProjectType) => {
   return {
     name: {
       label: "Project name",
-      flex: 3,
+      flex: 2.5,
     },
     status: {
       label: "Status",
-      flex: 2,
+      flex: 1,
     },
     manager: {
-      label: projectType === "myProjects" ? "Investor" : "Builder",
-      flex: 5,
+      label: projectType === "myProjects" ? "Funder" : "Contractor",
+      flex: 2.5,
     },
     milestones: {
       label: "Milestones",
-      flex: 3,
+      flex: 2,
     },
     grant: {
       label: "Grant",
-      flex: 1,
+      flex: 2,
     },
     creationDate: {
-      label: "Creation data",
-      flex: 2,
+      label: "Creation date",
+      flex: 1,
     },
   };
 };
+
+const defaultCols = getTableCols("myProjects");
 
 type ProjectType = "myInvestments" | "myProjects";
 
@@ -66,14 +110,21 @@ const ProjectRow: React.FC<{ project: Project; projectType: ProjectType }> = ({
   const networkId = useSelectedNetworkId();
 
   return (
-    <FlexRow
-      style={{ height: 50, borderBottomWidth: 1, borderBottomColor: neutral33 }}
+    <View
+      style={{
+        height: 50,
+        borderBottomWidth: 1,
+        borderBottomColor: neutral33,
+        flexDirection: "row",
+        alignItems: "center",
+        paddingHorizontal: layout.spacing_x2_5,
+      }}
     >
       {/* === Name === */}
-      <FlexRow style={{ flex: 3 }}>
+      <TableCell flex={defaultCols.name.flex} isLast={false}>
         <RoundedGradientImage
           size="XXS"
-          sourceURI={project.metadata.shortDescData.coverImg}
+          sourceURI={project.metadata?.shortDescData?.coverImg}
         />
 
         <TouchableOpacity
@@ -81,7 +132,9 @@ const ProjectRow: React.FC<{ project: Project; projectType: ProjectType }> = ({
             if (!project.id) {
               return;
             }
-            navigation.navigate("ProjectsDetail", { id: project.id });
+            navigation.navigate("ProjectsDetail", {
+              id: getNetworkObjectId(networkId, project.id),
+            });
           }}
         >
           <BrandText
@@ -91,18 +144,18 @@ const ProjectRow: React.FC<{ project: Project; projectType: ProjectType }> = ({
               fontSemibold13,
             ]}
           >
-            {project.metadata.shortDescData.name}
+            {project.metadata?.shortDescData?.name}
           </BrandText>
         </TouchableOpacity>
-      </FlexRow>
+      </TableCell>
 
       {/* === Status === */}
-      <View style={{ flex: 2, alignItems: "center" }}>
+      <TableCell flex={defaultCols.status.flex} isLast={false}>
         <ProjectStatusTag size="XS" status={project.status} />
-      </View>
+      </TableCell>
 
       {/* === Manager === */}
-      <View style={{ flex: 5, alignItems: "center" }}>
+      <TableCell flex={defaultCols.manager.flex} isLast={false}>
         {projectType === "myProjects" && (
           <UsernameWithAvatar userId={getUserId(networkId, project.funder)} />
         )}
@@ -111,112 +164,34 @@ const ProjectRow: React.FC<{ project: Project; projectType: ProjectType }> = ({
             userId={getUserId(networkId, project.contractor)}
           />
         )}
-      </View>
+      </TableCell>
 
       {/* === Milestones === */}
-      <View style={{ flex: 3, alignItems: "center" }}>
-        <BrandText style={[{ color: neutralFF }, fontSemibold13]}>
+      <TableCell flex={defaultCols.milestones.flex} isLast={false}>
+        <BrandText
+          style={[
+            { color: neutralFF, marginRight: layout.spacing_x1 },
+            fontSemibold13,
+          ]}
+        >
           {stats.completed}/{stats.total}
         </BrandText>
-
-        <ProgressLine percent={stats.percentCompleted} width={60} />
-      </View>
+        <ProgressLine gain={stats.percentCompleted / 100} />
+      </TableCell>
 
       {/* === Grant === */}
-      <View style={{ flex: 1, alignItems: "center" }}>
+      <TableCell flex={defaultCols.grant.flex} isLast={false}>
         <BrandText style={[{ color: neutralFF }, fontSemibold13]}>
-          ${project.metadata.shortDescData.budget}
+          {prettyPrice(networkId, project.budget, project.paymentDenom)}
         </BrandText>
-      </View>
+      </TableCell>
 
       {/* === Creation date === */}
-      <View style={{ flex: 2, alignItems: "center" }}>
+      <TableCell flex={defaultCols.creationDate.flex} isLast>
         <BrandText style={[{ color: neutralFF }, fontSemibold13]}>
           {moment(project.createdAt).format("L")}
         </BrandText>
-      </View>
-    </FlexRow>
-  );
-};
-
-export const MyProjectsManager: React.FC<{
-  type: ProjectType;
-}> = ({ type }) => {
-  const networkId = useSelectedNetworkId();
-  const selectedWallet = useSelectedWallet();
-
-  const { data: projects } = useProjects(
-    networkId,
-    0,
-    100,
-    type === "myProjects" ? "ALL" : selectedWallet?.address,
-    type === "myProjects" ? selectedWallet?.address : "ALL",
-  );
-
-  const [statusFilter, setStatusFilter] = useState<ContractStatus>(
-    ContractStatus.ALL,
-  );
-  const [searchText, setSearchText] = useState("");
-
-  const filteredProjects = useMemo(() => {
-    if (!selectedWallet?.address) return [];
-
-    return projects
-      .filter(
-        (p) => statusFilter === ContractStatus.ALL || p.status === statusFilter,
-      )
-      .filter((p) =>
-        p.metadata.shortDescData.name
-          .toLowerCase()
-          .includes(searchText.toLowerCase()),
-      );
-  }, [projects, statusFilter, searchText, selectedWallet?.address]);
-
-  return (
-    <View>
-      <FlexRow style={{ justifyContent: "space-between" }}>
-        <ProjectsStatusFilterButtons
-          status={statusFilter}
-          onChange={setStatusFilter}
-        />
-
-        <FlexRow style={{ width: "auto" }}>
-          <SearchBarInput
-            placeholder="Search for project..."
-            text={searchText}
-            onChangeText={setSearchText}
-          />
-
-          <SpacerRow size={1} />
-
-          <IconButton
-            iconSVG={filterSVG}
-            size="SM"
-            noBrokenCorners
-            backgroundColor={neutral33}
-          />
-        </FlexRow>
-      </FlexRow>
-
-      <SpacerColumn size={2} />
-
-      <TableRow
-        headings={getTableCols(type)}
-        labelStyle={{ textAlign: "center" }}
-      />
-
-      <FlexRow
-        style={{
-          width: "100%",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          paddingHorizontal: layout.spacing_x2_5, // Need padding to sync with table heading
-        }}
-      >
-        {filteredProjects.map((project) => (
-          <ProjectRow key={project.id} project={project} projectType={type} />
-        ))}
-      </FlexRow>
+      </TableCell>
     </View>
   );
 };

@@ -26,28 +26,32 @@ import {
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
-import { ProjectMilestone, MsStatus } from "../types";
+import { ProjectMilestone, MilestoneStatus } from "../types";
 
 export type Step = {
-  status: MsStatus;
+  status: MilestoneStatus;
   text: string;
   iconSVG: React.FC<SvgProps>;
 };
 
 const STEPS: Step[] = [
   {
-    status: MsStatus.MS_OPEN,
+    status: "MS_OPEN",
     text: "Open (Backlog)",
     iconSVG: projectsOpenSVG,
   },
   {
-    status: MsStatus.MS_PROGRESS,
+    status: "MS_PROGRESS",
     text: "In Progress",
     iconSVG: projectsInProgressSVG,
   },
-  { status: MsStatus.MS_REVIEW, text: "Review", iconSVG: projectsReviewSVG },
   {
-    status: MsStatus.MS_COMPLETED,
+    status: "MS_REVIEW",
+    text: "Review",
+    iconSVG: projectsReviewSVG,
+  },
+  {
+    status: "MS_COMPLETED",
     text: "Completed",
     iconSVG: projectsCompletedSVG,
   },

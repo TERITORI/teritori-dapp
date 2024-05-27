@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 
@@ -16,7 +17,11 @@ import {
   useSelectedNetworkInfo,
 } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { NetworkFeature, getNetworkFeature } from "@/networks";
+import {
+  NetworkFeature,
+  getNetworkFeature,
+  getNetworkObjectId,
+} from "@/networks";
 import { Tag } from "@/screens/Projects/components/Milestone";
 import { useEscrowContract } from "@/screens/Projects/hooks/useEscrowContract";
 import { Project } from "@/screens/Projects/types";
@@ -63,21 +68,33 @@ export const FundProjectModal: React.FC<FundProjectModalProps> = ({
     selectedWallet?.address,
   );
 
+  const queryClient = useQueryClient();
+
   const submitFunder = async () => {
     setIsSubmitting(true);
-
-    await execEscrowMethod("SubmitFunder", [
-      project.id?.toString(),
-      project.milestones?.map((m) => m.id).join(","),
-    ]);
-
-    setIsSubmitting(false);
+    try {
+      await execEscrowMethod(
+        "SubmitFunder",
+        [project.id?.toString()],
+        `${project.budget}${project.paymentDenom}`,
+      );
+      await Promise.all([
+        queryClient.invalidateQueries([
+          "project",
+          getNetworkObjectId(networkId, project.id),
+        ]),
+        queryClient.invalidateQueries(["projects", networkId]),
+      ]);
+    } finally {
+      onClose();
+      setIsSubmitting(false);
+    }
   };
 
   const fundingAmount = useMemo(() => {
     return project.milestones
-      ?.map((m) => m.amount)
-      .reduce((total, amount) => total + amount, 0)
+      .map((m) => m.amount)
+      .reduce((total, amount) => total + BigInt(amount), BigInt(0))
       .toString();
   }, [project]);
 
@@ -147,6 +164,7 @@ export const FundProjectModal: React.FC<FundProjectModalProps> = ({
         fullWidth
         disabled={isSubmitting}
         text="Confirm transaction"
+        testID="confirm-and-sign"
         onPress={() => submitFunder()}
       />
 

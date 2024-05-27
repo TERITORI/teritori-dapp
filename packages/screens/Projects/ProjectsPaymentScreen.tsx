@@ -1,4 +1,3 @@
-import { useRoute } from "@react-navigation/native";
 import moment from "moment";
 import React, { useState } from "react";
 import { View } from "react-native";
@@ -22,7 +21,6 @@ import { RoundedGradientImage } from "../../components/images/RoundedGradientIma
 import { TextInputCustom } from "../../components/inputs/TextInputCustom";
 import { Separator } from "../../components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { ScreenFC } from "../../utils/navigation";
 import {
   neutral17,
@@ -54,15 +52,14 @@ const CustomSocialButton: React.FC<{
   );
 };
 
-export const ProjectsPaymentScreen: ScreenFC<"ProjectsPayment"> = () => {
-  const networkId = useSelectedNetworkId();
-  const { params } = useRoute();
+export const ProjectsPaymentScreen: ScreenFC<"ProjectsPayment"> = ({
+  route: { params },
+}) => {
+  const { projectId, milestoneId } = params;
 
-  const { projectId, milestoneIdx } = params as any;
-
-  const { data: project } = useProject(networkId, projectId);
+  const { data: project } = useProject(projectId);
   const milestone = (project?.milestones || []).find(
-    (_, idx) => idx === +milestoneIdx,
+    (_, idx) => idx === +milestoneId,
   );
 
   const [report, setReport] = useState("");
@@ -75,7 +72,7 @@ export const ProjectsPaymentScreen: ScreenFC<"ProjectsPayment"> = () => {
         <RoundedGradientImage
           size="S"
           square
-          sourceURI={project?.metadata.shortDescData.coverImg}
+          sourceURI={project?.metadata?.shortDescData?.coverImg}
         />
         <SpacerRow size={2} />
         <BrandText style={fontSemibold28}>{milestone.title}</BrandText>
@@ -105,7 +102,7 @@ export const ProjectsPaymentScreen: ScreenFC<"ProjectsPayment"> = () => {
             <SpacerColumn size={2} />
 
             <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-              {project?.metadata.shortDescData.desc}
+              {project?.metadata?.shortDescData?.desc}
             </BrandText>
           </TertiaryBox>
 
@@ -123,7 +120,7 @@ export const ProjectsPaymentScreen: ScreenFC<"ProjectsPayment"> = () => {
                 Tags:
               </BrandText>
 
-              {project?.metadata.shortDescData.tags.split(",").map((tag) => {
+              {project?.metadata?.shortDescData?.tags?.split(",").map((tag) => {
                 return (
                   <Tag
                     text={tag}

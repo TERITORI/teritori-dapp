@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import React, { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import FlexRow from "../../../components/FlexRow";
@@ -10,19 +11,37 @@ import { Project } from "../types";
 import { BrandText } from "@/components/BrandText";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
-import { TableRow } from "@/components/table/TableRow";
+import { TableCell, TableRow } from "@/components/table/TableRow";
 import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
-import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { getUserId } from "@/networks";
 import {
-  useEscrowContract,
-  useQueryEscrow,
-} from "@/screens/Projects/hooks/useEscrowContract";
-import { extractGnoString } from "@/utils/gno";
+  getNetworkObjectId,
+  getUserId,
+  parseNetworkObjectId,
+} from "@/networks";
+import { useEscrowContract } from "@/screens/Projects/hooks/useEscrowContract";
 import { useAppNavigation } from "@/utils/navigation";
-import { neutral33, neutralA3, neutralFF } from "@/utils/style/colors";
+import { neutral33, neutralFF } from "@/utils/style/colors";
 import { fontSemibold13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+
+export const ContractorCandidates: React.FC<{ networkId: string }> = ({
+  networkId,
+}) => {
+  const selectedWallet = useSelectedWallet();
+
+  const { projects } = useProjects(networkId, {
+    byCandidatesForFunder: { funder: selectedWallet?.address || "" },
+  });
+
+  return (
+    <View>
+      <TableRow headings={TABLE_COLS} />
+      {projects.map((project) => (
+        <ProjectRow key={project.id} networkId={networkId} project={project} />
+      ))}
+    </View>
+  );
+};
 
 const TABLE_COLS = {
   name: {
@@ -31,84 +50,39 @@ const TABLE_COLS = {
   },
   status: {
     label: "Status",
-    flex: 2,
+    flex: 1,
   },
   candidates: {
     label: "Candidates",
-    flex: 8,
+    flex: 3,
   },
 };
 
-type CandidateProps = {
-  projectId: number;
-  candidate: string;
-};
-
-const Candidate: React.FC<CandidateProps> = ({ projectId, candidate }) => {
-  const networkId = useSelectedNetworkId();
-  const selectedWallet = useSelectedWallet();
-  const [isProcessing, setIsProcessing] = useState(false);
-
-  const { execEscrowMethod } = useEscrowContract(
-    networkId,
-    selectedWallet?.address,
-  );
-
-  const acceptCandidate = async () => {
-    setIsProcessing(true);
-    await execEscrowMethod("AcceptContractor", [
-      projectId.toString(),
-      candidate,
-    ]);
-    setIsProcessing(false);
-  };
-
-  return (
-    <FlexRow style={{ justifyContent: "space-between" }}>
-      <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
-        <UsernameWithAvatar userId={getUserId(networkId, candidate)} />
-      </BrandText>
-
-      <PrimaryButton
-        disabled={isProcessing}
-        text="Accept"
-        size="XS"
-        onPress={() => acceptCandidate()}
-      />
-    </FlexRow>
-  );
-};
-
-const ProjectRow: React.FC<{ project: Project }> = ({ project }) => {
+const ProjectRow: React.FC<{ networkId: string; project: Project }> = ({
+  networkId,
+  project,
+}) => {
   const navigation = useAppNavigation();
-  const networkId = useSelectedNetworkId();
 
-  const { data } = useQueryEscrow(
-    networkId,
-    "GetContractorCandidates",
-    [project.id],
-    !project.contractor,
-  );
-
-  const candidates = useMemo(() => {
-    if (!data) return [];
-    const extractedStr = extractGnoString(data);
-    if (!extractedStr) return [];
-
-    return extractedStr.split(",");
-  }, [data]);
-
-  if (!candidates.length) return null;
+  if (!project.contractorCandidates.length) return null;
 
   return (
-    <FlexRow
-      style={{ height: 50, borderBottomWidth: 1, borderBottomColor: neutral33 }}
+    <View
+      style={{
+        minHeight: 50,
+        borderBottomWidth: 1,
+        borderBottomColor: neutral33,
+        flexDirection: "row",
+        width: "100%",
+        paddingVertical: layout.spacing_x1,
+        paddingHorizontal: layout.spacing_x2_5,
+      }}
     >
       {/* === Name === */}
-      <FlexRow style={{ flex: 3 }}>
+      <TableCell flex={TABLE_COLS.name.flex} isLast={false}>
         <RoundedGradientImage
           size="XXS"
-          sourceURI={project.metadata.shortDescData.coverImg}
+          sourceURI={project.metadata?.shortDescData?.coverImg}
         />
 
         <TouchableOpacity
@@ -126,61 +100,77 @@ const ProjectRow: React.FC<{ project: Project }> = ({ project }) => {
               fontSemibold13,
             ]}
           >
-            {project.metadata.shortDescData.name}
+            {project.metadata?.shortDescData?.name}
           </BrandText>
         </TouchableOpacity>
-      </FlexRow>
+      </TableCell>
 
       {/* === Status === */}
-      <View style={{ flex: 2, alignItems: "center" }}>
+      <TableCell flex={TABLE_COLS.status.flex} isLast={false}>
         <ProjectStatusTag size="XS" status={project.status} />
-      </View>
+      </TableCell>
 
-      {/* === Candidates === */}
-      {candidates.length > 0 && (
-        <View style={{ flex: 8, alignItems: "center" }}>
-          {candidates.map((c, idx) => (
-            <Candidate key={idx} candidate={c} projectId={project.id || -1} />
-          ))}
+      <TableCell flex={TABLE_COLS.candidates.flex} isLast>
+        <View style={{ gap: layout.spacing_x1 }}>
+          {[
+            project.contractorCandidates,
+            // project.contractorCandidates,
+            // project.contractorCandidates,
+          ]
+            .flatMap((c) => c)
+            .map((c, idx) => (
+              <Candidate
+                key={idx}
+                candidate={c}
+                projectId={getNetworkObjectId(networkId, project.id)}
+              />
+            ))}
         </View>
-      )}
-    </FlexRow>
+      </TableCell>
+    </View>
   );
 };
 
-export const ContractorCandidates: React.FC = () => {
-  const networkId = useSelectedNetworkId();
+type CandidateProps = {
+  projectId: string;
+  candidate: string;
+};
+
+const Candidate: React.FC<CandidateProps> = ({ projectId, candidate }) => {
+  const [network, localProjectId] = parseNetworkObjectId(projectId);
+  const networkId = network?.id;
+
   const selectedWallet = useSelectedWallet();
 
-  const { data: projects } = useProjects(
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  const { execEscrowMethod } = useEscrowContract(
     networkId,
-    0,
-    100,
     selectedWallet?.address,
-    "ALL",
   );
 
-  const filteredProjects = useMemo(() => {
-    if (!selectedWallet?.address) return [];
-    return projects.filter((p) => !p.contractor);
-  }, [projects, selectedWallet?.address]);
+  const acceptCandidate = async () => {
+    setIsProcessing(true);
+    await execEscrowMethod("AcceptContractor", [localProjectId, candidate]);
+    await Promise.all([
+      queryClient.invalidateQueries(["project", projectId]),
+      queryClient.invalidateQueries(["projects", networkId]),
+    ]);
+    setIsProcessing(false);
+  };
 
   return (
-    <View>
-      <TableRow headings={TABLE_COLS} labelStyle={{ textAlign: "center" }} />
-
-      <FlexRow
-        style={{
-          width: "100%",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          paddingHorizontal: layout.spacing_x2_5, // Need padding to sync with table heading
-        }}
-      >
-        {filteredProjects.map((project) => (
-          <ProjectRow key={project.id} project={project} />
-        ))}
-      </FlexRow>
-    </View>
+    <FlexRow style={{ justifyContent: "space-between" }}>
+      <UsernameWithAvatar userId={getUserId(networkId, candidate)} />
+      <PrimaryButton
+        disabled={isProcessing}
+        text="Accept"
+        size="XS"
+        touchableStyle={{ marginLeft: layout.spacing_x1 }}
+        onPress={() => acceptCandidate()}
+      />
+    </FlexRow>
   );
 };

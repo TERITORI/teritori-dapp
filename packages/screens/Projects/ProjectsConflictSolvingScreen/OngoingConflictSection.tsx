@@ -94,9 +94,7 @@ export const OngoingConflictSection: FC<{
         >
           <BrandText>
             Initial message by {initiatorRole} on{" "}
-            {moment((lastConflict?.createdAt || 0) * 1000).format(
-              "MMM D, YYYY",
-            )}
+            {moment(lastConflict?.createdAt).format("MMM D, YYYY")}
           </BrandText>
           <UsernameWithAvatar
             userId={getUserId(network?.id, lastConflict?.initiator)}
@@ -128,9 +126,7 @@ export const OngoingConflictSection: FC<{
             >
               <BrandText>
                 Response by {responderRole} on{" "}
-                {moment(
-                  (lastConflict?.respondedAt || 0) * 1000 || Date.now(),
-                ).format("MMM D, YYYY")}
+                {moment(lastConflict?.respondedAt).format("MMM D, YYYY")}
               </BrandText>
               <UsernameWithAvatar
                 userId={getUserId(network?.id, responderAddress)}
@@ -200,7 +196,7 @@ export const OngoingConflictSection: FC<{
               >
                 <BrandText style={{ color: errorColor }}>
                   No response from {responderRole} after{" "}
-                  {moment((lastConflict?.createdAt || 0) * 1000).fromNow(true)}
+                  {moment(lastConflict?.createdAt).fromNow(true)}
                 </BrandText>
                 <UsernameWithAvatar
                   userId={getUserId(network?.id, responderAddress)}
@@ -214,8 +210,7 @@ export const OngoingConflictSection: FC<{
             <SpacerColumn size={3} />
             <BrandText style={{ color: yellowDefault }}>
               Waiting for{!lastConflict?.respondedAt ? " response or " : " "}
-              resolution for{" "}
-              {moment((lastConflict?.createdAt || 0) * 1000).fromNow(true)}...
+              resolution for {moment(lastConflict?.createdAt).fromNow(true)}...
             </BrandText>
           </>
         )}

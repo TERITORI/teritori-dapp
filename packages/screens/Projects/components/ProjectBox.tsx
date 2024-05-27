@@ -1,49 +1,50 @@
-import React, { useMemo } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { Link, useLinkBuilder } from "@react-navigation/native";
+import React, { memo, useMemo } from "react";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 
 import { Tag } from "./Milestone";
 import { ProjectStatusTag } from "./ProjectStatusTag";
-import discordSVG from "../../../../assets/icons/discord.svg";
-import githubSVG from "../../../../assets/icons/github.svg";
-import shareSVG from "../../../../assets/icons/share.svg";
-import twitterSVG from "../../../../assets/icons/twitter.svg";
-import websiteSVG from "../../../../assets/icons/website.svg";
-import { BrandText } from "../../../components/BrandText";
-import FlexRow from "../../../components/FlexRow";
-import { Link } from "../../../components/Link";
-import { ProgressLine } from "../../../components/ProgressLine";
-import { BoxStyle } from "../../../components/boxes/Box";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
-import { SocialButton } from "../../../components/buttons/SocialButton";
-import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
+import { Project } from "../types";
+
+import discordSVG from "@/assets/icons/discord.svg";
+import githubSVG from "@/assets/icons/github.svg";
+import shareSVG from "@/assets/icons/share.svg";
+import twitterSVG from "@/assets/icons/twitter.svg";
+import websiteSVG from "@/assets/icons/website.svg";
+import { BrandText } from "@/components/BrandText";
+import FlexRow from "@/components/FlexRow";
+import { ProgressLine } from "@/components/ProgressLine";
+import { TertiaryBox } from "@/components/boxes/TertiaryBox";
+import { SocialButton } from "@/components/buttons/SocialButton";
+import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import Clipboard from "@/modules/Clipboard";
+import { getNetworkObjectId, getUserId } from "@/networks";
+import { prettyPrice } from "@/utils/coins";
+import { useAppNavigation } from "@/utils/navigation";
+import { joinElements } from "@/utils/react";
 import {
   neutral17,
   neutral77,
   neutralA3,
   secondaryColor,
-} from "../../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontSemibold10,
   fontSemibold13,
   fontSemibold20,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { Project } from "../types";
-
-import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
-import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { getUserId } from "@/networks";
-import { prettyPrice } from "@/utils/coins";
-
-const BOX_WIDTH = 400;
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { normalizeTwitterId } from "@/utils/twitter";
 
 export const ProjectBox: React.FC<{
-  onPress?: () => void;
-  containerStyle?: BoxStyle;
   project: Project;
-}> = ({ containerStyle, onPress, project }) => {
+  width: number;
+}> = memo(({ project, width }) => {
   const stats = useMemo(() => {
     if (!project.milestones)
       return { completed: 0, total: 0, percentCompleted: 0 };
@@ -54,41 +55,126 @@ export const ProjectBox: React.FC<{
     const percentCompleted = Math.floor((completed / total) * 100);
     return { completed, total, percentCompleted };
   }, [project.milestones]);
+  const { setToast } = useFeedbacks();
+  const buildLink = useLinkBuilder();
 
   const networkId = useSelectedNetworkId();
 
+  const navigation = useAppNavigation();
+
+  const gotoProjectsDetail = (localId: string | undefined) => {
+    if (!localId) {
+      return;
+    }
+    navigation.navigate("ProjectsDetail", {
+      id: getNetworkObjectId(networkId, localId),
+    });
+  };
+
+  const onPress = () => gotoProjectsDetail(project.id);
+
+  const bottomElems = [
+    <SocialButton
+      iconSvg={shareSVG}
+      iconColor={secondaryColor}
+      onPress={async () => {
+        const pathname = buildLink("ProjectsDetail", {
+          id: getNetworkObjectId(networkId, project.id),
+        });
+        if (!pathname) return;
+
+        const link = new URL(window.location.href);
+        link.pathname = pathname;
+        await Clipboard.setStringAsync(link.href);
+
+        setToast({
+          title: "Copied permanent link",
+          message: "",
+          type: "success",
+          mode: "normal",
+        });
+      }}
+    />,
+  ];
+  if (project.metadata?.teamAndLinkData?.discordLink) {
+    bottomElems.push(
+      <Link to={project.metadata?.teamAndLinkData?.discordLink}>
+        <SocialButton text="" iconSvg={discordSVG} />
+      </Link>,
+    );
+  }
+  if (project.metadata?.teamAndLinkData?.websiteLink) {
+    bottomElems.push(
+      <Link to={project.metadata?.teamAndLinkData?.websiteLink}>
+        <SocialButton text="" iconSvg={websiteSVG} />
+      </Link>,
+    );
+  }
+  if (project.metadata?.teamAndLinkData?.githubLink) {
+    bottomElems.push(
+      <Link to={project.metadata?.teamAndLinkData?.githubLink}>
+        <SocialButton text="" iconSvg={githubSVG} />
+      </Link>,
+    );
+  }
+  if (project.metadata?.teamAndLinkData?.twitterProfile) {
+    bottomElems.push(
+      <Link
+        to={normalizeTwitterId(
+          project.metadata?.teamAndLinkData?.twitterProfile,
+        )}
+      >
+        <SocialButton text="" iconSvg={twitterSVG} />
+      </Link>,
+    );
+  }
+
   return (
-    <TertiaryBox style={[containerStyle, { width: BOX_WIDTH }]}>
+    <TertiaryBox style={{ width }}>
       {/* Body ============================================================== */}
       <View style={{ margin: layout.spacing_x2 }}>
-        <FlexRow>
+        <View style={{ flexDirection: "row" }}>
           <TouchableOpacity onPress={onPress}>
             <RoundedGradientImage
               size="S"
               square
-              sourceURI={project.metadata.shortDescData.coverImg}
+              sourceURI={project.metadata?.shortDescData?.coverImg}
             />
           </TouchableOpacity>
 
-          <View style={{ marginLeft: layout.spacing_x2 }}>
+          <View
+            style={{
+              marginLeft: layout.spacing_x2,
+              justifyContent: "space-between",
+              height: 56,
+            }}
+          >
             <TouchableOpacity onPress={onPress}>
               <BrandText style={fontSemibold20}>
-                {project.metadata.shortDescData.name}
+                {project.metadata?.shortDescData?.name}
               </BrandText>
             </TouchableOpacity>
-            <FlexRow style={{ marginTop: layout.spacing_x0_75 }}>
-              {project.metadata.shortDescData.tags
-                .split(",")
-                .map((tag, idx) => (
-                  <Tag
-                    key={idx}
-                    text={tag}
-                    containerStyle={{ marginRight: layout.spacing_x1 }}
-                  />
-                ))}
-            </FlexRow>
+            <View>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={{ width: width - (32 + 56 + layout.spacing_x2) }}
+              >
+                {project.metadata?.shortDescData?.tags
+                  ?.split(",")
+                  .map((tag, idx) => (
+                    <Tag
+                      key={idx}
+                      text={tag}
+                      containerStyle={[
+                        idx !== 0 && { marginLeft: layout.spacing_x1 },
+                      ]}
+                    />
+                  ))}
+              </ScrollView>
+            </View>
           </View>
-        </FlexRow>
+        </View>
 
         <BrandText
           numberOfLines={2}
@@ -97,7 +183,7 @@ export const ProjectBox: React.FC<{
             { color: neutral77, marginTop: layout.spacing_x2 },
           ]}
         >
-          {project.metadata.shortDescData.desc}
+          {project.metadata?.shortDescData?.desc}
         </BrandText>
 
         <SpacerColumn size={1} />
@@ -105,26 +191,24 @@ export const ProjectBox: React.FC<{
         <View>
           <FlexRow style={{ justifyContent: "space-between" }}>
             <BrandText style={[fontSemibold10, { color: neutralA3 }]}>
-              Milestone
+              Milestones
             </BrandText>
             <BrandText style={[fontSemibold10, { color: neutralA3 }]}>
               {stats.completed}/{stats.total}
             </BrandText>
           </FlexRow>
 
-          <ProgressLine
-            percent={stats.percentCompleted}
-            width={BOX_WIDTH - 32}
-          />
+          <ProgressLine gain={stats.percentCompleted} width={width - 32} />
         </View>
       </View>
 
       {/* Footer ============================================================== */}
-      <View
+      <TertiaryBox
         style={{
           width: "100%",
           backgroundColor: neutral17,
           padding: layout.spacing_x2,
+          borderWidth: 0,
         }}
       >
         <FlexRow style={{ justifyContent: "space-between" }}>
@@ -140,8 +224,8 @@ export const ProjectBox: React.FC<{
             <BrandText style={fontSemibold13}>
               {prettyPrice(
                 networkId,
-                project.metadata.shortDescData.budget.toString(),
-                project.escrowToken,
+                project.budget || "0",
+                project.paymentDenom,
               )}
             </BrandText>
           </FlexRow>
@@ -151,36 +235,12 @@ export const ProjectBox: React.FC<{
 
         <FlexRow>
           <FlexRow style={{ flexGrow: 1, width: "auto" }}>
-            <SocialButton iconSvg={shareSVG} iconColor={secondaryColor} />
-
-            <SpacerRow size={1} />
-
-            <Link to={project.metadata.teamAndLinkData.discordLink}>
-              <SocialButton text="" iconSvg={discordSVG} />
-            </Link>
-
-            <SpacerRow size={1} />
-
-            <Link to={project.metadata.teamAndLinkData.websiteLink}>
-              <SocialButton text="" iconSvg={websiteSVG} />
-            </Link>
-
-            <SpacerRow size={1} />
-
-            <Link to={project.metadata.teamAndLinkData.githubLink}>
-              <SocialButton text="" iconSvg={githubSVG} />
-            </Link>
-
-            <SpacerRow size={1} />
-
-            <Link to={project.metadata.teamAndLinkData.twitterProfile}>
-              <SocialButton text="" iconSvg={twitterSVG} />
-            </Link>
+            {joinElements(bottomElems, <SpacerRow size={1} />)}
           </FlexRow>
 
           <ProjectStatusTag status={project.status} size="SM" />
         </FlexRow>
-      </View>
+      </TertiaryBox>
     </TertiaryBox>
   );
-};
+});

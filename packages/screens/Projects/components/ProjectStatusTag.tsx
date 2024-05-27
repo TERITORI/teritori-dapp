@@ -8,10 +8,10 @@ import {
   redDefault,
   secondaryColor,
 } from "../../../utils/style/colors";
-import { ContractStatus } from "../types";
+import { ContractStatusFilter } from "../types";
 
 export const ProjectStatusTag: React.FC<{
-  status: ContractStatus | undefined;
+  status: ContractStatusFilter | undefined;
   onPress?: () => void;
   active?: boolean;
   size?: "XS" | "SM" | "M" | "XL";
@@ -19,50 +19,50 @@ export const ProjectStatusTag: React.FC<{
   let color, bgColor, borderColor, text;
 
   switch (status) {
-    case ContractStatus.ALL:
+    case "ALL":
       text = "All";
       color = secondaryColor;
       bgColor = neutral00;
       borderColor = neutral22;
       break;
-    case ContractStatus.CREATED:
+    case "CREATED":
       text = "Open";
       color = "#C8FFAE";
       bgColor = "#C8FFAE1A";
       borderColor = "#C8FFAE1A";
       break;
-    case ContractStatus.ACCEPTED:
+    case "ACCEPTED":
       text = "In Progress";
       color = "#EAA54B";
       bgColor = "#EAA54B1A";
       borderColor = "#EAA54B1A";
       break;
-    case ContractStatus.COMPLETED:
+    case "COMPLETED":
       text = "Completed";
       color = primaryColor;
       bgColor = neutral00;
       borderColor = neutral22;
       break;
-    case ContractStatus.CANCELED:
+    case "CANCELED":
       text = "Canceled";
       color = redDefault;
       bgColor = neutral00;
       borderColor = neutral22;
       break;
-    case ContractStatus.REJECTED:
+    case "REJECTED":
       text = "Rejected";
       color = redDefault;
       bgColor = neutral00;
       borderColor = neutral22;
       break;
-    case ContractStatus.CONFLICT:
+    case "CONFLICT":
       text = "Conflict";
       color = redDefault;
       bgColor = neutral00;
       borderColor = neutral22;
       break;
-    case ContractStatus.ABORTED_IN_FAVOR_OF_CONTRACTOR:
-    case ContractStatus.ABORTED_IN_FAVOR_OF_FUNDER:
+    case "ABORTED_IN_FAVOR_OF_CONTRACTOR":
+    case "ABORTED_IN_FAVOR_OF_FUNDER":
       text = "Aborted";
       color = redDefault;
       bgColor = neutral00;
@@ -86,6 +86,7 @@ export const ProjectStatusTag: React.FC<{
       style={{
         borderColor: active ? secondaryColor : borderColor,
       }}
+      testID={`project-status-${status || "UNKNOWN"}`}
     />
   );
 };

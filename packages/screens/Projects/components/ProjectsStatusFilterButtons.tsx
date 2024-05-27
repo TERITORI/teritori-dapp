@@ -3,11 +3,11 @@ import React from "react";
 import { ProjectStatusTag } from "./ProjectStatusTag";
 import FlexRow from "../../../components/FlexRow";
 import { SpacerRow } from "../../../components/spacer";
-import { ContractStatus } from "../types";
+import { ContractStatusFilter } from "../types";
 
 export const ProjectsStatusFilterButtons: React.FC<{
-  status: ContractStatus;
-  onChange: (newFilter: ContractStatus) => void;
+  status: ContractStatusFilter;
+  onChange: (newFilter: ContractStatusFilter) => void;
 }> = ({ status, onChange }) => {
   return (
     <FlexRow
@@ -17,46 +17,46 @@ export const ProjectsStatusFilterButtons: React.FC<{
       }}
     >
       <ProjectStatusTag
-        status={ContractStatus.ALL}
+        status="ALL"
         size="XS"
-        active={status === ContractStatus.ALL}
-        onPress={() => onChange(ContractStatus.ALL)}
+        active={status === "ALL"}
+        onPress={() => onChange("ALL")}
       />
 
       <SpacerRow size={2} />
 
       <ProjectStatusTag
-        status={ContractStatus.CREATED}
+        status="CREATED"
         size="XS"
-        active={status === ContractStatus.CREATED}
-        onPress={() => onChange(ContractStatus.CREATED)}
+        active={status === "CREATED"}
+        onPress={() => onChange("CREATED")}
       />
 
       <SpacerRow size={2} />
 
       <ProjectStatusTag
-        status={ContractStatus.ACCEPTED}
+        status="ACCEPTED"
         size="XS"
-        active={status === ContractStatus.ACCEPTED}
-        onPress={() => onChange(ContractStatus.ACCEPTED)}
+        active={status === "ACCEPTED"}
+        onPress={() => onChange("ACCEPTED")}
       />
 
       <SpacerRow size={2} />
 
       <ProjectStatusTag
-        status={ContractStatus.REJECTED}
+        status="REJECTED"
         size="XS"
-        active={status === ContractStatus.REJECTED}
-        onPress={() => onChange(ContractStatus.REJECTED)}
+        active={status === "REJECTED"}
+        onPress={() => onChange("REJECTED")}
       />
 
       <SpacerRow size={2} />
 
       <ProjectStatusTag
-        status={ContractStatus.COMPLETED}
+        status="COMPLETED"
         size="XS"
-        active={status === ContractStatus.COMPLETED}
-        onPress={() => onChange(ContractStatus.COMPLETED)}
+        active={status === "COMPLETED"}
+        onPress={() => onChange("COMPLETED")}
       />
     </FlexRow>
   );

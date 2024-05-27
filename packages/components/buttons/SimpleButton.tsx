@@ -18,12 +18,13 @@ interface SimpleButtonProps {
   color?: string;
   bgColor?: string;
   onPress?(): void;
-  containerStyle?: ViewStyle;
+  containerStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
   loading?: boolean;
   disabled?: boolean;
   iconSVG?: React.FC<SvgProps>;
   outline?: boolean;
+  testID?: string | undefined;
 }
 
 export const SimpleButton: React.FC<SimpleButtonProps> = ({
@@ -38,6 +39,7 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
   style,
   iconSVG = null,
   outline = false,
+  testID,
 }) => {
   let padH: number;
   let padV: number;
@@ -72,6 +74,7 @@ export const SimpleButton: React.FC<SimpleButtonProps> = ({
       disabled={disabled}
       style={[containerStyle, (loading || disabled) && { opacity: 0.6 }]}
       onPress={() => !loading && onPress?.()}
+      testID={testID}
     >
       <BrandText
         style={[

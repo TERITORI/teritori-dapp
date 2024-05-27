@@ -1,4 +1,5 @@
 import { Link } from "@react-navigation/native";
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
@@ -15,10 +16,16 @@ import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { getNetworkObjectId } from "@/networks";
 import { MilestonePriorityTag } from "@/screens/Projects/components/MilestonePriorityTag";
 import { MilestoneStatusTag } from "@/screens/Projects/components/MilestoneStatusTag";
 import { useEscrowContract } from "@/screens/Projects/hooks/useEscrowContract";
-import { MsStatus, Project, ProjectMilestone } from "@/screens/Projects/types";
+import {
+  MilestoneStatus,
+  Project,
+  ProjectMilestone,
+  zodMilestoneStatus,
+} from "@/screens/Projects/types";
 import {
   neutral00,
   neutral22,
@@ -31,13 +38,13 @@ import {
   fontSemibold20,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { objectKeys } from "@/utils/typescript";
 
 const STATUSES: SelectInputItem[] = [
-  { label: "Open", value: MsStatus.MS_OPEN.toString() },
-  { label: "In Progress", value: MsStatus.MS_PROGRESS.toString() },
-  { label: "Review", value: MsStatus.MS_REVIEW.toString() },
-  // NOTE: Disable, use cannot change status to COMPLETED
-  // { label: "Completed", value: MsStatus.MS_COMPLETED.toString() },
+  { label: "Open", value: "MS_OPEN" },
+  { label: "In Progress", value: "MS_PROGRESS" },
+  { label: "Review", value: "MS_REVIEW" },
+  { label: "Completed", value: "MS_COMPLETED" },
 ];
 
 export const MilestoneDetail: React.FC<{
@@ -46,7 +53,7 @@ export const MilestoneDetail: React.FC<{
   editable?: boolean;
   onClose?: (milestone: ProjectMilestone) => void;
 }> = ({ project, editable, milestone, onClose }) => {
-  const [newStatus, setNewStatus] = useState<MsStatus>(milestone.status);
+  const [newStatus, setNewStatus] = useState<MilestoneStatus>(milestone.status);
   const networkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
 
@@ -55,29 +62,50 @@ export const MilestoneDetail: React.FC<{
     selectedWallet?.address,
   );
   const [isProcessing, setIsProcessing] = useState(false);
+  const queryClient = useQueryClient();
 
   const changeMilestoneStatus = async (
     project: Project,
     milestone: ProjectMilestone,
   ) => {
     setIsProcessing(true);
-
-    // Convert milestone status => status id
-    let statusId = 1;
-    for (const msStatus in MsStatus) {
-      if (msStatus === newStatus) {
-        break;
+    try {
+      // Convert milestone status => status id
+      let statusId = 1;
+      for (const msStatus of objectKeys(zodMilestoneStatus.enum)) {
+        if (msStatus === newStatus) {
+          break;
+        }
+        statusId++;
       }
-      statusId++;
+
+      const refetch = () =>
+        Promise.all([
+          queryClient.invalidateQueries(["projects", networkId]),
+          queryClient.invalidateQueries([
+            "project",
+            getNetworkObjectId(networkId, project.id),
+          ]),
+        ]);
+
+      if (newStatus === "MS_COMPLETED") {
+        await execEscrowMethod("CompleteMilestoneAndPay", [
+          project.id.toString(),
+          milestone.id.toString(),
+        ]);
+        await refetch();
+        return;
+      }
+
+      await execEscrowMethod("ChangeMilestoneStatus", [
+        project.id.toString(),
+        milestone.id.toString(),
+        statusId.toString(),
+      ]);
+      await refetch();
+    } finally {
+      setIsProcessing(false);
     }
-
-    await execEscrowMethod("ChangeMilestoneStatus", [
-      project.id?.toString(),
-      milestone.id.toString(),
-      statusId.toString(),
-    ]);
-
-    setIsProcessing(false);
   };
 
   return (
@@ -173,15 +201,16 @@ export const MilestoneDetail: React.FC<{
             selectedItem={
               STATUSES.find((s) => s.value === newStatus) || STATUSES[0]
             }
-            selectItem={(item) => setNewStatus(item.value as MsStatus)}
+            selectItem={(item) => setNewStatus(item.value as MilestoneStatus)}
             boxStyle={{ height: 32 }}
+            testID="milestone-select-new-status"
           />
 
           <SpacerColumn size={2} />
 
           <PrimaryButton
             disabled={newStatus === milestone.status || isProcessing}
-            text="Start"
+            text="Change Status"
             onPress={() => changeMilestoneStatus(project, milestone)}
             fullWidth
             size="SM"

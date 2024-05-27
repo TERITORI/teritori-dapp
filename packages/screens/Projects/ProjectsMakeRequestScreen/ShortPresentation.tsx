@@ -1,7 +1,6 @@
 import { Formik } from "formik";
 import React, { useState } from "react";
 import { View } from "react-native";
-import { object, string } from "yup";
 
 import { MakeRequestFooter } from "./Footer";
 import addSVG from "../../../../assets/icons/add.svg";
@@ -18,21 +17,13 @@ import { IMAGE_MIME_TYPES } from "../../../utils/mime";
 import { errorColor, neutral77, neutralA3 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
 import { TNSResult } from "../components/TNSResult";
-import { emptyShortDesc } from "../defaultValues";
-import { useMakeRequestState } from "../hooks/useMakeRequestHook";
+import { emptyProjectFormData } from "../defaultValues";
+import {
+  useMakeRequestState,
+  yupProjectFormData,
+} from "../hooks/useMakeRequestHook";
 
 import { ButtonsGroup } from "@/screens/Projects/components/ButtonsGroup";
-
-const shortDescSchema = object({
-  name: string().required().min(3),
-  desc: string().required().min(10),
-  funder: string(),
-  contractor: string().min(32),
-  coverImg: string().required(),
-  arbitrator: string().required(),
-  tags: string().nullable(),
-  _coverImgFile: object(),
-});
 
 const CREATOR_TYPE_CONTRACTOR = "contractor";
 const CREATOR_TYPE_FUNDER = "funder";
@@ -40,7 +31,7 @@ const CREATOR_TYPE_FUNDER = "funder";
 export const ShortPresentation: React.FC = () => {
   const {
     actions: { goNextStep, setShortDesc },
-    shortDescData,
+    projectFormData: shortDescData,
   } = useMakeRequestState();
   const selectedWallet = useSelectedWallet();
   const caller = selectedWallet?.address;
@@ -73,8 +64,8 @@ export const ShortPresentation: React.FC = () => {
       <SpacerColumn size={2.5} />
 
       <Formik
-        initialValues={shortDescData || emptyShortDesc}
-        validationSchema={shortDescSchema}
+        initialValues={shortDescData || emptyProjectFormData}
+        validationSchema={yupProjectFormData}
         onSubmit={(values) => {
           if (creatorType === CREATOR_TYPE_CONTRACTOR) {
             values.contractor = caller;
@@ -224,11 +215,10 @@ export const ShortPresentation: React.FC = () => {
               <FileUploader
                 onUpload={async (files) => {
                   if (files[0].fileType !== "image") {
-                    await setFieldError("coverImg", "file is not an image");
+                    setFieldError("coverImg", "file is not an image");
                     return;
                   }
-                  await setFieldValue("coverImg", files[0].url);
-                  await setFieldValue("_coverImgFile", files[0]);
+                  await setFieldValue("coverImg", files[0]);
                 }}
                 mimeTypes={IMAGE_MIME_TYPES}
               >
@@ -252,11 +242,11 @@ export const ShortPresentation: React.FC = () => {
               )}
 
               <View style={{ alignItems: "center" }}>
-                {values._coverImgFile?.url && (
+                {values.coverImg && (
                   <RoundedGradientImage
                     size="M"
                     square
-                    sourceURI={values._coverImgFile?.url}
+                    sourceURI={values.coverImg.url}
                   />
                 )}
               </View>
@@ -270,13 +260,13 @@ export const ShortPresentation: React.FC = () => {
                 placeholder="Add  1-5 main Grant tags using comma..."
                 variant="labelOutside"
                 onChangeText={handleChange("tags")}
-                value={values.tags}
+                value={values.tags || ""}
                 error={errors.tags}
               />
 
               <MakeRequestFooter
                 disableNext={
-                  Object.keys(errors).length !== 0 || !values._coverImgFile
+                  Object.keys(errors).length !== 0 || !values.coverImg
                 }
                 onSubmit={handleSubmit}
               />

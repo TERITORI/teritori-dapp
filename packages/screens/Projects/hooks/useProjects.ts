@@ -1,66 +1,34 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { z } from "zod";
 
 import {
   NetworkFeature,
   getGnoNetwork,
   getNetworkFeature,
+  parseNetworkObjectId,
 } from "../../../networks";
-import { extractGnoString } from "../../../utils/gno";
-import { Project } from "../types";
+import { Project, zodProject } from "../types";
 
-const toJSON = (contractData: string, isArray: boolean) => {
-  // const regex = isArray ? /("\[.*\]")/ : /("{.*}")/;
-  //
-  // // FIXME: Wait JK to fix this JSON =============================================
-  // // NOTE: Don't know why extractGnoJSONString doesn't work here
-  // let rawData = contractData.match(regex)?.[0] || "";
+import { extractGnoJSONString } from "@/utils/gno";
 
-  let rawData = extractGnoString(contractData);
-
-  // FIXME: dont support \n for now
-  rawData = rawData.replace(/\n/g, " ");
-
-  // FIXME: sanitize
-  // eslint-disable-next-line no-restricted-syntax
-  let contractJSON: any = JSON.parse(rawData);
-
-  if (Array.isArray(contractJSON)) {
-    contractJSON = contractJSON.map((data: any) => {
-      // FIXME: sanitize
-      // eslint-disable-next-line no-restricted-syntax
-      data.metadata = JSON.parse(data.metadata.replace(/\n/g, " "));
-      return data;
-    });
-  } else {
-    // FIXME: sanitize
-    // eslint-disable-next-line no-restricted-syntax
-    contractJSON.metadata = JSON.parse(
-      contractJSON.metadata.replace(/\n/g, " "),
-    );
-  }
-
-  return contractJSON;
-};
-
-export const useProject = (
-  networkId: string | undefined,
-  projectId: string | undefined,
-) => {
+export const useProject = (projectId: string | undefined) => {
   return useQuery(
-    ["useProject", networkId, projectId],
+    ["project", projectId],
     async () => {
-      if (!networkId || projectId === undefined) {
+      const [network, localIdentifierStr] = parseNetworkObjectId(projectId);
+      if (!network || !localIdentifierStr) {
         return null;
       }
 
-      const gnoNetwork = getGnoNetwork(networkId);
+      const gnoNetwork = getGnoNetwork(network.id);
       if (!gnoNetwork) {
         return null;
       }
 
       const pmFeature = getNetworkFeature(
-        networkId,
+        network.id,
         NetworkFeature.GnoProjectManager,
       );
 
@@ -69,37 +37,44 @@ export const useProject = (
       }
 
       const client = new GnoJSONRPCProvider(gnoNetwork.endpoint);
+      const query = `RenderContractJSON(${parseInt(localIdentifierStr, 10)})`;
+      console.log("query", query);
       const contractData = await client.evaluateExpression(
         pmFeature.projectsManagerPkgPath,
-        `RenderContract(${projectId})`,
+        query,
       );
+      console.log("ret", contractData);
 
-      return toJSON(contractData, false) as Project;
+      const j = extractGnoJSONString(contractData);
+
+      console.log("parsed", j);
+
+      return zodProject.parse(j);
     },
-    { refetchInterval: 5000 },
+    { staleTime: Infinity },
   );
 };
+
+export type ProjectFilter =
+  | { byCandidatesForFunder: { funder: string } }
+  | { byFunder: { funder: string } }
+  | { byContractor: { contractor: string } }
+  | { byContractorAndFunder: { contractor: string; funder: string } }
+  | null;
 
 export const useProjects = (
   networkId: string,
-  startAfter: number,
-  limit: number,
-  filterByFunder: string = "", // By default, get only projects which have not funder
-  filterByContractor: string = "", // By default, get only projects which have not contractor
+  filter: ProjectFilter = null,
 ) => {
-  return useQuery(
-    [
-      "useProjects",
-      networkId,
-      startAfter,
-      limit,
-      filterByFunder,
-      filterByContractor,
-    ],
-    async () => {
+  const { data, ...other } = useInfiniteQuery<{
+    projects: Project[];
+    nextOffset: number;
+  }>(
+    ["projects", networkId, filter],
+    async ({ pageParam = 0 }) => {
       const gnoNetwork = getGnoNetwork(networkId);
       if (!gnoNetwork) {
-        return [];
+        return { projects: [], nextOffset: 0 };
       }
 
       const pmFeature = getNetworkFeature(
@@ -107,26 +82,41 @@ export const useProjects = (
         NetworkFeature.GnoProjectManager,
       );
       if (!pmFeature) {
-        return [];
+        return { projects: [], nextOffset: 0 };
       }
 
       const client = new GnoJSONRPCProvider(gnoNetwork.endpoint);
 
+      const limit = 12;
+
       const pkgPath = pmFeature.projectsManagerPkgPath;
-      const expr = `RenderContracts(${startAfter},${limit})`;
-      console.log("projects", pkgPath, expr);
+      const expr = `RenderContractsJSON(${pageParam},${limit},${JSON.stringify(JSON.stringify(filter))})`;
+
+      console.log("projhook fetching", expr);
 
       const contractsData = await client.evaluateExpression(pkgPath, expr);
 
-      console.log("projects data", contractsData);
+      console.log("projhook res", contractsData);
 
-      const projects = toJSON(contractsData, true) as Project[];
-      projects.sort((p1, p2) => (p2.id || -1) - (p1.id || -1));
+      const j = extractGnoJSONString(contractsData);
 
-      console.log("projects", projects);
+      const projects = z.array(zodProject).parse(j);
 
-      return projects;
+      return {
+        projects,
+        nextOffset: pageParam + projects.length,
+      };
     },
-    { initialData: [], refetchInterval: 10000 },
+    {
+      staleTime: Infinity,
+      getNextPageParam: ({ nextOffset }) => nextOffset,
+    },
   );
+
+  const projects = useMemo(() => {
+    if (!data) return [];
+    return data.pages.flatMap((page) => page.projects);
+  }, [data]);
+
+  return { projects, ...other };
 };

@@ -1,17 +1,19 @@
 import React from "react";
 
 import { Tag } from "./Milestone";
-import { neutralFF } from "../../../utils/style/colors";
-import { MsPriority } from "../types";
+import { neutral33, neutralFF } from "../../../utils/style/colors";
+import { MilestonePriority } from "../types";
 
 export const MilestonePriorityTag: React.FC<{
-  priority: MsPriority;
+  priority: MilestonePriority;
 }> = ({ priority }) => {
   switch (priority) {
-    case MsPriority.MS_PRIORITY_HIGH:
+    case "MS_PRIORITY_HIGH":
       return <Tag text="High" color={neutralFF} bgColor="#673932" />;
-    case MsPriority.MS_PRIORITY_MEDIUM:
+    case "MS_PRIORITY_MEDIUM":
       return <Tag text="Medium" color={neutralFF} bgColor="#705B38" />;
+    case "MS_PRIORITY_LOW":
+      return <Tag text="Low" color={neutralFF} bgColor={neutral33} />;
     default:
       return <Tag text="Unknown" color={neutralFF} bgColor="#000000" />;
   }

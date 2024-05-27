@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { ContractStatus, Project } from "../../types";
+import { Project } from "../../types";
 import { FundProjectModal } from "../FundProjectModal";
 import { Tag } from "../Milestone";
 import { ProjectStatusTag } from "../ProjectStatusTag";
@@ -16,19 +16,17 @@ import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { getUserId } from "@/networks";
+import { getNetworkObjectId, getUserId } from "@/networks";
 import {
   errorColor,
   neutral00,
   neutral33,
   neutral77,
   neutralA3,
-  yellowDefault,
 } from "@/utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
-  fontSemibold16,
   fontSemibold20,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -36,24 +34,19 @@ import { layout } from "@/utils/style/layout";
 type LeftBlockProps = {
   networkId: string;
   project: Project;
-  candidates: string[];
 };
 
-export const LeftBlock: React.FC<LeftBlockProps> = ({
-  networkId,
-  project,
-  candidates,
-}) => {
+export const LeftBlock: React.FC<LeftBlockProps> = ({ networkId, project }) => {
   const navigation = useAppNavigation();
   const [isFundModalVisible, setIsFundModalVisible] = useState(false);
-  const [isSubmitContractorModalVisible, setIsSubmitContractorModalVisible] =
-    useState(false);
+
+  const projectId = getNetworkObjectId(networkId, project.id);
 
   const selectedWallet = useSelectedWallet();
   const walletAddress = selectedWallet?.address || "";
 
   const projectStatus = project.status;
-  const shortDescData = project.metadata.shortDescData;
+  const shortDescData = project.metadata?.shortDescData;
 
   const authorId = project
     ? getUserId(networkId, project.sender)
@@ -65,7 +58,7 @@ export const LeftBlock: React.FC<LeftBlockProps> = ({
 
       <FlexRow>
         <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
-          Project creator
+          Project creator:{" "}
         </BrandText>
         <UsernameWithAvatar userId={authorId} addrLen={20} />
       </FlexRow>
@@ -77,7 +70,7 @@ export const LeftBlock: React.FC<LeftBlockProps> = ({
 
         <SpacerRow size={2} />
 
-        {shortDescData?.tags.split(",").map((tag, idx) => {
+        {shortDescData?.tags?.split(",").map((tag, idx) => {
           return (
             <Tag
               key={idx}
@@ -96,7 +89,7 @@ export const LeftBlock: React.FC<LeftBlockProps> = ({
         <RoundedGradientImage
           size="L"
           square
-          sourceURI={shortDescData._coverImgFile?.url || shortDescData.coverImg}
+          sourceURI={shortDescData?.coverImg}
         />
 
         {/* Name and Description */}
@@ -119,7 +112,7 @@ export const LeftBlock: React.FC<LeftBlockProps> = ({
                   width: "100%",
                 },
               ]}
-              numberOfLines={2}
+              numberOfLines={13}
             >
               {shortDescData?.desc}
             </BrandText>
@@ -131,7 +124,7 @@ export const LeftBlock: React.FC<LeftBlockProps> = ({
             {project &&
               (walletAddress === project.funder ||
                 walletAddress === project?.contractor) &&
-              project.status === ContractStatus.ACCEPTED && (
+              project.status === "ACCEPTED" && (
                 <>
                   <PrimaryButton
                     color={errorColor}
@@ -140,7 +133,7 @@ export const LeftBlock: React.FC<LeftBlockProps> = ({
                     onPress={() => {
                       project.id !== undefined &&
                         navigation.navigate("ProjectsConflictSolving", {
-                          projectId: project.id.toString(),
+                          projectId,
                         });
                     }}
                     size="SM"
@@ -151,7 +144,7 @@ export const LeftBlock: React.FC<LeftBlockProps> = ({
               )}
 
             {project.id !== undefined &&
-              project.status === ContractStatus.CONFLICT &&
+              project.status === "CONFLICT" &&
               (walletAddress === project.conflictHandler ||
                 walletAddress === project.contractor ||
                 walletAddress === project.funder) && (
@@ -162,53 +155,14 @@ export const LeftBlock: React.FC<LeftBlockProps> = ({
               )}
 
             {/* Actions */}
-            {/* If current user is not funder, not creator of project and the project has not contractor yet then user can become contractor */}
-            {!!project &&
-              walletAddress !== project.sender &&
-              walletAddress !== project.funder &&
-              !project.contractor &&
-              project.status === ContractStatus.CREATED &&
-              (project.contractorCandidates?.includes(walletAddress) ? (
-                <>
-                  <BrandText style={[fontSemibold16, { color: yellowDefault }]}>
-                    You are a candidate
-                  </BrandText>
-                  <SpacerColumn size={2} />
-                </>
-              ) : (
-                <>
-                  <PrimaryButton
-                    text="Submit your candidacy as contractor"
-                    onPress={() => setIsSubmitContractorModalVisible(true)}
-                    size="SM"
-                  />
-                  <SpacerColumn size={2} />
-                </>
-              ))}
             {/* If current user is not contractor, not creator of project and the project has not funder yet then user can become funder */}
             {walletAddress !== project.sender &&
               walletAddress !== project.contractor &&
               !project.funded &&
-              project.status === ContractStatus.CREATED && (
+              project.status === "CREATED" && (
                 <PrimaryButton
                   text="Fund this project"
                   onPress={() => setIsFundModalVisible(true)}
-                  size="SM"
-                  width={200}
-                />
-              )}
-
-            {walletAddress === project.funder &&
-              project.funded &&
-              project.status === ContractStatus.CREATED && (
-                <PrimaryButton
-                  disabled={!candidates.length}
-                  text={`${candidates.length} candidates`}
-                  onPress={() =>
-                    navigation.navigate("ProjectsManager", {
-                      view: "requestsByBuilders",
-                    })
-                  }
                   size="SM"
                   width={200}
                 />
@@ -227,12 +181,27 @@ export const LeftBlock: React.FC<LeftBlockProps> = ({
           onClose={() => setIsFundModalVisible(false)}
         />
       )}
+    </View>
+  );
+};
 
+export const SubmitCandidacyButton: React.FC<{
+  project: Project;
+}> = ({ project }) => {
+  const [isSubmitContractorModalVisible, setIsSubmitContractorModalVisible] =
+    useState(false);
+  return (
+    <>
       <SubmitContractorCandidateModal
-        project={project}
         isVisible={isSubmitContractorModalVisible}
         onClose={() => setIsSubmitContractorModalVisible(false)}
+        project={project}
       />
-    </View>
+      <PrimaryButton
+        text="Submit your candidacy as contractor"
+        onPress={() => setIsSubmitContractorModalVisible(true)}
+        size="SM"
+      />
+    </>
   );
 };

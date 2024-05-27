@@ -105,7 +105,7 @@ export const ProjectsCompleteMilestoneScreen: ScreenFC<
         <RoundedGradientImage
           size="S"
           square
-          sourceURI={project?.metadata.shortDescData.coverImg}
+          sourceURI={project.metadata?.shortDescData?.coverImg}
         />
         <SpacerRow size={2} />
 
@@ -115,7 +115,7 @@ export const ProjectsCompleteMilestoneScreen: ScreenFC<
           </BrandText>
 
           <BrandText style={fontSemibold28}>
-            {project?.metadata.shortDescData.name}
+            {project.metadata?.shortDescData?.name}
           </BrandText>
         </View>
       </FlexRow>
@@ -163,7 +163,7 @@ export const ProjectsCompleteMilestoneScreen: ScreenFC<
           {/*      Tags:*/}
           {/*    </BrandText>*/}
 
-          {/*    {project?.metadata.shortDescData.tags.split(",").map((tag) => {*/}
+          {/*    {project?.metadata?.shortDescData?.tags.split(",").map((tag) => {*/}
           {/*      return (*/}
           {/*        <Tag*/}
           {/*          text={tag}*/}
@@ -240,11 +240,7 @@ export const ProjectsCompleteMilestoneScreen: ScreenFC<
               <BrandText style={fontSemibold20}>Budget</BrandText>
               <SpacerRow size={1} />
               <BrandText style={[fontSemibold20, { color: primaryColor }]}>
-                {prettyPrice(
-                  networkId,
-                  milestone.amount.toString(),
-                  project.escrowToken,
-                )}
+                {prettyPrice(networkId, milestone.amount, project.paymentDenom)}
               </BrandText>
             </FlexRow>
 

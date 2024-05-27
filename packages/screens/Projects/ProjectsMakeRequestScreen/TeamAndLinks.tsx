@@ -1,7 +1,6 @@
 import { Formik } from "formik";
 import React from "react";
 import { View } from "react-native";
-import { object, string } from "yup";
 
 import { MakeRequestFooter } from "./Footer";
 import { BrandText } from "../../../components/BrandText";
@@ -16,15 +15,10 @@ import {
 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { emptyTeamAndLink } from "../defaultValues";
-import { useMakeRequestState } from "../hooks/useMakeRequestHook";
-
-const teamAndLinkSchema = object({
-  websiteLink: string().required().url(),
-  twitterProfile: string().required().url(),
-  discordLink: string().required().url(),
-  githubLink: string().required().url(),
-  teamDesc: string().required(),
-});
+import {
+  useMakeRequestState,
+  yupProjectTeamAndLinkFormData,
+} from "../hooks/useMakeRequestHook";
 
 export const TeamAndLinks: React.FC = () => {
   const {
@@ -46,7 +40,7 @@ export const TeamAndLinks: React.FC = () => {
 
       <Formik
         initialValues={teamAndLinkData || emptyTeamAndLink}
-        validationSchema={teamAndLinkSchema}
+        validationSchema={yupProjectTeamAndLinkFormData}
         onSubmit={(values) => {
           setTeamAndLink(values);
           goNextStep();

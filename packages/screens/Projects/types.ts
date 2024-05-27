@@ -1,110 +1,121 @@
-import { LocalFileData } from "../../utils/types/files";
+import { z } from "zod";
 
-export enum MsPriority {
-  MS_PRIORITY_HIGH = "MS_PRIORITY_HIGH",
-  MS_PRIORITY_MEDIUM = "MS_PRIORITY_MEDIUM",
-  MS_PRIORITY_LOW = "MS_PRIORITY_LOW",
-}
+import { zodTryParseJSON } from "@/utils/sanitize";
 
-export enum MsStatus {
-  MS_OPEN = "MS_OPEN",
-  MS_PROGRESS = "MS_PROGRESS",
-  MS_REVIEW = "MS_REVIEW",
-  MS_COMPLETED = "MS_COMPLETED",
-}
+const zodMilestonePriority = z.enum([
+  "MS_PRIORITY_HIGH",
+  "MS_PRIORITY_MEDIUM",
+  "MS_PRIORITY_LOW",
+]);
 
-export enum ContractStatus {
-  ALL = "ALL", // This is specific value used only for filter
-  CREATED = "CREATED",
-  ACCEPTED = "ACCEPTED",
-  CANCELED = "CANCELED",
-  PAUSED = "PAUSED",
-  COMPLETED = "COMPLETED",
-  REJECTED = "REJECTED",
-  CONFLICT = "CONFLICT",
-  ABORTED_IN_FAVOR_OF_FUNDER = "ABORTED_IN_FAVOR_OF_FUNDER",
-  ABORTED_IN_FAVOR_OF_CONTRACTOR = "ABORTED_IN_FAVOR_OF_CONTRACTOR",
-}
+export type MilestonePriority = z.infer<typeof zodMilestonePriority>;
 
-export type ShortDescData = {
-  name: string;
-  desc: string;
-  budget: number;
-  duration: number;
-  funder: string;
-  contractor: string;
-  coverImg: string;
-  tags: string;
-  _coverImgFile?: LocalFileData;
-  arbitrator: string;
-};
+export const zodMilestoneStatus = z.enum([
+  "MS_OPEN",
+  "MS_PROGRESS",
+  "MS_REVIEW",
+  "MS_COMPLETED",
+]);
 
-export type TeamAndLinkData = {
-  websiteLink: string;
-  twitterProfile: string;
-  discordLink: string;
-  githubLink: string;
-  teamDesc: string;
-};
+export type MilestoneStatus = z.infer<typeof zodMilestoneStatus>;
 
-type ProjectMetadata = {
-  shortDescData: ShortDescData;
-  milestones: ProjectMilestone[];
-  teamAndLinkData: TeamAndLinkData;
-};
+const zodProjectMilestone = z.object({
+  id: z.string(),
+  title: z.string(),
+  desc: z.string(),
+  amount: z.string(),
+  paid: z.string(),
+  duration: z.number(), // seconds
+  link: z.string(),
+  funded: z.boolean(),
+  priority: zodMilestonePriority,
+  status: zodMilestoneStatus,
+});
 
-export type ProjectMilestone = {
-  id: number;
-  title: string;
-  desc: string;
-  amount: number;
-  paid: number;
-  duration: number;
-  link: string;
-  funded: boolean;
-  status: MsStatus;
-  priority: MsPriority;
-};
+export type ProjectMilestone = z.infer<typeof zodProjectMilestone>;
 
-export enum ConflictOutcome {
-  RESUME_CONTRACT = "RESUME_CONTRACT",
-  REFUND_FUNDER = "REFUND_FUNDER",
-  PAY_CONTRACTOR = "PAY_CONTRACTOR",
-  UNKNOWN = "UNKNOWN",
-}
+const zodContractStatus = z.enum([
+  "CREATED",
+  "ACCEPTED",
+  "CANCELED",
+  "COMPLETED",
+  "REJECTED",
+  "CONFLICT",
+  "ABORTED_IN_FAVOR_OF_CONTRACTOR",
+  "ABORTED_IN_FAVOR_OF_FUNDER",
+]);
 
-type Conflict = {
-  initiator: string;
-  createdAt: number;
-  respondedAt: number | null;
-  resolvedAt: number | null;
-  initiatorMessage: string;
-  responseMessage: string | null;
-  resolutionMessage: string | null;
-  outcome: ConflictOutcome | null;
-};
+type ContractStatus = z.infer<typeof zodContractStatus>;
 
-export type Project = {
-  id?: number;
-  sender?: string;
-  contractor?: string;
-  funder?: string;
-  escrowToken?: string;
-  metadata: ProjectMetadata;
-  status?: ContractStatus;
-  expireAt?: number;
-  funderFeedback?: string;
-  contractorFeedback?: string;
-  contractorCandidates?: string[];
-  milestones?: ProjectMilestone[];
-  conflicts?: Conflict[];
-  activeMilestone?: number;
-  pausedBy?: string;
-  conflictHandler?: string;
-  handlerCandidate?: string;
-  handlerSuggestor?: string;
-  createdAt?: number;
-  funded?: boolean;
-  budget?: number;
-  rejectReason?: string;
-};
+export type ContractStatusFilter = ContractStatus | "ALL";
+
+const zodConflictOutcome = z.enum([
+  "RESUME_CONTRACT",
+  "REFUND_FUNDER",
+  "PAY_CONTRACTOR",
+]);
+
+const zodConflict = z.object({
+  initiator: z.string(),
+  createdAt: z.coerce.date(),
+  respondedAt: z.coerce.date().optional(),
+  resolvedAt: z.coerce.date().optional(),
+  initiatorMessage: z.string(),
+  responseMessage: z.string().optional(),
+  resolutionMessage: z.string().optional(),
+  outcome: zodConflictOutcome.optional(),
+});
+
+const zodProjectShortDescData = z.object({
+  name: z.string().optional(),
+  desc: z.string().optional(),
+  coverImg: z.string().optional(),
+  tags: z.string().optional(),
+});
+
+export type ProjectShortDescData = z.infer<typeof zodProjectShortDescData>;
+
+const zodProjectTeamAndLinkData = z.object({
+  websiteLink: z.string().optional(),
+  twitterProfile: z.string().optional(),
+  discordLink: z.string().optional(),
+  githubLink: z.string().optional(),
+  teamDesc: z.string().optional(),
+});
+
+export type ProjectTeamAndLinkData = z.infer<typeof zodProjectTeamAndLinkData>;
+
+const zodProjectMetadata = z.object({
+  shortDescData: zodProjectShortDescData.optional(),
+  teamAndLinkData: zodProjectTeamAndLinkData.optional(),
+});
+
+export type ProjectMetadata = z.infer<typeof zodProjectMetadata>;
+
+export const zodProject = z.object({
+  id: z.string(),
+  sender: z.string(),
+  contractor: z.string(),
+  contractorCandidates: z.array(z.string()),
+  funder: z.string(),
+  paymentDenom: z.string(),
+  metadata: z
+    .string()
+    .transform((data) => zodTryParseJSON(zodProjectMetadata, data)),
+  status: zodContractStatus,
+  expireAt: z.coerce.date(),
+  funderFeedback: z.string(),
+  contractorFeedback: z.string(),
+  milestones: z.array(zodProjectMilestone),
+  pausedBy: z.string(),
+  conflictHandler: z.string(),
+  handlerCandidate: z.string(),
+  handlerSuggestor: z.string(),
+  createdAt: z.coerce.date(),
+  budget: z.string(),
+  funded: z.boolean(),
+  rejectReason: z.string(),
+  conflicts: z.array(zodConflict),
+});
+
+export type Project = z.infer<typeof zodProject>;

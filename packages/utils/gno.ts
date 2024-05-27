@@ -7,7 +7,7 @@ interface AdenaDoContractMessage {
   value: { [key in string]: any };
 }
 
-interface RequestDocontractMessage {
+export interface RequestDocontractMessage {
   messages: AdenaDoContractMessage[];
   gasFee: number;
   gasWanted: number;
@@ -39,7 +39,7 @@ export const adenaDoContract = async (
   if (res.status === "failure") {
     const regex = /Data:.*s\:\"(.*)\"}\n/;
     const matches = res.data.error.log.match(regex);
-    const errMsg = matches.length > 1 ? matches[1] : res.message;
+    const errMsg = matches && matches.length > 1 ? matches[1] : res.message;
 
     console.error("Transaction failed:", {
       error: errMsg,
@@ -55,10 +55,9 @@ export const adenaDoContract = async (
   const index = 0;
 
   const deliverResults = blockResult.results.deliver_tx || [];
-  // FIXME: dont understand why when length > 0 tx not found
-  // if (deliverResults.length > 0) {
-  //   throw new Error("tx result not found in block");
-  // }
+  if (deliverResults.length == 0) {
+    throw new Error("tx result not found in block");
+  }
   const err = deliverResults[index].ResponseBase.Error;
   if (err) {
     console.error(deliverResults[index]);

@@ -1,3 +1,4 @@
+import { Decimal } from "@cosmjs/math";
 import { Formik } from "formik";
 import React, { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
@@ -26,7 +27,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ProjectMilestone, MsPriority, MsStatus } from "../types";
+import { MilestonePriority, ProjectMilestone } from "../types";
 
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
@@ -36,19 +37,19 @@ import {
 } from "@/networks";
 
 const PRIORITIES: SelectInputItem[] = [
-  { label: "High", value: MsPriority.MS_PRIORITY_HIGH.toString() },
-  { label: "Medium", value: MsPriority.MS_PRIORITY_MEDIUM.toString() },
+  { label: "High", value: "MS_PRIORITY_HIGH".toString() },
+  { label: "Medium", value: "MS_PRIORITY_MEDIUM".toString() },
 ];
 
 const initialValues: ProjectMilestone = {
-  id: 0,
+  id: "0",
   title: "",
   desc: "",
-  priority: MsPriority.MS_PRIORITY_MEDIUM,
-  status: MsStatus.MS_OPEN,
-  amount: 0,
+  priority: "MS_PRIORITY_MEDIUM",
+  status: "MS_OPEN",
+  amount: "0",
   link: "",
-  paid: 0,
+  paid: "0",
   funded: false,
   duration: 0,
 };
@@ -72,9 +73,8 @@ export const MilestoneForm: React.FC<{
   onSubmit: (milestone: ProjectMilestone) => void;
   onClose: () => void;
 }> = ({ onSubmit, onClose }) => {
-  const [priority, setPriority] = useState<MsPriority>(
-    MsPriority.MS_PRIORITY_MEDIUM,
-  );
+  const [priority, setPriority] =
+    useState<MilestonePriority>("MS_PRIORITY_MEDIUM");
 
   const networkId = useSelectedNetworkId();
 
@@ -92,7 +92,10 @@ export const MilestoneForm: React.FC<{
         validationSchema={newMilestoneSchema}
         onSubmit={(values: ProjectMilestone) => {
           values.priority = priority;
-          values.amount = values.amount * 10 ** decimals;
+          values.amount = Decimal.fromUserInput(
+            values.amount,
+            decimals,
+          ).atomics;
           onSubmit(values);
         }}
       >
@@ -174,6 +177,7 @@ export const MilestoneForm: React.FC<{
                   height={32}
                   value={"" + values.amount}
                   error={errors.amount}
+                  testID="milestone-budget"
                 />
               </FlexRow>
 
@@ -197,6 +201,7 @@ export const MilestoneForm: React.FC<{
                   height={32}
                   value={"" + values.duration}
                   error={errors.duration}
+                  testID="milestone-duration"
                 />
               </FlexRow>
 
@@ -231,6 +236,7 @@ export const MilestoneForm: React.FC<{
                 size="XS"
                 color={neutralFF}
                 bgColor={primaryColor}
+                testID="milestone-confirm"
                 style={{
                   width: "100%",
                   justifyContent: "center",

@@ -1,12 +1,14 @@
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 
 export const useUtils = () => {
-  const { setToastError } = useFeedbacks();
+  const { setToast } = useFeedbacks();
 
   const mustGetValue = (value?: string, name?: string) => {
     if (!value) {
-      setToastError({
+      setToast({
         title: "Error",
+        type: "error",
+        mode: "normal",
         message: `failed to get ${name || "value"}`,
       });
       throw Error(`failed to get ${name || "value"}`);

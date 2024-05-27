@@ -83,7 +83,7 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
               { textTransform: "uppercase", color: errorColor },
             ]}
           >
-            🔥 118.55K $TORI 🔥
+            🔥 368.55K $TORI 🔥
           </BrandText>
           {mobileMode && <SpacerColumn size={2} />}
           <BrandText

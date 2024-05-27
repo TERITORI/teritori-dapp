@@ -3,44 +3,110 @@ import moment from "moment/moment";
 import React from "react";
 import { View } from "react-native";
 
+import copySVG from "@/assets/icons/copy.svg";
 import discordSVG from "@/assets/icons/discord.svg";
 import githubSVG from "@/assets/icons/github.svg";
-import shareSVG from "@/assets/icons/share.svg";
 import twitterSVG from "@/assets/icons/twitter.svg";
 import websiteSVG from "@/assets/icons/website.svg";
 import { BrandText } from "@/components/BrandText";
 import FlexRow from "@/components/FlexRow";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
-import { SocialButton } from "@/components/buttons/SocialButton";
+import { IconWithTextButton } from "@/components/buttons/SocialButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
-import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { getNetworkFeature, NetworkFeature } from "@/networks";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import Clipboard from "@/modules/Clipboard";
 import { Project } from "@/screens/Projects/types";
 import { prettyPrice } from "@/utils/coins";
+import { joinElements } from "@/utils/react";
 import {
   neutral22,
   neutral77,
   neutralA3,
   primaryColor,
-  secondaryColor,
   yellowDefault,
 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { normalizeTwitterId } from "@/utils/twitter";
 
 type RightBlockProps = {
   project: Project;
+  networkId: string;
 };
 
-export const RightBlock: React.FC<RightBlockProps> = ({ project }) => {
-  const isFunded = project.funded;
-  const networkId = useSelectedNetworkId();
-  const shortDescData = project.metadata.shortDescData;
-  const teamAndLinkData = project.metadata.teamAndLinkData;
+export const RightBlock: React.FC<RightBlockProps> = ({
+  networkId,
+  project,
+}) => {
+  const { setToast } = useFeedbacks();
 
-  const pmFeature = getNetworkFeature(
-    networkId,
-    NetworkFeature.GnoProjectManager,
-  );
+  const isFunded = project.funded;
+  const teamAndLinkData = project.metadata?.teamAndLinkData;
+
+  const actions = [
+    <IconWithTextButton
+      text="Permanent link"
+      iconSvg={copySVG}
+      textColor={neutralA3}
+      onPress={async () => {
+        await Clipboard.setStringAsync(window.location.href);
+        setToast({
+          title: "Copied permanent link",
+          message: "",
+          type: "success",
+          mode: "normal",
+        });
+      }}
+    />,
+  ];
+
+  if (teamAndLinkData?.websiteLink) {
+    actions.push(
+      <Link to={teamAndLinkData?.websiteLink}>
+        <IconWithTextButton
+          text="Website URL"
+          iconSvg={websiteSVG}
+          textColor={neutralA3}
+        />
+      </Link>,
+    );
+  }
+
+  if (teamAndLinkData?.discordLink) {
+    actions.push(
+      <Link to={teamAndLinkData?.discordLink}>
+        <IconWithTextButton
+          text="Discord URL"
+          iconSvg={discordSVG}
+          textColor={neutralA3}
+        />
+      </Link>,
+    );
+  }
+
+  if (teamAndLinkData?.githubLink) {
+    actions.push(
+      <Link to={teamAndLinkData?.githubLink}>
+        <IconWithTextButton
+          text="Github URL"
+          iconSvg={githubSVG}
+          textColor={neutralA3}
+        />
+      </Link>,
+    );
+  }
+
+  if (teamAndLinkData?.twitterProfile) {
+    actions.push(
+      <Link to={normalizeTwitterId(teamAndLinkData?.twitterProfile)}>
+        <IconWithTextButton
+          text="Twitter URL"
+          iconSvg={twitterSVG}
+          textColor={neutralA3}
+        />
+      </Link>,
+    );
+  }
 
   return (
     <View>
@@ -48,11 +114,10 @@ export const RightBlock: React.FC<RightBlockProps> = ({ project }) => {
         style={{
           backgroundColor: neutral22,
           borderWidth: 0,
-          paddingVertical: 12,
-          paddingHorizontal: 16,
+          padding: layout.spacing_x1_5,
         }}
       >
-        <FlexRow style={{ justifyContent: "center", width: "100%" }}>
+        <FlexRow style={{ justifyContent: "space-between", width: "100%" }}>
           <BrandText
             style={[
               fontSemibold20,
@@ -63,11 +128,7 @@ export const RightBlock: React.FC<RightBlockProps> = ({ project }) => {
           </BrandText>
           <SpacerRow size={1} />
           <BrandText style={[fontSemibold20, { color: primaryColor }]}>
-            {prettyPrice(
-              networkId,
-              shortDescData?.budget.toString(),
-              pmFeature?.paymentsDenom,
-            )}
+            {prettyPrice(networkId, project.budget, project.paymentDenom)}
           </BrandText>
         </FlexRow>
       </TertiaryBox>
@@ -78,75 +139,34 @@ export const RightBlock: React.FC<RightBlockProps> = ({ project }) => {
         style={{
           backgroundColor: neutral22,
           borderWidth: 0,
-          paddingVertical: 12,
-          paddingHorizontal: 16,
+          padding: layout.spacing_x1_5,
         }}
       >
-        <FlexRow style={{ justifyContent: "center", width: "100%" }}>
+        <FlexRow style={{ justifyContent: "space-between", width: "100%" }}>
           <BrandText style={[fontSemibold20, { color: neutral77 }]}>
-            Expire At:
+            Expires on:
           </BrandText>
           <SpacerRow size={1} />
           <BrandText style={[fontSemibold20, { color: primaryColor }]}>
-            {moment(shortDescData.duration * 1000 + Date.now()).format("L")}
+            {/* FIXME */}
+            {moment(/*project.duration ||*/ 0 * 1000 + Date.now()).format(
+              "L",
+            )}{" "}
           </BrandText>
         </FlexRow>
       </TertiaryBox>
 
       <SpacerColumn size={2} />
 
-      <View style={{ backgroundColor: neutral22 }}>
-        <Link to={teamAndLinkData?.websiteLink}>
-          <SocialButton
-            text="Share URL"
-            iconSvg={shareSVG}
-            iconColor={secondaryColor}
-            textColor={neutralA3}
-          />
-        </Link>
-
-        <SpacerRow size={1} />
-
-        <Link to={teamAndLinkData?.discordLink}>
-          <SocialButton
-            text="Discord URL"
-            iconSvg={discordSVG}
-            textColor={neutralA3}
-          />
-        </Link>
-
-        <SpacerRow size={1} />
-
-        <Link to={teamAndLinkData?.websiteLink}>
-          <SocialButton
-            text="Website URL"
-            iconSvg={websiteSVG}
-            textColor={neutralA3}
-          />
-        </Link>
-
-        <SpacerRow size={1} />
-
-        <Link to={teamAndLinkData?.githubLink}>
-          <SocialButton
-            text="Github URL"
-            iconSvg={githubSVG}
-            textColor={neutralA3}
-          />
-        </Link>
-
-        <SpacerRow size={1} />
-
-        <Link to={teamAndLinkData?.discordLink}>
-          <SocialButton
-            text="Twitter URL"
-            iconSvg={twitterSVG}
-            textColor={neutralA3}
-          />
-        </Link>
-      </View>
-
-      <SpacerColumn size={2} />
+      <TertiaryBox
+        style={{
+          backgroundColor: neutral22,
+          borderWidth: 0,
+          padding: layout.spacing_x1_5,
+        }}
+      >
+        {joinElements(actions, <SpacerColumn size={1.5} />)}
+      </TertiaryBox>
     </View>
   );
 };

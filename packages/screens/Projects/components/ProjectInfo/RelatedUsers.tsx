@@ -1,10 +1,14 @@
+import { Link } from "@react-navigation/native";
 import React from "react";
-import { View } from "react-native";
+import { Table, Row, Cell, TableWrapper } from "react-native-reanimated-table";
+
+import { SubmitCandidacyButton } from "./LeftBlock";
 
 import { BrandText } from "@/components/BrandText";
-import FlexRow from "@/components/FlexRow";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
+import { SpacerColumn } from "@/components/spacer";
 import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getUserId } from "@/networks";
 import { Project } from "@/screens/Projects/types";
 import { neutral22, neutralA3 } from "@/utils/style/colors";
@@ -16,32 +20,22 @@ type RelatedUsersProps = {
   project: Project;
 };
 
-type RelatedUserProps = {
-  networkId: string;
-  label: string;
-  address?: string;
-};
-
-const RelatedUser: React.FC<RelatedUserProps> = ({
-  networkId,
-  label,
-  address = "",
-}) => {
-  return (
-    <View style={{ alignItems: "center" }}>
-      <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
-        {label}
-      </BrandText>
-
-      <UsernameWithAvatar userId={getUserId(networkId, address)} />
-    </View>
-  );
-};
-
 export const RelatedUsers: React.FC<RelatedUsersProps> = ({
   networkId,
   project,
 }) => {
+  const wallet = useSelectedWallet();
+  const walletAddress = wallet?.address;
+
+  const showCandidacyButton =
+    !!walletAddress &&
+    !!project &&
+    walletAddress !== project.sender &&
+    walletAddress !== project.funder &&
+    !project.contractor &&
+    project.status === "CREATED" &&
+    !project.contractorCandidates?.includes(walletAddress);
+
   return (
     <TertiaryBox
       style={{
@@ -52,23 +46,38 @@ export const RelatedUsers: React.FC<RelatedUsersProps> = ({
         marginBottom: layout.spacing_x2,
       }}
     >
-      <FlexRow style={{ flexWrap: "wrap", justifyContent: "space-between" }}>
-        <RelatedUser
-          networkId={networkId}
-          label="Funder"
-          address={project?.funder}
+      <Table>
+        <Row
+          data={["Funder", "Contractor", "Judge"]}
+          textStyle={[fontSemibold14, { color: neutralA3 }]}
         />
-        <RelatedUser
-          networkId={networkId}
-          label="Contractor"
-          address={project?.contractor}
-        />
-        <RelatedUser
-          networkId={networkId}
-          label="Conflict resolver"
-          address={project?.conflictHandler}
-        />
-      </FlexRow>
+        <SpacerColumn size={1} />
+        <TableWrapper style={{ flexDirection: "row" }}>
+          {[project?.funder, project?.contractor, project?.conflictHandler].map(
+            (cellData, cellIndex) => {
+              let content;
+              if (cellIndex === 1 && !cellData) {
+                if (showCandidacyButton) {
+                  content = <SubmitCandidacyButton project={project} />;
+                } else {
+                  content = (
+                    <Link to="/projects/manager/requestsByBuilders">
+                      <BrandText style={fontSemibold14}>
+                        {project.contractorCandidates.length} candidates
+                      </BrandText>
+                    </Link>
+                  );
+                }
+              } else {
+                content = (
+                  <UsernameWithAvatar userId={getUserId(networkId, cellData)} />
+                );
+              }
+              return <Cell key={cellIndex} data={content} />;
+            },
+          )}
+        </TableWrapper>
+      </Table>
     </TertiaryBox>
   );
 };

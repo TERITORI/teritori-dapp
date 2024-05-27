@@ -8,7 +8,7 @@ import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { MilestonePriorityTag } from "../components/MilestonePriorityTag";
 import { MilestoneStatusTag } from "../components/MilestoneStatusTag";
 import { useProjects } from "../hooks/useProjects";
-import { MsStatus, ProjectMilestone } from "../types";
+import { ProjectMilestone } from "../types";
 
 import { BrandText } from "@/components/BrandText";
 import { Link } from "@/components/Link";
@@ -16,6 +16,7 @@ import { TertiaryBox } from "@/components/boxes/TertiaryBox";
 import { SocialButton } from "@/components/buttons/SocialButton";
 import { Separator } from "@/components/separators/Separator";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getNetworkObjectId } from "@/networks";
 import { useAppNavigation } from "@/utils/navigation";
 import {
   neutral00,
@@ -36,14 +37,10 @@ export const MilestonesUpdateManager: React.FC = () => {
   const networkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
 
-  // TODO: Support to hardcoded 10 projects for now, make this more dynamic latter
-  const { data: projects, isLoading } = useProjects(
-    networkId,
-    0,
-    100,
-    selectedWallet?.address,
-    "ALL",
-  );
+  // TODO: Support to default limit projects for now, make this more dynamic latter
+  const { projects, isLoading } = useProjects(networkId, {
+    byFunder: { funder: selectedWallet?.address || "" },
+  });
 
   if (isLoading || !selectedWallet?.address) return null;
 
@@ -51,12 +48,12 @@ export const MilestonesUpdateManager: React.FC = () => {
     <>
       {projects.map((project) =>
         (project.milestones || [])
-          .filter((m) => m.status === MsStatus.MS_REVIEW)
+          .filter((m) => m.status === "MS_REVIEW")
           .map((milestone: ProjectMilestone, milestoneIdx: number) => {
             return (
               <>
                 <BrandText style={[fontSemibold16]}>
-                  Project: {project.metadata.shortDescData.name}
+                  Project: {project.metadata?.shortDescData?.name}
                 </BrandText>
                 <TertiaryBox
                   style={{
@@ -69,7 +66,7 @@ export const MilestonesUpdateManager: React.FC = () => {
                   <FlexRow>
                     <View style={{ flex: 3 }}>
                       <BrandText style={fontSemibold14}>
-                        {project.metadata.shortDescData.name}
+                        {project.metadata?.shortDescData?.name}
                       </BrandText>
 
                       <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
@@ -110,7 +107,7 @@ export const MilestonesUpdateManager: React.FC = () => {
                         Status
                       </BrandText>
 
-                      <MilestoneStatusTag status={MsStatus.MS_REVIEW} />
+                      <MilestoneStatusTag status="MS_REVIEW" />
 
                       {/*   <FlexRow>*/}
                       {/*  //   <MilestoneStatusTag status={MsStatus.MS_OPEN} />*/}
@@ -171,7 +168,7 @@ export const MilestonesUpdateManager: React.FC = () => {
                       onPress={() => {
                         if (!project.id) return;
                         navigation.navigate("ProjectsCompleteMilestone", {
-                          projectId: project.id,
+                          projectId: getNetworkObjectId(networkId, project.id),
                           milestoneId: milestone.id,
                         });
                       }}

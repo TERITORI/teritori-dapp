@@ -22,7 +22,7 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ProjectMilestone, MsPriority } from "../types";
+import { ProjectMilestone } from "../types";
 
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature, getNetworkFeature } from "@/networks";
@@ -41,6 +41,8 @@ export const MilestoneItem: React.FC<{
     NetworkFeature.GnoProjectManager,
   );
 
+  console.log("milestone", milestone);
+
   return (
     <View>
       <TouchableOpacity onPress={() => onPress?.(milestone)}>
@@ -56,6 +58,7 @@ export const MilestoneItem: React.FC<{
               fontSemibold13,
               { alignSelf: "flex-start", alignItems: "center" },
             ]}
+            numberOfLines={1}
           >
             🔎 {milestone.title}
           </BrandText>
@@ -71,6 +74,7 @@ export const MilestoneItem: React.FC<{
                 color: neutralA3,
               },
             ]}
+            numberOfLines={5}
           >
             {milestone.desc}
           </BrandText>
@@ -98,15 +102,15 @@ export const MilestoneItem: React.FC<{
             }}
           >
             <View style={{ flexGrow: 1, alignItems: "flex-start" }}>
-              {milestone.priority === MsPriority.MS_PRIORITY_HIGH && (
+              {milestone.priority === "MS_PRIORITY_HIGH" && (
                 <Tag bgColor="#673932" color="#ffffff" text="High 🔥" />
               )}
 
-              {milestone.priority === MsPriority.MS_PRIORITY_MEDIUM && (
+              {milestone.priority === "MS_PRIORITY_MEDIUM" && (
                 <Tag bgColor="#705B38" color="#ffffff" text="Medium" />
               )}
 
-              {milestone.priority === MsPriority.MS_PRIORITY_LOW && (
+              {milestone.priority === "MS_PRIORITY_LOW" && (
                 <Tag bgColor="#705B38" color="#ffffff" text="Low" />
               )}
             </View>

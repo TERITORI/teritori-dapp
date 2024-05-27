@@ -7,8 +7,8 @@ import FlexRow from "../../../components/FlexRow";
 import ModalBase from "../../../components/modals/ModalBase";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { ProjectStatusTag } from "../components/ProjectStatusTag";
-import { useProjects } from "../hooks/useProjects";
-import { Project, ContractStatus } from "../types";
+import { ProjectFilter, useProjects } from "../hooks/useProjects";
+import { Project } from "../types";
 
 import { BrandText } from "@/components/BrandText";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
@@ -22,6 +22,7 @@ import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { getUserId } from "@/networks";
 import { useEscrowContract } from "@/screens/Projects/hooks/useEscrowContract";
 import { useUtils } from "@/screens/Projects/hooks/useUtils";
+import { prettyPrice } from "@/utils/coins";
 import { useAppNavigation } from "@/utils/navigation";
 import {
   neutral17,
@@ -54,6 +55,8 @@ const RequestItem: React.FC<{
   const { mustGetValue } = useUtils();
 
   const { execEscrowMethod } = useEscrowContract(networkId, walletAddress);
+
+  const githubLink = project.metadata?.teamAndLinkData?.githubLink;
 
   const gotoProjectDetail = (project: Project) => {
     if (!project.id) {
@@ -109,14 +112,14 @@ const RequestItem: React.FC<{
               onPress={() => gotoProjectDetail(project)}
               style={fontSemibold14}
             >
-              {project.metadata.shortDescData.name}
+              {project.metadata?.shortDescData?.name}
             </BrandText>
 
             <BrandText
               onPress={() => gotoProjectDetail(project)}
               style={[fontSemibold14, { color: neutralA3 }]}
             >
-              {project.metadata.shortDescData.desc}
+              {project.metadata?.shortDescData?.desc}
             </BrandText>
           </View>
 
@@ -128,7 +131,7 @@ const RequestItem: React.FC<{
             </BrandText>
 
             <BrandText style={[fontSemibold14, { color: primaryColor }]}>
-              ${project.metadata.shortDescData.budget}
+              {prettyPrice(networkId, project.budget, project.paymentDenom)}
             </BrandText>
           </View>
 
@@ -177,7 +180,7 @@ const RequestItem: React.FC<{
                 { color: neutralA3, textAlign: "center" },
               ]}
             >
-              {project.milestones?.length || 0}
+              {project.milestones.length}
             </BrandText>
           </View>
 
@@ -187,22 +190,26 @@ const RequestItem: React.FC<{
             <ProjectStatusTag size="XS" status={project.status} />
           </View>
 
-          <Spacing />
+          {githubLink && (
+            <>
+              <Spacing />
 
-          <View style={{ flex: 1 }}>
-            <Link to={project.metadata.teamAndLinkData.githubLink}>
-              <SocialButton
-                iconSvg={githubSVG}
-                style={{
-                  marginRight: layout.spacing_x2,
-                  backgroundColor: neutral17,
-                }}
-              />
-            </Link>
-          </View>
+              <View style={{ flex: 1 }}>
+                <Link to={githubLink}>
+                  <SocialButton
+                    iconSvg={githubSVG}
+                    style={{
+                      marginRight: layout.spacing_x2,
+                      backgroundColor: neutral17,
+                    }}
+                  />
+                </Link>
+              </View>
+            </>
+          )}
 
           <FlexRow style={{ flex: 4 }}>
-            {project.status === ContractStatus.CREATED && (
+            {project.status === "CREATED" && (
               <>
                 <PrimaryButtonOutline
                   disabled={isProcessing}
@@ -229,7 +236,7 @@ const RequestItem: React.FC<{
               </>
             )}
 
-            {project.status === ContractStatus.REJECTED && (
+            {project.status === "REJECTED" && (
               <BrandText style={[fontSemibold14, { color: redDefault }]}>
                 {project.rejectReason}
               </BrandText>
@@ -276,18 +283,20 @@ export const Requests: React.FC<{
   const networkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
 
-  const funder =
-    type === "requestsByBuilders" ? selectedWallet?.address : "ALL";
-  const contractor =
-    type === "requestsByInvestors" ? selectedWallet?.address : "ALL";
+  // FIXME: add new filters
 
-  const { data: projects } = useProjects(
-    networkId,
-    0,
-    100, // TODO: hardcoded to 100 projects for now, make it dynamic later
-    funder,
-    contractor,
-  );
+  let filter: ProjectFilter;
+  switch (type) {
+    case "requestsByBuilders": {
+      filter = { byFunder: { funder: selectedWallet?.address || "" } };
+      break;
+    }
+    case "requestsByInvestors": {
+      filter = { byContractor: { contractor: selectedWallet?.address || "" } };
+    }
+  }
+
+  const { projects } = useProjects(networkId, filter);
 
   if (!selectedWallet?.address) {
     return null;

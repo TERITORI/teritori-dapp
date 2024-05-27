@@ -10,7 +10,7 @@ import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 export const Milestones: React.FC = () => {
   const {
     milestones,
-    shortDescData,
+    projectFormData: shortDescData,
     actions: { goNextStep, setShortDesc },
   } = useMakeRequestState();
 

@@ -7,19 +7,19 @@ import { TertiaryBox } from "@/components/boxes/TertiaryBox";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { SpacerColumn } from "@/components/spacer";
 import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
-import { getUserId } from "@/networks";
+import { getUserId, parseNetworkObjectId } from "@/networks";
 import { PartyRole } from "@/screens/Projects/ProjectsConflictSolvingScreen/types";
 import { useProject } from "@/screens/Projects/hooks/useProjects";
-import { ConflictOutcome } from "@/screens/Projects/types";
 import { errorColor, neutral17 } from "@/utils/style/colors";
 import { fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const SettledConflictsSection: FC<{
-  networkId: string | undefined;
   projectId: string | undefined;
-}> = ({ networkId, projectId }) => {
-  const { data: project } = useProject(networkId, projectId);
+}> = ({ projectId }) => {
+  const [network] = parseNetworkObjectId(projectId);
+  const networkId = network?.id;
+  const { data: project } = useProject(projectId);
   return (
     <>
       <BrandText style={[fontSemibold28]}>Settled conflicts</BrandText>
@@ -49,15 +49,15 @@ export const SettledConflictsSection: FC<{
 
           let outcomeColor, outcomeText;
           switch (conflict.outcome) {
-            case ConflictOutcome.RESUME_CONTRACT:
+            case "RESUME_CONTRACT":
               outcomeColor = "white";
               outcomeText = "Project resumed";
               break;
-            case ConflictOutcome.REFUND_FUNDER:
+            case "REFUND_FUNDER":
               outcomeColor = errorColor;
               outcomeText = "Funder reimbursed";
               break;
-            case ConflictOutcome.PAY_CONTRACTOR:
+            case "PAY_CONTRACTOR":
               outcomeColor = errorColor;
               outcomeText = "Contractor paid";
               break;
@@ -87,9 +87,7 @@ export const SettledConflictsSection: FC<{
                 >
                   <BrandText>
                     Initial message by {initiatorRole} on{" "}
-                    {moment(
-                      (conflict.createdAt || 0) * 1000 || Date.now(),
-                    ).format("MMM D, YYYY")}
+                    {moment(conflict.createdAt).format("MMM D, YYYY")}
                   </BrandText>
                   <UsernameWithAvatar
                     userId={getUserId(networkId, conflict?.initiator)}
@@ -122,9 +120,7 @@ export const SettledConflictsSection: FC<{
                     >
                       <BrandText>
                         Response by {responderRole} on{" "}
-                        {moment(
-                          (conflict.respondedAt || 0) * 1000 || Date.now(),
-                        ).format("MMM D, YYYY")}
+                        {moment(conflict.respondedAt).format("MMM D, YYYY")}
                       </BrandText>
                       <UsernameWithAvatar
                         userId={getUserId(networkId, responderAddress)}
@@ -154,7 +150,7 @@ export const SettledConflictsSection: FC<{
                     >
                       <BrandText style={{ color: errorColor }}>
                         No response from {responderRole} after{" "}
-                        {moment((conflict.createdAt || 0) * 1000).fromNow(true)}
+                        {moment(conflict.createdAt).fromNow(true)}
                       </BrandText>
                       <UsernameWithAvatar
                         userId={getUserId(networkId, responderAddress)}
@@ -173,9 +169,7 @@ export const SettledConflictsSection: FC<{
                 >
                   <BrandText>
                     Verdict on{" "}
-                    {moment(
-                      (conflict.resolvedAt || 0) * 1000 || Date.now(),
-                    ).format("MMM D, YYYY")}
+                    {moment(conflict.resolvedAt).format("MMM D, YYYY")}
                   </BrandText>
                   <UsernameWithAvatar
                     userId={getUserId(networkId, project?.conflictHandler)}

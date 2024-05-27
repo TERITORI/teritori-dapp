@@ -1,5 +1,5 @@
 import React from "react";
-import { ViewStyle } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 
 import { SimpleButton } from "../../../components/buttons/SimpleButton";
 import { neutral00, neutral33, neutral77 } from "../../../utils/style/colors";
@@ -11,7 +11,7 @@ export const Tag: React.FC<{
   bgColor?: string;
   size?: "XS" | "SM" | "M" | "XL";
   borderColor?: string;
-  containerStyle?: ViewStyle;
+  containerStyle?: StyleProp<ViewStyle>;
 }> = ({ text, bgColor, color, borderColor, size, containerStyle }) => {
   if (text === "") return null;
 

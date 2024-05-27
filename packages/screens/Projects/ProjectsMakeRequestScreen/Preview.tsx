@@ -5,13 +5,13 @@ import { MakeRequestFooter } from "./Footer";
 import { ProjectInfo } from "../components/ProjectInfo";
 import { ProjectMilestones } from "../components/ProjectMilestones";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
+import { Project } from "../types";
 
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { Project } from "@/screens/Projects/types";
 
 export const Preview: React.FC = () => {
   const {
-    shortDescData,
+    projectFormData,
     milestones,
     teamAndLinkData,
     actions: { goNextStep },
@@ -19,14 +19,42 @@ export const Preview: React.FC = () => {
 
   const selectedWallet = useSelectedWallet();
 
+  let coverFile = projectFormData.coverImg as any;
+  if ("file" in coverFile) {
+    // files selected by cypress are not File objects
+    coverFile = coverFile.file;
+  }
+
   // Create project object just like when it returned from server
   const project: Project = {
     sender: selectedWallet?.address || "",
     metadata: {
-      shortDescData,
+      shortDescData: {
+        ...projectFormData,
+        coverImg: coverFile ? URL.createObjectURL(coverFile) : "",
+        tags: projectFormData.tags || "",
+      },
       teamAndLinkData,
-      milestones: [],
     },
+    budget: "",
+    funder: selectedWallet?.address || "",
+    contractor: "",
+    status: "CREATED",
+    id: "",
+    funded: false,
+    milestones,
+    contractorCandidates: [],
+    paymentDenom: "",
+    expireAt: new Date(),
+    funderFeedback: "",
+    contractorFeedback: "",
+    pausedBy: "",
+    conflictHandler: "",
+    handlerCandidate: "",
+    handlerSuggestor: "",
+    createdAt: new Date(),
+    rejectReason: "",
+    conflicts: [],
   };
 
   return (
