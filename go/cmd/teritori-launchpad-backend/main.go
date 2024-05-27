@@ -4,6 +4,8 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"log"
+	"net"
 	"net/http"
 	"os"
 
@@ -24,7 +26,11 @@ func main() {
 		enableTls       = flag.Bool("enable_tls", false, "Use TLS - required for HTTP2.")
 		tlsCertFilePath = flag.String("tls_cert_file", "../../misc/localhost.crt", "Path to the CRT/PEM file.")
 		tlsKeyFilePath  = flag.String("tls_key_file", "../../misc/localhost.key", "Path to the private key file.")
-		dbPath          = fs.String("db-path", "launchpad.db", "path to sqlite db")
+		dbHost          = fs.String("db-indexer-host", "", "host postgreSQL database")
+		dbPort          = fs.String("db-indexer-port", "", "port for postgreSQL database")
+		dbPass          = fs.String("postgres-password", "", "password for postgreSQL database")
+		dbName          = fs.String("database-name", "", "database name for postgreSQL")
+		dbUser          = fs.String("postgres-user", "", "username for postgreSQL")
 		networksFile    = fs.String("networks-file", "networks.json", "path to networks config file")
 		pinataJWT       = fs.String("pinata-jwt", "", "Pinata admin JWT token")
 	)
@@ -57,11 +63,6 @@ func main() {
 		panic(errors.Wrap(err, "failed to unmarshal networks config"))
 	}
 
-	if dbPath == nil {
-		panic(errors.New("missing Database configuration"))
-	}
-
-	// Setup the DB + auto migrate
 	var launchpadModels = []interface{}{
 		// users
 		&indexerdb.User{},
@@ -72,7 +73,10 @@ func main() {
 		&LaunchpadWhitelist{},
 	}
 
-	launchpadDB, err := indexerdb.NewSQLiteDB(*dbPath)
+	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
+		*dbHost, *dbUser, *dbPass, *dbName, *dbPort)
+	launchpadDB, err := indexerdb.NewPostgresDB(dataConnexion)
+
 	if err != nil {
 		panic(errors.Wrap(err, "failed to access db"))
 	}
@@ -90,8 +94,18 @@ func main() {
 		NetworkStore: netstore,
 	})
 
+	lis, err := net.Listen("tcp", ":9080")
+	if err != nil {
+		panic(errors.Wrapf(err, "failed to listen on port 9080"))
+	}
+
 	server := grpc.NewServer()
 	launchpadpb.RegisterLaunchpadServiceServer(server, launchpadSvc)
+
+	logger.Info("gRPC server listening at: " + lis.Addr().String())
+	if err := server.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),
