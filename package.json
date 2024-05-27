@@ -13,7 +13,8 @@
     "lint-fix": "eslint --cache --ext .js,.jsx,.ts,.tsx . --fix",
     "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport=\"packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/screens/RiotGame/RiotGameBridgeScreen.tsx;packages/components/socialFeed/RichText/inline-toolbar;app.config.js;weshd;./App.tsx;packages/modules/FileSystem/index.ts;.*\\.web|.electron|.native|.d.ts\"",
     "validate-networks": "tsx packages/scripts/validateNetworks.ts",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "install-gno": "tsx packages/scripts/install-gno"
   },
   "engines": {
     "node": "v18.1.0"
