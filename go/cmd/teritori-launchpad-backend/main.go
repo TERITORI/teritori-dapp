@@ -4,8 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log"
-	"net"
 	"net/http"
 	"os"
 
@@ -94,18 +92,18 @@ func main() {
 		NetworkStore: netstore,
 	})
 
-	lis, err := net.Listen("tcp", ":9080")
-	if err != nil {
-		panic(errors.Wrapf(err, "failed to listen on port 9080"))
-	}
+	// lis, err := net.Listen("tcp", ":9080")
+	// if err != nil {
+	// 	panic(errors.Wrapf(err, "failed to listen on port 9080"))
+	// }
 
 	server := grpc.NewServer()
 	launchpadpb.RegisterLaunchpadServiceServer(server, launchpadSvc)
 
-	logger.Info("gRPC server listening at: " + lis.Addr().String())
-	if err := server.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
+	// logger.Info("gRPC server listening at: " + lis.Addr().String())
+	// if err := server.Serve(lis); err != nil {
+	// 	log.Fatalf("failed to serve: %v", err)
+	// }
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),
