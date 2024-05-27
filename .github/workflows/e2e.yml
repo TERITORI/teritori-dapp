@@ -15,7 +15,7 @@ jobs:
       - uses: cypress-io/github-action@v6
         with:
           browser: chrome
-          build: yarn build-gno
+          build: yarn install-gno
           start: |
             yarn start
             gnodev --add-account g1vy7xjwc7xvzd2pjvhdhqgeacjcfg8pv0qqng7z
