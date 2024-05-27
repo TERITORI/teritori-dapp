@@ -209,7 +209,7 @@ func (s *Launchpad) TokenMetadata(ctx context.Context, req *launchpadpb.TokenMet
 }
 
 func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.CollectionsByCreatorRequest) (*launchpadpb.CollectionsByCreatorResponse, error) {
-	creatorID := req.GetCreator()
+	creatorID := req.GetCreatorId()
 
 	if creatorID == "" {
 		return nil, errors.New("creatorID is mandatory")
