@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 
@@ -16,7 +17,10 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
+
+const DEBUG = false
 
 func main() {
 	fs := flag.NewFlagSet("teritori-dapp-backend", flag.ContinueOnError)
@@ -92,18 +96,22 @@ func main() {
 		NetworkStore: netstore,
 	})
 
-	// lis, err := net.Listen("tcp", ":9080")
-	// if err != nil {
-	// 	panic(errors.Wrapf(err, "failed to listen on port 9080"))
-	// }
-
 	server := grpc.NewServer()
 	launchpadpb.RegisterLaunchpadServiceServer(server, launchpadSvc)
 
-	// logger.Info("gRPC server listening at: " + lis.Addr().String())
-	// if err := server.Serve(lis); err != nil {
-	// 	log.Fatalf("failed to serve: %v", err)
-	// }
+	if DEBUG {
+		lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+		if err != nil {
+			panic(errors.Wrapf(err, "[DEBUG] failed to listen on port %d", port))
+		}
+
+		reflection.Register(server)
+
+		logger.Info(fmt.Sprintf("[DEBUG] gRPC server listening at: %s", lis.Addr().String()))
+		if err := server.Serve(lis); err != nil {
+			panic(errors.Errorf("failed to serve: %v", err))
+		}
+	}
 
 	wrappedServer := grpcweb.WrapServer(server,
 		grpcweb.WithWebsockets(true),
@@ -120,6 +128,8 @@ func main() {
 		Addr:    fmt.Sprintf(":%d", port),
 		Handler: http.HandlerFunc(handler),
 	}
+
+	reflection.Register(server)
 
 	logger.Info(fmt.Sprintf("Starting server. http port: %d, with TLS: %v", port, *enableTls))
 
