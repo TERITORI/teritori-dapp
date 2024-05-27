@@ -7,7 +7,7 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "launchpad.v1";
 
 export interface CollectionsByCreatorRequest {
-  creator: string;
+  creatorId: string;
 }
 
 export interface CollectionsByCreatorResponse {
@@ -69,13 +69,13 @@ export interface Trait {
 }
 
 function createBaseCollectionsByCreatorRequest(): CollectionsByCreatorRequest {
-  return { creator: "" };
+  return { creatorId: "" };
 }
 
 export const CollectionsByCreatorRequest = {
   encode(message: CollectionsByCreatorRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
+    if (message.creatorId !== "") {
+      writer.uint32(10).string(message.creatorId);
     }
     return writer;
   },
@@ -92,7 +92,7 @@ export const CollectionsByCreatorRequest = {
             break;
           }
 
-          message.creator = reader.string();
+          message.creatorId = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -104,13 +104,13 @@ export const CollectionsByCreatorRequest = {
   },
 
   fromJSON(object: any): CollectionsByCreatorRequest {
-    return { creator: isSet(object.creator) ? globalThis.String(object.creator) : "" };
+    return { creatorId: isSet(object.creatorId) ? globalThis.String(object.creatorId) : "" };
   },
 
   toJSON(message: CollectionsByCreatorRequest): unknown {
     const obj: any = {};
-    if (message.creator !== "") {
-      obj.creator = message.creator;
+    if (message.creatorId !== "") {
+      obj.creatorId = message.creatorId;
     }
     return obj;
   },
@@ -120,7 +120,7 @@ export const CollectionsByCreatorRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<CollectionsByCreatorRequest>, I>>(object: I): CollectionsByCreatorRequest {
     const message = createBaseCollectionsByCreatorRequest();
-    message.creator = object.creator ?? "";
+    message.creatorId = object.creatorId ?? "";
     return message;
   },
 };

@@ -3,7 +3,7 @@
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CollectionsByCreatorRequest {
     #[prost(string, tag="1")]
-    pub creator: ::prost::alloc::string::String,
+    pub creator_id: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

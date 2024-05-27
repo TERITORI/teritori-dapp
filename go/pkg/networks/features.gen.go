@@ -61,6 +61,26 @@ func (nb *NetworkBase) GetFeatureCosmWasmNFTsBurner() (*FeatureCosmWasmNFTsBurne
 	return feature.(*FeatureCosmWasmNFTsBurner), nil
 }
 
+type FeatureNFTLaunchpad struct {
+	*FeatureBase
+	LaunchpadContractAddress string `json:"launchpadContractAddress"`
+	DefaultMintDenom         string `json:"defaultMintDenom"`
+}
+
+var _ Feature = &FeatureNFTLaunchpad{}
+
+func (f FeatureNFTLaunchpad) Type() FeatureType {
+	return FeatureTypeNFTLaunchpad
+}
+
+func (nb *NetworkBase) GetFeatureNFTLaunchpad() (*FeatureNFTLaunchpad, error) {
+	feature, err := nb.GetFeature(FeatureTypeNFTLaunchpad)
+	if err != nil {
+		return nil, err
+	}
+	return feature.(*FeatureNFTLaunchpad), nil
+}
+
 func UnmarshalFeature(b []byte) (Feature, error) {
 	var base FeatureBase
 	if err := json.Unmarshal(b, &base); err != nil {
@@ -77,6 +97,12 @@ func UnmarshalFeature(b []byte) (Feature, error) {
 		var f FeatureCosmWasmNFTsBurner
 		if err := json.Unmarshal(b, &f); err != nil {
 			return nil, errors.Wrap(err, "failed to unmarshal feature CosmWasmNFTsBurner")
+		}
+		return &f, nil
+	case FeatureTypeNFTLaunchpad:
+		var f FeatureNFTLaunchpad
+		if err := json.Unmarshal(b, &f); err != nil {
+			return nil, errors.Wrap(err, "failed to unmarshal feature NFTLaunchpad")
 		}
 		return &f, nil
 	}
