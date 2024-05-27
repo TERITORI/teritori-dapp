@@ -21,5 +21,5 @@ jobs:
           build: yarn install-gno
           start: |
             yarn start
-            gnodev --add-account g1vy7xjwc7xvzd2pjvhdhqgeacjcfg8pv0qqng7z
+            gnodev --server-mode --add-account g1vy7xjwc7xvzd2pjvhdhqgeacjcfg8pv0qqng7z
           wait-on: "http://localhost:8080, http://localhost:8888"
