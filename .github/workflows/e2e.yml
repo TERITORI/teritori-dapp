@@ -1,0 +1,22 @@
+name: E2E Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  merge_group:
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          build: yarn build-gno
+          start: |
+            yarn start
+            gnodev --add-account g1vy7xjwc7xvzd2pjvhdhqgeacjcfg8pv0qqng7z
+          wait-on: "http://localhost:8080, http://localhost:8888"
