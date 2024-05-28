@@ -27,16 +27,16 @@ jobs:
 
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.19"
+          go-version: "1.22"
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           cache: "yarn"
-          node-version: 18
+          node-version-file: ".nvmrc"
 
       - uses: actions/setup-java@v4
         with:
