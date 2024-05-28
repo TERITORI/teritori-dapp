@@ -18,6 +18,7 @@ jobs:
       - uses: cypress-io/github-action@v6
         with:
           browser: chrome
+          headed: true
           build: yarn install-gno
           start: |
             yarn start --minify
