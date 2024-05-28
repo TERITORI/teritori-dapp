@@ -4472,7 +4472,7 @@
     "featureObjects": [
       {
         "type": "GnoProjectManager",
-        "projectsManagerPkgPath": "gno.land/r/demo/teritori/escrow",
+        "projectsManagerPkgPath": "gno.land/r/demo/teritori/projects_manager",
         "paymentsDenom": "ugnot"
       }
     ],
@@ -4501,7 +4501,7 @@
     "stakeCurrency": "ugnot",
     "idPrefix": "gnodev",
     "chainId": "dev",
-    "endpoint": "http://127.0.0.1:36657/http://127.0.0.1:26657",
+    "endpoint": "http://127.0.0.1:26657",
     "txExplorer": "https://gnoscan.io/transactions/details?txhash=$hash",
     "accountExplorer": "https://gnoscan.io/accounts/$address",
     "contractExplorer": "https://gnoscan.io/realms/details?path=$address",
@@ -9894,7 +9894,8 @@
         "displayName": "SAGA",
         "coingeckoId": "saga-2",
         "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/saga/images/saga.svg",
-        "color": "TODO"
+        "color": "TODO",
+        "variant": "cosmos"
       }
     ],
     "features": [],
@@ -9971,7 +9972,8 @@
         "displayName": "TSAGA",
         "coingeckoId": "not-found",
         "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/saga/images/saga.svg",
-        "color": "TODO"
+        "color": "TODO",
+        "variant": "cosmos"
       }
     ],
     "features": [],
