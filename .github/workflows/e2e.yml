@@ -22,22 +22,13 @@ jobs:
         with:
           browser: chrome
           build: yarn install-gno
-          record: true
           start: |
             yarn start --minify
             gnodev --server-mode --add-account g193vp9tjhfpldvgg3gn433ayv8pn7rtfv8shyeq
           wait-on: "http://localhost:8888, http://localhost:8081"
-      - name: Upload screenshots
+      - name: Upload errors screenshots
         uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: cypress-screenshots
           path: cypress/screenshots
-      - name: Upload videos
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: cypress-videos
-          path: cypress/videos
-          if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
-
