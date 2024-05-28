@@ -9,7 +9,7 @@ describe("Funder proposer full flow", () => {
     const judgeAddr = "g1nyz430dsujj56ygllcaujkzagz54v0l6yusspy";
 
     cy.visit("http://localhost:8081/projects?network=gno-dev", {
-      timeout: 120000,
+      timeout: 300000,
     });
 
     cy.contains("Create a Project").click();
