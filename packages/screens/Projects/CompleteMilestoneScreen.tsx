@@ -1,4 +1,3 @@
-import { useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
 import { View } from "react-native";
 import { SvgProps } from "react-native-svg";
@@ -58,16 +57,15 @@ const CustomSocialButton: React.FC<{
 
 export const ProjectsCompleteMilestoneScreen: ScreenFC<
   "ProjectsCompleteMilestone"
-> = () => {
-  const { params } = useRoute();
+> = ({ route: { params } }) => {
   const navigation = useAppNavigation();
 
   const networkId = useSelectedNetworkId();
-  const { projectId, milestoneId } = params as any;
+  const { projectId, milestoneId } = params;
   const [isProcessing, setIsProcessing] = useState(false);
   const selectedWallet = useSelectedWallet();
 
-  const { data: project } = useProject(networkId, projectId);
+  const { data: project } = useProject(projectId);
   const milestone = (project?.milestones || []).find(
     (_, idx) => idx === +milestoneId,
   );

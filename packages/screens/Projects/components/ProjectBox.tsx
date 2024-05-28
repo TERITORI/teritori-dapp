@@ -198,7 +198,10 @@ export const ProjectBox: React.FC<{
             </BrandText>
           </FlexRow>
 
-          <ProgressLine gain={stats.percentCompleted} width={width - 32} />
+          <ProgressLine
+            gain={stats.percentCompleted}
+            style={{ width: width - 32 }}
+          />
         </View>
       </View>
 

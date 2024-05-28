@@ -82,7 +82,7 @@ export type RootStackParamList = {
 
   Settings: undefined;
 
-  Projects: { network?: string };
+  Projects?: { network?: string };
   ProjectsManager: { view?: string };
   ProjectsPayment: { projectId: string; milestoneId: string };
   ProjectsCompleteMilestone: { projectId: string; milestoneId: string };

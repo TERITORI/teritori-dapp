@@ -1,4 +1,4 @@
-import { TextStyle, ViewStyle } from "react-native";
+import { TextStyle, View, ViewStyle } from "react-native";
 
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -17,10 +17,9 @@ export const TopMenuAccount: React.FC = () => {
 
   return (
     <FlexCol style={containerCStyle}>
-      <UsernameWithAvatar
-        userId={selectedWallet?.userId || ""}
-        style={userImageLineCStyle}
-      />
+      <View style={userImageLineCStyle}>
+        <UsernameWithAvatar userId={selectedWallet?.userId || ""} />
+      </View>
 
       <FlexRow alignItems="center" justifyContent="space-between">
         <OmniLink to={{ screen: "WalletManagerWallets" }}>

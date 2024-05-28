@@ -37,7 +37,7 @@ export const adenaDoContract = async (
   const res = await adena.DoContract(req);
 
   if (res.status === "failure") {
-    const regex = /Data:.*s\:\"(.*)\"}\n/;
+    const regex = /Data:.*s:"(.*)"}\n/;
     const matches = res.data.error.log.match(regex);
     const errMsg = matches && matches.length > 1 ? matches[1] : res.message;
 
@@ -55,7 +55,7 @@ export const adenaDoContract = async (
   const index = 0;
 
   const deliverResults = blockResult.results.deliver_tx || [];
-  if (deliverResults.length == 0) {
+  if (!deliverResults.length) {
     throw new Error("tx result not found in block");
   }
   const err = deliverResults[index].ResponseBase.Error;

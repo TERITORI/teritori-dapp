@@ -1,5 +1,5 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {

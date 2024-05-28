@@ -33,7 +33,7 @@ export const OngoingConflictSection: FC<{
   const [outcome, setOutcome] = useState<number>(1);
   const [responseMessage, setResponseMessage] = useState<string>("");
   const [resolutionMessage, setResolutionMessage] = useState<string>("");
-  const { data: project } = useProject(network?.id, projectId);
+  const { data: project } = useProject(projectId);
   const conflicts = project?.conflicts;
   const lastConflict = conflicts?.length
     ? conflicts[conflicts.length - 1]
