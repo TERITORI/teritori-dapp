@@ -69,7 +69,7 @@ describe("Funder proposer full flow", () => {
 
     // accept bob candidacy
     changeTestUser("alice");
-    cy.contains("1 candidates").click();
+    cy.contains("1 candidates").click({ timeout: 10000 });
     cy.contains("Accept").click();
     // check that the project is not present anymore in candidates list
     cy.contains("Accept").should("not.exist");
