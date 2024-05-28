@@ -22,5 +22,4 @@ jobs:
           start: |
             yarn start
             gnodev --server-mode --add-account g1vy7xjwc7xvzd2pjvhdhqgeacjcfg8pv0qqng7z
-          wait-on: "http://localhost:8888, http://localhost:8080"
-          wait-on-timeout: 600
+          wait-on: "http://localhost:8888, http://localhost:8081"
