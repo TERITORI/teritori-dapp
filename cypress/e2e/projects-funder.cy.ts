@@ -54,7 +54,10 @@ describe("Funder proposer full flow", () => {
     // fourth step: review and create
     cy.contains("Publish this request").click();
     cy.get("div[data-testid='confirm-and-sign']").click();
-    cy.contains("Back to Project Program", { timeout: 10000 }).click();
+    cy.get("div[data-testid='confirm-and-sign']", { timeout: 10000 }).should(
+      "not.exist",
+    );
+    cy.contains("Back to Project Program").click();
 
     // check that the project is present in manager as contractor
     cy.contains("Projects Manager").click();
@@ -66,6 +69,9 @@ describe("Funder proposer full flow", () => {
     changeTestUser("bob");
     cy.contains("Submit your candidacy as contractor").click();
     cy.get("div[data-testid='confirm-and-sign']").click();
+    cy.get("div[data-testid='confirm-and-sign']", { timeout: 10000 }).should(
+      "not.exist",
+    );
 
     // accept bob candidacy
     changeTestUser("alice");
