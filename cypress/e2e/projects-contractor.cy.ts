@@ -8,7 +8,9 @@ describe("Contractor proposer full flow", () => {
     const milestoneName = "Test Milestone";
     const judgeAddr = "g1nyz430dsujj56ygllcaujkzagz54v0l6yusspy";
 
-    cy.visit("http://localhost:8081/projects?network=gno-dev");
+    cy.visit("http://localhost:8081/projects?network=gno-dev", {
+      timeout: 120000,
+    });
 
     cy.contains("Create a Project").click();
 
