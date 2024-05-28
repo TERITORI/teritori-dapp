@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { View } from "react-native";
 import { useDispatch } from "react-redux";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
-import { Tabs } from "@/components/tabs/Tabs";
 import { useNFTBurnerTotal } from "@/hooks/nft-burner/useNFTBurnerTotal";
 import { useNFTBurnerUserCount } from "@/hooks/nft-burner/useNFTBurnerUserCount";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -19,15 +18,6 @@ import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral00, neutral33 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-
-const tabs = {
-  burn: {
-    name: "Burn NFTs",
-  },
-  leaderboard: {
-    name: "Leaderboard",
-  },
-};
 
 export const BurnCapitalScreen: ScreenFC<"BurnCapital"> = ({ route }) => {
   const inputNetwork = route.params?.network;
@@ -47,10 +37,6 @@ export const BurnCapitalScreen: ScreenFC<"BurnCapital"> = ({ route }) => {
     }
     dispatch(setSelectedNetworkId(network.id));
   }, [dispatch, inputNetwork]);
-
-  const [selectedTab, setSelectedTab] = useState<"burn" | "leaderboard">(
-    "burn",
-  );
 
   const { data: count } = useNFTBurnerUserCount(selectedWallet?.userId);
   const { data: total } = useNFTBurnerTotal(selectedNetworkId);
@@ -78,13 +64,6 @@ export const BurnCapitalScreen: ScreenFC<"BurnCapital"> = ({ route }) => {
             alignItems: "center",
           }}
         >
-          <Tabs
-            items={tabs}
-            selected={selectedTab}
-            style={{ height: 48 }}
-            onSelect={setSelectedTab}
-          />
-
           <TopSectionConnectWallet />
           {typeof total === "number" && (
             <BrandText>Total burned: {total}</BrandText>
@@ -92,15 +71,6 @@ export const BurnCapitalScreen: ScreenFC<"BurnCapital"> = ({ route }) => {
           {typeof count === "number" && (
             <BrandText>Burned by you: {count}</BrandText>
           )}
-          {/*{nftCollectionToBurn.map((nft) => (*/}
-          {/*  <CollectionContent*/}
-          {/*    key={nft.id}*/}
-          {/*    id={nft.id}*/}
-          {/*    selectedTab="owned"*/}
-          {/*    sortDirection={1}*/}
-          {/*    style={{ marginHorizontal: layout.spacing_x3 }}*/}
-          {/*  />*/}
-          {/*))}*/}
 
           <BurnableNFTs
             ownerId={selectedWallet?.userId || ""}
