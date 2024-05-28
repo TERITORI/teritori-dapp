@@ -78,7 +78,7 @@ describe("Funder proposer full flow", () => {
     // switch to bob and do milestone
     changeTestUser("bob");
     cy.contains("Test Project").click();
-    cy.contains(milestoneName).click();
+    cy.contains(milestoneName).click({ force: true });
     // TODO: test in progress state
     changeSelectedMilestoneStatus("Review");
 
