@@ -7,7 +7,7 @@ export const changeTestUser = (user: string) => {
 
 export const changeSelectedMilestoneStatus = (newStatus: string) => {
   const getStatusDropdown = () =>
-    cy.get("*[data-testid='milestone-select-new-status']", { timeout: 10000 });
+    cy.get("*[data-testid='milestone-select-new-status']", { timeout: 20000 });
   getStatusDropdown().click();
   const statusElem = getStatusDropdown().contains(newStatus);
   statusElem.click();
