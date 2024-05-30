@@ -19,6 +19,9 @@ const nftsBurnerFeature: CosmWasmNFTsBurner = {
   type: NetworkFeature.CosmWasmNFTsBurner,
   burnerContractAddress:
     "tori1qyl0j7a24amk8k8gcmvv07y2zjx7nkcwpk73js24euh64hkja6esd2p2xp",
+  authorizedCollections: [
+    "testori-tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0",
+  ],
 };
 
 const riotContractAddressGen0 =

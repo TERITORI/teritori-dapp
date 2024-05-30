@@ -10894,7 +10894,11 @@
     "featureObjects": [
       {
         "type": "CosmWasmNFTsBurner",
-        "burnerContractAddress": "tori16tlfw7uq73d5n8j5tl0zl367c58f032j50jgxr3e7f09gez3xq5qvcrxy7"
+        "burnerContractAddress": "tori16tlfw7uq73d5n8j5tl0zl367c58f032j50jgxr3e7f09gez3xq5qvcrxy7",
+        "authorizedCollections": [
+          "tori-tori1upd858fjdlme0wv4vd2v7c4majyr9dg53rl72dzfhds9zusmn9mqzjk22e",
+          "tori-tori1quj5act407qgszngzsh9elcelzl9pgcglq3844cwqex3cxzzeres0ckprs"
+        ]
       }
     ],
     "registryName": "teritori",
@@ -11075,7 +11079,10 @@
       },
       {
         "type": "CosmWasmNFTsBurner",
-        "burnerContractAddress": "tori1qyl0j7a24amk8k8gcmvv07y2zjx7nkcwpk73js24euh64hkja6esd2p2xp"
+        "burnerContractAddress": "tori1qyl0j7a24amk8k8gcmvv07y2zjx7nkcwpk73js24euh64hkja6esd2p2xp",
+        "authorizedCollections": [
+          "testori-tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0"
+        ]
       }
     ],
     "currencies": [

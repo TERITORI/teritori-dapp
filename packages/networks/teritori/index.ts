@@ -11,6 +11,10 @@ const burnCapitalFeature: CosmWasmNFTsBurner = {
   type: NetworkFeature.CosmWasmNFTsBurner,
   burnerContractAddress:
     "tori16tlfw7uq73d5n8j5tl0zl367c58f032j50jgxr3e7f09gez3xq5qvcrxy7",
+  authorizedCollections: [
+    "tori-tori1upd858fjdlme0wv4vd2v7c4majyr9dg53rl72dzfhds9zusmn9mqzjk22e", // Sasquatch Society Farmers
+    "tori-tori1quj5act407qgszngzsh9elcelzl9pgcglq3844cwqex3cxzzeres0ckprs", // ToriWadz
+  ],
 };
 
 export const teritoriNetwork: CosmosNetworkInfo = {

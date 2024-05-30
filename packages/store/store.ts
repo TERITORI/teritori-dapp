@@ -1,8 +1,12 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { Platform } from "react-native";
 import { useDispatch } from "react-redux";
-import { persistStore, persistReducer, createMigrate } from "redux-persist";
+import { createMigrate, persistReducer, persistStore } from "redux-persist";
 
+import {
+  burnCapitalCartItems,
+  burnCapitalCartItemsUI,
+} from "./slices/burnCartItems";
 import { dAppsReducer, dAppsReducerPersisted } from "./slices/dapps-store";
 import {
   marketplaceCartItems,
@@ -140,6 +144,8 @@ const rootReducer = combineReducers({
   dAppsStore: dAppsReducer,
   marketplaceCartItems,
   marketplaceCartItemsUI,
+  burnCapitalCartItems,
+  burnCapitalCartItemsUI,
   marketplaceFilters,
   marketplaceFilterUI,
   search: searchReducer,

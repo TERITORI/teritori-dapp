@@ -3,6 +3,7 @@ import { Platform } from "react-native";
 import BookMarkIcon from "@/assets/icons/bookmark.svg";
 import dao from "@/assets/icons/dao.svg";
 import socialFeed from "@/assets/icons/feed.svg";
+import burnCapital from "@/assets/icons/fire.svg";
 import freelance from "@/assets/icons/freelanceservice.svg";
 import governance from "@/assets/icons/governance.svg";
 import checklogo from "@/assets/icons/greenCheck.svg";
@@ -191,6 +192,16 @@ export function getAvailableApps(): dAppGroup {
           groupKey: "top-apps",
           selectedByDefault: true,
           alwaysOn: true,
+        },
+        burnCapital: {
+          id: "burnCapital",
+          title: "Burn Capital",
+          description: "Burn Capital dApp",
+          icon: burnCapital,
+          route: "BurnCapital",
+          groupKey: "top-apps",
+          selectedByDefault: true,
+          alwaysOn: false,
         },
         toripunks: {
           id: "toripunks",

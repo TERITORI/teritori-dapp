@@ -32,6 +32,7 @@ export type CosmWasmPremiumFeed = z.infer<typeof zodCosmWasmPremiumFeed>;
 const zodCosmWasmNFTsBurner = z.object({
   type: z.literal(NetworkFeature.CosmWasmNFTsBurner),
   burnerContractAddress: z.string(),
+  authorizedCollections: z.array(z.string()), // FIXME: use nft contract address instead of minter contract address in ids
 });
 
 export type CosmWasmNFTsBurner = z.infer<typeof zodCosmWasmNFTsBurner>;

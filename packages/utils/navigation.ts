@@ -217,6 +217,9 @@ const navConfig: {
     Collection: "collection/:id",
     CollectionTools: "collection/:id/tools",
     NFTDetail: "nft/:id",
+    // ==== Burn Capital
+    BurnCapital: "burn-capital",
+    // ==== Feed
     Feed: "feed/:tab?",
     FeedNewArticle: "feed/new",
     FeedPostView: "feed/post/:id",
@@ -309,7 +312,6 @@ const navConfig: {
     CreateWallet: "create-wallet",
     MiniChatProfile: "mini-chat-profile",
     MiniGroupActions: "mini-group-actions",
-    BurnCapital: "burn-capital",
   },
 };
 
