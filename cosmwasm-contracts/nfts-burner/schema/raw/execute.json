@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ExecuteMsg",
+  "anyOf": [
+    {
+      "$ref": "#/definitions/ExecMsg"
+    }
+  ],
+  "definitions": {
+    "Binary": {
+      "description": "Binary is a wrapper around Vec<u8> to add base64 de/serialization with serde. It also adds some helper methods to help encode inline.\n\nThis is only needed as serde-json-{core,wasm} has a horrible encoding for Vec<u8>. See also <https://github.com/CosmWasm/cosmwasm/blob/main/docs/MESSAGE_TYPES.md>.",
+      "type": "string"
+    },
+    "ExecMsg": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "receive_nft"
+          ],
+          "properties": {
+            "receive_nft": {
+              "type": "object",
+              "required": [
+                "msg",
+                "sender",
+                "token_id"
+              ],
+              "properties": {
+                "msg": {
+                  "$ref": "#/definitions/Binary"
+                },
+                "sender": {
+                  "type": "string"
+                },
+                "token_id": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "authorize_collections"
+          ],
+          "properties": {
+            "authorize_collections": {
+              "type": "object",
+              "required": [
+                "collection_addrs"
+              ],
+              "properties": {
+                "collection_addrs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "update_ownership"
+          ],
+          "properties": {
+            "update_ownership": {
+              "type": "object",
+              "properties": {
+                "new_owner": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

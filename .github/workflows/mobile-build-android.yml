@@ -36,7 +36,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           cache: "yarn"
-          node-version: 18
+          node-version-file: ".nvmrc"
 
       - uses: actions/setup-java@v4
         with:

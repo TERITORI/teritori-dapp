@@ -1,10 +1,17 @@
 import { teritoriCurrencies } from "./currencies";
+import { CosmWasmNFTsBurner } from "../features";
 import { NetworkKind, CosmosNetworkInfo, NetworkFeature } from "../types";
 
 const nameServiceContractAddress =
   "tori1wkwy0xh89ksdgj9hr347dyd2dw7zesmtrue6kfzyml4vdtz6e5wscs7038";
 const riotContractAddressGen1 =
   "tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37";
+
+const burnCapitalFeature: CosmWasmNFTsBurner = {
+  type: NetworkFeature.CosmWasmNFTsBurner,
+  burnerContractAddress:
+    "tori16tlfw7uq73d5n8j5tl0zl367c58f032j50jgxr3e7f09gez3xq5qvcrxy7",
+};
 
 export const teritoriNetwork: CosmosNetworkInfo = {
   id: "teritori",
@@ -22,7 +29,9 @@ export const teritoriNetwork: CosmosNetworkInfo = {
     NetworkFeature.BurnTokens,
     NetworkFeature.NFTLaunchpad,
     NetworkFeature.NFTMarketplaceLeaderboard,
+    NetworkFeature.CosmWasmNFTsBurner,
   ],
+  featureObjects: [burnCapitalFeature],
   registryName: "teritori",
   overrides: "cosmos-registry:teritori",
   walletUrlForStaking: "https://app.teritori.com/staking",

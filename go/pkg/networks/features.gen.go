@@ -19,6 +19,7 @@ const (
 	FeatureTypeNFTBridge                 = FeatureType("NFTBridge")
 	FeatureTypeCosmWasmPremiumFeed       = FeatureType("CosmWasmPremiumFeed")
 	FeatureTypeNFTMarketplaceLeaderboard = FeatureType("NFTMarketplaceLeaderboard")
+	FeatureTypeCosmWasmNFTsBurner        = FeatureType("CosmWasmNFTsBurner")
 )
 
 type FeatureCosmWasmPremiumFeed struct {
@@ -41,6 +42,25 @@ func (nb *NetworkBase) GetFeatureCosmWasmPremiumFeed() (*FeatureCosmWasmPremiumF
 	return feature.(*FeatureCosmWasmPremiumFeed), nil
 }
 
+type FeatureCosmWasmNFTsBurner struct {
+	*FeatureBase
+	BurnerContractAddress string `json:"burnerContractAddress"`
+}
+
+var _ Feature = &FeatureCosmWasmNFTsBurner{}
+
+func (f FeatureCosmWasmNFTsBurner) Type() FeatureType {
+	return FeatureTypeCosmWasmNFTsBurner
+}
+
+func (nb *NetworkBase) GetFeatureCosmWasmNFTsBurner() (*FeatureCosmWasmNFTsBurner, error) {
+	feature, err := nb.GetFeature(FeatureTypeCosmWasmNFTsBurner)
+	if err != nil {
+		return nil, err
+	}
+	return feature.(*FeatureCosmWasmNFTsBurner), nil
+}
+
 func UnmarshalFeature(b []byte) (Feature, error) {
 	var base FeatureBase
 	if err := json.Unmarshal(b, &base); err != nil {
@@ -51,6 +71,12 @@ func UnmarshalFeature(b []byte) (Feature, error) {
 		var f FeatureCosmWasmPremiumFeed
 		if err := json.Unmarshal(b, &f); err != nil {
 			return nil, errors.Wrap(err, "failed to unmarshal feature CosmWasmPremiumFeed")
+		}
+		return &f, nil
+	case FeatureTypeCosmWasmNFTsBurner:
+		var f FeatureCosmWasmNFTsBurner
+		if err := json.Unmarshal(b, &f); err != nil {
+			return nil, errors.Wrap(err, "failed to unmarshal feature CosmWasmNFTsBurner")
 		}
 		return &f, nil
 	}

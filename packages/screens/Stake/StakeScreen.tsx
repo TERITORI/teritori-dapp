@@ -12,6 +12,7 @@ import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { Tabs } from "@/components/tabs/Tabs";
 import { useAreThereWallets } from "@/hooks/useAreThereWallets";
+import { useCosmosDelegations } from "@/hooks/useCosmosDelegations";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { useValidators } from "@/hooks/useValidators";
@@ -47,6 +48,15 @@ export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
   const {
     data: { activeValidators, inactiveValidators },
   } = useValidators(selectedNetworkId);
+  const { data: cosmosDelegationsData = [] } = useCosmosDelegations(userId);
+  const delegationsValidators = activeValidators.flatMap((validator) =>
+    cosmosDelegationsData
+      .filter(
+        (delegationData) =>
+          validator.address === delegationData.delegation.validator_address,
+      )
+      .map(() => validator),
+  );
 
   const tabs = {
     active: {
@@ -56,6 +66,10 @@ export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
     inactive: {
       name: "Inactive Validators",
       badgeCount: inactiveValidators.length,
+    },
+    myDelegations: {
+      name: "My Delegations",
+      badgeCount: delegationsValidators.length,
     },
   };
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("active");
@@ -111,7 +125,11 @@ export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
       </View>
       <ValidatorsTable
         validators={
-          selectedTab === "active" ? activeValidators : inactiveValidators
+          selectedTab === "active"
+            ? activeValidators
+            : selectedTab === "myDelegations"
+              ? delegationsValidators
+              : inactiveValidators
         }
         actions={
           areThereWallets

@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "InstantiateMsg",
+  "type": "object",
+  "required": [
+    "authorized_collections"
+  ],
+  "properties": {
+    "admin_addr": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "authorized_collections": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

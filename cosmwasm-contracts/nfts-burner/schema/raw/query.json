@@ -1,0 +1,141 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QueryMsg",
+  "anyOf": [
+    {
+      "$ref": "#/definitions/QueryMsg"
+    }
+  ],
+  "definitions": {
+    "QueryMsg": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "ownership"
+          ],
+          "properties": {
+            "ownership": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "burned_by_user"
+          ],
+          "properties": {
+            "burned_by_user": {
+              "type": "object",
+              "required": [
+                "user_addr"
+              ],
+              "properties": {
+                "user_addr": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "burned_total"
+          ],
+          "properties": {
+            "burned_total": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "burned_by_collection"
+          ],
+          "properties": {
+            "burned_by_collection": {
+              "type": "object",
+              "required": [
+                "collection_addr"
+              ],
+              "properties": {
+                "collection_addr": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "authorized_collections"
+          ],
+          "properties": {
+            "authorized_collections": {
+              "type": "object",
+              "required": [
+                "limit",
+                "offset"
+              ],
+              "properties": {
+                "limit": {
+                  "type": "integer",
+                  "format": "uint32",
+                  "minimum": 0.0
+                },
+                "offset": {
+                  "type": "integer",
+                  "format": "uint32",
+                  "minimum": 0.0
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "burned_nfts"
+          ],
+          "properties": {
+            "burned_nfts": {
+              "type": "object",
+              "required": [
+                "limit",
+                "offset"
+              ],
+              "properties": {
+                "collection_addr": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "limit": {
+                  "type": "integer",
+                  "format": "uint32",
+                  "minimum": 0.0
+                },
+                "offset": {
+                  "type": "integer",
+                  "format": "uint32",
+                  "minimum": 0.0
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}
