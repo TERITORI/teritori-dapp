@@ -61,6 +61,7 @@ export interface Collection {
   metadatas_merkle_root?: string | null;
   mint_periods: MintPeriod[];
   name: string;
+  owner?: string | null;
   partners: string;
   project_desc: string;
   project_type: string;

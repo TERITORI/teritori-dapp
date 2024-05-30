@@ -233,6 +233,12 @@
         "name": {
           "type": "string"
         },
+        "owner": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "partners": {
           "type": "string"
         },

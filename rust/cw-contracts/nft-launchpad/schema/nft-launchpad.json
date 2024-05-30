@@ -285,6 +285,12 @@
           "name": {
             "type": "string"
           },
+          "owner": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "partners": {
             "type": "string"
           },
@@ -668,6 +674,12 @@
         "name": {
           "type": "string"
         },
+        "owner": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "partners": {
           "type": "string"
         },
@@ -975,6 +987,12 @@
         },
         "name": {
           "type": "string"
+        },
+        "owner": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "partners": {
           "type": "string"
