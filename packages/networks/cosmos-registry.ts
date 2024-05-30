@@ -10,6 +10,7 @@ const banList = [
   "coreum",
   "seitestnet2",
   "lavatestnet2",
+  "andromeda1",
 ];
 
 export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
