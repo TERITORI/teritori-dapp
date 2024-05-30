@@ -12,7 +12,7 @@ use nft_tr721::contract::{
 
 fn get_default_collection() -> Collection {
     let mint_periods = vec![MintPeriod {
-        price: Some(Coin{
+        price: Some(Coin {
             amount: Uint128::new(10),
             denom: "denom".to_string(),
         }),
@@ -94,6 +94,7 @@ fn get_default_collection() -> Collection {
         base_token_uri: None,
         metadatas_merkle_root: None,
         deployed_address: None,
+        owner: Some("owner".to_string()),
     }
 }
 
@@ -166,16 +167,16 @@ fn full_flow() {
     // Create collection with invalid symbol ---------------------------------------------------------
     {
         let err = contract
-            .submit_collection(Collection{
+            .submit_collection(Collection {
                 symbol: "a_123".to_string(),
                 ..default_collection.clone()
-            } )
+            })
             .call(sender)
             .unwrap_err();
 
         assert_eq!(err, ContractError::CollectionSymbolInvalid)
     }
-    
+
     // Create collection ---------------------------------------------------------
     {
         let submit_collection_resp = contract
@@ -201,16 +202,19 @@ fn full_flow() {
     // Submit collection with same name
     {
         let err = contract
-        .submit_collection(default_collection.clone())
-        .call(sender)
-        .unwrap_err();
-        
+            .submit_collection(default_collection.clone())
+            .call(sender)
+            .unwrap_err();
+
         assert_eq!(err, ContractError::CollectionSymbolExists);
     }
 
     // Deploy when deployer missing  ---------------------------------------------------------
     {
-        let err = contract.deploy_collection("SYMBOL_NOT_EXIST".to_string()).call(sender).unwrap_err();
+        let err = contract
+            .deploy_collection("SYMBOL_NOT_EXIST".to_string())
+            .call(sender)
+            .unwrap_err();
         assert_eq!(err, ContractError::DeployerMissing)
     }
 
@@ -226,7 +230,10 @@ fn full_flow() {
             .call(sender)
             .unwrap();
 
-        let err = contract.deploy_collection("SYMBOL_NOT_EXIST".to_string()).call(sender).unwrap_err();
+        let err = contract
+            .deploy_collection("SYMBOL_NOT_EXIST".to_string())
+            .call(sender)
+            .unwrap_err();
         assert_eq!(err, ContractError::Forbidden)
     }
 
@@ -242,14 +249,31 @@ fn full_flow() {
             .call(sender)
             .unwrap();
 
-        let err = contract.deploy_collection("SYMBOL_NOT_EXIST".to_string()).call(sender).unwrap_err();
+        let err = contract
+            .deploy_collection("SYMBOL_NOT_EXIST".to_string())
+            .call(sender)
+            .unwrap_err();
         assert_eq!(err, ContractError::CollectionNotFound)
     }
 
     // Deploy collection without merkle root  ---------------------------------------------------------
     {
-        let err = contract.deploy_collection("SYMBOL".to_string()).call(sender).unwrap_err();
+        let err = contract
+            .deploy_collection("SYMBOL".to_string())
+            .call(sender)
+            .unwrap_err();
         assert_eq!(err, ContractError::MerkleRootMissing)
+    }
+
+    // Update merkle root from unauthorized user
+    {
+        let new_merkle_root = "new merkle root";
+        let err = contract
+            .update_merkle_root("SYMBOL".to_string(), new_merkle_root.to_string())
+            .call("unauthorized")
+            .unwrap_err();
+
+        assert_eq!(err, ContractError::Forbidden);
     }
 
     // Update merkle root
@@ -270,7 +294,10 @@ fn full_flow() {
 
     // Deploy collection with merkle root but dont have nft code id  ---------------------------------------------------------
     {
-        let err = contract.deploy_collection("SYMBOL".to_string()).call(sender).unwrap_err();
+        let err = contract
+            .deploy_collection("SYMBOL".to_string())
+            .call(sender)
+            .unwrap_err();
         assert_eq!(err, ContractError::NftCodeIdMissing)
     }
 

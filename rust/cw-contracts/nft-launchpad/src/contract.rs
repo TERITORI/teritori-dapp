@@ -1,3 +1,5 @@
+use std::ops::Add;
+
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
     to_json_binary, Addr, Order, Reply, Response, StdResult, SubMsg, WasmMsg,
@@ -83,12 +85,20 @@ impl NftLaunchpad {
 
         let collection_id = collection.to_owned().symbol;
 
-        // Add new collection
-        self.collections.save(storage, collection_id.to_owned(), &collection)?;
+        let sender = ctx.info.sender.to_string();
 
-        Ok(Response::new()
+        let mut collection_with_owner = collection.clone();
+        collection_with_owner.owner = Some(sender.to_owned());
+
+        // Add new collection
+        self.collections.save(storage, collection_id.to_owned(), &collection_with_owner)?;
+
+        Ok(
+            Response::new()
             .add_attribute("action", "submit_collection")
-            .add_attribute("collection_id", collection_id))
+            .add_attribute("collection_id", collection_id)
+            .add_attribute("owner", sender)
+        )
     }
 
     #[msg(exec)]
@@ -104,6 +114,11 @@ impl NftLaunchpad {
             .collections
             .load(storage, collection_id.to_owned())
             .map_err(|_| ContractError::CollectionNotFound)?;
+
+        let sender = ctx.info.sender.to_string();
+        if sender != collection.owner.clone().unwrap() {
+            return Err(ContractError::Forbidden);
+        }
 
         // Do not allow to update merke root if the collection has been deployed already
         if collection.deployed_address.is_some() {
@@ -333,6 +348,7 @@ pub struct Collection {
     pub base_token_uri: Option<String>,
     pub metadatas_merkle_root: Option<String>,
     pub deployed_address: Option<String>,
+    pub owner: Option<String>,
 }
 
 #[cw_serde]
