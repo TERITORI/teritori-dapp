@@ -25,6 +25,7 @@ interface TextInputLaunchpadProps<T extends FieldValues>
   sublabel?: React.ReactElement;
   valueModifier?: (value: string) => string;
   required?: boolean;
+  disabled?: boolean;
 }
 
 export const TextInputLaunchpad = <T extends FieldValues>({
@@ -34,6 +35,7 @@ export const TextInputLaunchpad = <T extends FieldValues>({
   placeHolder,
   sublabel,
   valueModifier,
+  disabled,
   required = true,
   ...restProps
 }: TextInputLaunchpadProps<T>) => {
@@ -49,8 +51,9 @@ export const TextInputLaunchpad = <T extends FieldValues>({
       onHoverOut={() => setHovered(false)}
       onPress={() => inputRef?.current?.focus()}
       style={{ width: "100%", marginBottom: layout.spacing_x2 }}
+      disabled={disabled}
     >
-      <Label hovered={hovered} isRequired={required}>
+      <Label hovered={!disabled && hovered} isRequired={required}>
         {label}
       </Label>
       {sublabel && sublabel}
@@ -63,7 +66,7 @@ export const TextInputLaunchpad = <T extends FieldValues>({
             paddingHorizontal: layout.spacing_x1_5,
             height: 40,
           },
-          hovered && { borderColor: secondaryColor },
+          !disabled && hovered && { borderColor: secondaryColor },
         ]}
       >
         <TextInput
@@ -84,6 +87,7 @@ export const TextInputLaunchpad = <T extends FieldValues>({
           }
           value={field.value || ""}
           ref={inputRef}
+          editable={!disabled}
           {...restProps}
         />
       </TertiaryBox>
