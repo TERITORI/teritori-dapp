@@ -1,6 +1,5 @@
 import React from "react";
 import { FlatList, StyleSheet, useWindowDimensions, View } from "react-native";
-import { Observable } from "rxjs";
 
 import { CenterSection } from "./component/CenterSection";
 import { GameBgCard } from "./component/GameBgCard";
@@ -124,7 +123,6 @@ export const RiotGameScreen = () => {
   };
 
   const uploadMetadata = async (data: LocalFileData[]) => {
-    const file = data[0];
     const client = mustGetLaunchpadClient(networkId);
 
     const nft0 = {

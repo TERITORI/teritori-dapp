@@ -35,6 +35,7 @@ export type RootStackParamList = {
   Launchpad: undefined;
   LaunchpadApply: undefined;
   LaunchpadCreate: undefined;
+  LaunchpadComplete: { id: string };
   LaunchpadMyCollections: undefined;
   LaunchpadAdministrationDashboard: undefined;
   LaunchpadApplications: undefined;
@@ -201,6 +202,7 @@ const navConfig: {
     Launchpad: "launchpad",
     LaunchpadApply: "launchpad/apply",
     LaunchpadCreate: "launchpad/create",
+    LaunchpadComplete: "launchpad/complete/:id",
     LaunchpadMyCollections: "launchpad/my-collections",
     LaunchpadAdministrationDashboard: "launchpad/admin",
     LaunchpadApplications: "launchpad/admin/applications",

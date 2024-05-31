@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { mustGetLaunchpadClient } from "@/utils/backend";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {
@@ -8,9 +9,11 @@ import {
 } from "@/utils/types/launchpad";
 
 export const useCollectionsByCreator = (
-  networkId: string | undefined,
-  userId: string | undefined,
+  networkId?: string,
+  userId?: string,
 ) => {
+  const { setToast } = useFeedbacks();
+
   return useQuery(["collectionsByCreator", networkId, userId], async () => {
     const collectionsData: CollectionDataResult[] = [];
 
@@ -33,8 +36,14 @@ export const useCollectionsByCreator = (
         if (!collectionData) return;
         collectionsData.push(collectionData);
       });
-    } catch (e) {
-      console.error("Error getting collections by creator:", e);
+    } catch (e: any) {
+      console.error("Error getting collections by creator: ", e);
+      setToast({
+        mode: "normal",
+        type: "error",
+        title: "Error getting collections by creator",
+        message: e.message,
+      });
     }
     return collectionsData;
   });

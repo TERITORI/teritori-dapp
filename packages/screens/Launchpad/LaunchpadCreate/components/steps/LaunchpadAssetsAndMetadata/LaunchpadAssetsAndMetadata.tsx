@@ -1,4 +1,6 @@
-import React, { Dispatch, FC, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { Dispatch, FC, useEffect, useState } from "react";
+import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { View } from "react-native";
 
 import { AssetsTab } from "./AssetsTab";
@@ -16,6 +18,11 @@ import {
 import { neutral33, neutral77, primaryColor } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import {
+  CollectionAssetsMetadatasFormValues,
+  CollectionFormValues,
+  ZodCollectionAssetsMetadatasFormValues,
+} from "@/utils/types/launchpad";
 
 const AssetsAndMetadataTabItems = {
   assets: {
@@ -33,6 +40,19 @@ export const LaunchpadAssetsAndMetadata: FC<{
   const isMobile = useIsMobile();
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof AssetsAndMetadataTabItems>("assets");
+  const { watch, setValue } = useFormContext<CollectionFormValues>();
+  const collectionAssetsMetadatas = watch("assetsMetadatas");
+  const assetsMetadatasForm = useForm<CollectionAssetsMetadatasFormValues>({
+    mode: "all",
+    defaultValues: collectionAssetsMetadatas, // Retreive assetsMetadatas from collectionForm
+    resolver: zodResolver(ZodCollectionAssetsMetadatasFormValues),
+  });
+  const assetsMetadatas = assetsMetadatasForm.watch("assetsMetadatas");
+
+  // Plug assetsMetadatas from assetsMetadatasForm to collectionForm
+  useEffect(() => {
+    setValue("assetsMetadatas", { assetsMetadatas });
+  }, [assetsMetadatas, setValue]);
 
   return (
     <>
@@ -92,7 +112,13 @@ export const LaunchpadAssetsAndMetadata: FC<{
           }}
           onSelect={setSelectedTab}
         />
-        {selectedTab === "assets" && <AssetsTab />}
+        {selectedTab === "assets" && (
+          <FormProvider {...assetsMetadatasForm}>
+            <AssetsTab />
+          </FormProvider>
+        )}
+
+        {/*TODO: Handle this ?*/}
         {selectedTab === "uri" && <UriTab />}
 
         <View

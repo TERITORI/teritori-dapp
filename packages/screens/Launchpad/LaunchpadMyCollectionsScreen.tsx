@@ -6,6 +6,7 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { Box } from "@/components/boxes/Box";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useCollectionsByCreator } from "@/hooks/launchpad/useCollectionsByCreator";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
@@ -24,6 +25,7 @@ import {
   fontSemibold28,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { CollectionDataResult } from "@/utils/types/launchpad";
 
 export const LaunchpadMyCollectionsScreen: ScreenFC<
   "LaunchpadMyCollections"
@@ -32,7 +34,7 @@ export const LaunchpadMyCollectionsScreen: ScreenFC<
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
   const userId = selectedWallet?.userId;
-  const { data: collections } = useCollectionsByCreator(
+  const { data: userCollections } = useCollectionsByCreator(
     selectedNetworkId,
     userId,
   );
@@ -79,14 +81,52 @@ export const LaunchpadMyCollectionsScreen: ScreenFC<
         <SpacerColumn size={3} />
 
         {/*TODO: Refacto CollectionsTable*/}
-        {/*<CollectionsTable rows={collections}/>*/}
+        {/*<CollectionsTable rows={userCollections}/>*/}
 
-        {collections?.length ? (
-          collections.map((collection) => (
-            <BrandText>{collection.name}</BrandText>
+        {userCollections?.length ? (
+          userCollections.map((collection) => (
+            <View
+              key={collection.symbol}
+              style={{
+                backgroundColor: neutral17,
+                padding: layout.spacing_x2,
+                borderRadius: 16,
+                marginBottom: layout.spacing_x2,
+              }}
+            >
+              <BrandText style={[fontSemibold13, { color: neutral77 }]}>
+                Name
+              </BrandText>
+              <BrandText>{collection.name}</BrandText>
+              <SpacerColumn size={0.5} />
+              <BrandText style={[fontSemibold13, { color: neutral77 }]}>
+                Symbol
+              </BrandText>
+              <BrandText>{collection.symbol}</BrandText>
+              <SpacerColumn size={0.5} />
+              <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+                <View>
+                  <BrandText style={[fontSemibold13, { color: neutral77 }]}>
+                    Status
+                  </BrandText>
+                  <BrandText>{collectionStatus(collection)}</BrandText>
+                </View>
+                {collectionStatus(collection) === "INCOMPLETE" && (
+                  <PrimaryButton
+                    text="Complete metadata"
+                    size="XXS"
+                    boxStyle={{ marginLeft: layout.spacing_x3 }}
+                    onPress={() =>
+                      navigation.navigate("LaunchpadComplete", {
+                        id: collection.symbol,
+                      })
+                    }
+                  />
+                )}
+              </View>
+            </View>
           ))
         ) : (
-          // {!collections?.length &&
           <Box
             style={{
               borderWidth: 1,
@@ -125,3 +165,10 @@ export const LaunchpadMyCollectionsScreen: ScreenFC<
     </ScreenContainer>
   );
 };
+
+const collectionStatus = (collection: CollectionDataResult) =>
+  !collection.metadatas_merkle_root
+    ? "INCOMPLETE"
+    : !collection.deployed_address
+      ? "COMPLETE"
+      : "DEPLOYED";

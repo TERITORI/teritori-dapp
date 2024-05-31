@@ -21,8 +21,9 @@ import { LaunchpadAllProjectAdministrationDashScreen } from "@/screens/Launchpad
 import { LaunchpadApplicationReview } from "@/screens/Launchpad/LaunchpadApplicationReview/LaunchpadApplicationReview";
 import { LaunchpadApplicationsScreen } from "@/screens/Launchpad/LaunchpadApplications/LaunchpadApplicationsScreen";
 import { LaunchpadApplyScreen } from "@/screens/Launchpad/LaunchpadApplyScreen";
+import { LaunchpadCompleteScreen } from "@/screens/Launchpad/LaunchpadCompleteScreen";
 import { LaunchpadCreateScreen } from "@/screens/Launchpad/LaunchpadCreate/LaunchpadCreateScreen";
-import { LaunchpadMyCollectionsScreen } from "@/screens/Launchpad/LaunchpadMyCollections/LaunchpadMyCollectionsScreen";
+import { LaunchpadMyCollectionsScreen } from "@/screens/Launchpad/LaunchpadMyCollectionsScreen";
 import { LaunchpadReadyApplicationsScreen } from "@/screens/Launchpad/LaunchpadReadyApplications/LaunchpadReadyApplicationsScreen";
 import { LaunchpadScreen } from "@/screens/Launchpad/LaunchpadScreen";
 import { MintCollectionScreen } from "@/screens/Launchpad/MintCollectionScreen";
@@ -217,6 +218,14 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         options={{
           header: () => null,
           title: screenTitle("Create Collection"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadComplete"
+        component={LaunchpadCompleteScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Complete Collection"),
         }}
       />
       <Nav.Screen

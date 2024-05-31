@@ -18,6 +18,7 @@ import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { formatFile } from "@/components/inputs/fileUploader/formatFile";
 import { FileUploaderSmallProps } from "@/components/inputs/fileUploaderSmall/FileUploaderSmall.type";
 import { SpacerRow } from "@/components/spacer";
+import { pluralOrNot } from "@/utils/text";
 import { LocalFileData } from "@/utils/types/files";
 
 export const FileUploaderSmall: FC<FileUploaderSmallProps> = ({
@@ -167,7 +168,7 @@ export const FileUploaderSmall: FC<FileUploaderSmallProps> = ({
               : !multiple && !filesCount
                 ? "Select file"
                 : multiple && filesCount
-                  ? filesCount + " files added"
+                  ? filesCount + ` ${pluralOrNot("file", filesCount)} selected`
                   : multiple && !filesCount
                     ? "Select files"
                     : ""}

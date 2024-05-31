@@ -50,7 +50,7 @@ const ZodCollectionMintPeriodFormValues = z.object({
   isOpen: z.boolean(),
 });
 
-const ZodCollectionAssetsMetadataFormValues = z.object({
+export const ZodCollectionAssetsMetadataFormValues = z.object({
   image: ZodLocalFileData,
   externalUrl: z
     .string()
@@ -71,6 +71,10 @@ const ZodCollectionAssetsMetadataFormValues = z.object({
     )
     .optional(),
   attributes: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
+});
+
+export const ZodCollectionAssetsMetadatasFormValues = z.object({
+  assetsMetadatas: z.array(ZodCollectionAssetsMetadataFormValues).optional(),
 });
 
 export const ZodCollectionFormValues = z.object({
@@ -175,7 +179,7 @@ export const ZodCollectionFormValues = z.object({
   mintPeriods: z.array(ZodCollectionMintPeriodFormValues).nonempty(),
   royaltyAddress: z.string().trim().optional(),
   royaltyPercentage: z.string().trim().optional(),
-  assetsMetadatas: z.array(ZodCollectionAssetsMetadataFormValues).optional(),
+  assetsMetadatas: ZodCollectionAssetsMetadatasFormValues.optional(),
   baseTokenUri: z
     .string()
     .trim()
@@ -206,20 +210,24 @@ export type CollectionAssetsMetadataFormValues = z.infer<
   typeof ZodCollectionAssetsMetadataFormValues
 >;
 
+export type CollectionAssetsMetadatasFormValues = z.infer<
+  typeof ZodCollectionAssetsMetadatasFormValues
+>;
+
 // ===== Shapes to build objects from api
-const ZodWhitelistInfoResult = z.object({
+const ZodWhitelistInfoDataResult = z.object({
   addresses_count: z.number(),
   addresses_ipfs: z.string(),
   addresses_merkle_root: z.string(),
 });
 
-const ZodMintPeriodResult = z.object({
+const ZodMintPeriodDataResult = z.object({
   end_time: z.number().optional(),
   limit_per_address: z.number().optional(),
   max_tokens: z.number().optional(),
   price: ZodCoin.optional(),
   start_time: z.number(),
-  whitelist_info: ZodWhitelistInfoResult.optional(),
+  whitelist_info: ZodWhitelistInfoDataResult.optional(),
 });
 
 export const ZodCollectionDataResult = z.object({
@@ -243,7 +251,7 @@ export const ZodCollectionDataResult = z.object({
   is_project_derivative: z.boolean(),
   is_ready_for_mint: z.boolean(),
   metadatas_merkle_root: z.string().optional(),
-  mint_periods: z.array(ZodMintPeriodResult),
+  mint_periods: z.array(ZodMintPeriodDataResult),
   name: z.string(),
   partners: z.string(),
   project_desc: z.string(),

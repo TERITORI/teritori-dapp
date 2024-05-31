@@ -214,12 +214,6 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
                 loader
                 isLoading={isLoading}
                 disabled={isLoading}
-                // TODO: disabled or let the user press and see the error ?
-                // disabled={
-                //   !collectionForm.formState.isValid ||
-                //   !coverImage ||
-                //   !!Object.keys(collectionForm.formState.errors).length
-                // }
                 onPress={onPressSubmit}
               />
             ) : (

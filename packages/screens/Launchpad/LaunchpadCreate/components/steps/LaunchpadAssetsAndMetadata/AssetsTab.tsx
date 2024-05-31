@@ -7,20 +7,29 @@ import { MetadataUpdateModal } from "./MetadataUpdateModal";
 import { FileUploaderSmall } from "../../../../../../components/inputs/fileUploaderSmall";
 import {
   CollectionAssetsMetadataFormValues,
-  CollectionFormValues,
+  CollectionAssetsMetadatasFormValues,
 } from "../../../../../../utils/types/launchpad";
 
+import crossSVG from "@/assets/icons/cross.svg";
 import trashSVG from "@/assets/icons/trash.svg";
+import warningTriangleSVG from "@/assets/icons/warning-triangle.svg";
 import { BrandText } from "@/components/BrandText";
 import { SelectedFilesPreview } from "@/components/FilePreview/SelectedFilesPreview/SelectedFilesPreview";
 import { SVG } from "@/components/SVG";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { IMAGE_MIME_TYPES, TXT_CSV_MIME_TYPES } from "@/utils/mime";
-import { errorColor, neutral33 } from "@/utils/style/colors";
-import { fontSemibold14 } from "@/utils/style/fonts";
+import {
+  errorColor,
+  neutral17,
+  neutral33,
+  neutral77,
+  warningColor,
+} from "@/utils/style/colors";
+import { fontSemibold13, fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { pluralOrNot } from "@/utils/text";
 import { LocalFileData } from "@/utils/types/files";
@@ -36,9 +45,10 @@ export const AssetsTab: React.FC = () => {
   const isMobile = useIsMobile();
   const { setToast } = useFeedbacks();
   const [selectedElemIndex, setSelectedElemIndex] = useState<number>();
-  const collectionForm = useFormContext<CollectionFormValues>();
+  const assetsMetadatasForm =
+    useFormContext<CollectionAssetsMetadatasFormValues>();
   const { fields, remove } = useFieldArray({
-    control: collectionForm.control,
+    control: assetsMetadatasForm.control,
     name: "assetsMetadatas",
   });
   const [mappingFileParseResults, setMappingFileParseResults] =
@@ -48,9 +58,17 @@ export const AssetsTab: React.FC = () => {
   const selectedElem = fields.find(
     (metadata, index) => index === selectedElemIndex,
   );
+  const [issues, setIssues] = useState<
+    {
+      title: string;
+      message: string;
+      type: "error" | "warning";
+    }[]
+  >([]);
 
   const onUploadMappingDataFile = async (files: LocalFileData[]) => {
-    collectionForm.setValue("assetsMetadatas", []);
+    setIssues([]);
+    assetsMetadatasForm.setValue("assetsMetadatas", []);
 
     // Controls CSV headings present on the first row.
     try {
@@ -65,16 +83,18 @@ export const AssetsTab: React.FC = () => {
             parseResults.data[0][attributesColIndex] !== "attributes"
           ) {
             setMappingFileParseResults(undefined);
-            console.error(
-              "Please verify the headings on the first row.\nCheck the description for more information.",
-            );
-            setToast({
-              title: "Invalid mapping file",
-              message:
-                "Please verify the headings on the first row.\nCheck the description for more information.",
-              mode: "normal",
-              type: "error",
-            });
+            const title = "Invalid mapping file";
+            const message =
+              "Please verify the headings on the first row.\nThe selected file is ignored.\nCheck the description for more information.";
+            console.error(title + ".\n" + message);
+            setIssues((issues) => [
+              ...issues,
+              {
+                title,
+                message,
+                type: "error",
+              },
+            ]);
           } else {
             setMappingFileParseResults(parseResults);
           }
@@ -94,57 +114,105 @@ export const AssetsTab: React.FC = () => {
 
   const onUploadImages = (images: LocalFileData[]) => {
     if (!mappingFileParseResults) return;
-    collectionForm.setValue("assetsMetadatas", []);
-
+    setIssues([]);
+    assetsMetadatasForm.setValue("assetsMetadatas", []);
     const dataRows = mappingFileParseResults.data;
     const mappedAssets: CollectionAssetsMetadataFormValues[] = [];
+    const missingNameRows: string[][] = [];
+    const missingAttributesRows: string[][] = [];
 
     //The rows order in the CSV determines the assets order.
     dataRows.forEach((dataRow, dataRowIndex) => {
-      if (dataRowIndex === 0) return;
-
+      if (dataRowIndex === 0) return; // We ignore the first row since it's the table headings
       images.forEach((image) => {
         if (dataRow[fileNameColIndex] !== image.file.name) return;
-
-        mappedAssets.push({
+        const asset: CollectionAssetsMetadataFormValues = {
           image,
-          // Empty values are valid
+          // Empty values are valid, except for name and attributes
           name: dataRow[nameColIndex],
           description: dataRow[descriptionColIndex],
           externalUrl: dataRow[externalURLColIndex],
           youtubeUrl: dataRow[youtubeURLColIndex],
           attributes: dataRow[attributesColIndex],
-        });
+        };
+        if (!dataRow[nameColIndex].trim()) {
+          missingNameRows.push(dataRow);
+        }
+        if (!dataRow[attributesColIndex].trim()) {
+          missingAttributesRows.push(dataRow);
+        }
+        if (dataRow[nameColIndex].trim() && dataRow[attributesColIndex].trim())
+          mappedAssets.push(asset);
       });
     });
-    collectionForm.setValue("assetsMetadatas", mappedAssets);
+    assetsMetadatasForm.setValue("assetsMetadatas", mappedAssets);
 
-    if (mappedAssets.length < images.length) {
-      const nbIgnoredImages = images.length - mappedAssets.length;
-      const message = `${nbIgnoredImages} added ${pluralOrNot("image", nbIgnoredImages)} ${pluralOrNot("is", nbIgnoredImages)} not expected in the mapping file and has been ignored.\nCheck the description for more information.`;
-      console.warn(message);
-      setToast({
-        title: "Unknown images",
-        message,
-        mode: "normal",
-        type: "warning",
-      });
+    // ---- Handling warnings
+    if (
+      mappedAssets.length +
+        missingNameRows.length +
+        missingAttributesRows.length <
+      images.length
+    ) {
+      const nbUnexpectedAssets =
+        images.length -
+        (mappedAssets.length +
+          missingNameRows.length +
+          missingAttributesRows.length);
+      const title = `Unexpected ${pluralOrNot("asset", nbUnexpectedAssets)}`;
+      const message = `${nbUnexpectedAssets} selected ${pluralOrNot("asset", nbUnexpectedAssets)} ${pluralOrNot("is", nbUnexpectedAssets)} not expected in the mapping file and has been ignored.\nCheck the description for more information.`;
+      console.warn(title + ".\n" + message);
+      setIssues((issues) => [
+        ...issues,
+        {
+          title,
+          message,
+          type: "warning",
+        },
+      ]);
+    }
+    if (missingNameRows.length) {
+      const title = `Incomplete ${pluralOrNot("asset", missingNameRows.length)}`;
+      const message = `Missing "name" in ${missingNameRows.length} selected ${pluralOrNot("asset", missingNameRows.length)} that ${pluralOrNot("is", missingNameRows.length)} ignored.\nPlease complete properly the mapping file.\nCheck the description for more information.`;
+      console.warn(title + ".\n" + message);
+      setIssues((issues) => [
+        ...issues,
+        {
+          title,
+          message,
+          type: "warning",
+        },
+      ]);
+    }
+    if (missingAttributesRows.length) {
+      const title = `Incomplete ${pluralOrNot("asset", missingAttributesRows.length)}`;
+      const message = `Missing "attributes" in ${missingAttributesRows.length} selected ${pluralOrNot("asset", missingAttributesRows.length)} that ${pluralOrNot("is", missingAttributesRows.length)} ignored.\nPlease complete properly the mapping file.\nCheck the description for more information.`;
+      console.warn(title + ".\n" + message);
+      setIssues((issues) => [
+        ...issues,
+        {
+          title,
+          message,
+          type: "warning",
+        },
+      ]);
     }
     if (
       dataRows.length - 1 > //First row is headings, so we do -1
       mappedAssets.length
     ) {
-      console.log("dataRows.length - 1", dataRows.length - 1);
-      console.log("mappedAssets.length", mappedAssets.length);
-      const nbMissingImages = dataRows.length - 1 - mappedAssets.length;
-      const message = `${nbMissingImages} added ${pluralOrNot("image", nbMissingImages)} expected in the mapping file ${pluralOrNot("is", nbMissingImages)} missing.\nCheck the description for more information.`;
-      console.warn(message);
-      setToast({
-        title: "Missing images",
-        message,
-        mode: "normal",
-        type: "warning",
-      });
+      const nbMissingAssets = dataRows.length - 1 - mappedAssets.length;
+      const title = `Missing ${pluralOrNot("asset", nbMissingAssets)}`;
+      const message = `${nbMissingAssets} ${pluralOrNot("asset", nbMissingAssets)} expected in the mapping file ${pluralOrNot("is", nbMissingAssets)} missing.\nCheck the description for more information.`;
+      console.warn(title + ".\n" + message);
+      setIssues((issues) => [
+        ...issues,
+        {
+          title,
+          message,
+          type: "warning",
+        },
+      ]);
     }
   };
 
@@ -154,6 +222,58 @@ export const AssetsTab: React.FC = () => {
         width: "100%",
       }}
     >
+      {!!issues.length && (
+        <>
+          <SpacerColumn size={1} />
+          {issues.map((issue, index) => (
+            <CustomPressable
+              onPress={() =>
+                setIssues((issues) => issues.filter((issue, i) => i !== index))
+              }
+              key={index}
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                backgroundColor: neutral17,
+                padding: layout.spacing_x2,
+                borderRadius: 16,
+                marginBottom:
+                  index !== issues.length - 1 ? layout.spacing_x1 : 0,
+              }}
+            >
+              <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: "row" }}>
+                  <SVG
+                    source={warningTriangleSVG}
+                    color={issue.type === "error" ? errorColor : warningColor}
+                    height={16}
+                    width={16}
+                  />
+                  <SpacerRow size={1} />
+                  <BrandText
+                    style={[
+                      fontSemibold13,
+                      {
+                        color:
+                          issue.type === "error" ? errorColor : warningColor,
+                      },
+                    ]}
+                  >
+                    {issue.title}
+                  </BrandText>
+                </View>
+                <SpacerColumn size={0.5} />
+                <BrandText style={[fontSemibold13, { color: neutral77 }]}>
+                  {issue.message}
+                </BrandText>
+              </View>
+
+              <SVG source={crossSVG} color={neutral77} height={16} width={16} />
+            </CustomPressable>
+          ))}
+        </>
+      )}
+
       <View
         style={{
           flexDirection: isMobile ? "column" : "row",
@@ -224,6 +344,10 @@ export const AssetsTab: React.FC = () => {
                       borderRadius: 999,
                       borderWidth: 1,
                       borderColor: errorColor,
+                    }}
+                    onPress={() => {
+                      assetsMetadatasForm.setValue("assetsMetadatas", []);
+                      setIssues([]);
                     }}
                   >
                     <SVG source={trashSVG} width={16} height={16} />

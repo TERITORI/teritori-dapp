@@ -5,7 +5,7 @@ import { View } from "react-native";
 import ModalBase from "../../../../../../components/modals/ModalBase";
 import {
   CollectionAssetsMetadataFormValues,
-  CollectionFormValues,
+  CollectionAssetsMetadatasFormValues,
 } from "../../../../../../utils/types/launchpad";
 
 import { BrandText } from "@/components/BrandText";
@@ -24,7 +24,8 @@ export const MetadataUpdateModal: React.FC<{
   elem: CollectionAssetsMetadataFormValues;
   elemIndex: number;
 }> = ({ onClose, isVisible, elem, elemIndex }) => {
-  const collectionForm = useFormContext<CollectionFormValues>();
+  const assetsMetadatasForm =
+    useFormContext<CollectionAssetsMetadatasFormValues>();
   const namePath = `assetsMetadatas.${elemIndex}.name` as const;
   const descriptionPath = `assetsMetadatas.${elemIndex}.description` as const;
   const externalUrlPath = `assetsMetadatas.${elemIndex}.externalUrl` as const;
@@ -64,7 +65,7 @@ export const MetadataUpdateModal: React.FC<{
           </PrimaryBox>
           <View style={{ marginLeft: layout.spacing_x2 }}>
             <BrandText style={[fontSemibold20, { color: secondaryColor }]}>
-              Update Metadata #{elemIndex + 1}
+              Metadata #{elemIndex + 1}
             </BrandText>
             <BrandText
               style={[fontSemibold16, { color: neutral77, width: 300 }]}
@@ -111,43 +112,48 @@ export const MetadataUpdateModal: React.FC<{
       >
         <Separator style={{ marginBottom: layout.spacing_x3 }} />
 
-        <TextInputLaunchpad<CollectionFormValues>
+        <TextInputLaunchpad<CollectionAssetsMetadatasFormValues>
           name={namePath}
           label="Name"
-          form={collectionForm}
+          form={assetsMetadatasForm}
           placeHolder="Token name"
+          disabled
         />
 
-        <TextInputLaunchpad<CollectionFormValues>
+        <TextInputLaunchpad<CollectionAssetsMetadatasFormValues>
           name={descriptionPath}
           label="Description"
-          form={collectionForm}
+          form={assetsMetadatasForm}
           placeHolder="Token description"
           required={false}
+          disabled
         />
 
-        <TextInputLaunchpad<CollectionFormValues>
+        <TextInputLaunchpad<CollectionAssetsMetadatasFormValues>
           name={externalUrlPath}
           label="External URL"
-          form={collectionForm}
+          form={assetsMetadatasForm}
           placeHolder="https://"
           required={false}
+          disabled
         />
 
-        <TextInputLaunchpad<CollectionFormValues>
+        <TextInputLaunchpad<CollectionAssetsMetadatasFormValues>
           name={youtubeUrlPath}
           label="Youtube URL"
-          form={collectionForm}
+          form={assetsMetadatasForm}
           placeHolder="https://"
           required={false}
+          disabled
         />
 
         {/*TODO: Attributes selection ?*/}
-        <TextInputLaunchpad<CollectionFormValues>
+        <TextInputLaunchpad<CollectionAssetsMetadatasFormValues>
           name={attributesPath}
           label="Attributes"
-          form={collectionForm}
+          form={assetsMetadatasForm}
           placeHolder="Enter trait types and values"
+          disabled
         />
       </View>
     </ModalBase>
