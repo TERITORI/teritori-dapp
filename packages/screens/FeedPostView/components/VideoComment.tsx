@@ -6,7 +6,7 @@ import { OmniLink } from "@/components/OmniLink";
 import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
 import { DateTime } from "@/components/socialFeed/SocialCard/DateTime";
 import { SpacerRow } from "@/components/spacer";
-import { useAppMode } from "@/hooks/useAppMode";
+import { useIsMiniMode } from "@/hooks/useAppMode";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
 import { zodTryParseJSON } from "@/utils/sanitize";
@@ -19,7 +19,7 @@ import { PostExtra, ZodSocialFeedPostMetadata } from "@/utils/types/feed";
 export const VideoComment: FC<{
   comment: PostExtra;
 }> = ({ comment }) => {
-  const [appMode] = useAppMode();
+  const isMiniMode = useIsMiniMode();
   const { width: windowWidth } = useWindowDimensions();
   const metadata = zodTryParseJSON(ZodSocialFeedPostMetadata, comment.metadata);
   const authorNSInfo = useNSUserInfo(comment.authorId);
@@ -39,7 +39,7 @@ export const VideoComment: FC<{
         }}
       >
         <OmniLink
-          disabled={appMode === "mini"}
+          disabled={isMiniMode}
           to={{
             screen: "UserPublicProfile",
             params: { id: comment.authorId },
@@ -55,7 +55,7 @@ export const VideoComment: FC<{
         <View style={{ flex: 1 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <OmniLink
-              disabled={appMode === "mini"}
+              disabled={isMiniMode}
               to={{
                 screen: "UserPublicProfile",
                 params: { id: comment.authorId },

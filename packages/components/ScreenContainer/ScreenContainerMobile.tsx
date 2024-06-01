@@ -10,7 +10,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { HeaderMobile } from "./HeaderMobile";
 import { useSearchBar } from "../../context/SearchBarProvider";
-import { useAppMode } from "../../hooks/useAppMode";
+import { useIsMiniMode } from "../../hooks/useAppMode";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import { neutral33, neutral77 } from "../../utils/style/colors";
 import { fontBold12 } from "../../utils/style/fonts";
@@ -66,7 +66,7 @@ export const ScreenContainerMobile: FC<{
 }) => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const { isSearchModalMobileOpen, setSearchModalMobileOpen } = useSearchBar();
-  const [appMode] = useAppMode();
+  const isMiniMode = useIsMiniMode();
   const safeAreaInset = useSafeAreaInsets();
 
   return (
@@ -90,7 +90,7 @@ export const ScreenContainerMobile: FC<{
           onClose={() => setSearchModalMobileOpen(false)}
           visible={isSearchModalMobileOpen}
         />
-        {appMode === "mini" ? (
+        {isMiniMode ? (
           headerMini ?? <DefaultAppBar title={mobileTitle || ""} />
         ) : (
           <HeaderMobile

@@ -5,7 +5,7 @@ import { TipModal } from "./TipModal";
 import tipSolidSVG from "../../../../assets/icons/social/transfer-gray.svg";
 import tipSVG from "../../../../assets/icons/tip.svg";
 import { useWalletControl } from "../../../context/WalletControlProvider";
-import { useAppMode } from "../../../hooks/useAppMode";
+import { useIsMiniMode } from "../../../hooks/useAppMode";
 import { useCoingeckoPrices } from "../../../hooks/useCoingeckoPrices";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
@@ -68,7 +68,7 @@ export const TipButton: React.FC<{
   const { showConnectWalletModal } = useWalletControl();
   const [tipModalVisible, setTipModalVisible] = useState(false);
   const [tipAmountLocal, setTipAmountLocal] = useState(amount);
-  const [appMode] = useAppMode();
+  const isMiniMode = useIsMiniMode();
 
   const onPress = async () => {
     if (!selectedWallet?.address || !selectedWallet.connected) {
@@ -100,7 +100,7 @@ export const TipButton: React.FC<{
         disabled={disabled}
       >
         <SVG
-          source={appMode === "mini" ? tipSolidSVG : tipSVG}
+          source={isMiniMode ? tipSolidSVG : tipSVG}
           width={20}
           height={20}
           color={secondaryColor}

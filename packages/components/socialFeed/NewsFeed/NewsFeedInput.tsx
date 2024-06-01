@@ -36,7 +36,7 @@ import ToggleButton from "@/components/buttons/ToggleButton";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
-import { useAppMode } from "@/hooks/useAppMode";
+import { useIsMiniMode } from "@/hooks/useAppMode";
 import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { useIpfs } from "@/hooks/useIpfs";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -130,7 +130,7 @@ export const NewsFeedInput = React.forwardRef<
     },
     forwardRef,
   ) => {
-    const [appMode] = useAppMode();
+    const isMiniMode = useIsMiniMode();
     const { width: windowWidth } = useWindowDimensions();
     const { width } = useMaxResolution();
     const isMobile = useIsMobile();
@@ -372,7 +372,7 @@ export const NewsFeedInput = React.forwardRef<
         <View style={{ backgroundColor: neutral22, zIndex: 9 }}>
           <PrimaryBox
             style={{
-              backgroundColor: appMode === "mini" ? neutral00 : neutral22,
+              backgroundColor: isMiniMode ? neutral00 : neutral22,
               width: "100%",
             }}
           >
@@ -496,7 +496,7 @@ export const NewsFeedInput = React.forwardRef<
         </View>
         <View
           style={{
-            backgroundColor: appMode === "mini" ? neutral00 : neutral17,
+            backgroundColor: isMiniMode ? neutral00 : neutral17,
 
             paddingVertical: isMobile
               ? layout.spacing_x1_5
@@ -601,7 +601,7 @@ export const NewsFeedInput = React.forwardRef<
                       MAX_IMAGES
                   }
                 />
-                {appMode !== "mini" && (
+                {isMiniMode && (
                   <>
                     <FileUploader
                       onUpload={(files) => setValue("files", [files?.[0]])}

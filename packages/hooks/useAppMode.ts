@@ -16,3 +16,8 @@ export const useAppMode = (): [
 
   return [appMode, handleSet];
 };
+
+export const useIsMiniMode = (): boolean => {
+  const [appMode] = useAppMode();
+  return appMode === "mini";
+};
