@@ -11,13 +11,15 @@ import {
   Sort,
   SortDirection,
 } from "@/api/marketplace/v1/marketplace";
+import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
 import { useCollections } from "@/hooks/useCollections";
+import { useNFTs } from "@/hooks/useNFTs";
 import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
 import { parseNetworkObjectId } from "@/networks";
 import { ScreenFC } from "@/utils/navigation";
 import { neutralA3 } from "@/utils/style/colors";
-import { fontSemibold14 } from "@/utils/style/fonts";
+import { fontSemibold14, fontSemibold16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 const NFTScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
@@ -59,11 +61,22 @@ const NFTScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
             .toLowerCase()
             .includes(filterText.toLowerCase()),
         )}
+        ListEmptyComponent={
+          <BrandText
+            style={[
+              fontSemibold16,
+              {
+                textAlign: "center",
+                marginTop: layout.spacing_x1_25,
+              },
+            ]}
+          >
+            No NFTs found
+          </BrandText>
+        }
         keyExtractor={(item) => item.id}
         renderItem={({ item, index }) => (
-          <>
-            <NFTAccordion index={index} ownerId={userId} collection={item} />
-          </>
+          <NFTAccordion index={index} ownerId={userId} collection={item} />
         )}
       />
     </View>
