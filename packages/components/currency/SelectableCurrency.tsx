@@ -3,10 +3,10 @@ import React, { useMemo } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import { CurrencyAmount } from "./CurrencyAmount";
-import useSelectedWallet from "../../../../hooks/useSelectedWallet";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 
 import { BrandText } from "@/components/BrandText";
-import { CurrencyIcon } from "@/components/CurrencyIcon";
+import { CurrencyIcon } from "@/components/currency/CurrencyIcon";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { useBalances } from "@/hooks/useBalances";

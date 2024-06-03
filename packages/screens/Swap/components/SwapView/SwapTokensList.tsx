@@ -1,13 +1,15 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, Fragment, SetStateAction } from "react";
 import { StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import { SelectableCurrency } from "./SelectableCurrency";
 import chevronUpSVG from "../../../../../assets/icons/chevron-up.svg";
+import { SelectableCurrency } from "../../../../components/currency/SelectableCurrency";
 import { FadeInView } from "../FadeInView";
 
 import { SVG } from "@/components/SVG";
 import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn } from "@/components/spacer";
 import { CurrencyInfo } from "@/networks";
 import { layout } from "@/utils/style/layout";
 
@@ -60,15 +62,19 @@ export const SwapTokensList: React.FC<{
               }}
             >
               {currencies?.map((currencyInfo, index) => (
-                <SelectableCurrency
-                  key={index}
-                  currency={currencyInfo}
-                  networkId={selectedNetworkId}
-                  onPressItem={() => {
-                    setCurrency(currencyInfo);
-                    close();
-                  }}
-                />
+                <Fragment key={index}>
+                  <SpacerColumn size={1} />
+                  <Separator />
+                  <SpacerColumn size={1} />
+                  <SelectableCurrency
+                    currency={currencyInfo}
+                    networkId={selectedNetworkId}
+                    onPressItem={() => {
+                      setCurrency(currencyInfo);
+                      close();
+                    }}
+                  />
+                </Fragment>
               ))}
             </View>
           </LegacyTertiaryBox>

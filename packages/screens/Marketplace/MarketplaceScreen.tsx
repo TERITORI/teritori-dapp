@@ -14,10 +14,10 @@ import { PeriodFilter } from "./PeriodFilter";
 
 import { PopularCollection } from "@/api/marketplace/v1/marketplace";
 import { BrandText } from "@/components/BrandText";
-import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { OmniLink } from "@/components/OmniLink";
 import { Pagination } from "@/components/Pagination";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { CurrencyIcon } from "@/components/currency/CurrencyIcon";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
 import { SearchInput } from "@/components/sorts/SearchInput";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";

@@ -5,9 +5,9 @@ import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 
 import { BrandText } from "@/components/BrandText";
-import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { SVG } from "@/components/SVG";
 import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { CurrencyIcon } from "@/components/currency/CurrencyIcon";
 import { DepositWithdrawModal } from "@/components/modals/DepositWithdrawModal";
 import { useBalances } from "@/hooks/useBalances";
 import { useIsMobile } from "@/hooks/useIsMobile";

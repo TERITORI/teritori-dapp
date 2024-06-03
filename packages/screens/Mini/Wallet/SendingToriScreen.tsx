@@ -17,12 +17,12 @@ import TitleBar from "../components/TitleBar";
 import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 
 import { BrandText } from "@/components/BrandText";
-import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { Dropdown } from "@/components/Dropdown";
 import { SVG } from "@/components/SVG";
 import { UserNameInline } from "@/components/UserNameInline";
 import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
 import { CustomButton } from "@/components/buttons/CustomButton";
+import { CurrencyIcon } from "@/components/currency/CurrencyIcon";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useGetAssets } from "@/hooks/wallet/useGetAssets";

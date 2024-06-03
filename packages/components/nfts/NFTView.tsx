@@ -38,7 +38,6 @@ import {
 } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
-import { CurrencyIcon } from "../CurrencyIcon";
 import { DropdownOption } from "../DropdownOption";
 import { ImageWithTextInsert } from "../ImageWithTextInsert";
 import { NetworkIcon } from "../NetworkIcon";
@@ -47,6 +46,7 @@ import { SVG } from "../SVG";
 import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SecondaryButton } from "../buttons/SecondaryButton";
+import { CurrencyIcon } from "../currency/CurrencyIcon";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../spacer";
 

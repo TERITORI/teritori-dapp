@@ -6,9 +6,9 @@ import { prettyPrice } from "../../utils/coins";
 import { fontSemibold12, fontSemibold28 } from "../../utils/style/fonts";
 import { NFTInfo } from "../../utils/types/nft";
 import { BrandText } from "../BrandText";
-import { CurrencyIcon } from "../CurrencyIcon";
 import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
+import { CurrencyIcon } from "../currency/CurrencyIcon";
 import { GradientText } from "../gradientText";
 
 // TODO: Dynamic data + props
