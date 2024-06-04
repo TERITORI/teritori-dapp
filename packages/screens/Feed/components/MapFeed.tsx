@@ -4,7 +4,7 @@ import { Platform, ScrollView, useWindowDimensions } from "react-native";
 import { FeedHeader } from "./FeedHeader";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { useMaxResolution } from "../../../hooks/useMaxResolution";
-import { headerHeight } from "../../../utils/style/layout";
+import {headerHeight, RESPONSIVE_BREAKPOINT_S, screenContentMaxWidth} from "../../../utils/style/layout";
 
 import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
 import {PostsRequest} from "@/api/feed/v1/feed";
@@ -32,8 +32,8 @@ const MapView = Platform.select({
 })();
 
 export const MapFeed = () => {
-  const { height: windowHeight } = useWindowDimensions();
-  const { height } = useMaxResolution();
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+  const { width, height } = useMaxResolution();
   const isMobile = useIsMobile();
 
   const mapFeedRequest: Partial<PostsRequest> = {
@@ -62,8 +62,9 @@ export const MapFeed = () => {
         <MapView
           style={{
             alignSelf: "center",
-            width: "100%",
-            height: windowHeight - (headerHeight + 64),
+            height: windowHeight - (headerHeight + 110),
+            width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
+            maxWidth: screenContentMaxWidth,
           }}
         />
       </Suspense>
