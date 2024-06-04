@@ -245,4 +245,27 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 		StartsAt:   "2024-03-05T00:00:00",
 		EndsAt:     "2024-04-12T00:00:00",
 	},
+	// Pre-Season 2
+	{
+		ID:        "Pre-Official season 2",
+		GameID:    THE_RIOT_GAME_ID,
+		BossName:  `== $*=|'¤?")à-£_%`,
+		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.cf-ipfs.com/",
+		StartsAt:  "2024-04-12T00:00:00",
+		EndsAt:    "2024-06-05T00:00:00",
+		IsPre:     true,
+	},
+	// Season 2
+	{
+		ID:         "Season 2 official - ETH",
+		GameID:     THE_RIOT_GAME_ID,
+		Denom:      "tori",
+		Decimals:   6,
+		TotalPrize: 1_200_000,
+		BossName:   "Mr. Jones",
+		BossImage:  "https://bafybeidmr5xascx6pt67qkkarzicpfw7s4pluudbr7a4ekzvcax7g7dawi.ipfs.cf-ipfs.com/",
+		TopN:       500,
+		StartsAt:   "2024-06-05T00:00:00",
+		EndsAt:     "2024-07-10T00:00:00",
+	},
 }
