@@ -58,11 +58,11 @@ const TeritoriTipAmount: React.FC<TipAmountProps> = ({ amount }) => {
 
 export const TipButton: React.FC<{
   postId: string;
-  author: string;
+  authorId: string;
   amount: number;
   disabled?: boolean;
   useAltStyle?: boolean;
-}> = ({ postId, author, amount, disabled, useAltStyle }) => {
+}> = ({ postId, authorId, amount, disabled, useAltStyle }) => {
   const selectedWallet = useSelectedWallet();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const { showConnectWalletModal } = useWalletControl();
@@ -76,8 +76,10 @@ export const TipButton: React.FC<{
         forceNetworkFeature: NetworkFeature.SocialFeed,
         action: "Tip",
       });
+
       return;
     }
+
     setTipModalVisible(true);
   };
 
@@ -117,7 +119,7 @@ export const TipButton: React.FC<{
       </TouchableOpacity>
 
       <TipModal
-        author={author}
+        authorId={authorId}
         postId={postId}
         onClose={(newTipAmount: number | undefined) => {
           setTipModalVisible(false);

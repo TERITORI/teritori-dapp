@@ -154,7 +154,7 @@ export const CollectionHeader: React.FC<{
                 stats?.floorPrice?.length && network
                   ? {
                       networkId: network.id,
-                      value: 0,
+                      amount: "0",
                       denom: stats.floorPrice[0].denom,
                     }
                   : undefined
@@ -177,7 +177,7 @@ export const CollectionHeader: React.FC<{
                 stats?.floorPrice?.length && network
                   ? {
                       networkId: network.id,
-                      value: parseFloat(stats.totalVolume),
+                      amount: stats.totalVolume,
                       denom: stats.floorPrice[0].denom,
                     }
                   : undefined
@@ -213,7 +213,7 @@ export const CollectionHeader: React.FC<{
                     stats?.floorPrice?.length && network
                       ? {
                           networkId: network.id,
-                          value: stats.avgPricePeriod,
+                          amount: stats.avgPricePeriod.toString(),
                           denom: stats.floorPrice[0].denom,
                         }
                       : undefined

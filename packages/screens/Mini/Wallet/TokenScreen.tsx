@@ -5,13 +5,12 @@ import { useSelector } from "react-redux";
 import { AddedToken } from "./components/AddedToken";
 import TransactionItem from "./components/TransactionItem";
 import teritoriSVG from "../../../../assets/icons/networks/teritori.svg";
-import settingSVG from "../../../../assets/icons/setting-solid.svg";
 import transactionSVG from "../../../../assets/icons/transactions-gray.svg";
-import { CustomButton } from "../components/Button/CustomButton";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
-import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { Spinner } from "@/components/Spinner";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { useBalances } from "@/hooks/useBalances";
@@ -48,10 +47,13 @@ export const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
     }
   }, [dispatch, navigation, selectedWallet, wallets]);
 
-  const balances = useBalances(
+  const { balances, refetch, isLoading, isFetching } = useBalances(
     selectedWallet?.networkId,
     selectedWallet?.address,
   );
+  const onRefreshing = () => {
+    refetch();
+  };
 
   return (
     <>
@@ -112,15 +114,36 @@ export const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
         </View>
       </View>
       <Separator style={{ marginVertical: layout.spacing_x3 }} />
+      {isFetching ||
+        (isLoading && (
+          <>
+            <View
+              style={{
+                alignItems: "center",
+                marginVertical: layout.spacing_x1_5,
+              }}
+            >
+              <Spinner />
+            </View>
+            <SpacerColumn size={2} />
+          </>
+        ))}
       <FlatList
         data={balances}
+        refreshing={isFetching && isLoading}
+        onRefresh={onRefreshing}
         keyExtractor={(item) => item.denom}
         renderItem={({ item: balance }) => (
           <>
             <AddedToken
               dollarAmount={balance.usdAmount?.toLocaleString() || "N/A"}
               icon={teritoriSVG}
-              onPress={() => {}}
+              onPress={() => {
+                navigation.replace("MiniSendTori", {
+                  back: "MiniSelectToken",
+                  denom: balance.denom,
+                });
+              }}
               denom={balance.denom}
               amount={balance.amount}
             />
@@ -130,8 +153,8 @@ export const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
       />
 
       <SpacerColumn size={3} />
-
-      <CustomPressable
+      {/* TODO: enable whenwe have gnoland support*/}
+      {/* <CustomPressable
         style={{
           flexDirection: "row",
           alignItems: "center",
@@ -141,7 +164,7 @@ export const TokenScreen: ScreenFC<"MiniWallets"> = ({ navigation }) => {
       >
         <SVG source={settingSVG} height={24} width={24} />
         <BrandText style={[fontSemibold14]}>Manage Tokens</BrandText>
-      </CustomPressable>
+      </CustomPressable> */}
       <Separator style={{ marginVertical: layout.spacing_x3 }} />
 
       <LastTransactions />

@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 import editProfileSVG from "../../../../assets/icons/input-edit.svg";
 import profileSVG from "../../../../assets/icons/input-profile.svg";
-import { CustomButton } from "../components/Button/CustomButton";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import FileUpload from "../components/FileUpload";
 import MiniTextInput from "../components/MiniTextInput";
@@ -14,11 +13,12 @@ import { BlurScreenContainer } from "../layout/BlurScreenContainer";
 import downloadSVG from "@/assets/icons/download-white.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
+import { CustomButton } from "@/components/buttons/CustomButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { selectContactInfo, setContactInfo } from "@/store/slices/message";
 import { RootStackParamList } from "@/utils/navigation";
-import { neutral77, successColor } from "@/utils/style/colors";
+import { neutral77 } from "@/utils/style/colors";
 import { fontMedium14, fontSemibold16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
@@ -42,32 +42,51 @@ export default function ProfileDetailScreen({
     name: contactInfo.name,
     avatar: contactInfo.avatar,
   });
-  const [success, setSuccess] = useState("");
 
   const dispatch = useDispatch();
-  const { setToastError, setToastSuccess } = useFeedbacks();
+  const { setToast } = useFeedbacks();
+
   const [isImportAccountLoading, setIsImportAccountLoading] = useState(false);
   const [isExportLoading, setIsExportLoading] = useState(false);
 
   const handleImportAccount = async () => {
     setIsImportAccountLoading(true);
+    setToast({
+      mode: "mini",
+      showAlways: true,
+      message: "Account Importing...",
+      type: "loading",
+      variant: "outline",
+    });
     try {
       await handleRestoreAccount();
-      setToastSuccess({
-        title: "Your account has been imported.",
-        message: "It will take few short minutes to load the account.",
+
+      setToast({
+        mode: "mini",
+        message: "Your account has been imported.",
+        type: "success",
+        variant: "outline",
       });
     } catch {
-      setToastError({
-        title: "Import account failed.",
+      setToast({
+        mode: "mini",
         message: "Failed to import account. Try again later.",
+        type: "error",
+        variant: "outline",
       });
     }
     setIsImportAccountLoading(false);
   };
 
   const handleSave = () => {
-    setSuccess("");
+    setToast({
+      mode: "mini",
+      showAlways: true,
+      message: "Profile Updating...",
+      type: "loading",
+      variant: "outline",
+    });
+
     const shareLink = createSharableLink({
       ...contactInfo,
       ...values,
@@ -78,23 +97,40 @@ export default function ProfileDetailScreen({
         ...values,
       }),
     );
-    setSuccess("Successfully updated!");
+    setToast({
+      mode: "mini",
+      message: "Profile Updated Successfully.",
+      type: "success",
+      variant: "outline",
+    });
+
+    navigation.replace("MiniChatSetting", {});
   };
 
   const handleExport = async () => {
     setIsExportLoading(true);
+    setToast({
+      mode: "mini",
+      showAlways: true,
+      message: "Account Exporting...",
+      type: "loading",
+      variant: "outline",
+    });
     try {
       await exportAccount();
-
-      setToastSuccess({
-        title: "Account backup has completed!",
-        message: "Backup file has been downloaded on your device. ",
+      setToast({
+        mode: "mini",
+        message: "Account backup has completed!",
+        type: "success",
+        variant: "outline",
       });
     } catch (err) {
       console.error("Account backup failed", err);
-      setToastError({
-        title: "Account backup failed!",
-        message: "",
+      setToast({
+        mode: "mini",
+        message: "Failed to backup account",
+        type: "error",
+        variant: "outline",
       });
     }
     setIsExportLoading(false);
@@ -162,15 +198,6 @@ export default function ProfileDetailScreen({
         </View>
 
         <View>
-          {success && (
-            <>
-              <BrandText style={[fontMedium14, { color: successColor }]}>
-                {success}
-              </BrandText>
-              <SpacerColumn size={1.5} />
-            </>
-          )}
-
           <CustomButton onPress={() => handleSave()} title="Update Profile" />
           <SpacerColumn size={1.5} />
 

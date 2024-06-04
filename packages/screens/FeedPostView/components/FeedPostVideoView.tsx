@@ -1,5 +1,5 @@
 import { ResizeMode } from "expo-av";
-import React, { FC, Fragment, useEffect, useMemo, useState } from "react";
+import React, { FC, Fragment, useEffect, useState } from "react";
 import { TextInput, useWindowDimensions, View } from "react-native";
 import Animated, {
   runOnJS,
@@ -9,7 +9,6 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { VideoComment } from "./VideoComment";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
 
 import { Post, PostsRequest } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
@@ -23,26 +22,23 @@ import { ReportButton } from "@/components/socialFeed/SocialActions/ReportButton
 import { ShareButton } from "@/components/socialFeed/SocialActions/ShareButton";
 import { TipButton } from "@/components/socialFeed/SocialActions/TipButton";
 import { SocialCardHeader } from "@/components/socialFeed/SocialCard/SocialCardHeader";
-import { SOCIAl_CARD_BORDER_RADIUS } from "@/components/socialFeed/SocialCard/cards/SocialThreadCard";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { VideosList } from "@/components/video/VideosList";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
-import {
-  combineFetchCommentPages,
-  useFetchComments,
-} from "@/hooks/feed/useFetchComments";
+import { useFetchComments } from "@/hooks/feed/useFetchComments";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
-import { getNetwork, NetworkKind, parseUserId } from "@/networks";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { NetworkKind, getNetwork, parseUserId } from "@/networks";
 import { generatePostMetadata } from "@/utils/feed/queries";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {
   DEFAULT_USERNAME,
   hashtagMatch,
   mentionMatch,
-  postResultToPost,
+  SOCIAl_CARD_BORDER_RADIUS,
   SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT,
 } from "@/utils/social-feed";
 import { neutral77, neutralA3, secondaryColor } from "@/utils/style/colors";
@@ -68,14 +64,13 @@ const INPUT_MIN_HEIGHT = 20;
 const INPUT_MAX_HEIGHT = 400;
 
 export const FeedPostVideoView: FC<{
-  networkId: string;
   post: Post;
   refetchPost: () => Promise<any>;
-}> = ({ post, refetchPost, networkId }) => {
+}> = ({ post, refetchPost }) => {
+  const network = getNetwork(post.networkId);
   const { width: windowWidth } = useWindowDimensions();
   const navigation = useAppNavigation();
   const wallet = useSelectedWallet();
-  const network = getNetwork(networkId);
 
   const [viewWidth, setViewWidth] = useState(0);
   const isMobile = useIsMobile();
@@ -90,12 +85,12 @@ export const FeedPostVideoView: FC<{
     DEFAULT_USERNAME;
 
   const {
-    data: commentsData,
+    data: comments,
     refetch,
     hasNextPage,
     fetchNextPage,
   } = useFetchComments({
-    parentId: localPost.identifier,
+    parentId: localPost.id,
     totalCount: localPost.subPostLength,
     enabled: true,
   });
@@ -109,13 +104,9 @@ export const FeedPostVideoView: FC<{
   const [replyTo, setReplyTo] = useState<ReplyToType>();
   const [newComment, setNewComment] = useState("");
   const [isCreateCommentLoading, setCreateCommentLoading] = useState(false);
-  const comments = useMemo(
-    () => (commentsData ? combineFetchCommentPages(commentsData.pages) : []),
-    [commentsData],
-  );
 
   const { makePost, isProcessing } = useFeedPosting(
-    networkId,
+    post.networkId,
     wallet?.userId,
     PostCategory.Comment,
     () => {
@@ -193,7 +184,7 @@ export const FeedPostVideoView: FC<{
 
       await makePost(
         JSON.stringify(metadata),
-        hasUsername ? replyTo?.parentId : localPost.identifier,
+        hasUsername ? replyTo?.parentId : localPost.id,
       );
     } catch (err) {
       console.error("post submit err", err);
@@ -225,7 +216,7 @@ export const FeedPostVideoView: FC<{
         runOnJS(setFlatListContentOffsetY)(event.contentOffset.y);
       },
     },
-    [post?.identifier],
+    [post.id],
   );
 
   useEffect(() => {
@@ -291,8 +282,7 @@ export const FeedPostVideoView: FC<{
                   borderRadius: SOCIAl_CARD_BORDER_RADIUS,
                 }}
                 resizeMode={ResizeMode.CONTAIN}
-                authorId={localPost.authorId}
-                postId={localPost.identifier}
+                postId={localPost.id}
               />
 
               {/*====== Video info ======*/}
@@ -322,9 +312,7 @@ export const FeedPostVideoView: FC<{
                 >
                   <SocialCardHeader
                     authorId={localPost.authorId}
-                    authorAddress={authorAddress}
                     createdAt={localPost.createdAt}
-                    authorMetadata={authorNSInfo?.metadata}
                   />
                   {viewWidth < SOCIAL_FEED_BREAKPOINT_M && (
                     <SpacerColumn size={1} />
@@ -338,20 +326,20 @@ export const FeedPostVideoView: FC<{
                     <TipButton
                       disabled={localPost.authorId === wallet?.userId}
                       amount={localPost.tipAmount}
-                      author={username}
-                      postId={localPost.identifier}
+                      authorId={localPost.authorId}
+                      postId={localPost.id}
                       useAltStyle
                     />
 
                     <SpacerRow size={1.5} />
-                    <ShareButton postId={localPost.identifier} useAltStyle />
+                    <ShareButton postId={localPost.id} useAltStyle />
 
                     {network?.kind === NetworkKind.Gno && (
                       <>
                         <SpacerRow size={1.5} />
                         <ReportButton
                           refetchFeed={refetchPost}
-                          postId={localPost.identifier}
+                          postId={localPost.id}
                           useAltStyle
                         />
                       </>
@@ -439,14 +427,14 @@ export const FeedPostVideoView: FC<{
             {comments.map((comment, index) => (
               <Fragment key={index}>
                 <SpacerColumn size={2.5} />
-                <VideoComment comment={postResultToPost(networkId, comment)} />
+                <VideoComment comment={comment} />
               </Fragment>
             ))}
 
             {/*====== Other videos (mobile) ======*/}
             {isMobile && (
               <VideosList
-                consultedPostId={localPost.identifier}
+                consultedPostId={localPost.id}
                 title={
                   otherVideosRequest.filter?.user
                     ? `More videos from ${username}`
@@ -462,7 +450,7 @@ export const FeedPostVideoView: FC<{
           {/*====== Other videos (desktop) ======*/}
           {!isMobile && (
             <VideosList
-              consultedPostId={localPost.identifier}
+              consultedPostId={localPost.id}
               title={
                 otherVideosRequest.filter?.user
                   ? `More videos from ${username}`

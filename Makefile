@@ -34,6 +34,15 @@ P2E_DOCKER_IMAGE=$(DOCKER_REGISTRY)/p2e-update-leaderboard:$(shell git rev-parse
 FEED_DOCKER_IMAGE=$(DOCKER_REGISTRY)/feed-clean-pinata-keys:$(shell git rev-parse --short HEAD)
 MULTISIG_DOCKER_IMAGE=$(DOCKER_REGISTRY)/cosmos-multisig-backend:$(shell git rev-parse --short HEAD)
 
+
+ARCH := $(shell uname -m)
+
+ifeq ($(ARCH),x86_64)
+    ARCH := amd64
+else ifeq ($(ARCH),aarch64)
+    ARCH := arm64
+endif
+
 node_modules: package.json yarn.lock
 	yarn
 	touch $@
@@ -336,7 +345,7 @@ check-ios-weshframework:
 .PHONY: build-ios-weshframework
 build-ios-weshframework:
 	$(MAKE) init-weshd-go
-	cd ./weshd && gomobile bind -v \
+	cd ./weshd && GOARCH=$(ARCH) gomobile bind -v \
 	-o ./ios/Frameworks/WeshFramework.xcframework \
 	-tags 'nowatchdog' -target ios \
 	./go/app
@@ -352,11 +361,10 @@ check-android-weshframework:
 build-android-weshframework:
 	mkdir -p ./weshd/android/libs
 	$(MAKE) init-weshd-go
-	CGO_CPPFLAGS="-Wno-error -Wno-nullability-completeness -Wno-expansion-to-defined -DHAVE_GETHOSTUUID=0"
 	cd ./weshd && gomobile bind \
 	-javapkg=com.weshnet \
 	-o ./android/libs/WeshFramework.aar \
-	-tags "fts5 sqlite sqlite_unlock_notify" -tags 'nowatchdog' -target android -androidapi 21 \
+    -tags 'nowatchdog' -target android -androidapi 23 \
 	./go/app
 
 .PHONY: init-weshd-go

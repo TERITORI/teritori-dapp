@@ -38,7 +38,7 @@ export const VideosList: React.FC<{
       combineFetchFeedPages(data?.pages || []).filter(
         (p) =>
           // We remove the current video from the fetched ones
-          !consultedPostId || p.identifier !== consultedPostId,
+          !consultedPostId || p.id !== consultedPostId,
       ),
     [data?.pages, consultedPostId],
   );
@@ -75,7 +75,7 @@ export const VideosList: React.FC<{
       </BrandText>
       <View style={contentGroupCStyle}>
         <GridList<Post>
-          keyExtractor={(item) => `video-${item.identifier}`}
+          keyExtractor={(item) => item.id}
           data={videos}
           minElemWidth={minCardWidth}
           renderItem={({ item }, elemSize) => (

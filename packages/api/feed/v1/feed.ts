@@ -23,6 +23,11 @@ export interface Reaction {
 export interface Post {
   category: number;
   isDeleted: boolean;
+  /**
+   * use local_identifier
+   *
+   * @deprecated
+   */
   identifier: string;
   metadata: string;
   parentPostIdentifier: string;
@@ -32,6 +37,9 @@ export interface Post {
   reactions: Reaction[];
   tipAmount: number;
   premiumLevel: number;
+  id: string;
+  localIdentifier: string;
+  networkId: string;
 }
 
 export interface PostFilter {
@@ -272,6 +280,9 @@ function createBasePost(): Post {
     reactions: [],
     tipAmount: 0,
     premiumLevel: 0,
+    id: "",
+    localIdentifier: "",
+    networkId: "",
   };
 }
 
@@ -309,6 +320,15 @@ export const Post = {
     }
     if (message.premiumLevel !== 0) {
       writer.uint32(88).uint32(message.premiumLevel);
+    }
+    if (message.id !== "") {
+      writer.uint32(98).string(message.id);
+    }
+    if (message.localIdentifier !== "") {
+      writer.uint32(106).string(message.localIdentifier);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(114).string(message.networkId);
     }
     return writer;
   },
@@ -397,6 +417,27 @@ export const Post = {
 
           message.premiumLevel = reader.uint32();
           continue;
+        case 12:
+          if (tag !== 98) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        case 13:
+          if (tag !== 106) {
+            break;
+          }
+
+          message.localIdentifier = reader.string();
+          continue;
+        case 14:
+          if (tag !== 114) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -421,6 +462,9 @@ export const Post = {
         : [],
       tipAmount: isSet(object.tipAmount) ? globalThis.Number(object.tipAmount) : 0,
       premiumLevel: isSet(object.premiumLevel) ? globalThis.Number(object.premiumLevel) : 0,
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      localIdentifier: isSet(object.localIdentifier) ? globalThis.String(object.localIdentifier) : "",
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
     };
   },
 
@@ -459,6 +503,15 @@ export const Post = {
     if (message.premiumLevel !== 0) {
       obj.premiumLevel = Math.round(message.premiumLevel);
     }
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.localIdentifier !== "") {
+      obj.localIdentifier = message.localIdentifier;
+    }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
     return obj;
   },
 
@@ -478,6 +531,9 @@ export const Post = {
     message.reactions = object.reactions?.map((e) => Reaction.fromPartial(e)) || [];
     message.tipAmount = object.tipAmount ?? 0;
     message.premiumLevel = object.premiumLevel ?? 0;
+    message.id = object.id ?? "";
+    message.localIdentifier = object.localIdentifier ?? "";
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };

@@ -102,11 +102,7 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
         backgroundColor: neutral17,
       }}
     >
-      <View
-        style={{
-          flex: 1,
-        }}
-      >
+      <View>
         <NameNFT name={name} />
 
         <View
@@ -118,9 +114,7 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
           }}
         >
           <View>
-            <View
-              style={{ flex: 1, alignItems: "center", flexDirection: "row" }}
-            >
+            <View style={{ alignItems: "center", flexDirection: "row" }}>
               <SVG
                 width={32}
                 height={32}
@@ -144,6 +138,7 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
               be visible from the name service and another token with the same
               name will be mintable.
             </BrandText>
+
             <SecondaryButton
               fullWidth
               size="XS"

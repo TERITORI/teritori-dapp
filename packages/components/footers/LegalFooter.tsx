@@ -39,7 +39,7 @@ export const LegalFooter: React.FC<{ children: ReactNode }> = ({
             { color: neutral77, marginLeft: layout.spacing_x1_5 },
           ]}
         >
-          2023 Teritori
+          {new Date().getFullYear()} Teritori
         </BrandText>
       </View>
 

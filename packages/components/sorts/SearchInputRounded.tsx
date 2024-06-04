@@ -11,12 +11,13 @@ import { neutral33, secondaryColor } from "@/utils/style/colors";
 
 export const SearchInputRounded: React.FC<{
   handleChangeSearch: (e: string) => void;
-}> = ({ handleChangeSearch }) => {
+  isMobile: boolean;
+}> = ({ handleChangeSearch, isMobile }) => {
   return (
     <PrimaryBox
       style={{
         padding: layout.spacing_x1,
-        width: 471,
+        width: isMobile ? 195 : 471,
         flexDirection: "row",
         alignItems: "center",
         borderColor: neutral33,

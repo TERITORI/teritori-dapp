@@ -21,13 +21,13 @@ export const ManageTokensScreen: ScreenFC<"MiniManageTokens"> = ({
 
   const selectedWallet = useSelectedNativeWallet();
 
-  const balances = useBalances(
+  const { balances } = useBalances(
     selectedWallet?.networkId,
     selectedWallet?.address,
   );
 
   return (
-    <BlurScreenContainer title="Manage Tokens">
+    <BlurScreenContainer title="Manage Tokens" noScrollView>
       <View
         style={{
           paddingHorizontal: layout.spacing_x2,

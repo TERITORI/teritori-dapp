@@ -1,4 +1,5 @@
-import React, { ReactNode, useState } from "react";
+import { cloneDeep } from "lodash";
+import React, { ReactNode, useMemo, useState } from "react";
 import {
   FlatList,
   Platform,
@@ -11,12 +12,7 @@ import { useSelector } from "react-redux";
 
 import { PeriodFilter } from "./PeriodFilter";
 
-import {
-  Collection,
-  MintState,
-  Sort,
-  SortDirection,
-} from "@/api/marketplace/v1/marketplace";
+import { PopularCollection } from "@/api/marketplace/v1/marketplace";
 import { BrandText } from "@/components/BrandText";
 import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { OmniLink } from "@/components/OmniLink";
@@ -27,63 +23,75 @@ import { SearchInput } from "@/components/sorts/SearchInput";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { TableRow } from "@/components/table/TableRow";
 import { Tabs } from "@/components/tabs/Tabs";
-import { useCollections } from "@/hooks/useCollections";
+import { usePopularCollections } from "@/hooks/marketplace/usePopularCollections";
+import { useCoingeckoPrices } from "@/hooks/useCoingeckoPrices";
 import { useEnabledNetworks } from "@/hooks/useEnabledNetworks";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useCollectionNavigationTarget } from "@/hooks/useNavigateToCollection";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { NetworkFeature } from "@/networks";
+import { NetworkFeature, parseCollectionId } from "@/networks";
 import { selectTimePeriod } from "@/store/slices/marketplaceFilters";
+import {
+  CoingeckoCoin,
+  CoingeckoPrices,
+  getCoingeckoPrice,
+} from "@/utils/coingecko";
 import { prettyPrice } from "@/utils/coins";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
-import { errorColor, mineShaftColor, successColor } from "@/utils/style/colors";
+import { prettyNumber } from "@/utils/numbers";
+import {
+  errorColor,
+  mineShaftColor,
+  neutral77,
+  successColor,
+} from "@/utils/style/colors";
 import {
   fontSemibold11,
   fontSemibold13,
   fontSemibold20,
   fontSemibold28,
+  fontSemibold9,
 } from "@/utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
-import { numFormatter } from "@/utils/text";
 import { PrettyPrint } from "@/utils/types/marketplace";
 import { arrayIncludes } from "@/utils/typescript";
 
-const TABLE_ROWS = {
+const TABLE_COLUMNS = {
   rank: {
     label: "Rank",
-    flex: 1,
+    flex: 0.5,
   },
   collectionNameData: {
     label: "Collection",
-    flex: 5,
+    flex: 2.5,
   },
-  totalVolume: {
-    label: "Total Volume",
-    flex: 3,
+  tradeVolume: {
+    label: "",
+    flex: 1.8,
   },
-  TimePeriodVolume: {
-    label: "30d Volume",
-    flex: 3,
-  },
-  TimePeriodPercentualVolume: {
-    label: "30d % Volume",
-    flex: 3,
+  tradeVolumeDiff: {
+    label: "",
+    flex: 1,
   },
   sales: {
-    label: "Sales",
-    flex: 3,
+    label: "",
+    flex: 1,
   },
   floorPrice: {
     label: "Floor Price",
-    flex: 3,
+    flex: 1.8,
   },
   owners: {
     label: "Owners",
-    flex: 3,
+    flex: 1,
   },
   supply: {
     label: "Supply",
-    flex: 3,
+    flex: 1,
+  },
+  mintVolume: {
+    label: "",
+    flex: 1.8,
   },
 };
 
@@ -114,34 +122,10 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
       : tabsKeys[0],
   );
 
-  const req = {
-    networkId: selectedTab,
-    sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
-    upcoming: false,
-    sort: Sort.SORT_VOLUME_USD,
-    limit: 32,
-    offset: 0,
-    periodInMinutes: timePeriod.value,
-    mintState: MintState.MINT_STATE_UNSPECIFIED,
-  };
-
-  const { collections: brokenCollections } = useCollections(req);
-
-  // this is a hack, we need to fix these in the indexer but it's pain to replay due to current p2e implem and we need to fix this asap
-  // FIXME
-  const collections = brokenCollections.map((collection) => {
-    let denom = collection.denom;
-    let volumeDenom = collection.volumeDenom;
-    switch (collection.id) {
-      case "tori-tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37": // tori gen-1
-      case "tori-tori167xst2jy9n6u92t3n8hf762adtpe3cs6acsgn0w5n2xlz9hv3xgs4ksc6t": // disease of the brain
-      case "tori-tori1wkwy0xh89ksdgj9hr347dyd2dw7zesmtrue6kfzyml4vdtz6e5wscs7038": // tns
-        denom = "utori";
-        volumeDenom = denom;
-        break;
-    }
-    return { ...collection, denom, volumeDenom };
-  });
+  const { data: collections } = usePopularCollections(
+    selectedTab,
+    timePeriod.value / 60,
+  );
 
   const [filterText, setFilterText] = useState("");
 
@@ -199,26 +183,59 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
           <SpacerRow size={2} />
           <PeriodFilter />
         </View>
-        <CollectionTable rows={collections} filterText={filterText} />
+        <CollectionTable rows={collections || []} filterText={filterText} />
       </View>
     </ScreenContainer>
   );
 };
 
 const CollectionTable: React.FC<{
-  rows: Collection[];
+  rows: PopularCollection[];
   filterText: string;
 }> = ({ rows, filterText }) => {
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [pageIndex, setPageIndex] = useState(0);
   const isMobile = useIsMobile();
   const timePeriod = useSelector(selectTimePeriod);
-  const filteredCollections = rows.filter(({ collectionName }) =>
+  const filteredCollections = rows.filter(({ name: collectionName }) =>
     collectionName?.toLowerCase().includes(filterText.toLowerCase()),
   );
-  TABLE_ROWS.TimePeriodPercentualVolume.label =
-    timePeriod.shortLabel + " % Volume";
-  TABLE_ROWS.TimePeriodVolume.label = timePeriod.shortLabel + " Volume";
+
+  const floorCoins = useMemo(
+    () =>
+      Object.values(
+        rows.reduce(
+          (acc, collection) => {
+            const [network] = parseCollectionId(collection.id);
+            if (!network) {
+              return acc;
+            }
+            collection.floorPrices.forEach((fp) => {
+              const key = `${network.id}/${fp.denom}`;
+              if (acc[key]) {
+                return;
+              }
+              const c: CoingeckoCoin = {
+                networkId: network.id,
+                denom: fp.denom,
+              };
+              acc[key] = c;
+            });
+            return acc;
+          },
+          {} as Record<string, CoingeckoCoin>,
+        ),
+      ),
+    [rows],
+  );
+
+  const { prices: floorPrices } = useCoingeckoPrices(floorCoins);
+
+  const columns = cloneDeep(TABLE_COLUMNS);
+  columns.tradeVolume.label = timePeriod.shortLabel + " Trade Volume";
+  columns.mintVolume.label = timePeriod.shortLabel + " Mint Volume";
+  columns.sales.label = timePeriod.shortLabel + " Sales";
+  columns.tradeVolumeDiff.label = timePeriod.shortLabel + " Trade %";
 
   const maxPage = Math.max(Math.ceil(rows.length / itemsPerPage), 1);
   return (
@@ -232,21 +249,24 @@ const CollectionTable: React.FC<{
       <TableRow
         headings={
           !isMobile
-            ? Object.values(TABLE_ROWS)
-            : Object.values(TABLE_ROWS).slice(0, -5)
+            ? columns
+            : Object.fromEntries(Object.entries(columns).slice(0, -5))
         }
       />
       <FlatList
         scrollEnabled={Platform.OS === "web"}
         data={filteredCollections}
         renderItem={({ item, index }) => (
-          <CollectionRow collection={item} rank={index} />
+          <CollectionRow collection={item} rank={index} prices={floorPrices} />
         )}
         keyExtractor={(item) => item.id}
         style={{
           minHeight: 248,
           borderTopColor: mineShaftColor,
           borderTopWidth: 1,
+        }}
+        contentContainerStyle={{
+          paddingBottom: 150, //just to make last element visible on mobile
         }}
       />
       {filteredCollections.length > 50 && (
@@ -284,32 +304,73 @@ const PrettyPriceWithCurrency: React.FC<{
         style,
       ]}
     >
-      <BrandText
-        style={[
-          isMobile ? fontSemibold11 : fontSemibold13,
-          {
-            marginRight: layout.spacing_x0_5,
-          },
-        ]}
-        numberOfLines={1}
-      >
-        {prettyPrice(data.networkId, data.value.toString(10), data.denom)}
-      </BrandText>
-      <CurrencyIcon networkId={data.networkId} denom={data.denom} size={16} />
+      {BigInt(data.amount) > 0 ? (
+        <>
+          <CurrencyIcon
+            networkId={data.networkId}
+            denom={data.denom}
+            size={16}
+          />
+          <BrandText
+            style={[
+              isMobile ? fontSemibold11 : fontSemibold13,
+              {
+                marginLeft: layout.spacing_x0_5,
+              },
+            ]}
+            numberOfLines={1}
+          >
+            {prettyPrice(data.networkId, data.amount, data.denom)}
+          </BrandText>
+          {!!data.usdValue && (
+            <BrandText
+              style={[
+                isMobile ? fontSemibold9 : fontSemibold11,
+                {
+                  marginLeft: layout.spacing_x1,
+                  color: neutral77,
+                },
+              ]}
+              numberOfLines={1}
+            >
+              ${prettyNumber(data.usdValue, 2)}
+            </BrandText>
+          )}
+        </>
+      ) : (
+        <BrandText
+          style={[
+            isMobile ? fontSemibold11 : fontSemibold13,
+            {
+              color: neutral77,
+            },
+          ]}
+          numberOfLines={1}
+        >
+          -
+        </BrandText>
+      )}
     </View>
   );
 };
 
-const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
-  collection,
-  rank,
-}) => {
-  const rowData = useRowData(collection, rank);
+const CollectionRow: React.FC<{
+  collection: PopularCollection;
+  rank: number;
+  prices: CoingeckoPrices;
+}> = ({ collection, rank, prices }) => {
+  const rowData = getRowData(collection, rank, prices);
   const isMobile = useIsMobile();
 
-  const target = useCollectionNavigationTarget(collection.id, {
-    forceSecondaryDuringMint: collection.secondaryDuringMint,
-  });
+  const target = useCollectionNavigationTarget(collection.id);
+
+  const tradeDiffText = rowData["TimePeriodPercentualVolume"];
+  const tradeDiffColor =
+    tradeDiffText !== "-"
+      ? tradeDiffText.includes("+")
+        ? successColor
+        : errorColor
+      : neutral77;
 
   return (
     <OmniLink
@@ -329,13 +390,13 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         params: { id: collection.id },
       }}
     >
-      <InnerCell style={{ flex: TABLE_ROWS.rank.flex }}>
+      <InnerCell style={{ flex: TABLE_COLUMNS.rank.flex }}>
         {rowData.rank}
       </InnerCell>
 
       <View
         style={{
-          flex: TABLE_ROWS.collectionNameData.flex,
+          flex: TABLE_COLUMNS.collectionNameData.flex,
           flexDirection: "row",
           flexWrap: "nowrap",
           alignItems: "center",
@@ -345,46 +406,66 @@ const CollectionRow: React.FC<{ collection: Collection; rank: number }> = ({
         <RoundedGradientImage
           size="XS"
           sourceURI={rowData.collectionNameData.image}
-          style={{ marginRight: isMobile ? 8 : 30 }}
+          style={{ marginRight: isMobile ? 8 : layout.spacing_x1_5 }}
         />
-        <BrandText style={isMobile ? fontSemibold11 : fontSemibold13}>
+        <BrandText
+          style={isMobile ? fontSemibold11 : fontSemibold13}
+          numberOfLines={1}
+        >
           {rowData.collectionNameData.collectionName}
         </BrandText>
       </View>
       <PrettyPriceWithCurrency
-        data={rowData.totalVolume}
-        style={{ flex: TABLE_ROWS.totalVolume.flex }}
+        data={rowData["tradeVolume"]}
+        style={{ flex: TABLE_COLUMNS.tradeVolume.flex }}
       />
-      <PrettyPriceWithCurrency
-        data={rowData["TimePeriodVolume"]}
-        style={{ flex: TABLE_ROWS.TimePeriodVolume.flex }}
-      />
+      <InnerCell
+        style={{ flex: TABLE_COLUMNS.tradeVolumeDiff.flex }}
+        textStyle={{
+          color: tradeDiffColor,
+        }}
+      >
+        {tradeDiffText}
+      </InnerCell>
       {!isMobile && (
         <>
-          <InnerCell
-            style={{ flex: TABLE_ROWS.TimePeriodPercentualVolume.flex }}
-            textStyle={{
-              color: rowData["TimePeriodPercentualVolume"].includes("+")
-                ? successColor
-                : errorColor,
-            }}
-          >
-            {rowData["TimePeriodPercentualVolume"]}
-          </InnerCell>
-
-          <InnerCell style={{ flex: TABLE_ROWS.sales.flex }}>
+          <InnerCell style={{ flex: TABLE_COLUMNS.sales.flex }}>
             {rowData.sales}
           </InnerCell>
           <PrettyPriceWithCurrency
             data={rowData.floorPrice}
-            style={{ flex: TABLE_ROWS.floorPrice.flex }}
+            style={{ flex: TABLE_COLUMNS.floorPrice.flex }}
           />
-          <InnerCell style={{ flex: TABLE_ROWS.owners.flex }}>
+          <InnerCell style={{ flex: TABLE_COLUMNS.owners.flex }}>
             {rowData.owners}
           </InnerCell>
-          <InnerCell style={{ flex: TABLE_ROWS.supply.flex, paddingRight: 0 }}>
-            {rowData.supply === "0" ? "No limit" : rowData.supply}
+          <InnerCell
+            style={{ flex: TABLE_COLUMNS.supply.flex, paddingRight: 0 }}
+          >
+            {rowData.supply.current === rowData.supply.max ? (
+              rowData.supply.current
+            ) : (
+              <>
+                {rowData.supply.current}
+                <BrandText
+                  style={[
+                    isMobile ? fontSemibold11 : fontSemibold13,
+                    {
+                      color: neutral77,
+                      marginHorizontal: 2,
+                    },
+                  ]}
+                >
+                  /
+                </BrandText>
+                {rowData.supply.max === -1 ? "∞" : rowData.supply.max}
+              </>
+            )}
           </InnerCell>
+          <PrettyPriceWithCurrency
+            data={rowData.mintVolume}
+            style={{ flex: TABLE_COLUMNS.mintVolume.flex }}
+          />
         </>
       )}
     </OmniLink>
@@ -424,58 +505,85 @@ interface RowData {
     collectionName?: string;
     image: string;
   };
-  totalVolume: PrettyPrint;
-  TimePeriodVolume: PrettyPrint;
+  mintVolume: PrettyPrint;
+  tradeVolume: PrettyPrint;
   TimePeriodPercentualVolume: string;
   sales: string;
   floorPrice: PrettyPrint;
   owners: string;
-  supply: string;
+  supply: {
+    max: number;
+    current: number;
+  };
 }
 
-const useRowData = (collection: Collection, rank: number): RowData => {
+const getRowData = (
+  collection: PopularCollection,
+  rank: number,
+  prices: CoingeckoPrices,
+): RowData => {
+  const [network] = parseCollectionId(collection.id);
+  const networkId = network?.id || "";
+  const fp =
+    collection.floorPrices.length > 0 ? collection.floorPrices[0] : undefined;
+  const fpUsdValue = getCoingeckoPrice(
+    networkId,
+    fp?.denom || "",
+    fp?.amount || "",
+    prices,
+  );
+  const tv =
+    collection.tradeVolumesByDenom.length > 0
+      ? collection.tradeVolumesByDenom[0]
+      : undefined;
+  const mv =
+    collection.mintVolumesByDenom.length > 0
+      ? collection.mintVolumesByDenom[0]
+      : undefined;
   return {
     id: collection.id,
     rank: rank + 1,
-    collectionName: collection.collectionName,
+    collectionName: collection.name,
     collectionNameData: {
-      collectionName: collection.collectionName,
+      collectionName: collection.name,
       image: collection.imageUri,
     },
-    totalVolume: {
-      networkId: collection.networkId,
-      value: +collection.totalVolume,
-      denom: collection.denom,
+    mintVolume: {
+      networkId,
+      usdValue: collection.mintUsdVolume,
+      amount: mv?.amount || "0",
+      denom: mv?.denom || "",
     },
-    TimePeriodVolume: {
-      networkId: collection.networkId,
-      value: parseFloat(collection.volume),
-      denom: collection.denom,
+    tradeVolume: {
+      networkId,
+      usdValue: collection.tradeUsdVolume,
+      amount: tv?.amount || "0",
+      denom: tv?.denom || "",
     },
     TimePeriodPercentualVolume: getDelta(collection),
-    sales: numFormatter(collection.numTrades, 0),
+    sales: prettyNumber(collection.tradesCount, 2),
     floorPrice: {
-      networkId: collection.networkId,
-      value: +collection.floorPrice,
-      denom: collection.denom,
+      networkId,
+      amount: fp?.amount || "0",
+      denom: fp?.denom || "",
+      usdValue: fpUsdValue,
     },
-    owners: numFormatter(
-      collection.numOwners,
-      collection.numOwners.toString().length,
-    ),
-    supply: numFormatter(
-      collection.maxSupply,
-      collection.maxSupply.toString().length,
-    ),
+    owners: prettyNumber(collection.ownersCount, 3),
+    supply: {
+      max: collection.maxSupply,
+      current: collection.currentSupply,
+    },
   };
 };
-const getDelta = (collection: Collection) => {
-  if (collection.volume === "0") {
+
+const getDelta = (collection: PopularCollection) => {
+  const diff = collection.tradeUsdVolume - collection.tradeUsdVolumePrev;
+  if (diff === 0 || collection.tradeUsdVolumePrev === 0) {
     return "-";
   }
-  const res = (collection.volumeCompare * 100) / parseFloat(collection.volume);
-  if (res > 100) {
-    return "+" + res.toFixed(2) + "%";
+  const res = (diff / collection.tradeUsdVolumePrev) * 100;
+  if (res > 0) {
+    return "+" + res.toFixed(0) + "%";
   }
-  return "-" + (100 - res).toFixed(2) + "%";
+  return res.toFixed(0) + "%";
 };

@@ -1,18 +1,6 @@
 import React, { memo, useEffect, useState } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 
-import { Post } from "../../../../api/feed/v1/feed";
-import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
-import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
-import { getNetworkObjectId, parseUserId } from "../../../../networks";
-import {
-  neutral00,
-  neutral17,
-  neutral33,
-  withAlpha,
-} from "../../../../utils/style/colors";
-import { layout } from "../../../../utils/style/layout";
-import { OnPressReplyType, PostCategory } from "../../../../utils/types/feed";
 import FlexRow from "../../../FlexRow";
 import { CustomPressable } from "../../../buttons/CustomPressable";
 import { SpacerColumn } from "../../../spacer";
@@ -24,9 +12,19 @@ import { SocialCardHeader } from "../SocialCardHeader";
 import { SocialCardWrapper } from "../SocialCardWrapper";
 import { SocialMessageContent } from "../SocialMessageContent";
 
+import { Post } from "@/api/feed/v1/feed";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
-
-export const SOCIAl_CARD_BORDER_RADIUS = 12;
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { parseUserId } from "@/networks";
+import { SOCIAl_CARD_BORDER_RADIUS } from "@/utils/social-feed";
+import {
+  neutral00,
+  neutral17,
+  neutral33,
+  withAlpha,
+} from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
+import { OnPressReplyType, PostCategory } from "@/utils/types/feed";
 
 export const SocialThreadCard: React.FC<{
   post: Post;
@@ -50,16 +48,14 @@ export const SocialThreadCard: React.FC<{
   }) => {
     const [localPost, setLocalPost] = useState<Post>(post);
     const [viewWidth, setViewWidth] = useState(0);
-    const selectedNetworkInfo = useSelectedNetworkInfo();
-    const selectedNetworkId = selectedNetworkInfo?.id || "";
     const authorNSInfo = useNSUserInfo(localPost.authorId);
     const [, authorAddress] = parseUserId(localPost.authorId);
     const navigation = useAppNavigation();
-    const username = authorNSInfo?.metadata?.tokenId || authorAddress;
+    const replyTo = authorNSInfo?.metadata?.tokenId || authorAddress;
 
     const handleReply = () =>
       onPressReply?.({
-        username,
+        username: replyTo, // todo: refacto handler to use userId
       });
 
     useEffect(() => {
@@ -77,7 +73,7 @@ export const SocialThreadCard: React.FC<{
           disabled={isPostConsultation}
           onPress={() =>
             navigation.navigate("FeedPostView", {
-              id: getNetworkObjectId(selectedNetworkId, localPost.identifier),
+              id: localPost.id,
             })
           }
           style={[
@@ -96,10 +92,8 @@ export const SocialThreadCard: React.FC<{
         >
           {/*====== Card Header */}
           <SocialCardHeader
-            authorAddress={authorAddress}
             authorId={localPost.authorId}
             createdAt={post.createdAt}
-            authorMetadata={authorNSInfo?.metadata}
           />
 
           <SpacerColumn size={1.5} />

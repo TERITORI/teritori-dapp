@@ -22,7 +22,7 @@ const def = {
   },
   voting: {
     name: "Voting",
-    filter: "PROPOSAL_STATUS_VOTING",
+    filter: "PROPOSAL_STATUS_DEPOSIT_PERIOD",
   },
   passed: {
     name: "Passed",
@@ -37,9 +37,14 @@ const def = {
 interface StatesDropdownGovProps {
   style?: ViewStyle;
   onChange: (filter?: ProposalStatus) => void;
+  isMobile: boolean;
 }
 
-export const StatesDropdown = ({ style, onChange }: StatesDropdownGovProps) => {
+export const StatesDropdown = ({
+  style,
+  onChange,
+  isMobile,
+}: StatesDropdownGovProps) => {
   const [isDropdownOpen, setDropdownState, ref] = useDropdowns();
   const [selected, setSelected] = useState<keyof typeof def>("all");
 
@@ -48,7 +53,7 @@ export const StatesDropdown = ({ style, onChange }: StatesDropdownGovProps) => {
       style={[
         {
           zIndex: 1,
-          width: 148,
+          width: isMobile ? "auto" : 148,
         },
         style,
       ]}
@@ -59,6 +64,8 @@ export const StatesDropdown = ({ style, onChange }: StatesDropdownGovProps) => {
           backgroundColor: neutral33,
           borderWidth: 1,
           borderRadius: 8,
+          width: "100%",
+          minWidth: 150,
         }}
       >
         <View
@@ -107,6 +114,7 @@ export const StatesDropdown = ({ style, onChange }: StatesDropdownGovProps) => {
                 top: 35,
                 right: 0,
                 width: "100%",
+                minWidth: 148,
                 paddingHorizontal: layout.spacing_x1_5,
                 paddingBottom: layout.spacing_x1,
                 backgroundColor: neutral33,
@@ -124,6 +132,7 @@ export const StatesDropdown = ({ style, onChange }: StatesDropdownGovProps) => {
               {objectKeys(def).map((key, index) => {
                 return (
                   <TouchableOpacity
+                    key={key}
                     onPress={() => {
                       onChange(def[key].filter as any);
                       setSelected(key);

@@ -36,7 +36,7 @@ export const MusicPostTrackContent: FC<{
         fallbackImageURI={defaultThumbnailImage}
         imageURI={track.audioFile.thumbnailFileData?.url}
         authorId={post.authorId}
-        postId={post.identifier}
+        postId={post.id}
       />
     </>
   );

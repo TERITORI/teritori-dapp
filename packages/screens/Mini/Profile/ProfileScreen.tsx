@@ -3,6 +3,7 @@ import { FlatList, Pressable, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { Account } from "./Account";
+import { ShareContactQRModal } from "./ShareContactQRModal";
 import addSVG from "../../../../assets/icons/add-solid-white.svg";
 import closeSVG from "../../../../assets/icons/close.svg";
 import copySVG from "../../../../assets/icons/copy.svg";
@@ -18,6 +19,7 @@ import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import Clipboard from "@/modules/Clipboard";
 import { selectContactInfo, setContactInfo } from "@/store/slices/message";
 import {
@@ -27,11 +29,7 @@ import {
 import { useAppDispatch } from "@/store/store";
 import { RouteName, ScreenFC } from "@/utils/navigation";
 import { neutral39 } from "@/utils/style/colors";
-import {
-  fontMedium10,
-  fontSemibold15,
-  fontSemibold18,
-} from "@/utils/style/fonts";
+import { fontSemibold15, fontSemibold18 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { createSharableLink } from "@/weshnet/services";
 
@@ -62,32 +60,37 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
   const wallets = useSelector(selectAllWallets);
   const dispatch = useAppDispatch();
   const contactInfo = useSelector(selectContactInfo);
-  const [isCopied, setIsCopied] = useState(false);
+  const { setToast } = useFeedbacks();
+  const [showQRModal, setShowQRModal] = useState(false);
+
+  const shareLink = createSharableLink({
+    ...contactInfo,
+  });
 
   useEffect(() => {
-    const shareLink = createSharableLink({
-      ...contactInfo,
-    });
     dispatch(
       setContactInfo({
         shareLink,
       }),
     );
-    //TODO: remove this; import/export account will replace this functionality
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
+  }, [dispatch, shareLink]);
+
+  const sharableLink = contactInfo?.shareLink || "Teritori";
 
   const onCopyPress = async () => {
-    await Clipboard.setStringAsync(contactInfo?.shareLink);
+    await Clipboard.setStringAsync(sharableLink);
 
-    setIsCopied(true);
-    setTimeout(() => {
-      setIsCopied(false);
-    }, 3000);
+    setToast({
+      mode: "mini",
+      message: "Link Copied",
+      type: "success",
+      duration: 3000,
+    });
   };
 
   return (
     <BlurScreenContainer
+      noScrollView
       customHeader={
         <View
           style={{
@@ -140,6 +143,7 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
               </Pressable>
             );
           }}
+          contentContainerStyle={{ flexGrow: 1 }}
         />
 
         <Separator />
@@ -163,21 +167,36 @@ export const ProfileScreen: ScreenFC<"MiniProfile"> = ({ navigation }) => {
             </React.Fragment>
           );
         })}
-        <CustomPressable onPress={onCopyPress}>
-          <View
+        <View
+          style={{
+            paddingVertical: layout.spacing_x1_5,
+            flexDirection: "row",
+            gap: layout.spacing_x2,
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <CustomPressable
+            onPress={() => setShowQRModal(true)}
             style={{
               paddingVertical: layout.spacing_x1_5,
               flexDirection: "row",
               gap: layout.spacing_x2,
+              flex: 1,
             }}
           >
             <SVG source={profileSVG} height={24} width={24} />
             <BrandText>Share my contact</BrandText>
-            <SVG source={copySVG} height={24} width={24} />
-            {isCopied && <BrandText style={[fontMedium10]}>copied</BrandText>}
-          </View>
-        </CustomPressable>
+          </CustomPressable>
+          <CustomPressable onPress={onCopyPress}>
+            <SVG source={copySVG} height={30} width={30} />
+          </CustomPressable>
+        </View>
       </View>
+      <ShareContactQRModal
+        isOpen={showQRModal}
+        onClose={() => setShowQRModal(false)}
+      />
     </BlurScreenContainer>
   );
 };

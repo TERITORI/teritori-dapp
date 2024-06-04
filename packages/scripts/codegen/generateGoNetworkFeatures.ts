@@ -90,14 +90,16 @@ func UnmarshalFeature(b []byte) (Feature, error) {
     return nil, errors.Wrap(err, "failed to unmarshal feature base")
   }
   switch base.Type {
-    ${allFeatureObjects.map((featureObject) => {
-      return `case ${enumName}${featureObject.shape.type.value}:
+    ${allFeatureObjects
+      .map((featureObject) => {
+        return `case ${enumName}${featureObject.shape.type.value}:
       var f Feature${featureObject.shape.type.value}
       if err := json.Unmarshal(b, &f); err != nil {
         return nil, errors.Wrap(err, "failed to unmarshal feature ${featureObject.shape.type.value}")
       }
       return &f, nil`;
-    })}
+      })
+      .join("\n")}
   }
   return nil, errors.Errorf("unknown feature type %s", base.Type)
 }

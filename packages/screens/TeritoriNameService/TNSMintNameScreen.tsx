@@ -4,7 +4,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useQueryClient } from "@tanstack/react-query";
 import Long from "long";
 import React, { useMemo, useState } from "react";
-import { View } from "react-native";
+import { Platform, ScrollView, useWindowDimensions, View } from "react-native";
 
 import { TNSModalCommonProps } from "./TNSHomeScreen";
 import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
@@ -51,13 +51,19 @@ import { defaultMetaData } from "@/utils/types/tns";
 const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
   price,
 }) => {
-  const networkId = useSelectedNetworkId();
-
-  const width = 417;
+  const { width: windowWidth } = useWindowDimensions();
+  const width =
+    windowWidth < 417
+      ? windowWidth - 40
+      : Platform.OS === "web"
+        ? 417
+        : 417 - 40;
   const height = 80;
 
+  const networkId = useSelectedNetworkId();
+
   return (
-    <View>
+    <View style={{ alignSelf: "center" }}>
       <SVG
         width={width}
         height={height}
@@ -66,7 +72,6 @@ const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
       />
       <View
         style={{
-          flex: 1,
           flexDirection: "row",
           alignItems: "center",
           height,
@@ -178,6 +183,8 @@ export const TNSMintNameModal: React.FC<
     userKind: UserKind;
   }
 > = ({ onClose, initialData, userId, userKind, navigateBackTo }) => {
+  const { width: windowWidth } = useWindowDimensions();
+
   const [network, userAddress] = parseUserId(userId);
   const networkId = network?.id;
   const cosmosNetwork = getCosmosNetwork(networkId);
@@ -186,7 +193,7 @@ export const TNSMintNameModal: React.FC<
     name + cosmosNetwork?.nameServiceTLD || ""
   ).toLowerCase();
   const [isSuccessModal, setSuccessModal] = useState(false);
-  const balances = useBalances(networkId, userAddress);
+  const { balances } = useBalances(networkId, userAddress);
   const isKeplrConnected = useIsKeplrConnected();
   const isLeapConnected = useIsLeapConnected();
 
@@ -273,20 +280,27 @@ export const TNSMintNameModal: React.FC<
     onClose();
     setSuccessModal(false);
   };
+  const width = windowWidth < 480 ? windowWidth : 480;
 
   return (
     <ModalBase
       onClose={() => onClose()}
       onBackPress={() => onClose(navigateBackTo)}
-      width={480}
+      width={width}
       scrollable
       label={name}
       hideMainSeparator
       boxStyle={{
         backgroundColor: neutral17,
+        paddingBottom: 80,
       }}
     >
-      <View style={{ flex: 1, alignItems: "center", paddingBottom: 20 }}>
+      <ScrollView
+        contentContainerStyle={{
+          alignItems: "center",
+          paddingBottom: 20,
+        }}
+      >
         {!!price && <CostContainer price={price} />}
         <BrandText
           style={{
@@ -325,7 +339,7 @@ export const TNSMintNameModal: React.FC<
           initialData={initialData}
           disabled={!canPayForMintName}
         />
-      </View>
+      </ScrollView>
       <TNSRegisterSuccess visible={isSuccessModal} onClose={handleModalClose} />
     </ModalBase>
   );

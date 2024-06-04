@@ -32,7 +32,10 @@ export const NotEnoughFundsModal: FC<{
 }> = ({ label = "Not enough funds", cost, visible, onClose }) => {
   const selectedWallet = useSelectedWallet();
   const selectedNetwork = useSelectedNetworkInfo();
-  const balances = useBalances(selectedNetwork?.id, selectedWallet?.address);
+  const { balances } = useBalances(
+    selectedNetwork?.id,
+    selectedWallet?.address,
+  );
   const costBalance = balances.find((bal) => bal.denom === cost?.denom);
   const currency = getCurrency(selectedNetwork?.id, cost?.denom);
   const nativeCurrency = getNativeCurrency(selectedNetwork?.id, cost?.denom);

@@ -405,6 +405,41 @@ export interface LeaderboardResponse {
   entry: LeaderboardEntry | undefined;
 }
 
+export interface Coin {
+  amount: string;
+  denom: string;
+}
+
+export interface PopularCollection {
+  id: string;
+  name: string;
+  imageUri: string;
+  floorPrices: Coin[];
+  tradeVolumesByDenom: Coin[];
+  mintVolumesByDenom: Coin[];
+  tradeUsdVolume: number;
+  tradeUsdVolumePrev: number;
+  mintUsdVolume: number;
+  mintUsdVolumePrev: number;
+  tradesCount: number;
+  mintsCount: number;
+  ownersCount: number;
+  rank: number;
+  maxSupply: number;
+  currentSupply: number;
+}
+
+export interface PopularCollectionsRequest {
+  networkId: string;
+  periodHours: number;
+  limit: number;
+  offset: number;
+}
+
+export interface PopularCollectionsResponse {
+  collection: PopularCollection | undefined;
+}
+
 function createBaseAttribute(): Attribute {
   return { traitType: "", value: "" };
 }
@@ -4365,6 +4400,550 @@ export const LeaderboardResponse = {
   },
 };
 
+function createBaseCoin(): Coin {
+  return { amount: "", denom: "" };
+}
+
+export const Coin = {
+  encode(message: Coin, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.amount !== "") {
+      writer.uint32(10).string(message.amount);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Coin {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCoin();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.amount = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.denom = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Coin {
+    return {
+      amount: isSet(object.amount) ? globalThis.String(object.amount) : "",
+      denom: isSet(object.denom) ? globalThis.String(object.denom) : "",
+    };
+  },
+
+  toJSON(message: Coin): unknown {
+    const obj: any = {};
+    if (message.amount !== "") {
+      obj.amount = message.amount;
+    }
+    if (message.denom !== "") {
+      obj.denom = message.denom;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Coin>, I>>(base?: I): Coin {
+    return Coin.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<Coin>, I>>(object: I): Coin {
+    const message = createBaseCoin();
+    message.amount = object.amount ?? "";
+    message.denom = object.denom ?? "";
+    return message;
+  },
+};
+
+function createBasePopularCollection(): PopularCollection {
+  return {
+    id: "",
+    name: "",
+    imageUri: "",
+    floorPrices: [],
+    tradeVolumesByDenom: [],
+    mintVolumesByDenom: [],
+    tradeUsdVolume: 0,
+    tradeUsdVolumePrev: 0,
+    mintUsdVolume: 0,
+    mintUsdVolumePrev: 0,
+    tradesCount: 0,
+    mintsCount: 0,
+    ownersCount: 0,
+    rank: 0,
+    maxSupply: 0,
+    currentSupply: 0,
+  };
+}
+
+export const PopularCollection = {
+  encode(message: PopularCollection, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.imageUri !== "") {
+      writer.uint32(26).string(message.imageUri);
+    }
+    for (const v of message.floorPrices) {
+      Coin.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    for (const v of message.tradeVolumesByDenom) {
+      Coin.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
+    for (const v of message.mintVolumesByDenom) {
+      Coin.encode(v!, writer.uint32(122).fork()).ldelim();
+    }
+    if (message.tradeUsdVolume !== 0) {
+      writer.uint32(49).double(message.tradeUsdVolume);
+    }
+    if (message.tradeUsdVolumePrev !== 0) {
+      writer.uint32(57).double(message.tradeUsdVolumePrev);
+    }
+    if (message.mintUsdVolume !== 0) {
+      writer.uint32(65).double(message.mintUsdVolume);
+    }
+    if (message.mintUsdVolumePrev !== 0) {
+      writer.uint32(73).double(message.mintUsdVolumePrev);
+    }
+    if (message.tradesCount !== 0) {
+      writer.uint32(80).uint64(message.tradesCount);
+    }
+    if (message.mintsCount !== 0) {
+      writer.uint32(128).uint64(message.mintsCount);
+    }
+    if (message.ownersCount !== 0) {
+      writer.uint32(88).uint64(message.ownersCount);
+    }
+    if (message.rank !== 0) {
+      writer.uint32(96).uint32(message.rank);
+    }
+    if (message.maxSupply !== 0) {
+      writer.uint32(104).int64(message.maxSupply);
+    }
+    if (message.currentSupply !== 0) {
+      writer.uint32(112).uint64(message.currentSupply);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PopularCollection {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePopularCollection();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.imageUri = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.floorPrices.push(Coin.decode(reader, reader.uint32()));
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.tradeVolumesByDenom.push(Coin.decode(reader, reader.uint32()));
+          continue;
+        case 15:
+          if (tag !== 122) {
+            break;
+          }
+
+          message.mintVolumesByDenom.push(Coin.decode(reader, reader.uint32()));
+          continue;
+        case 6:
+          if (tag !== 49) {
+            break;
+          }
+
+          message.tradeUsdVolume = reader.double();
+          continue;
+        case 7:
+          if (tag !== 57) {
+            break;
+          }
+
+          message.tradeUsdVolumePrev = reader.double();
+          continue;
+        case 8:
+          if (tag !== 65) {
+            break;
+          }
+
+          message.mintUsdVolume = reader.double();
+          continue;
+        case 9:
+          if (tag !== 73) {
+            break;
+          }
+
+          message.mintUsdVolumePrev = reader.double();
+          continue;
+        case 10:
+          if (tag !== 80) {
+            break;
+          }
+
+          message.tradesCount = longToNumber(reader.uint64() as Long);
+          continue;
+        case 16:
+          if (tag !== 128) {
+            break;
+          }
+
+          message.mintsCount = longToNumber(reader.uint64() as Long);
+          continue;
+        case 11:
+          if (tag !== 88) {
+            break;
+          }
+
+          message.ownersCount = longToNumber(reader.uint64() as Long);
+          continue;
+        case 12:
+          if (tag !== 96) {
+            break;
+          }
+
+          message.rank = reader.uint32();
+          continue;
+        case 13:
+          if (tag !== 104) {
+            break;
+          }
+
+          message.maxSupply = longToNumber(reader.int64() as Long);
+          continue;
+        case 14:
+          if (tag !== 112) {
+            break;
+          }
+
+          message.currentSupply = longToNumber(reader.uint64() as Long);
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PopularCollection {
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      imageUri: isSet(object.imageUri) ? globalThis.String(object.imageUri) : "",
+      floorPrices: globalThis.Array.isArray(object?.floorPrices)
+        ? object.floorPrices.map((e: any) => Coin.fromJSON(e))
+        : [],
+      tradeVolumesByDenom: globalThis.Array.isArray(object?.tradeVolumesByDenom)
+        ? object.tradeVolumesByDenom.map((e: any) => Coin.fromJSON(e))
+        : [],
+      mintVolumesByDenom: globalThis.Array.isArray(object?.mintVolumesByDenom)
+        ? object.mintVolumesByDenom.map((e: any) => Coin.fromJSON(e))
+        : [],
+      tradeUsdVolume: isSet(object.tradeUsdVolume) ? globalThis.Number(object.tradeUsdVolume) : 0,
+      tradeUsdVolumePrev: isSet(object.tradeUsdVolumePrev) ? globalThis.Number(object.tradeUsdVolumePrev) : 0,
+      mintUsdVolume: isSet(object.mintUsdVolume) ? globalThis.Number(object.mintUsdVolume) : 0,
+      mintUsdVolumePrev: isSet(object.mintUsdVolumePrev) ? globalThis.Number(object.mintUsdVolumePrev) : 0,
+      tradesCount: isSet(object.tradesCount) ? globalThis.Number(object.tradesCount) : 0,
+      mintsCount: isSet(object.mintsCount) ? globalThis.Number(object.mintsCount) : 0,
+      ownersCount: isSet(object.ownersCount) ? globalThis.Number(object.ownersCount) : 0,
+      rank: isSet(object.rank) ? globalThis.Number(object.rank) : 0,
+      maxSupply: isSet(object.maxSupply) ? globalThis.Number(object.maxSupply) : 0,
+      currentSupply: isSet(object.currentSupply) ? globalThis.Number(object.currentSupply) : 0,
+    };
+  },
+
+  toJSON(message: PopularCollection): unknown {
+    const obj: any = {};
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.imageUri !== "") {
+      obj.imageUri = message.imageUri;
+    }
+    if (message.floorPrices?.length) {
+      obj.floorPrices = message.floorPrices.map((e) => Coin.toJSON(e));
+    }
+    if (message.tradeVolumesByDenom?.length) {
+      obj.tradeVolumesByDenom = message.tradeVolumesByDenom.map((e) => Coin.toJSON(e));
+    }
+    if (message.mintVolumesByDenom?.length) {
+      obj.mintVolumesByDenom = message.mintVolumesByDenom.map((e) => Coin.toJSON(e));
+    }
+    if (message.tradeUsdVolume !== 0) {
+      obj.tradeUsdVolume = message.tradeUsdVolume;
+    }
+    if (message.tradeUsdVolumePrev !== 0) {
+      obj.tradeUsdVolumePrev = message.tradeUsdVolumePrev;
+    }
+    if (message.mintUsdVolume !== 0) {
+      obj.mintUsdVolume = message.mintUsdVolume;
+    }
+    if (message.mintUsdVolumePrev !== 0) {
+      obj.mintUsdVolumePrev = message.mintUsdVolumePrev;
+    }
+    if (message.tradesCount !== 0) {
+      obj.tradesCount = Math.round(message.tradesCount);
+    }
+    if (message.mintsCount !== 0) {
+      obj.mintsCount = Math.round(message.mintsCount);
+    }
+    if (message.ownersCount !== 0) {
+      obj.ownersCount = Math.round(message.ownersCount);
+    }
+    if (message.rank !== 0) {
+      obj.rank = Math.round(message.rank);
+    }
+    if (message.maxSupply !== 0) {
+      obj.maxSupply = Math.round(message.maxSupply);
+    }
+    if (message.currentSupply !== 0) {
+      obj.currentSupply = Math.round(message.currentSupply);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PopularCollection>, I>>(base?: I): PopularCollection {
+    return PopularCollection.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<PopularCollection>, I>>(object: I): PopularCollection {
+    const message = createBasePopularCollection();
+    message.id = object.id ?? "";
+    message.name = object.name ?? "";
+    message.imageUri = object.imageUri ?? "";
+    message.floorPrices = object.floorPrices?.map((e) => Coin.fromPartial(e)) || [];
+    message.tradeVolumesByDenom = object.tradeVolumesByDenom?.map((e) => Coin.fromPartial(e)) || [];
+    message.mintVolumesByDenom = object.mintVolumesByDenom?.map((e) => Coin.fromPartial(e)) || [];
+    message.tradeUsdVolume = object.tradeUsdVolume ?? 0;
+    message.tradeUsdVolumePrev = object.tradeUsdVolumePrev ?? 0;
+    message.mintUsdVolume = object.mintUsdVolume ?? 0;
+    message.mintUsdVolumePrev = object.mintUsdVolumePrev ?? 0;
+    message.tradesCount = object.tradesCount ?? 0;
+    message.mintsCount = object.mintsCount ?? 0;
+    message.ownersCount = object.ownersCount ?? 0;
+    message.rank = object.rank ?? 0;
+    message.maxSupply = object.maxSupply ?? 0;
+    message.currentSupply = object.currentSupply ?? 0;
+    return message;
+  },
+};
+
+function createBasePopularCollectionsRequest(): PopularCollectionsRequest {
+  return { networkId: "", periodHours: 0, limit: 0, offset: 0 };
+}
+
+export const PopularCollectionsRequest = {
+  encode(message: PopularCollectionsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.networkId !== "") {
+      writer.uint32(10).string(message.networkId);
+    }
+    if (message.periodHours !== 0) {
+      writer.uint32(16).uint32(message.periodHours);
+    }
+    if (message.limit !== 0) {
+      writer.uint32(24).uint32(message.limit);
+    }
+    if (message.offset !== 0) {
+      writer.uint32(32).uint32(message.offset);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PopularCollectionsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePopularCollectionsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.periodHours = reader.uint32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.limit = reader.uint32();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.offset = reader.uint32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PopularCollectionsRequest {
+    return {
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      periodHours: isSet(object.periodHours) ? globalThis.Number(object.periodHours) : 0,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+      offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
+    };
+  },
+
+  toJSON(message: PopularCollectionsRequest): unknown {
+    const obj: any = {};
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    if (message.periodHours !== 0) {
+      obj.periodHours = Math.round(message.periodHours);
+    }
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.offset !== 0) {
+      obj.offset = Math.round(message.offset);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PopularCollectionsRequest>, I>>(base?: I): PopularCollectionsRequest {
+    return PopularCollectionsRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<PopularCollectionsRequest>, I>>(object: I): PopularCollectionsRequest {
+    const message = createBasePopularCollectionsRequest();
+    message.networkId = object.networkId ?? "";
+    message.periodHours = object.periodHours ?? 0;
+    message.limit = object.limit ?? 0;
+    message.offset = object.offset ?? 0;
+    return message;
+  },
+};
+
+function createBasePopularCollectionsResponse(): PopularCollectionsResponse {
+  return { collection: undefined };
+}
+
+export const PopularCollectionsResponse = {
+  encode(message: PopularCollectionsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.collection !== undefined) {
+      PopularCollection.encode(message.collection, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PopularCollectionsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePopularCollectionsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.collection = PopularCollection.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PopularCollectionsResponse {
+    return { collection: isSet(object.collection) ? PopularCollection.fromJSON(object.collection) : undefined };
+  },
+
+  toJSON(message: PopularCollectionsResponse): unknown {
+    const obj: any = {};
+    if (message.collection !== undefined) {
+      obj.collection = PopularCollection.toJSON(message.collection);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PopularCollectionsResponse>, I>>(base?: I): PopularCollectionsResponse {
+    return PopularCollectionsResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<PopularCollectionsResponse>, I>>(object: I): PopularCollectionsResponse {
+    const message = createBasePopularCollectionsResponse();
+    message.collection = (object.collection !== undefined && object.collection !== null)
+      ? PopularCollection.fromPartial(object.collection)
+      : undefined;
+    return message;
+  },
+};
+
 export interface MarketplaceService {
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse>;
   CollectionStats(
@@ -4390,6 +4969,10 @@ export interface MarketplaceService {
     metadata?: grpc.Metadata,
   ): Promise<SearchCollectionsResponse>;
   Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse>;
+  PopularCollections(
+    request: DeepPartial<PopularCollectionsRequest>,
+    metadata?: grpc.Metadata,
+  ): Observable<PopularCollectionsResponse>;
 }
 
 export class MarketplaceServiceClientImpl implements MarketplaceService {
@@ -4409,6 +4992,7 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
     this.SearchNames = this.SearchNames.bind(this);
     this.SearchCollections = this.SearchCollections.bind(this);
     this.Leaderboard = this.Leaderboard.bind(this);
+    this.PopularCollections = this.PopularCollections.bind(this);
   }
 
   Collections(request: DeepPartial<CollectionsRequest>, metadata?: grpc.Metadata): Observable<CollectionsResponse> {
@@ -4477,6 +5061,17 @@ export class MarketplaceServiceClientImpl implements MarketplaceService {
 
   Leaderboard(request: DeepPartial<LeaderboardRequest>, metadata?: grpc.Metadata): Observable<LeaderboardResponse> {
     return this.rpc.invoke(MarketplaceServiceLeaderboardDesc, LeaderboardRequest.fromPartial(request), metadata);
+  }
+
+  PopularCollections(
+    request: DeepPartial<PopularCollectionsRequest>,
+    metadata?: grpc.Metadata,
+  ): Observable<PopularCollectionsResponse> {
+    return this.rpc.invoke(
+      MarketplaceServicePopularCollectionsDesc,
+      PopularCollectionsRequest.fromPartial(request),
+      metadata,
+    );
   }
 }
 
@@ -4748,6 +5343,29 @@ export const MarketplaceServiceLeaderboardDesc: UnaryMethodDefinitionish = {
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = LeaderboardResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketplaceServicePopularCollectionsDesc: UnaryMethodDefinitionish = {
+  methodName: "PopularCollections",
+  service: MarketplaceServiceDesc,
+  requestStream: false,
+  responseStream: true,
+  requestType: {
+    serializeBinary() {
+      return PopularCollectionsRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = PopularCollectionsResponse.decode(data);
       return {
         ...value,
         toObject() {

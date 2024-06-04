@@ -11,6 +11,7 @@ import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
 import { NetworkFeature, NetworkFeatureObject } from "./features";
 import { gnoDevNetwork } from "./gno-dev";
+import { gnoPortalNetwork } from "./gno-portal";
 import { gnoTeritoriNetwork } from "./gno-teritori";
 import { gnoTest3Network } from "./gno-test3";
 import { osmosisNetwork } from "./osmosis";
@@ -18,6 +19,8 @@ import { osmosisTestnetNetwork } from "./osmosis-testnet";
 // import { solanaNetwork } from "./solana";
 import { polygonNetwork } from "./polygon";
 import { polygonMumbaiNetwork } from "./polygon-mumbai";
+import { sagaNetwork } from "./saga";
+import { sagaTest2 } from "./saga-test2";
 import { teritoriNetwork } from "./teritori";
 import { teritoriLocalnetNetwork } from "./teritori-localnet";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
@@ -42,11 +45,14 @@ const packageNetworks = [
   ethereumNetwork,
   osmosisNetwork,
   osmosisTestnetNetwork,
+  gnoPortalNetwork,
+  gnoTeritoriNetwork,
   gnoTest3Network,
   gnoDevNetwork,
-  gnoTeritoriNetwork,
   polygonMumbaiNetwork,
   polygonNetwork,
+  sagaTest2,
+  sagaNetwork,
 ];
 
 export const defaultEnabledNetworks = [
@@ -58,7 +64,7 @@ export const defaultEnabledNetworks = [
   "polygon-mumbai",
   "cosmos-hub",
   "osmosis",
-  "gno-teritori",
+  "gno-portal",
   "cosmos-registry:juno",
   "cosmos-registry:kujira",
   "cosmos-registry:axelar",

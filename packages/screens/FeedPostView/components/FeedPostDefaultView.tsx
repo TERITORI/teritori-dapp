@@ -11,10 +11,7 @@ import { Post } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
-import {
-  CommentsContainer,
-  LINES_HORIZONTAL_SPACE,
-} from "@/components/cards/CommentsContainer";
+import { CommentsContainer } from "@/components/cards/CommentsContainer";
 import { CreateShortPostButton } from "@/components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostButton";
 import { CreateShortPostModal } from "@/components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostModal";
 import {
@@ -25,16 +22,13 @@ import { RefreshButton } from "@/components/socialFeed/NewsFeed/RefreshButton/Re
 import { RefreshButtonRound } from "@/components/socialFeed/NewsFeed/RefreshButton/RefreshButtonRound";
 import { SocialThreadCard } from "@/components/socialFeed/SocialCard/cards/SocialThreadCard";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
-import {
-  combineFetchCommentPages,
-  useFetchComments,
-} from "@/hooks/feed/useFetchComments";
+import { useFetchComments } from "@/hooks/feed/useFetchComments";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
-import { getNetworkObjectId, parseUserId } from "@/networks";
-import { DEFAULT_USERNAME } from "@/utils/social-feed";
+import { parseUserId } from "@/networks";
+import { DEFAULT_USERNAME, LINES_HORIZONTAL_SPACE } from "@/utils/social-feed";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import {
   layout,
@@ -49,11 +43,10 @@ import {
 } from "@/utils/types/feed";
 
 export const FeedPostDefaultView: FC<{
-  networkId: string;
   post: Post;
   refetchPost: () => Promise<any>;
   isLoadingPost?: boolean;
-}> = ({ post, networkId, refetchPost, isLoadingPost }) => {
+}> = ({ post, refetchPost, isLoadingPost }) => {
   const navigation = useAppNavigation();
 
   const { width: windowWidth } = useWindowDimensions();
@@ -61,14 +54,12 @@ export const FeedPostDefaultView: FC<{
   const isMobile = useIsMobile();
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
 
-  const postId = post.identifier;
-
   useEffect(() => {
-    if (post?.category === PostCategory.Video)
+    if (post.category === PostCategory.Video)
       navigation.replace("FeedPostView", {
-        id: postId,
+        id: post.id,
       });
-  }, [post?.category, postId, navigation]);
+  }, [post.category, post.id, navigation]);
 
   const authorId = post?.authorId;
   const authorNSInfo = useNSUserInfo(authorId);
@@ -84,21 +75,18 @@ export const FeedPostDefaultView: FC<{
   const isGoingUp = useSharedValue(false);
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const {
-    data,
+    data: comments,
     refetch: refetchComments,
     hasNextPage,
     fetchNextPage,
     isLoading: isLoadingComments,
   } = useFetchComments({
-    parentId: post?.identifier,
-    totalCount: post?.subPostLength,
+    parentId: post.id,
+    totalCount: post.subPostLength,
     enabled: true,
   });
   const isNextPageAvailable = useSharedValue(hasNextPage);
-  const comments = useMemo(
-    () => (data ? combineFetchCommentPages(data.pages) : []),
-    [data],
-  );
+
   const isLoadingSharedValue = useSharedValue(true);
   useEffect(() => {
     isLoadingSharedValue.value = isLoadingPost || isLoadingComments;
@@ -136,7 +124,7 @@ export const FeedPostDefaultView: FC<{
         runOnJS(setFlatListContentOffsetY)(event.contentOffset.y);
       },
     },
-    [post?.identifier],
+    [post.id],
   );
 
   const handleSubmitInProgress = () => {
@@ -164,20 +152,19 @@ export const FeedPostDefaultView: FC<{
 
   return (
     <ScreenContainer
-      forceNetworkId={networkId}
+      forceNetworkId={post.networkId}
       fullWidth
       responsive
       noMargin
       headerChildren={
-        <BrandText style={fontSemibold20}>{headerLabel}</BrandText>
+        <BrandText style={[fontSemibold20, { width: "18%" }]} numberOfLines={1}>
+          {headerLabel}
+        </BrandText>
       }
       onBackPress={() =>
         post?.parentPostIdentifier
           ? navigation.navigate("FeedPostView", {
-              id: getNetworkObjectId(
-                networkId,
-                post?.parentPostIdentifier || "",
-              ),
+              id: post.id,
             })
           : navigation.canGoBack()
             ? navigation.goBack()
@@ -311,7 +298,7 @@ export const FeedPostDefaultView: FC<{
           ref={feedInputRef}
           type="comment"
           replyTo={replyTo}
-          parentId={post.identifier}
+          parentId={post.id}
           onSubmitInProgress={handleSubmitInProgress}
           onSubmitSuccess={() => {
             setReplyTo(undefined);
@@ -329,7 +316,7 @@ export const FeedPostDefaultView: FC<{
           refetchComments();
         }}
         replyTo={replyTo}
-        parentId={post.identifier}
+        parentId={post.id}
       />
     </ScreenContainer>
   );

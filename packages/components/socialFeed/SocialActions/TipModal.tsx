@@ -28,16 +28,18 @@ import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../../modals/ModalBase";
 import { SpacerColumn } from "../../spacer";
 
+import { Username } from "@/components/user/Username";
+
 type TipFormType = {
   amount: string;
 };
 
 export const TipModal: React.FC<{
-  author: string;
+  authorId: string;
   postId: string;
   onClose: (newTipAmount?: number) => void;
   isVisible: boolean;
-}> = ({ author, postId, onClose, isVisible }) => {
+}> = ({ authorId, postId, onClose, isVisible }) => {
   const {
     control,
     handleSubmit: formHandleSubmit,
@@ -60,7 +62,7 @@ export const TipModal: React.FC<{
   const selectedNetworkId = selectedNetworkInfo?.id || "";
   const nativeCurrency = getStakingCurrency(selectedNetworkId);
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
+  const { balances } = useBalances(selectedNetworkId, selectedWallet?.address);
   const currencyBalance = balances.find(
     (bal) => bal.denom === nativeCurrency?.denom,
   );
@@ -148,7 +150,10 @@ export const TipModal: React.FC<{
           alignItems: "center",
         }}
       >
-        <BrandText style={fontSemibold14}>Send a tip to {author}</BrandText>
+        <BrandText style={fontSemibold14}>
+          Send a tip to{" "}
+          <Username textStyle={fontSemibold14} userId={authorId} />
+        </BrandText>
         <SpacerColumn size={2.5} />
         <TextInputCustom<TipFormType>
           name="amount"

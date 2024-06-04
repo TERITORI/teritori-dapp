@@ -25,8 +25,6 @@ export const useVaultNFTInfo = (nftId: string | undefined) => {
         return null;
       }
 
-      console.log("network nft info", network);
-
       const client = await mustGetNonSigningCosmWasmClient(network.id);
       const vaultClient = new NftMarketplaceQueryClient(
         client,

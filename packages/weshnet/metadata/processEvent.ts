@@ -8,6 +8,7 @@ import {
 } from "../../api/weshnet/protocoltypes";
 import {
   selectContactRequestList,
+  selectConversationList,
   setContactRequest,
   setContactRequestList,
   setConversationList,
@@ -16,6 +17,8 @@ import { store } from "../../store/store";
 import { weshClient } from "../client";
 import { subscribeMessages } from "../message/subscriber";
 import { bytesFromString, decodeJSON, stringFromBytes } from "../utils";
+
+import { setNotificationRequest } from "@/store/slices/notification";
 
 const processedMetadataIds: string[] = [];
 
@@ -93,6 +96,15 @@ export const processMetadata = async (data: GroupMetadataEvent) => {
           }),
         );
 
+        store.dispatch(
+          setNotificationRequest({
+            id: stringFromBytes(parsedData.payload.contactPk),
+            avatar: parsedData.payload.contactMetadata.avatar,
+            isRead: false,
+            type: "contact-request",
+          }),
+        );
+
         break;
       }
       case EventType.EventTypeAccountContactRequestIncomingDiscarded: {
@@ -112,7 +124,6 @@ export const processMetadata = async (data: GroupMetadataEvent) => {
             ),
           ),
         );
-
         break;
       }
       case EventType.EventTypeAccountContactRequestIncomingAccepted: {
@@ -130,6 +141,7 @@ export const processMetadata = async (data: GroupMetadataEvent) => {
 
         if (contactRequestIndex !== -1) {
           const contactRequest = contactRequests[contactRequestIndex];
+
           store.dispatch(
             setContactRequestList(
               contactRequests.filter(
@@ -139,6 +151,7 @@ export const processMetadata = async (data: GroupMetadataEvent) => {
               ),
             ),
           );
+
           const group = await weshClient.client.GroupInfo({
             contactPk: bytesFromString(contactRequest.contactId),
           });
@@ -171,17 +184,38 @@ export const processMetadata = async (data: GroupMetadataEvent) => {
       }
       case EventType.EventTypeAccountGroupJoined: {
         const parsedData: any = GroupMetadataEvent.toJSON(data);
-
+        const conversationList = selectConversationList(store.getState());
         parsedData.payload = AccountGroupJoined.decode(data.metadata.payload);
+
+        const groupPk = stringFromBytes(parsedData.payload.group.publicKey);
+        console.log("group-join");
+        const selectedGroup = conversationList.filter(
+          (singleConv) => singleConv.id === groupPk,
+        )[0];
+
         store.dispatch(
           setConversationList({
             id: stringFromBytes(parsedData.payload.group.publicKey),
             type: "group",
-            members: [],
+            members: [parsedData.payload.contactPk],
             name: "Group",
             status: "active",
           }),
         );
+
+        if (
+          selectedGroup &&
+          !selectedGroup?.members.includes(parsedData.payload.contackPk)
+        ) {
+          store.dispatch(
+            setNotificationRequest({
+              id: stringFromBytes(parsedData.payload.group.publicKey),
+              type: "group-join",
+              isRead: false,
+            }),
+          );
+        }
+
         subscribeMessages(stringFromBytes(parsedData.payload.group.publicKey));
 
         break;

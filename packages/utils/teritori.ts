@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export interface CosmosDelegationsResponse {
   delegation_responses: {
     delegation: {
@@ -12,19 +14,27 @@ export interface CosmosDelegationsResponse {
   }[];
 }
 
-export interface CosmosRewardsResponse {
-  total: {
-    denom: string;
-    amount: string;
-  }[];
-  rewards: {
-    validator_address: string;
-    reward: {
-      denom: string;
-      amount: string;
-    }[];
-  }[];
-}
+export const zodCosmosRewardsResponse = z.object({
+  total: z.array(
+    z.object({
+      denom: z.string(),
+      amount: z.string(),
+    }),
+  ),
+  rewards: z.array(
+    z.object({
+      validator_address: z.string(),
+      reward: z.array(
+        z.object({
+          denom: z.string(),
+          amount: z.string(),
+        }),
+      ),
+    }),
+  ),
+});
+
+export type CosmosRewardsResponse = z.infer<typeof zodCosmosRewardsResponse>;
 
 export interface CosmosBalancesResponse {
   balances: { denom: string; amount: string }[];

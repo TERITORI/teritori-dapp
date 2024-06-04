@@ -13,7 +13,12 @@ export const useBalances = (
   networkId: string | undefined,
   address: string | undefined,
 ) => {
-  const { data: networkBalances } = useQuery(
+  const {
+    data: networkBalances,
+    refetch,
+    isFetching,
+    isLoading,
+  } = useQuery(
     ["balances", networkId, address],
     async () => {
       if (!address || !networkId) {
@@ -59,7 +64,7 @@ export const useBalances = (
     return balances;
   }, [networkId, networkBalances, prices]);
 
-  return finalBalances;
+  return { balances: finalBalances, refetch, isLoading, isFetching };
 };
 
 const getNetworkBalances = async (

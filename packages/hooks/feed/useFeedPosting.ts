@@ -38,7 +38,7 @@ export const useFeedPosting = (
   const [step, setStep] = useState(
     feedPostingStep(FeedPostingStepId.UNDEFINED),
   );
-  const balances = useBalances(networkId, userAddress);
+  const { balances } = useBalances(networkId, userAddress);
   const { postFee } = useFeedPostFee(networkId, category);
   const { freePostCount } = useFreePostsCount(userId, category);
   const { isDAO } = useIsDAO(userId);
