@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { View, useWindowDimensions, KeyboardAvoidingView } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
@@ -11,7 +11,6 @@ import CustomAppBar from "../../../components/AppBar/CustomAppBar";
 
 import { Post } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
-import { KeyboardAvoidingView } from "@/components/KeyboardAvoidingView";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { CommentsContainer } from "@/components/cards/CommentsContainer";
@@ -123,7 +122,11 @@ export const MiniArticlePostDetails = ({ post, refetchPost }: Props) => {
   if (!metadataToUse) return null;
 
   return (
-    <KeyboardAvoidingView extraVerticalOffset={-100}>
+    <KeyboardAvoidingView
+      behavior={"padding"}
+      style={{ flex: 1, backgroundColor: "#000" }}
+      keyboardVerticalOffset={30}
+    >
       <ScreenContainer
         forceNetworkId={post.networkId}
         fullWidth
@@ -139,6 +142,7 @@ export const MiniArticlePostDetails = ({ post, refetchPost }: Props) => {
           style={{
             flexDirection: "column",
             justifyContent: "space-between",
+            flex: 1,
           }}
         >
           <Animated.ScrollView
