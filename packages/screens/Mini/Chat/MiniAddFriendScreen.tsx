@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useCallback, useState } from "react";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -33,7 +34,11 @@ import { weshServices } from "@/weshnet";
 
 export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = ({
   navigation,
+  route,
 }) => {
+  const params = route.params;
+  const contactUrl = params ? params?.contactUrl : undefined;
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [addContactLoading, setAddContactLoading] = useState(false);
@@ -41,7 +46,15 @@ export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = ({
   const contactInfo = useSelector(selectContactInfo);
   const { setToast } = useFeedbacks();
 
-  const isGroupLink = contactLink.includes("&groupName=");
+  const isGroupLink = contactLink.includes("/group");
+
+  useFocusEffect(
+    useCallback(() => {
+      if (contactUrl) {
+        setContactLink(contactUrl);
+      }
+    }, [contactUrl]),
+  );
 
   const handleAddContact = async () => {
     setAddContactLoading(true);
@@ -104,7 +117,6 @@ export const MiniAddFriendScreen: ScreenFC<"MiniAddFriend"> = ({
         <SpacerColumn size={1} />
         <BrandText style={[fontSemibold16]}>{inputLabel}</BrandText>
         <SpacerColumn size={2} />
-
         <MiniTextInput
           placeholder="Paste the shared link here"
           style={{ backgroundColor: withAlpha(neutral22, 0.9) }}
