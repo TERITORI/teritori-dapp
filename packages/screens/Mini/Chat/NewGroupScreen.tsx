@@ -144,9 +144,7 @@ export const NewGroupScreen: ScreenFC<"MiniNewGroup"> = ({ navigation }) => {
         variant: "outline",
         duration: 3000,
       });
-      navigation.replace("Conversation", {
-        conversationId: stringFromBytes(group.groupPk),
-      });
+      navigation.replace("MiniTabs", { screen: "MiniChats" });
     } catch (err: any) {
       console.error("create group err", err);
       setToast({
