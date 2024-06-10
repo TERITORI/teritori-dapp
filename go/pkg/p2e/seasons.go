@@ -266,6 +266,16 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 		BossImage:  "https://bafybeidmr5xascx6pt67qkkarzicpfw7s4pluudbr7a4ekzvcax7g7dawi.ipfs.cf-ipfs.com/",
 		TopN:       500,
 		StartsAt:   "2024-06-05T00:00:00",
-		EndsAt:     "2024-07-10T00:00:00",
+		EndsAt:     "2024-06-11T00:00:00",
+	},
+	// Pre-Season 2
+	{
+		ID:        "Season 2 - Pre",
+		GameID:    THE_RIOT_GAME_ID,
+		BossName:  `== $*=|'¤?")à-£_%`,
+		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.cf-ipfs.com/",
+		StartsAt:  "2024-06-11T00:00:00",
+		EndsAt:    "2024-12-12T00:00:00",
+		IsPre:     true,
 	},
 }
