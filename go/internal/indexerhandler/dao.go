@@ -72,7 +72,7 @@ type VotingModuleInstantiateInfo struct {
 
 func (h *Handler) handleExecuteInstantiateContractWithSelfAdmin(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	contractAddress := execMsg.Contract
-	if contractAddress != h.config.Network.DaoFactoryContractAddress {
+	if contractAddress != h.config.Network.CwAdminFactoryContractAddress {
 		h.logger.Debug("ignored instantiate dao from unknown factory", zap.String("tx", e.TxHash), zap.String("factory-address", contractAddress))
 		return nil
 	}

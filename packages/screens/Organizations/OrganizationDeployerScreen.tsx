@@ -22,7 +22,11 @@ import {
   NetworkKind,
 } from "@/networks";
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
-import { createDaoMemberBased, createDaoTokenBased } from "@/utils/dao";
+import {
+  createDaoMemberBased,
+  CreateDaoMemberBasedParams,
+  createDaoTokenBased,
+} from "@/utils/dao";
 import { adenaDeployGnoDAO } from "@/utils/gnodao/deploy";
 import {
   ConfigureVotingFormType,
@@ -36,7 +40,7 @@ import {
 
 export const OrganizationDeployerScreen = () => {
   const selectedWallet = useSelectedWallet();
-  const { setToastError } = useFeedbacks();
+  const { setToast } = useFeedbacks();
   const [daoAddress, setDAOAddress] = useState("");
   const [currentStep, setCurrentStep] = useState(0);
   const [step1DaoInfoFormData, setStep1DaoInfoFormData] =
@@ -50,7 +54,7 @@ export const OrganizationDeployerScreen = () => {
   const queryClient = useQueryClient();
   const [launchingStep, setLaunchingStep] = useState(0);
   const getPercent = (num: number | undefined): string => {
-    let ret_num = 0;
+    let ret_num: number;
     ret_num = num === undefined ? 0 : num;
     ret_num = ret_num < 0 ? 0 : ret_num;
     ret_num = ret_num > 100 ? 100 : ret_num;
@@ -113,7 +117,8 @@ export const OrganizationDeployerScreen = () => {
 
           const networkId = selectedWallet.networkId;
           const network = mustGetCosmosNetwork(networkId);
-          const daoFactoryContractAddress = network.daoFactoryContractAddress!;
+          const cwAdminFactoryContractAddress =
+            network.cwAdminFactoryContractAddress!;
           const walletAddress = selectedWallet.address;
           const signingClient = await getKeplrSigningCosmWasmClient(networkId);
 
@@ -124,7 +129,7 @@ export const OrganizationDeployerScreen = () => {
               {
                 client: signingClient,
                 sender: walletAddress,
-                contractAddress: daoFactoryContractAddress,
+                contractAddress: cwAdminFactoryContractAddress,
                 daoPreProposeSingleCodeId: network.daoPreProposeSingleCodeId!,
                 daoProposalSingleCodeId: network.daoProposalSingleCodeId!,
                 daoCw20CodeId: network.daoCw20CodeId!,
@@ -156,35 +161,36 @@ export const OrganizationDeployerScreen = () => {
             );
           } else if (step1DaoInfoFormData.structure === DaoType.MEMBER_BASED) {
             if (!step3MemberSettingFormData) return false;
+            const params: CreateDaoMemberBasedParams = {
+              networkId,
+              sender: walletAddress,
+              contractAddress: cwAdminFactoryContractAddress,
+              daoCoreCodeId: network.daoCoreCodeId!,
+              daoPreProposeSingleCodeId: network.daoPreProposeSingleCodeId!,
+              daoProposalSingleCodeId: network.daoProposalSingleCodeId!,
+              cw4GroupCodeId: network.cw4GroupCodeId!,
+              daoVotingCw4CodeId: network.daoVotingCw4CodeId!,
+              name: step1DaoInfoFormData.organizationName,
+              description: step1DaoInfoFormData.organizationDescription,
+              tns: step1DaoInfoFormData.associatedHandle,
+              imageUrl: step1DaoInfoFormData.imageUrl,
+              members: step3MemberSettingFormData.members.map((value) => ({
+                addr: value.addr,
+                weight: parseInt(value.weight, 10),
+              })),
+              quorum: getPercent(step2ConfigureVotingFormData.supportPercent),
+              threshold: getPercent(
+                step2ConfigureVotingFormData.minimumApprovalPercent,
+              ),
+              maxVotingPeriod: getDuration(
+                step2ConfigureVotingFormData.days,
+                step2ConfigureVotingFormData.hours,
+                step2ConfigureVotingFormData.minutes,
+              ),
+              onStepChange: setLaunchingStep,
+            };
             const { daoAddress, executeResult } = await createDaoMemberBased(
-              {
-                networkId,
-                sender: walletAddress,
-                contractAddress: daoFactoryContractAddress,
-                daoCoreCodeId: network.daoCoreCodeId!,
-                daoPreProposeSingleCodeId: network.daoPreProposeSingleCodeId!,
-                daoProposalSingleCodeId: network.daoProposalSingleCodeId!,
-                daoCw4GroupCodeId: network.daoCw4GroupCodeId!,
-                daoVotingCw4CodeId: network.daoVotingCw4CodeId!,
-                name: step1DaoInfoFormData.organizationName,
-                description: step1DaoInfoFormData.organizationDescription,
-                tns: step1DaoInfoFormData.associatedHandle,
-                imageUrl: step1DaoInfoFormData.imageUrl,
-                members: step3MemberSettingFormData.members.map((value) => ({
-                  addr: value.addr,
-                  weight: parseInt(value.weight, 10),
-                })),
-                quorum: getPercent(step2ConfigureVotingFormData.supportPercent),
-                threshold: getPercent(
-                  step2ConfigureVotingFormData.minimumApprovalPercent,
-                ),
-                maxVotingPeriod: getDuration(
-                  step2ConfigureVotingFormData.days,
-                  step2ConfigureVotingFormData.hours,
-                  step2ConfigureVotingFormData.minutes,
-                ),
-                onStepChange: setLaunchingStep,
-              },
+              params,
               "auto",
             );
             createDaoRes = executeResult;
@@ -192,14 +198,16 @@ export const OrganizationDeployerScreen = () => {
           } else {
             return false;
           }
-          console.log("res", createDaoRes);
+          console.log("Res: ", createDaoRes);
           console.log(createDaoRes.transactionHash);
           if (createDaoRes) {
             return true;
           } else {
-            setToastError({
+            console.error("Failed to create DAO");
+            setToast({
               title: "Failed to create DAO",
-              message: "Failed to create DAO",
+              mode: "normal",
+              type: "error",
             });
             return false;
           }
@@ -209,11 +217,13 @@ export const OrganizationDeployerScreen = () => {
         }
       }
     } catch (err: unknown) {
-      console.log("failed to create DAO:", err);
+      console.error("Failed to create DAO: ", err);
       if (err instanceof Error) {
-        setToastError({
+        setToast({
           title: "Failed to create DAO",
           message: err.message,
+          mode: "normal",
+          type: "error",
         });
       }
       return false;
