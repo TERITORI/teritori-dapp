@@ -10,10 +10,9 @@ import (
 // Realm (package) state
 
 var (
-	gFeeds          avl.Tree    // id -> *Feed
-	gFeedsCtr       int         // increments Feed.id
-	gFeedsByName    avl.Tree    // name -> *Feed
-	gDefaultAnonFee = 100000000 // minimum fee required if anonymous
+	gFeeds       avl.Tree // id -> *Feed
+	gFeedsCtr    int      // increments Feed.id
+	gFeedsByName avl.Tree // name -> *Feed
 )
 
 //----------------------------------------

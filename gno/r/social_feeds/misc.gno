@@ -1,12 +1,8 @@
 package social_feeds
 
 import (
-	"encoding/base64"
-	"std"
 	"strconv"
 	"strings"
-
-	"gno.land/r/demo/users"
 )
 
 func getFeed(fid FeedID) *Feed {
@@ -32,15 +28,6 @@ func incGetFeedID() FeedID {
 	return FeedID(gFeedsCtr)
 }
 
-func usernameOf(addr std.Address) string {
-	user := users.GetUserByAddress(addr)
-	if user == nil {
-		return ""
-	} else {
-		return user.Name
-	}
-}
-
 func feedIDKey(fid FeedID) string {
 	return padZero(uint64(fid), 10)
 }
@@ -64,10 +51,6 @@ func padZero(u64 uint64, length int) string {
 	} else {
 		return strings.Repeat("0", length-len(str)) + str
 	}
-}
-
-func bytesToString(b []byte) string {
-	return base64.RawURLEncoding.EncodeToString(b)
 }
 
 func intToString(val int) string {

@@ -7,14 +7,14 @@ import (
 	"gno.land/p/demo/teritori/flags_index"
 )
 
-var SEPARATOR = "/"
+var seperator = "/"
 
 func getFlagID(fid FeedID, pid PostID) flags_index.FlagID {
-	return flags_index.FlagID(fid.String() + SEPARATOR + pid.String())
+	return flags_index.FlagID(fid.String() + seperator + pid.String())
 }
 
 func parseFlagID(flagID flags_index.FlagID) (FeedID, PostID) {
-	parts := strings.Split(string(flagID), SEPARATOR)
+	parts := strings.Split(string(flagID), seperator)
 	if len(parts) != 2 {
 		panic("invalid flag ID '" + string(flagID) + "'")
 	}

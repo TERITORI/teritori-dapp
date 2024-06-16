@@ -1,39 +1,54 @@
+gnokey maketx addpkg  \
+  -deposit="1ugnot" \
+  -gas-fee="1ugnot" \
+  -gas-wanted="50000000" \
+  -broadcast="true" \
+  -remote="https://rpc.gno.land:443" \
+  -chainid="portal-loop" \
+  -pkgdir="." \
+  -pkgpath="gno.land/r/demo/teritori/social_feeds" \
+  mykey2
+
 gnokey maketx call \
-    -pkgpath "gno.land/r/demo/social_feeds" \
+    -pkgpath "gno.land/r/demo/teritori/social_feeds" \
     -func "CreateFeed" \
     -gas-fee 1000000ugnot \
     -gas-wanted 3000000 \
-    -send "" \
+    -remote="https://rpc.gno.land:443" \
+    -chainid="portal-loop" \
     -broadcast \
     -args "teritori" \
-    test1
+    mykey2
 
 gnokey maketx call \
-    -pkgpath "gno.land/r/demo/social_feeds" \
+    -pkgpath "gno.land/r/demo/teritori/social_feeds" \
     -func "CreatePost" \
     -gas-fee 1000000ugnot \
     -gas-wanted 2000000 \
-    -send "" \
+    -remote="https://rpc.gno.land:443" \
+    -chainid="portal-loop" \
     -broadcast \
     -args "1" \
     -args "0" \
     -args "2" \
     -args '{"gifs": [], "files": [], "title": "", "message": "Hello world 2 !", "hashtags": [], "mentions": [], "createdAt": "2023-08-03T01:39:45.522Z", "updatedAt": "2023-08-03T01:39:45.522Z"}' \
-    test1 
+    mykey2 
 
 gnokey maketx call \
-    -pkgpath "gno.land/r/demo/social_feeds" \
+    -pkgpath "gno.land/r/demo/teritori/social_feeds" \
     -func "TipPost" \
     -gas-fee 1000000ugnot \
     -gas-wanted 3000000 \
-    -send "1000000ugnot" \
+    -send "1000ugnot" \
+    -remote="https://rpc.gno.land:443" \
+    -chainid="portal-loop" \
     -broadcast \
     -args "1" \
     -args "1" \
-    test1
+    mykey2
 
 gnokey maketx call \
-    -pkgpath "gno.land/r/demo/social_feeds" \
+    -pkgpath "gno.land/r/demo/teritori/social_feeds" \
     -func "HidePostForMe" \
     -gas-fee 1000000ugnot \
     -gas-wanted 3000000 \
@@ -41,27 +56,10 @@ gnokey maketx call \
     -broadcast \
     -args "1" \
     -args "1" \
-    test1
+    mykey2
 
 // Query posts
-gnokey query vm/qeval --data 'gno.land/r/demo/social_feeds
+gnokey query vm/qeval --data 'gno.land/r/demo/teritori/social_feeds
 GetPosts(1, "", []uint64{}, 0, 10)'
 
-gnokey maketx addpkg \
-    -deposit="1ugnot" \
-    -gas-fee="1ugnot" \
-    -gas-wanted="5000000" \
-    -broadcast="true"  \
-    -pkgdir="." \
-    -pkgpath="gno.land/r/demo/social_feeds_v2" \
-    test1
-
-gnokey maketx call \
-    -pkgpath "gno.land/r/demo/social_feeds" \
-    -func "MigrateFromPreviousFeed" \
-    -gas-fee 1000000ugnot \
-    -gas-wanted 2000000 \
-    -send "" \
-    -broadcast \
-    test1 
 

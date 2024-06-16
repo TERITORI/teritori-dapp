@@ -7,8 +7,6 @@ import (
 	"gno.land/p/demo/teritori/ujson"
 )
 
-var PKG_PATH = "gno.land/r/demo/teritori/social_feeds"
-
 // Ban a post
 type ExecutableMessageBanPost struct {
 	dao_interfaces.ExecutableMessage
