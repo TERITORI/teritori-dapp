@@ -416,4 +416,18 @@ generate.internal-contracts-clients: node_modules
 		|| exit 1 ;\
 		npx tsx packages/scripts/makeTypescriptIndex $${outdir} || exit 1 ; \
 	done
-	
+
+all-gno:  clean-gno clone-gno bin-gno test-gno
+
+clone-gno:
+	cd gnobuild && git clone https://github.com/gnolang/gno.git
+
+bin-gno:
+	cd gnobuild/gno/gnovm && make build
+
+test-gno:
+	./gnobuild/gno/gnovm/build/gno lint ./gno/...
+
+clean-gno:
+	rm -rf gnobuild
+	mkdir gnobuild
