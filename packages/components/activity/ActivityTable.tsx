@@ -25,6 +25,7 @@ import { TableRow } from "@/components/table/TableRow";
 import { CellBrandText, TableTextCell } from "@/components/table/TableTextCell";
 import { TableWrapper } from "@/components/table/TableWrapper";
 import { tableCellTextStyle, TableColumns } from "@/components/table/utils";
+import { prettyNumber } from "@/utils/numbers";
 import { tinyAddress } from "@/utils/text";
 
 const columns: TableColumns = {
@@ -141,8 +142,8 @@ const ActivityTableRow: React.FC<{
             minWidth: columns.transactionType.minWidth,
             flex: columns.transactionType.flex,
           },
-          activityNameStyle(activity.transactionKind),
         ]}
+        textStyle={activityNameStyle(activity.transactionKind)}
       >
         {prettyActivityName(activity.transactionKind)}
       </TableTextCell>
@@ -174,7 +175,7 @@ const ActivityTableRow: React.FC<{
         </CellBrandText>
         <SpacerRow size={1} />
         <CellBrandText style={{ color: neutral77 }}>
-          {hasAmount ? `≈ $${activity.usdPrice.toFixed(2)}` : ""}
+          {hasAmount ? "$" + prettyNumber(activity.usdPrice, 2) : ""}
         </CellBrandText>
       </TableCell>
 
