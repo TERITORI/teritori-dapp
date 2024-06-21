@@ -23,7 +23,7 @@ import {
   GrpcWebImpl as P2eGrpcWebImpl,
   P2eService,
 } from "../api/p2e/v1/p2e";
-import { getNetwork } from "../networks";
+import { getNetwork, getNetworkFeature, NetworkFeature } from "../networks";
 
 const marketplaceClients: { [key: string]: MarketplaceService } = {};
 
@@ -117,13 +117,20 @@ const launchpadClients: { [key: string]: LaunchpadService } = {};
 
 export const getLaunchpadClient = (networkId: string | undefined) => {
   const network = getNetwork(networkId);
-  if (!network) {
+  const cosmwasmLaunchpadFeature = getNetworkFeature(
+    networkId,
+    NetworkFeature.NFTLaunchpad,
+  );
+  if (!network || !cosmwasmLaunchpadFeature) {
     return undefined;
   }
   if (!launchpadClients[network.id]) {
-    const rpc = new LaunchpadGrpcWebImpl(network.launchpadEndpoint, {
-      debug: false,
-    });
+    const rpc = new LaunchpadGrpcWebImpl(
+      cosmwasmLaunchpadFeature.launchpadEndpoint,
+      {
+        debug: false,
+      },
+    );
     launchpadClients[network.id] = new LaunchpadServiceClientImpl(rpc);
   }
   return launchpadClients[network.id];
