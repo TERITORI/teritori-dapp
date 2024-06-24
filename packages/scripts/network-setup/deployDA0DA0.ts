@@ -1,9 +1,9 @@
 import { OfflineSigner } from "@cosmjs/proto-signing";
+import axios from "axios";
 import { bech32 } from "bech32";
 import fs from "fs";
 import { cloneDeep } from "lodash";
 import path from "path";
-import { finished } from "stream";
 
 import {
   instantiateContract,
@@ -15,8 +15,6 @@ import {
 
 import { CosmosNetworkInfo, getCosmosNetwork } from "@/networks";
 import { execPromise } from "@/scripts/lib";
-
-const { Readable } = require("stream");
 
 const cosmWasmCwPlusVersion = "v1.1.0";
 const cosmWasmCwPlusBinariesPath = `https://github.com/CosmWasm/cw-plus/releases/download/${cosmWasmCwPlusVersion}`;
@@ -220,12 +218,9 @@ const instantiateCwAdminFactory = async (
 };
 
 const downloadFileFromUrl = async (url: string, fileName: string) => {
-  const response = await fetch(url);
-  if (!response.ok && response.status === 0) {
-    throw new Error(`Fetching ${url} failed with status ${response.status}`);
-  }
+  const response = await axios.get(url, { responseType: "stream" });
   const fileStream = fs.createWriteStream(path.join(__dirname, fileName));
-  await finished(Readable.fromWeb(response.body).pipe(fileStream), () => {});
+  await response.data.pipe(fileStream);
 };
 
 export default deployDA0DA0;
