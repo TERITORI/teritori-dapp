@@ -22,7 +22,7 @@ import { execPromise } from "@/scripts/lib";
  * Store these binaries
  * And deploy cw_admin_factory contract
  */
-const deployDA0DA0 = async (
+export const deployDA0DA0 = async (
   opts: { home: string; binaryPath: string; signer: OfflineSigner | undefined },
   networkId: string,
   wallet: string,
@@ -186,5 +186,3 @@ const deployRemoteWASM = async (
   console.log(`Storing ${filePath}`);
   return await storeWASM(opts, wallet, network, filePath);
 };
-
-export default deployDA0DA0;

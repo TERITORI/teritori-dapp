@@ -4,7 +4,7 @@ import fs from "fs/promises";
 import { buildCosmos, startCosmosLocalnet } from "./cosmos";
 import { teritoriLocalnetNetwork } from "../../networks/teritori-localnet";
 
-import deployDA0DA0 from "@/scripts/network-setup/deployDA0DA0";
+import { deployDA0DA0 } from "@/scripts/network-setup/deployDA0DA0";
 
 const main = async () => {
   program.argument(
