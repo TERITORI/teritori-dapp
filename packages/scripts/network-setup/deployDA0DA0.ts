@@ -16,18 +16,6 @@ import {
 import { CosmosNetworkInfo, getCosmosNetwork } from "@/networks";
 import { execPromise } from "@/scripts/lib";
 
-const cosmWasmCwPlusVersion = "v1.1.0";
-const cosmWasmCwPlusBinariesPath = `https://github.com/CosmWasm/cw-plus/releases/download/${cosmWasmCwPlusVersion}`;
-const cw4GroupWasmFileName = "cw4_group.wasm";
-
-const daoDaoContractsVersion = "v2.2.0";
-const daoDaoContractsBinariesPath = `https://github.com/DA0-DA0/dao-contracts/releases/download/${daoDaoContractsVersion}`;
-const cwAdminFactoryWasmFileName = "cw_admin_factory.wasm";
-const daoDaoCoreWasmFileName = "dao_dao_core.wasm";
-const daoVotingCw4WasmFileName = "dao_voting_cw4.wasm";
-const daoPreProposeSingleWWasmFileName = "dao_pre_propose_single.wasm";
-const daoProposalSingleWasmFileName = "dao_proposal_single.wasm";
-
 /**
  * Firstly, store name-service WASM binaries and instantiate name-service contract, if not present on the network
  * Download WASM binaries from https://github.com/DA0-DA0/dao-contracts (We consider using the v2.2.0) and https://github.com/CosmWasm/cw-plus
@@ -39,6 +27,18 @@ const deployDA0DA0 = async (
   networkId: string,
   wallet: string,
 ) => {
+  const cosmWasmCwPlusVersion = "v1.1.0";
+  const cosmWasmCwPlusBinariesPath = `https://github.com/CosmWasm/cw-plus/releases/download/${cosmWasmCwPlusVersion}`;
+  const cw4GroupWasmFileName = "cw4_group.wasm";
+
+  const daoDaoContractsVersion = "v2.2.0";
+  const daoDaoContractsBinariesPath = `https://github.com/DA0-DA0/dao-contracts/releases/download/${daoDaoContractsVersion}`;
+  const cwAdminFactoryWasmFileName = "cw_admin_factory.wasm";
+  const daoDaoCoreWasmFileName = "dao_dao_core.wasm";
+  const daoVotingCw4WasmFileName = "dao_voting_cw4.wasm";
+  const daoPreProposeSingleWWasmFileName = "dao_pre_propose_single.wasm";
+  const daoProposalSingleWasmFileName = "dao_proposal_single.wasm";
+
   const network = cloneDeep(getCosmosNetwork(networkId));
   if (!network) {
     console.error(`Cosmos network ${networkId} not found`);
@@ -78,36 +78,21 @@ const deployDA0DA0 = async (
   }
 
   // ========= cw4_group
-  console.log("Fetching cw4 group");
-  await downloadFileFromUrl(
+  network.cw4GroupCodeId = await deployRemoteWASM(
+    opts,
+    wallet,
+    network,
     `${cosmWasmCwPlusBinariesPath}/${cw4GroupWasmFileName}`,
     cw4GroupWasmFileName,
   );
-  const cw4GroupWasmFilePath = path.join(__dirname, cw4GroupWasmFileName);
-  console.log("Storing cw4 group");
-  network.cw4GroupCodeId = await storeWASM(
-    opts,
-    wallet,
-    network,
-    cw4GroupWasmFilePath,
-  );
 
   // ========= cw_admin_factory
-  console.log("Fetching cw admin factory");
-  await downloadFileFromUrl(
-    `${daoDaoContractsBinariesPath}/${cwAdminFactoryWasmFileName}`,
-    cwAdminFactoryWasmFileName,
-  );
-  const cwAdminFactoryWasmFilePath = path.join(
-    __dirname,
-    cwAdminFactoryWasmFileName,
-  );
-  console.log("Storing cw admin factory");
-  network.cwAdminFactoryCodeId = await storeWASM(
+  network.cwAdminFactoryCodeId = await deployRemoteWASM(
     opts,
     wallet,
     network,
-    cwAdminFactoryWasmFilePath,
+    `${daoDaoContractsBinariesPath}/${cwAdminFactoryWasmFileName}`,
+    cwAdminFactoryWasmFileName,
   );
   console.log("Instantiating cw admin factory", network.cwAdminFactoryCodeId);
   network.cwAdminFactoryContractAddress = await instantiateCwAdminFactory(
@@ -118,72 +103,39 @@ const deployDA0DA0 = async (
   );
 
   // ========= dao_dao_core
-  console.log("Fetching dao dao core");
-  await downloadFileFromUrl(
+  network.daoCoreCodeId = await deployRemoteWASM(
+    opts,
+    wallet,
+    network,
     `${daoDaoContractsBinariesPath}/${daoDaoCoreWasmFileName}`,
     daoDaoCoreWasmFileName,
   );
-  const daoDaoCoreWasmFilePath = path.join(__dirname, daoDaoCoreWasmFileName);
-  console.log("Storing dao dao core");
-  network.daoCoreCodeId = await storeWASM(
+
+  // ========= dao_voting_cw4
+  network.daoVotingCw4CodeId = await deployRemoteWASM(
     opts,
     wallet,
     network,
-    daoDaoCoreWasmFilePath,
-  );
-
-  // ========= dao_voting_cw4
-  console.log("Fetching dao voting cw4");
-  await downloadFileFromUrl(
     `${daoDaoContractsBinariesPath}/${daoVotingCw4WasmFileName}`,
     daoVotingCw4WasmFileName,
   );
-  const daoVotingCw4WasmFilePath = path.join(
-    __dirname,
-    daoVotingCw4WasmFileName,
-  );
-  console.log("Storing dao voting cw4");
-  network.daoVotingCw4CodeId = await storeWASM(
+
+  // ========= dao_pre_propose_single
+  network.daoPreProposeSingleCodeId = await deployRemoteWASM(
     opts,
     wallet,
     network,
-    daoVotingCw4WasmFilePath,
-  );
-
-  // ========= dao_pre_propose_single
-  console.log("Fetching dao voting cw4");
-  await downloadFileFromUrl(
     `${daoDaoContractsBinariesPath}/${daoPreProposeSingleWWasmFileName}`,
     daoPreProposeSingleWWasmFileName,
   );
-  const daoPreProposeSingleWasmFilePath = path.join(
-    __dirname,
-    daoPreProposeSingleWWasmFileName,
-  );
-  console.log("Storing dao pre propose single");
-  network.daoPreProposeSingleCodeId = await storeWASM(
-    opts,
-    wallet,
-    network,
-    daoPreProposeSingleWasmFilePath,
-  );
 
   // ========= dao_proposal_single
-  console.log("Fetching dao voting cw4");
-  await downloadFileFromUrl(
-    `${daoDaoContractsBinariesPath}/${daoProposalSingleWasmFileName}`,
-    daoProposalSingleWasmFileName,
-  );
-  const daoProposalSingleWasmFilePath = path.join(
-    __dirname,
-    daoProposalSingleWasmFileName,
-  );
-  console.log("Storing dao proposal single");
-  network.daoProposalSingleCodeId = await storeWASM(
+  network.daoProposalSingleCodeId = await deployRemoteWASM(
     opts,
     wallet,
     network,
-    daoProposalSingleWasmFilePath,
+    `${daoDaoContractsBinariesPath}/${daoProposalSingleWasmFileName}`,
+    daoProposalSingleWasmFileName,
   );
 
   console.log(JSON.stringify(network, null, 2));
@@ -217,10 +169,22 @@ const instantiateCwAdminFactory = async (
   );
 };
 
-const downloadFileFromUrl = async (url: string, fileName: string) => {
+const deployRemoteWASM = async (
+  opts: { home: string; binaryPath: string; signer: OfflineSigner | undefined },
+  wallet: string,
+  network: CosmosNetworkInfo,
+  url: string,
+  name: string,
+) => {
+  console.log(`Fetching ${url}`);
+  const contractsDir = path.join(opts.home, "remote-wasm");
+  fs.mkdirSync(contractsDir, { recursive: true });
+  const filePath = path.join(contractsDir, name);
   const response = await axios.get(url, { responseType: "stream" });
-  const fileStream = fs.createWriteStream(path.join(__dirname, fileName));
+  const fileStream = fs.createWriteStream(filePath);
   await response.data.pipe(fileStream);
+  console.log(`Storing ${filePath}`);
+  return await storeWASM(opts, wallet, network, filePath);
 };
 
 export default deployDA0DA0;
