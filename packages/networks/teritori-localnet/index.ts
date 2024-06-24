@@ -66,8 +66,8 @@ export const teritoriLocalnetNetwork: NetworkInfo = {
   daoCoreCodeId: -1,
   daoPreProposeSingleCodeId: -1,
   daoProposalSingleCodeId: -1,
-  daoCw4GroupCodeId: -1,
+  cw4GroupCodeId: -1,
   daoVotingCw4CodeId: -1,
-  daoFactoryCodeId: -1,
-  daoFactoryContractAddress: "",
+  cwAdminFactoryCodeId: -1,
+  cwAdminFactoryContractAddress: "",
 };

@@ -62,15 +62,15 @@ export type CosmosNetworkInfo = NetworkInfoBase & {
   socialFeedCodeId?: number;
   socialFeedContractAddress?: string;
   daoCw20CodeId?: number;
-  daoFactoryCodeId?: number;
+  cwAdminFactoryCodeId?: number;
   daoCoreCodeId?: number;
   daoPreProposeSingleCodeId?: number;
   daoProposalSingleCodeId?: number;
   daoVotingCw20StakedCodeId?: number;
   daoCw20StakeCodeId?: number;
-  daoCw4GroupCodeId?: number;
+  cw4GroupCodeId?: number;
   daoVotingCw4CodeId?: number;
-  daoFactoryContractAddress?: string;
+  cwAdminFactoryContractAddress?: string;
   coreDAOAddress?: string;
 };
 
