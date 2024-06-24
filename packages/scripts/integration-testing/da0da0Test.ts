@@ -4,7 +4,7 @@ import fs from "fs/promises";
 import { buildCosmos, startCosmosLocalnet } from "./cosmos";
 import { teritoriLocalnetNetwork } from "../../networks/teritori-localnet";
 
-import deployDaoStuff from "@/scripts/network-setup/deployDaoStuff";
+import deployDA0DA0 from "@/scripts/network-setup/deployDA0DA0";
 
 const main = async () => {
   program.argument(
@@ -23,7 +23,7 @@ const main = async () => {
 
   // test cosmwasm
 
-  await deployDaoStuff(
+  await deployDA0DA0(
     { binaryPath: binary, home, signer: admSigner },
     teritoriLocalnetNetwork.id,
     "testnet-adm",

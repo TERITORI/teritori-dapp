@@ -36,7 +36,7 @@ const daoProposalSingleWasmFileName = "dao_proposal_single.wasm";
  * Store these binaries
  * And deploy cw_admin_factory contract
  */
-const deployDaoStuff = async (
+const deployDA0DA0 = async (
   opts: { home: string; binaryPath: string; signer: OfflineSigner | undefined },
   networkId: string,
   wallet: string,
@@ -228,4 +228,4 @@ const downloadFileFromUrl = async (url: string, fileName: string) => {
   await finished(Readable.fromWeb(response.body).pipe(fileStream), () => {});
 };
 
-export default deployDaoStuff;
+export default deployDA0DA0;
