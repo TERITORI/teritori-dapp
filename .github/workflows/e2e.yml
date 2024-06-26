@@ -24,10 +24,10 @@ jobs:
       - uses: cypress-io/github-action@v6
         with:
           browser: chrome
-          build: yarn install-gno
+          build: make install-gno
           start: |
             yarn start --minify
-            gnodev --server-mode --add-account g193vp9tjhfpldvgg3gn433ayv8pn7rtfv8shyeq
+            make start.gnodev-e2e
           wait-on: "http://localhost:8888, http://localhost:8081"
       - name: Upload errors screenshots
         uses: actions/upload-artifact@v4

@@ -418,4 +418,11 @@ generate.internal-contracts-clients: node_modules
 		|| exit 1 ;\
 		npx tsx packages/scripts/makeTypescriptIndex $${outdir} || exit 1 ; \
 	done
-	
+
+.PHONY: install-gno
+install-gno: node_modules
+	yarn install-gno
+
+.PHONY: start.gnodev-e2e
+start.gnodev-e2e:
+	gnodev --unsafe-api --server-mode --add-account g193vp9tjhfpldvgg3gn433ayv8pn7rtfv8shyeq $$(find gno -name gno.mod -type f -exec dirname {} \;)
