@@ -1,30 +1,32 @@
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { OfflineSigner } from "@cosmjs/proto-signing";
 import { IndexedTx } from "@cosmjs/stargate";
+import { Attribute, Event } from "@cosmjs/stargate/build/events";
 import { bech32 } from "bech32";
 import _, { cloneDeep } from "lodash";
 import path from "path";
 
 import { InstantiateMsg as MarketplaceVaultInstantiateMsg } from "../../contracts-clients/nft-marketplace/NftMarketplace.types";
 import {
-  TeritoriNameServiceClient,
-  TeritoriNameServiceQueryClient,
-} from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import {
-  Metadata,
   ExecuteMsg as NameServiceExecuteMsg,
   InstantiateMsg as NameServiceInstantiateMsg,
+  Metadata,
 } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { InstantiateMsg as SocialFeedInstantiateMsg } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import {
-  CosmosNetworkInfo,
-  cosmosNetworkGasPrice,
-  getCosmosNetwork,
-  mustGetNonSigningCosmWasmClient,
-} from "../../networks";
-import { zodTryParseJSON } from "../../utils/sanitize";
 import { execPromise, injectRPCPort, retry, sleep, zodTxResult } from "../lib";
 import sqh from "../sqh";
+
+import {
+  TeritoriNameServiceClient,
+  TeritoriNameServiceQueryClient,
+} from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
+import {
+  cosmosNetworkGasPrice,
+  CosmosNetworkInfo,
+  getCosmosNetwork,
+  mustGetNonSigningCosmWasmClient,
+} from "@/networks";
+import { zodTryParseJSON } from "@/utils/sanitize";
 
 export const deployTeritoriEcosystem = async (
   opts: { home: string; binaryPath: string; signer: OfflineSigner | undefined },
@@ -136,7 +138,7 @@ const goldenMetadata: Metadata = {
   validator_operator_address: null,
 };
 
-const registerTNSHandle = async (
+export const registerTNSHandle = async (
   network: CosmosNetworkInfo,
   signer: OfflineSigner,
 ) => {
@@ -196,7 +198,7 @@ const instantiateMarketplaceVault = (
     throw new Error("Code ID not found");
   }
   const instantiateMsg: MarketplaceVaultInstantiateMsg = { fee_bp: "5" };
-  const addr = instantiateContract(
+  return instantiateContract(
     opts,
     wallet,
     network,
@@ -205,7 +207,6 @@ const instantiateMarketplaceVault = (
     "Teritori Marketplace Vault",
     instantiateMsg,
   );
-  return addr;
 };
 
 const instantiateSocialFeed = async (
@@ -219,7 +220,7 @@ const instantiateSocialFeed = async (
     throw new Error("Social feed code ID not found");
   }
   const instantiateMsg: SocialFeedInstantiateMsg = {};
-  const addr = await instantiateContract(
+  return await instantiateContract(
     opts,
     wallet,
     network,
@@ -228,10 +229,9 @@ const instantiateSocialFeed = async (
     "Teritori Social Feed",
     instantiateMsg,
   );
-  return addr;
 };
 
-const instantiateNameService = async (
+export const instantiateNameService = async (
   opts: { home: string; binaryPath: string },
   wallet: string,
   adminAddr: string,
@@ -289,7 +289,7 @@ const instantiateNameService = async (
   return addr;
 };
 
-const instantiateContract = async (
+export const instantiateContract = async (
   opts: { home: string; binaryPath: string },
   wallet: string,
   network: CosmosNetworkInfo,
@@ -323,8 +323,7 @@ const instantiateContract = async (
     throw new Error("Failed to parse instantiate result");
   }
   const tx = await getTx(network.id, outObj.txhash);
-  const contractAddress = mustGetAttr(tx, "instantiate", "_contract_address");
-  return contractAddress;
+  return mustGetAttr(tx, "instantiate", "_contract_address");
 };
 
 export const storeWASM = async (
@@ -396,8 +395,8 @@ const getTx = async (networkId: string, txhash: string, timeout?: number) => {
 
 const getAttr = (tx: IndexedTx, eventKey: string, attrKey: string) => {
   return tx?.events
-    .find((e) => e.type === eventKey)
-    ?.attributes.find((a) => a.key === attrKey)?.value;
+    .find((e: Event) => e.type === eventKey)
+    ?.attributes.find((a: Attribute) => a.key === attrKey)?.value;
 };
 
 const mustGetAttr = (tx: IndexedTx, eventKey: string, attrKey: string) => {
