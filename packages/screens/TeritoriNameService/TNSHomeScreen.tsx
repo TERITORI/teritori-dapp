@@ -152,16 +152,13 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
 
   return (
     <ScreenContainer
-      noMargin={width <= 1600}
       headerChildren={<BrandText>Name Service</BrandText>}
       forceNetworkFeatures={[NetworkFeature.NameService]}
       forceNetworkKind={NetworkKind.Cosmos}
+      isLarge
+      responsive
     >
-      <View
-        style={{
-          marginHorizontal: 32,
-        }}
-      >
+      <View>
         <IntroLogoText
           title={`${selectedNetwork?.displayName} Name Service`}
           backgroundImage={TNSBannerPNG}

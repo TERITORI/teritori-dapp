@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { FlatList, View } from "react-native";
 
 import { InnerCellText } from "../../../components/applicationTable/InnerCellText";
-import { TableRow } from "../../../components/table/TableRow";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import { mineShaftColor } from "../../../utils/style/colors";
 import {
@@ -15,9 +14,11 @@ import { LeaderboardEntry } from "@/api/marketplace/v1/marketplace";
 import { Pagination } from "@/components/Pagination";
 import { UserNameInline } from "@/components/UserNameInline";
 import { SpacerColumn } from "@/components/spacer";
+import { TableHeader } from "@/components/table/TableHeader";
+import { TableColumns } from "@/components/table/utils";
 import { getMarketplaceClient } from "@/utils/backend";
 
-const TABLE_ROWS = {
+const TABLE_COLUMNS: TableColumns = {
   rank: {
     label: "#",
     flex: 1,
@@ -74,14 +75,16 @@ export const MarketplaceLeaderboardTable: React.FC<{
         maxWidth: screenContentMaxWidthLarge,
       }}
     >
-      <TableRow
-        headings={
+      <TableHeader
+        style={{
+          paddingHorizontal: layout.spacing_x2_5,
+        }}
+        columns={
           !isMobile
-            ? TABLE_ROWS
-            : Object.fromEntries(Object.entries(TABLE_ROWS).slice(0, -4))
+            ? TABLE_COLUMNS
+            : Object.fromEntries(Object.entries(TABLE_COLUMNS).slice(0, -5))
         }
       />
-
       <FlatList
         data={leaderboard}
         renderItem={({ item }) => <LeaderboardRowData rowData={item} />}
@@ -98,7 +101,7 @@ export const MarketplaceLeaderboardTable: React.FC<{
         currentPage={pageIndex}
         maxPage={maxPage}
         itemsPerPage={itemsPerPage}
-        dropdownOptions={[100]}
+        nbItemsOptions={[100]}
         setItemsPerPage={setItemsPerPage}
         onChangePage={setPageIndex}
       />
@@ -125,12 +128,12 @@ const LeaderboardRowData: React.FC<{ rowData: LeaderboardEntry }> = ({
         paddingHorizontal: layout.spacing_x2_5,
       }}
     >
-      <InnerCellText style={{ flex: TABLE_ROWS.rank.flex }}>
+      <InnerCellText style={{ flex: TABLE_COLUMNS.rank.flex }}>
         {rowData.rank}
       </InnerCellText>
       <View
         style={{
-          flex: TABLE_ROWS.trader.flex,
+          flex: TABLE_COLUMNS.trader.flex,
           flexDirection: "row",
           alignItems: "center",
         }}
@@ -139,7 +142,7 @@ const LeaderboardRowData: React.FC<{ rowData: LeaderboardEntry }> = ({
       </View>
       <InnerCellText
         textStyle={{ paddingLeft: layout.spacing_x1 }}
-        style={{ flex: TABLE_ROWS.totalXp.flex }}
+        style={{ flex: TABLE_COLUMNS.totalXp.flex }}
       >
         {prettyXp(rowData.totalXp)}
       </InnerCellText>
@@ -147,25 +150,25 @@ const LeaderboardRowData: React.FC<{ rowData: LeaderboardEntry }> = ({
         <>
           <InnerCellText
             textStyle={{ paddingLeft: layout.spacing_x1 }}
-            style={{ flex: TABLE_ROWS.bonus.flex }}
+            style={{ flex: TABLE_COLUMNS.bonus.flex }}
           >
             {rowData.boost === 1 ? "-" : `X${rowData.boost}`}
           </InnerCellText>
           <InnerCellText
             textStyle={{ paddingLeft: layout.spacing_x1 }}
-            style={{ flex: TABLE_ROWS.mintXp.flex }}
+            style={{ flex: TABLE_COLUMNS.mintXp.flex }}
           >
             {prettyXp(rowData.mintXp)}
           </InnerCellText>
           <InnerCellText
             textStyle={{ paddingLeft: layout.spacing_x1 }}
-            style={{ flex: TABLE_ROWS.salesXp.flex }}
+            style={{ flex: TABLE_COLUMNS.salesXp.flex }}
           >
             {prettyXp(rowData.sellXp)}
           </InnerCellText>
           <InnerCellText
             textStyle={{ paddingLeft: layout.spacing_x1 }}
-            style={{ flex: TABLE_ROWS.buyXp.flex }}
+            style={{ flex: TABLE_COLUMNS.buyXp.flex }}
           >
             {prettyXp(rowData.buyXp)}
           </InnerCellText>
