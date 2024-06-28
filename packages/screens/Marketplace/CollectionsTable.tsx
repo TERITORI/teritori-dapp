@@ -176,7 +176,7 @@ export const CollectionsTable: FC<{
           renderItem={({ item, index }) => (
             <CollectionTableRow
               collection={item}
-              rank={index}
+              index={index}
               prices={floorPrices}
             />
           )}
@@ -190,10 +190,10 @@ export const CollectionsTable: FC<{
 
 const CollectionTableRow: React.FC<{
   collection: PopularCollection;
-  rank: number;
+  index: number;
   prices: CoingeckoPrices;
-}> = ({ collection, rank, prices }) => {
-  const rowData = getRowData(collection, rank, prices);
+}> = ({ collection, index, prices }) => {
+  const rowData = getRowData(collection, index, prices);
   const target = useCollectionNavigationTarget(collection.id);
   const tradeDiffText = rowData["TimePeriodPercentualVolume"];
   const tradeDiffColor =
@@ -233,7 +233,6 @@ const CollectionTableRow: React.FC<{
             size="XS"
             sourceURI={rowData.collectionNameData.image}
             style={{
-              // marginRight: isMobile ? layout.spacing_x1 : layout.spacing_x1_5,
               marginRight: layout.spacing_x1,
             }}
           />
@@ -405,7 +404,7 @@ const getDelta = (collection: PopularCollection) => {
 
 const getRowData = (
   collection: PopularCollection,
-  rank: number,
+  index: number,
   prices: CoingeckoPrices,
 ): RowData => {
   const [network] = parseCollectionId(collection.id);
@@ -428,7 +427,7 @@ const getRowData = (
       : undefined;
   return {
     id: collection.id,
-    rank: rank + 1,
+    rank: index + 1,
     collectionName: collection.name,
     collectionNameData: {
       collectionName: collection.name,

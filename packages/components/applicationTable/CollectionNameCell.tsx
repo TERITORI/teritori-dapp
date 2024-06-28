@@ -10,6 +10,8 @@ import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
 import { RoundedGradientImage } from "../images/RoundedGradientImage";
 
+// TODO: Remove this component after correctly replaced its usage by packages/components/table
+
 interface Props {
   rowData: any; // currently i don't know the data types will change it once i will work on functionality
   style: ViewStyle;

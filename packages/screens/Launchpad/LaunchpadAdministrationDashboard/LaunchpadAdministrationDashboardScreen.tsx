@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 
 import { ApplicationStatusCard } from "./component/ApplicationStatusCard";
-import { CollectionsTable } from "./component/CollectionsTable";
 import { CurrentlyHighlightedProject } from "./component/CurrentlyHighLightedProject";
 import { GenesisExplore } from "./component/GenesisExplore";
+import { LaunchpadCollectionsTable } from "./component/LaunchpadCollectionsTable";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
@@ -27,14 +27,25 @@ type SecTabsListType =
   | "upcomingProjectsCarousel"
   | "liveSaleinProgress";
 
-const dummyData = [
+export interface DummyLaunchpadCollection {
+  id: number;
+  rank: number;
+  collectionNameData: string;
+  collectionNetwork: string;
+  twitterURL: string;
+  discordURL: string;
+  expectedTotalSupply: number;
+  expectedPublicMintPrice: string;
+  expectedMintDate: Date;
+}
+const dummyData: DummyLaunchpadCollection[] = [
   {
     id: 1,
     rank: 1,
     collectionNameData: "The R!ot",
     collectionNetwork: "teritori",
-    TwitterURL: "https://www.lipsum.com/",
-    DiscordURL: "https://www.lipsum.com/",
+    twitterURL: "https://www.lipsum.com/",
+    discordURL: "https://www.lipsum.com/",
     expectedTotalSupply: 3000,
     expectedPublicMintPrice: "550 L",
     expectedMintDate: new Date(),
@@ -44,8 +55,8 @@ const dummyData = [
     rank: 2,
     collectionNameData: "throw back push chair",
     collectionNetwork: "solanaL",
-    TwitterURL: "https://www.lipsum.com/",
-    DiscordURL: "https://www.lipsum.com/",
+    twitterURL: "https://www.lipsum.com/",
+    discordURL: "https://www.lipsum.com/",
     expectedTotalSupply: 3000,
     expectedPublicMintPrice: "550 L",
     expectedMintDate: new Date(),
@@ -55,8 +66,8 @@ const dummyData = [
     rank: 3,
     collectionNameData: "cachablesadly back push chair",
     collectionNetwork: "solanaL",
-    TwitterURL: "https://www.lipsum.com/",
-    DiscordURL: "https://www.lipsum.com/",
+    twitterURL: "https://www.lipsum.com/",
+    discordURL: "https://www.lipsum.com/",
     expectedTotalSupply: 3000,
     expectedPublicMintPrice: "550 L",
     expectedMintDate: new Date(),
@@ -174,7 +185,7 @@ export const LaunchpadAdministrationDashboardScreen: React.FC = () => {
             marginTop: layout.spacing_x4,
           }}
         >
-          <CollectionsTable rows={dummyData} />
+          <LaunchpadCollectionsTable rows={dummyData} />
         </View>
 
         <TouchableOpacity

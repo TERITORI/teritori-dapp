@@ -6,7 +6,7 @@ import { SpacerColumn } from "@/components/spacer";
 
 export const TableWrapper: FC<{
   children: ReactNode;
-  paginationProps: PaginationProps;
+  paginationProps?: PaginationProps;
   showPagination?: boolean;
   horizontalScrollBreakpoint?: number;
 }> = ({
@@ -31,7 +31,7 @@ export const TableWrapper: FC<{
         </View>
       </ScrollView>
 
-      {showPagination && (
+      {showPagination && paginationProps && (
         <>
           <SpacerColumn size={2} />
           <Pagination {...paginationProps} />

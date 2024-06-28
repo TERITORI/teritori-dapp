@@ -11,6 +11,8 @@ import { secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import { SVG } from "../SVG";
 
+// TODO: Remove this component after correctly replaced its usage by packages/components/table
+
 export const LinkIconAndRedirect: React.FC<{
   style?: StyleProp<ViewStyle>;
   value: string;

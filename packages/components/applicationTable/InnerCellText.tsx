@@ -10,6 +10,8 @@ import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 
+// TODO: Remove this component after correctly replaced its usage by packages/components/table
+
 export const InnerCellText: React.FC<{
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
