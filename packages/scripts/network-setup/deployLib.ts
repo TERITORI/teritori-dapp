@@ -290,7 +290,7 @@ export const instantiateNameService = async (
 };
 
 export const instantiateContract = async (
-  opts: { home: string; binaryPath: string },
+  opts: { home: string; binaryPath: string; keyringBackend?: string },
   wallet: string,
   network: CosmosNetworkInfo,
   codeId: number,
@@ -304,7 +304,7 @@ export const instantiateContract = async (
     network.chainId
   } --node ${injectRPCPort(
     network.rpcEndpoint,
-  )} --yes --keyring-backend test -o json --label ${sqh(
+  )} --yes --keyring-backend ${opts.keyringBackend || "test"} -o json --label ${sqh(
     label,
   )} --admin ${admin} --home ${opts.home}`;
   console.log("⚙️  " + cmd);

@@ -1,8 +1,10 @@
 import { OfflineSigner } from "@cosmjs/proto-signing";
 import axios from "axios";
 import { bech32 } from "bech32";
+import { program } from "commander";
 import fs from "fs";
 import { cloneDeep } from "lodash";
+import os from "os";
 import path from "path";
 
 import {
@@ -23,7 +25,12 @@ import { execPromise } from "@/scripts/lib";
  * And deploy cw_admin_factory contract
  */
 export const deployDA0DA0 = async (
-  opts: { home: string; binaryPath: string; signer: OfflineSigner | undefined },
+  opts: {
+    home: string;
+    binaryPath: string;
+    keyringBackend?: string;
+    signer: OfflineSigner | undefined;
+  },
   networkId: string,
   wallet: string,
 ) => {
@@ -48,7 +55,7 @@ export const deployDA0DA0 = async (
 
   let walletAddr = (
     await execPromise(
-      `${opts.binaryPath} keys show --keyring-backend test -a ${wallet} --home ${opts.home}`,
+      `${opts.binaryPath} keys show --keyring-backend ${opts.keyringBackend || "test"} -a ${wallet} --home ${opts.home}`,
       { encoding: "utf-8" },
     )
   ).stdout.trim();
@@ -149,7 +156,7 @@ export const deployDA0DA0 = async (
 };
 
 const instantiateCwAdminFactory = async (
-  opts: { home: string; binaryPath: string },
+  opts: { home: string; binaryPath: string; keyringBackend?: string },
   wallet: string,
   adminAddr: string,
   network: CosmosNetworkInfo,
@@ -186,3 +193,24 @@ const deployRemoteWASM = async (
   console.log(`Storing ${filePath}`);
   return await storeWASM(opts, wallet, network, filePath);
 };
+
+const main = async () => {
+  program.argument("<network-id>", "Network id to deploy to");
+  program.argument("<wallet>", "Wallet to deploy from");
+  program.option("--keyring-backend [keyring-backend]", "Keyring backend");
+  program.parse();
+  const [networkId, wallet] = program.args;
+  const { keyringBackend } = program.opts();
+
+  await deployDA0DA0(
+    {
+      home: path.join(os.homedir(), ".teritorid"),
+      binaryPath: "teritorid",
+      keyringBackend,
+      signer: undefined,
+    },
+    networkId,
+    wallet,
+  );
+};
+main();
