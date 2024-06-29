@@ -11,8 +11,6 @@ import (
 	"gno.land/p/demo/avl"
 	ujson "gno.land/p/demo/teritori/ujson"
 	"gno.land/p/demo/testutils"
-	// Fake previous version for testing
-	feedsV7 "gno.land/r/demo/teritori/social_feeds"
 )
 
 var (
@@ -463,21 +461,21 @@ func testHidePostForMe(t *testing.T) {
 }
 
 func testMigrateFeedData(t *testing.T) {
-	feedID := feedsV7.CreateFeed("teritor11")
+	feedID := CreateFeed("teritor11")
 
 	// Post to test
-	postID := feedsV7.CreatePost(feedID, feedsV7.PostID(0), 2, `{"metadata": "value"}`)
-	feedsV7.ReactPost(feedID, postID, "🇬🇸", true)
+	postID := CreatePost(feedID, PostID(0), 2, `{"metadata": "value"}`)
+	ReactPost(feedID, postID, "🇬🇸", true)
 
 	// Add comment to post
-	commentID := feedsV7.CreatePost(feedID, postID, 2, `{"comment1": "value"}`)
-	feedsV7.ReactPost(feedID, commentID, "🇬🇸", true)
+	commentID := CreatePost(feedID, postID, 2, `{"comment1": "value"}`)
+	ReactPost(feedID, commentID, "🇬🇸", true)
 
 	// // Post with json metadata
-	feedsV7.CreatePost(feedID, feedsV7.PostID(0), 2, `{'a':1}`)
+	CreatePost(feedID, PostID(0), 2, `{'a':1}`)
 
 	// Expect: should convert feed data to JSON successfully without error
-	dataJSON := feedsV7.ExportFeedData(feedID)
+	dataJSON := ExportFeedData(feedID)
 	if dataJSON == "" {
 		t.Fatalf("expected feed data exported successfully")
 	}

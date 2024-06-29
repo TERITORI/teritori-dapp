@@ -6,7 +6,7 @@ gnokey maketx addpkg  \
   -remote="https://rpc.gno.land:443" \
   -chainid="portal-loop" \
   -pkgdir="." \
-  -pkgpath="gno.land/r/demo/teritori/social_feeds" \
+  -pkgpath="gno.land/p/demo/teritori/base64" \
   mykey2
 
 gnokey maketx call \
