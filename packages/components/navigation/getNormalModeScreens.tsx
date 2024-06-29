@@ -16,15 +16,15 @@ import { GovernanceScreen } from "@/screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "@/screens/Guardians/GuardiansScreen";
 import { HashtagFeedScreen } from "@/screens/HashtagFeed/HashtagFeedScreen";
 import { HomeScreen } from "@/screens/Home/HomeScreen";
-import { LaunchpadAdministrationDashboardScreen } from "@/screens/Launchpad/LaunchpadAdministrationDashboard/LaunchpadAdministrationDashboardScreen";
-import { LaunchpadAllProjectAdministrationDashScreen } from "@/screens/Launchpad/LaunchpadAllProjectAdministrationDash/LaunchpadAllProjectAdministrationDashScreen";
+import { LaunchpadAdministrationOverviewScreen } from "@/screens/Launchpad/LaunchpadAdministrationOverview/LaunchpadAdministrationOverviewScreen";
+import { LaunchpadAllProjectsScreen } from "@/screens/Launchpad/LaunchpadAllProjects/LaunchpadAllProjectsScreen";
 import { LaunchpadApplicationReview } from "@/screens/Launchpad/LaunchpadApplicationReview/LaunchpadApplicationReview";
 import { LaunchpadApplicationsScreen } from "@/screens/Launchpad/LaunchpadApplications/LaunchpadApplicationsScreen";
 import { LaunchpadApplyScreen } from "@/screens/Launchpad/LaunchpadApplyScreen";
 import { LaunchpadCompleteScreen } from "@/screens/Launchpad/LaunchpadCompleteScreen";
 import { LaunchpadCreateScreen } from "@/screens/Launchpad/LaunchpadCreate/LaunchpadCreateScreen";
 import { LaunchpadMyCollectionsScreen } from "@/screens/Launchpad/LaunchpadMyCollectionsScreen";
-import { LaunchpadReadyCollectionsScreen } from "@/screens/Launchpad/LaunchpadReadyApplications/LaunchpadReadyCollectionsScreen";
+import { LaunchpadReadyApplicationsScreen } from "@/screens/Launchpad/LaunchpadReadyApplications/LaunchpadReadyApplicationsScreen";
 import { LaunchpadScreen } from "@/screens/Launchpad/LaunchpadScreen";
 import { MintCollectionScreen } from "@/screens/Launchpad/MintCollectionScreen";
 import { CollectionScreen } from "@/screens/Marketplace/CollectionScreen";
@@ -242,8 +242,8 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         options={{ header: () => null, title: screenTitle("Mint Collection") }}
       />
       <Nav.Screen
-        name="LaunchpadAdministrationDashboard"
-        component={LaunchpadAdministrationDashboardScreen}
+        name="LaunchpadAdministrationOverview"
+        component={LaunchpadAdministrationOverviewScreen}
         options={{
           header: () => null,
           title: screenTitle("Launchpad Administration Dashboard"),
@@ -259,15 +259,15 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
       />
       <Nav.Screen
         name="LaunchpadReadyApplications"
-        component={LaunchpadReadyCollectionsScreen}
+        component={LaunchpadReadyApplicationsScreen}
         options={{
           header: () => null,
           title: screenTitle("Launchpad Ready Applications"),
         }}
       />
       <Nav.Screen
-        name="LaunchpadAllProjectAdministrationDash"
-        component={LaunchpadAllProjectAdministrationDashScreen}
+        name="LaunchpadAllProjects"
+        component={LaunchpadAllProjectsScreen}
         options={{
           header: () => null,
           title: screenTitle("Launchpad All Applications"),

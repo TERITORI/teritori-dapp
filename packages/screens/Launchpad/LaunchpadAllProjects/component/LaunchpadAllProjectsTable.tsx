@@ -41,7 +41,7 @@ const TABLE_COLUMNS: TableColumns = {
   },
 };
 
-export const AllApplicationsTable: React.FC<{
+export const LaunchpadAllProjectsTable: React.FC<{
   rows: any[];
 }> = ({ rows }) => {
   const isMobile = useIsMobile();

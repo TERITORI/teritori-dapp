@@ -50,7 +50,7 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
     <ScreenContainer
       forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
       headerChildren={
-        <BrandText style={fontSemibold20}>NFT Launchpad</BrandText>
+        <BrandText style={fontSemibold20}>Apply to Launchpad</BrandText>
       }
     >
       <LaunchpadBanner />

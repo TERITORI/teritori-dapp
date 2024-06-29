@@ -74,7 +74,7 @@ const dummyData: DummyLaunchpadCollection[] = [
   },
 ];
 
-export const LaunchpadAdministrationDashboardScreen: React.FC = () => {
+export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const { width } = useWindowDimensions();
 
@@ -119,7 +119,7 @@ export const LaunchpadAdministrationDashboardScreen: React.FC = () => {
       isLarge
       footerChildren={<></>}
       headerChildren={
-        <BrandText style={fontSemibold20}>NFT Launchpad</BrandText>
+        <BrandText style={fontSemibold20}>Administration Dashboard</BrandText>
       }
       responsive
       forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
@@ -133,7 +133,9 @@ export const LaunchpadAdministrationDashboardScreen: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <BrandText style={fontSemibold28}>Administration Dashboard</BrandText>
+          <BrandText style={fontSemibold28}>
+            Launchpad Administration Overview
+          </BrandText>
         </View>
 
         <View

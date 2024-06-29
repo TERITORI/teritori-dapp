@@ -52,7 +52,7 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
       isLarge
       footerChildren={<></>}
       headerChildren={
-        <BrandText style={fontSemibold20}>NFT Launchpad</BrandText>
+        <BrandText style={fontSemibold20}>Administration Dashboard</BrandText>
       }
       responsive
       onBackPress={() => navigation.goBack()}
@@ -67,7 +67,7 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <BrandText style={fontSemibold28}>Applications</BrandText>
+          <BrandText style={fontSemibold28}>Launchpad Applications</BrandText>
         </View>
 
         <View

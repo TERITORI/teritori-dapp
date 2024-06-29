@@ -16,7 +16,7 @@ import { TableRow } from "@/components/table/TableRow";
 import { CellBrandText, TableTextCell } from "@/components/table/TableTextCell";
 import { TableWrapper } from "@/components/table/TableWrapper";
 import { TableColumns } from "@/components/table/utils";
-import { DummyLaunchpadCollection } from "@/screens/Launchpad/LaunchpadAdministrationDashboard/LaunchpadAdministrationDashboardScreen";
+import { DummyLaunchpadCollection } from "@/screens/Launchpad/LaunchpadAdministrationOverview/LaunchpadAdministrationOverviewScreen";
 import { secondaryColor } from "@/utils/style/colors";
 import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
 

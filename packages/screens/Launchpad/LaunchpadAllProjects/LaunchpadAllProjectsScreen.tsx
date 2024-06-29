@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { AllApplicationsTable } from "./component/AllApplicationsTable";
+import { LaunchpadAllProjectsTable } from "./component/LaunchpadAllProjectsTable";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
@@ -51,7 +51,7 @@ const dummyData = [
   },
 ];
 
-export const LaunchpadAllProjectAdministrationDashScreen: React.FC = () => {
+export const LaunchpadAllProjectsScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const isMobile = useIsMobile();
 
@@ -80,10 +80,10 @@ export const LaunchpadAllProjectAdministrationDashScreen: React.FC = () => {
       isLarge
       footerChildren={<></>}
       headerChildren={
-        <BrandText style={fontSemibold20}>NFT Launchpad</BrandText>
+        <BrandText style={fontSemibold20}>Administration Dashboard</BrandText>
       }
       responsive
-      onBackPress={() => navigation.goBack()}
+      onBackPress={() => navigation.navigate("LaunchpadAdministrationOverview")}
       forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
     >
       <View
@@ -139,7 +139,7 @@ export const LaunchpadAllProjectAdministrationDashScreen: React.FC = () => {
             marginTop: layout.spacing_x4,
           }}
         >
-          <AllApplicationsTable rows={dummyData} />
+          <LaunchpadAllProjectsTable rows={dummyData} />
         </View>
       </View>
     </ScreenContainer>

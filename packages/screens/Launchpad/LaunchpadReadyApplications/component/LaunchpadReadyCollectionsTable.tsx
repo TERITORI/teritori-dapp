@@ -15,7 +15,7 @@ import { TableRow } from "@/components/table/TableRow";
 import { CellBrandText, TableTextCell } from "@/components/table/TableTextCell";
 import { TableWrapper } from "@/components/table/TableWrapper";
 import { TableColumns } from "@/components/table/utils";
-import { DummyLaunchpadReadyCollection } from "@/screens/Launchpad/LaunchpadReadyApplications/LaunchpadReadyCollectionsScreen";
+import { DummyLaunchpadReadyCollection } from "@/screens/Launchpad/LaunchpadReadyApplications/LaunchpadReadyApplicationsScreen";
 import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
 
 const columns: TableColumns = {

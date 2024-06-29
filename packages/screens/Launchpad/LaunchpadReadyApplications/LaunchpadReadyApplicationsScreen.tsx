@@ -12,7 +12,7 @@ import { LaunchpadReadyCollectionsTable } from "@/screens/Launchpad/LaunchpadRea
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import {} from "@/screens/Launchpad/LaunchpadAdministrationDashboard/LaunchpadAdministrationDashboardScreen";
+import {} from "@/screens/Launchpad/LaunchpadAdministrationOverview/LaunchpadAdministrationOverviewScreen";
 
 type TabsListType = "readyForListing" | "waitingForApproval";
 
@@ -27,7 +27,7 @@ export interface DummyLaunchpadReadyCollection {
   basicMarketingPackage: string;
 }
 
-export const LaunchpadReadyCollectionsScreen: React.FC = () => {
+export const LaunchpadReadyApplicationsScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const isMobile = useIsMobile();
 
@@ -63,7 +63,7 @@ export const LaunchpadReadyCollectionsScreen: React.FC = () => {
       isLarge
       footerChildren={<></>}
       headerChildren={
-        <BrandText style={fontSemibold20}>NFT Launchpad</BrandText>
+        <BrandText style={fontSemibold20}>Administration Dashboard</BrandText>
       }
       responsive
       onBackPress={() => navigation.goBack()}
