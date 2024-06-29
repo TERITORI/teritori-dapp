@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { ReadyLaunchApplicationsTable } from "./component/ReadyLaunchApplicationsTable";
-
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { HighVolSortButton } from "@/components/sorts/HighVolSortButton";
@@ -10,23 +8,26 @@ import { Tabs } from "@/components/tabs/Tabs";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { NetworkFeature } from "@/networks";
+import { LaunchpadReadyCollectionsTable } from "@/screens/Launchpad/LaunchpadReadyApplications/component/LaunchpadReadyCollectionsTable";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import {} from "@/screens/Launchpad/LaunchpadAdministrationDashboard/LaunchpadAdministrationDashboardScreen";
 
 type TabsListType = "readyForListing" | "waitingForApproval";
 
-const dummyData = {
-  rank: 1,
-  collectionNameData: "The R!ot",
-  collectionNetwork: "teritori",
-  projectReadinessForMint: "Complete and ready to mint",
-  whitelistQuantity: "0",
-  premiumMarketingPackage: "No",
-  basicMarketingPackage: "Yes",
-};
+export interface DummyLaunchpadReadyCollection {
+  id: number;
+  rank: number;
+  collectionNameData: string;
+  collectionNetwork: string;
+  projectReadinessForMint: string;
+  whitelistQuantity: string;
+  premiumMarketingPackage: string;
+  basicMarketingPackage: string;
+}
 
-export const LaunchpadReadyApplicationsScreen: React.FC = () => {
+export const LaunchpadReadyCollectionsScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const isMobile = useIsMobile();
 
@@ -40,6 +41,19 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
       badgeCount: 42,
     },
   };
+
+  const dummyData: DummyLaunchpadReadyCollection[] = Array(25)
+    .fill({
+      id: 0,
+      rank: 0,
+      collectionNameData: "The R!ot",
+      collectionNetwork: "teritori",
+      projectReadinessForMint: "Complete and ready to mint",
+      whitelistQuantity: "0",
+      premiumMarketingPackage: "No",
+      basicMarketingPackage: "Yes",
+    })
+    .map((item, index) => ({ ...item, id: index + 1, rank: index + 1 }));
 
   const [selectedTab, setSelectedTab] =
     useState<TabsListType>("readyForListing");
@@ -108,7 +122,7 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
             marginTop: layout.spacing_x4,
           }}
         >
-          <ReadyLaunchApplicationsTable rows={Array(25).fill(dummyData)} />
+          <LaunchpadReadyCollectionsTable rows={dummyData} />
         </View>
       </View>
     </ScreenContainer>

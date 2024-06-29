@@ -24,7 +24,7 @@ import { LaunchpadApplyScreen } from "@/screens/Launchpad/LaunchpadApplyScreen";
 import { LaunchpadCompleteScreen } from "@/screens/Launchpad/LaunchpadCompleteScreen";
 import { LaunchpadCreateScreen } from "@/screens/Launchpad/LaunchpadCreate/LaunchpadCreateScreen";
 import { LaunchpadMyCollectionsScreen } from "@/screens/Launchpad/LaunchpadMyCollectionsScreen";
-import { LaunchpadReadyApplicationsScreen } from "@/screens/Launchpad/LaunchpadReadyApplications/LaunchpadReadyApplicationsScreen";
+import { LaunchpadReadyCollectionsScreen } from "@/screens/Launchpad/LaunchpadReadyApplications/LaunchpadReadyCollectionsScreen";
 import { LaunchpadScreen } from "@/screens/Launchpad/LaunchpadScreen";
 import { MintCollectionScreen } from "@/screens/Launchpad/MintCollectionScreen";
 import { CollectionScreen } from "@/screens/Marketplace/CollectionScreen";
@@ -259,7 +259,7 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
       />
       <Nav.Screen
         name="LaunchpadReadyApplications"
-        component={LaunchpadReadyApplicationsScreen}
+        component={LaunchpadReadyCollectionsScreen}
         options={{
           header: () => null,
           title: screenTitle("Launchpad Ready Applications"),
