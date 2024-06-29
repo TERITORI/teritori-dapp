@@ -8,13 +8,14 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { CollectionNameCell } from "@/components/applicationTable/CollectionNameCell";
 import { InnerCellText } from "@/components/applicationTable/InnerCellText";
-import { TableRow } from "@/components/table/TableRow";
+import { TableHeader } from "@/components/table/TableHeader";
+import { TableColumns } from "@/components/table/utils";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { lightblue, mineShaftColor, neutral00 } from "@/utils/style/colors";
 import { fontSemibold11, fontSemibold13 } from "@/utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
 
-const TABLE_ROWS = {
+const TABLE_COLUMNS: TableColumns = {
   rank: {
     label: "#",
     flex: 1,
@@ -58,11 +59,14 @@ export const ReadyLaunchApplicationTable: React.FC<{
         maxWidth: screenContentMaxWidthLarge,
       }}
     >
-      <TableRow
-        headings={
+      <TableHeader
+        style={{
+          paddingHorizontal: layout.spacing_x2_5,
+        }}
+        columns={
           !isMobile
-            ? TABLE_ROWS
-            : Object.fromEntries(Object.entries(TABLE_ROWS).slice(0, -5))
+            ? TABLE_COLUMNS
+            : Object.fromEntries(Object.entries(TABLE_COLUMNS).slice(0, -5))
         }
       />
       <FlatList
@@ -97,7 +101,7 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
     >
       <BrandText
         style={[
-          { flex: TABLE_ROWS.rank.flex },
+          { flex: TABLE_COLUMNS.rank.flex },
           isMobile ? fontSemibold11 : fontSemibold13,
         ]}
       >
@@ -105,12 +109,12 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
       </BrandText>
       <CollectionNameCell
         rowData={rowData}
-        style={{ flex: TABLE_ROWS.collectionNameData.flex }}
+        style={{ flex: TABLE_COLUMNS.collectionNameData.flex }}
       />
       <InnerCellText
         isSolanaIcon
         style={{
-          flex: TABLE_ROWS.collectionNetwork.flex,
+          flex: TABLE_COLUMNS.collectionNetwork.flex,
         }}
       >
         {rowData["collectionNetwork"]}
@@ -118,20 +122,20 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
       {!isMobile && (
         <>
           <CellBadgeRow
-            style={{ flex: TABLE_ROWS.projectReadinessForMint.flex }}
+            style={{ flex: TABLE_COLUMNS.projectReadinessForMint.flex }}
             text={rowData.projectReadinessForMint}
           />
           <CellBadgeRow
-            style={{ flex: TABLE_ROWS.whitelistQuantity.flex }}
+            style={{ flex: TABLE_COLUMNS.whitelistQuantity.flex }}
             text={rowData.whitelistQuantity}
           />
           <CellBadgeRow
-            style={{ flex: TABLE_ROWS.premiumMarketingPackage.flex }}
+            style={{ flex: TABLE_COLUMNS.premiumMarketingPackage.flex }}
             text={rowData.premiumMarketingPackage}
           />
           <View
             style={{
-              flex: TABLE_ROWS.basicMarketingPackage.flex,
+              flex: TABLE_COLUMNS.basicMarketingPackage.flex,
               flexDirection: "row",
             }}
           >

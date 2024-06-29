@@ -1,5 +1,7 @@
 import { program } from "commander";
 import fs from "fs";
+import os from "os";
+import path from "path";
 
 import { storeWASM } from "./deployLib";
 import {
@@ -46,7 +48,11 @@ const main = async () => {
   fs.writeFileSync(contractPath, contractBytes);
 
   const codeId = await storeWASM(
-    { home: "~/.teritorid", binaryPath: "teritorid", keyringBackend },
+    {
+      home: path.join(os.homedir(), ".teritorid"),
+      binaryPath: "teritorid",
+      keyringBackend,
+    },
     wallet,
     destinationNetwork,
     contractPath,
