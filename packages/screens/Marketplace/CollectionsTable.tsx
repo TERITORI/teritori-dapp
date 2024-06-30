@@ -8,7 +8,7 @@ import { BrandText } from "@/components/BrandText";
 import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { OmniLink } from "@/components/OmniLink";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
-import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { SpacerRow } from "@/components/spacer";
 import { TableCell } from "@/components/table/TableCell";
 import { TableHeader } from "@/components/table/TableHeader";
 import { TableRow } from "@/components/table/TableRow";
@@ -182,7 +182,6 @@ export const CollectionsTable: FC<{
           )}
           keyExtractor={(item) => item.id}
         />
-        <SpacerColumn size={16} />
       </TableWrapper>
     </View>
   );
