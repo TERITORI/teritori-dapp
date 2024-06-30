@@ -75,7 +75,6 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 				if !bytes.Equal(log.Topics[0], transferTopic) {
 					return nil
 				}
-
 				from := DecodeTopicToAddr(log.Topics[1])
 				to := DecodeTopicToAddr(log.Topics[2])
 				nftID, err := DecodeTopicToInt(log.Topics[3])
@@ -166,7 +165,7 @@ func (h *Handler) HandleETHTx(tx *pb.Tx) error {
 			if err := h.handleMintWithMetadata(contractABI, tx, args); err != nil {
 				return errors.Wrap(err, "failed to handle mint and mint with meta data")
 			}
-		case "transferFrom":
+		case "transferFrom", "safeTransferFrom":
 			if err := h.handleTransferFrom(contractABI, tx, args); err != nil {
 				return errors.Wrap(err, "failed to handle transfer")
 			}
