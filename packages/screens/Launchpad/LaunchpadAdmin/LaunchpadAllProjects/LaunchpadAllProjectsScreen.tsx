@@ -16,38 +16,52 @@ import { layout } from "@/utils/style/layout";
 
 type TabsListType = "all" | "verified" | "ethereum" | "solana" | "cosmos";
 
-const dummyData = [
+export interface DummyLaunchpadProject {
+  id: number;
+  rank: number;
+  collectionNameData: string;
+  floor: string;
+  totalVol: string;
+  vol: string;
+  volPercentage: string;
+}
+
+const dummyData: DummyLaunchpadProject[] = [
   {
+    id: 1,
     rank: 1,
     collectionNameData: "Meebits",
     floor: "3.9",
     totalVol: "2,052,499,51",
     vol: "78,231.57",
-    volPerctage: "+24.26%",
+    volPercentage: "+24.26%",
   },
   {
-    rank: 1,
+    id: 2,
+    rank: 2,
     collectionNameData: "Meebits",
     floor: "3.9",
     totalVol: "2,052,499,51",
     vol: "78,231.57",
-    volPerctage: "-24.26%",
+    volPercentage: "-24.26%",
   },
   {
-    rank: 1,
+    id: 3,
+    rank: 3,
     collectionNameData: "Meebits",
     floor: "3.9",
     totalVol: "2,052,499,51",
     vol: "78,231.57",
-    volPerctage: "+24.26%",
+    volPercentage: "+24.26%",
   },
   {
-    rank: 1,
+    id: 4,
+    rank: 4,
     collectionNameData: "Meebits",
     floor: "3.9",
     totalVol: "2,052,499,51",
     vol: "78,231.57",
-    volPerctage: "-24.26%",
+    volPercentage: "-24.26%",
   },
 ];
 

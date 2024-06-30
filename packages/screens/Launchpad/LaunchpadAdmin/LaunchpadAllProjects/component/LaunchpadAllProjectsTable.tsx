@@ -1,144 +1,197 @@
 import React from "react";
 import { FlatList, View } from "react-native";
 
-import dotsSVG from "@/assets/icons/dots.svg";
-import { BrandText } from "@/components/BrandText";
+import defaultCollectionImagePNG from "@/assets/default-images/ava.png";
+import checkBadgeSVG from "@/assets/icons/certified.svg";
+import cryptoLogoSVG from "@/assets/icons/crypto-logo.svg";
+import downArrowSVG from "@/assets/icons/downArrow.svg";
+import upArrowSVG from "@/assets/icons/upArrow.svg";
 import { SVG } from "@/components/SVG";
-import { CollectionNameCell } from "@/components/applicationTable/CollectionNameCell";
-import { InnerCellText } from "@/components/applicationTable/InnerCellText";
-import { PercentageVolumeCell } from "@/components/applicationTable/PercentageVolumeCell";
+import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
+import { SpacerColumn } from "@/components/spacer";
+import { TableCell } from "@/components/table/TableCell";
 import { TableHeader } from "@/components/table/TableHeader";
+import { TableRow } from "@/components/table/TableRow";
+import { CellBrandText, TableTextCell } from "@/components/table/TableTextCell";
+import { TableWrapper } from "@/components/table/TableWrapper";
 import { TableColumns } from "@/components/table/utils";
-import { useIsMobile } from "@/hooks/useIsMobile";
-import { mineShaftColor } from "@/utils/style/colors";
-import { fontSemibold11, fontSemibold13 } from "@/utils/style/fonts";
+import { DummyLaunchpadProject } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAllProjects/LaunchpadAllProjectsScreen";
+import { errorColor, successColor } from "@/utils/style/colors";
 import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
 
-const TABLE_COLUMNS: TableColumns = {
+const columns: TableColumns = {
   rank: {
     label: "#",
-    flex: 1,
+    minWidth: 20,
+    flex: 0.25,
   },
   collectionNameData: {
     label: "Collection Name",
-    flex: 5,
+    minWidth: 260,
+    flex: 3,
   },
   floor: {
     label: "Floor",
-    flex: 3,
+    minWidth: 120,
+    flex: 1.5,
   },
   totalVol: {
     label: "Total Vol",
-    flex: 3,
+    minWidth: 140,
+    flex: 1.8,
   },
   vol: {
     label: "24h Vol",
-    flex: 3,
+    minWidth: 120,
+    flex: 1.5,
   },
-  volPerctage: {
+  volPercentage: {
     label: "24h Vol %",
-    flex: 3,
+    minWidth: 120,
+    flex: 1.5,
   },
 };
 
-export const LaunchpadAllProjectsTable: React.FC<{
-  rows: any[];
-}> = ({ rows }) => {
-  const isMobile = useIsMobile();
+const breakpointM = 860;
 
+export const LaunchpadAllProjectsTable: React.FC<{
+  rows: DummyLaunchpadProject[];
+}> = ({ rows }) => {
   return (
     <View
       style={{
-        justifyContent: "space-between",
         width: "100%",
         maxWidth: screenContentMaxWidthLarge,
       }}
     >
-      <TableHeader
-        style={{
-          paddingHorizontal: layout.spacing_x2_5,
-        }}
-        columns={
-          !isMobile
-            ? TABLE_COLUMNS
-            : Object.fromEntries(Object.entries(TABLE_COLUMNS).slice(0, -5))
-        }
-      />
-      <FlatList
-        data={rows}
-        renderItem={({ item }) => <ApplicationRowData rowData={item} />}
-        keyExtractor={(item) => item.id}
-        style={{
-          minHeight: 220,
-          borderTopColor: mineShaftColor,
-          borderTopWidth: 1,
-        }}
-      />
+      <TableWrapper horizontalScrollBreakpoint={breakpointM}>
+        <TableHeader columns={columns} />
+        <FlatList
+          data={rows}
+          renderItem={({ item, index }) => (
+            <LaunchpadAllProjectsTableRow collection={item} index={index} />
+          )}
+          keyExtractor={(item) => item.id.toString()}
+        />
+        <SpacerColumn size={16} />
+      </TableWrapper>
     </View>
   );
 };
 
-const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
-  const isMobile = useIsMobile();
-
+const LaunchpadAllProjectsTableRow: React.FC<{
+  collection: DummyLaunchpadProject;
+  index: number;
+  // prices: CoingeckoPrices;
+}> = ({
+  collection,
+  index,
+  //  prices
+}) => {
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        width: "100%",
-        borderColor: mineShaftColor,
-        borderBottomWidth: 1,
-        paddingVertical: layout.spacing_x2,
-        paddingHorizontal: layout.spacing_x2_5,
-      }}
-    >
-      <BrandText
-        style={[
-          { flex: TABLE_COLUMNS.rank.flex },
-          isMobile ? fontSemibold11 : fontSemibold13,
-        ]}
-      >
-        {rowData.rank}
-      </BrandText>
-      <CollectionNameCell
-        rowData={rowData}
-        style={{ flex: TABLE_COLUMNS.collectionNameData.flex }}
-      />
-      <InnerCellText isCryptoLogo style={{ flex: TABLE_COLUMNS.floor.flex }}>
-        {rowData.floor}
-      </InnerCellText>
-      {!isMobile && (
-        <>
-          <InnerCellText
-            isCryptoLogo
-            style={{ flex: TABLE_COLUMNS.totalVol.flex }}
-          >
-            {rowData.totalVol}
-          </InnerCellText>
-          <InnerCellText isCryptoLogo style={{ flex: TABLE_COLUMNS.vol.flex }}>
-            {rowData.vol}
-          </InnerCellText>
-          <View
+    <View>
+      <TableRow>
+        <TableTextCell
+          style={{
+            minWidth: columns.rank.minWidth,
+            flex: columns.rank.flex,
+          }}
+        >
+          {`${index + 1}`}
+        </TableTextCell>
+
+        <TableCell
+          style={{
+            minWidth: columns.collectionNameData.minWidth,
+            flex: columns.collectionNameData.flex,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <RoundedGradientImage
+            size="XS"
+            sourceURI={defaultCollectionImagePNG}
             style={{
-              flex: TABLE_COLUMNS.volPerctage.flex,
-              flexDirection: "row",
+              marginRight: layout.spacing_x1,
+            }}
+          />
+          <CellBrandText>{collection.collectionNameData}</CellBrandText>
+
+          <SVG
+            source={checkBadgeSVG}
+            width={18}
+            height={18}
+            style={{ marginLeft: layout.spacing_x1 }}
+          />
+        </TableCell>
+
+        <TableCell
+          style={{
+            minWidth: columns.floor.minWidth,
+            flex: columns.floor.flex,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <SVG source={cryptoLogoSVG} />
+          <CellBrandText style={{ marginLeft: layout.spacing_x1 }}>
+            {collection.floor}
+          </CellBrandText>
+        </TableCell>
+
+        <TableCell
+          style={{
+            minWidth: columns.totalVol.minWidth,
+            flex: columns.totalVol.flex,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <SVG source={cryptoLogoSVG} />
+          <CellBrandText style={{ marginLeft: layout.spacing_x1 }}>
+            {collection.totalVol}
+          </CellBrandText>
+        </TableCell>
+
+        <TableCell
+          style={{
+            minWidth: columns.vol.minWidth,
+            flex: columns.vol.flex,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <SVG source={cryptoLogoSVG} />
+          <CellBrandText style={{ marginLeft: layout.spacing_x1 }}>
+            {collection.vol}
+          </CellBrandText>
+        </TableCell>
+
+        <TableCell
+          style={{
+            minWidth: columns.volPercentage.minWidth,
+            flex: columns.volPercentage.flex,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          {collection.volPercentage.includes("+") ? (
+            <SVG source={upArrowSVG} />
+          ) : (
+            <SVG source={downArrowSVG} />
+          )}
+          <CellBrandText
+            style={{
+              marginLeft: layout.spacing_x1,
+              color: collection.volPercentage.includes("+")
+                ? successColor
+                : errorColor,
             }}
           >
-            <PercentageVolumeCell
-              value={rowData.volPerctage}
-              style={{ flex: 1 }}
-            />
-            <SVG
-              source={dotsSVG}
-              height={16}
-              width={16}
-              style={{ marginLeft: layout.spacing_x0_5 }}
-            />
-          </View>
-        </>
-      )}
+            {collection.volPercentage}
+          </CellBrandText>
+        </TableCell>
+      </TableRow>
     </View>
   );
 };
