@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import { Image, TouchableOpacity, ViewStyle } from "react-native";
 import Popover from "react-native-popover-view";
 
-import { TooltipContant } from "./TooltipContant";
+import { TooltipContent } from "./TooltipContent";
 
 import avaPNG from "@/assets/default-images/ava.png";
 import checkBadgeSVG from "@/assets/icons/certified.svg";
@@ -47,7 +47,7 @@ export const GuardiansList: FC<{ index: number }> = ({ index }) => {
         popoverStyle={popoverStyle}
         backgroundStyle={{ opacity: 0 }}
       >
-        <TooltipContant />
+        <TooltipContent />
       </Popover>
     </>
   );

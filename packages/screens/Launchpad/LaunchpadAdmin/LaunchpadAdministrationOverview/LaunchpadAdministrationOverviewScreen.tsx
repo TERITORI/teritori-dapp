@@ -9,6 +9,7 @@ import { LaunchpadCollectionsTable } from "../LaunchpadApplications/component/La
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SecondaryBox } from "@/components/boxes/SecondaryBox";
+import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { NetworkFeature } from "@/networks";
@@ -189,6 +190,8 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
         >
           <LaunchpadCollectionsTable rows={dummyData} />
         </View>
+
+        <SpacerColumn size={2} />
 
         <TouchableOpacity
           onPress={() => navigation.navigate("LaunchpadApplications")}

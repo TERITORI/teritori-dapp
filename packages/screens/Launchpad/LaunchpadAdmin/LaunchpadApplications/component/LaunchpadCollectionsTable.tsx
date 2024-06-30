@@ -9,7 +9,6 @@ import solanaCircleSVG from "@/assets/icons/networks/solana-circle.svg";
 import { Link } from "@/components/Link";
 import { SVG } from "@/components/SVG";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
-import { SpacerColumn } from "@/components/spacer";
 import { TableCell } from "@/components/table/TableCell";
 import { TableHeader } from "@/components/table/TableHeader";
 import { TableRow } from "@/components/table/TableRow";
@@ -83,7 +82,6 @@ export const LaunchpadCollectionsTable: React.FC<{
           )}
           keyExtractor={(item) => item.id.toString()}
         />
-        <SpacerColumn size={16} />
       </TableWrapper>
     </View>
   );

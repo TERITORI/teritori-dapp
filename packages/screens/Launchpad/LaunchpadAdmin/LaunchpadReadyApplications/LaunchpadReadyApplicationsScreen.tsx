@@ -4,11 +4,12 @@ import { View } from "react-native";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { HighVolSortButton } from "@/components/sorts/HighVolSortButton";
+import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { NetworkFeature } from "@/networks";
-import { LaunchpadReadyCollectionsTable } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadReadyApplications/component/LaunchpadReadyCollectionsTable";
+import { LaunchpadReadyApplicationsTable } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadReadyApplications/component/LaunchpadReadyApplicationsTable";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -121,8 +122,10 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
             marginTop: layout.spacing_x4,
           }}
         >
-          <LaunchpadReadyCollectionsTable rows={dummyData} />
+          <LaunchpadReadyApplicationsTable rows={dummyData} />
         </View>
+
+        <SpacerColumn size={16} />
       </View>
     </ScreenContainer>
   );

@@ -1,14 +1,13 @@
 import React from "react";
 import { FlatList, View } from "react-native";
 
-import { CellBadgeRow } from "./CellBadgeRow";
+import { StateBadge } from "../../components/StateBadge";
 
 import defaultCollectionImagePNG from "@/assets/default-images/ava.png";
 import checkBadgeSVG from "@/assets/icons/certified.svg";
 import solanaCircleSVG from "@/assets/icons/networks/solana-circle.svg";
 import { SVG } from "@/components/SVG";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
-import { SpacerColumn } from "@/components/spacer";
 import { TableCell } from "@/components/table/TableCell";
 import { TableHeader } from "@/components/table/TableHeader";
 import { TableRow } from "@/components/table/TableRow";
@@ -58,7 +57,7 @@ const columns: TableColumns = {
 
 const breakpointM = 1120;
 
-export const LaunchpadReadyCollectionsTable: React.FC<{
+export const LaunchpadReadyApplicationsTable: React.FC<{
   rows: DummyLaunchpadReadyCollection[]; //TODO: Type this
 }> = ({ rows }) => {
   return (
@@ -80,7 +79,6 @@ export const LaunchpadReadyCollectionsTable: React.FC<{
           )}
           keyExtractor={(item) => item.id.toString()}
         />
-        <SpacerColumn size={16} />
       </TableWrapper>
     </View>
   );
@@ -156,10 +154,7 @@ const LaunchpadReadyApplicationsTableRow: React.FC<{
             flex: columns.projectReadinessForMint.flex,
           }}
         >
-          <CellBadgeRow
-            style={{ flex: columns.projectReadinessForMint.flex }}
-            text={collection.projectReadinessForMint}
-          />
+          <StateBadge text={collection.projectReadinessForMint} />
         </TableCell>
 
         <TableCell
@@ -168,10 +163,7 @@ const LaunchpadReadyApplicationsTableRow: React.FC<{
             flex: columns.whitelistQuantity.flex,
           }}
         >
-          <CellBadgeRow
-            style={{ flex: columns.whitelistQuantity.flex }}
-            text={collection.whitelistQuantity}
-          />
+          <StateBadge text={collection.whitelistQuantity} />
         </TableCell>
 
         <TableCell
@@ -180,10 +172,7 @@ const LaunchpadReadyApplicationsTableRow: React.FC<{
             flex: columns.premiumMarketingPackage.flex,
           }}
         >
-          <CellBadgeRow
-            style={{ flex: columns.premiumMarketingPackage.flex }}
-            text={collection.premiumMarketingPackage}
-          />
+          <StateBadge text={collection.premiumMarketingPackage} />
         </TableCell>
 
         <TableTextCell

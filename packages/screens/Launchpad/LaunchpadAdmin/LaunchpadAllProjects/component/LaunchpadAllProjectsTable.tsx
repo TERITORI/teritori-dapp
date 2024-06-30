@@ -8,7 +8,6 @@ import downArrowSVG from "@/assets/icons/downArrow.svg";
 import upArrowSVG from "@/assets/icons/upArrow.svg";
 import { SVG } from "@/components/SVG";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
-import { SpacerColumn } from "@/components/spacer";
 import { TableCell } from "@/components/table/TableCell";
 import { TableHeader } from "@/components/table/TableHeader";
 import { TableRow } from "@/components/table/TableRow";
@@ -73,7 +72,6 @@ export const LaunchpadAllProjectsTable: React.FC<{
           )}
           keyExtractor={(item) => item.id.toString()}
         />
-        <SpacerColumn size={16} />
       </TableWrapper>
     </View>
   );

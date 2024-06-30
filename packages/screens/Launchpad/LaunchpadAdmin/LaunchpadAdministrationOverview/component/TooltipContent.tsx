@@ -5,19 +5,26 @@ import avaPNG from "@/assets/default-images/ava.png";
 import checkBadgeSVG from "@/assets/icons/certified.svg";
 import SolanaCircleSVG from "@/assets/icons/networks/solana-circle.svg";
 import { BrandText } from "@/components/BrandText";
-import { HeaderContent } from "@/components/HeaderContent/HeaderContent";
 import { SVG } from "@/components/SVG";
-import { InnerCellText } from "@/components/applicationTable/InnerCellText";
-import { lightblue, neutral00 } from "@/utils/style/colors";
-import { fontSemibold16 } from "@/utils/style/fonts";
+import { StateBadge } from "@/screens/Launchpad/LaunchpadAdmin/components/StateBadge";
+import { neutral77 } from "@/utils/style/colors";
+import { fontSemibold12, fontSemibold16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-export const TooltipContant = () => {
+export const TooltipContent = () => {
   return (
     <>
       <View style={flexRowCenter}>
         <View>
-          <HeaderContent header="Collection Name">
+          <View>
+            <BrandText
+              style={[
+                fontSemibold12,
+                { color: neutral77, marginBottom: layout.spacing_x1 },
+              ]}
+            >
+              Collection Name
+            </BrandText>
             <View style={listToggle}>
               <Image
                 style={{
@@ -39,27 +46,31 @@ export const TooltipContant = () => {
               </BrandText>
               <SVG source={checkBadgeSVG} width={18} height={18} />
             </View>
-          </HeaderContent>
-          <HeaderContent
-            style={{ marginTop: layout.spacing_x1_5 }}
-            header="Project Readiness for Mint"
-          >
-            <InnerCellText
-              style={{
-                backgroundColor: lightblue,
-                borderRadius: 100,
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                alignSelf: "flex-start",
-              }}
-              textStyle={{ color: neutral00 }}
+          </View>
+
+          <View style={{ marginTop: layout.spacing_x1_5 }}>
+            <BrandText
+              style={[
+                fontSemibold12,
+                { color: neutral77, marginBottom: layout.spacing_x1 },
+              ]}
             >
-              Complete and ready to mint
-            </InnerCellText>
-          </HeaderContent>
+              Project Readiness for Mint
+            </BrandText>
+            <StateBadge text="Complete and ready to mint" />
+          </View>
         </View>
+
         <View>
-          <HeaderContent header="Collection network">
+          <View>
+            <BrandText
+              style={[
+                fontSemibold12,
+                { color: neutral77, marginBottom: layout.spacing_x1 },
+              ]}
+            >
+              Collection network
+            </BrandText>
             <View style={listToggle}>
               <SVG
                 width={28}
@@ -73,24 +84,19 @@ export const TooltipContant = () => {
                 Solana
               </BrandText>
             </View>
-          </HeaderContent>
-          <HeaderContent
-            style={{ marginTop: layout.spacing_x1_5 }}
-            header="Basic marketing package"
-          >
-            <InnerCellText
-              style={{
-                backgroundColor: lightblue,
-                borderRadius: 100,
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                alignSelf: "flex-start",
-              }}
-              textStyle={{ color: neutral00 }}
+          </View>
+
+          <View style={{ marginTop: layout.spacing_x1_5 }}>
+            <BrandText
+              style={[
+                fontSemibold12,
+                { color: neutral77, marginBottom: layout.spacing_x1 },
+              ]}
             >
-              Yes
-            </InnerCellText>
-          </HeaderContent>
+              Basic marketing package
+            </BrandText>
+            <StateBadge text="Yes" />
+          </View>
         </View>
       </View>
     </>

@@ -4,6 +4,7 @@ import { View } from "react-native";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { HighVolSortButton } from "@/components/sorts/HighVolSortButton";
+import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -111,6 +112,8 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
         >
           <LaunchpadCollectionsTable rows={dummyData} />
         </View>
+
+        <SpacerColumn size={16} />
       </View>
     </ScreenContainer>
   );
