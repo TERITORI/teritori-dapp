@@ -40,7 +40,8 @@ export const adenaDoContract = async (
     throw new Error(res.message);
   }
   const hash: string = res.data.hash;
-  await client.waitForTransaction(hash,height);
+
+  await client.waitForTransaction(hash, height);
 
   return hash;
 };
