@@ -1,0 +1,29 @@
+name: Gno Lint
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  merge_group:
+
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.22"
+      - name: Clean gno
+        run: make clean-gno
+        
+      - name: Clone gno
+        run: make clone-gno
+
+      - name: Build GnoVM
+        run: make build-gno
+
+      - name: Lint gno
+        run: make lint-gno

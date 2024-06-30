@@ -73,7 +73,7 @@ export const useSocialReactions = ({
       send: "",
       pkg_path: gnoNetwork.socialFeedsPkgPath,
       func: "ReactPost",
-      args: [TERITORI_FEED_ID, post.id, emoji, "true"],
+      args: [TERITORI_FEED_ID, post.id.split("-")[1], emoji, "true"],
     };
     const txHash = await adenaDoContract(
       post.networkId,
