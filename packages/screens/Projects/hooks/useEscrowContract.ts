@@ -53,7 +53,7 @@ export const useEscrowContract = (
   walletAddress: string | undefined,
 ) => {
   const { mustGetValue } = useUtils();
-  const { setToastError, setToastSuccess } = useFeedbacks();
+  const { setToastError } = useFeedbacks();
 
   const _getEscrowInfo = (networkId: string) => {
     const pmFeature = getNetworkFeature(
@@ -125,11 +125,6 @@ export const useEscrowContract = (
         },
         { gasWanted },
       );
-
-      setToastSuccess({
-        title: "Success",
-        message: "Action has been done successfully !",
-      });
 
       return true;
     } catch (e: any) {

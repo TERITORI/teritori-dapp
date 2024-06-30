@@ -11,7 +11,8 @@ import { Project } from "../types";
 import { BrandText } from "@/components/BrandText";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
-import { TableCell, TableRow } from "@/components/table/TableRow";
+import { TableCell } from "@/components/table/TableCell";
+import { TableHeader } from "@/components/table/TableHeader";
 import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
 import {
   getNetworkObjectId,
@@ -35,7 +36,7 @@ export const ContractorCandidates: React.FC<{ networkId: string }> = ({
 
   return (
     <View>
-      <TableRow headings={TABLE_COLS} />
+      <TableHeader columns={TABLE_COLS} />
       {projects.map((project) => (
         <ProjectRow key={project.id} networkId={networkId} project={project} />
       ))}
@@ -79,7 +80,7 @@ const ProjectRow: React.FC<{ networkId: string; project: Project }> = ({
       }}
     >
       {/* === Name === */}
-      <TableCell flex={TABLE_COLS.name.flex} isLast={false}>
+      <TableCell style={{ flex: TABLE_COLS.name.flex }}>
         <RoundedGradientImage
           size="XXS"
           sourceURI={project.metadata?.shortDescData?.coverImg}
@@ -106,11 +107,11 @@ const ProjectRow: React.FC<{ networkId: string; project: Project }> = ({
       </TableCell>
 
       {/* === Status === */}
-      <TableCell flex={TABLE_COLS.status.flex} isLast={false}>
+      <TableCell style={{ flex: TABLE_COLS.status.flex }}>
         <ProjectStatusTag size="XS" status={project.status} />
       </TableCell>
 
-      <TableCell flex={TABLE_COLS.candidates.flex} isLast>
+      <TableCell style={{ flex: TABLE_COLS.candidates.flex }}>
         <View style={{ gap: layout.spacing_x1 }}>
           {[
             project.contractorCandidates,

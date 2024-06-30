@@ -18,7 +18,15 @@ const main = async () => {
     return;
   }
 
-  const cmd = `gnokey query vm/qeval -remote ${sqh(network.endpoint)} -data ${sqh(`${realm}\n${query}`)}`;
+  if (!realm) {
+    console.log("missing realm argument");
+  }
+
+  if (!query) {
+    console.log("missing query argument");
+  }
+
+  const cmd = `gnokey query vm/qeval -remote ${sqh(network.endpoint)} -data ${sqh(`${realm}.${query}`)}`;
   console.log("> " + cmd);
   child_process.execSync(cmd, { stdio: "inherit" });
 };

@@ -92,7 +92,7 @@ export const useProjects = (
       const pkgPath = pmFeature.projectsManagerPkgPath;
       const expr = `RenderContractsJSON(${pageParam},${limit},${JSON.stringify(JSON.stringify(filter))})`;
 
-      console.log("projhook fetching", expr);
+      console.log("projhook fetching", pkgPath, expr);
 
       const contractsData = await client.evaluateExpression(pkgPath, expr);
 

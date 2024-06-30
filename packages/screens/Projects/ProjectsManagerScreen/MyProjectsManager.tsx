@@ -13,13 +13,15 @@ import { BrandText } from "@/components/BrandText";
 import { ProgressLine } from "@/components/ProgressLine";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
 import { SpacerColumn } from "@/components/spacer";
-import { TableCell, TableRow } from "@/components/table/TableRow";
+import { TableCell } from "@/components/table/TableCell";
+import { TableHeader } from "@/components/table/TableHeader";
+import { TableRow } from "@/components/table/TableRow";
 import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { getNetworkObjectId, getUserId } from "@/networks";
 import { prettyPrice } from "@/utils/coins";
 import { useAppNavigation } from "@/utils/navigation";
-import { neutral33, neutralFF } from "@/utils/style/colors";
+import { neutralFF } from "@/utils/style/colors";
 import { fontSemibold13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
@@ -60,7 +62,7 @@ export const MyProjectsManager: React.FC<{
 
       <SpacerColumn size={2} />
 
-      <TableRow headings={getTableCols(type)} />
+      <TableHeader columns={getTableCols(type)} />
       {filteredProjects.map((project) => (
         <ProjectRow key={project.id} project={project} projectType={type} />
       ))}
@@ -110,18 +112,9 @@ const ProjectRow: React.FC<{ project: Project; projectType: ProjectType }> = ({
   const networkId = useSelectedNetworkId();
 
   return (
-    <View
-      style={{
-        height: 50,
-        borderBottomWidth: 1,
-        borderBottomColor: neutral33,
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: layout.spacing_x2_5,
-      }}
-    >
+    <TableRow>
       {/* === Name === */}
-      <TableCell flex={defaultCols.name.flex} isLast={false}>
+      <TableCell style={{ flex: defaultCols.name.flex }}>
         <RoundedGradientImage
           size="XXS"
           sourceURI={project.metadata?.shortDescData?.coverImg}
@@ -150,12 +143,12 @@ const ProjectRow: React.FC<{ project: Project; projectType: ProjectType }> = ({
       </TableCell>
 
       {/* === Status === */}
-      <TableCell flex={defaultCols.status.flex} isLast={false}>
+      <TableCell style={{ flex: defaultCols.status.flex }}>
         <ProjectStatusTag size="XS" status={project.status} />
       </TableCell>
 
       {/* === Manager === */}
-      <TableCell flex={defaultCols.manager.flex} isLast={false}>
+      <TableCell style={{ flex: defaultCols.manager.flex }}>
         {projectType === "myProjects" && (
           <UsernameWithAvatar userId={getUserId(networkId, project.funder)} />
         )}
@@ -167,7 +160,7 @@ const ProjectRow: React.FC<{ project: Project; projectType: ProjectType }> = ({
       </TableCell>
 
       {/* === Milestones === */}
-      <TableCell flex={defaultCols.milestones.flex} isLast={false}>
+      <TableCell style={{ flex: defaultCols.milestones.flex }}>
         <BrandText
           style={[
             { color: neutralFF, marginRight: layout.spacing_x1 },
@@ -180,18 +173,18 @@ const ProjectRow: React.FC<{ project: Project; projectType: ProjectType }> = ({
       </TableCell>
 
       {/* === Grant === */}
-      <TableCell flex={defaultCols.grant.flex} isLast={false}>
+      <TableCell style={{ flex: defaultCols.grant.flex }}>
         <BrandText style={[{ color: neutralFF }, fontSemibold13]}>
           {prettyPrice(networkId, project.budget, project.paymentDenom)}
         </BrandText>
       </TableCell>
 
       {/* === Creation date === */}
-      <TableCell flex={defaultCols.creationDate.flex} isLast>
+      <TableCell style={{ flex: defaultCols.creationDate.flex }}>
         <BrandText style={[{ color: neutralFF }, fontSemibold13]}>
           {moment(project.createdAt).format("L")}
         </BrandText>
       </TableCell>
-    </View>
+    </TableRow>
   );
 };

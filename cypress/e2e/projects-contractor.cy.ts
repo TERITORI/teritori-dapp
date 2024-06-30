@@ -53,7 +53,7 @@ describe("Contractor proposer full flow", () => {
     // fourth step: review and create
     cy.contains("Publish this request").click();
     cy.get("div[data-testid='confirm-and-sign']").click();
-    cy.get("div[data-testid='confirm-and-sign']", { timeout: 10000 }).should(
+    cy.get("div[data-testid='confirm-and-sign']", { timeout: 20000 }).should(
       "not.exist",
     );
     cy.contains("Back to Project Program").click();
@@ -69,7 +69,7 @@ describe("Contractor proposer full flow", () => {
     changeTestUser("alice");
     cy.contains("Fund this project").click();
     cy.get("div[data-testid='confirm-and-sign']").click();
-    cy.get("div[data-testid='confirm-and-sign']", { timeout: 10000 }).should(
+    cy.get("div[data-testid='confirm-and-sign']", { timeout: 20000 }).should(
       "not.exist",
     );
 

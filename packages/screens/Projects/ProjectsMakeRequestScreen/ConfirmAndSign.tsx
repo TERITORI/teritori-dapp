@@ -50,6 +50,7 @@ import { LocalFileData } from "@/utils/types/files";
 export const ConfirmAndSign: React.FC = () => {
   const [isShowModal, setIsShowModal] = useState(false);
   const [isShowConfirmModal, setIsShowConfirmModal] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const navigation = useAppNavigation();
   const {
@@ -77,7 +78,7 @@ export const ConfirmAndSign: React.FC = () => {
 
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
-  const { setToastError } = useFeedbacks();
+  const { setToast } = useFeedbacks();
 
   const { execEscrowMethod } = useEscrowContract(
     networkId,
@@ -106,6 +107,8 @@ export const ConfirmAndSign: React.FC = () => {
 
   const confirmAndSign = async () => {
     try {
+      setIsProcessing(true);
+
       if (!projectFormData.coverImg) {
         setIsShowConfirmModal(false);
         throw Error("Cover image file is required");
@@ -146,10 +149,7 @@ export const ConfirmAndSign: React.FC = () => {
       const conflictHandler = projectFormData.arbitrator;
 
       if (!contractor && !funder) {
-        return setToastError({
-          title: "Error",
-          message: "Contract and Funder cannot be both empty",
-        });
+        throw new Error("Contract and Funder cannot be both empty");
       }
 
       let send = "";
@@ -179,9 +179,23 @@ export const ConfirmAndSign: React.FC = () => {
 
       setIsShowConfirmModal(false);
       setIsShowModal(true);
-    } catch (e: any) {
-      setToastError({ title: "Error", message: e.message });
+    } catch (e) {
+      let msg = "";
+      if (e instanceof Error) {
+        msg = e.message;
+      } else {
+        msg = `${e}`;
+      }
+      setIsShowConfirmModal(false);
+      setToast({
+        title: "Error",
+        message: msg,
+        type: "error",
+        mode: "normal",
+      });
       throw e;
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -264,8 +278,8 @@ export const ConfirmAndSign: React.FC = () => {
         <SpacerColumn size={2} />
 
         <PrimaryButton
+          disabled={isProcessing}
           fullWidth
-          disabled={isUploadingImage}
           text="Confirm and Sign"
           testID="confirm-and-sign"
           onPress={confirmAndSign}
@@ -276,7 +290,7 @@ export const ConfirmAndSign: React.FC = () => {
         <SecondaryButton
           fullWidth
           size="M"
-          disabled={isUploadingImage}
+          disabled={isProcessing}
           text="Cancel"
           onPress={cancel}
         />
