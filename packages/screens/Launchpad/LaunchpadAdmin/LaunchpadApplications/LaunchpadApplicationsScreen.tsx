@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { ApplicationsCollectionsTable } from "./component/ApplicationsCollectionsTable";
-
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { HighVolSortButton } from "@/components/sorts/HighVolSortButton";
@@ -10,23 +8,13 @@ import { Tabs } from "@/components/tabs/Tabs";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { NetworkFeature } from "@/networks";
+import { DummyLaunchpadCollection } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/LaunchpadAdministrationOverviewScreen";
+import { LaunchpadCollectionsTable } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplications/component/LaunchpadCollectionsTable";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 type TabsListType = "pendingApplications" | "pendingConfirmations";
-
-const dummyData = {
-  id: 1,
-  rank: 1,
-  collectionNameData: "The R!ot",
-  collectionNetwork: "teritori",
-  TwitterURL: "https://www.lipsum.com/",
-  DiscordURL: "https://www.lipsum.com/",
-  expectedTotalSupply: 3000,
-  expectedPublicMintPrice: "550 L",
-  expectedMintDate: new Date(),
-};
 
 export const LaunchpadApplicationsScreen: React.FC = () => {
   const navigation = useAppNavigation();
@@ -46,6 +34,20 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<TabsListType>(
     "pendingApplications",
   );
+
+  const dummyData: DummyLaunchpadCollection[] = Array(25)
+    .fill({
+      id: 0,
+      rank: 0,
+      collectionNameData: "The R!ot",
+      collectionNetwork: "teritori",
+      TwitterURL: "https://www.lipsum.com/",
+      DiscordURL: "https://www.lipsum.com/",
+      expectedTotalSupply: 3000,
+      expectedPublicMintPrice: "550 L",
+      expectedMintDate: new Date(),
+    })
+    .map((item, index) => ({ ...item, id: index + 1, rank: index + 1 }));
 
   return (
     <ScreenContainer
@@ -107,7 +109,7 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
             marginTop: layout.spacing_x4,
           }}
         >
-          <ApplicationsCollectionsTable rows={Array(25).fill(dummyData)} />
+          <LaunchpadCollectionsTable rows={dummyData} />
         </View>
       </View>
     </ScreenContainer>

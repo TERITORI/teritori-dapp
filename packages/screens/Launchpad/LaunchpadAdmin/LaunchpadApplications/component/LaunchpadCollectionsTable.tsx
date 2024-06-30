@@ -79,7 +79,7 @@ export const LaunchpadCollectionsTable: React.FC<{
         <FlatList
           data={rows}
           renderItem={({ item, index }) => (
-            <LaunchpadCollectionTableRow collection={item} index={index} />
+            <LaunchpadCollectionsTableRow collection={item} index={index} />
           )}
           keyExtractor={(item) => item.id.toString()}
         />
@@ -89,7 +89,7 @@ export const LaunchpadCollectionsTable: React.FC<{
   );
 };
 
-const LaunchpadCollectionTableRow: React.FC<{
+const LaunchpadCollectionsTableRow: React.FC<{
   collection: DummyLaunchpadCollection;
   index: number;
   // prices: CoingeckoPrices;

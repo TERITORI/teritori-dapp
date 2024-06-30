@@ -4,7 +4,7 @@ import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { ApplicationStatusCard } from "./component/ApplicationStatusCard";
 import { CurrentlyHighlightedProject } from "./component/CurrentlyHighLightedProject";
 import { GenesisExplore } from "./component/GenesisExplore";
-import { LaunchpadCollectionsTable } from "./component/LaunchpadCollectionsTable";
+import { LaunchpadCollectionsTable } from "../LaunchpadApplications/component/LaunchpadCollectionsTable";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
