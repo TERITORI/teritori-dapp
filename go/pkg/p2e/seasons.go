@@ -275,7 +275,30 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 		BossName:  `== $*=|'¤?")à-£_%`,
 		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.cf-ipfs.com/",
 		StartsAt:  "2024-06-11T00:00:00",
-		EndsAt:    "2024-12-12T00:00:00",
+		EndsAt:    "2024-07-01T00:00:00",
+		IsPre:     true,
+	},
+	// Season PepeTest
+	{
+		ID:         "Season PepeTest",
+		GameID:     THE_RIOT_GAME_ID,
+		Denom:      "tori",
+		Decimals:   6,
+		TotalPrize: 1_000,
+		BossName:   "PepeTest",
+		BossImage:  "https://bafkreihruz6slyifkknubjr7t3xa555cbc3m3xr7jkapcvlpr2566cywqu.ipfs.cf-ipfs.com/",
+		TopN:       500,
+		StartsAt:   "2024-07-01T00:00:00",
+		EndsAt:     "2024-07-04T00:00:00",
+	},
+	// After PepeTest
+	{
+		ID:        "Season After PepeTest",
+		GameID:    THE_RIOT_GAME_ID,
+		BossName:  `== $*=|'¤?")à-£_%`,
+		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.cf-ipfs.com/",
+		StartsAt:  "2024-07-04T00:00:00",
+		EndsAt:    "2025-01-01T00:00:00",
 		IsPre:     true,
 	},
 }
