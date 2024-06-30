@@ -15,6 +15,7 @@ export const sagaTest2: CosmosNetworkInfo = {
       coingeckoId: "not-found",
       icon: "https://raw.githubusercontent.com/cosmos/chain-registry/master/saga/images/saga.svg",
       color: "TODO",
+      variant: "cosmos",
     },
   ],
   features: [],

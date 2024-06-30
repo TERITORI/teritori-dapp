@@ -1,22 +1,23 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
-import { View, ViewStyle } from "react-native";
+import { FC, memo } from "react";
+import { StyleProp, View, ViewStyle } from "react-native";
 
 import { neutral33 } from "../utils/style/colors";
 
-const DEFAULT_WIDTH = 200;
-
-interface ProgressLineProps {
-  percent: number;
-  width?: number;
-  style?: ViewStyle;
-}
-
-export const ProgressLine: React.FC<ProgressLineProps> = ({
-  percent,
-  width = DEFAULT_WIDTH,
-  style,
-}) => {
+/**
+ * @param gain - The gain of the progress line. Must be between 0 and 1 inclusive.
+ * @param style - The style of the container View.
+ */
+export const ProgressLine: FC<{
+  gain: number;
+  style?: StyleProp<ViewStyle>;
+}> = memo(({ gain, style }) => {
+  if (gain < 0) {
+    gain = 0;
+  }
+  if (gain > 1) {
+    gain = 1;
+  }
   return (
     <View
       style={[
@@ -24,7 +25,7 @@ export const ProgressLine: React.FC<ProgressLineProps> = ({
           height: 4,
           borderRadius: 4,
           backgroundColor: neutral33,
-          width,
+          flexGrow: 1,
           position: "relative",
         },
         style,
@@ -36,7 +37,7 @@ export const ProgressLine: React.FC<ProgressLineProps> = ({
         locations={[0, 0.5, 1]}
         colors={["#5433FF", "#20BDFF", "#A5FECB"]}
         style={{
-          width: (percent / 100) * width,
+          width: `${gain * 100}%`,
           height: 4,
           position: "absolute",
           top: 0,
@@ -46,4 +47,4 @@ export const ProgressLine: React.FC<ProgressLineProps> = ({
       />
     </View>
   );
-};
+});

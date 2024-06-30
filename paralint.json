@@ -1,6 +1,6 @@
 {
   "eslint": "eslint --cache --ext .js,.jsx,.ts,.tsx .",
-  "tsc": "tsc",
+  "tsc": "tsc --pretty",
   "depcheck": "depcheck",
   "unused-exports": "yarn unused-exports",
   "validate-networks": "yarn validate-networks",

@@ -10,5 +10,6 @@ export const gnoCurrencies: CurrencyInfo[] = [
     icon: "gno.svg",
     kind: "native",
     color: currencyGNOcolor,
+    variant: "gno",
   },
 ];

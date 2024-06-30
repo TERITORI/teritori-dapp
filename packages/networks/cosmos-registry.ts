@@ -54,6 +54,7 @@ export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
               decimals:
                 asset.denom_units.find((du) => du.denom === asset.display)
                   ?.exponent || 6,
+              variant: "cosmos",
               displayName: asset.symbol,
               coingeckoId: asset.coingecko_id || "not-found",
               icon:

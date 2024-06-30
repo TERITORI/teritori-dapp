@@ -52,6 +52,7 @@ type Props = {
   allowSearchValue?: boolean;
   name?: string;
   isLoading?: boolean;
+  testID?: string;
   renderItem?: ({
     onPressItem,
     item,
@@ -75,6 +76,7 @@ export const SelectInput: React.FC<Props> = ({
   name,
   isLoading,
   renderItem,
+  testID,
 }) => {
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const [hovered, setHovered] = useState(false);
@@ -131,6 +133,7 @@ export const SelectInput: React.FC<Props> = ({
         if (!disabled || selectableData.length) setOpenMenu((value) => !value);
       }}
       disabled={disabled || !selectableData.length}
+      testID={testID}
     >
       {label && (
         <>

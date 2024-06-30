@@ -19,6 +19,8 @@ import { ConnectWalletButton } from "../connectWallet/components/ConnectWalletBu
 import { SeparatorGradient } from "../separators/SeparatorGradient";
 import { SpacerColumn } from "../spacer";
 
+import { ConnectGnotestButton } from "@/context/WalletsProvider/gnotest";
+
 export const ConnectWalletModal: FC<{
   forceNetworkFeature?: NetworkFeature;
   label?: string;
@@ -109,6 +111,7 @@ export const ConnectWalletModal: FC<{
         visible={isDisclaimerVisible}
         onClose={toggleDisclaimer}
       />
+      <ConnectGnotestButton onDone={onClose} />
     </ModalBase>
   );
 };

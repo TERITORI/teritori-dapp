@@ -6,4 +6,5 @@ export enum WalletProvider {
   Adena = "Adena",
   Store = "Store",
   Native = "Native",
+  Gnotest = "Gnotest",
 }

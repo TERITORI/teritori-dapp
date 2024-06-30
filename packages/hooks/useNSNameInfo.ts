@@ -56,6 +56,7 @@ export const useNSNameInfo = (
           return nftInfo;
         }
         case NetworkKind.Gno: {
+          console.log("uinf gno", tokenId);
           if (!tokenId.startsWith("gno.land/") && tokenId.endsWith(".gno")) {
             const address = await gnoGetAddressByUsername(
               network,
@@ -64,8 +65,21 @@ export const useNSNameInfo = (
             if (!address) {
               return null;
             }
+            const query = `GetUserByName(${JSON.stringify(tokenId.slice(0, -".gno".length))}).Profile`;
+            console.log("uinf query", query);
+            const provider = new GnoJSONRPCProvider(network.endpoint);
+            const metadata = await provider.evaluateExpression(
+              network.nameServiceContractAddress,
+              query,
+            );
+            console.log("uinf res", metadata);
+            const mt = extractGnoJSONString(metadata);
             const res: NftInfoResponse = {
-              extension: {},
+              extension: {
+                public_name: mt.displayName,
+                image: mt.imageURI,
+                public_bio: mt.bio,
+              },
             };
             return res;
           }
@@ -111,7 +125,7 @@ const gnoGetAddressByUsername = async (
   try {
     const res = await provider.evaluateExpression(
       network.nameServiceContractAddress,
-      `GetUserByName(${JSON.stringify(name)}).address`,
+      `GetUserByName(${JSON.stringify(name)}).Address`,
     );
     const address = extractGnoString(res);
     return address;

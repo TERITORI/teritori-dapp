@@ -21,6 +21,8 @@ RIOTER_FOOTER_PACKAGE=rioter-footer-nft
 ADDR_LIST_REPO=cw_addr_list
 ADDR_LIST_PACKAGE=cw-address-list
 
+GOFMT=$(shell $(GO) env GOROOT)/bin/gofmt
+
 CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
 DOCKER_REGISTRY=rg.nl-ams.scw.cloud/teritori
@@ -415,4 +417,11 @@ generate.internal-contracts-clients: node_modules
 		|| exit 1 ;\
 		npx tsx packages/scripts/makeTypescriptIndex $${outdir} || exit 1 ; \
 	done
-	
+
+.PHONY: install-gno
+install-gno: node_modules
+	yarn install-gno
+
+.PHONY: start.gnodev-e2e
+start.gnodev-e2e:
+	gnodev --unsafe-api --server-mode --add-account g193vp9tjhfpldvgg3gn433ayv8pn7rtfv8shyeq $$(find gno -name gno.mod -type f -exec dirname {} \;)

@@ -96,6 +96,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
               description: "",
               state: testnetEnabled,
             }}
+            testID="testnet-switch"
           />
         </View>
 

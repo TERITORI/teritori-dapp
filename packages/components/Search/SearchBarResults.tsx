@@ -92,7 +92,7 @@ export const SearchBarResults: FC = () => {
   );
 };
 
-const SearchResultsSection: React.FC<{
+export const SearchResultsSection: React.FC<{
   title: string;
   style: StyleProp<ViewStyle>;
   isFirstSection?: boolean;

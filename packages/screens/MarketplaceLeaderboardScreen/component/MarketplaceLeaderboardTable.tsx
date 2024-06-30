@@ -12,10 +12,10 @@ import {
 
 import { LeaderboardEntry } from "@/api/marketplace/v1/marketplace";
 import { Pagination } from "@/components/Pagination";
-import { UserNameInline } from "@/components/UserNameInline";
 import { SpacerColumn } from "@/components/spacer";
 import { TableHeader } from "@/components/table/TableHeader";
 import { TableColumns } from "@/components/table/utils";
+import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
 import { getMarketplaceClient } from "@/utils/backend";
 
 const TABLE_COLUMNS: TableColumns = {
@@ -138,7 +138,7 @@ const LeaderboardRowData: React.FC<{ rowData: LeaderboardEntry }> = ({
           alignItems: "center",
         }}
       >
-        <UserNameInline userId={rowData.userId} />
+        <UsernameWithAvatar userId={rowData.userId} />
       </View>
       <InnerCellText
         textStyle={{ paddingLeft: layout.spacing_x1 }}

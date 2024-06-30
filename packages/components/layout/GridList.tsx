@@ -16,6 +16,12 @@ type GridListType<T> = React.FC<{
   gap?: number;
   noFixedHeight?: boolean;
   onEndReached?: ComponentProps<typeof FlatList<T>>["onEndReached"];
+  ListHeaderComponent?: ComponentProps<
+    typeof FlatList<T>
+  >["ListHeaderComponent"];
+  ListFooterComponent?: ComponentProps<
+    typeof FlatList<T>
+  >["ListFooterComponent"];
 }>;
 
 type ItemWrapper<T> =
@@ -36,6 +42,8 @@ export function GridList<T>({
   noFixedHeight,
   keyExtractor,
   renderItem,
+  ListHeaderComponent,
+  ListFooterComponent,
 }: ComponentProps<GridListType<T>>): ReturnType<GridListType<T>> {
   const { height } = useMaxResolution({ isLarge: true });
   const [containerWidth, setContainerWidth] = useState(0);
@@ -90,6 +98,7 @@ export function GridList<T>({
     <FlatList<ItemWrapper<T>>
       onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
       contentContainerStyle={!noFixedHeight && { height }}
+      ListHeaderComponent={ListHeaderComponent}
       columnWrapperStyle={
         elemsPerRow < 2
           ? undefined
@@ -109,6 +118,7 @@ export function GridList<T>({
           size={Math.min(height, containerWidth) / 3}
         />
       }
+      ListFooterComponent={ListFooterComponent}
       renderItem={renderItemWithFixedWidth}
     />
   );
