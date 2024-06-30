@@ -67,7 +67,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
             alignItems: "center",
-            width: cartIsShown ? width - SideCartWidth : width,
+            width: cartIsShown ? width - SideCartWidth : "100%",
           }}
         >
           <CollectionHeader

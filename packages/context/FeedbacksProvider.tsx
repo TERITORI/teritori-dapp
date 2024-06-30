@@ -27,7 +27,7 @@ interface IMiniToast extends MiniToastProps {
 
 type Toast = IMiniToast | INormalToast;
 
-const initialToast: Toast = {
+export const initialToast: Toast = {
   message: "",
   title: "",
   duration: 8000,
