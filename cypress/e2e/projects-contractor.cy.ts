@@ -2,7 +2,7 @@ import { changeSelectedMilestoneStatus, changeTestUser } from "./lib";
 
 describe("Contractor proposer full flow", () => {
   it("works", () => {
-    cy.request("http://127.0.0.1:8888/reset");
+    //cy.request("http://127.0.0.1:8888/reset");
 
     const projectName = "Test Project";
     const milestoneName = "Test Milestone";

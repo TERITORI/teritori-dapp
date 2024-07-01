@@ -1,6 +1,27 @@
+import * as yup from "yup";
 import { z } from "zod";
 
 import { zodTryParseJSON } from "@/utils/sanitize";
+
+export const yupMilestoneFormValues = yup.object({
+  id: yup.string(),
+  title: yup
+    .string()
+    .required()
+    .min(3)
+    .matches(/^[^,]*$/, "Should not contain ,"),
+  desc: yup
+    .string()
+    .required()
+    .min(10)
+    .matches(/^[^,]*$/, "Should not contain ,"),
+  amount: yup.number().required().positive().integer(),
+  priority: yup.string(),
+  link: yup.string().url(),
+  duration: yup.number().min(1),
+});
+
+export type MilestoneFormValues = yup.InferType<typeof yupMilestoneFormValues>;
 
 const zodMilestonePriority = z.enum([
   "MS_PRIORITY_HIGH",

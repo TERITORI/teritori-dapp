@@ -15,9 +15,6 @@ export const emptyProjectFormData: ProjectFormData = {
   name: "",
   desc: "",
   arbitrator: "",
-  tags: "",
-  funder: "",
-  contractor: "",
   coverImg: {},
 };
 

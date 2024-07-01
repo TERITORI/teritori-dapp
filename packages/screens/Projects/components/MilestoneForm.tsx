@@ -1,8 +1,8 @@
 import { Decimal } from "@cosmjs/math";
-import { Formik } from "formik";
+import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
-import { number, object, string } from "yup";
 
 import closeSVG from "../../../../assets/icons/close.svg";
 import { BrandText } from "../../../components/BrandText";
@@ -27,7 +27,11 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { MilestonePriority, ProjectMilestone } from "../types";
+import {
+  MilestoneFormValues,
+  MilestonePriority,
+  yupMilestoneFormValues,
+} from "../types";
 
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
@@ -41,36 +45,17 @@ const PRIORITIES: SelectInputItem[] = [
   { label: "Medium", value: "MS_PRIORITY_MEDIUM".toString() },
 ];
 
-const initialValues: ProjectMilestone = {
-  id: "0",
+const initialValues: MilestoneFormValues = {
   title: "",
   desc: "",
   priority: "MS_PRIORITY_MEDIUM",
-  status: "MS_OPEN",
-  amount: "0",
+  amount: 0,
   link: "",
-  paid: "0",
-  funded: false,
   duration: 0,
 };
 
-const newMilestoneSchema = object({
-  title: string()
-    .required()
-    .min(3)
-    .matches(/^[^,]*$/, "Should not contain ,"),
-  desc: string()
-    .required()
-    .min(10)
-    .matches(/^[^,]*$/, "Should not contain ,"),
-  amount: number().required().positive().integer(),
-  priority: string(),
-  link: string().url(),
-  duration: number().min(1),
-});
-
 export const MilestoneForm: React.FC<{
-  onSubmit: (milestone: ProjectMilestone) => void;
+  onSubmit: (milestone: MilestoneFormValues) => void;
   onClose: () => void;
 }> = ({ onSubmit, onClose }) => {
   const [priority, setPriority] =
@@ -85,168 +70,158 @@ export const MilestoneForm: React.FC<{
   const currency = getNativeCurrency(networkId, pmFeature?.paymentsDenom);
   const decimals = currency?.decimals || 0;
 
+  const { handleSubmit, watch, formState, setValue } = useForm({
+    resolver: yupResolver(yupMilestoneFormValues),
+    defaultValues: initialValues,
+  });
+  const values = watch();
+  const { errors } = formState;
+
   return (
     <View>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={newMilestoneSchema}
-        onSubmit={(values: ProjectMilestone) => {
-          values.priority = priority;
-          values.amount = Decimal.fromUserInput(
-            values.amount,
-            decimals,
-          ).atomics;
-          onSubmit(values);
+      <TertiaryBox
+        style={{
+          backgroundColor: neutral22,
+          padding: layout.spacing_x2,
+          marginBottom: layout.spacing_x2,
         }}
       >
-        {({ handleChange, handleSubmit, values, errors }) => {
-          return (
-            <TertiaryBox
-              style={{
-                backgroundColor: neutral22,
-                padding: layout.spacing_x2,
-                marginBottom: layout.spacing_x2,
-              }}
-            >
-              <TextInputCustom
-                onChangeText={handleChange("title")}
-                name="milestoneName"
-                label=""
-                placeHolder="⚡️ Type name here..."
-                hideLabel
-                fullWidth
-                noBrokenCorners
-                containerStyle={{ width: "100%" }}
-                height={32}
-                value={values.title}
-                error={errors.title}
-              />
+        <TextInputCustom
+          onChangeText={(val) => setValue("title", val)}
+          name="milestoneName"
+          label=""
+          placeHolder="⚡️ Type name here..."
+          hideLabel
+          fullWidth
+          noBrokenCorners
+          containerStyle={{ width: "100%" }}
+          height={32}
+          value={values.title}
+          error={errors.title?.message}
+        />
 
-              <SpacerColumn size={1.5} />
+        <SpacerColumn size={1.5} />
 
-              <TextInputCustom
-                label=""
-                hideLabel
-                name="desc"
-                fullWidth
-                multiline
-                placeholder="Type description here..."
-                textInputStyle={{ height: 40 }}
-                noBrokenCorners
-                onChangeText={handleChange("desc")}
-                value={values.desc}
-                error={errors.desc}
-              />
+        <TextInputCustom
+          label=""
+          hideLabel
+          name="desc"
+          fullWidth
+          multiline
+          placeholder="Type description here..."
+          textInputStyle={{ height: 40 }}
+          noBrokenCorners
+          onChangeText={(val) => setValue("desc", val)}
+          value={values.desc}
+          error={errors.desc?.message}
+        />
 
-              <SpacerColumn size={1.5} />
+        <SpacerColumn size={1.5} />
 
-              <FlexRow style={{ zIndex: 2 }}>
-                <BrandText
-                  style={[fontSemibold12, { color: neutral77, flex: 1 }]}
-                >
-                  Priority
-                </BrandText>
-                <SelectInput
-                  data={PRIORITIES}
-                  selectedItem={
-                    PRIORITIES.find((p) => p.value === priority.toString()) ||
-                    PRIORITIES[0]
-                  }
-                  selectItem={(item) => setPriority(item.value as any)}
-                  boxStyle={{ height: 32 }}
-                />
-              </FlexRow>
+        <FlexRow style={{ zIndex: 2 }}>
+          <BrandText style={[fontSemibold12, { color: neutral77, flex: 1 }]}>
+            Priority
+          </BrandText>
+          <SelectInput
+            data={PRIORITIES}
+            selectedItem={
+              PRIORITIES.find((p) => p.value === priority.toString()) ||
+              PRIORITIES[0]
+            }
+            selectItem={(item) => setPriority(item.value as any)}
+            boxStyle={{ height: 32 }}
+          />
+        </FlexRow>
 
-              <SpacerColumn size={1.5} />
+        <SpacerColumn size={1.5} />
 
-              <FlexRow style={{ padding: 0 }}>
-                <BrandText
-                  style={[fontSemibold12, { color: neutral77, flex: 1 }]}
-                >
-                  Budget
-                </BrandText>
-                <TextInputCustom
-                  onChangeText={handleChange("amount")}
-                  name="milestoneBudget"
-                  label=""
-                  placeHolder="Type here..."
-                  hideLabel
-                  fullWidth
-                  noBrokenCorners
-                  containerStyle={{ flex: 1 }}
-                  height={32}
-                  value={"" + values.amount}
-                  error={errors.amount}
-                  testID="milestone-budget"
-                />
-              </FlexRow>
+        <FlexRow style={{ padding: 0 }}>
+          <BrandText style={[fontSemibold12, { color: neutral77, flex: 1 }]}>
+            Budget
+          </BrandText>
+          <TextInputCustom
+            onChangeText={(val) => setValue("amount", +val)}
+            name="milestoneBudget"
+            label=""
+            placeHolder="Type here..."
+            hideLabel
+            fullWidth
+            noBrokenCorners
+            containerStyle={{ flex: 1 }}
+            height={32}
+            value={"" + values.amount}
+            error={errors.amount?.message}
+            testID="milestone-budget"
+          />
+        </FlexRow>
 
-              <SpacerColumn size={1.5} />
+        <SpacerColumn size={1.5} />
 
-              <FlexRow style={{ padding: 0 }}>
-                <BrandText
-                  style={[fontSemibold12, { color: neutral77, flex: 1 }]}
-                >
-                  Duration
-                </BrandText>
-                <TextInputCustom
-                  onChangeText={handleChange("duration")}
-                  name="milestoneDuration"
-                  label=""
-                  placeHolder="Type here..."
-                  hideLabel
-                  fullWidth
-                  noBrokenCorners
-                  containerStyle={{ flex: 1 }}
-                  height={32}
-                  value={"" + values.duration}
-                  error={errors.duration}
-                  testID="milestone-duration"
-                />
-              </FlexRow>
+        <FlexRow style={{ padding: 0 }}>
+          <BrandText style={[fontSemibold12, { color: neutral77, flex: 1 }]}>
+            Duration
+          </BrandText>
+          <TextInputCustom
+            onChangeText={(val) => setValue("duration", +val)}
+            name="milestoneDuration"
+            label=""
+            placeHolder="Type here..."
+            hideLabel
+            fullWidth
+            noBrokenCorners
+            containerStyle={{ flex: 1 }}
+            height={32}
+            value={"" + values.duration}
+            error={errors.duration?.message}
+            testID="milestone-duration"
+          />
+        </FlexRow>
 
-              <SpacerColumn size={1.5} />
+        <SpacerColumn size={1.5} />
 
-              <FlexRow>
-                <BrandText
-                  style={[fontSemibold12, { color: neutral77, flex: 1 }]}
-                >
-                  Github link
-                </BrandText>
-                <TextInputCustom
-                  onChangeText={handleChange("link")}
-                  name="milestoneGithubLink"
-                  label=""
-                  placeHolder="Github link..."
-                  hideLabel
-                  fullWidth
-                  noBrokenCorners
-                  containerStyle={{ flex: 1 }}
-                  height={32}
-                  value={values.link}
-                  error={errors.link}
-                />
-              </FlexRow>
+        <FlexRow>
+          <BrandText style={[fontSemibold12, { color: neutral77, flex: 1 }]}>
+            Github link
+          </BrandText>
+          <TextInputCustom
+            onChangeText={(val) => setValue("link", val)}
+            name="milestoneGithubLink"
+            label=""
+            placeHolder="Github link..."
+            hideLabel
+            fullWidth
+            noBrokenCorners
+            containerStyle={{ flex: 1 }}
+            height={32}
+            value={values.link}
+            error={errors.link?.message}
+          />
+        </FlexRow>
 
-              <SpacerColumn size={2} />
+        <SpacerColumn size={2} />
 
-              <SimpleButton
-                onPress={handleSubmit}
-                text="Confirm"
-                size="XS"
-                color={neutralFF}
-                bgColor={primaryColor}
-                testID="milestone-confirm"
-                style={{
-                  width: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              />
-            </TertiaryBox>
-          );
-        }}
-      </Formik>
+        <SimpleButton
+          onPress={handleSubmit((values) => {
+            values.priority = priority;
+            // FIXME: loss of precision
+            values.amount = +Decimal.fromUserInput(
+              values.amount.toString(),
+              decimals,
+            ).atomics;
+            onSubmit(values);
+          })}
+          text="Confirm"
+          size="XS"
+          color={neutralFF}
+          bgColor={primaryColor}
+          testID="milestone-confirm"
+          style={{
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        />
+      </TertiaryBox>
 
       <TouchableOpacity
         onPress={() => onClose?.()}

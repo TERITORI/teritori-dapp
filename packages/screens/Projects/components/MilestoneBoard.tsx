@@ -26,7 +26,11 @@ import {
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
-import { ProjectMilestone, MilestoneStatus } from "../types";
+import {
+  ProjectMilestone,
+  MilestoneStatus,
+  MilestoneFormValues,
+} from "../types";
 
 export type Step = {
   status: MilestoneStatus;
@@ -75,7 +79,7 @@ export const MilestoneBoard: React.FC<{
     removeMilestone(milestone);
   };
 
-  const addNewMilestone = (milestone: ProjectMilestone) => {
+  const addNewMilestone = (milestone: MilestoneFormValues) => {
     showMilestoneForm(false);
     addMilestone(milestone);
   };

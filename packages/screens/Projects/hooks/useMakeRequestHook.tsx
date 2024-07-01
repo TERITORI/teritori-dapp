@@ -5,7 +5,7 @@ import { create } from "zustand";
 
 import { useAppNavigation } from "../../../utils/navigation";
 import { emptyProjectFormData, fakeTeamAndLink } from "../defaultValues";
-import { ProjectMilestone } from "../types";
+import { MilestoneFormValues, ProjectMilestone } from "../types";
 
 export const yupProjectTeamAndLinkFormData = yup.object({
   websiteLink: yup.string().required().url(),
@@ -23,7 +23,7 @@ export const yupProjectFormData = yup.object({
   name: yup.string().required().min(3),
   desc: yup.string().required().min(10),
   funder: yup.string(),
-  contractor: yup.string().min(32),
+  contractor: yup.string(),
   arbitrator: yup.string().required(),
   tags: yup.string().nullable(),
   coverImg: yup.object(),
@@ -35,13 +35,13 @@ type MakeRequestState = {
   stepIndice: number;
   projectFormData: ProjectFormData;
   teamAndLinkData: ProjectTeamAndLinkFormData;
-  milestones: ProjectMilestone[];
+  milestones: MilestoneFormValues[];
   actions: {
     // setStepIndice: (stepIndice: number) => void;
     setShortDesc: (shortDescData: ProjectFormData) => void;
     setTeamAndLink: (teamAndLinkData: ProjectTeamAndLinkFormData) => void;
 
-    addMilestone: (milestone: ProjectMilestone) => void;
+    addMilestone: (milestone: MilestoneFormValues) => void;
     removeMilestone: (milestone: ProjectMilestone) => void;
   };
 };
