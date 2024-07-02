@@ -209,8 +209,27 @@ func (s *Launchpad) TokenMetadata(ctx context.Context, req *launchpadpb.TokenMet
 }
 
 func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.CollectionsByCreatorRequest) (*launchpadpb.CollectionsByCreatorResponse, error) {
-	creatorID := req.GetCreatorId()
+	limit := req.GetLimit()
+  if limit <= 0 {
+    return errors.New("limit must be a positive number")
+  }
 
+  offset := req.GetOffset()
+  if offset < 0 {
+    return errors.New("offset must be greater or equal to 0")
+  }
+
+  networkID := req.GetNetworkId()
+  if networkID == "" {
+    return errors.New("missing network id")
+  }
+
+  network, err := s.conf.NetworkStore.GetNetwork(networkID)
+  if err != nil {
+    return errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
+  }
+
+	creatorID := req.GetCreatorId()
 	if creatorID == "" {
 		return nil, errors.New("creatorID is mandatory")
 	}
@@ -220,12 +239,83 @@ func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.C
 		return nil, errors.Wrap(err, "failed to get collection data")
 	}
 
+  orderDirection := ""
+  switch req.GetSortDirection() {
+  case launchpadpb.SortDirection_SORT_DIRECTION_UNSPECIFIED:
+    orderDirection = ""
+  case launchpadpb.SortDirection_SORT_DIRECTION_ASCENDING:
+    orderDirection = " ASC "
+  case launchpadpb.SortDirection_SORT_DIRECTION_DESCENDING:
+    orderDirection = " DESC "
+  }
+  orderSQL := ""
+  switch req.GetSort() {
+  case launchpadpb.Sort_SORT_COLLECTION_NAME:
+    orderSQL = "lp.collection_name" + orderDirection
+  case marketplacepb.Sort_SORT_STATUS:
+    orderSQL = "case when total_volume is null then 1 else 0 end, total_volume " + orderDirection
+  case marketplacepb.Sort_SORT_CREATED_AT:
+    orderSQL = "lp.time " + orderDirection
+
+
+  case marketplacepb.Sort_SORT_VOLUME_USD:
+    orderSQL = "case when total_volume_usd is null then 1 else 0 end, total_volume_usd " + orderDirection
+  case marketplacepb.Sort_SORT_UNSPECIFIED:
+    orderSQL = "volume DESC"
+  }
+
 	res := make([]string, len(projects))
 	for idx, pj := range projects {
 		res[idx] = pj.CollectionData.String()
 	}
 
 	return &launchpadpb.CollectionsByCreatorResponse{
+		Collections: res,
+	}, nil
+}
+
+func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.CollectionsRequest) (*launchpadpb.CollectionsResponse, error) {
+
+
+  //   TODO: Sort, control daoID, return LaunchpadProject[]
+
+	limit := req.GetLimit()
+	if limit <= 0 {
+		return errors.New("limit must be a positive number")
+	}
+
+	offset := req.GetOffset()
+	if offset < 0 {
+		return errors.New("offset must be greater or equal to 0")
+	}
+
+	networkID := req.GetNetworkId()
+	if networkID == "" {
+		return errors.New("missing network id")
+	}
+
+	network, err := s.conf.NetworkStore.GetNetwork(networkID)
+	if err != nil {
+		return errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
+	}
+
+	daoID := req.GetCreatorId()
+
+	if creatorID == "" {
+		return nil, errors.New("creatorID is mandatory")
+	}
+
+	var projects []indexerdb.Collections
+	if err := s.conf.IndexerDB.Find(&projects, "creator_id = ?", creatorID).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to get collection data")
+	}
+
+	res := make([]string, len(projects))
+	for idx, pj := range projects {
+		res[idx] = pj.CollectionData.String()
+	}
+
+	return &launchpadpb.CollectionsResponse{
 		Collections: res,
 	}, nil
 }
