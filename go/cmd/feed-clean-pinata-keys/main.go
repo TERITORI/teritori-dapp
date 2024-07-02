@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TERITORI/teritori-dapp/go/pkg/feed"
+	"github.com/TERITORI/teritori-dapp/go/pkg/pinata"
 	"github.com/go-co-op/gocron"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
@@ -44,7 +44,7 @@ func main() {
 		panic(errors.Wrap(err, "failed to init logger"))
 	}
 
-	pinata := feed.NewPinataService(*pinataJWT)
+	pinataService := pinata.NewPinataService(*pinataJWT)
 
 	schedule := gocron.NewScheduler(time.UTC)
 	isProcessing := false
@@ -55,7 +55,7 @@ func main() {
 
 		isProcessing = true
 
-		keysResp, err := pinata.GetAPIKeys(0)
+		keysResp, err := pinataService.GetAPIKeys(0)
 		if err != nil {
 			logger.Error(fmt.Sprintf("failed to count keys: %s", err))
 			isProcessing = false
@@ -64,7 +64,7 @@ func main() {
 
 		logger.Info("cleaning Pinata API keys", zap.Int("count", keysResp.Count))
 
-		remainingPages := keysResp.Count / feed.PINATA_LIMIT_PER_PAGE
+		remainingPages := keysResp.Count / pinata.PINATA_LIMIT_PER_PAGE
 		totalSkip := 0
 		totalRemaining := 0
 		totalRevoked := 0
@@ -72,7 +72,7 @@ func main() {
 		// Get all existing keys
 		keysData := keysResp.Keys
 		for i := 0; i < remainingPages; i++ {
-			respI, err := pinata.GetAPIKeys(i)
+			respI, err := pinataService.GetAPIKeys(i)
 			if err != nil {
 				logger.Error(fmt.Sprintf("failed to get API keys: %s", err))
 				isProcessing = false
@@ -84,7 +84,7 @@ func main() {
 
 		// Process each key
 		for _, keyData := range keysData {
-			if keyData.Revoked || keyData.Scopes.Admin || !strings.HasPrefix(keyData.Name, feed.FEED_KEY_PREFIX) {
+			if keyData.Revoked || keyData.Scopes.Admin || !strings.HasPrefix(keyData.Name, pinata.FEED_KEY_PREFIX) {
 				totalSkip++
 				continue
 			}
@@ -92,12 +92,12 @@ func main() {
 			now := time.Now()
 			diff := now.Sub(keyData.CreatedAt)
 
-			if diff.Seconds() <= feed.KEY_TTL {
+			if diff.Seconds() <= pinata.KEY_TTL {
 				totalRemaining++
 				continue
 			}
 
-			if err := pinata.RevokeAPIKey(keyData.Key); err != nil {
+			if err := pinataService.RevokeAPIKey(keyData.Key); err != nil {
 				logger.Error(fmt.Sprintf("failed revoke API key %s: %s", keyData.Key, err))
 				isProcessing = false
 				return

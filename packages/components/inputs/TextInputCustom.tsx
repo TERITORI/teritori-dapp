@@ -51,6 +51,11 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 
 // TODO: Refacto TextInputCustom. Too much props
 
+export type TextInputCustomRules = Omit<
+  RegisterOptions,
+  "valueAsNumber" | "valueAsDate" | "setValueAs"
+>;
+
 export interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
   label: string;
@@ -69,7 +74,7 @@ export interface TextInputCustomProps<T extends FieldValues>
   height?: number;
   control?: Control<T>;
   name: Path<T>;
-  rules?: Omit<RegisterOptions, "valueAsNumber" | "valueAsDate" | "setValueAs">;
+  rules?: TextInputCustomRules;
   defaultValue?: PathValue<T, Path<T>>;
   subtitle?: React.ReactElement;
   sublabel?: React.ReactElement;
