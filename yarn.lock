@@ -4282,7 +4282,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gnolang/tm2-js-client@npm:^1.2.1":
+"@gnolang/tm2-js-client@npm:1.2.1":
   version: 1.2.1
   resolution: "@gnolang/tm2-js-client@npm:1.2.1"
   dependencies:
@@ -4296,6 +4296,23 @@ __metadata:
     uuid: ^9.0.1
     ws: ^8.16.0
   checksum: aadc03e5edfa130ff34a963fd6b571332e4380fb9d2e98bd40f301325dc1dfd40ab2634654a7c97edbba685c58cc8a79e58eeb96e8326d766dc3bdc89bb78ad9
+  languageName: node
+  linkType: hard
+
+"@gnolang/tm2-js-client@patch:@gnolang/tm2-js-client@npm%3A1.2.1#./.yarn/patches/@gnolang-tm2-js-client-npm-1.2.1-1ea3bc3862.patch::locator=teritori-dapp%40workspace%3A.":
+  version: 1.2.1
+  resolution: "@gnolang/tm2-js-client@patch:@gnolang/tm2-js-client@npm%3A1.2.1#./.yarn/patches/@gnolang-tm2-js-client-npm-1.2.1-1ea3bc3862.patch::version=1.2.1&hash=3c7277&locator=teritori-dapp%40workspace%3A."
+  dependencies:
+    "@cosmjs/amino": ^0.32.4
+    "@cosmjs/crypto": ^0.32.4
+    "@cosmjs/ledger-amino": ^0.32.4
+    "@types/uuid": ^9.0.4
+    axios: ^1.4.0
+    long: ^5.2.3
+    protobufjs: ^7.2.3
+    uuid: ^9.0.1
+    ws: ^8.16.0
+  checksum: a8853be7c0a52d4f4f38f2381cc671e8b4d7f62512cf00a2dee779039d70772f3ca62c583f7f93a50a79b6f2d44a2bc1c83abbe8c6f46751b2b071ccab6b96f9
   languageName: node
   linkType: hard
 
@@ -22029,8 +22046,8 @@ __metadata:
   linkType: hard
 
 "ws@npm:^8.16.0":
-  version: 8.17.0
-  resolution: "ws@npm:8.17.0"
+  version: 8.17.1
+  resolution: "ws@npm:8.17.1"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -22039,7 +22056,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 147ef9eab0251364e1d2c55338ad0efb15e6913923ccbfdf20f7a8a6cb8f88432bcd7f4d8f66977135bfad35575644f9983201c1a361019594a4e53977bf6d4e
+  checksum: 442badcce1f1178ec87a0b5372ae2e9771e07c4929a3180321901f226127f252441e8689d765aa5cfba5f50ac60dd830954afc5aeae81609aefa11d3ddf5cecf
   languageName: node
   linkType: hard
 
