@@ -30,13 +30,14 @@ const getEthereumSquadStakingConfig = async (networkId: string | undefined) => {
   const owner = await ethereumClient.owner();
   const squadCountLimit = await ethereumClient.maxSquadCount();
 
-  // TODO: Hardcode several values because it will not be changed and it take too much requests to get them
+  // NOTE: the current contract does not allow to retrieve the array of multiplier but individual value
+  // so we hardcode several values because it will not be changed and it take too much requests to get them
   const squadConfig: SquadConfig = {
     owner,
     cooldownPeriod: cooldownPeriod.toNumber(),
     squadCountLimit: squadCountLimit.toNumber(),
     // Hardcode
-    bonusMultiplier: [100, 101, 102, 103, 104, 105],
+    bonusMultiplier: [100, 105, 125, 131, 139, 161],
     maxSquadSize: 6,
     minSquadSize: 1,
   };
