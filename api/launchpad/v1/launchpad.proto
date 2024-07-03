@@ -36,12 +36,12 @@ message CollectionsByCreatorResponse {
 }
 
 message LaunchpadProjectsRequest {
-  string creator_id = 1;
-  string network_id = 2;
-  int32 limit = 3;
-  int32 offset = 4;
-  Sort sort = 5;
-  SortDirection sort_direction = 6;
+  string network_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+  Sort sort = 4;
+  SortDirection sort_direction = 5;
+//  TODO: user authentication (Member of the admin DAO)
 }
 
 message LaunchpadProjectsResponse {
