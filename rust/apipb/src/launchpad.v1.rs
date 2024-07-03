@@ -25,16 +25,15 @@ pub struct CollectionsByCreatorResponse {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LaunchpadProjectsRequest {
     #[prost(string, tag="1")]
-    pub creator_id: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
     pub network_id: ::prost::alloc::string::String,
-    #[prost(int32, tag="3")]
+    #[prost(int32, tag="2")]
     pub limit: i32,
-    #[prost(int32, tag="4")]
+    #[prost(int32, tag="3")]
     pub offset: i32,
-    #[prost(enumeration="Sort", tag="5")]
+    #[prost(enumeration="Sort", tag="4")]
     pub sort: i32,
-    #[prost(enumeration="SortDirection", tag="6")]
+    ///   TODO: user authentication (Member of the admin DAO)
+    #[prost(enumeration="SortDirection", tag="5")]
     pub sort_direction: i32,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]

@@ -92,11 +92,11 @@ export interface CollectionsByCreatorResponse {
 }
 
 export interface LaunchpadProjectsRequest {
-  creatorId: string;
   networkId: string;
   limit: number;
   offset: number;
   sort: Sort;
+  /** TODO: user authentication (Member of the admin DAO) */
   sortDirection: SortDirection;
 }
 
@@ -363,28 +363,25 @@ export const CollectionsByCreatorResponse = {
 };
 
 function createBaseLaunchpadProjectsRequest(): LaunchpadProjectsRequest {
-  return { creatorId: "", networkId: "", limit: 0, offset: 0, sort: 0, sortDirection: 0 };
+  return { networkId: "", limit: 0, offset: 0, sort: 0, sortDirection: 0 };
 }
 
 export const LaunchpadProjectsRequest = {
   encode(message: LaunchpadProjectsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.creatorId !== "") {
-      writer.uint32(10).string(message.creatorId);
-    }
     if (message.networkId !== "") {
-      writer.uint32(18).string(message.networkId);
+      writer.uint32(10).string(message.networkId);
     }
     if (message.limit !== 0) {
-      writer.uint32(24).int32(message.limit);
+      writer.uint32(16).int32(message.limit);
     }
     if (message.offset !== 0) {
-      writer.uint32(32).int32(message.offset);
+      writer.uint32(24).int32(message.offset);
     }
     if (message.sort !== 0) {
-      writer.uint32(40).int32(message.sort);
+      writer.uint32(32).int32(message.sort);
     }
     if (message.sortDirection !== 0) {
-      writer.uint32(48).int32(message.sortDirection);
+      writer.uint32(40).int32(message.sortDirection);
     }
     return writer;
   },
@@ -401,38 +398,31 @@ export const LaunchpadProjectsRequest = {
             break;
           }
 
-          message.creatorId = reader.string();
+          message.networkId = reader.string();
           continue;
         case 2:
-          if (tag !== 18) {
+          if (tag !== 16) {
             break;
           }
 
-          message.networkId = reader.string();
+          message.limit = reader.int32();
           continue;
         case 3:
           if (tag !== 24) {
             break;
           }
 
-          message.limit = reader.int32();
+          message.offset = reader.int32();
           continue;
         case 4:
           if (tag !== 32) {
             break;
           }
 
-          message.offset = reader.int32();
+          message.sort = reader.int32() as any;
           continue;
         case 5:
           if (tag !== 40) {
-            break;
-          }
-
-          message.sort = reader.int32() as any;
-          continue;
-        case 6:
-          if (tag !== 48) {
             break;
           }
 
@@ -449,7 +439,6 @@ export const LaunchpadProjectsRequest = {
 
   fromJSON(object: any): LaunchpadProjectsRequest {
     return {
-      creatorId: isSet(object.creatorId) ? globalThis.String(object.creatorId) : "",
       networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
       limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
       offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
@@ -460,9 +449,6 @@ export const LaunchpadProjectsRequest = {
 
   toJSON(message: LaunchpadProjectsRequest): unknown {
     const obj: any = {};
-    if (message.creatorId !== "") {
-      obj.creatorId = message.creatorId;
-    }
     if (message.networkId !== "") {
       obj.networkId = message.networkId;
     }
@@ -486,7 +472,6 @@ export const LaunchpadProjectsRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<LaunchpadProjectsRequest>, I>>(object: I): LaunchpadProjectsRequest {
     const message = createBaseLaunchpadProjectsRequest();
-    message.creatorId = object.creatorId ?? "";
     message.networkId = object.networkId ?? "";
     message.limit = object.limit ?? 0;
     message.offset = object.offset ?? 0;
