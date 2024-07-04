@@ -252,10 +252,14 @@ func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.C
 	switch req.GetSort() {
 	case launchpadpb.Sort_SORT_COLLECTION_NAME:
 		orderSQL = "lp.collection_name" + orderDirection
+	case launchpadpb.Sort_SORT_UNSPECIFIED:
+		orderSQL = "lp.network_id" + orderDirection
 	}
 
-	err = s.conf.IndexerDB.Raw(`SELECT collection_data from launchpad_projects ORDER BY %s`,
-		orderSQL, // ORDER BY here or it won't work
+	err = s.conf.IndexerDB.Raw(fmt.Sprintf(
+		`
+		SELECT collection_data FROM launchpad_projects AS lp ORDER BY %s
+		`, orderSQL), // ORDER BY here or it won't work
 	).Scan(&projects).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
@@ -287,6 +291,11 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		return nil, errors.New("missing network id")
 	}
 
+	userAddress := req.GetUserAddress()
+	if userAddress == "" {
+		return nil, errors.New("missing user address")
+	}
+
 	_, err := s.conf.NetworkStore.GetNetwork(networkID)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
@@ -295,25 +304,24 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 	//  TODO: user authentication (Member of the admin DAO)
 	// Control if sender is member of the admin DAO
 	daoAdminAddress := "tori129kpfu7krgumuc38hfyxwfluq7eu06rhr3awcztr3a9cgjjcx5hswlqj8v"
-	userAddress := req.GetUserAddress()
 	var isUserAuthorized bool
 	err = s.conf.IndexerDB.Raw(`
 	SELECT EXISTS (
 		SELECT 1
 		FROM dao_members dm
 		JOIN daos d ON dm.dao_contract_address = d.contract_address
-		WHERE d.address = ?
-		WHERE dm.member_address = ?
+		WHERE d.contract_address = ?
+		AND dm.member_address = ?
 	) AS dao_exists;
 	`,
 		daoAdminAddress,
 		userAddress,
 	).Scan(&isUserAuthorized).Error
 	if err != nil {
-		return errors.Wrap(err, "failed to query database")
+		return nil, errors.Wrap(err, "failed to query database")
 	}
 	if !isUserAuthorized {
-		return errors.New("Unauthorized")
+		return nil, errors.New("Unauthorized")
 	}
 
 	var projects []launchpadpb.LaunchpadProject
@@ -330,10 +338,14 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 	switch req.GetSort() {
 	case launchpadpb.Sort_SORT_COLLECTION_NAME:
 		orderSQL = "lp.collection_name" + orderDirection
+	case launchpadpb.Sort_SORT_UNSPECIFIED:
+		orderSQL = "lp.network_id" + orderDirection
 	}
 
-	err = s.conf.IndexerDB.Raw(`SELECT * from launchpad_projects ORDER BY %s`,
-		orderSQL, // ORDER BY here or it won't work
+	err = s.conf.IndexerDB.Raw(fmt.Sprintf(
+		`
+		SELECT * FROM launchpad_projects AS lp ORDER BY %s
+		`, orderSQL), // ORDER BY here or it won't work
 	).Scan(&projects).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
