@@ -7,7 +7,7 @@ import { PeriodFilter } from "./PeriodFilter";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SearchInput } from "@/components/sorts/SearchInput";
-import { SpacerRow } from "@/components/spacer";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
 import { usePopularCollections } from "@/hooks/marketplace/usePopularCollections";
 import { useEnabledNetworks } from "@/hooks/useEnabledNetworks";
@@ -113,6 +113,8 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
           filterText={filterText}
         />
       </View>
+
+      <SpacerColumn size={16} />
     </ScreenContainer>
   );
 };

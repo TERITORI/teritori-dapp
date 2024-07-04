@@ -423,3 +423,25 @@ install-gno: node_modules
 .PHONY: start.gnodev-e2e
 start.gnodev-e2e:
 	gnodev --unsafe-api --server-mode --add-account g193vp9tjhfpldvgg3gn433ayv8pn7rtfv8shyeq $$(find gno -name gno.mod -type f -exec dirname {} \;)
+
+.PHONY: clone-gno
+clone-gno:
+	cd gnobuild && git clone https://github.com/gnolang/gno.git
+	cp -r ./gno/p ./gnobuild/gno/examples/gno.land/p/demo/teritori
+
+.PHONY: build-gno
+build-gno:
+	cd gnobuild/gno/gnovm && make build
+
+.PHONY: lint-gno
+lint-gno:
+	./gnobuild/gno/gnovm/build/gno lint ./gno/. -v
+
+.PHONY: test-gno
+test-gno:
+	./gnobuild/gno/gnovm/build/gno test ./gno/... -v
+
+.PHONY: clean-gno
+clean-gno:
+	rm -rf gnobuild
+	mkdir gnobuild
