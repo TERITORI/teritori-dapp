@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { NetworkKind, parseUserId } from "@/networks";
+import { NetworkKind, getUserId, parseUserId } from "@/networks";
 import {
   getEthereumSquadStakingQueryClient,
   getCosmosSquadStakingQueryClient,
 } from "@/utils/contracts";
+import { estimateStakingDurationManually } from "@/utils/game";
 import { SquadInfo } from "@/utils/types/riot-p2e";
 
 const cosmosGetSquads = async (
@@ -32,15 +33,31 @@ const ethereumGetSquads = async (
   const queryClient = await getEthereumSquadStakingQueryClient(networkId);
   const res = await queryClient.callStatic.userSquadInfo(user);
 
-  return res.map((squad) => ({
-    index: squad.index.toNumber(),
-    endTime: squad.endTime.toNumber(),
-    startTime: squad.startTime.toNumber(),
-    nfts: squad.nfts.map((nft) => ({
+  const promises = res.map(async (squad) => {
+    let endTime = squad.endTime.toNumber();
+    const startTime = squad.startTime.toNumber();
+    const nfts = squad.nfts.map((nft) => ({
       contract: nft.collection,
       tokenId: nft.tokenId.toString(),
-    })),
-  }));
+    }));
+
+    // PATCH: If on polygon and startTime = endTime that means we are not able to fetch metadata
+    // then we will calculate manually the info here
+    if (networkId === "polygon" && startTime === endTime) {
+      const userId = getUserId(networkId, user);
+      const duration = await estimateStakingDurationManually(userId, nfts);
+      endTime = startTime + Math.round(duration / 1000);
+    }
+
+    return {
+      index: squad.index.toNumber(),
+      endTime,
+      startTime,
+      nfts,
+    };
+  });
+
+  return await Promise.all(promises);
 };
 
 export const useSquadStakingSquads = (userId: string | undefined) => {
