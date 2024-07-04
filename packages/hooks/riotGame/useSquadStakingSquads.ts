@@ -5,8 +5,8 @@ import {
   getEthereumSquadStakingQueryClient,
   getCosmosSquadStakingQueryClient,
 } from "@/utils/contracts";
-import { SquadInfo } from "@/utils/types/riot-p2e";
 import { estimateStakingDurationManually } from "@/utils/game";
+import { SquadInfo } from "@/utils/types/riot-p2e";
 
 const cosmosGetSquads = async (
   networkId: string,
@@ -26,7 +26,7 @@ const cosmosGetSquads = async (
   }));
 };
 
-export const ethereumGetSquads = async (
+const ethereumGetSquads = async (
   networkId: string,
   user: string,
 ): Promise<SquadInfo[]> => {
@@ -35,7 +35,7 @@ export const ethereumGetSquads = async (
 
   const promises = res.map(async (squad) => {
     let endTime = squad.endTime.toNumber();
-    let startTime = squad.startTime.toNumber();
+    const startTime = squad.startTime.toNumber();
     const nfts = squad.nfts.map((nft) => ({
       contract: nft.collection,
       tokenId: nft.tokenId.toString(),
@@ -46,7 +46,7 @@ export const ethereumGetSquads = async (
     if (networkId === "polygon" && startTime === endTime) {
       const userId = getUserId(networkId, user);
       const duration = await estimateStakingDurationManually(userId, nfts);
-      endTime = startTime + Math.round(duration/1000);
+      endTime = startTime + Math.round(duration / 1000);
     }
 
     return {
