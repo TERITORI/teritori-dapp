@@ -127,6 +127,7 @@ export const useFeedPosting = (
           const provider = new GnoJSONRPCProvider(network.endpoint);
           await provider.waitForTransaction(txHash);
           setStep(feedPostingStep(FeedPostingStepId.DONE));
+          onSuccess && onSuccess();
         } else {
           setStep(feedPostingStep(FeedPostingStepId.POSTING));
 
@@ -153,6 +154,7 @@ export const useFeedPosting = (
       isDAO,
       makeProposal,
       mutateAsync,
+      onSuccess,
       network,
       postFee,
       userAddress,
