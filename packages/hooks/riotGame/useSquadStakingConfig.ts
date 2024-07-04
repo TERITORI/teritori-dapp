@@ -23,7 +23,7 @@ const getCosmosSquadStakingConfig = async (networkId: string | undefined) => {
   return squadConfig;
 };
 
-const getEthereumSquadStakingConfig = async (networkId: string | undefined) => {
+export const getEthereumSquadStakingConfig = async (networkId: string | undefined) => {
   const ethereumClient = await getEthereumSquadStakingQueryClient(networkId);
 
   const cooldownPeriod = await ethereumClient.cooldownPeriod();

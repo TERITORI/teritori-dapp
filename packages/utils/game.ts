@@ -40,7 +40,10 @@ import {
   RipperRarity,
   RipperTraitType,
   SquadConfig,
+  NFT as SquadNFT,
 } from "@/utils/types/riot-p2e";
+import { getEthereumSquadStakingConfig } from "@/hooks/riotGame/useSquadStakingConfig";
+import { getEthereumStandardNFTInfo } from "@/hooks/useNFTInfo";
 
 const round = (input: number) => {
   return Math.floor(100 * input) / 100;
@@ -599,3 +602,38 @@ export const squadStake = async (
       throw Error(`${network.id} does not support squad stake`);
   }
 };
+
+
+export const estimateStakingDurationManually = async (userId: string, squadNfts: SquadNFT[]) => {
+    const [network, address] = parseUserId(userId);
+    if (!network || !address) {
+      return 0;
+    }
+
+    if (network.kind !== NetworkKind.Ethereum || network.id !== "polygon") {
+      return 0;
+    }
+
+    const stakingConfig = await getEthereumSquadStakingConfig(network.id);
+
+    const nftInfosPromise = squadNfts.map(async (nft) => {
+      return await getEthereumStandardNFTInfo(
+        network,
+        network?.riotContractAddressGen0,
+        nft.tokenId,
+        userId,
+      );
+    });
+    const nftInfos = await Promise.all(nftInfosPromise);
+    const nftInfosToNFTs: NFT[] = nftInfos.map((nft) =>
+      NFT.fromPartial({
+        attributes: nft.attributes.map((attr) => ({
+          traitType: attr.trait_type,
+          value: attr.value,
+        })),
+      }),
+    );
+
+    const duration = estimateStakingDuration(nftInfosToNFTs, stakingConfig);
+    return duration;
+}

@@ -183,7 +183,7 @@ const getTNSNFTInfo = async (
   return nfo;
 };
 
-const getEthereumStandardNFTInfo = async (
+export const getEthereumStandardNFTInfo = async (
   network: EthereumNetworkInfo,
   minterContractAddress: string,
   tokenId: string,
@@ -203,9 +203,13 @@ const getEthereumStandardNFTInfo = async (
   const nftClient = TeritoriNft__factory.connect(nftAddress, provider);
   const collectionName = await nftClient.callStatic.name();
   const contractURI = await nftClient.callStatic.contractURI();
-  const collectionMetadata = await fetch(contractURI).then((data) =>
-    data.json(),
-  );
+
+  // NOTE: For some reason, deployed contract is missing contractURI so we set metadata to empty
+  // instead of blocking process here
+  const collectionMetadata = contractURI
+    ? await fetch(contractURI).then((data) => data.json())
+    : {};
+
   // TokenURI must be fetched from deployed NFT
   const deployedNftClient = TeritoriNft__factory.connect(nftAddress, provider);
   const tokenURI = await deployedNftClient.tokenURI(tokenId);
