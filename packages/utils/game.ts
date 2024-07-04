@@ -2,8 +2,12 @@ import { Coin } from "@cosmjs/amino";
 import { toUtf8 } from "@cosmjs/encoding";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 
-import { getKeplrSquadStakingClient } from "./contracts";
+import {
+  getEthereumSquadStakingQueryClient,
+  getKeplrSquadStakingClient,
+} from "./contracts";
 import { getMetaMaskEthereumSigner } from "./ethereum";
+import { getEthereumStandardNFTInfo } from "./nft";
 import backpackSVG from "../../assets/game/backpack.svg";
 import coinStakeSVG from "../../assets/game/coin-stake.svg";
 import controllerSVG from "../../assets/game/controller.svg";
@@ -40,6 +44,7 @@ import {
   RipperRarity,
   RipperTraitType,
   SquadConfig,
+  NFT as SquadNFT,
 } from "@/utils/types/riot-p2e";
 
 const round = (input: number) => {
@@ -598,4 +603,65 @@ export const squadStake = async (
     default:
       throw Error(`${network.id} does not support squad stake`);
   }
+};
+
+export const estimateStakingDurationManually = async (
+  userId: string,
+  squadNfts: SquadNFT[],
+) => {
+  const [network, address] = parseUserId(userId);
+  if (!network || !address) {
+    return 0;
+  }
+
+  if (network.kind !== NetworkKind.Ethereum || network.id !== "polygon") {
+    return 0;
+  }
+
+  const stakingConfig = await getEthereumSquadStakingConfig(network.id);
+
+  const nftInfosPromise = squadNfts.map(async (nft) => {
+    return await getEthereumStandardNFTInfo(
+      network,
+      network?.riotContractAddressGen0,
+      nft.tokenId,
+      userId,
+    );
+  });
+  const nftInfos = await Promise.all(nftInfosPromise);
+  const nftInfosToNFTs: NFT[] = nftInfos.map((nft) =>
+    NFT.fromPartial({
+      attributes: nft.attributes.map((attr) => ({
+        traitType: attr.trait_type,
+        value: attr.value,
+      })),
+    }),
+  );
+
+  const duration = estimateStakingDuration(nftInfosToNFTs, stakingConfig);
+  return duration;
+};
+
+export const getEthereumSquadStakingConfig = async (
+  networkId: string | undefined,
+) => {
+  const ethereumClient = await getEthereumSquadStakingQueryClient(networkId);
+
+  const cooldownPeriod = await ethereumClient.cooldownPeriod();
+  const owner = await ethereumClient.owner();
+  const squadCountLimit = await ethereumClient.maxSquadCount();
+
+  // NOTE: the current contract does not allow to retrieve the array of multiplier but individual value
+  // so we hardcode several values because it will not be changed and it take too much requests to get them
+  const squadConfig: SquadConfig = {
+    owner,
+    cooldownPeriod: cooldownPeriod.toNumber(),
+    squadCountLimit: squadCountLimit.toNumber(),
+    // Hardcode
+    bonusMultiplier: [100, 105, 125, 131, 139, 161],
+    maxSquadSize: 6,
+    minSquadSize: 1,
+  };
+
+  return squadConfig;
 };
