@@ -53,13 +53,10 @@ const gnoGetUsernameByAddress = async (
 
   const provider = new GnoJSONRPCProvider(network.endpoint);
 
-  const query = `GetUserByAddress(${JSON.stringify(userAddress)}).Name`;
-  console.log("query", query);
   const username = await provider.evaluateExpression(
     network.nameServiceContractAddress,
-    query,
+    `GetUserByAddress("${userAddress}").Name`,
   );
-  console.log("res", username);
   const gnoUsename = extractGnoString(username);
   return `${gnoUsename}.gno`;
 };
