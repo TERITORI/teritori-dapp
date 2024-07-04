@@ -21,8 +21,6 @@ RIOTER_FOOTER_PACKAGE=rioter-footer-nft
 ADDR_LIST_REPO=cw_addr_list
 ADDR_LIST_PACKAGE=cw-address-list
 
-GOFMT=$(shell $(GO) env GOROOT)/bin/gofmt
-
 CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
 DOCKER_REGISTRY=rg.nl-ams.scw.cloud/teritori
