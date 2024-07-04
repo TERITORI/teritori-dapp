@@ -55,7 +55,7 @@ const gnoGetUsernameByAddress = async (
 
   const username = await provider.evaluateExpression(
     network.nameServiceContractAddress,
-    `GetUserByAddress("${userAddress}").name`,
+    `GetUserByAddress("${userAddress}").Name`,
   );
   const gnoUsename = extractGnoString(username);
   return `${gnoUsename}.gno`;
