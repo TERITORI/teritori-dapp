@@ -41,7 +41,8 @@ message LaunchpadProjectsRequest {
   int32 offset = 3;
   Sort sort = 4;
   SortDirection sort_direction = 5;
-//  TODO: user authentication (Member of the admin DAO)
+//  TODO: user authentication (Member of the admin DAO) using a token
+  string user_address = 6;
 }
 
 message LaunchpadProjectsResponse {

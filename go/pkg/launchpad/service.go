@@ -294,28 +294,27 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 
 	//  TODO: user authentication (Member of the admin DAO)
 	// Control if sender is member of the admin DAO
-	// var isUserAuthorized bool
-
-	// userAddress, err := s.authenticate(s.db, req.GetAuthToken())
-	// if err != nil {
-	// 	return nil, errors.Wrap(err, "failed to authenticate")
-	// }
-	// err = s.conf.IndexerDB.Raw(`
-	// SELECT EXISTS (
-	// 	SELECT 1
-	// 	FROM dao_members dm
-	// 	JOIN daos d ON dm.dao_contract_address = d.contract_address
-	// 	WHERE dm.member_address = ?
-	// ) AS dao_exists;
-	// `,
-	// 	userAddress,
-	// ).Scan(&isUserAuthorized).Error
-	// if err != nil {
-	// 	return errors.Wrap(err, "failed to query database")
-	// }
-	// if !isUserAuthorized {
-	// 	return errors.New("Unauthorized")
-	// }
+	daoAdminAddress := "tori129kpfu7krgumuc38hfyxwfluq7eu06rhr3awcztr3a9cgjjcx5hswlqj8v"
+	userAddress := req.GetUserAddress()
+	var isUserAuthorized bool
+	err = s.conf.IndexerDB.Raw(`
+	SELECT EXISTS (
+		SELECT 1
+		FROM dao_members dm
+		JOIN daos d ON dm.dao_contract_address = d.contract_address
+		WHERE d.address = ?
+		WHERE dm.member_address = ?
+	) AS dao_exists;
+	`,
+		daoAdminAddress,
+		userAddress,
+	).Scan(&isUserAuthorized).Error
+	if err != nil {
+		return errors.Wrap(err, "failed to query database")
+	}
+	if !isUserAuthorized {
+		return errors.New("Unauthorized")
+	}
 
 	var projects []launchpadpb.LaunchpadProject
 	orderDirection := ""
