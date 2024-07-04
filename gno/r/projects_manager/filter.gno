@@ -3,8 +3,8 @@ package projects_manager
 import (
 	"std"
 
-	"gno.land/p/demo/dao_maker/jsonutil"
 	"gno.land/p/demo/json"
+	"gno.land/p/demo/teritori/jsonutil"
 	"gno.land/p/demo/ufmt"
 )
 

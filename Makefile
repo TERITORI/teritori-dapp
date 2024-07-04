@@ -426,6 +426,7 @@ start.gnodev-e2e:
 
 .PHONY: clone-gno
 clone-gno:
+	mkdir -p gnobuild
 	cd gnobuild && git clone https://github.com/gnolang/gno.git
 	cp -r ./gno/p ./gnobuild/gno/examples/gno.land/p/demo/teritori
 
@@ -444,4 +445,3 @@ test-gno:
 .PHONY: clean-gno
 clean-gno:
 	rm -rf gnobuild
-	mkdir gnobuild
