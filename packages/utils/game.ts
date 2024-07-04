@@ -7,6 +7,7 @@ import {
   getKeplrSquadStakingClient,
 } from "./contracts";
 import { getMetaMaskEthereumSigner } from "./ethereum";
+import { getEthereumStandardNFTInfo } from "./nft";
 import backpackSVG from "../../assets/game/backpack.svg";
 import coinStakeSVG from "../../assets/game/coin-stake.svg";
 import controllerSVG from "../../assets/game/controller.svg";
@@ -45,7 +46,6 @@ import {
   SquadConfig,
   NFT as SquadNFT,
 } from "@/utils/types/riot-p2e";
-import { getEthereumStandardNFTInfo } from "./nft";
 
 const round = (input: number) => {
   return Math.floor(100 * input) / 100;

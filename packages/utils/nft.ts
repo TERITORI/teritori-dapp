@@ -1,10 +1,11 @@
-import { EthereumNetworkInfo, getCollectionId, getUserId } from "@/networks";
 import { getEthereumProvider } from "./ethereum";
-import { TeritoriMinter__factory } from "@/evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { web3ToWeb2URI } from "./ipfs";
 import { NFTAttribute, NFTInfo } from "./types/nft";
-import { NFTVault__factory } from "@/evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
+
+import { TeritoriMinter__factory } from "@/evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { TeritoriNft__factory } from "@/evm-contracts-clients/teritori-nft/TeritoriNft__factory";
+import { NFTVault__factory } from "@/evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
+import { EthereumNetworkInfo, getCollectionId, getUserId } from "@/networks";
 
 export const getEthereumStandardNFTInfo = async (
   network: EthereumNetworkInfo,

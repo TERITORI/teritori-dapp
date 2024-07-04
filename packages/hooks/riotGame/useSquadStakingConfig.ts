@@ -1,12 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { getNetwork, NetworkKind } from "@/networks";
-import {
-  getCosmosSquadStakingQueryClient,
-  getEthereumSquadStakingQueryClient,
-} from "@/utils/contracts";
-import { SquadConfig } from "@/utils/types/riot-p2e";
+import { getCosmosSquadStakingQueryClient } from "@/utils/contracts";
 import { getEthereumSquadStakingConfig } from "@/utils/game";
+import { SquadConfig } from "@/utils/types/riot-p2e";
 
 const getCosmosSquadStakingConfig = async (networkId: string | undefined) => {
   const cosmosClient = await getCosmosSquadStakingQueryClient(networkId);

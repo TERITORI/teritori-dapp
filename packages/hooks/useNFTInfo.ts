@@ -22,9 +22,9 @@ import {
   parseUserId,
 } from "@/networks";
 import { web3ToWeb2URI } from "@/utils/ipfs";
+import { getEthereumStandardNFTInfo } from "@/utils/nft";
 import { nameServiceDefaultImage } from "@/utils/tns";
 import { NFTAttribute, NFTInfo } from "@/utils/types/nft";
-import { getEthereumStandardNFTInfo } from "@/utils/nft";
 
 export const useNFTInfo = (nftId: string, userId?: string | undefined) => {
   const [network, minterContractAddress, tokenId] = parseNftId(nftId);
