@@ -96,8 +96,9 @@ export interface LaunchpadProjectsRequest {
   limit: number;
   offset: number;
   sort: Sort;
-  /** TODO: user authentication (Member of the admin DAO) */
   sortDirection: SortDirection;
+  /** TODO: user authentication (Member of the admin DAO) using a token */
+  userAddress: string;
 }
 
 export interface LaunchpadProjectsResponse {
@@ -363,7 +364,7 @@ export const CollectionsByCreatorResponse = {
 };
 
 function createBaseLaunchpadProjectsRequest(): LaunchpadProjectsRequest {
-  return { networkId: "", limit: 0, offset: 0, sort: 0, sortDirection: 0 };
+  return { networkId: "", limit: 0, offset: 0, sort: 0, sortDirection: 0, userAddress: "" };
 }
 
 export const LaunchpadProjectsRequest = {
@@ -382,6 +383,9 @@ export const LaunchpadProjectsRequest = {
     }
     if (message.sortDirection !== 0) {
       writer.uint32(40).int32(message.sortDirection);
+    }
+    if (message.userAddress !== "") {
+      writer.uint32(50).string(message.userAddress);
     }
     return writer;
   },
@@ -428,6 +432,13 @@ export const LaunchpadProjectsRequest = {
 
           message.sortDirection = reader.int32() as any;
           continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.userAddress = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -444,6 +455,7 @@ export const LaunchpadProjectsRequest = {
       offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
       sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
       sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
+      userAddress: isSet(object.userAddress) ? globalThis.String(object.userAddress) : "",
     };
   },
 
@@ -464,6 +476,9 @@ export const LaunchpadProjectsRequest = {
     if (message.sortDirection !== 0) {
       obj.sortDirection = sortDirectionToJSON(message.sortDirection);
     }
+    if (message.userAddress !== "") {
+      obj.userAddress = message.userAddress;
+    }
     return obj;
   },
 
@@ -477,6 +492,7 @@ export const LaunchpadProjectsRequest = {
     message.offset = object.offset ?? 0;
     message.sort = object.sort ?? 0;
     message.sortDirection = object.sortDirection ?? 0;
+    message.userAddress = object.userAddress ?? "";
     return message;
   },
 };

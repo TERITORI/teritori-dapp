@@ -32,9 +32,11 @@ pub struct LaunchpadProjectsRequest {
     pub offset: i32,
     #[prost(enumeration="Sort", tag="4")]
     pub sort: i32,
-    ///   TODO: user authentication (Member of the admin DAO)
     #[prost(enumeration="SortDirection", tag="5")]
     pub sort_direction: i32,
+    ///   TODO: user authentication (Member of the admin DAO) using a token
+    #[prost(string, tag="6")]
+    pub user_address: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
