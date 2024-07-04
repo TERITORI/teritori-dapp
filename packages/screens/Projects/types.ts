@@ -1,27 +1,7 @@
-import * as yup from "yup";
+import * as zod from "zod";
 import { z } from "zod";
 
 import { zodTryParseJSON } from "@/utils/sanitize";
-
-export const yupMilestoneFormValues = yup.object({
-  id: yup.string(),
-  title: yup
-    .string()
-    .required()
-    .min(3)
-    .matches(/^[^,]*$/, "Should not contain ,"),
-  desc: yup
-    .string()
-    .required()
-    .min(10)
-    .matches(/^[^,]*$/, "Should not contain ,"),
-  amount: yup.number().required().positive().integer(),
-  priority: yup.string(),
-  link: yup.string().url(),
-  duration: yup.number().min(1),
-});
-
-export type MilestoneFormValues = yup.InferType<typeof yupMilestoneFormValues>;
 
 const zodMilestonePriority = z.enum([
   "MS_PRIORITY_HIGH",
@@ -30,6 +10,33 @@ const zodMilestonePriority = z.enum([
 ]);
 
 export type MilestonePriority = z.infer<typeof zodMilestonePriority>;
+
+export const zodMilestoneFormValues = zod.object({
+  id: zod.string().optional(),
+  title: zod
+    .string()
+    .min(3)
+    .regex(/^[^,]*$/, "Should not contain ,"),
+  desc: zod
+    .string()
+    .min(10)
+    .regex(/^[^,]*$/, "Should not contain ,"),
+  amount: zod.number().positive().int(),
+  priority: zodMilestonePriority,
+  link: zod.string().url().optional(),
+  duration: zod.number().min(1),
+});
+
+export type MilestoneFormValues = zod.infer<typeof zodMilestoneFormValues>;
+
+export interface MilestoneRequest {
+  title: string;
+  desc: string;
+  amount: string;
+  duration: string;
+  link: string;
+  priority: string;
+}
 
 export const zodMilestoneStatus = z.enum([
   "MS_OPEN",
@@ -54,6 +61,19 @@ const zodProjectMilestone = z.object({
 });
 
 export type ProjectMilestone = z.infer<typeof zodProjectMilestone>;
+
+export const previewMilestoneForm = (fm: MilestoneFormValues) => {
+  const m: ProjectMilestone = {
+    ...fm,
+    id: fm.id || "",
+    status: "MS_OPEN",
+    paid: "0",
+    amount: fm.amount.toString(),
+    link: fm.link || "",
+    funded: false,
+  };
+  return m;
+};
 
 const zodContractStatus = z.enum([
   "CREATED",
@@ -111,7 +131,7 @@ const zodProjectMetadata = z.object({
   teamAndLinkData: zodProjectTeamAndLinkData.optional(),
 });
 
-export type ProjectMetadata = z.infer<typeof zodProjectMetadata>;
+// export type ProjectMetadata = z.infer<typeof zodProjectMetadata>;
 
 export const zodProject = z.object({
   id: z.string(),

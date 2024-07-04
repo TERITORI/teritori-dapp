@@ -8,6 +8,13 @@ import (
 	"gno.land/p/demo/json"
 )
 
+func TestUnmarshalMilestones(t *testing.T) {
+	_, err := json.Unmarshal([]byte("[]"))
+	if err != nil {
+		t.Fatalf("Error unmarshalling empty array: %s", err)
+	}
+}
+
 func TestJSONRender(t *testing.T) {
 	createdAt := time.Date(2021, time.August, 1, 0, 0, 0, 0, time.UTC)
 	duration := time.Hour * 24 * 30

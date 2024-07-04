@@ -31,8 +31,8 @@ import { prettyPrice } from "@/utils/coins";
 export const MilestoneItem: React.FC<{
   milestone: ProjectMilestone;
   isHovered?: boolean;
-  onPress?: (milestone: ProjectMilestone) => void;
-  onDelete?: (milestone: ProjectMilestone) => void;
+  onPress?: (id: string) => void;
+  onDelete?: (id: string) => void;
 }> = ({ milestone, onPress, isHovered, onDelete }) => {
   const networkId = useSelectedNetworkId();
 
@@ -45,7 +45,7 @@ export const MilestoneItem: React.FC<{
 
   return (
     <View>
-      <TouchableOpacity onPress={() => onPress?.(milestone)}>
+      <TouchableOpacity onPress={() => onPress?.(milestone.id)}>
         <TertiaryBox
           style={{
             backgroundColor: isHovered ? neutral33 : neutral22,
@@ -145,7 +145,7 @@ export const MilestoneItem: React.FC<{
           }}
         >
           <TouchableOpacity
-            onPress={() => onDelete?.(milestone)}
+            onPress={() => onDelete?.(milestone.id)}
             style={{
               position: "absolute",
               padding: layout.spacing_x1,

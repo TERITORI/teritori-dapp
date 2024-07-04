@@ -5,7 +5,6 @@ import { HeaderBackButton } from "../components/HeaderBackButton";
 import { ProjectInfo } from "../components/ProjectInfo";
 import { ProjectMilestones } from "../components/ProjectMilestones";
 import { useProject } from "../hooks/useProjects";
-import { ProjectMilestone } from "../types";
 
 import { ScreenContainer } from "@/components/ScreenContainer";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
@@ -27,8 +26,8 @@ export const ProjectsDetailScreen: ScreenFC<"ProjectsDetail"> = ({
     (m) => m.id === selectedMilestoneId,
   );
 
-  const onSelectMilestone = (milestone: ProjectMilestone) => {
-    setSelectedMilestoneId(milestone.id);
+  const onSelectMilestone = (id: string) => {
+    setSelectedMilestoneId(id);
   };
 
   if (!project)

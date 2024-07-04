@@ -1,5 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
@@ -30,7 +30,7 @@ import { layout } from "../../../utils/style/layout";
 import {
   MilestoneFormValues,
   MilestonePriority,
-  yupMilestoneFormValues,
+  zodMilestoneFormValues,
 } from "../types";
 
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
@@ -50,7 +50,6 @@ const initialValues: MilestoneFormValues = {
   desc: "",
   priority: "MS_PRIORITY_MEDIUM",
   amount: 0,
-  link: "",
   duration: 0,
 };
 
@@ -71,7 +70,7 @@ export const MilestoneForm: React.FC<{
   const decimals = currency?.decimals || 0;
 
   const { handleSubmit, watch, formState, setValue } = useForm({
-    resolver: yupResolver(yupMilestoneFormValues),
+    resolver: zodResolver(zodMilestoneFormValues),
     defaultValues: initialValues,
   });
   const values = watch();
@@ -201,15 +200,21 @@ export const MilestoneForm: React.FC<{
         <SpacerColumn size={2} />
 
         <SimpleButton
-          onPress={handleSubmit((values) => {
-            values.priority = priority;
-            // FIXME: loss of precision
-            values.amount = +Decimal.fromUserInput(
-              values.amount.toString(),
-              decimals,
-            ).atomics;
-            onSubmit(values);
-          })}
+          onPress={handleSubmit(
+            (values) => {
+              console.log("adding milestone: handle sumbit", values);
+              values.priority = priority;
+              // FIXME: loss of precision
+              values.amount = +Decimal.fromUserInput(
+                values.amount.toString(),
+                decimals,
+              ).atomics;
+              onSubmit(values);
+            },
+            (state) => {
+              console.error("adding milestone: invalid", state);
+            },
+          )}
           text="Confirm"
           size="XS"
           color={neutralFF}

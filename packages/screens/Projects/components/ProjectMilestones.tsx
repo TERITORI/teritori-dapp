@@ -19,7 +19,7 @@ import { ProjectMilestone } from "../types";
 
 export const ProjectMilestones: React.FC<{
   milestones: ProjectMilestone[];
-  onSelectMilestone?: (milestone: ProjectMilestone) => void;
+  onSelectMilestone?: (id: string) => void;
 }> = ({ milestones, onSelectMilestone }) => {
   const [searchText, setSearchText] = useState("");
   const [isHideInfo, setIsHideInfo] = useState(false);

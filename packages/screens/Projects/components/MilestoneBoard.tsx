@@ -64,7 +64,7 @@ const STEPS: Step[] = [
 export const MilestoneBoard: React.FC<{
   milestones: ProjectMilestone[];
   containerStyle?: StyleProp<ViewStyle>;
-  onSelectMilestone?: (milestone: ProjectMilestone) => void;
+  onSelectMilestone?: (id: string) => void;
   editable?: boolean;
 }> = ({ onSelectMilestone, containerStyle, editable, milestones }) => {
   const [hoveredMilestone, setHoveredMilestone] = useState<ProjectMilestone>();
@@ -74,13 +74,14 @@ export const MilestoneBoard: React.FC<{
     actions: { addMilestone, removeMilestone },
   } = useMakeRequestState();
 
-  const removeHoveredMilestone = (milestone: ProjectMilestone) => {
+  const removeHoveredMilestone = (id: string) => {
     setHoveredMilestone(undefined);
-    removeMilestone(milestone);
+    removeMilestone(id);
   };
 
   const addNewMilestone = (milestone: MilestoneFormValues) => {
     showMilestoneForm(false);
+    console.log("adding milestone", milestone);
     addMilestone(milestone);
   };
 

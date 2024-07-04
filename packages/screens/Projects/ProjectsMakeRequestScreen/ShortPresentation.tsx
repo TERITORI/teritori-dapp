@@ -1,5 +1,5 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
@@ -20,13 +20,12 @@ import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
 import { TNSResult } from "../components/TNSResult";
 import {
   useMakeRequestState,
-  yupProjectFormData,
+  zodProjectFormData,
 } from "../hooks/useMakeRequestHook";
 
+import { LoaderFullScreen } from "@/components/loaders/LoaderFullScreen";
+import { useIpfs } from "@/hooks/useIpfs";
 import { ButtonsGroup } from "@/screens/Projects/components/ButtonsGroup";
-
-const CREATOR_TYPE_CONTRACTOR = "contractor";
-const CREATOR_TYPE_FUNDER = "funder";
 
 export const ShortPresentation: React.FC = () => {
   const {
@@ -39,13 +38,20 @@ export const ShortPresentation: React.FC = () => {
   const [searchTNSText, setSearchTNSText] = useState("");
   const [isTNSVisible, setIsTNSVisible] = useState(false);
   const { handleSubmit, formState, setValue, watch, setError } = useForm({
-    resolver: yupResolver(yupProjectFormData),
+    resolver: zodResolver(zodProjectFormData),
     defaultValues: shortDescData,
   });
   const { errors } = formState;
   const values = watch();
-
-  const [creatorType, setCreatorType] = useState(CREATOR_TYPE_CONTRACTOR);
+  const { uploadToIPFS } = useIpfs();
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
+  useEffect(() => {
+    if (!caller) {
+      // TODO: would be better to not allow this corner case, aka do something smarter when no wallet is connected
+      return;
+    }
+    setValue("creatorAddress", caller);
+  }, [setValue, caller]);
 
   const { names } = useNameSearch({
     networkId: selectedNetworkId,
@@ -59,6 +65,8 @@ export const ShortPresentation: React.FC = () => {
 
   return (
     <View style={{ width: "100%", maxWidth: 480, margin: "auto" }}>
+      <LoaderFullScreen visible={isUploadingCover} />
+
       <BrandText style={fontSemibold20}>Grant details</BrandText>
 
       <SpacerColumn size={1} />
@@ -82,16 +90,12 @@ export const ShortPresentation: React.FC = () => {
             "A contractor looking for a funder",
             "A funder looking for a developer",
           ]}
-          selectedId={creatorType === CREATOR_TYPE_CONTRACTOR ? 0 : 1}
+          selectedId={values.creatorKind === "contractor" ? 0 : 1}
           onChange={async (selectedId) => {
             if (selectedId === 0) {
-              setCreatorType(CREATOR_TYPE_CONTRACTOR);
-              setValue("contractor", caller);
-              setValue("funder", "");
+              setValue("creatorKind", "contractor");
             } else {
-              setCreatorType(CREATOR_TYPE_FUNDER);
-              setValue("funder", caller);
-              setValue("contractor", "");
+              setValue("creatorKind", "funder");
             }
           }}
         />
@@ -102,7 +106,7 @@ export const ShortPresentation: React.FC = () => {
       <View style={{ position: "relative", zIndex: 2 }}>
         <TextInputCustom
           label={
-            creatorType === CREATOR_TYPE_FUNDER
+            values.creatorKind === "funder"
               ? "Potential developer"
               : "Potential funder"
           }
@@ -113,23 +117,10 @@ export const ShortPresentation: React.FC = () => {
           onChangeText={(text) => {
             setSearchTNSText(text);
             setIsTNSVisible(true);
-            setValue(
-              creatorType === CREATOR_TYPE_FUNDER
-                ? CREATOR_TYPE_CONTRACTOR
-                : CREATOR_TYPE_FUNDER,
-              text,
-            );
+            setValue("targetAddress", text);
           }}
-          value={
-            creatorType === CREATOR_TYPE_FUNDER
-              ? values.contractor
-              : values.funder
-          }
-          error={
-            creatorType === CREATOR_TYPE_FUNDER
-              ? errors.contractor?.message
-              : errors.funder?.message
-          }
+          value={values.targetAddress}
+          error={errors.targetAddress?.message}
         />
 
         <TNSResult
@@ -138,12 +129,7 @@ export const ShortPresentation: React.FC = () => {
           names={names}
           onSelected={(name) => {
             setIsTNSVisible(false);
-            setValue(
-              creatorType === CREATOR_TYPE_FUNDER
-                ? CREATOR_TYPE_CONTRACTOR
-                : CREATOR_TYPE_FUNDER,
-              name,
-            );
+            setValue("targetAddress", name);
           }}
         />
       </View>
@@ -171,9 +157,9 @@ export const ShortPresentation: React.FC = () => {
         placeholder="Your Grant description"
         textInputStyle={{ height: 80 }}
         variant="labelOutside"
-        onChangeText={(val) => setValue("desc", val)}
-        value={values.desc}
-        error={errors.desc?.message}
+        onChangeText={(val) => setValue("description", val)}
+        value={values.description}
+        error={errors.description?.message}
       />
 
       <SpacerColumn size={2.5} />
@@ -184,8 +170,8 @@ export const ShortPresentation: React.FC = () => {
         fullWidth
         placeholder="Address of the authority that will resolve conflicts"
         variant="labelOutside"
-        onChangeText={(val) => setValue("arbitrator", val)}
-        value={values.arbitrator}
+        onChangeText={(val) => setValue("arbitratorAddress", val)}
+        value={values.arbitratorAddress}
       />
 
       <SpacerColumn size={2.5} />
@@ -198,11 +184,17 @@ export const ShortPresentation: React.FC = () => {
 
       <FileUploader
         onUpload={async (files) => {
-          if (files[0].fileType !== "image") {
-            setError("coverImg", { message: "file is not an image" });
-            return;
+          setIsUploadingCover(true);
+          try {
+            if (files[0].fileType !== "image") {
+              setError("coverImg", { message: "file is not an image" });
+              return;
+            }
+            const web3URI = await uploadToIPFS(selectedWallet.userId, files[0]);
+            setValue("coverImg", web3URI);
+          } finally {
+            setIsUploadingCover(false);
           }
-          setValue("coverImg", files[0]);
         }}
         mimeTypes={IMAGE_MIME_TYPES}
       >
@@ -219,19 +211,15 @@ export const ShortPresentation: React.FC = () => {
 
       <SpacerColumn size={1} />
 
-      {errors.coverImg && (
+      {!!errors.coverImg && (
         <BrandText style={[fontSemibold14, { color: errorColor }]}>
           {errors.coverImg.message}
         </BrandText>
       )}
 
       <View style={{ alignItems: "center" }}>
-        {values.coverImg && (
-          <RoundedGradientImage
-            size="M"
-            square
-            sourceURI={values.coverImg.url}
-          />
+        {!!values.coverImg && (
+          <RoundedGradientImage size="M" square sourceURI={values.coverImg} />
         )}
       </View>
 

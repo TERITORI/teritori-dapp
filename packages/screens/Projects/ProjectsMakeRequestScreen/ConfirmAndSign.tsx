@@ -8,8 +8,11 @@ import ModalBase from "../../../components/modals/ModalBase";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { Tag } from "../components/Milestone";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
-import { useUtils } from "../hooks/useUtils";
-import { ProjectShortDescData, ProjectTeamAndLinkData } from "../types";
+import {
+  MilestoneRequest,
+  ProjectShortDescData,
+  ProjectTeamAndLinkData,
+} from "../types";
 
 import { BrandText } from "@/components/BrandText";
 import FlexRow from "@/components/FlexRow";
@@ -21,7 +24,6 @@ import { SecondaryButtonOutline } from "@/components/buttons/SecondaryButtonOutl
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useBalances } from "@/hooks/useBalances";
-import { useIpfs } from "@/hooks/useIpfs";
 import {
   useSelectedNetworkId,
   useSelectedNetworkInfo,
@@ -45,7 +47,6 @@ import {
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
-import { LocalFileData } from "@/utils/types/files";
 
 export const ConfirmAndSign: React.FC = () => {
   const [isShowModal, setIsShowModal] = useState(false);
@@ -59,9 +60,6 @@ export const ConfirmAndSign: React.FC = () => {
     teamAndLinkData: teamAndLinkFormData,
   } = useMakeRequestState();
   const networkId = useSelectedNetworkId();
-  const wallet = useSelectedWallet();
-  const { mustGetValue } = useUtils();
-  const { uploadToIPFS } = useIpfs();
 
   const pmFeature = getNetworkFeature(
     networkId,
@@ -76,8 +74,6 @@ export const ConfirmAndSign: React.FC = () => {
   );
   const bal = balances?.find((b) => b.denom === pmFeature?.paymentsDenom);
 
-  const [isUploadingImage, setIsUploadingImage] = useState(false);
-
   const { setToast } = useFeedbacks();
 
   const { execEscrowMethod } = useEscrowContract(
@@ -86,19 +82,6 @@ export const ConfirmAndSign: React.FC = () => {
   );
 
   const queryClient = useQueryClient();
-
-  const uploadFile = async (fileToUpload: LocalFileData) => {
-    setIsUploadingImage(true);
-    try {
-      if (!selectedWallet) {
-        throw Error("Wallet not found");
-      }
-      const web3URI = await uploadToIPFS(selectedWallet.userId, fileToUpload);
-      return web3URI;
-    } finally {
-      setIsUploadingImage(false);
-    }
-  };
 
   const cancel = async () => {
     setIsShowConfirmModal(false);
@@ -118,15 +101,14 @@ export const ConfirmAndSign: React.FC = () => {
         throw Error("Project manager feature not found");
       }
 
-      const coverImg = await uploadFile(projectFormData.coverImg);
+      const coverImg = projectFormData.coverImg;
 
-      const caller = mustGetValue(wallet?.address, "caller");
-      const expiryDuration =
-        "" + milestones.reduce((total, m) => total + +m.duration, 0);
+      // other party can't accept contract after duration expired
+      const expiryDuration = 24 * 60 * 60; // 1 day in seconds
 
       const shortDescData: ProjectShortDescData = {
         name: projectFormData.name,
-        desc: projectFormData.desc,
+        desc: projectFormData.description,
         coverImg,
         tags: projectFormData.tags || "",
       };
@@ -144,36 +126,47 @@ export const ConfirmAndSign: React.FC = () => {
         teamAndLinkData,
       });
 
-      const contractor = projectFormData.contractor;
-      const funder = projectFormData.funder;
-      const conflictHandler = projectFormData.arbitrator;
-
-      if (!contractor && !funder) {
-        throw new Error("Contract and Funder cannot be both empty");
-      }
+      const conflictHandler = projectFormData.arbitratorAddress;
 
       let send = "";
       // If creator = funder then we need to send all needed fund
-      if (caller === funder) {
+      if (projectFormData.creatorKind === "funder") {
         send = totalFunding + pmFeature.paymentsDenom;
       }
 
-      console.log("executing contract creation");
+      const contractor =
+        projectFormData.creatorKind === "contractor"
+          ? projectFormData.creatorAddress
+          : "";
+      const funder =
+        projectFormData.creatorKind === "funder"
+          ? projectFormData.creatorAddress
+          : "";
 
-      await execEscrowMethod(
-        "CreateContractJSON",
-        [
-          contractor,
-          funder,
-          pmFeature.paymentsDenom,
-          metadata,
-          expiryDuration,
-          JSON.stringify(milestones),
-          conflictHandler,
-        ],
-        send,
-        10_000_000,
-      );
+      const args = [
+        contractor,
+        funder,
+        pmFeature.paymentsDenom,
+        metadata,
+        expiryDuration.toString(),
+        JSON.stringify(
+          milestones.map((ms) => {
+            const req: MilestoneRequest = {
+              title: ms.title,
+              desc: ms.desc,
+              duration: ms.duration.toString(),
+              amount: ms.amount.toString(),
+              link: ms.link || "",
+              priority: ms.priority,
+            };
+            return req;
+          }),
+        ),
+        conflictHandler,
+      ];
+      console.log("executing contract creation", args);
+
+      await execEscrowMethod("CreateContractJSON", args, send, 10_000_000);
 
       await queryClient.invalidateQueries(["projects"]);
 
@@ -268,12 +261,6 @@ export const ConfirmAndSign: React.FC = () => {
             {prettyPrice(networkId, bal?.amount, pmFeature?.paymentsDenom)}
           </BrandText>
         </FlexRow>
-
-        {isUploadingImage && (
-          <BrandText style={[fontSemibold14]}>
-            Uploading Cover Image...
-          </BrandText>
-        )}
 
         <SpacerColumn size={2} />
 

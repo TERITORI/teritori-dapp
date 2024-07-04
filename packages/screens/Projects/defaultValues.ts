@@ -3,19 +3,24 @@ import {
   ProjectTeamAndLinkFormData,
 } from "./hooks/useMakeRequestHook";
 
-export const emptyTeamAndLink: ProjectTeamAndLinkFormData = {
+/*
+const emptyTeamAndLink: ProjectTeamAndLinkFormData = {
   websiteLink: "",
   twitterProfile: "",
   discordLink: "",
   githubLink: "",
   teamDesc: "",
 };
+*/
 
 export const emptyProjectFormData: ProjectFormData = {
+  creatorAddress: "",
   name: "",
-  desc: "",
-  arbitrator: "",
-  coverImg: {},
+  description: "",
+  arbitratorAddress: "",
+  coverImg: "",
+  creatorKind: "contractor",
+  tags: "",
 };
 
 // Used only when dev, for quickly goto next step

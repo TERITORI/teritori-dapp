@@ -45,6 +45,7 @@ export const RightBlock: React.FC<RightBlockProps> = ({
 
   const actions = [
     <IconWithTextButton
+      key="permalink"
       text="Permanent link"
       iconSvg={copySVG}
       textColor={neutralA3}
@@ -62,7 +63,7 @@ export const RightBlock: React.FC<RightBlockProps> = ({
 
   if (teamAndLinkData?.websiteLink) {
     actions.push(
-      <Link to={teamAndLinkData?.websiteLink}>
+      <Link key="website" to={teamAndLinkData?.websiteLink}>
         <IconWithTextButton
           text="Website URL"
           iconSvg={websiteSVG}
@@ -74,7 +75,7 @@ export const RightBlock: React.FC<RightBlockProps> = ({
 
   if (teamAndLinkData?.discordLink) {
     actions.push(
-      <Link to={teamAndLinkData?.discordLink}>
+      <Link key="discord" to={teamAndLinkData?.discordLink}>
         <IconWithTextButton
           text="Discord URL"
           iconSvg={discordSVG}
@@ -86,7 +87,7 @@ export const RightBlock: React.FC<RightBlockProps> = ({
 
   if (teamAndLinkData?.githubLink) {
     actions.push(
-      <Link to={teamAndLinkData?.githubLink}>
+      <Link key="github" to={teamAndLinkData?.githubLink}>
         <IconWithTextButton
           text="Github URL"
           iconSvg={githubSVG}
@@ -98,7 +99,10 @@ export const RightBlock: React.FC<RightBlockProps> = ({
 
   if (teamAndLinkData?.twitterProfile) {
     actions.push(
-      <Link to={normalizeTwitterId(teamAndLinkData?.twitterProfile)}>
+      <Link
+        key="twitter"
+        to={normalizeTwitterId(teamAndLinkData?.twitterProfile)}
+      >
         <IconWithTextButton
           text="Twitter URL"
           iconSvg={twitterSVG}

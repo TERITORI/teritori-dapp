@@ -20,7 +20,7 @@ export const iconPadding = 12;
 export const outerPadding = 6;
 export const innerGap = 8;
 
-export const IconWithText: React.FC<{
+const IconWithText: React.FC<{
   text?: string;
   iconSvg: React.FC<SvgProps>;
   textColor?: ColorValue;

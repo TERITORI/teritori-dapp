@@ -1,5 +1,4 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import { useQuery } from "@tanstack/react-query";
 
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
@@ -9,44 +8,6 @@ import {
 } from "@/networks";
 import { useUtils } from "@/screens/Projects/hooks/useUtils";
 import { adenaVMCall, extractGnoString } from "@/utils/gno";
-
-// This will call and get data from escrow contract
-export const useQueryEscrow = (
-  networkId: string,
-  methodName: string,
-  args: any[],
-  enabled: boolean,
-) => {
-  const { mustGetValue } = useUtils();
-
-  const gnoNetwork = mustGetGnoNetwork(networkId);
-
-  const networkFeature = getNetworkFeature(
-    networkId,
-    NetworkFeature.GnoProjectManager,
-  );
-
-  const escrowPkgPath = mustGetValue(
-    networkFeature?.projectsManagerPkgPath,
-    "escrow pkg path",
-  );
-
-  return useQuery(
-    ["queryEscrow", networkId, methodName, ...args],
-    async () => {
-      const client = new GnoJSONRPCProvider(gnoNetwork.endpoint);
-      const argsStr = args
-        .map((arg) => (typeof arg === "number" ? arg : `"${arg}"`))
-        .join(",");
-
-      return await client.evaluateExpression(
-        escrowPkgPath,
-        `${methodName}(${argsStr})`,
-      );
-    },
-    { enabled },
-  );
-};
 
 export const useEscrowContract = (
   networkId: string | undefined,
@@ -100,7 +61,7 @@ export const useEscrowContract = (
   // only through error in case of problem
   const execEscrowMethod = async (
     func: string,
-    args: any[],
+    args: string[],
     send: string = "",
     gasWanted: number = 2_000_000,
   ) => {

@@ -1,12 +1,13 @@
 import { useRoute } from "@react-navigation/native";
 import { useMemo } from "react";
-import * as yup from "yup";
+import { z } from "zod";
 import { create } from "zustand";
 
 import { useAppNavigation } from "../../../utils/navigation";
 import { emptyProjectFormData, fakeTeamAndLink } from "../defaultValues";
-import { MilestoneFormValues, ProjectMilestone } from "../types";
+import { MilestoneFormValues } from "../types";
 
+/*
 export const yupProjectTeamAndLinkFormData = yup.object({
   websiteLink: yup.string().required().url(),
   twitterProfile: yup.string().required().url(),
@@ -14,22 +15,48 @@ export const yupProjectTeamAndLinkFormData = yup.object({
   githubLink: yup.string().required().url(),
   teamDesc: yup.string().required(),
 });
+*/
 
-export type ProjectTeamAndLinkFormData = yup.InferType<
-  typeof yupProjectTeamAndLinkFormData
+export const zodProjectTeamAndLinkFormData = z.object({
+  websiteLink: z.string().url(),
+  twitterProfile: z.string().url(),
+  discordLink: z.string().url(),
+  githubLink: z.string().url(),
+  teamDesc: z.string(),
+});
+
+export type ProjectTeamAndLinkFormData = z.infer<
+  typeof zodProjectTeamAndLinkFormData
 >;
 
+/*
 export const yupProjectFormData = yup.object({
   name: yup.string().required().min(3),
   desc: yup.string().required().min(10),
-  funder: yup.string(),
-  contractor: yup.string(),
+  creator: yup
+    .mixed()
+    .oneOf([
+      yup.object({ funder: yup.string() }),
+      yup.object({ contractor: yup.string() }),
+    ]),
   arbitrator: yup.string().required(),
   tags: yup.string().nullable(),
   coverImg: yup.object(),
 });
+*/
 
-export type ProjectFormData = yup.InferType<typeof yupProjectFormData>;
+export const zodProjectFormData = z.object({
+  name: z.string().min(3),
+  description: z.string().min(10),
+  creatorKind: z.enum(["funder", "contractor"]),
+  creatorAddress: z.string().min(1),
+  targetAddress: z.string().min(1).optional(),
+  arbitratorAddress: z.string().min(1),
+  tags: z.string(),
+  coverImg: z.string().min(1), // web3 uri
+});
+
+export type ProjectFormData = z.infer<typeof zodProjectFormData>;
 
 type MakeRequestState = {
   stepIndice: number;
@@ -42,7 +69,7 @@ type MakeRequestState = {
     setTeamAndLink: (teamAndLinkData: ProjectTeamAndLinkFormData) => void;
 
     addMilestone: (milestone: MilestoneFormValues) => void;
-    removeMilestone: (milestone: ProjectMilestone) => void;
+    removeMilestone: (id: string) => void;
   };
 };
 
@@ -69,9 +96,9 @@ const useMakeRequestStore = create<MakeRequestState>((set, get) => ({
 
       set({ milestones: updatedMilestones });
     },
-    removeMilestone: (milestone) => {
+    removeMilestone: (id) => {
       const updatedMilestones = get()
-        .milestones.filter((t) => t.id !== milestone.id)
+        .milestones.filter((t) => t.id !== id)
         .map((t, idx) => {
           t.id = idx.toString();
           return t;

@@ -5,7 +5,7 @@ import { MakeRequestFooter } from "./Footer";
 import { ProjectInfo } from "../components/ProjectInfo";
 import { ProjectMilestones } from "../components/ProjectMilestones";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
-import { Project } from "../types";
+import { Project, previewMilestoneForm } from "../types";
 
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 
@@ -19,19 +19,13 @@ export const Preview: React.FC = () => {
 
   const selectedWallet = useSelectedWallet();
 
-  let coverFile = projectFormData.coverImg as any;
-  if ("file" in coverFile) {
-    // files selected by cypress are not File objects
-    coverFile = coverFile.file;
-  }
-
   // Create project object just like when it returned from server
   const project: Project = {
     sender: selectedWallet?.address || "",
     metadata: {
       shortDescData: {
         ...projectFormData,
-        coverImg: coverFile ? URL.createObjectURL(coverFile) : "",
+        coverImg: projectFormData.coverImg,
         tags: projectFormData.tags || "",
       },
       teamAndLinkData,
@@ -42,7 +36,7 @@ export const Preview: React.FC = () => {
     status: "CREATED",
     id: "",
     funded: false,
-    milestones,
+    milestones: milestones.map(previewMilestoneForm),
     contractorCandidates: [],
     paymentDenom: "",
     expireAt: new Date(),
@@ -61,7 +55,7 @@ export const Preview: React.FC = () => {
     <View>
       <ProjectInfo project={project} />
 
-      <ProjectMilestones milestones={milestones} />
+      <ProjectMilestones milestones={milestones.map(previewMilestoneForm)} />
 
       <MakeRequestFooter
         nextText="Publish this request"

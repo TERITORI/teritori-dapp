@@ -6,6 +6,7 @@ import { neutral17 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { MilestoneBoard } from "../components/MilestoneBoard";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
+import { previewMilestoneForm } from "../types";
 
 export const Milestones: React.FC = () => {
   const {
@@ -15,15 +16,6 @@ export const Milestones: React.FC = () => {
   } = useMakeRequestState();
 
   const goToReview = () => {
-    // Calculate total budget based on total milestones amounts
-    const totalBudget = milestones.reduce((total, m) => total + +m.amount, 0);
-    const totalDuration = milestones.reduce(
-      (total, m) => total + +m.duration,
-      0,
-    );
-    shortDescData.budget = totalBudget;
-    shortDescData.duration = totalDuration;
-
     setShortDesc(shortDescData);
 
     goNextStep();
@@ -32,7 +24,7 @@ export const Milestones: React.FC = () => {
   return (
     <View>
       <MilestoneBoard
-        milestones={milestones}
+        milestones={milestones.map(previewMilestoneForm)}
         editable
         containerStyle={{
           backgroundColor: neutral17,
@@ -41,7 +33,10 @@ export const Milestones: React.FC = () => {
         }}
       />
 
-      <MakeRequestFooter disableNext={false} onSubmit={goToReview} />
+      <MakeRequestFooter
+        disableNext={!milestones.length}
+        onSubmit={goToReview}
+      />
     </View>
   );
 };
