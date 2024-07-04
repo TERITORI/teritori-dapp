@@ -424,6 +424,11 @@ install-gno: node_modules
 start.gnodev-e2e:
 	gnodev --unsafe-api --server-mode --add-account g193vp9tjhfpldvgg3gn433ayv8pn7rtfv8shyeq $$(find gno -name gno.mod -type f -exec dirname {} \;)
 
+.PHONY: gno-mod-tidy
+gno-mod-tidy:
+	find gno -name gno.mod -type f -exec sh -c 'cd $$(dirname {}); gno mod tidy' \;
+
+
 .PHONY: clone-gno
 clone-gno:
 	mkdir -p gnobuild
