@@ -27,9 +27,14 @@ describe("Contractor proposer full flow", () => {
     cy.get(
       "input[placeholder='Address of the authority that will resolve conflicts']",
     ).type(judgeAddr);
+
     cy.get("input[type=file]").selectFile("cypress/fixtures/image.png", {
       force: true,
     });
+    cy.get("div[data-testid=loader-full-screen]", { timeout: 10000 }).should(
+      "not.exist",
+    );
+
     cy.get("input[placeholder='Add  1-5 main Grant tags using comma...']").type(
       "ui,ux,frontend",
     );
