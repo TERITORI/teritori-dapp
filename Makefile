@@ -445,7 +445,7 @@ test-gno:
 .PHONY: gno-mod-tidy
 gno-mod-tidy:
 	export gno=$$(pwd)/gnobuild/gno/gnovm/build/gno; \
-	find gno -name gno.mod -type f  -print0 | xargs -I'{}' -0L1 sh -c 'cd $$(dirname {}); $$gno mod tidy' \;
+	find gno -name gno.mod -type f | xargs -I'{}' sh -c 'cd $$(dirname {}); $$gno mod tidy' \;
 
 .PHONY: clean-gno
 clean-gno:
