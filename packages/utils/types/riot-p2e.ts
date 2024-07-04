@@ -70,7 +70,7 @@ export type SquadConfig = {
   squadCountLimit: number;
 };
 
-interface NFT {
+export interface NFT {
   contract: string;
   tokenId: string;
 }
@@ -78,6 +78,6 @@ interface NFT {
 export interface SquadInfo {
   index: number;
   endTime: number;
-  nfts: NFT[];
   startTime: number;
+  nfts: NFT[];
 }

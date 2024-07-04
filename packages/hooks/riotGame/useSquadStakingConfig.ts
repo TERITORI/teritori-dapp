@@ -1,10 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { getNetwork, NetworkKind } from "@/networks";
-import {
-  getCosmosSquadStakingQueryClient,
-  getEthereumSquadStakingQueryClient,
-} from "@/utils/contracts";
+import { getCosmosSquadStakingQueryClient } from "@/utils/contracts";
+import { getEthereumSquadStakingConfig } from "@/utils/game";
 import { SquadConfig } from "@/utils/types/riot-p2e";
 
 const getCosmosSquadStakingConfig = async (networkId: string | undefined) => {
@@ -18,28 +16,6 @@ const getCosmosSquadStakingConfig = async (networkId: string | undefined) => {
     minSquadSize: config.min_squad_size,
     owner: config.owner,
     squadCountLimit: config.squad_count_limit,
-  };
-
-  return squadConfig;
-};
-
-const getEthereumSquadStakingConfig = async (networkId: string | undefined) => {
-  const ethereumClient = await getEthereumSquadStakingQueryClient(networkId);
-
-  const cooldownPeriod = await ethereumClient.cooldownPeriod();
-  const owner = await ethereumClient.owner();
-  const squadCountLimit = await ethereumClient.maxSquadCount();
-
-  // NOTE: the current contract does not allow to retrieve the array of multiplier but individual value
-  // so we hardcode several values because it will not be changed and it take too much requests to get them
-  const squadConfig: SquadConfig = {
-    owner,
-    cooldownPeriod: cooldownPeriod.toNumber(),
-    squadCountLimit: squadCountLimit.toNumber(),
-    // Hardcode
-    bonusMultiplier: [100, 105, 125, 131, 139, 161],
-    maxSquadSize: 6,
-    minSquadSize: 1,
   };
 
   return squadConfig;
