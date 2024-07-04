@@ -28,7 +28,7 @@ jobs:
       - name: Lint gno
         run: make lint-gno
 
-      - name: Check tidy
+      - name: gno mod tidy
         run: make gno-mod-tidy
 
       - name: Check that there is no diff

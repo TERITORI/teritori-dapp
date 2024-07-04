@@ -424,11 +424,6 @@ install-gno: node_modules
 start.gnodev-e2e:
 	gnodev --unsafe-api --server-mode --add-account g193vp9tjhfpldvgg3gn433ayv8pn7rtfv8shyeq $$(find gno -name gno.mod -type f -exec dirname {} \;)
 
-.PHONY: gno-mod-tidy
-gno-mod-tidy:
-	find gno -name gno.mod -type f -exec sh -c 'cd $$(dirname {}); gno mod tidy' \;
-
-
 .PHONY: clone-gno
 clone-gno:
 	mkdir -p gnobuild
@@ -446,6 +441,11 @@ lint-gno:
 .PHONY: test-gno
 test-gno:
 	./gnobuild/gno/gnovm/build/gno test ./gno/... -v
+
+.PHONY: gno-mod-tidy
+gno-mod-tidy:
+	export gno=$$(pwd)/gnobuild/gno/gnovm/build/gno; \
+	find gno -name gno.mod -type f  -print0 | xargs -I'{}' -0L1 sh -c 'cd $$(dirname {}); $$gno mod tidy' \;
 
 .PHONY: clean-gno
 clean-gno:
