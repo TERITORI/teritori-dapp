@@ -2,7 +2,10 @@ import { Coin } from "@cosmjs/amino";
 import { toUtf8 } from "@cosmjs/encoding";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 
-import { getKeplrSquadStakingClient } from "./contracts";
+import {
+  getEthereumSquadStakingQueryClient,
+  getKeplrSquadStakingClient,
+} from "./contracts";
 import { getMetaMaskEthereumSigner } from "./ethereum";
 import backpackSVG from "../../assets/game/backpack.svg";
 import coinStakeSVG from "../../assets/game/coin-stake.svg";
@@ -34,8 +37,6 @@ import {
   parseUserId,
 } from "../networks";
 
-import { getEthereumSquadStakingConfig } from "@/hooks/riotGame/useSquadStakingConfig";
-import { getEthereumStandardNFTInfo } from "@/hooks/useNFTInfo";
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import {
   GameBgCardItem,
@@ -44,6 +45,7 @@ import {
   SquadConfig,
   NFT as SquadNFT,
 } from "@/utils/types/riot-p2e";
+import { getEthereumStandardNFTInfo } from "./nft";
 
 const round = (input: number) => {
   return Math.floor(100 * input) / 100;
@@ -638,4 +640,28 @@ export const estimateStakingDurationManually = async (
 
   const duration = estimateStakingDuration(nftInfosToNFTs, stakingConfig);
   return duration;
+};
+
+export const getEthereumSquadStakingConfig = async (
+  networkId: string | undefined,
+) => {
+  const ethereumClient = await getEthereumSquadStakingQueryClient(networkId);
+
+  const cooldownPeriod = await ethereumClient.cooldownPeriod();
+  const owner = await ethereumClient.owner();
+  const squadCountLimit = await ethereumClient.maxSquadCount();
+
+  // NOTE: the current contract does not allow to retrieve the array of multiplier but individual value
+  // so we hardcode several values because it will not be changed and it take too much requests to get them
+  const squadConfig: SquadConfig = {
+    owner,
+    cooldownPeriod: cooldownPeriod.toNumber(),
+    squadCountLimit: squadCountLimit.toNumber(),
+    // Hardcode
+    bonusMultiplier: [100, 105, 125, 131, 139, 161],
+    maxSquadSize: 6,
+    minSquadSize: 1,
+  };
+
+  return squadConfig;
 };
