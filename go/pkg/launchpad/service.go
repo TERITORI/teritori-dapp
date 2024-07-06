@@ -251,15 +251,15 @@ func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.C
 	orderSQL := ""
 	switch req.GetSort() {
 	case launchpadpb.Sort_SORT_COLLECTION_NAME:
-		orderSQL = "lp.collection_name" + orderDirection
+		orderSQL = "ORDER BY lp.collection_data->>'name'" + orderDirection
 	case launchpadpb.Sort_SORT_UNSPECIFIED:
-		orderSQL = "lp.network_id" + orderDirection
+		orderSQL = ""
 	}
 
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(
 		`
-		SELECT collection_data FROM launchpad_projects AS lp ORDER BY %s
-		`, orderSQL), // ORDER BY here or it won't work
+		SELECT collection_data FROM launchpad_projects AS lp %s
+		`, orderSQL),
 	).Scan(&projects).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
@@ -324,6 +324,26 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		return nil, errors.New("Unauthorized")
 	}
 
+	// collectionName := indexerdb.LaunchpadProject.CollectionData
+
+	// s.conf.IndexerDB.Raw(`
+	// 	SELECT *
+	// 	FROM launchpad_projects lp
+	// 	WHERE lp.project_id = ?
+	// `,
+	// 	seasonId,
+	// 	userId,
+	// ).Scan(&userRank).Error
+
+	// project := indexerdb.LaunchpadProject{
+	// 	ProjectID: req.ProjectId,
+	// 	NetworkID: req.NetworkId,
+	// }
+
+	// if err := s.conf.IndexerDB.First(&project).Error; err != nil {
+	// 	return nil, errors.Wrap(err, "failed to get the requested project")
+	// }
+
 	var projects []launchpadpb.LaunchpadProject
 	orderDirection := ""
 	switch req.GetSortDirection() {
@@ -337,15 +357,15 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 	orderSQL := ""
 	switch req.GetSort() {
 	case launchpadpb.Sort_SORT_COLLECTION_NAME:
-		orderSQL = "lp.collection_name" + orderDirection
+		orderSQL = "ORDER BY lp.collection_data->>'name'" + orderDirection
 	case launchpadpb.Sort_SORT_UNSPECIFIED:
-		orderSQL = "lp.network_id" + orderDirection
+		orderSQL = ""
 	}
 
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(
 		`
-		SELECT * FROM launchpad_projects AS lp ORDER BY %s
-		`, orderSQL), // ORDER BY here or it won't work
+		SELECT * FROM launchpad_projects AS lp %s
+		`, orderSQL),
 	).Scan(&projects).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
@@ -356,7 +376,6 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		result[idx] = &launchpadpb.LaunchpadProject{
 			Id:             dbProject.Id,
 			NetworkId:      dbProject.NetworkId,
-			CollectionName: dbProject.CollectionName,
 			CreatorId:      dbProject.CreatorId,
 			CollectionData: dbProject.CollectionData,
 		}

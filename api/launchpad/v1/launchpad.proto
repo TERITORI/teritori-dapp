@@ -86,10 +86,9 @@ message TokenMetadataResponse {
 message LaunchpadProject {
   string id = 1;
   string network_id = 2;
-  string collection_name = 3;
-  string creator_id = 4;
-  string collection_data = 5;
-  optional string merkle_root = 6;
+  string creator_id = 3;
+  string collection_data = 4;
+  optional string merkle_root = 5;
 }
 
 // message UpdateCollectionWhitelistsRequest {
