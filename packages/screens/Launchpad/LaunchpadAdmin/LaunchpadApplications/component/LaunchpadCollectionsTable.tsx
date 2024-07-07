@@ -15,9 +15,10 @@ import { TableRow } from "@/components/table/TableRow";
 import { CellBrandText, TableTextCell } from "@/components/table/TableTextCell";
 import { TableWrapper } from "@/components/table/TableWrapper";
 import { TableColumns } from "@/components/table/utils";
-import { DummyLaunchpadCollection } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/LaunchpadAdministrationOverviewScreen";
+import { getNetwork } from "@/networks";
 import { secondaryColor } from "@/utils/style/colors";
 import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
+import { CollectionDataResult } from "@/utils/types/launchpad";
 
 const columns: TableColumns = {
   rank: {
@@ -25,14 +26,19 @@ const columns: TableColumns = {
     minWidth: 20,
     flex: 0.25,
   },
-  collectionNameData: {
+  collectionName: {
     label: "Collection Name",
-    minWidth: 260,
+    minWidth: 240,
     flex: 3,
+  },
+  symbol: {
+    label: "Symbol",
+    minWidth: 80,
+    flex: 0.5,
   },
   collectionNetwork: {
     label: "Collection Network",
-    minWidth: 160,
+    minWidth: 150,
     flex: 1.8,
   },
   twitterURL: {
@@ -47,12 +53,12 @@ const columns: TableColumns = {
   },
   expectedTotalSupply: {
     label: "Expected Total Supply",
-    minWidth: 160,
+    minWidth: 140,
     flex: 1.8,
   },
   expectedPublicMintPrice: {
     label: "Expected Public Mint Price",
-    minWidth: 160,
+    minWidth: 150,
     flex: 1.8,
   },
   expectedMintDate: {
@@ -61,10 +67,11 @@ const columns: TableColumns = {
     flex: 1,
   },
 };
-const breakpointM = 1092;
+const breakpointM = 1110;
 
+// Displays collection_data as CollectionDataResult[] from many launchpad_projects
 export const LaunchpadCollectionsTable: React.FC<{
-  rows: DummyLaunchpadCollection[]; //TODO: Type this
+  rows: CollectionDataResult[];
 }> = ({ rows }) => {
   return (
     <View
@@ -80,7 +87,7 @@ export const LaunchpadCollectionsTable: React.FC<{
           renderItem={({ item, index }) => (
             <LaunchpadCollectionsTableRow collection={item} index={index} />
           )}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.symbol}
         />
       </TableWrapper>
     </View>
@@ -88,7 +95,7 @@ export const LaunchpadCollectionsTable: React.FC<{
 };
 
 const LaunchpadCollectionsTableRow: React.FC<{
-  collection: DummyLaunchpadCollection;
+  collection: CollectionDataResult;
   index: number;
   // prices: CoingeckoPrices;
 }> = ({
@@ -96,6 +103,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
   index,
   //  prices
 }) => {
+  const network = getNetwork(collection.target_network);
   return (
     // <OmniLink
     //   disabled={!target}
@@ -117,8 +125,8 @@ const LaunchpadCollectionsTableRow: React.FC<{
 
         <TableCell
           style={{
-            minWidth: columns.collectionNameData.minWidth,
-            flex: columns.collectionNameData.flex,
+            minWidth: columns.collectionName.minWidth,
+            flex: columns.collectionName.flex,
             flexDirection: "row",
             alignItems: "center",
           }}
@@ -130,7 +138,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
               marginRight: layout.spacing_x1,
             }}
           />
-          <CellBrandText>{collection.collectionNameData}</CellBrandText>
+          <CellBrandText>{collection.name}</CellBrandText>
 
           <SVG
             source={checkBadgeSVG}
@@ -139,6 +147,15 @@ const LaunchpadCollectionsTableRow: React.FC<{
             style={{ marginLeft: layout.spacing_x1 }}
           />
         </TableCell>
+
+        <TableTextCell
+          style={{
+            minWidth: columns.symbol.minWidth,
+            flex: columns.symbol.flex,
+          }}
+        >
+          {collection.symbol}
+        </TableTextCell>
 
         <TableCell
           style={{
@@ -155,7 +172,9 @@ const LaunchpadCollectionsTableRow: React.FC<{
             style={{ marginRight: layout.spacing_x1 }}
           />
 
-          <CellBrandText>{collection.collectionNetwork}</CellBrandText>
+          <CellBrandText>
+            {network?.displayName || "UNKNOWN NETWORK"}
+          </CellBrandText>
         </TableCell>
 
         <TableCell
@@ -164,7 +183,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
             flex: columns.twitterURL.flex,
           }}
         >
-          <Link to={collection.twitterURL}>
+          <Link to={collection.twitter_profile}>
             <SVG source={externalLinkSVG} color={secondaryColor} />
           </Link>
         </TableCell>
@@ -175,7 +194,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
             flex: columns.discordURL.flex,
           }}
         >
-          <Link to={collection.discordURL}>
+          <Link to={collection.contact_discord_name}>
             <SVG source={externalLinkSVG} color={secondaryColor} />
           </Link>
         </TableCell>
@@ -186,7 +205,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
             minWidth: columns.expectedTotalSupply.minWidth,
           }}
         >
-          {`${collection.expectedTotalSupply}`}
+          {`${collection.expected_supply}`}
         </TableTextCell>
 
         <TableTextCell
@@ -195,7 +214,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
             minWidth: columns.expectedPublicMintPrice.minWidth,
           }}
         >
-          {collection.expectedPublicMintPrice}
+          {`${collection.expected_public_mint_price}`}
         </TableTextCell>
 
         <TableTextCell
@@ -204,7 +223,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
             minWidth: columns.expectedMintDate.minWidth,
           }}
         >
-          {moment(collection.expectedMintDate).format("MMM D YYYY")}
+          {moment(collection.expected_mint_date).format("MMM D YYYY")}
         </TableTextCell>
 
         {/*TODO: Three dots here with possible actions on the collection ?*/}

@@ -17,6 +17,7 @@ import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
+import { zodTryParseJSON } from "@/utils/sanitize";
 import { primaryColor } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -24,6 +25,10 @@ import {
   fontSemibold28,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import {
+  CollectionDataResult,
+  ZodCollectionDataResult,
+} from "@/utils/types/launchpad";
 
 const MD_BREAKPOINT = 820;
 type TabsListType = "pendingApplications" | "pendingConfirmations";
@@ -32,65 +37,31 @@ type SecTabsListType =
   | "upcomingProjectsCarousel"
   | "liveSaleinProgress";
 
-export interface DummyLaunchpadCollection {
-  id: number;
-  rank: number;
-  collectionNameData: string;
-  collectionNetwork: string;
-  twitterURL: string;
-  discordURL: string;
-  expectedTotalSupply: number;
-  expectedPublicMintPrice: string;
-  expectedMintDate: Date;
-}
-const dummyData: DummyLaunchpadCollection[] = [
-  {
-    id: 1,
-    rank: 1,
-    collectionNameData: "The R!ot",
-    collectionNetwork: "teritori",
-    twitterURL: "https://www.lipsum.com/",
-    discordURL: "https://www.lipsum.com/",
-    expectedTotalSupply: 3000,
-    expectedPublicMintPrice: "550 L",
-    expectedMintDate: new Date(),
-  },
-  {
-    id: 2,
-    rank: 2,
-    collectionNameData: "throw back push chair",
-    collectionNetwork: "solanaL",
-    twitterURL: "https://www.lipsum.com/",
-    discordURL: "https://www.lipsum.com/",
-    expectedTotalSupply: 3000,
-    expectedPublicMintPrice: "550 L",
-    expectedMintDate: new Date(),
-  },
-  {
-    id: 3,
-    rank: 3,
-    collectionNameData: "cachablesadly back push chair",
-    collectionNetwork: "solanaL",
-    twitterURL: "https://www.lipsum.com/",
-    discordURL: "https://www.lipsum.com/",
-    expectedTotalSupply: 3000,
-    expectedPublicMintPrice: "550 L",
-    expectedMintDate: new Date(),
-  },
-];
-
 export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
   const { width } = useWindowDimensions();
-  const { data: launchpadProjects } = useLaunchpadProjects({
+  const { data: launchpadProjects = [] } = useLaunchpadProjects({
     networkId: selectedNetworkId,
     userAddress: selectedWallet?.address || "",
     offset: 0,
     limit: 100,
     sort: Sort.SORT_UNSPECIFIED,
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+  });
+
+  const collectionsData: CollectionDataResult[] = [];
+  launchpadProjects.forEach((project) => {
+    if (!project) {
+      return;
+    }
+    const collectionData: CollectionDataResult | undefined = zodTryParseJSON(
+      ZodCollectionDataResult,
+      project.collectionData,
+    );
+    if (!collectionData) return;
+    collectionsData.push(collectionData);
   });
 
   const tabs = {
@@ -202,7 +173,7 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
             marginTop: layout.spacing_x4,
           }}
         >
-          <LaunchpadCollectionsTable rows={dummyData} />
+          <LaunchpadCollectionsTable rows={collectionsData} />
         </View>
 
         <SpacerColumn size={2} />

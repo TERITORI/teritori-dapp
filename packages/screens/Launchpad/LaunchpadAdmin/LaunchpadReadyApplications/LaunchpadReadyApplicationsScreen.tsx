@@ -19,7 +19,7 @@ type TabsListType = "readyForListing" | "waitingForApproval";
 export interface DummyLaunchpadReadyCollection {
   id: number;
   rank: number;
-  collectionNameData: string;
+  collectionName: string;
   collectionNetwork: string;
   projectReadinessForMint: string;
   whitelistQuantity: string;
@@ -46,7 +46,7 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
     .fill({
       id: 0,
       rank: 0,
-      collectionNameData: "The R!ot",
+      collectionName: "The R!ot",
       collectionNetwork: "teritori",
       projectReadinessForMint: "Complete and ready to mint",
       whitelistQuantity: "0",

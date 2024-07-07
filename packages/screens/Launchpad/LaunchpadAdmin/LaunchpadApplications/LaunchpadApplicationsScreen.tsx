@@ -40,7 +40,7 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
     .fill({
       id: 0,
       rank: 0,
-      collectionNameData: "The R!ot",
+      collectionName: "The R!ot",
       collectionNetwork: "teritori",
       TwitterURL: "https://www.lipsum.com/",
       DiscordURL: "https://www.lipsum.com/",

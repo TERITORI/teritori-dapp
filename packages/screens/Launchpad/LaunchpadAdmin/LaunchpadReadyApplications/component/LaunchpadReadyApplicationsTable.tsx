@@ -23,7 +23,7 @@ const columns: TableColumns = {
     minWidth: 20,
     flex: 0.25,
   },
-  collectionNameData: {
+  collectionName: {
     label: "Collection Name",
     minWidth: 260,
     flex: 3,
@@ -107,8 +107,8 @@ const LaunchpadReadyApplicationsTableRow: React.FC<{
 
         <TableCell
           style={{
-            minWidth: columns.collectionNameData.minWidth,
-            flex: columns.collectionNameData.flex,
+            minWidth: columns.collectionName.minWidth,
+            flex: columns.collectionName.flex,
             flexDirection: "row",
             alignItems: "center",
           }}
@@ -120,7 +120,7 @@ const LaunchpadReadyApplicationsTableRow: React.FC<{
               marginRight: layout.spacing_x1,
             }}
           />
-          <CellBrandText>{collection.collectionNameData}</CellBrandText>
+          <CellBrandText>{collection.collectionName}</CellBrandText>
 
           <SVG
             source={checkBadgeSVG}

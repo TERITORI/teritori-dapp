@@ -15,7 +15,7 @@ export const useCollectionsByCreator = (req: CollectionsByCreatorRequest) => {
   const creatorId = req.creatorId;
 
   return useQuery(["collectionsByCreator", networkId, creatorId], async () => {
-    const collectionsData: CollectionDataResult[] = [];
+    const results: CollectionDataResult[] = [];
 
     try {
       const client = mustGetLaunchpadClient(networkId);
@@ -23,16 +23,19 @@ export const useCollectionsByCreator = (req: CollectionsByCreatorRequest) => {
       if (!client || !creatorId) {
         return [];
       }
-      const { collections } = await client.CollectionsByCreator(req);
+      const { collections: collectionsData } =
+        await client.CollectionsByCreator(req);
 
-      collections.forEach((data) => {
-        if (!data) {
+      collectionsData.forEach((collectionData) => {
+        if (!collectionData) {
           return;
         }
-        const collectionData: CollectionDataResult | undefined =
-          zodTryParseJSON(ZodCollectionDataResult, data);
-        if (!collectionData) return;
-        collectionsData.push(collectionData);
+        const result: CollectionDataResult | undefined = zodTryParseJSON(
+          ZodCollectionDataResult,
+          collectionData,
+        );
+        if (!result) return;
+        results.push(result);
       });
     } catch (e: any) {
       console.error("Error getting collections by creator: ", e);
@@ -43,6 +46,6 @@ export const useCollectionsByCreator = (req: CollectionsByCreatorRequest) => {
         message: e.message,
       });
     }
-    return collectionsData;
+    return results;
   });
 };

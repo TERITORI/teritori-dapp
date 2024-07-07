@@ -20,7 +20,7 @@ type TabsListType = "all" | "verified" | "ethereum" | "solana" | "cosmos";
 export interface DummyLaunchpadProject {
   id: number;
   rank: number;
-  collectionNameData: string;
+  collectionName: string;
   floor: string;
   totalVol: string;
   vol: string;
@@ -31,7 +31,7 @@ const dummyData: DummyLaunchpadProject[] = [
   {
     id: 1,
     rank: 1,
-    collectionNameData: "Meebits",
+    collectionName: "Meebits",
     floor: "3.9",
     totalVol: "2,052,499,51",
     vol: "78,231.57",
@@ -40,7 +40,7 @@ const dummyData: DummyLaunchpadProject[] = [
   {
     id: 2,
     rank: 2,
-    collectionNameData: "Meebits",
+    collectionName: "Meebits",
     floor: "3.9",
     totalVol: "2,052,499,51",
     vol: "78,231.57",
@@ -49,7 +49,7 @@ const dummyData: DummyLaunchpadProject[] = [
   {
     id: 3,
     rank: 3,
-    collectionNameData: "Meebits",
+    collectionName: "Meebits",
     floor: "3.9",
     totalVol: "2,052,499,51",
     vol: "78,231.57",
@@ -58,7 +58,7 @@ const dummyData: DummyLaunchpadProject[] = [
   {
     id: 4,
     rank: 4,
-    collectionNameData: "Meebits",
+    collectionName: "Meebits",
     floor: "3.9",
     totalVol: "2,052,499,51",
     vol: "78,231.57",
