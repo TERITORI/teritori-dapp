@@ -142,7 +142,6 @@ export interface TokenMetadataResponse {
 export interface LaunchpadProject {
   id: string;
   networkId: string;
-  collectionName: string;
   creatorId: string;
   collectionData: string;
   merkleRoot?: string | undefined;
@@ -1075,7 +1074,7 @@ export const TokenMetadataResponse = {
 };
 
 function createBaseLaunchpadProject(): LaunchpadProject {
-  return { id: "", networkId: "", collectionName: "", creatorId: "", collectionData: "", merkleRoot: undefined };
+  return { id: "", networkId: "", creatorId: "", collectionData: "", merkleRoot: undefined };
 }
 
 export const LaunchpadProject = {
@@ -1086,17 +1085,14 @@ export const LaunchpadProject = {
     if (message.networkId !== "") {
       writer.uint32(18).string(message.networkId);
     }
-    if (message.collectionName !== "") {
-      writer.uint32(26).string(message.collectionName);
-    }
     if (message.creatorId !== "") {
-      writer.uint32(34).string(message.creatorId);
+      writer.uint32(26).string(message.creatorId);
     }
     if (message.collectionData !== "") {
-      writer.uint32(42).string(message.collectionData);
+      writer.uint32(34).string(message.collectionData);
     }
     if (message.merkleRoot !== undefined) {
-      writer.uint32(50).string(message.merkleRoot);
+      writer.uint32(42).string(message.merkleRoot);
     }
     return writer;
   },
@@ -1127,24 +1123,17 @@ export const LaunchpadProject = {
             break;
           }
 
-          message.collectionName = reader.string();
+          message.creatorId = reader.string();
           continue;
         case 4:
           if (tag !== 34) {
             break;
           }
 
-          message.creatorId = reader.string();
+          message.collectionData = reader.string();
           continue;
         case 5:
           if (tag !== 42) {
-            break;
-          }
-
-          message.collectionData = reader.string();
-          continue;
-        case 6:
-          if (tag !== 50) {
             break;
           }
 
@@ -1163,7 +1152,6 @@ export const LaunchpadProject = {
     return {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
-      collectionName: isSet(object.collectionName) ? globalThis.String(object.collectionName) : "",
       creatorId: isSet(object.creatorId) ? globalThis.String(object.creatorId) : "",
       collectionData: isSet(object.collectionData) ? globalThis.String(object.collectionData) : "",
       merkleRoot: isSet(object.merkleRoot) ? globalThis.String(object.merkleRoot) : undefined,
@@ -1177,9 +1165,6 @@ export const LaunchpadProject = {
     }
     if (message.networkId !== "") {
       obj.networkId = message.networkId;
-    }
-    if (message.collectionName !== "") {
-      obj.collectionName = message.collectionName;
     }
     if (message.creatorId !== "") {
       obj.creatorId = message.creatorId;
@@ -1200,7 +1185,6 @@ export const LaunchpadProject = {
     const message = createBaseLaunchpadProject();
     message.id = object.id ?? "";
     message.networkId = object.networkId ?? "";
-    message.collectionName = object.collectionName ?? "";
     message.creatorId = object.creatorId ?? "";
     message.collectionData = object.collectionData ?? "";
     message.merkleRoot = object.merkleRoot ?? undefined;

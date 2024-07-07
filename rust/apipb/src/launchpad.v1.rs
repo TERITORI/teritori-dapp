@@ -108,12 +108,10 @@ pub struct LaunchpadProject {
     #[prost(string, tag="2")]
     pub network_id: ::prost::alloc::string::String,
     #[prost(string, tag="3")]
-    pub collection_name: ::prost::alloc::string::String,
-    #[prost(string, tag="4")]
     pub creator_id: ::prost::alloc::string::String,
-    #[prost(string, tag="5")]
+    #[prost(string, tag="4")]
     pub collection_data: ::prost::alloc::string::String,
-    #[prost(string, optional, tag="6")]
+    #[prost(string, optional, tag="5")]
     pub merkle_root: ::core::option::Option<::prost::alloc::string::String>,
 }
 // message UpdateCollectionWhitelistsRequest {
