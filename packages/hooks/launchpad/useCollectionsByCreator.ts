@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { CollectionsByCreatorRequest } from "@/api/launchpad/v1/launchpad";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { mustGetLaunchpadClient } from "@/utils/backend";
 import { zodTryParseJSON } from "@/utils/sanitize";
@@ -8,24 +9,21 @@ import {
   ZodCollectionDataResult,
 } from "@/utils/types/launchpad";
 
-export const useCollectionsByCreator = (
-  networkId?: string,
-  userId?: string,
-) => {
+export const useCollectionsByCreator = (req: CollectionsByCreatorRequest) => {
   const { setToast } = useFeedbacks();
+  const networkId = req.networkId;
+  const creatorId = req.creatorId;
 
-  return useQuery(["collectionsByCreator", networkId, userId], async () => {
+  return useQuery(["collectionsByCreator", networkId, creatorId], async () => {
     const collectionsData: CollectionDataResult[] = [];
 
     try {
       const client = mustGetLaunchpadClient(networkId);
 
-      if (!client || !userId) {
+      if (!client || !creatorId) {
         return [];
       }
-      const { collections } = await client.CollectionsByCreator({
-        creatorId: userId,
-      });
+      const { collections } = await client.CollectionsByCreator(req);
 
       collections.forEach((data) => {
         if (!data) {

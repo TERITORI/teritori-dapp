@@ -1,6 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
+import { Sort, SortDirection } from "@/api/launchpad/v1/launchpad";
 import infoSVG from "@/assets/icons/info.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
@@ -33,11 +34,14 @@ export const LaunchpadMyCollectionsScreen: ScreenFC<
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
-  const userId = selectedWallet?.userId;
-  const { data: userCollections } = useCollectionsByCreator(
-    selectedNetworkId,
-    userId,
-  );
+  const { data: userCollections } = useCollectionsByCreator({
+    networkId: selectedNetworkId,
+    creatorId: selectedWallet?.userId || "",
+    offset: 0,
+    limit: 100,
+    sort: Sort.SORT_UNSPECIFIED,
+    sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+  });
 
   return (
     <ScreenContainer

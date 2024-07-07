@@ -324,26 +324,6 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		return nil, errors.New("Unauthorized")
 	}
 
-	// collectionName := indexerdb.LaunchpadProject.CollectionData
-
-	// s.conf.IndexerDB.Raw(`
-	// 	SELECT *
-	// 	FROM launchpad_projects lp
-	// 	WHERE lp.project_id = ?
-	// `,
-	// 	seasonId,
-	// 	userId,
-	// ).Scan(&userRank).Error
-
-	// project := indexerdb.LaunchpadProject{
-	// 	ProjectID: req.ProjectId,
-	// 	NetworkID: req.NetworkId,
-	// }
-
-	// if err := s.conf.IndexerDB.First(&project).Error; err != nil {
-	// 	return nil, errors.Wrap(err, "failed to get the requested project")
-	// }
-
 	var projects []launchpadpb.LaunchpadProject
 	orderDirection := ""
 	switch req.GetSortDirection() {

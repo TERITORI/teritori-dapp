@@ -6,12 +6,16 @@ import { CurrentlyHighlightedProject } from "./component/CurrentlyHighLightedPro
 import { GenesisExplore } from "./component/GenesisExplore";
 import { LaunchpadCollectionsTable } from "../LaunchpadApplications/component/LaunchpadCollectionsTable";
 
+import { Sort, SortDirection } from "@/api/launchpad/v1/launchpad";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SecondaryBox } from "@/components/boxes/SecondaryBox";
 import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
+import { useLaunchpadProjects } from "@/hooks/launchpad/useLaunchpadProjects";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
 import { primaryColor } from "@/utils/style/colors";
 import {
@@ -77,7 +81,17 @@ const dummyData: DummyLaunchpadCollection[] = [
 
 export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
   const navigation = useAppNavigation();
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
   const { width } = useWindowDimensions();
+  const { data: launchpadProjects } = useLaunchpadProjects({
+    networkId: selectedNetworkId,
+    userAddress: selectedWallet?.address || "",
+    offset: 0,
+    limit: 100,
+    sort: Sort.SORT_UNSPECIFIED,
+    sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+  });
 
   const tabs = {
     pendingApplications: {
