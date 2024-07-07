@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { View } from "react-native";
 
@@ -9,7 +9,6 @@ import { ScreenContainer } from "@/components/ScreenContainer";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
-import { Collection } from "@/contracts-clients/nft-launchpad";
 import { useCollectionById } from "@/hooks/launchpad/useCollectionById";
 import { useCompleteCollection } from "@/hooks/launchpad/useCompleteCollection";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -29,12 +28,11 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
   route,
 }) => {
   const isMobile = useIsMobile();
-  const { id } = route.params;
+  const { id: collectionId } = route.params;
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
   const { completeCollection } = useCompleteCollection();
-  const { getCollectionById } = useCollectionById();
-  const [collection, setCollection] = useState<Collection>();
+  const { data: collection } = useCollectionById({ collectionId });
   const assetsMetadatasForm = useForm<CollectionAssetsMetadatasFormValues>({
     mode: "all",
     resolver: zodResolver(ZodCollectionAssetsMetadatasFormValues),
@@ -48,7 +46,10 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
     try {
       const assetsMetadatasFormValues = assetsMetadatasForm.getValues();
       if (!assetsMetadatasFormValues.assetsMetadatas?.length) return;
-      await completeCollection(id, assetsMetadatasFormValues.assetsMetadatas);
+      await completeCollection(
+        collectionId,
+        assetsMetadatasFormValues.assetsMetadatas,
+      );
 
       setLoading(false);
       setLoadingFullScreen(false);
@@ -62,14 +63,6 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
       setLoadingFullScreen(false);
     }, 1000);
   };
-
-  useEffect(() => {
-    const effect = async () => {
-      const collectionById = await getCollectionById(id);
-      setCollection(collectionById);
-    };
-    effect();
-  }, [getCollectionById, id]);
 
   return (
     <ScreenContainer
