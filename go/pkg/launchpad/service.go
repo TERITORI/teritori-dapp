@@ -235,9 +235,6 @@ func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.C
 	}
 
 	var projects []indexerdb.LaunchpadProject
-	if err := s.conf.IndexerDB.Find(&projects, "creator_id = ?", creatorID).Error; err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("unknown creator id '%s'", creatorID))
-	}
 
 	orderDirection := ""
 	switch req.GetSortDirection() {
@@ -258,8 +255,8 @@ func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.C
 
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(
 		`
-		SELECT collection_data FROM launchpad_projects AS lp %s
-		`, orderSQL),
+		SELECT collection_data FROM launchpad_projects AS lp WHERE lp.creator_id = ? %s
+		`, orderSQL), creatorID,
 	).Scan(&projects).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
@@ -325,6 +322,7 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 	}
 
 	var projects []launchpadpb.LaunchpadProject
+
 	orderDirection := ""
 	switch req.GetSortDirection() {
 	case launchpadpb.SortDirection_SORT_DIRECTION_UNSPECIFIED:
