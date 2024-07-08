@@ -9,7 +9,7 @@ import { ScreenContainer } from "@/components/ScreenContainer";
 import { NFTMainInfo } from "@/components/nftDetails/NFTMainInfo";
 import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
-import { initialToastError, useFeedbacks } from "@/context/FeedbacksProvider";
+import { initialToast, useFeedbacks } from "@/context/FeedbacksProvider";
 import { Wallet } from "@/context/WalletsProvider";
 import { NftMarketplaceClient } from "@/contracts-clients/nft-marketplace/NftMarketplace.client";
 import { NFTVault__factory } from "@/evm-contracts-clients/teritori-nft-vault/NFTVault__factory";
@@ -36,7 +36,7 @@ const Content: React.FC<{
 }> = ({ id }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof screenTabItems>("main");
-  const { setToastError, setLoadingFullScreen } = useFeedbacks();
+  const { setToast, setLoadingFullScreen } = useFeedbacks();
   const isMobile = useIsMobile();
   const wallet = useSelectedWallet();
   const { info, refresh, notFound } = useNFTInfo(id, wallet?.userId);
@@ -85,14 +85,16 @@ const Content: React.FC<{
     }
 
     if (!buyFunc) {
-      setToastError({
-        title: "Error",
+      setToast({
         message: `Unsupported network kind ${network?.kind}`,
+        title: "Error",
+        type: "error",
+        mode: "normal",
       });
       return;
     }
 
-    setToastError(initialToastError);
+    setToast(initialToast);
     try {
       const txHash = await buyFunc(wallet, info);
 
@@ -103,13 +105,15 @@ const Content: React.FC<{
     } catch (e) {
       console.error(e);
       if (e instanceof Error) {
-        setToastError({
+        setToast({
           title: "Failed to buy NFT",
           message: e.message,
+          type: "error",
+          mode: "normal",
         });
       }
     }
-  }, [info, network?.kind, refresh, setToastError, wallet]);
+  }, [info, network?.kind, refresh, setToast, wallet]);
 
   const sell = useSellNFT(network?.kind);
 
@@ -273,9 +277,6 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
       forceNetworkId={network?.id}
       footerChildren={<></>}
       responsive
-      fullWidth
-      noScroll
-      noMargin
       onBackPress={() =>
         navigation.canGoBack()
           ? navigation.goBack()

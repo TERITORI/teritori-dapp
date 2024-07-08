@@ -7,12 +7,13 @@ import { SVG } from "@/components/SVG";
 import { CollectionNameCell } from "@/components/applicationTable/CollectionNameCell";
 import { InnerCellText } from "@/components/applicationTable/InnerCellText";
 import { LinkIconAndRedirect } from "@/components/applicationTable/LinkIconAndRedirect";
-import { TableRow } from "@/components/table/TableRow";
+import { TableHeader } from "@/components/table/TableHeader";
+import { TableColumns } from "@/components/table/utils";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { mineShaftColor } from "@/utils/style/colors";
 import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
 
-const TABLE_ROWS = {
+const TABLE_COLUMNS: TableColumns = {
   rank: {
     label: "#",
     flex: 1,
@@ -60,11 +61,14 @@ export const CollectionsTable: React.FC<{
         maxWidth: screenContentMaxWidthLarge,
       }}
     >
-      <TableRow
-        headings={
+      <TableHeader
+        style={{
+          paddingHorizontal: layout.spacing_x2_5,
+        }}
+        columns={
           !isMobile
-            ? TABLE_ROWS
-            : Object.fromEntries(Object.entries(TABLE_ROWS).slice(0, -5))
+            ? TABLE_COLUMNS
+            : Object.fromEntries(Object.entries(TABLE_COLUMNS).slice(0, -5))
         }
       />
 
@@ -98,17 +102,17 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
         paddingHorizontal: layout.spacing_x2_5,
       }}
     >
-      <InnerCellText style={{ flex: TABLE_ROWS.rank.flex }}>
+      <InnerCellText style={{ flex: TABLE_COLUMNS.rank.flex }}>
         {rowData.rank}
       </InnerCellText>
       <CollectionNameCell
         rowData={rowData}
-        style={{ flex: TABLE_ROWS.collectionNameData.flex }}
+        style={{ flex: TABLE_COLUMNS.collectionNameData.flex }}
       />
       <InnerCellText
         isSolanaIcon
         style={{
-          flex: TABLE_ROWS.collectionNetwork.flex,
+          flex: TABLE_COLUMNS.collectionNetwork.flex,
         }}
       >
         {rowData["collectionNetwork"]}
@@ -117,27 +121,27 @@ const ApplicationRowData: React.FC<{ rowData: any }> = ({ rowData }) => {
         <>
           <LinkIconAndRedirect
             value={rowData.TwitterURL}
-            style={{ flex: TABLE_ROWS.TwitterURL.flex }}
+            style={{ flex: TABLE_COLUMNS.TwitterURL.flex }}
           />
           <LinkIconAndRedirect
             value={rowData.DiscordURL}
-            style={{ flex: TABLE_ROWS.DiscordURL.flex }}
+            style={{ flex: TABLE_COLUMNS.DiscordURL.flex }}
           />
           <InnerCellText
             style={{
-              flex: TABLE_ROWS.expectedTotalSupply.flex,
+              flex: TABLE_COLUMNS.expectedTotalSupply.flex,
             }}
           >
             {rowData.expectedTotalSupply}
           </InnerCellText>
           <InnerCellText
-            style={{ flex: TABLE_ROWS.expectedPublicMintPrice.flex }}
+            style={{ flex: TABLE_COLUMNS.expectedPublicMintPrice.flex }}
           >
             {rowData.expectedPublicMintPrice}
           </InnerCellText>
           <View
             style={{
-              flex: TABLE_ROWS.expectedMintDate.flex,
+              flex: TABLE_COLUMNS.expectedMintDate.flex,
               flexDirection: "row",
             }}
           >

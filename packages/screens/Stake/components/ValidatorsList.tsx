@@ -13,7 +13,8 @@ import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline"
 import { SecondaryButtonOutline } from "@/components/buttons/SecondaryButtonOutline";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
 import { SpacerRow } from "@/components/spacer";
-import { TableRow, TableRowHeading } from "@/components/table/TableRow";
+import { TableHeader } from "@/components/table/TableHeader";
+import { TableColumns } from "@/components/table/utils";
 import { useCosmosValidatorBondedAmount } from "@/hooks/useCosmosValidatorBondedAmount";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useKeybaseAvatarURL } from "@/hooks/useKeybaseAvatarURL";
@@ -35,19 +36,19 @@ import { ValidatorInfo } from "@/utils/types/staking";
 
 const serviceScoreSize = 24;
 
-const TABLE_ROWS = {
+const TABLE_COLUMNS: TableColumns = {
   rank: {
     label: "Rank",
     flex: 1,
-  } as TableRowHeading,
+  },
   name: {
     label: "Name",
     flex: 4,
-  } as TableRowHeading,
+  },
   votingPower: {
     label: "Voting Power",
     flex: 3,
-  } as TableRowHeading,
+  },
   serviceScore: {
     label: "Service Score",
     flex: 2,
@@ -55,19 +56,19 @@ const TABLE_ROWS = {
   commission: {
     label: "Commission",
     flex: 2,
-  } as TableRowHeading,
+  },
   staked: {
     label: "Staked",
     flex: 2,
-  } as TableRowHeading,
+  },
   claimable: {
     label: "Claimable Reward",
     flex: 3,
-  } as TableRowHeading,
+  },
   actions: {
     label: "",
     flex: 2,
-  } as TableRowHeading,
+  },
 };
 
 interface ValidatorsListAction {
@@ -85,7 +86,7 @@ export const ValidatorsTable: React.FC<{
 }> = ({ validators: validatorsProp, actions, style, userId, userKind }) => {
   const isMobile = useIsMobile();
 
-  const [sortBy, setSortBy] = React.useState<string>("rank");
+  const [sortBy] = React.useState<string>("rank");
 
   const validators = [...validatorsProp].sort((a, b) => {
     switch (sortBy) {
@@ -96,19 +97,22 @@ export const ValidatorsTable: React.FC<{
     }
   });
 
-  const ROWS_TMP =
-    actions && !isMobile ? TABLE_ROWS : removeObjectKey(TABLE_ROWS, "actions");
-  const ROWS = userId
-    ? ROWS_TMP
-    : removeObjectKeys(ROWS_TMP, ["staked", "claimable"]);
+  const COLUMNS_TMP =
+    actions && !isMobile
+      ? TABLE_COLUMNS
+      : removeObjectKey(TABLE_COLUMNS, "actions");
+  const COLUMNS = userId
+    ? COLUMNS_TMP
+    : removeObjectKeys(COLUMNS_TMP, ["staked", "claimable"]);
   const { rewards, claimReward } = useRewards(userId, userKind);
 
   return (
     <>
-      <TableRow
-        headings={ROWS}
-        allowSelect={["rank", "serviceScore"]}
-        onPressItem={(key) => setSortBy(key)}
+      <TableHeader
+        columns={COLUMNS}
+        style={{
+          paddingHorizontal: layout.spacing_x2_5,
+        }}
       />
       <FlatList
         data={validators}
@@ -166,7 +170,7 @@ const ValidatorRow: React.FC<{
         <BrandText
           style={[
             isMobile ? fontSemibold11 : fontSemibold13,
-            { flex: TABLE_ROWS.rank.flex, paddingRight: layout.spacing_x1 },
+            { flex: TABLE_COLUMNS.rank.flex, paddingRight: layout.spacing_x1 },
           ]}
         >
           {validator.rank}
@@ -176,7 +180,7 @@ const ValidatorRow: React.FC<{
             flexDirection: isMobile ? "column" : "row",
             alignItems: isMobile ? "flex-start" : "center",
             gap: layout.spacing_x0_5,
-            flex: TABLE_ROWS.name.flex,
+            flex: TABLE_COLUMNS.name.flex,
             paddingRight: layout.spacing_x1,
           }}
         >
@@ -195,7 +199,7 @@ const ValidatorRow: React.FC<{
           style={[
             isMobile ? fontSemibold11 : fontSemibold13,
             {
-              flex: TABLE_ROWS.votingPower.flex,
+              flex: TABLE_COLUMNS.votingPower.flex,
               paddingRight: layout.spacing_x1,
             },
           ]}
@@ -214,7 +218,7 @@ const ValidatorRow: React.FC<{
         </BrandText>
         <View
           style={{
-            flex: TABLE_ROWS.serviceScore.flex,
+            flex: TABLE_COLUMNS.serviceScore.flex,
             paddingRight: layout.spacing_x1,
             flexDirection: "row",
             alignItems: "center",
@@ -252,7 +256,7 @@ const ValidatorRow: React.FC<{
           style={[
             fontSemibold13,
             {
-              flex: TABLE_ROWS.commission.flex,
+              flex: TABLE_COLUMNS.commission.flex,
               paddingRight: actions || userId ? layout.spacing_x1 : 0,
             },
           ]}
@@ -263,7 +267,7 @@ const ValidatorRow: React.FC<{
           <>
             <View
               style={{
-                flex: TABLE_ROWS.staked.flex,
+                flex: TABLE_COLUMNS.staked.flex,
                 paddingRight: layout.spacing_x1,
                 flexDirection: isMobile ? "column" : "row",
                 alignItems: "center",
@@ -285,7 +289,7 @@ const ValidatorRow: React.FC<{
             </View>
             <View
               style={{
-                flex: TABLE_ROWS.claimable.flex,
+                flex: TABLE_COLUMNS.claimable.flex,
                 paddingRight: actions ? layout.spacing_x1 : 0,
                 flexDirection: isMobile ? "column" : "row",
                 alignItems: "center",
@@ -317,7 +321,7 @@ const ValidatorRow: React.FC<{
         {!!actions && !isMobile && (
           <View
             style={{
-              flex: TABLE_ROWS.actions.flex,
+              flex: TABLE_COLUMNS.actions.flex,
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",

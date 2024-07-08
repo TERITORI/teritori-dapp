@@ -2,57 +2,63 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { FlatList, View } from "react-native";
 
-import { InnerCellText } from "../../../components/applicationTable/InnerCellText";
-import { TableRow } from "../../../components/table/TableRow";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { mineShaftColor } from "../../../utils/style/colors";
-import {
-  layout,
-  screenContentMaxWidthLarge,
-} from "../../../utils/style/layout";
+import { screenContentMaxWidthLarge } from "../../../utils/style/layout";
 
 import { LeaderboardEntry } from "@/api/marketplace/v1/marketplace";
-import { Pagination } from "@/components/Pagination";
 import { UserNameInline } from "@/components/UserNameInline";
 import { SpacerColumn } from "@/components/spacer";
+import { TableCell } from "@/components/table/TableCell";
+import { TableHeader } from "@/components/table/TableHeader";
+import { TableRow } from "@/components/table/TableRow";
+import { TableTextCell } from "@/components/table/TableTextCell";
+import { TableWrapper } from "@/components/table/TableWrapper";
+import { TableColumns } from "@/components/table/utils";
 import { getMarketplaceClient } from "@/utils/backend";
 
-const TABLE_ROWS = {
+const columns: TableColumns = {
   rank: {
     label: "#",
-    flex: 1,
+    minWidth: 20,
+    flex: 0.25,
   },
-  trader: {
+  userId: {
     label: "Trader",
-    flex: 5,
+    minWidth: 200,
+    flex: 2.5,
   },
   totalXp: {
     label: "Total",
-    flex: 3,
+    flex: 1.5,
+    minWidth: 120,
   },
-  bonus: {
+  boost: {
     label: "Bonus",
-    flex: 2,
+    flex: 1,
+    minWidth: 100,
   },
   mintXp: {
     label: "Mints",
-    flex: 2,
+    flex: 1,
+    minWidth: 100,
   },
-  salesXp: {
+  sellXp: {
     label: "Sales",
-    flex: 2,
+    flex: 1,
+    minWidth: 100,
   },
   buyXp: {
     label: "Buys",
-    flex: 2,
+    flex: 1,
+    minWidth: 100,
   },
 };
+
+const breakpointM = 890;
 
 export const MarketplaceLeaderboardTable: React.FC<{
   networkId: string | undefined;
   timePeriodHours: number;
 }> = React.memo(({ networkId, timePeriodHours }) => {
-  const isMobile = useIsMobile();
   const [pageIndex, setPageIndex] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(100);
   const { data: leaderboard } = useMarketplaceLeaderboard(
@@ -69,108 +75,104 @@ export const MarketplaceLeaderboardTable: React.FC<{
   return (
     <View
       style={{
-        justifyContent: "space-between",
         width: "100%",
         maxWidth: screenContentMaxWidthLarge,
       }}
     >
-      <TableRow
-        headings={
-          !isMobile
-            ? TABLE_ROWS
-            : Object.fromEntries(Object.entries(TABLE_ROWS).slice(0, -4))
-        }
-      />
-
-      <FlatList
-        data={leaderboard}
-        renderItem={({ item }) => <LeaderboardRowData rowData={item} />}
-        keyExtractor={(item) => item.userId}
-        style={{
-          minHeight: 220,
-          borderTopColor: mineShaftColor,
-          borderTopWidth: 1,
+      <TableWrapper
+        horizontalScrollBreakpoint={breakpointM}
+        paginationProps={{
+          currentPage: pageIndex,
+          maxPage,
+          itemsPerPage,
+          nbItemsOptions: [100],
+          setItemsPerPage,
+          onChangePage: setPageIndex,
         }}
-        stickyHeaderIndices={[0]}
-      />
-      <SpacerColumn size={2} />
-      <Pagination
-        currentPage={pageIndex}
-        maxPage={maxPage}
-        itemsPerPage={itemsPerPage}
-        dropdownOptions={[100]}
-        setItemsPerPage={setItemsPerPage}
-        onChangePage={setPageIndex}
-      />
-      <SpacerColumn size={2} />
+      >
+        <TableHeader columns={columns} />
+        <FlatList
+          data={leaderboard}
+          renderItem={({ item }) => (
+            <MarketplaceLeaderboardTableRow leaderboardEntry={item} />
+          )}
+          keyExtractor={(item) => item.userId}
+        />
+        <SpacerColumn size={2} />
+      </TableWrapper>
     </View>
   );
 });
 
-const LeaderboardRowData: React.FC<{ rowData: LeaderboardEntry }> = ({
-  rowData,
-}) => {
-  const isMobile = useIsMobile();
-
+const MarketplaceLeaderboardTableRow: React.FC<{
+  leaderboardEntry: LeaderboardEntry;
+}> = ({ leaderboardEntry }) => {
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        width: "100%",
-        borderColor: mineShaftColor,
-        borderBottomWidth: 1,
-        paddingVertical: layout.spacing_x2,
-        paddingHorizontal: layout.spacing_x2_5,
-      }}
-    >
-      <InnerCellText style={{ flex: TABLE_ROWS.rank.flex }}>
-        {rowData.rank}
-      </InnerCellText>
-      <View
-        style={{
-          flex: TABLE_ROWS.trader.flex,
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <UserNameInline userId={rowData.userId} />
-      </View>
-      <InnerCellText
-        textStyle={{ paddingLeft: layout.spacing_x1 }}
-        style={{ flex: TABLE_ROWS.totalXp.flex }}
-      >
-        {prettyXp(rowData.totalXp)}
-      </InnerCellText>
-      {!isMobile && (
-        <>
-          <InnerCellText
-            textStyle={{ paddingLeft: layout.spacing_x1 }}
-            style={{ flex: TABLE_ROWS.bonus.flex }}
-          >
-            {rowData.boost === 1 ? "-" : `X${rowData.boost}`}
-          </InnerCellText>
-          <InnerCellText
-            textStyle={{ paddingLeft: layout.spacing_x1 }}
-            style={{ flex: TABLE_ROWS.mintXp.flex }}
-          >
-            {prettyXp(rowData.mintXp)}
-          </InnerCellText>
-          <InnerCellText
-            textStyle={{ paddingLeft: layout.spacing_x1 }}
-            style={{ flex: TABLE_ROWS.salesXp.flex }}
-          >
-            {prettyXp(rowData.sellXp)}
-          </InnerCellText>
-          <InnerCellText
-            textStyle={{ paddingLeft: layout.spacing_x1 }}
-            style={{ flex: TABLE_ROWS.buyXp.flex }}
-          >
-            {prettyXp(rowData.buyXp)}
-          </InnerCellText>
-        </>
-      )}
+    <View>
+      <TableRow>
+        <TableTextCell
+          style={{
+            minWidth: columns.rank.minWidth,
+            flex: columns.rank.flex,
+          }}
+        >
+          {`${leaderboardEntry.rank}`}
+        </TableTextCell>
+
+        <TableCell
+          style={{
+            minWidth: columns.userId.minWidth,
+            flex: columns.userId.flex,
+          }}
+        >
+          <UserNameInline userId={leaderboardEntry.userId} />
+        </TableCell>
+
+        <TableTextCell
+          style={{
+            minWidth: columns.totalXp.minWidth,
+            flex: columns.totalXp.flex,
+          }}
+        >
+          {prettyXp(leaderboardEntry.totalXp)}
+        </TableTextCell>
+
+        <TableTextCell
+          style={{
+            minWidth: columns.boost.minWidth,
+            flex: columns.boost.flex,
+          }}
+        >
+          {prettyXp(leaderboardEntry.boost)}
+        </TableTextCell>
+
+        <TableTextCell
+          style={{
+            minWidth: columns.mintXp.minWidth,
+            flex: columns.mintXp.flex,
+          }}
+        >
+          {prettyXp(leaderboardEntry.mintXp)}
+        </TableTextCell>
+
+        <TableTextCell
+          style={{
+            minWidth: columns.sellXp.minWidth,
+            flex: columns.sellXp.flex,
+          }}
+        >
+          {prettyXp(leaderboardEntry.sellXp)}
+        </TableTextCell>
+
+        <TableTextCell
+          style={{
+            minWidth: columns.buyXp.minWidth,
+            flex: columns.buyXp.flex,
+          }}
+        >
+          {prettyXp(leaderboardEntry.buyXp)}
+        </TableTextCell>
+      </TableRow>
     </View>
   );
 };

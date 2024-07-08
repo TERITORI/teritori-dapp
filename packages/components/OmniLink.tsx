@@ -4,9 +4,9 @@ import {
   Platform,
   TouchableOpacity,
   TouchableOpacityProps,
-  View,
-  ViewStyle,
 } from "react-native";
+
+import { CustomPressable } from "@/components/buttons/CustomPressable";
 
 interface OmniLinkToType {
   screen: string | never;
@@ -39,27 +39,21 @@ export const OmniLink: React.FC<{
   };
 
   if (Platform.OS === "web") {
-    // It's important to use a `View` or `Text` on web instead of `TouchableX`
-    // Otherwise React Native for Web omits the `onClick` prop that's passed
-    // You'll also need to pass `onPress` as `onClick` to the `View`
-    // You can add hover effects using `onMouseEnter` and `onMouseLeave`
     return (
-      <View
-        // @ts-expect-error: description todo
-        onClick={!disabled ? handlePress : null}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+      <CustomPressable
+        onPress={!disabled ? handlePress : null}
+        onHoverIn={() => setIsHovered(true)}
+        onHoverOut={() => setIsHovered(false)}
         style={[
           {
             opacity: isHovered && !disabled && !noHoverEffect ? 0.5 : 1,
           },
-          { transitionDuration: "150ms" } as ViewStyle, // browser specific
           style,
         ]}
         {...(disabled ? {} : props)}
       >
         {children}
-      </View>
+      </CustomPressable>
     );
   }
 

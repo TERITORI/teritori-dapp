@@ -1,6 +1,6 @@
 module weshd
 
-go 1.19
+go 1.20
 
 require (
 	berty.tech/weshnet v1.14.0
