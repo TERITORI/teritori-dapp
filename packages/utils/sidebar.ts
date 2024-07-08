@@ -54,7 +54,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
         title: "Admin Dashboard",
         id: "admin",
         icon: gridSVG,
-        route: "LaunchpadAdministrationDashboard",
+        route: "LaunchpadAdministrationOverview",
       },
     },
   },

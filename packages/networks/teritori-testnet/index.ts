@@ -26,6 +26,7 @@ const cosmwasmLaunchpadFeature: CosmWasmLaunchpad = {
   type: NetworkFeature.NFTLaunchpad,
   launchpadContractAddress:
     "tori1mas00kamdty6f7halxwm95y8uvzf46yfpmg8mwfyf9ftf7tj7upq0ex6n9",
+  launchpadEndpoint: "",
   defaultMintDenom: "utori",
 };
 

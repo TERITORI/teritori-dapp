@@ -65,6 +65,7 @@ type FeatureNFTLaunchpad struct {
 	*FeatureBase
 	LaunchpadContractAddress string `json:"launchpadContractAddress"`
 	DefaultMintDenom         string `json:"defaultMintDenom"`
+	LaunchpadEndpoint        string `json:"launchpadEndpoint"`
 }
 
 var _ Feature = &FeatureNFTLaunchpad{}

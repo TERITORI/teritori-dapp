@@ -49,6 +49,7 @@ const zodCosmWasmLaunchpad = z.object({
   type: z.literal(NetworkFeature.NFTLaunchpad),
   launchpadContractAddress: z.string(),
   defaultMintDenom: z.string(),
+  launchpadEndpoint: z.string(),
   // allowedMintDenoms: z.array(z.string()), // for future
 });
 

@@ -25,7 +25,6 @@ interface NetworkInfoBase {
   contractExplorer: string;
   testnet: boolean;
   backendEndpoint: string;
-  launchpadEndpoint: string;
   secondaryDuringMintList?: string[];
   excludeFromLaunchpadList?: string[];
 
@@ -73,7 +72,6 @@ export type CosmosNetworkInfo = NetworkInfoBase & {
   daoVotingCw4CodeId?: number;
   cwAdminFactoryContractAddress?: string;
   coreDAOAddress?: string;
-  launchpadContractAddress?: string;
 };
 
 export type EthereumNetworkInfo = NetworkInfoBase & {

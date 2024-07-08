@@ -209,23 +209,157 @@ func (s *Launchpad) TokenMetadata(ctx context.Context, req *launchpadpb.TokenMet
 }
 
 func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.CollectionsByCreatorRequest) (*launchpadpb.CollectionsByCreatorResponse, error) {
-	creatorID := req.GetCreatorId()
+	limit := req.GetLimit()
+	if limit <= 0 {
+		return nil, errors.New("limit must be a positive number")
+	}
 
+	offset := req.GetOffset()
+	if offset < 0 {
+		return nil, errors.New("offset must be greater or equal to 0")
+	}
+
+	networkID := req.GetNetworkId()
+	if networkID == "" {
+		return nil, errors.New("missing network id")
+	}
+
+	_, err := s.conf.NetworkStore.GetNetwork(networkID)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
+	}
+
+	creatorID := req.GetCreatorId()
 	if creatorID == "" {
 		return nil, errors.New("creatorID is mandatory")
 	}
 
 	var projects []indexerdb.LaunchpadProject
-	if err := s.conf.IndexerDB.Find(&projects, "creator_id = ?", creatorID).Error; err != nil {
-		return nil, errors.Wrap(err, "failed to get collection data")
+
+	orderDirection := ""
+	switch req.GetSortDirection() {
+	case launchpadpb.SortDirection_SORT_DIRECTION_UNSPECIFIED:
+		orderDirection = ""
+	case launchpadpb.SortDirection_SORT_DIRECTION_ASCENDING:
+		orderDirection = " ASC "
+	case launchpadpb.SortDirection_SORT_DIRECTION_DESCENDING:
+		orderDirection = " DESC "
+	}
+	orderSQL := ""
+	switch req.GetSort() {
+	case launchpadpb.Sort_SORT_COLLECTION_NAME:
+		orderSQL = "ORDER BY lp.collection_data->>'name'" + orderDirection
+	case launchpadpb.Sort_SORT_UNSPECIFIED:
+		orderSQL = ""
 	}
 
-	res := make([]string, len(projects))
+	err = s.conf.IndexerDB.Raw(fmt.Sprintf(
+		`
+		SELECT collection_data FROM launchpad_projects AS lp WHERE lp.creator_id = ? %s
+		`, orderSQL), creatorID,
+	).Scan(&projects).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
+
+	result := make([]string, len(projects))
 	for idx, pj := range projects {
-		res[idx] = pj.CollectionData.String()
+		result[idx] = string(pj.CollectionData)
 	}
 
 	return &launchpadpb.CollectionsByCreatorResponse{
-		Collections: res,
+		Collections: result,
+	}, nil
+}
+
+func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.LaunchpadProjectsRequest) (*launchpadpb.LaunchpadProjectsResponse, error) {
+	limit := req.GetLimit()
+	if limit <= 0 {
+		return nil, errors.New("limit must be a positive number")
+	}
+
+	offset := req.GetOffset()
+	if offset < 0 {
+		return nil, errors.New("offset must be greater or equal to 0")
+	}
+
+	networkID := req.GetNetworkId()
+	if networkID == "" {
+		return nil, errors.New("missing network id")
+	}
+
+	userAddress := req.GetUserAddress()
+	if userAddress == "" {
+		return nil, errors.New("missing user address")
+	}
+
+	_, err := s.conf.NetworkStore.GetNetwork(networkID)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
+	}
+
+	//  TODO: user authentication (Member of the admin DAO)
+	// Control if sender is member of the admin DAO
+	daoAdminAddress := "tori129kpfu7krgumuc38hfyxwfluq7eu06rhr3awcztr3a9cgjjcx5hswlqj8v"
+	var isUserAuthorized bool
+	err = s.conf.IndexerDB.Raw(`
+	SELECT EXISTS (
+		SELECT 1
+		FROM dao_members dm
+		JOIN daos d ON dm.dao_contract_address = d.contract_address
+		WHERE d.contract_address = ?
+		AND dm.member_address = ?
+	) AS dao_exists;
+	`,
+		daoAdminAddress,
+		userAddress,
+	).Scan(&isUserAuthorized).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
+	if !isUserAuthorized {
+		return nil, errors.New("Unauthorized")
+	}
+
+	var projects []launchpadpb.LaunchpadProject
+
+	orderDirection := ""
+	switch req.GetSortDirection() {
+	case launchpadpb.SortDirection_SORT_DIRECTION_UNSPECIFIED:
+		orderDirection = ""
+	case launchpadpb.SortDirection_SORT_DIRECTION_ASCENDING:
+		orderDirection = " ASC "
+	case launchpadpb.SortDirection_SORT_DIRECTION_DESCENDING:
+		orderDirection = " DESC "
+	}
+	orderSQL := ""
+	switch req.GetSort() {
+	case launchpadpb.Sort_SORT_COLLECTION_NAME:
+		orderSQL = "ORDER BY lp.collection_data->>'name'" + orderDirection
+	case launchpadpb.Sort_SORT_UNSPECIFIED:
+		orderSQL = ""
+	}
+
+	err = s.conf.IndexerDB.Raw(fmt.Sprintf(
+		`
+		SELECT * FROM launchpad_projects AS lp %s
+		`, orderSQL),
+	).Scan(&projects).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
+
+	result := make([]*launchpadpb.LaunchpadProject, len(projects))
+	for idx, dbProject := range projects {
+		result[idx] = &launchpadpb.LaunchpadProject{
+			Id:             dbProject.Id,
+			NetworkId:      dbProject.NetworkId,
+			CreatorId:      dbProject.CreatorId,
+			CollectionData: dbProject.CollectionData,
+		}
+	}
+
+	return &launchpadpb.LaunchpadProjectsResponse{
+		Projects: result,
 	}, nil
 }

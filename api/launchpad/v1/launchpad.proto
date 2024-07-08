@@ -6,20 +6,47 @@ option go_package = "./launchpadpb";
 service LaunchpadService {
   rpc UploadMetadatas(UploadMetadatasRequest) returns (UploadMetadatasResponse);
   rpc CalculateCollectionMerkleRoot(CalculateCollectionMerkleRootRequest) returns (CalculateCollectionMerkleRootResponse);
-
   rpc TokenMetadata(TokenMetadataRequest) returns (TokenMetadataResponse);
-
   rpc CollectionsByCreator(CollectionsByCreatorRequest) returns (CollectionsByCreatorResponse);
-  // rpc UpdateCollectionWhitelists(UpdateCollectionWhitelistsRequest) returns(UpdateCollectionWhitelistsResponse);
-  // rpc WhitelistedAddressMerkleInfo(WhitelistedAddressMerkleInfoRequest) returns (WhitelistedAddressMerkleInfoResponse);
+  rpc LaunchpadProjects(LaunchpadProjectsRequest) returns (LaunchpadProjectsResponse);
+}
+
+enum Sort {
+  SORT_UNSPECIFIED = 0;
+  SORT_COLLECTION_NAME = 1;
+}
+
+enum SortDirection {
+  SORT_DIRECTION_UNSPECIFIED = 0;
+  SORT_DIRECTION_ASCENDING = 1;
+  SORT_DIRECTION_DESCENDING = 2;
 }
 
 message CollectionsByCreatorRequest {
   string creator_id = 1;
+  string network_id = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+  Sort sort = 5;
+  SortDirection sort_direction = 6;
 }
 
 message CollectionsByCreatorResponse {
   repeated string collections = 1;
+}
+
+message LaunchpadProjectsRequest {
+  string network_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+  Sort sort = 4;
+  SortDirection sort_direction = 5;
+//  TODO: user authentication (Member of the admin DAO) using a token
+  string user_address = 6;
+}
+
+message LaunchpadProjectsResponse {
+  repeated LaunchpadProject projects = 1;
 }
 
 message UploadMetadatasRequest {
@@ -54,6 +81,14 @@ message TokenMetadataResponse {
   string merkle_root = 1;
   Metadata metadata = 2;
   repeated string merkle_proof = 3;
+}
+
+message LaunchpadProject {
+  string id = 1;
+  string network_id = 2;
+  string creator_id = 3;
+  string collection_data = 4;
+  optional string merkle_root = 5;
 }
 
 // message UpdateCollectionWhitelistsRequest {
