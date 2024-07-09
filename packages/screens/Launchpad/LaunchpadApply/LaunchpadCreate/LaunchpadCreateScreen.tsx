@@ -152,14 +152,20 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
     }, 1000);
   };
 
-  const onInvalid = () => {
-    setToast({
-      mode: "normal",
-      type: "error",
-      title: "Unable to create the collection",
-      message: "Some fields are not correctly filled",
-    });
-  };
+  const onInvalid = () =>
+    // fieldsErrors: FieldErrors<CollectionFormValues>
+    {
+      // FIXME: Show which step is concerned
+      // console.error('Fields errors: ', fieldsErrors)
+      setToast({
+        mode: "normal",
+        type: "error",
+        title: "Unable to create the collection",
+        message:
+          "Some fields are not correctly filled." +
+          "\nMaybe from the mapping file, please complete it properly.\nCheck the description for more information.",
+      });
+    };
 
   const onPressSubmit = () => collectionForm.handleSubmit(onValid, onInvalid)();
 

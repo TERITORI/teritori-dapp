@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { FieldErrors, FormProvider, useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
@@ -21,6 +21,7 @@ import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
   CollectionAssetsMetadatasFormValues,
+  CollectionFormValues,
   ZodCollectionAssetsMetadatasFormValues,
 } from "@/utils/types/launchpad";
 
@@ -28,6 +29,7 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
   route,
 }) => {
   const isMobile = useIsMobile();
+  const { setToast } = useFeedbacks();
   const { id: collectionId } = route.params;
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
@@ -36,11 +38,12 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
   const assetsMetadatasForm = useForm<CollectionAssetsMetadatasFormValues>({
     mode: "all",
     resolver: zodResolver(ZodCollectionAssetsMetadatasFormValues),
+    defaultValues: { assetsMetadatas: [] },
   });
   const [isLoading, setLoading] = useState(false);
   const { setLoadingFullScreen } = useFeedbacks();
 
-  const onPressComplete = async () => {
+  const onValid = async () => {
     setLoading(true);
     setLoadingFullScreen(true);
     try {
@@ -63,6 +66,20 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
       setLoadingFullScreen(false);
     }, 1000);
   };
+
+  const onInvalid = (fieldsErrors: FieldErrors<CollectionFormValues>) => {
+    console.error("Fields errors: ", fieldsErrors);
+    setToast({
+      mode: "normal",
+      type: "error",
+      title: "Unable to complete the collection",
+      message:
+        "Some fields are not correctly filled.\nPlease complete properly the mapping file.\nCheck the description for more information.",
+    });
+  };
+
+  const onPressComplete = () =>
+    assetsMetadatasForm.handleSubmit(onValid, onInvalid)();
 
   return (
     <ScreenContainer

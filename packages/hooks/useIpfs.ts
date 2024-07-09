@@ -74,8 +74,6 @@ export const useIpfs = () => {
             "Content-Type": "multipart/form-data",
           },
         });
-        console.log("responseFile.data.IpfsHash", responseFile.data.IpfsHash);
-
         return {
           ipfsCid: CID.parse(responseFile.data.IpfsHash).toV1().toString(),
           ipfsHash: responseFile.data.IpfsHash,
@@ -102,13 +100,9 @@ export const useIpfs = () => {
           pinataJWTKey,
         });
 
-        console.log("############## pinFileToIPFSResult", pinFileToIPFSResult);
-        console.log("############## file", file);
-
         const url = !pinFileToIPFSResult?.ipfsCid
           ? ""
           : "ipfs://" + pinFileToIPFSResult.ipfsCid;
-        console.log("############## url", url);
 
         if (file.thumbnailFileData) {
           const pinThumbnailToIPFSResult = await pinataPinFileToIPFS({
@@ -116,16 +110,9 @@ export const useIpfs = () => {
             pinataJWTKey,
           });
 
-          console.log(
-            "############## pinThumbnailToIPFSResult",
-            pinThumbnailToIPFSResult,
-          );
-
           const thumbnailUrl = !pinThumbnailToIPFSResult?.ipfsCid
             ? ""
             : "ipfs://" + pinThumbnailToIPFSResult.ipfsCid;
-
-          // console.log('############## thumbnailUrl', thumbnailUrl)
 
           return {
             ...omit(file, "file"),
