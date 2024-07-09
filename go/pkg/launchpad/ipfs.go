@@ -68,7 +68,9 @@ func (ps *PinningService) VerifyPinned(cidStrs ...string) (bool, error) {
 
 	pinnedStrs := make([]string, len(pinnedItems))
 	for idx, item := range pinnedItems {
-		pinnedStrs[idx] = string(item.GetStatus())
+		if string(item.GetStatus()) == remoteClient.StatusPinned.String() {
+			pinnedStrs[idx] = item.GetPin().GetCid().String()
+		}
 	}
 
 	var unpinnedCids []string
