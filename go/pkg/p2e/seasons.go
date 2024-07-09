@@ -298,6 +298,30 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 		BossName:  `== $*=|'¤?")à-£_%`,
 		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.cf-ipfs.com/",
 		StartsAt:  "2024-07-04T00:00:00",
+		EndsAt:    "2024-07-10T00:00:00",
+		IsPre:     true,
+	},
+	// ------------------------------
+	// The R!ot EVM - Mainnet Test Season 2
+	{
+		ID:         "Season PepeTest 2",
+		GameID:     THE_RIOT_GAME_ID,
+		Denom:      "tori",
+		Decimals:   6,
+		TotalPrize: 5_000,
+		BossName:   "PepeTest 2",
+		BossImage:  "https://gateway.pinata.cloud/ipfs/QmPWB9SDkt82AF7U4WEJneDbbhJDqn9JhVLTr8G1B1ny4f",
+		TopN:       500,
+		StartsAt:   "2024-07-10T00:00:00",
+		EndsAt:     "2024-07-14T00:00:00",
+	},
+	// After PepeTest2
+	{
+		ID:        "Season After PepeTest 2",
+		GameID:    THE_RIOT_GAME_ID,
+		BossName:  `== $*=|'¤?")à-£_%`,
+		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.cf-ipfs.com/",
+		StartsAt:  "2024-07-14T00:00:00",
 		EndsAt:    "2025-01-01T00:00:00",
 		IsPre:     true,
 	},
