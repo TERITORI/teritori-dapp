@@ -34,7 +34,9 @@ export const useIpfs = () => {
     async ({
       file,
       pinataJWTKey,
-    }: PinataFileProps): Promise<string | undefined> => {
+    }: PinataFileProps): Promise<
+      { ipfsCid: string | undefined; ipfsHash: string } | undefined
+    > => {
       try {
         const formData = new FormData();
         if (Platform.OS !== "web") {
@@ -72,7 +74,12 @@ export const useIpfs = () => {
             "Content-Type": "multipart/form-data",
           },
         });
-        return CID.parse(responseFile.data.IpfsHash).toV1().toString();
+        console.log("responseFile.data.IpfsHash", responseFile.data.IpfsHash);
+
+        return {
+          ipfsCid: CID.parse(responseFile.data.IpfsHash).toV1().toString(),
+          ipfsHash: responseFile.data.IpfsHash,
+        };
       } catch (err) {
         console.error("Error pinning " + file.fileName + " to IPFS", err);
       }
@@ -90,28 +97,44 @@ export const useIpfs = () => {
       const storedFile = async (
         file: LocalFileData,
       ): Promise<RemoteFileData> => {
-        const fileIpfsHash = await pinataPinFileToIPFS({
+        const pinFileToIPFSResult = await pinataPinFileToIPFS({
           file,
           pinataJWTKey,
         });
 
-        const url = !fileIpfsHash ? "" : "ipfs://" + fileIpfsHash;
+        console.log("############## pinFileToIPFSResult", pinFileToIPFSResult);
+        console.log("############## file", file);
+
+        const url = !pinFileToIPFSResult?.ipfsCid
+          ? ""
+          : "ipfs://" + pinFileToIPFSResult.ipfsCid;
+        console.log("############## url", url);
 
         if (file.thumbnailFileData) {
-          const thumbnailFileIpfsHash = await pinataPinFileToIPFS({
+          const pinThumbnailToIPFSResult = await pinataPinFileToIPFS({
             file: file.thumbnailFileData,
             pinataJWTKey,
           });
-          const thumbnailUrl = !thumbnailFileIpfsHash
+
+          console.log(
+            "############## pinThumbnailToIPFSResult",
+            pinThumbnailToIPFSResult,
+          );
+
+          const thumbnailUrl = !pinThumbnailToIPFSResult?.ipfsCid
             ? ""
-            : "ipfs://" + thumbnailFileIpfsHash;
+            : "ipfs://" + pinThumbnailToIPFSResult.ipfsCid;
+
+          // console.log('############## thumbnailUrl', thumbnailUrl)
 
           return {
             ...omit(file, "file"),
             url,
+            hash: pinFileToIPFSResult?.ipfsHash,
             thumbnailFileData: {
               ...omit(file.thumbnailFileData, "file"),
               url: thumbnailUrl,
+              hash: pinThumbnailToIPFSResult?.ipfsHash,
             },
           };
         } else {
@@ -120,6 +143,7 @@ export const useIpfs = () => {
             // Thumbnails cannot have a thumbnail, so we set isThumbnailImage here
             isThumbnailImage: file.isThumbnailImage,
             url,
+            hash: pinFileToIPFSResult?.ipfsHash,
           };
         }
       };
@@ -155,14 +179,14 @@ export const useIpfs = () => {
       if (!pinataJWTKey) {
         throw new Error("Failed to get upload key");
       }
-      const fileIpfsHash = await pinataPinFileToIPFS({
+      const pinFileToIPFSResult = await pinataPinFileToIPFS({
         file,
         pinataJWTKey,
       });
-      if (!fileIpfsHash) {
+      if (!pinFileToIPFSResult?.ipfsCid) {
         throw new Error("Failed to pin file");
       }
-      return "ipfs://" + fileIpfsHash;
+      return "ipfs://" + pinFileToIPFSResult.ipfsCid;
     },
     [pinataPinFileToIPFS, userIPFSKey],
   );
