@@ -9,6 +9,7 @@ service LaunchpadService {
   rpc TokenMetadata(TokenMetadataRequest) returns (TokenMetadataResponse);
   rpc CollectionsByCreator(CollectionsByCreatorRequest) returns (CollectionsByCreatorResponse);
   rpc LaunchpadProjects(LaunchpadProjectsRequest) returns (LaunchpadProjectsResponse);
+  rpc LaunchpadProjectById(LaunchpadProjectByIdRequest) returns (LaunchpadProjectByIdResponse);
 }
 
 enum Sort {
@@ -47,6 +48,17 @@ message LaunchpadProjectsRequest {
 
 message LaunchpadProjectsResponse {
   repeated LaunchpadProject projects = 1;
+}
+
+message LaunchpadProjectByIdRequest {
+  string network_id = 1;
+  string project_id = 2;
+  //  TODO: user authentication (Member of the admin DAO) using a token
+  string user_address = 3;
+}
+
+message LaunchpadProjectByIdResponse {
+  LaunchpadProject project = 1;
 }
 
 message UploadMetadatasRequest {

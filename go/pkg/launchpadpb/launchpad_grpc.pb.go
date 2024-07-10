@@ -27,6 +27,7 @@ type LaunchpadServiceClient interface {
 	TokenMetadata(ctx context.Context, in *TokenMetadataRequest, opts ...grpc.CallOption) (*TokenMetadataResponse, error)
 	CollectionsByCreator(ctx context.Context, in *CollectionsByCreatorRequest, opts ...grpc.CallOption) (*CollectionsByCreatorResponse, error)
 	LaunchpadProjects(ctx context.Context, in *LaunchpadProjectsRequest, opts ...grpc.CallOption) (*LaunchpadProjectsResponse, error)
+	LaunchpadProjectById(ctx context.Context, in *LaunchpadProjectByIdRequest, opts ...grpc.CallOption) (*LaunchpadProjectByIdResponse, error)
 }
 
 type launchpadServiceClient struct {
@@ -82,6 +83,15 @@ func (c *launchpadServiceClient) LaunchpadProjects(ctx context.Context, in *Laun
 	return out, nil
 }
 
+func (c *launchpadServiceClient) LaunchpadProjectById(ctx context.Context, in *LaunchpadProjectByIdRequest, opts ...grpc.CallOption) (*LaunchpadProjectByIdResponse, error) {
+	out := new(LaunchpadProjectByIdResponse)
+	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/LaunchpadProjectById", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LaunchpadServiceServer is the server API for LaunchpadService service.
 // All implementations must embed UnimplementedLaunchpadServiceServer
 // for forward compatibility
@@ -91,6 +101,7 @@ type LaunchpadServiceServer interface {
 	TokenMetadata(context.Context, *TokenMetadataRequest) (*TokenMetadataResponse, error)
 	CollectionsByCreator(context.Context, *CollectionsByCreatorRequest) (*CollectionsByCreatorResponse, error)
 	LaunchpadProjects(context.Context, *LaunchpadProjectsRequest) (*LaunchpadProjectsResponse, error)
+	LaunchpadProjectById(context.Context, *LaunchpadProjectByIdRequest) (*LaunchpadProjectByIdResponse, error)
 	mustEmbedUnimplementedLaunchpadServiceServer()
 }
 
@@ -112,6 +123,9 @@ func (UnimplementedLaunchpadServiceServer) CollectionsByCreator(context.Context,
 }
 func (UnimplementedLaunchpadServiceServer) LaunchpadProjects(context.Context, *LaunchpadProjectsRequest) (*LaunchpadProjectsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LaunchpadProjects not implemented")
+}
+func (UnimplementedLaunchpadServiceServer) LaunchpadProjectById(context.Context, *LaunchpadProjectByIdRequest) (*LaunchpadProjectByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LaunchpadProjectById not implemented")
 }
 func (UnimplementedLaunchpadServiceServer) mustEmbedUnimplementedLaunchpadServiceServer() {}
 
@@ -216,6 +230,24 @@ func _LaunchpadService_LaunchpadProjects_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LaunchpadService_LaunchpadProjectById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LaunchpadProjectByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LaunchpadServiceServer).LaunchpadProjectById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/launchpad.v1.LaunchpadService/LaunchpadProjectById",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LaunchpadServiceServer).LaunchpadProjectById(ctx, req.(*LaunchpadProjectByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LaunchpadService_ServiceDesc is the grpc.ServiceDesc for LaunchpadService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -242,6 +274,10 @@ var LaunchpadService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LaunchpadProjects",
 			Handler:    _LaunchpadService_LaunchpadProjects_Handler,
+		},
+		{
+			MethodName: "LaunchpadProjectById",
+			Handler:    _LaunchpadService_LaunchpadProjectById_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -46,6 +46,23 @@ pub struct LaunchpadProjectsResponse {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct LaunchpadProjectByIdRequest {
+    #[prost(string, tag="1")]
+    pub network_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub project_id: ::prost::alloc::string::String,
+    ///   TODO: user authentication (Member of the admin DAO) using a token
+    #[prost(string, tag="3")]
+    pub user_address: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct LaunchpadProjectByIdResponse {
+    #[prost(message, optional, tag="1")]
+    pub project: ::core::option::Option<LaunchpadProject>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct UploadMetadatasRequest {
     #[prost(string, tag="1")]
     pub sender: ::prost::alloc::string::String,

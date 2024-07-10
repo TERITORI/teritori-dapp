@@ -105,6 +105,17 @@ export interface LaunchpadProjectsResponse {
   projects: LaunchpadProject[];
 }
 
+export interface LaunchpadProjectByIdRequest {
+  networkId: string;
+  projectId: string;
+  /** TODO: user authentication (Member of the admin DAO) using a token */
+  userAddress: string;
+}
+
+export interface LaunchpadProjectByIdResponse {
+  project: LaunchpadProject | undefined;
+}
+
 export interface UploadMetadatasRequest {
   sender: string;
   networkId: string;
@@ -553,6 +564,154 @@ export const LaunchpadProjectsResponse = {
   fromPartial<I extends Exact<DeepPartial<LaunchpadProjectsResponse>, I>>(object: I): LaunchpadProjectsResponse {
     const message = createBaseLaunchpadProjectsResponse();
     message.projects = object.projects?.map((e) => LaunchpadProject.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseLaunchpadProjectByIdRequest(): LaunchpadProjectByIdRequest {
+  return { networkId: "", projectId: "", userAddress: "" };
+}
+
+export const LaunchpadProjectByIdRequest = {
+  encode(message: LaunchpadProjectByIdRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.networkId !== "") {
+      writer.uint32(10).string(message.networkId);
+    }
+    if (message.projectId !== "") {
+      writer.uint32(18).string(message.projectId);
+    }
+    if (message.userAddress !== "") {
+      writer.uint32(26).string(message.userAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): LaunchpadProjectByIdRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLaunchpadProjectByIdRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.projectId = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.userAddress = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): LaunchpadProjectByIdRequest {
+    return {
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      projectId: isSet(object.projectId) ? globalThis.String(object.projectId) : "",
+      userAddress: isSet(object.userAddress) ? globalThis.String(object.userAddress) : "",
+    };
+  },
+
+  toJSON(message: LaunchpadProjectByIdRequest): unknown {
+    const obj: any = {};
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    if (message.projectId !== "") {
+      obj.projectId = message.projectId;
+    }
+    if (message.userAddress !== "") {
+      obj.userAddress = message.userAddress;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<LaunchpadProjectByIdRequest>, I>>(base?: I): LaunchpadProjectByIdRequest {
+    return LaunchpadProjectByIdRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<LaunchpadProjectByIdRequest>, I>>(object: I): LaunchpadProjectByIdRequest {
+    const message = createBaseLaunchpadProjectByIdRequest();
+    message.networkId = object.networkId ?? "";
+    message.projectId = object.projectId ?? "";
+    message.userAddress = object.userAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseLaunchpadProjectByIdResponse(): LaunchpadProjectByIdResponse {
+  return { project: undefined };
+}
+
+export const LaunchpadProjectByIdResponse = {
+  encode(message: LaunchpadProjectByIdResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.project !== undefined) {
+      LaunchpadProject.encode(message.project, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): LaunchpadProjectByIdResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLaunchpadProjectByIdResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.project = LaunchpadProject.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): LaunchpadProjectByIdResponse {
+    return { project: isSet(object.project) ? LaunchpadProject.fromJSON(object.project) : undefined };
+  },
+
+  toJSON(message: LaunchpadProjectByIdResponse): unknown {
+    const obj: any = {};
+    if (message.project !== undefined) {
+      obj.project = LaunchpadProject.toJSON(message.project);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<LaunchpadProjectByIdResponse>, I>>(base?: I): LaunchpadProjectByIdResponse {
+    return LaunchpadProjectByIdResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<LaunchpadProjectByIdResponse>, I>>(object: I): LaunchpadProjectByIdResponse {
+    const message = createBaseLaunchpadProjectByIdResponse();
+    message.project = (object.project !== undefined && object.project !== null)
+      ? LaunchpadProject.fromPartial(object.project)
+      : undefined;
     return message;
   },
 };
@@ -1524,6 +1683,10 @@ export interface LaunchpadService {
     request: DeepPartial<LaunchpadProjectsRequest>,
     metadata?: grpc.Metadata,
   ): Promise<LaunchpadProjectsResponse>;
+  LaunchpadProjectById(
+    request: DeepPartial<LaunchpadProjectByIdRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<LaunchpadProjectByIdResponse>;
 }
 
 export class LaunchpadServiceClientImpl implements LaunchpadService {
@@ -1536,6 +1699,7 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
     this.TokenMetadata = this.TokenMetadata.bind(this);
     this.CollectionsByCreator = this.CollectionsByCreator.bind(this);
     this.LaunchpadProjects = this.LaunchpadProjects.bind(this);
+    this.LaunchpadProjectById = this.LaunchpadProjectById.bind(this);
   }
 
   UploadMetadatas(
@@ -1578,6 +1742,17 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
     return this.rpc.unary(
       LaunchpadServiceLaunchpadProjectsDesc,
       LaunchpadProjectsRequest.fromPartial(request),
+      metadata,
+    );
+  }
+
+  LaunchpadProjectById(
+    request: DeepPartial<LaunchpadProjectByIdRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<LaunchpadProjectByIdResponse> {
+    return this.rpc.unary(
+      LaunchpadServiceLaunchpadProjectByIdDesc,
+      LaunchpadProjectByIdRequest.fromPartial(request),
       metadata,
     );
   }
@@ -1690,6 +1865,29 @@ export const LaunchpadServiceLaunchpadProjectsDesc: UnaryMethodDefinitionish = {
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = LaunchpadProjectsResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const LaunchpadServiceLaunchpadProjectByIdDesc: UnaryMethodDefinitionish = {
+  methodName: "LaunchpadProjectById",
+  service: LaunchpadServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return LaunchpadProjectByIdRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = LaunchpadProjectByIdResponse.decode(data);
       return {
         ...value,
         toObject() {
