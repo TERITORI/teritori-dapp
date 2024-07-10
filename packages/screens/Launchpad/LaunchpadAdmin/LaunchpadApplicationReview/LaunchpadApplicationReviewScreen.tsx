@@ -13,9 +13,26 @@ import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { NetworkFeature } from "@/networks";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import {ScreenFC} from "@/utils/navigation";
+import {useCollectionById} from "@/hooks/launchpad/useCollectionById";
+import {useLaunchpadProjectById} from "@/hooks/launchpad/useLaunchpadProjectById";
+import {useSelectedNetworkId} from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 
-export const LaunchpadApplicationReview: React.FC = () => {
+export const LaunchpadApplicationReviewScreen: ScreenFC<"LaunchpadApplicationReview">  = ({
+                                                              route,
+                                                            }) => {
+  const { id: projectId } = route.params;
   const navigation = useAppNavigation();
+  const networkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const { data: launchpadProject } = useLaunchpadProjectById({
+    projectId,
+    networkId,
+    userAddress: selectedWallet?.address || ""
+  });
+
+  console.log('launchpadProjectlaunchpadProjectlaunchpadProject', launchpadProject)
 
   return (
     <ScreenContainer

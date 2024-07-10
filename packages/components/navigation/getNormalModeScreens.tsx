@@ -18,7 +18,7 @@ import { HashtagFeedScreen } from "@/screens/HashtagFeed/HashtagFeedScreen";
 import { HomeScreen } from "@/screens/Home/HomeScreen";
 import { LaunchpadAdministrationOverviewScreen } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/LaunchpadAdministrationOverviewScreen";
 import { LaunchpadAllProjectsScreen } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAllProjects/LaunchpadAllProjectsScreen";
-import { LaunchpadApplicationReview } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplicationReview/LaunchpadApplicationReview";
+import { LaunchpadApplicationReviewScreen } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplicationReview/LaunchpadApplicationReviewScreen";
 import { LaunchpadApplicationsScreen } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplications/LaunchpadApplicationsScreen";
 import { LaunchpadReadyApplicationsScreen } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadReadyApplications/LaunchpadReadyApplicationsScreen";
 import { LaunchpadApplyScreen } from "@/screens/Launchpad/LaunchpadApply/LaunchpadApplyScreen";
@@ -275,7 +275,7 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
       />
       <Nav.Screen
         name="LaunchpadApplicationReview"
-        component={LaunchpadApplicationReview}
+        component={LaunchpadApplicationReviewScreen}
         options={{
           header: () => null,
           title: screenTitle("Launchpad Application Review"),

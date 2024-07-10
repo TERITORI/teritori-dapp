@@ -363,3 +363,59 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		Projects: result,
 	}, nil
 }
+
+func (s *Launchpad) LaunchpadProjectById(ctx context.Context, req *launchpadpb.LaunchpadProjectByIdRequest) (*launchpadpb.LaunchpadProjectByIdResponse, error) {
+	networkID := req.GetNetworkId()
+	if networkID == "" {
+		return nil, errors.New("missing network id")
+	}
+
+	projectID := req.GetProjectId()
+	if projectID == "" {
+		return nil, errors.New("missing project id")
+	}
+
+	userAddress := req.GetUserAddress()
+	if userAddress == "" {
+		return nil, errors.New("missing user address")
+	}
+
+	_, err := s.conf.NetworkStore.GetNetwork(networkID)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
+	}
+
+	//  TODO: user authentication (Member of the admin DAO)
+	// Control if sender is member of the admin DAO
+	daoAdminAddress := "tori129kpfu7krgumuc38hfyxwfluq7eu06rhr3awcztr3a9cgjjcx5hswlqj8v"
+	var isUserAuthorized bool
+	err = s.conf.IndexerDB.Raw(`
+	SELECT EXISTS (
+		SELECT 1
+		FROM dao_members dm
+		JOIN daos d ON dm.dao_contract_address = d.contract_address
+		WHERE d.contract_address = ?
+		AND dm.member_address = ?
+	) AS dao_exists;
+	`,
+		daoAdminAddress,
+		userAddress,
+	).Scan(&isUserAuthorized).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
+	if !isUserAuthorized {
+		return nil, errors.New("Unauthorized")
+	}
+
+	var project *launchpadpb.LaunchpadProject
+
+	err = s.conf.IndexerDB.Raw("SELECT * FROM launchpad_projects AS lp WHERE lp.project_id = ?", projectID).Scan(&project).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
+
+	return &launchpadpb.LaunchpadProjectByIdResponse{
+		Project: project,
+	}, nil
+}

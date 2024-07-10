@@ -141,7 +141,13 @@ export const useCompleteCollection = () => {
         });
       }
     },
-    [selectedNetworkId, selectedWallet, setToast, userIPFSKey, uploadFilesToPinata],
+    [
+      selectedNetworkId,
+      selectedWallet,
+      setToast,
+      userIPFSKey,
+      uploadFilesToPinata,
+    ],
   );
 
   return { completeCollection };
