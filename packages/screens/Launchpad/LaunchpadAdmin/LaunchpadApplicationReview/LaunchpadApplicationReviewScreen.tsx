@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo} from "react";
 import { View } from "react-native";
 
 import { ApplicationDetail } from "./component/ApplicationDetail";
@@ -14,11 +14,11 @@ import { NetworkFeature } from "@/networks";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {ScreenFC} from "@/utils/navigation";
-import {useCollectionById} from "@/hooks/launchpad/useCollectionById";
 import {useLaunchpadProjectById} from "@/hooks/launchpad/useLaunchpadProjectById";
 import {useSelectedNetworkId} from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-
+import {NotFound} from "@/components/NotFound";
+import {collectionData} from "@/utils/launchpad";
 export const LaunchpadApplicationReviewScreen: ScreenFC<"LaunchpadApplicationReview">  = ({
                                                               route,
                                                             }) => {
@@ -26,13 +26,28 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<"LaunchpadApplicationRev
   const navigation = useAppNavigation();
   const networkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
-  const { data: launchpadProject } = useLaunchpadProjectById({
+  const { launchpadProject } = useLaunchpadProjectById({
     projectId,
     networkId,
     userAddress: selectedWallet?.address || ""
   });
+  const collection = useMemo(() => launchpadProject ? collectionData(launchpadProject) : null, [launchpadProject] )
 
-  console.log('launchpadProjectlaunchpadProjectlaunchpadProject', launchpadProject)
+  if (!launchpadProject || !collection) {
+    return (
+      <ScreenContainer
+        footerChildren={<></>}
+        headerChildren={
+          <BrandText style={fontSemibold20}>Application Review</BrandText>
+        }
+        responsive
+        onBackPress={() => navigation.canGoBack() ? navigation.goBack() : navigation.navigate("LaunchpadAdministrationOverview")}
+        forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+      >
+        <NotFound label="Application"/>
+      </ScreenContainer>
+    );
+  }
 
   return (
     <ScreenContainer
@@ -41,16 +56,16 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<"LaunchpadApplicationRev
         <BrandText style={fontSemibold20}>Application Review</BrandText>
       }
       responsive
-      onBackPress={() => navigation.goBack()}
+      onBackPress={() => navigation.canGoBack() ? navigation.goBack() : navigation.navigate("LaunchpadAdministrationOverview")}
       forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
     >
       <View style={{ marginTop: layout.spacing_x4 }}>
-        <ApplicationDetail />
+        <ApplicationDetail collection={collection}/>
         <View>
-          <CreatorInformation />
-          <ProjectInformation />
-          <TeamInformation />
-          <InvestmentInformation />
+          <CreatorInformation collection={collection}/>
+          <ProjectInformation collection={collection}/>
+          <TeamInformation collection={collection}/>
+          <InvestmentInformation collection={collection}/>
         </View>
       </View>
     </ScreenContainer>

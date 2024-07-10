@@ -26,7 +26,7 @@ import {
   fontSemibold28,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { CollectionDataResult } from "@/utils/types/launchpad";
+import {collectionStatus} from "@/utils/launchpad";
 
 export const LaunchpadMyCollectionsScreen: ScreenFC<
   "LaunchpadMyCollections"
@@ -170,9 +170,3 @@ export const LaunchpadMyCollectionsScreen: ScreenFC<
   );
 };
 
-const collectionStatus = (collection: CollectionDataResult) =>
-  !collection.metadatas_merkle_root
-    ? "INCOMPLETE"
-    : !collection.deployed_address
-      ? "COMPLETE"
-      : "DEPLOYED";

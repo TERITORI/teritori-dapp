@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import {
-  LaunchpadProject, LaunchpadProjectByIdRequest,
+  LaunchpadProject, LaunchpadProjectByIdRequest, LaunchpadProjectByIdResponse, LaunchpadProjectsResponse,
 } from "@/api/launchpad/v1/launchpad";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { mustGetLaunchpadClient } from "@/utils/backend";
@@ -10,21 +10,18 @@ export const useLaunchpadProjectById = (req: LaunchpadProjectByIdRequest) => {
   const { setToast } = useFeedbacks();
   const networkId = req.networkId;
   const userAddress = req.userAddress;
-  const collectionId = req.collectionId;
+  const collectionId = req.projectId;
 
-  return useQuery(
+  const { data, ...other } = useQuery<LaunchpadProject | null>(
     ["launchpadProjectById", collectionId, networkId, userAddress],
     async () => {
-      let launchpadProject: LaunchpadProject | undefined;
-
       try {
         const client = mustGetLaunchpadClient(networkId);
-        if (!client) {
-          return;
+        if (!client || !userAddress) {
+          return null;
         }
-        launchpadProject = await client.LaunchpadProjectById({
-          collectionId,
-        });
+        const response: LaunchpadProjectByIdResponse = await client.LaunchpadProjectById(req);
+        return response.project || null
       } catch (e: any) {
         console.error("Error getting launchpad project: ", e);
         setToast({
@@ -33,8 +30,10 @@ export const useLaunchpadProjectById = (req: LaunchpadProjectByIdRequest) => {
           title: "Error getting launchpad project",
           message: e.message,
         });
+        return null;
       }
-      return launchpadProject;
+
     },
   );
+  return {launchpadProject: data, ...other}
 };

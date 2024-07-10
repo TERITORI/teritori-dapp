@@ -19,6 +19,7 @@ import { getNetwork } from "@/networks";
 import { secondaryColor } from "@/utils/style/colors";
 import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
 import { CollectionDataResult } from "@/utils/types/launchpad";
+import {OmniLink} from "@/components/OmniLink";
 
 const columns: TableColumns = {
   rank: {
@@ -105,14 +106,12 @@ const LaunchpadCollectionsTableRow: React.FC<{
 }) => {
   const network = getNetwork(collection.target_network);
   return (
-    // <OmniLink
-    //   disabled={!target}
-    //   to={{
-    //     screen: "MyCollection",
-    //     params: { id: collection.id },
-    //   }}
-    // >
-    <View>
+    <OmniLink
+      to={{
+        screen: "LaunchpadApplicationReview",
+        params: { id: collection.symbol },
+      }}
+    >
       <TableRow>
         <TableTextCell
           style={{
@@ -234,7 +233,6 @@ const LaunchpadCollectionsTableRow: React.FC<{
         {/*  style={{ marginLeft: layout.spacing_x0_5 }}*/}
         {/*/>*/}
       </TableRow>
-    </View>
-    // </OmniLink>
+    </OmniLink>
   );
 };

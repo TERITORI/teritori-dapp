@@ -18,6 +18,8 @@ import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
 import { SecondaryBox } from "@/components/boxes/SecondaryBox";
 import { primaryColor, primaryTextColor } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
+import {CollectionDataResult} from "@/utils/types/launchpad";
+import {collectionStatus} from "@/utils/launchpad";
 
 const dummyData = [
   { title: "Supply", value: "5000" },
@@ -32,7 +34,9 @@ const applicationSocialData = [
 ];
 const LG_BREAKPOINT = 1250;
 
-export const ApplicationDetail: React.FC = () => {
+export const ApplicationDetail: React.FC<{
+  collection: CollectionDataResult;
+}> = ({collection}) => {
   const { width } = useWindowDimensions();
 
   return (
@@ -48,7 +52,7 @@ export const ApplicationDetail: React.FC = () => {
       {/* ===== Left container */}
       <View style={{ flex: 1 }}>
         <View style={{ alignSelf: "flex-start" }}>
-          <TertiaryBadge size="SM" label="PENDING REVIEW" />
+          <TertiaryBadge size="M" label={collectionStatus(collection)} />
         </View>
         <BrandText style={[fontSemibold28, { marginTop: 24 }]}>
           Yellow Block Generation

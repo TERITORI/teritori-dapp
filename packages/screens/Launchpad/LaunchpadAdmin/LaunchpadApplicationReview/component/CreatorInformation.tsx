@@ -5,10 +5,13 @@ import { BoxDetailTeritori } from "@/components/BoxDetailTeritori/BoxDetailTerit
 import { BrandText } from "@/components/BrandText";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
+import {CollectionDataResult} from "@/utils/types/launchpad";
 
 const MD_BREAKPOINT = 800;
 
-export const CreatorInformation: React.FC = () => {
+export const CreatorInformation: React.FC<{
+  collection: CollectionDataResult;
+}> = ({collection}) => {
   const { width } = useWindowDimensions();
 
   return (

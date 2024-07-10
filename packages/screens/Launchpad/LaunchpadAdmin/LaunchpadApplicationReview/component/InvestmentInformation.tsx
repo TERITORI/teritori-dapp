@@ -6,10 +6,13 @@ import { LinkCard } from "./LinkCard";
 import { BoxDetailTeritori } from "@/components/BoxDetailTeritori/BoxDetailTeritori";
 import { BrandText } from "@/components/BrandText";
 import { fontSemibold20 } from "@/utils/style/fonts";
+import {CollectionDataResult} from "@/utils/types/launchpad";
 
 const MD_BREAKPOINT = 800;
 
-export const InvestmentInformation: React.FC = () => {
+export const InvestmentInformation: React.FC<{
+  collection: CollectionDataResult;
+}> = ({collection}) => {
   const { width } = useWindowDimensions();
 
   return (

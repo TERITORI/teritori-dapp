@@ -42,7 +42,7 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
   const { width } = useWindowDimensions();
-  const { data: launchpadProjects = [] } = useLaunchpadProjects({
+  const { launchpadProjects = [] } = useLaunchpadProjects({
     networkId: selectedNetworkId,
     userAddress: selectedWallet?.address || "",
     offset: 0,
