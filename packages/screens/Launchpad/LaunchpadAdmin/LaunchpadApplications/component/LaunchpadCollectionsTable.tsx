@@ -7,6 +7,7 @@ import checkBadgeSVG from "@/assets/icons/certified.svg";
 import externalLinkSVG from "@/assets/icons/external-link.svg";
 import solanaCircleSVG from "@/assets/icons/networks/solana-circle.svg";
 import { Link } from "@/components/Link";
+import { OmniLink } from "@/components/OmniLink";
 import { SVG } from "@/components/SVG";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
 import { TableCell } from "@/components/table/TableCell";
@@ -19,7 +20,6 @@ import { getNetwork } from "@/networks";
 import { secondaryColor } from "@/utils/style/colors";
 import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
 import { CollectionDataResult } from "@/utils/types/launchpad";
-import {OmniLink} from "@/components/OmniLink";
 
 const columns: TableColumns = {
   rank: {

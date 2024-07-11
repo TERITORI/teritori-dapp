@@ -13,6 +13,7 @@ import { useCollectionsByCreator } from "@/hooks/launchpad/useCollectionsByCreat
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
+import { collectionStatus } from "@/utils/launchpad";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import {
   neutral17,
@@ -26,7 +27,6 @@ import {
   fontSemibold28,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import {collectionStatus} from "@/utils/launchpad";
 
 export const LaunchpadMyCollectionsScreen: ScreenFC<
   "LaunchpadMyCollections"
@@ -169,4 +169,3 @@ export const LaunchpadMyCollectionsScreen: ScreenFC<
     </ScreenContainer>
   );
 };
-

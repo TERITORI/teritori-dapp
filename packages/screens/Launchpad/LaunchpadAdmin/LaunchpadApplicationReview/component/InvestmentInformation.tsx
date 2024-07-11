@@ -4,16 +4,15 @@ import { View, useWindowDimensions } from "react-native";
 import { LinkCard } from "./LinkCard";
 
 import { BrandText } from "@/components/BrandText";
+import { launchpadReviewBreakpointM } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplicationReview/LaunchpadApplicationReviewScreen";
+import { ApplicationCard } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplicationReview/component/ApplicationCard";
 import { fontSemibold20 } from "@/utils/style/fonts";
-import {CollectionDataResult} from "@/utils/types/launchpad";
-import {ApplicationCard} from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplicationReview/component/ApplicationCard";
-import {layout} from "@/utils/style/layout";
-
-const breakpointM = 800;
+import { layout } from "@/utils/style/layout";
+import { CollectionDataResult } from "@/utils/types/launchpad";
 
 export const InvestmentInformation: React.FC<{
   collection: CollectionDataResult;
-}> = ({collection}) => {
+}> = ({ collection }) => {
   const { width } = useWindowDimensions();
 
   return (
@@ -25,7 +24,7 @@ export const InvestmentInformation: React.FC<{
       <BrandText style={fontSemibold20}>Investment information</BrandText>
       <View
         style={{
-          flexDirection: width >= breakpointM ? "row" : "column",
+          flexDirection: width >= launchpadReviewBreakpointM ? "row" : "column",
           marginTop: layout.spacing_x2,
           gap: layout.spacing_x1_5,
           flexWrap: "wrap",
@@ -33,27 +32,24 @@ export const InvestmentInformation: React.FC<{
       >
         <ApplicationCard
           title="Investment Description"
-          value="For decades, the destruction of ecosystems and social relations has
-            turned people into soulless robots. At the same time, inequality
-            explodes every year and misery becomes the norm for the silent
-            majority. A minority of powerful & wealthy leaders, called the “The
-            Legion'', have set up a technological & political system allowing
-            them to continue to develop their wealth and safety."
+          value={collection.investment_desc}
         />
         <LinkCard
+          style={{ borderColor: "red" }}
           title="Investment Links Attachments"
           linksData={[
-            { title: "Instagram", link: "https://instagram.com/loremipsum" },
-            { title: "Telegram", link: "@nickname" },
-            { title: "Signal", link: "@nickname" },
+            { title: "Instagram", link: "TODO" }, //TODO ? We have only one input for these 3 data
+            { title: "Telegram", link: "TODO" }, //TODO ?
+            { title: "Signal", link: "TODO" }, //TODO ?
           ]}
         />
         <LinkCard
+          style={{ borderColor: "red" }}
           title="Whitepaper Roadmap"
           linksData={[
-            { title: "Roadmap", link: "Link" },
-            { title: "Whitepaper", link: "Link" },
-            { title: "Pitch Deck", link: "Link" },
+            { title: "Roadmap", link: "TODO" }, //TODO ?   We have only one input for these 3 data
+            { title: "Whitepaper", link: "TODO" }, //TODO ?
+            { title: "Pitch Deck", link: "TODO" }, //TODO ?
           ]}
         />
       </View>

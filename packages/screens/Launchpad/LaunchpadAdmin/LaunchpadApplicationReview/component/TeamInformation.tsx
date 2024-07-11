@@ -4,16 +4,15 @@ import { useWindowDimensions, View } from "react-native";
 import { LinkCard } from "./LinkCard";
 
 import { BrandText } from "@/components/BrandText";
+import { launchpadReviewBreakpointM } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplicationReview/LaunchpadApplicationReviewScreen";
+import { ApplicationCard } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplicationReview/component/ApplicationCard";
 import { fontSemibold20 } from "@/utils/style/fonts";
-import {CollectionDataResult} from "@/utils/types/launchpad";
-import {ApplicationCard} from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplicationReview/component/ApplicationCard";
-import {layout} from "@/utils/style/layout";
-
-const MD_BREAKPOINT = 800;
+import { layout } from "@/utils/style/layout";
+import { CollectionDataResult } from "@/utils/types/launchpad";
 
 export const TeamInformation: React.FC<{
   collection: CollectionDataResult;
-}> = ({collection}) => {
+}> = ({ collection }) => {
   const { width } = useWindowDimensions();
 
   return (
@@ -25,35 +24,26 @@ export const TeamInformation: React.FC<{
       <BrandText style={fontSemibold20}>Team information</BrandText>
       <View
         style={{
-          flexDirection: width >= MD_BREAKPOINT ? "row" : "column",
+          flexDirection: width >= launchpadReviewBreakpointM ? "row" : "column",
           marginTop: layout.spacing_x2,
           gap: layout.spacing_x1_5,
         }}
       >
         <ApplicationCard
           title="Team Description"
-          value="For decades, the destruction of ecosystems and social relations has
-            turned people into soulless robots. At the same time, inequality
-            explodes every year and misery becomes the norm for the silent
-            majority. A minority of powerful & wealthy leaders, called the “The
-            Legion'', have set up a technological & political system allowing
-            them to continue to develop their wealth and safety."
+          value={collection.team_desc}
         />
         <ApplicationCard
           title="Partners Description"
-          value="For decades, the destruction of ecosystems and social relations has
-          turned people into soulless robots. At the same time, inequality
-          explodes every year and misery becomes the norm for the silent
-          majority. A minority of powerful & wealthy leaders, called the “The
-          Legion'', have set up a technological & political system allowing
-          them to continue to develop their wealth and safety."
+          value={collection.partners}
         />
         <LinkCard
+          style={{ borderColor: "red" }}
           title="Team Links"
           linksData={[
-            { title: "Instagram", link: "https://instagram.com/loremipsum" },
-            { title: "Telegram", link: "@nickname" },
-            { title: "Signal", link: "@nickname" },
+            { title: "Instagram", link: "TODO" }, //TODO ?  We have only one input for these 3 data (external_link)
+            { title: "Telegram", link: "TODO" }, //TODO ?
+            { title: "Signal", link: "TODO" }, //TODO ?
           ]}
         />
       </View>
