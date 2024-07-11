@@ -2,7 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 
 import {
   LaunchpadProject,
-  LaunchpadProjectsRequest, LaunchpadProjectsResponse,
+  LaunchpadProjectsRequest,
+  LaunchpadProjectsResponse,
 } from "@/api/launchpad/v1/launchpad";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { mustGetLaunchpadClient } from "@/utils/backend";
@@ -23,7 +24,8 @@ export const useLaunchpadProjects = (req: LaunchpadProjectsRequest) => {
         if (!client || !userAddress) {
           return [];
         }
-        const response: LaunchpadProjectsResponse = await client.LaunchpadProjects(req);
+        const response: LaunchpadProjectsResponse =
+          await client.LaunchpadProjects(req);
         response.projects.forEach((data) => {
           if (!data) {
             return;
@@ -43,5 +45,5 @@ export const useLaunchpadProjects = (req: LaunchpadProjectsRequest) => {
       return launchpadProjects;
     },
   );
-  return {launchpadProjects: data, ...other}
+  return { launchpadProjects: data, ...other };
 };

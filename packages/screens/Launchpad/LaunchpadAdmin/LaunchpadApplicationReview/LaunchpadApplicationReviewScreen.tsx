@@ -19,6 +19,8 @@ import {useSelectedNetworkId} from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import {NotFound} from "@/components/NotFound";
 import {collectionData} from "@/utils/launchpad";
+import {SpacerColumn} from "@/components/spacer";
+
 export const LaunchpadApplicationReviewScreen: ScreenFC<"LaunchpadApplicationReview">  = ({
                                                               route,
                                                             }) => {
@@ -61,6 +63,7 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<"LaunchpadApplicationRev
     >
       <View style={{ marginTop: layout.spacing_x4 }}>
         <ApplicationDetail collection={collection}/>
+        <SpacerColumn size={5}/>
         <View>
           <CreatorInformation collection={collection}/>
           <ProjectInformation collection={collection}/>

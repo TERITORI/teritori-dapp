@@ -1,13 +1,14 @@
 import React from "react";
 import { View, useWindowDimensions } from "react-native";
 
-import { BoxDetailTeritori } from "@/components/BoxDetailTeritori/BoxDetailTeritori";
 import { BrandText } from "@/components/BrandText";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import {CollectionDataResult} from "@/utils/types/launchpad";
+import {layout} from "@/utils/style/layout";
+import {ApplicationCard} from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplicationReview/component/ApplicationCard";
 
-const MD_BREAKPOINT = 800;
+const breakpointM = 768;
 
 export const CreatorInformation: React.FC<{
   collection: CollectionDataResult;
@@ -19,50 +20,50 @@ export const CreatorInformation: React.FC<{
       style={{
         borderTopColor: neutral33,
         borderTopWidth: 1,
-        paddingTop: 32,
+        paddingTop: layout.spacing_x4,
       }}
     >
       <BrandText style={fontSemibold20}>Creator information</BrandText>
       <View
         style={{
-          flexDirection: width >= MD_BREAKPOINT ? "row" : "column",
-          marginTop: 16,
-          gap: 12,
+          flexDirection: width >= breakpointM ? "row" : "column",
+          marginTop: layout.spacing_x2,
+          gap: layout.spacing_x1_5,
           flexWrap: "wrap",
         }}
       >
-        <BoxDetailTeritori title="Creator Name" descripation="@nickname" />
-        <BoxDetailTeritori title="Creator Name" descripation="@nickname" />
+        <ApplicationCard title="Creator Name" value="@nickname" style={{flex: 2}}/>
+        <ApplicationCard title="Twitter URL" value="@nickname" style={{flex: 2}}/>
 
-        <View style={{ flex: 1, flexDirection: "row", gap: 12 }}>
-          <BoxDetailTeritori
+        <View style={{ flex: 2, flexDirection: "row", gap: layout.spacing_x1_5 }}>
+          <ApplicationCard
             title="Twitter Follower Range"
-            descripation="5000"
+            value="5000"
           />
-          <BoxDetailTeritori
+          <ApplicationCard
             title="Twitter Follower Count"
-            descripation="5000"
+            value="5000"
           />
         </View>
       </View>
       <View
         style={{
-          flexDirection: width >= MD_BREAKPOINT ? "row" : "column",
-          marginTop: 12,
-          gap: 12,
+          flexDirection: width >= breakpointM ? "row" : "column",
+          marginTop: layout.spacing_x1_5,
+          gap: layout.spacing_x1_5,
         }}
       >
-        <BoxDetailTeritori
+        <ApplicationCard
           title="Main Contact Discord"
-          descripation="@nickname"
+          value="@nickname"
         />
-        <BoxDetailTeritori
+        <ApplicationCard
           title="Discord URL"
-          descripation="https://discord.com/link"
+          value="https://discord.com/link"
         />
-        <BoxDetailTeritori
+        <ApplicationCard
           title="Main Contact Email"
-          descripation="hello@email.com"
+          value="hello@email.com"
         />
       </View>
     </View>

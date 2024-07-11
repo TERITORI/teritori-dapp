@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 
 import {
-  LaunchpadProject, LaunchpadProjectByIdRequest, LaunchpadProjectByIdResponse, LaunchpadProjectsResponse,
+  LaunchpadProject,
+  LaunchpadProjectByIdRequest,
+  LaunchpadProjectByIdResponse,
 } from "@/api/launchpad/v1/launchpad";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { mustGetLaunchpadClient } from "@/utils/backend";
@@ -20,8 +22,9 @@ export const useLaunchpadProjectById = (req: LaunchpadProjectByIdRequest) => {
         if (!client || !userAddress) {
           return null;
         }
-        const response: LaunchpadProjectByIdResponse = await client.LaunchpadProjectById(req);
-        return response.project || null
+        const response: LaunchpadProjectByIdResponse =
+          await client.LaunchpadProjectById(req);
+        return response.project || null;
       } catch (e: any) {
         console.error("Error getting launchpad project: ", e);
         setToast({
@@ -32,8 +35,7 @@ export const useLaunchpadProjectById = (req: LaunchpadProjectByIdRequest) => {
         });
         return null;
       }
-
     },
   );
-  return {launchpadProject: data, ...other}
+  return { launchpadProject: data, ...other };
 };

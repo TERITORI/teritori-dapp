@@ -1,20 +1,22 @@
 import React from "react";
-import { FlatList, View } from "react-native";
+import {FlatList, Linking, View} from "react-native";
 
 import { BrandText } from "@/components/BrandText";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
-import { neutral77 } from "@/utils/style/colors";
-import { fontSemibold12, fontSemibold14 } from "@/utils/style/fonts";
+import {neutral77, primaryColor} from "@/utils/style/colors";
+import {fontSemibold12, fontSemibold14} from "@/utils/style/fonts";
+import {layout} from "@/utils/style/layout";
+import {CustomPressable} from "@/components/buttons/CustomPressable";
 
-export const LinkCard: React.FC<{ title: any; linksData: any }> = ({
+export const LinkCard: React.FC<{ title: string; linksData: { title: string; link: string; }[] }> = ({
   title,
   linksData,
 }) => {
   return (
     <TertiaryBox
       style={{
-        borderRadius: 6,
-        padding: 12,
+        borderRadius: layout.spacing_x0_75,
+        padding:  layout.spacing_x1_25,
         flex: 1,
         height: "100%",
       }}
@@ -25,13 +27,15 @@ export const LinkCard: React.FC<{ title: any; linksData: any }> = ({
       <FlatList
         data={linksData}
         renderItem={({ item, index }) => (
-          <View style={{ marginTop: 6, flexDirection: "row" }} key={index}>
+          <View style={{ marginTop: layout.spacing_x0_75, flexDirection: "row" }} key={index}>
             <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-              {item?.title}
+              {item.title}
             </BrandText>
-            <BrandText style={[fontSemibold14, { marginStart: 12 }]}>
-              {item?.link}
-            </BrandText>
+              <CustomPressable onPress={() => Linking.openURL(item.link)}>
+                <BrandText style={[fontSemibold14, { marginLeft:  layout.spacing_x1_25, color: primaryColor }]} numberOfLines={1}>
+                  {item.link}
+                </BrandText>
+              </CustomPressable>
           </View>
         )}
       />

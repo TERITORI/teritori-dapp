@@ -3,18 +3,26 @@ import React from "react";
 import { BrandText } from "@/components/BrandText";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
 import { neutral77 } from "@/utils/style/colors";
-import { fontSemibold12, fontSemibold14 } from "@/utils/style/fonts";
+import {fontMedium14, fontSemibold12} from "@/utils/style/fonts";
+import {layout} from "@/utils/style/layout";
+import {StyleProp, } from "react-native";
+import {BoxStyle} from "@/components/boxes/Box";
 
 export const ApplicationCard: React.FC<{
-  rowData: { title: string; value: string };
-}> = ({ rowData }) => {
+title: string; value: string; style?: StyleProp<BoxStyle>
+}> = ({ title, value, style }) => {
   return (
-    <TertiaryBox style={{ borderRadius: 6, padding: 12, width: 132 }}>
-      <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-        {rowData?.title}
+    <TertiaryBox style={[{ borderRadius: 6,
+      padding: layout.spacing_x1_5,
+      justifyContent: "space-between",
+      minHeight: 64,
+      flex: 1,
+    }, style]}>
+      <BrandText style={[fontSemibold12, { color: neutral77, marginBottom: layout.spacing_x0_75 }]}>
+        {title}
       </BrandText>
-      <BrandText style={[fontSemibold14, { marginTop: 6 }]}>
-        {rowData?.value}
+      <BrandText style={fontMedium14}>
+        {value}
       </BrandText>
     </TertiaryBox>
   );

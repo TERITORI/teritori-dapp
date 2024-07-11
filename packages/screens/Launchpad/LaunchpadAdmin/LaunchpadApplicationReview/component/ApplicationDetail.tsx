@@ -1,130 +1,128 @@
 import React from "react";
 import {
   View,
-  useWindowDimensions,
   Image,
-  TouchableOpacity,
+   Linking,
 } from "react-native";
 
-import { ApplicationCard } from "./ApplicationCard";
-import { ApplicationSocialCard } from "./ApplicationSocialCard";
+import {ApplicationCard} from "./ApplicationCard";
 
 import guardianPng from "@/assets/default-images/guardian_profile.png";
 import discordSVG from "@/assets/icons/discord.svg";
 import twitterSVG from "@/assets/icons/twitter.svg";
 import websiteSVG from "@/assets/icons/website.svg";
-import { BrandText } from "@/components/BrandText";
-import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
-import { SecondaryBox } from "@/components/boxes/SecondaryBox";
-import { primaryColor, primaryTextColor } from "@/utils/style/colors";
-import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
+import {BrandText} from "@/components/BrandText";
+import {neutral33} from "@/utils/style/colors";
+import {fontSemibold13, fontSemibold14, fontSemibold28} from "@/utils/style/fonts";
 import {CollectionDataResult} from "@/utils/types/launchpad";
 import {collectionStatus} from "@/utils/launchpad";
+import {layout} from "@/utils/style/layout";
+import {SocialButton} from "@/components/buttons/SocialButton";
+import {useMaxResolution} from "@/hooks/useMaxResolution";
+import {SpacerColumn, SpacerRow} from "@/components/spacer";
+import {PrimaryButton} from "@/components/buttons/PrimaryButton";
+import {BoxStyle} from "@/components/boxes/Box";
 
-const dummyData = [
-  { title: "Supply", value: "5000" },
-  { title: "Price", value: "5 SOL" },
-  { title: "Limit Buy", value: "5 by address" },
-];
-
-const applicationSocialData = [
-  { icon: discordSVG, name: "Discord" },
-  { icon: websiteSVG, name: "Website" },
-  { icon: twitterSVG, name: "Twitter" },
-];
-const LG_BREAKPOINT = 1250;
+const breakpointM = 900;
 
 export const ApplicationDetail: React.FC<{
   collection: CollectionDataResult;
 }> = ({collection}) => {
-  const { width } = useWindowDimensions();
+  const {width} = useMaxResolution();
 
   return (
     <View
       style={{
-        flexDirection: width >= LG_BREAKPOINT ? "row" : "column-reverse",
-        alignItems: width >= LG_BREAKPOINT ? "flex-start" : "center",
+        flexDirection: width >= breakpointM ? "row" : "column-reverse",
+        alignItems: width >= breakpointM ? "flex-start" : "center",
         justifyContent: "center",
-        marginTop: 72,
-        paddingBottom: 40,
       }}
     >
       {/* ===== Left container */}
-      <View style={{ flex: 1 }}>
-        <View style={{ alignSelf: "flex-start" }}>
-          <TertiaryBadge size="M" label={collectionStatus(collection)} />
+      <View style={{
+        flex: 1,
+        width: "100%"
+      }}>
+        <View style={{
+          alignSelf: "flex-start",
+          backgroundColor: neutral33,
+          height: 28,
+          paddingHorizontal: layout.spacing_x1_5,
+          borderRadius: 999,
+          justifyContent: "center"
+        }}>
+          <BrandText style={fontSemibold13}>{collectionStatus(collection)}</BrandText>
         </View>
-        <BrandText style={[fontSemibold28, { marginTop: 24 }]}>
-          Yellow Block Generation
+        <BrandText style={[fontSemibold28, {marginTop: layout.spacing_x3}]}>
+          {collection.name}
         </BrandText>
         <View
           style={{
             flexDirection: "row",
             alignItems: "flex-start",
-            marginTop: 10,
-            gap: 12,
+            marginTop: layout.spacing_x1_5,
+            gap: layout.spacing_x1_5,
             flexWrap: "wrap",
           }}
         >
-          {dummyData?.map((item, index) => (
-            <ApplicationCard rowData={item} key={index} />
-          ))}
+            <ApplicationCard title="Supply" value={collection.expected_supply.toString()} style={applicationCardCStyle}/>
+            <ApplicationCard title="Price" value={collection.expected_public_mint_price.toString()} style={applicationCardCStyle}/>
+            <ApplicationCard title="Symbol" value={collection.symbol} style={applicationCardCStyle}/>
         </View>
-        <View style={{ marginTop: 24 }}>
+        <View style={{marginTop: layout.spacing_x3}}>
           <BrandText style={fontSemibold14}>
-            For decades, the destruction of ecosystems and social relations has
-            turned people into soulless robots. At the same time, inequality
-            explodes every year and misery becomes the norm for the silent
-            majority.
-          </BrandText>
-          <BrandText style={[fontSemibold14, { marginTop: 15 }]}>
-            A minority of powerful & wealthy leaders, called the “The Legion'',
-            have set up a technological & political system allowing them to
-            continue to develop their wealth and safety.
-          </BrandText>
-          <BrandText style={fontSemibold14}>
-            Of course this system only serves the happy few elite members of the
-            society while the majority survives in an increasingly uncertain
-            world.
+            {collection.desc}
           </BrandText>
         </View>
         <View
           style={{
             flexDirection: "row",
             alignItems: "flex-start",
-            marginTop: 24,
-            gap: 12,
+            marginTop: layout.spacing_x3,
+            gap: layout.spacing_x1_5,
             flexWrap: "wrap",
           }}
         >
-          {applicationSocialData?.map((item, index) => (
-            <ApplicationSocialCard socialData={item} key={index} />
-          ))}
+          <SocialButton
+            text="Discord"
+            iconSvg={discordSVG}
+            onPress={() => Linking.openURL(collection.contact_discord_name)}
+          />
+          <SocialButton
+            text="Twitter"
+            iconSvg={twitterSVG}
+            onPress={() => Linking.openURL(collection.twitter_profile)}
+          />
+          {collection.website_link &&
+            <SocialButton
+              text="Website"
+              iconSvg={websiteSVG}
+              onPress={() => Linking.openURL(collection.website_link!)}
+            />
+          }
         </View>
-        <TouchableOpacity>
-          <SecondaryBox
-            style={{
-              alignSelf: "flex-start",
-              borderRadius: 6,
-              alignItems: "center",
-              justifyContent: "center",
-              paddingVertical: 16,
-              paddingHorizontal: 20,
-              backgroundColor: primaryColor,
-              marginTop: 32,
-              width: 146,
-            }}
-          >
-            <BrandText style={[fontSemibold14, { color: primaryTextColor }]}>
-              Approve
-            </BrandText>
-          </SecondaryBox>
-        </TouchableOpacity>
+        <SpacerColumn size={4}/>
+        <PrimaryButton text="Approve" boxStyle={{width: 146}}/>
       </View>
+
+      {
+        width >= breakpointM ?  <SpacerRow size={3}/> :  <SpacerColumn size={3}/>
+      }
+
       {/* ===== Right container */}
-      <View style={{ flex: 1, marginLeft: 16 }}>
-        <Image style={{ width: 450, height: 450 }} source={guardianPng} />
-      </View>
+      <Image
+        resizeMode="contain"
+        style={[{
+           height: width >= breakpointM ? 534 : 380,
+           width: width >= breakpointM ? 534 : 380,
+        },
+          width >= breakpointM && {flex: 1}
+          ]
+      }
+        source={guardianPng}
+      />
     </View>
   );
 };
+
+const applicationCardCStyle: BoxStyle = {width: 132, maxWidth: 140}
