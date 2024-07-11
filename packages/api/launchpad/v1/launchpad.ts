@@ -191,14 +191,14 @@ export interface TokenMetadataResponse {
   merkleProof: string[];
 }
 
-export interface LaunchpadProjectsCountByStatusRequest {
+export interface LaunchpadProjectsCountRequest {
   /** TODO: user authentication (Member of the admin DAO) using a token */
   userAddress: string;
   networkId: string;
-  status: Status;
+  status?: Status | undefined;
 }
 
-export interface LaunchpadProjectsCountByStatusResponse {
+export interface LaunchpadProjectsCountResponse {
   count: number;
 }
 
@@ -208,7 +208,6 @@ export interface LaunchpadProject {
   creatorId: string;
   collectionData: string;
   merkleRoot?: string | undefined;
-  status: Status;
 }
 
 export interface Metadata {
@@ -1315,28 +1314,28 @@ export const TokenMetadataResponse = {
   },
 };
 
-function createBaseLaunchpadProjectsCountByStatusRequest(): LaunchpadProjectsCountByStatusRequest {
-  return { userAddress: "", networkId: "", status: 0 };
+function createBaseLaunchpadProjectsCountRequest(): LaunchpadProjectsCountRequest {
+  return { userAddress: "", networkId: "", status: undefined };
 }
 
-export const LaunchpadProjectsCountByStatusRequest = {
-  encode(message: LaunchpadProjectsCountByStatusRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const LaunchpadProjectsCountRequest = {
+  encode(message: LaunchpadProjectsCountRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.userAddress !== "") {
       writer.uint32(10).string(message.userAddress);
     }
     if (message.networkId !== "") {
       writer.uint32(18).string(message.networkId);
     }
-    if (message.status !== 0) {
+    if (message.status !== undefined) {
       writer.uint32(24).int32(message.status);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): LaunchpadProjectsCountByStatusRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LaunchpadProjectsCountRequest {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseLaunchpadProjectsCountByStatusRequest();
+    const message = createBaseLaunchpadProjectsCountRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1370,15 +1369,15 @@ export const LaunchpadProjectsCountByStatusRequest = {
     return message;
   },
 
-  fromJSON(object: any): LaunchpadProjectsCountByStatusRequest {
+  fromJSON(object: any): LaunchpadProjectsCountRequest {
     return {
       userAddress: isSet(object.userAddress) ? globalThis.String(object.userAddress) : "",
       networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
-      status: isSet(object.status) ? statusFromJSON(object.status) : 0,
+      status: isSet(object.status) ? statusFromJSON(object.status) : undefined,
     };
   },
 
-  toJSON(message: LaunchpadProjectsCountByStatusRequest): unknown {
+  toJSON(message: LaunchpadProjectsCountRequest): unknown {
     const obj: any = {};
     if (message.userAddress !== "") {
       obj.userAddress = message.userAddress;
@@ -1386,44 +1385,42 @@ export const LaunchpadProjectsCountByStatusRequest = {
     if (message.networkId !== "") {
       obj.networkId = message.networkId;
     }
-    if (message.status !== 0) {
+    if (message.status !== undefined) {
       obj.status = statusToJSON(message.status);
     }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<LaunchpadProjectsCountByStatusRequest>, I>>(
-    base?: I,
-  ): LaunchpadProjectsCountByStatusRequest {
-    return LaunchpadProjectsCountByStatusRequest.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<LaunchpadProjectsCountRequest>, I>>(base?: I): LaunchpadProjectsCountRequest {
+    return LaunchpadProjectsCountRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<LaunchpadProjectsCountByStatusRequest>, I>>(
+  fromPartial<I extends Exact<DeepPartial<LaunchpadProjectsCountRequest>, I>>(
     object: I,
-  ): LaunchpadProjectsCountByStatusRequest {
-    const message = createBaseLaunchpadProjectsCountByStatusRequest();
+  ): LaunchpadProjectsCountRequest {
+    const message = createBaseLaunchpadProjectsCountRequest();
     message.userAddress = object.userAddress ?? "";
     message.networkId = object.networkId ?? "";
-    message.status = object.status ?? 0;
+    message.status = object.status ?? undefined;
     return message;
   },
 };
 
-function createBaseLaunchpadProjectsCountByStatusResponse(): LaunchpadProjectsCountByStatusResponse {
+function createBaseLaunchpadProjectsCountResponse(): LaunchpadProjectsCountResponse {
   return { count: 0 };
 }
 
-export const LaunchpadProjectsCountByStatusResponse = {
-  encode(message: LaunchpadProjectsCountByStatusResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const LaunchpadProjectsCountResponse = {
+  encode(message: LaunchpadProjectsCountResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.count !== 0) {
       writer.uint32(8).uint32(message.count);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): LaunchpadProjectsCountByStatusResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LaunchpadProjectsCountResponse {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseLaunchpadProjectsCountByStatusResponse();
+    const message = createBaseLaunchpadProjectsCountResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1443,11 +1440,11 @@ export const LaunchpadProjectsCountByStatusResponse = {
     return message;
   },
 
-  fromJSON(object: any): LaunchpadProjectsCountByStatusResponse {
+  fromJSON(object: any): LaunchpadProjectsCountResponse {
     return { count: isSet(object.count) ? globalThis.Number(object.count) : 0 };
   },
 
-  toJSON(message: LaunchpadProjectsCountByStatusResponse): unknown {
+  toJSON(message: LaunchpadProjectsCountResponse): unknown {
     const obj: any = {};
     if (message.count !== 0) {
       obj.count = Math.round(message.count);
@@ -1455,22 +1452,20 @@ export const LaunchpadProjectsCountByStatusResponse = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<LaunchpadProjectsCountByStatusResponse>, I>>(
-    base?: I,
-  ): LaunchpadProjectsCountByStatusResponse {
-    return LaunchpadProjectsCountByStatusResponse.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<LaunchpadProjectsCountResponse>, I>>(base?: I): LaunchpadProjectsCountResponse {
+    return LaunchpadProjectsCountResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<LaunchpadProjectsCountByStatusResponse>, I>>(
+  fromPartial<I extends Exact<DeepPartial<LaunchpadProjectsCountResponse>, I>>(
     object: I,
-  ): LaunchpadProjectsCountByStatusResponse {
-    const message = createBaseLaunchpadProjectsCountByStatusResponse();
+  ): LaunchpadProjectsCountResponse {
+    const message = createBaseLaunchpadProjectsCountResponse();
     message.count = object.count ?? 0;
     return message;
   },
 };
 
 function createBaseLaunchpadProject(): LaunchpadProject {
-  return { id: "", networkId: "", creatorId: "", collectionData: "", merkleRoot: undefined, status: 0 };
+  return { id: "", networkId: "", creatorId: "", collectionData: "", merkleRoot: undefined };
 }
 
 export const LaunchpadProject = {
@@ -1489,9 +1484,6 @@ export const LaunchpadProject = {
     }
     if (message.merkleRoot !== undefined) {
       writer.uint32(42).string(message.merkleRoot);
-    }
-    if (message.status !== 0) {
-      writer.uint32(48).int32(message.status);
     }
     return writer;
   },
@@ -1538,13 +1530,6 @@ export const LaunchpadProject = {
 
           message.merkleRoot = reader.string();
           continue;
-        case 6:
-          if (tag !== 48) {
-            break;
-          }
-
-          message.status = reader.int32() as any;
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1561,7 +1546,6 @@ export const LaunchpadProject = {
       creatorId: isSet(object.creatorId) ? globalThis.String(object.creatorId) : "",
       collectionData: isSet(object.collectionData) ? globalThis.String(object.collectionData) : "",
       merkleRoot: isSet(object.merkleRoot) ? globalThis.String(object.merkleRoot) : undefined,
-      status: isSet(object.status) ? statusFromJSON(object.status) : 0,
     };
   },
 
@@ -1582,9 +1566,6 @@ export const LaunchpadProject = {
     if (message.merkleRoot !== undefined) {
       obj.merkleRoot = message.merkleRoot;
     }
-    if (message.status !== 0) {
-      obj.status = statusToJSON(message.status);
-    }
     return obj;
   },
 
@@ -1598,7 +1579,6 @@ export const LaunchpadProject = {
     message.creatorId = object.creatorId ?? "";
     message.collectionData = object.collectionData ?? "";
     message.merkleRoot = object.merkleRoot ?? undefined;
-    message.status = object.status ?? 0;
     return message;
   },
 };
@@ -1939,10 +1919,10 @@ export interface LaunchpadService {
     request: DeepPartial<LaunchpadProjectByIdRequest>,
     metadata?: grpc.Metadata,
   ): Promise<LaunchpadProjectByIdResponse>;
-  LaunchpadProjectsCountByStatus(
-    request: DeepPartial<LaunchpadProjectsCountByStatusRequest>,
+  LaunchpadProjectsCount(
+    request: DeepPartial<LaunchpadProjectsCountRequest>,
     metadata?: grpc.Metadata,
-  ): Promise<LaunchpadProjectsCountByStatusResponse>;
+  ): Promise<LaunchpadProjectsCountResponse>;
 }
 
 export class LaunchpadServiceClientImpl implements LaunchpadService {
@@ -1956,7 +1936,7 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
     this.CollectionsByCreator = this.CollectionsByCreator.bind(this);
     this.LaunchpadProjects = this.LaunchpadProjects.bind(this);
     this.LaunchpadProjectById = this.LaunchpadProjectById.bind(this);
-    this.LaunchpadProjectsCountByStatus = this.LaunchpadProjectsCountByStatus.bind(this);
+    this.LaunchpadProjectsCount = this.LaunchpadProjectsCount.bind(this);
   }
 
   UploadMetadatas(
@@ -2014,13 +1994,13 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
     );
   }
 
-  LaunchpadProjectsCountByStatus(
-    request: DeepPartial<LaunchpadProjectsCountByStatusRequest>,
+  LaunchpadProjectsCount(
+    request: DeepPartial<LaunchpadProjectsCountRequest>,
     metadata?: grpc.Metadata,
-  ): Promise<LaunchpadProjectsCountByStatusResponse> {
+  ): Promise<LaunchpadProjectsCountResponse> {
     return this.rpc.unary(
-      LaunchpadServiceLaunchpadProjectsCountByStatusDesc,
-      LaunchpadProjectsCountByStatusRequest.fromPartial(request),
+      LaunchpadServiceLaunchpadProjectsCountDesc,
+      LaunchpadProjectsCountRequest.fromPartial(request),
       metadata,
     );
   }
@@ -2166,19 +2146,19 @@ export const LaunchpadServiceLaunchpadProjectByIdDesc: UnaryMethodDefinitionish 
   } as any,
 };
 
-export const LaunchpadServiceLaunchpadProjectsCountByStatusDesc: UnaryMethodDefinitionish = {
-  methodName: "LaunchpadProjectsCountByStatus",
+export const LaunchpadServiceLaunchpadProjectsCountDesc: UnaryMethodDefinitionish = {
+  methodName: "LaunchpadProjectsCount",
   service: LaunchpadServiceDesc,
   requestStream: false,
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return LaunchpadProjectsCountByStatusRequest.encode(this).finish();
+      return LaunchpadProjectsCountRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = LaunchpadProjectsCountByStatusResponse.decode(data);
+      const value = LaunchpadProjectsCountResponse.decode(data);
       return {
         ...value,
         toObject() {

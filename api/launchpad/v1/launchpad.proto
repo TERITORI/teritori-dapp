@@ -10,7 +10,7 @@ service LaunchpadService {
   rpc CollectionsByCreator(CollectionsByCreatorRequest) returns (CollectionsByCreatorResponse);
   rpc LaunchpadProjects(LaunchpadProjectsRequest) returns (LaunchpadProjectsResponse);
   rpc LaunchpadProjectById(LaunchpadProjectByIdRequest) returns (LaunchpadProjectByIdResponse);
-  rpc LaunchpadProjectsCountByStatus(LaunchpadProjectsCountByStatusRequest) returns (LaunchpadProjectsCountByStatusResponse);
+  rpc LaunchpadProjectsCount(LaunchpadProjectsCountRequest) returns (LaunchpadProjectsCountResponse);
 }
 
 enum Sort {
@@ -52,7 +52,7 @@ message LaunchpadProjectsRequest {
   int32 offset = 3;
   Sort sort = 4;
   SortDirection sort_direction = 5;
-//  TODO: user authentication (Member of the admin DAO) using a token
+  //  TODO: user authentication (Member of the admin DAO) using a token
   string user_address = 6;
   optional Status status = 7;
 }
@@ -106,14 +106,14 @@ message TokenMetadataResponse {
   repeated string merkle_proof = 3;
 }
 
-message LaunchpadProjectsCountByStatusRequest {
+message LaunchpadProjectsCountRequest {
   //  TODO: user authentication (Member of the admin DAO) using a token
   string user_address = 1;
   string network_id = 2;
-  Status status = 3;
+  optional Status status = 3;
 }
 
-message LaunchpadProjectsCountByStatusResponse {
+message LaunchpadProjectsCountResponse {
   uint32 count = 1;
 }
 
@@ -125,7 +125,6 @@ message LaunchpadProject {
   string creator_id = 3;
   string collection_data = 4;
   optional string merkle_root = 5;
-  Status status = 6;
 }
 
 message Metadata {

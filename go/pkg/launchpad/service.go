@@ -223,7 +223,6 @@ func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.C
 	if networkID == "" {
 		return nil, errors.New("missing network id")
 	}
-
 	_, err := s.conf.NetworkStore.GetNetwork(networkID)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
@@ -232,6 +231,20 @@ func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.C
 	creatorID := req.GetCreatorId()
 	if creatorID == "" {
 		return nil, errors.New("creatorID is mandatory")
+	}
+
+	status := req.GetStatus()
+	if status < 0 || status > 2 {
+		return nil, errors.New("invalid status")
+	}
+	statusFilterSQL := ""
+	switch status {
+	case launchpadpb.Status_STATUS_INCOMPLETE:
+		statusFilterSQL = "AND lp.collection_data->>'metadatas_merkle_root' ISNULL"
+	case launchpadpb.Status_STATUS_COMPLETE:
+		statusFilterSQL = "AND NOT lp.collection_data->>'metadatas_merkle_root' ISNULL"
+	case launchpadpb.Status_STATUS_DEPLOYED:
+		statusFilterSQL = "AND NOT lp.collection_data->>'deployed_address' ISNULL"
 	}
 
 	var projects []indexerdb.LaunchpadProject
@@ -253,11 +266,11 @@ func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.C
 		orderSQL = ""
 	}
 
-	err = s.conf.IndexerDB.Raw(fmt.Sprintf(
-		`
-		SELECT collection_data FROM launchpad_projects AS lp WHERE lp.creator_id = ? %s
-		`, orderSQL), creatorID,
-	).Scan(&projects).Error
+	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`
+		SELECT collection_data FROM launchpad_projects AS lp WHERE lp.creator_id = ? AND lp.network_id = ? %s %s
+	`,
+		statusFilterSQL,
+		orderSQL), creatorID, networkID).Scan(&projects).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
@@ -287,38 +300,36 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 	if networkID == "" {
 		return nil, errors.New("missing network id")
 	}
+	_, err := s.conf.NetworkStore.GetNetwork(networkID)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
+	}
 
 	userAddress := req.GetUserAddress()
 	if userAddress == "" {
 		return nil, errors.New("missing user address")
 	}
 
-	_, err := s.conf.NetworkStore.GetNetwork(networkID)
+	isUserAdmin, err := s.IsUserAdmin(userAddress)
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
+		return nil, errors.Wrap(err, "failed to verify user's authentication")
+	}
+	if !isUserAdmin {
+		return nil, errors.New("Unauthorized")
 	}
 
-	//  TODO: user authentication (Member of the admin DAO)
-	// Control if sender is member of the admin DAO
-	daoAdminAddress := "tori129kpfu7krgumuc38hfyxwfluq7eu06rhr3awcztr3a9cgjjcx5hswlqj8v"
-	var isUserAuthorized bool
-	err = s.conf.IndexerDB.Raw(`
-	SELECT EXISTS (
-		SELECT 1
-		FROM dao_members dm
-		JOIN daos d ON dm.dao_contract_address = d.contract_address
-		WHERE d.contract_address = ?
-		AND dm.member_address = ?
-	) AS dao_exists;
-	`,
-		daoAdminAddress,
-		userAddress,
-	).Scan(&isUserAuthorized).Error
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to query database")
+	status := req.GetStatus()
+	if status < 0 || status > 2 {
+		return nil, errors.New("invalid status")
 	}
-	if !isUserAuthorized {
-		return nil, errors.New("Unauthorized")
+	statusFilterSQL := ""
+	switch status {
+	case launchpadpb.Status_STATUS_INCOMPLETE:
+		statusFilterSQL = "AND lp.collection_data->>'metadatas_merkle_root' ISNULL"
+	case launchpadpb.Status_STATUS_COMPLETE:
+		statusFilterSQL = "AND NOT lp.collection_data->>'metadatas_merkle_root' ISNULL"
+	case launchpadpb.Status_STATUS_DEPLOYED:
+		statusFilterSQL = "AND NOT lp.collection_data->>'deployed_address' ISNULL"
 	}
 
 	var projects []launchpadpb.LaunchpadProject
@@ -340,11 +351,10 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		orderSQL = ""
 	}
 
-	err = s.conf.IndexerDB.Raw(fmt.Sprintf(
-		`
-		SELECT * FROM launchpad_projects AS lp %s
-		`, orderSQL),
-	).Scan(&projects).Error
+	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`
+		SELECT * FROM launchpad_projects AS lp WHERE lp.network_id = ? %s %s
+	`, statusFilterSQL,
+		orderSQL), networkID).Scan(&projects).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
@@ -385,12 +395,81 @@ func (s *Launchpad) LaunchpadProjectById(ctx context.Context, req *launchpadpb.L
 		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
 	}
 
+	isUserAdmin, err := s.IsUserAdmin(userAddress)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to verify user's authentication")
+	}
+	if !isUserAdmin {
+		return nil, errors.New("Unauthorized")
+	}
+
+	var project *launchpadpb.LaunchpadProject
+
+	err = s.conf.IndexerDB.Raw(`SELECT * FROM launchpad_projects AS lp WHERE lp.project_id = ? AND lp.network_id = ?`, projectID, networkID).Scan(&project).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
+
+	return &launchpadpb.LaunchpadProjectByIdResponse{
+		Project: project,
+	}, nil
+}
+
+func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb.LaunchpadProjectsCountRequest) (*launchpadpb.LaunchpadProjectsCountResponse, error) {
+	networkID := req.GetNetworkId()
+	if networkID == "" {
+		return nil, errors.New("missing network id")
+	}
+
+	status := req.GetStatus()
+	if status < 0 || status > 2 {
+		return nil, errors.New("invalid status")
+	}
+	statusFilterSQL := ""
+	switch status {
+	case launchpadpb.Status_STATUS_INCOMPLETE:
+		statusFilterSQL = "AND lp.collection_data->>'metadatas_merkle_root' ISNULL"
+	case launchpadpb.Status_STATUS_COMPLETE:
+		statusFilterSQL = "AND NOT lp.collection_data->>'metadatas_merkle_root' ISNULL"
+	case launchpadpb.Status_STATUS_DEPLOYED:
+		statusFilterSQL = "AND NOT lp.collection_data->>'deployed_address' ISNULL"
+	}
+
+	userAddress := req.GetUserAddress()
+	if userAddress == "" {
+		return nil, errors.New("missing user address")
+	}
+
+	_, err := s.conf.NetworkStore.GetNetwork(networkID)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
+	}
+
+	isUserAdmin, err := s.IsUserAdmin(userAddress)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to verify user's authentication")
+	}
+	if !isUserAdmin {
+		return nil, errors.New("Unauthorized")
+	}
+
+	var count uint32
+	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`SELECT COUNT(*) FROM launchpad_projects AS lp WHERE lp.network_id = ? %s`, statusFilterSQL), networkID).Scan(&count).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
+
+	return &launchpadpb.LaunchpadProjectsCountResponse{
+		Count: count,
+	}, nil
+}
+
+func (s *Launchpad) IsUserAdmin(userAddress string) (bool, error) {
 	//  TODO: user authentication (Member of the admin DAO)
 	// Control if sender is member of the admin DAO
 	daoAdminAddress := "tori129kpfu7krgumuc38hfyxwfluq7eu06rhr3awcztr3a9cgjjcx5hswlqj8v"
 	var isUserAuthorized bool
-	err = s.conf.IndexerDB.Raw(`
-	SELECT EXISTS (
+	err := s.conf.IndexerDB.Raw(`SELECT EXISTS (
 		SELECT 1
 		FROM dao_members dm
 		JOIN daos d ON dm.dao_contract_address = d.contract_address
@@ -402,20 +481,7 @@ func (s *Launchpad) LaunchpadProjectById(ctx context.Context, req *launchpadpb.L
 		userAddress,
 	).Scan(&isUserAuthorized).Error
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to query database")
+		return false, errors.Wrap(err, "failed to query database")
 	}
-	if !isUserAuthorized {
-		return nil, errors.New("Unauthorized")
-	}
-
-	var project *launchpadpb.LaunchpadProject
-
-	err = s.conf.IndexerDB.Raw("SELECT * FROM launchpad_projects AS lp WHERE lp.project_id = ?", projectID).Scan(&project).Error
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to query database")
-	}
-
-	return &launchpadpb.LaunchpadProjectByIdResponse{
-		Project: project,
-	}, nil
+	return isUserAuthorized, nil
 }

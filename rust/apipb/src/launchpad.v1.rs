@@ -125,18 +125,18 @@ pub struct TokenMetadataResponse {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct LaunchpadProjectsCountByStatusRequest {
+pub struct LaunchpadProjectsCountRequest {
     ///   TODO: user authentication (Member of the admin DAO) using a token
     #[prost(string, tag="1")]
     pub user_address: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
     pub network_id: ::prost::alloc::string::String,
-    #[prost(enumeration="Status", tag="3")]
-    pub status: i32,
+    #[prost(enumeration="Status", optional, tag="3")]
+    pub status: ::core::option::Option<i32>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct LaunchpadProjectsCountByStatusResponse {
+pub struct LaunchpadProjectsCountResponse {
     #[prost(uint32, tag="1")]
     pub count: u32,
 }
@@ -155,8 +155,6 @@ pub struct LaunchpadProject {
     pub collection_data: ::prost::alloc::string::String,
     #[prost(string, optional, tag="5")]
     pub merkle_root: ::core::option::Option<::prost::alloc::string::String>,
-    #[prost(enumeration="Status", tag="6")]
-    pub status: i32,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
