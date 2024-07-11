@@ -1,4 +1,6 @@
 // @generated
+// -------------------------------
+
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CollectionsByCreatorRequest {
@@ -14,6 +16,8 @@ pub struct CollectionsByCreatorRequest {
     pub sort: i32,
     #[prost(enumeration="SortDirection", tag="6")]
     pub sort_direction: i32,
+    #[prost(enumeration="Status", optional, tag="7")]
+    pub status: ::core::option::Option<i32>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -37,6 +41,8 @@ pub struct LaunchpadProjectsRequest {
     ///   TODO: user authentication (Member of the admin DAO) using a token
     #[prost(string, tag="6")]
     pub user_address: ::prost::alloc::string::String,
+    #[prost(enumeration="Status", optional, tag="7")]
+    pub status: ::core::option::Option<i32>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -119,6 +125,25 @@ pub struct TokenMetadataResponse {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct LaunchpadProjectsCountByStatusRequest {
+    ///   TODO: user authentication (Member of the admin DAO) using a token
+    #[prost(string, tag="1")]
+    pub user_address: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub network_id: ::prost::alloc::string::String,
+    #[prost(enumeration="Status", tag="3")]
+    pub status: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct LaunchpadProjectsCountByStatusResponse {
+    #[prost(uint32, tag="1")]
+    pub count: u32,
+}
+// -------------------------------
+
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LaunchpadProject {
     #[prost(string, tag="1")]
     pub id: ::prost::alloc::string::String,
@@ -130,31 +155,9 @@ pub struct LaunchpadProject {
     pub collection_data: ::prost::alloc::string::String,
     #[prost(string, optional, tag="5")]
     pub merkle_root: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(enumeration="Status", tag="6")]
+    pub status: i32,
 }
-// message UpdateCollectionWhitelistsRequest {
-//    string sender = 1;
-//    string network_id = 2;
-//    uint32 project_id = 3;
-//    repeated WhitelistMintInfo whitelist_mint_infos = 4; 
-// }
-
-// message UpdateCollectionWhitelistsResponse {
-//    repeated string merkle_roots = 1;
-// }
-
-// message WhitelistedAddressMerkleInfoRequest {
-//    string sender = 1;
-//    string network_id = 2;
-//    uint32 project_id = 3;
-//    uint32 whitelist_id = 4;
-//    string address = 5;
-// }
-
-// message WhitelistedAddressMerkleInfoResponse {
-//    string merkle_root = 1;
-//    repeated string merkle_proof = 2;
-// }
-
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Metadata {
@@ -242,6 +245,35 @@ impl SortDirection {
             "SORT_DIRECTION_UNSPECIFIED" => Some(Self::Unspecified),
             "SORT_DIRECTION_ASCENDING" => Some(Self::Ascending),
             "SORT_DIRECTION_DESCENDING" => Some(Self::Descending),
+            _ => None,
+        }
+    }
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum Status {
+    Incomplete = 0,
+    Complete = 1,
+    Deployed = 2,
+}
+impl Status {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            Status::Incomplete => "STATUS_INCOMPLETE",
+            Status::Complete => "STATUS_COMPLETE",
+            Status::Deployed => "STATUS_DEPLOYED",
+        }
+    }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "STATUS_INCOMPLETE" => Some(Self::Incomplete),
+            "STATUS_COMPLETE" => Some(Self::Complete),
+            "STATUS_DEPLOYED" => Some(Self::Deployed),
             _ => None,
         }
     }

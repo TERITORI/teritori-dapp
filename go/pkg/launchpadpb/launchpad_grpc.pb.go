@@ -28,6 +28,7 @@ type LaunchpadServiceClient interface {
 	CollectionsByCreator(ctx context.Context, in *CollectionsByCreatorRequest, opts ...grpc.CallOption) (*CollectionsByCreatorResponse, error)
 	LaunchpadProjects(ctx context.Context, in *LaunchpadProjectsRequest, opts ...grpc.CallOption) (*LaunchpadProjectsResponse, error)
 	LaunchpadProjectById(ctx context.Context, in *LaunchpadProjectByIdRequest, opts ...grpc.CallOption) (*LaunchpadProjectByIdResponse, error)
+	LaunchpadProjectsCountByStatus(ctx context.Context, in *LaunchpadProjectsCountByStatusRequest, opts ...grpc.CallOption) (*LaunchpadProjectsCountByStatusResponse, error)
 }
 
 type launchpadServiceClient struct {
@@ -92,6 +93,15 @@ func (c *launchpadServiceClient) LaunchpadProjectById(ctx context.Context, in *L
 	return out, nil
 }
 
+func (c *launchpadServiceClient) LaunchpadProjectsCountByStatus(ctx context.Context, in *LaunchpadProjectsCountByStatusRequest, opts ...grpc.CallOption) (*LaunchpadProjectsCountByStatusResponse, error) {
+	out := new(LaunchpadProjectsCountByStatusResponse)
+	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/LaunchpadProjectsCountByStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LaunchpadServiceServer is the server API for LaunchpadService service.
 // All implementations must embed UnimplementedLaunchpadServiceServer
 // for forward compatibility
@@ -102,6 +112,7 @@ type LaunchpadServiceServer interface {
 	CollectionsByCreator(context.Context, *CollectionsByCreatorRequest) (*CollectionsByCreatorResponse, error)
 	LaunchpadProjects(context.Context, *LaunchpadProjectsRequest) (*LaunchpadProjectsResponse, error)
 	LaunchpadProjectById(context.Context, *LaunchpadProjectByIdRequest) (*LaunchpadProjectByIdResponse, error)
+	LaunchpadProjectsCountByStatus(context.Context, *LaunchpadProjectsCountByStatusRequest) (*LaunchpadProjectsCountByStatusResponse, error)
 	mustEmbedUnimplementedLaunchpadServiceServer()
 }
 
@@ -126,6 +137,9 @@ func (UnimplementedLaunchpadServiceServer) LaunchpadProjects(context.Context, *L
 }
 func (UnimplementedLaunchpadServiceServer) LaunchpadProjectById(context.Context, *LaunchpadProjectByIdRequest) (*LaunchpadProjectByIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LaunchpadProjectById not implemented")
+}
+func (UnimplementedLaunchpadServiceServer) LaunchpadProjectsCountByStatus(context.Context, *LaunchpadProjectsCountByStatusRequest) (*LaunchpadProjectsCountByStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LaunchpadProjectsCountByStatus not implemented")
 }
 func (UnimplementedLaunchpadServiceServer) mustEmbedUnimplementedLaunchpadServiceServer() {}
 
@@ -248,6 +262,24 @@ func _LaunchpadService_LaunchpadProjectById_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LaunchpadService_LaunchpadProjectsCountByStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LaunchpadProjectsCountByStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LaunchpadServiceServer).LaunchpadProjectsCountByStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/launchpad.v1.LaunchpadService/LaunchpadProjectsCountByStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LaunchpadServiceServer).LaunchpadProjectsCountByStatus(ctx, req.(*LaunchpadProjectsCountByStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LaunchpadService_ServiceDesc is the grpc.ServiceDesc for LaunchpadService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -278,6 +310,10 @@ var LaunchpadService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LaunchpadProjectById",
 			Handler:    _LaunchpadService_LaunchpadProjectById_Handler,
+		},
+		{
+			MethodName: "LaunchpadProjectsCountByStatus",
+			Handler:    _LaunchpadService_LaunchpadProjectsCountByStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
