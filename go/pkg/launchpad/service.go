@@ -214,6 +214,7 @@ func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.C
 		return nil, errors.New("limit must be a positive number")
 	}
 
+	// TODO: Handle offset for pagination
 	offset := req.GetOffset()
 	if offset < 0 {
 		return nil, errors.New("offset must be greater or equal to 0")
@@ -234,7 +235,7 @@ func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.C
 	}
 
 	status := req.GetStatus()
-	if status < 0 || status > 2 {
+	if status < 0 {
 		return nil, errors.New("invalid status")
 	}
 	statusFilterSQL := ""
@@ -261,16 +262,16 @@ func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.C
 	orderSQL := ""
 	switch req.GetSort() {
 	case launchpadpb.Sort_SORT_COLLECTION_NAME:
-		orderSQL = "ORDER BY lp.collection_data->>'name'" + orderDirection
+		orderSQL = " ORDER BY lp.collection_data->>'name'" + orderDirection
 	case launchpadpb.Sort_SORT_UNSPECIFIED:
 		orderSQL = ""
 	}
 
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`
-		SELECT collection_data FROM launchpad_projects AS lp WHERE lp.creator_id = ? AND lp.network_id = ? %s %s
+		SELECT collection_data FROM launchpad_projects AS lp WHERE lp.creator_id = ? AND lp.network_id = ? %s %s LIMIT ?
 	`,
 		statusFilterSQL,
-		orderSQL), creatorID, networkID).Scan(&projects).Error
+		orderSQL), creatorID, networkID, limit).Scan(&projects).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
@@ -291,6 +292,7 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		return nil, errors.New("limit must be a positive number")
 	}
 
+	// TODO: Handle offset for pagination
 	offset := req.GetOffset()
 	if offset < 0 {
 		return nil, errors.New("offset must be greater or equal to 0")
@@ -319,7 +321,7 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 	}
 
 	status := req.GetStatus()
-	if status < 0 || status > 2 {
+	if status < 0 {
 		return nil, errors.New("invalid status")
 	}
 	statusFilterSQL := ""
@@ -352,9 +354,9 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 	}
 
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`
-		SELECT * FROM launchpad_projects AS lp WHERE lp.network_id = ? %s %s
+		SELECT * FROM launchpad_projects AS lp WHERE lp.network_id = ? %s %s LIMIT ?
 	`, statusFilterSQL,
-		orderSQL), networkID).Scan(&projects).Error
+		orderSQL), networkID, limit).Scan(&projects).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
@@ -422,7 +424,7 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 	}
 
 	status := req.GetStatus()
-	if status < 0 || status > 2 {
+	if status < 0 {
 		return nil, errors.New("invalid status")
 	}
 	statusFilterSQL := ""
