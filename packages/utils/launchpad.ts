@@ -19,3 +19,21 @@ export const collectionStatus = (collectionData: CollectionDataResult) =>
 
 export const collectionData = (launchpadProject: LaunchpadProject) =>
   zodTryParseJSON(ZodCollectionDataResult, launchpadProject.collectionData);
+
+export const collectionsData = (launchpadProjects: LaunchpadProject[]) => {
+  const result: CollectionDataResult[] = [];
+  launchpadProjects.forEach((project) => {
+    if (!project) {
+      return;
+    }
+    const collectionData: CollectionDataResult | undefined = zodTryParseJSON(
+      ZodCollectionDataResult,
+      project.collectionData,
+    );
+    if (!collectionData) {
+      return;
+    }
+    result.push(collectionData);
+  });
+  return result;
+};

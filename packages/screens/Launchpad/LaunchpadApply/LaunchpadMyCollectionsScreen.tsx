@@ -34,11 +34,11 @@ export const LaunchpadMyCollectionsScreen: ScreenFC<
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
-  const { data: userCollections } = useCollectionsByCreator({
+  const { userCollections } = useCollectionsByCreator({
     networkId: selectedNetworkId,
     creatorId: selectedWallet?.userId || "",
     offset: 0,
-    limit: 100,
+    limit: 100, // TODO: Pagination
     sort: Sort.SORT_UNSPECIFIED,
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
   });

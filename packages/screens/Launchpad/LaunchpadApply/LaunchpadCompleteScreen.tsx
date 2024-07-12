@@ -34,7 +34,7 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
   const { completeCollection } = useCompleteCollection();
-  const { data: collection } = useCollectionById({ collectionId });
+  const { collection } = useCollectionById({ collectionId });
   const assetsMetadatasForm = useForm<CollectionAssetsMetadatasFormValues>({
     mode: "all",
     resolver: zodResolver(ZodCollectionAssetsMetadatasFormValues),

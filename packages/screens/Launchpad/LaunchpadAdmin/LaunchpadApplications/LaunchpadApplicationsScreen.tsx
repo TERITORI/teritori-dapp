@@ -1,16 +1,21 @@
-import React, { useState } from "react";
+import React, { FC, useMemo, useState } from "react";
 import { View } from "react-native";
 
+import { Sort, SortDirection, Status } from "@/api/launchpad/v1/launchpad";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { HighVolSortButton } from "@/components/sorts/HighVolSortButton";
 import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
+import { useLaunchpadProjects } from "@/hooks/launchpad/useLaunchpadProjects";
+import { useLaunchpadProjectsCounts } from "@/hooks/launchpad/useLaunchpadProjectsCounts";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
-import { DummyLaunchpadCollection } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/LaunchpadAdministrationOverviewScreen";
 import { LaunchpadCollectionsTable } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplications/component/LaunchpadCollectionsTable";
+import { collectionsData } from "@/utils/launchpad";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -20,35 +25,32 @@ type TabsListType = "pendingApplications" | "pendingConfirmations";
 export const LaunchpadApplicationsScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const isMobile = useIsMobile();
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const { counts } = useLaunchpadProjectsCounts(
+    {
+      networkId: selectedNetworkId,
+      userAddress: selectedWallet?.address || "",
+    },
+    [Status.STATUS_COMPLETE, Status.STATUS_INCOMPLETE],
+  );
 
-  const tabs = {
-    pendingApplications: {
-      name: "Pending Applications",
-      badgeCount: 32,
-    },
-    pendingConfirmations: {
-      name: "Pending Confirmations",
-      badgeCount: 42,
-    },
-  };
+  const tabs = useMemo(() => {
+    return {
+      pendingApplications: {
+        name: "Pending Applications",
+        badgeCount: counts?.countIncomplete || 0,
+      },
+      pendingConfirmations: {
+        name: "Pending Confirmations",
+        badgeCount: counts?.countComplete || 0,
+      },
+    };
+  }, [counts]);
 
   const [selectedTab, setSelectedTab] = useState<TabsListType>(
     "pendingApplications",
   );
-
-  const dummyData: DummyLaunchpadCollection[] = Array(25)
-    .fill({
-      id: 0,
-      rank: 0,
-      collectionName: "The R!ot",
-      collectionNetwork: "teritori",
-      TwitterURL: "https://www.lipsum.com/",
-      DiscordURL: "https://www.lipsum.com/",
-      expectedTotalSupply: 3000,
-      expectedPublicMintPrice: "550 L",
-      expectedMintDate: new Date(),
-    })
-    .map((item, index) => ({ ...item, id: index + 1, rank: index + 1 }));
 
   return (
     <ScreenContainer
@@ -58,7 +60,7 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
         <BrandText style={fontSemibold20}>Administration Dashboard</BrandText>
       }
       responsive
-      onBackPress={() => navigation.goBack()}
+      onBackPress={() => navigation.navigate("LaunchpadAdministrationOverview")}
       forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
     >
       <View style={{ marginTop: layout.spacing_x4 }}>
@@ -110,11 +112,51 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
             marginTop: layout.spacing_x4,
           }}
         >
-          <LaunchpadCollectionsTable rows={dummyData} />
+          {selectedTab === "pendingApplications" ? (
+            <PendingApplicationsTable />
+          ) : selectedTab === "pendingConfirmations" ? (
+            <PendingConfirmationsTable />
+          ) : (
+            <></>
+          )}{" "}
         </View>
 
         <SpacerColumn size={16} />
       </View>
     </ScreenContainer>
+  );
+};
+
+const PendingApplicationsTable: FC = () => {
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const { launchpadProjects = [] } = useLaunchpadProjects({
+    networkId: selectedNetworkId,
+    userAddress: selectedWallet?.address || "",
+    offset: 0,
+    limit: 100, // TODO: Pagination
+    sort: Sort.SORT_UNSPECIFIED,
+    sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+    status: Status.STATUS_INCOMPLETE,
+  });
+  return (
+    <LaunchpadCollectionsTable rows={collectionsData(launchpadProjects)} />
+  );
+};
+
+const PendingConfirmationsTable: FC = () => {
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const { launchpadProjects = [] } = useLaunchpadProjects({
+    networkId: selectedNetworkId,
+    userAddress: selectedWallet?.address || "",
+    offset: 0,
+    limit: 100, // TODO: Pagination
+    sort: Sort.SORT_UNSPECIFIED,
+    sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+    status: Status.STATUS_COMPLETE,
+  });
+  return (
+    <LaunchpadCollectionsTable rows={collectionsData(launchpadProjects)} />
   );
 };

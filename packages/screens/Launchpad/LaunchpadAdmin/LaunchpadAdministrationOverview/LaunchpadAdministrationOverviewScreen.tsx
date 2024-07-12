@@ -1,34 +1,26 @@
-import React, { useState } from "react";
-import { TouchableOpacity, View, useWindowDimensions } from "react-native";
+import React, { FC, useMemo, useState } from "react";
+import { useWindowDimensions, View } from "react-native";
 
 import { ApplicationStatusCard } from "./component/ApplicationStatusCard";
 import { CurrentlyHighlightedProject } from "./component/CurrentlyHighLightedProject";
 import { GenesisExplore } from "./component/GenesisExplore";
 import { LaunchpadCollectionsTable } from "../LaunchpadApplications/component/LaunchpadCollectionsTable";
 
-import { Sort, SortDirection } from "@/api/launchpad/v1/launchpad";
+import { Sort, SortDirection, Status } from "@/api/launchpad/v1/launchpad";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
-import { SecondaryBox } from "@/components/boxes/SecondaryBox";
+import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
 import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
 import { useLaunchpadProjects } from "@/hooks/launchpad/useLaunchpadProjects";
+import { useLaunchpadProjectsCounts } from "@/hooks/launchpad/useLaunchpadProjectsCounts";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
-import { zodTryParseJSON } from "@/utils/sanitize";
-import { primaryColor } from "@/utils/style/colors";
-import {
-  fontSemibold13,
-  fontSemibold20,
-  fontSemibold28,
-} from "@/utils/style/fonts";
+import { collectionsData } from "@/utils/launchpad";
+import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import {
-  CollectionDataResult,
-  ZodCollectionDataResult,
-} from "@/utils/types/launchpad";
 
 const MD_BREAKPOINT = 820;
 type TabsListType = "pendingApplications" | "pendingConfirmations";
@@ -42,40 +34,28 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
   const { width } = useWindowDimensions();
-  const { launchpadProjects = [] } = useLaunchpadProjects({
-    networkId: selectedNetworkId,
-    userAddress: selectedWallet?.address || "",
-    offset: 0,
-    limit: 100,
-    sort: Sort.SORT_UNSPECIFIED,
-    sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
-  });
-
-  const collectionsData: CollectionDataResult[] = [];
-  launchpadProjects.forEach((project) => {
-    if (!project) {
-      return;
-    }
-    const collectionData: CollectionDataResult | undefined = zodTryParseJSON(
-      ZodCollectionDataResult,
-      project.collectionData,
-    );
-    if (!collectionData) return;
-    collectionsData.push(collectionData);
-  });
-
-  const tabs = {
-    pendingApplications: {
-      name: "Pending Applications",
-      badgeCount: 32,
+  const { counts } = useLaunchpadProjectsCounts(
+    {
+      networkId: selectedNetworkId,
+      userAddress: selectedWallet?.address || "",
     },
-    pendingConfirmations: {
-      name: "Pending Confirmations",
-      badgeCount: 42,
-    },
-  };
+    [Status.STATUS_COMPLETE, Status.STATUS_INCOMPLETE],
+  );
 
-  const secTabs = {
+  const tabs = useMemo(() => {
+    return {
+      pendingApplications: {
+        name: "Pending Applications",
+        badgeCount: counts?.countIncomplete || 0,
+      },
+      pendingConfirmations: {
+        name: "Pending Confirmations",
+        badgeCount: counts?.countComplete || 0,
+      },
+    };
+  }, [counts]);
+
+  const herosTabs = {
     highlightedNewsHero: {
       name: "Highlighted News Hero",
       badgeCount: 3,
@@ -94,7 +74,7 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
     "pendingApplications",
   );
 
-  const [selectedSecTab, setSelectedSecTab] = useState<SecTabsListType>(
+  const [selectedHerosTab, setSelectedSecTab] = useState<SecTabsListType>(
     "highlightedNewsHero",
   );
 
@@ -133,14 +113,12 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
         >
           <ApplicationStatusCard
             label="Pending Applications"
-            count={32}
-            onPress={() => {}} //TODO: don't forget to rewrite onPress function if possible
+            count={counts?.countIncomplete || 0}
             isReady={false}
           />
           <ApplicationStatusCard
             label="Pending Confirmations"
-            count={156}
-            onPress={() => {}} // TODO: don't forget to rewrite onPress function if possible
+            count={counts?.countComplete || 0}
             style={{
               marginHorizontal:
                 width >= MD_BREAKPOINT ? layout.spacing_x1_5 : 0,
@@ -148,9 +126,10 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
             }}
             isReady={false}
           />
+          {/*// TODO: Is it status COMPLETE ? */}
           <ApplicationStatusCard
             label="Ready to Launch"
-            count={10123}
+            count={counts?.countComplete || 0}
             onPress={() => navigation.navigate("LaunchpadReadyApplications")}
             isReady
           />
@@ -173,35 +152,28 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
             marginTop: layout.spacing_x4,
           }}
         >
-          <LaunchpadCollectionsTable rows={collectionsData} />
+          {selectedTab === "pendingApplications" ? (
+            <PendingApplicationsTable />
+          ) : selectedTab === "pendingConfirmations" ? (
+            <PendingConfirmationsTable />
+          ) : (
+            <></>
+          )}
         </View>
 
         <SpacerColumn size={2} />
 
-        <TouchableOpacity
+        <PrimaryButtonOutline
+          size="M"
+          text=" Load More"
           onPress={() => navigation.navigate("LaunchpadApplications")}
-        >
-          <SecondaryBox
-            style={{
-              alignSelf: "center",
-              borderRadius: 6,
-              alignItems: "center",
-              justifyContent: "center",
-              borderWidth: 1,
-              borderColor: primaryColor,
-              padding: layout.spacing_x2,
-            }}
-          >
-            <BrandText style={[fontSemibold13, { color: primaryColor }]}>
-              Load More
-            </BrandText>
-          </SecondaryBox>
-        </TouchableOpacity>
+          style={{ alignSelf: "center" }}
+        />
 
         <View style={{ marginTop: layout.spacing_x4 }}>
           <Tabs
-            items={secTabs}
-            selected={selectedSecTab}
+            items={herosTabs}
+            selected={selectedHerosTab}
             style={{ height: 48 }}
             onSelect={setSelectedSecTab}
           />
@@ -216,5 +188,39 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
         </View>
       </View>
     </ScreenContainer>
+  );
+};
+
+const PendingApplicationsTable: FC = () => {
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const { launchpadProjects = [] } = useLaunchpadProjects({
+    networkId: selectedNetworkId,
+    userAddress: selectedWallet?.address || "",
+    offset: 0,
+    limit: 10,
+    sort: Sort.SORT_UNSPECIFIED,
+    sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+    status: Status.STATUS_INCOMPLETE,
+  });
+  return (
+    <LaunchpadCollectionsTable rows={collectionsData(launchpadProjects)} />
+  );
+};
+
+const PendingConfirmationsTable: FC = () => {
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
+  const { launchpadProjects = [] } = useLaunchpadProjects({
+    networkId: selectedNetworkId,
+    userAddress: selectedWallet?.address || "",
+    offset: 0,
+    limit: 10,
+    sort: Sort.SORT_UNSPECIFIED,
+    sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+    status: Status.STATUS_COMPLETE,
+  });
+  return (
+    <LaunchpadCollectionsTable rows={collectionsData(launchpadProjects)} />
   );
 };

@@ -14,7 +14,7 @@ export const useCollectionsByCreator = (req: CollectionsByCreatorRequest) => {
   const networkId = req.networkId;
   const creatorId = req.creatorId;
 
-  return useQuery(
+  const { data, ...other } = useQuery<CollectionDataResult[]>(
     ["launchpadCollectionsByCreator", networkId, creatorId],
     async () => {
       const results: CollectionDataResult[] = [];
@@ -51,4 +51,5 @@ export const useCollectionsByCreator = (req: CollectionsByCreatorRequest) => {
       return results;
     },
   );
+  return { userCollections: data, ...other };
 };

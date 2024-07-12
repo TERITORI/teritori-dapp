@@ -19,7 +19,7 @@ export const ApplicationStatusCard: React.FC<{
   label: string;
   count: number;
   style?: StyleProp<BoxStyle>;
-  onPress: () => void;
+  onPress?: () => void;
   isReady?: boolean;
 }> = ({ label, style, count, isReady, onPress }) => {
   return (
@@ -38,6 +38,7 @@ export const ApplicationStatusCard: React.FC<{
     >
       <TouchableOpacity
         onPress={onPress}
+        disabled={!onPress}
         style={{
           alignItems: "flex-start",
           justifyContent: "space-between",
@@ -48,21 +49,23 @@ export const ApplicationStatusCard: React.FC<{
         <View>
           <BrandText style={fontSemibold24}>{count}</BrandText>
         </View>
-        <View
-          style={{
-            height: 32,
-            width: 32,
-            backgroundColor: neutral30,
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 20,
-            position: "absolute",
-            right: 18,
-            bottom: 0,
-          }}
-        >
-          <SVG source={chevronRightSVG} width={16} />
-        </View>
+        {onPress && (
+          <View
+            style={{
+              height: 32,
+              width: 32,
+              backgroundColor: neutral30,
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 20,
+              position: "absolute",
+              right: 18,
+              bottom: 0,
+            }}
+          >
+            <SVG source={chevronRightSVG} width={16} />
+          </View>
+        )}
       </TouchableOpacity>
     </PrimaryBox>
   );

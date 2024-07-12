@@ -19,7 +19,7 @@ export const useCollectionById = ({
   const selectedWallet = useSelectedWallet();
   const { setToast } = useFeedbacks();
 
-  return useQuery(
+  const { data, ...other } = useQuery<Collection | undefined>(
     ["launchpadCollectionById", collectionId, selectedNetworkId],
     async () => {
       let collection: Collection | undefined;
@@ -54,4 +54,6 @@ export const useCollectionById = ({
       return collection;
     },
   );
+
+  return { collection: data, ...other };
 };
