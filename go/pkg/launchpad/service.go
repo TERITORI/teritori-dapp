@@ -334,7 +334,7 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		statusFilterSQL = "AND NOT lp.collection_data->>'deployed_address' ISNULL"
 	}
 
-	var projects []launchpadpb.LaunchpadProject
+	var projects []indexerdb.LaunchpadProject
 
 	orderDirection := ""
 	switch req.GetSortDirection() {
@@ -364,10 +364,10 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 	result := make([]*launchpadpb.LaunchpadProject, len(projects))
 	for idx, dbProject := range projects {
 		result[idx] = &launchpadpb.LaunchpadProject{
-			Id:             dbProject.Id,
-			NetworkId:      dbProject.NetworkId,
-			CreatorId:      dbProject.CreatorId,
-			CollectionData: dbProject.CollectionData,
+			Id:             dbProject.ProjectID,
+			NetworkId:      dbProject.NetworkID,
+			CreatorId:      string(dbProject.CreatorID),
+			CollectionData: string(dbProject.CollectionData),
 		}
 	}
 
@@ -405,7 +405,7 @@ func (s *Launchpad) LaunchpadProjectById(ctx context.Context, req *launchpadpb.L
 		return nil, errors.New("Unauthorized")
 	}
 
-	var project *launchpadpb.LaunchpadProject
+	var project *indexerdb.LaunchpadProject
 
 	err = s.conf.IndexerDB.Raw(`SELECT * FROM launchpad_projects AS lp WHERE lp.project_id = ? AND lp.network_id = ?`, projectID, networkID).Scan(&project).Error
 	if err != nil {
@@ -413,7 +413,12 @@ func (s *Launchpad) LaunchpadProjectById(ctx context.Context, req *launchpadpb.L
 	}
 
 	return &launchpadpb.LaunchpadProjectByIdResponse{
-		Project: project,
+		Project: &launchpadpb.LaunchpadProject{
+			Id:             project.ProjectID,
+			NetworkId:      project.NetworkID,
+			CreatorId:      string(project.CreatorID),
+			CollectionData: string(project.CollectionData),
+		},
 	}, nil
 }
 
