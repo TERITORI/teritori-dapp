@@ -252,7 +252,8 @@ impl SortDirection {
 pub enum Status {
     Incomplete = 0,
     Complete = 1,
-    Deployed = 2,
+    Confirmed = 2,
+    Deployed = 3,
 }
 impl Status {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -263,6 +264,7 @@ impl Status {
         match self {
             Status::Incomplete => "STATUS_INCOMPLETE",
             Status::Complete => "STATUS_COMPLETE",
+            Status::Confirmed => "STATUS_CONFIRMED",
             Status::Deployed => "STATUS_DEPLOYED",
         }
     }
@@ -271,6 +273,7 @@ impl Status {
         match value {
             "STATUS_INCOMPLETE" => Some(Self::Incomplete),
             "STATUS_COMPLETE" => Some(Self::Complete),
+            "STATUS_CONFIRMED" => Some(Self::Confirmed),
             "STATUS_DEPLOYED" => Some(Self::Deployed),
             _ => None,
         }

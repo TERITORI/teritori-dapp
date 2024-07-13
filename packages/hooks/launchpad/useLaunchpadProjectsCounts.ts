@@ -10,6 +10,7 @@ import { mustGetLaunchpadClient } from "@/utils/backend";
 interface LaunchpadProjectsCounts {
   countComplete: number;
   countIncomplete: number;
+  countConfirmed: number;
   countDeployed: number;
 }
 
@@ -27,6 +28,7 @@ export const useLaunchpadProjectsCounts = (
       const counts: LaunchpadProjectsCounts = {
         countComplete: 0,
         countIncomplete: 0,
+        countConfirmed: 0,
         countDeployed: 0,
       };
       try {
@@ -48,6 +50,14 @@ export const useLaunchpadProjectsCounts = (
             status: Status.STATUS_COMPLETE,
           });
           counts.countComplete = responseComplete.count;
+        }
+        if (wantedStatus.includes(Status.STATUS_CONFIRMED)) {
+          // TODO: Handle status confirmed in in go/pkg/launchpad/service.go
+          const responseConfirmed = await client.LaunchpadProjectsCount({
+            ...req,
+            status: Status.STATUS_CONFIRMED,
+          });
+          counts.countConfirmed = responseConfirmed.count;
         }
         if (wantedStatus.includes(Status.STATUS_DEPLOYED)) {
           const responseDeployed = await client.LaunchpadProjectsCount({

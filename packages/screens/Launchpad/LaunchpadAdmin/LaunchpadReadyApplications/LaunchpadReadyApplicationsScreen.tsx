@@ -31,6 +31,7 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const isMobile = useIsMobile();
 
+  // TODO: Should we remove the tabs ? ("Waiting for Approval" useless ?)
   const tabs = {
     readyForListing: {
       name: "Ready for Listing",

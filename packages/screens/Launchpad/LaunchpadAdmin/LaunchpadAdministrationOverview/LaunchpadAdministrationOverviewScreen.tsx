@@ -1,26 +1,26 @@
-import React, { FC, useMemo, useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import React, {FC, useMemo, useState} from "react";
+import {useWindowDimensions, View} from "react-native";
 
-import { ApplicationStatusCard } from "./component/ApplicationStatusCard";
-import { CurrentlyHighlightedProject } from "./component/CurrentlyHighLightedProject";
-import { GenesisExplore } from "./component/GenesisExplore";
-import { LaunchpadCollectionsTable } from "../LaunchpadApplications/component/LaunchpadCollectionsTable";
+import {ApplicationStatusCard} from "./component/ApplicationStatusCard";
+import {CurrentlyHighlightedProject} from "./component/CurrentlyHighLightedProject";
+import {GenesisExplore} from "./component/GenesisExplore";
+import {LaunchpadCollectionsTable} from "../LaunchpadApplications/component/LaunchpadCollectionsTable";
 
-import { Sort, SortDirection, Status } from "@/api/launchpad/v1/launchpad";
-import { BrandText } from "@/components/BrandText";
-import { ScreenContainer } from "@/components/ScreenContainer";
-import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
-import { SpacerColumn } from "@/components/spacer";
-import { Tabs } from "@/components/tabs/Tabs";
-import { useLaunchpadProjects } from "@/hooks/launchpad/useLaunchpadProjects";
-import { useLaunchpadProjectsCounts } from "@/hooks/launchpad/useLaunchpadProjectsCounts";
-import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
-import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import {Sort, SortDirection, Status} from "@/api/launchpad/v1/launchpad";
+import {BrandText} from "@/components/BrandText";
+import {ScreenContainer} from "@/components/ScreenContainer";
+import {PrimaryButtonOutline} from "@/components/buttons/PrimaryButtonOutline";
+import {SpacerColumn} from "@/components/spacer";
+import {Tabs} from "@/components/tabs/Tabs";
+import {useLaunchpadProjects} from "@/hooks/launchpad/useLaunchpadProjects";
+import {useLaunchpadProjectsCounts} from "@/hooks/launchpad/useLaunchpadProjectsCounts";
+import {useAppNavigation} from "@/hooks/navigation/useAppNavigation";
+import {useSelectedNetworkId} from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { NetworkFeature } from "@/networks";
-import { collectionsData } from "@/utils/launchpad";
-import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
-import { layout } from "@/utils/style/layout";
+import {NetworkFeature} from "@/networks";
+import {collectionsData} from "@/utils/launchpad";
+import {fontSemibold20, fontSemibold28} from "@/utils/style/fonts";
+import {layout} from "@/utils/style/layout";
 
 const MD_BREAKPOINT = 820;
 type TabsListType = "pendingApplications" | "pendingConfirmations";
@@ -39,7 +39,7 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
       networkId: selectedNetworkId,
       userAddress: selectedWallet?.address || "",
     },
-    [Status.STATUS_COMPLETE, Status.STATUS_INCOMPLETE],
+    [Status.STATUS_COMPLETE, Status.STATUS_INCOMPLETE, Status.STATUS_CONFIRMED],
   );
 
   const tabs = useMemo(() => {
@@ -126,10 +126,9 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
             }}
             isReady={false}
           />
-          {/*// TODO: Is it status COMPLETE ? */}
           <ApplicationStatusCard
             label="Ready to Launch"
-            count={counts?.countComplete || 0}
+            count={counts?.countConfirmed || 0}
             onPress={() => navigation.navigate("LaunchpadReadyApplications")}
             isReady
           />

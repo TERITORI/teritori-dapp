@@ -27,7 +27,8 @@ enum SortDirection {
 enum Status {
   STATUS_INCOMPLETE = 0;
   STATUS_COMPLETE = 1;
-  STATUS_DEPLOYED = 2;
+  STATUS_CONFIRMED = 2;
+  STATUS_DEPLOYED = 3;
 }
 
 // -------------------------------

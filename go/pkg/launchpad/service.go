@@ -244,6 +244,9 @@ func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.C
 		statusFilterSQL = "AND lp.collection_data->>'metadatas_merkle_root' ISNULL"
 	case launchpadpb.Status_STATUS_COMPLETE:
 		statusFilterSQL = "AND NOT lp.collection_data->>'metadatas_merkle_root' ISNULL"
+				// TODO: Status confirmed ?
+	case launchpadpb.Status_STATUS_CONFIRMED:
+		statusFilterSQL = "AND NOT lp.collection_data->>'TODO' ISNULL"
 	case launchpadpb.Status_STATUS_DEPLOYED:
 		statusFilterSQL = "AND NOT lp.collection_data->>'deployed_address' ISNULL"
 	}
@@ -330,6 +333,9 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		statusFilterSQL = "AND lp.collection_data->>'metadatas_merkle_root' ISNULL"
 	case launchpadpb.Status_STATUS_COMPLETE:
 		statusFilterSQL = "AND NOT lp.collection_data->>'metadatas_merkle_root' ISNULL"
+				// TODO: Status confirmed ?
+	case launchpadpb.Status_STATUS_CONFIRMED:
+		statusFilterSQL = "AND NOT lp.collection_data->>'TODO' ISNULL"
 	case launchpadpb.Status_STATUS_DEPLOYED:
 		statusFilterSQL = "AND NOT lp.collection_data->>'deployed_address' ISNULL"
 	}
@@ -438,6 +444,9 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 		statusFilterSQL = "AND lp.collection_data->>'metadatas_merkle_root' ISNULL"
 	case launchpadpb.Status_STATUS_COMPLETE:
 		statusFilterSQL = "AND NOT lp.collection_data->>'metadatas_merkle_root' ISNULL"
+		// TODO: Status confirmed ?
+	case launchpadpb.Status_STATUS_CONFIRMED:
+		statusFilterSQL = "AND NOT lp.collection_data->>'TODO' ISNULL"
 	case launchpadpb.Status_STATUS_DEPLOYED:
 		statusFilterSQL = "AND NOT lp.collection_data->>'deployed_address' ISNULL"
 	}
