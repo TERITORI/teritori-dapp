@@ -93,7 +93,6 @@ const ethereumClaim = async (
     signer,
   );
 
-
   const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
 
   const estimatedGasLimit = await distributorClient.estimateGas.claim(
