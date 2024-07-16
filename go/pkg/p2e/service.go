@@ -276,13 +276,17 @@ func (s *P2eService) MerkleData(ctx context.Context, req *p2epb.MerkleDataReques
 		}
 	}
 
-	return &p2epb.MerkleDataResponse{
+	totalAllocation := userLeaf.Amount.String()
+
+	resp := &p2epb.MerkleDataResponse{
 		Proof:           proof,
 		ClaimableAmount: userLeaf.Amount.Sub(userLeaf.Amount, claimedAmount).String(),
 		UserReward: &p2epb.UserReward{
 			To:     userLeaf.To.String(),
 			Token:  userLeaf.Token.String(),
-			Amount: userLeaf.Amount.String(),
+			Amount: totalAllocation,
 		},
-	}, nil
+	}
+
+	return resp, nil
 }
