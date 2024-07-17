@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"gno.land/p/demo/avl"
-	"gno.land/p/demo/teritori/flags_index"
 	"gno.land/p/demo/ufmt"
+	"gno.land/p/teritori/flags_index"
 )
 
 // Only registered user can create a new feed

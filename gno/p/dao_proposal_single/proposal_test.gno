@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"gno.land/p/demo/avl"
-	dao_interfaces "gno.land/p/demo/teritori/dao_interfaces"
-	"gno.land/p/demo/teritori/dao_utils"
-	"gno.land/p/demo/teritori/ujson"
+	dao_interfaces "gno.land/p/teritori/dao_interfaces"
+	"gno.land/p/teritori/dao_utils"
+	"gno.land/p/teritori/ujson"
 )
 
 type NoopMessage struct{}

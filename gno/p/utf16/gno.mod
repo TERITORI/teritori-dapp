@@ -1,1 +1,1 @@
-module gno.land/p/demo/teritori/utf16
+module gno.land/p/teritori/utf16
