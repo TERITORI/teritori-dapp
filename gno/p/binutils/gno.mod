@@ -1,1 +1,1 @@
-module gno.land/p/demo/teritori/binutils
+module gno.land/p/teritori/binutils

@@ -1,1 +1,1 @@
-module gno.land/p/demo/teritori/markdown_utils
+module gno.land/p/teritori/markdown_utils

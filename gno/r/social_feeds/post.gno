@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"gno.land/p/demo/avl"
-	ujson "gno.land/p/demo/teritori/ujson"
+	ujson "gno.land/p/teritori/ujson"
 )
 
 type PostID uint64

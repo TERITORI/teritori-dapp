@@ -3,8 +3,8 @@ package social_feeds
 import (
 	"strings"
 
-	"gno.land/p/demo/teritori/dao_interfaces"
-	"gno.land/p/demo/teritori/ujson"
+	"gno.land/p/teritori/dao_interfaces"
+	"gno.land/p/teritori/ujson"
 )
 
 // Ban a post
@@ -17,7 +17,7 @@ type ExecutableMessageBanPost struct {
 }
 
 func (msg ExecutableMessageBanPost) Type() string {
-	return "gno.land/r/demo/teritori/social_feeds.BanPost"
+	return "gno.land/r/teritori/social_feeds.BanPost"
 }
 
 func (msg *ExecutableMessageBanPost) ToJSON() string {
