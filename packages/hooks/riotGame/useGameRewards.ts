@@ -80,7 +80,8 @@ const ethereumClaim = async (
     token: TOKEN,
     networkId: network.id,
   });
-  const allocation = resp.userReward?.amount || "0";
+
+  const totalAllocation = BigNumber.from(resp.userReward?.amount || "0");
 
   const signer = await getMetaMaskEthereumSigner(network, userAddress);
   if (!signer) {
@@ -92,15 +93,14 @@ const ethereumClaim = async (
     signer,
   );
 
-  const claimableAmount = BigNumber.from(allocation);
-
   const { maxFeePerGas, maxPriorityFeePerGas } = await signer.getFeeData();
+
   const estimatedGasLimit = await distributorClient.estimateGas.claim(
     TOKEN,
-    claimableAmount,
+    totalAllocation,
     resp.proof,
   );
-  const tx = await distributorClient.claim(TOKEN, claimableAmount, resp.proof, {
+  const tx = await distributorClient.claim(TOKEN, totalAllocation, resp.proof, {
     maxFeePerGas: maxFeePerGas?.toNumber(),
     maxPriorityFeePerGas: maxPriorityFeePerGas?.toNumber(),
     gasLimit: estimatedGasLimit.mul(150).div(100),
