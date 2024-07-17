@@ -1,7 +1,7 @@
 import { gnoCurrencies } from "./currencies";
 import { GnoNetworkInfo, NetworkFeature, NetworkKind } from "../types";
 
-export const gnoPortalNetwork: GnoNetworkInfo = {
+export const gnoTest4Network: GnoNetworkInfo = {
   id: "gno-test4",
   kind: NetworkKind.Gno,
   displayName: "Gno Test4",
@@ -9,7 +9,7 @@ export const gnoPortalNetwork: GnoNetworkInfo = {
   features: [NetworkFeature.SocialFeed, NetworkFeature.UPP],
   currencies: gnoCurrencies,
   stakeCurrency: "ugnot",
-  idPrefix: "gnoport",
+  idPrefix: "gnotest4",
   chainId: "test4",
   endpoint: "https://rpc.test4.gno.land:443",
   txExplorer: "https://gnoscan.io/transactions/details?txhash=$hash",
