@@ -18,7 +18,15 @@ export const DateTimeInputLaunchpad: FC<{
   required?: boolean;
   onChange: (timestamp: number) => void;
   timestamp?: number;
-}> = ({ label, sublabel, onChange, timestamp = 0, required = true }) => {
+  isDirty?: boolean;
+}> = ({
+  label,
+  sublabel,
+  onChange,
+  isDirty,
+  timestamp = 0,
+  required = true,
+}) => {
   const [hovered, setHovered] = useState(false);
   const reg = new RegExp(`^\\d+$`);
   const defaultDate = timestamp ? new Date(timestamp) : undefined;
@@ -66,6 +74,7 @@ export const DateTimeInputLaunchpad: FC<{
   );
 
   const error = useMemo(() => {
+    if (!isDirty) return;
     if (!day && !month && !year && !hours && !minutes) {
       return DEFAULT_FORM_ERRORS.required;
     }
@@ -82,7 +91,7 @@ export const DateTimeInputLaunchpad: FC<{
     ) {
       return DEFAULT_FORM_ERRORS.datetime;
     }
-  }, [year, month, day, hours, minutes, date]);
+  }, [year, month, day, hours, minutes, date, isDirty]);
 
   const valueModifier = (text: string) => {
     console.log("text", text);

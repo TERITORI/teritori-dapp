@@ -1,4 +1,5 @@
 import React, { Dispatch, FC, useRef } from "react";
+import { useFormContext } from "react-hook-form";
 import {
   LayoutChangeEvent,
   ScrollView,
@@ -8,6 +9,7 @@ import {
 } from "react-native";
 
 import ChevronRightSvg from "@/assets/icons/chevron-right.svg";
+import RejectSVG from "@/assets/icons/reject.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
@@ -21,26 +23,121 @@ import {
 } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { CollectionFormValues } from "@/utils/types/launchpad";
 export type LaunchpadCreateStepKey = number;
-export interface LaunchpadCreateStep {
+
+interface LaunchpadStepperProps {
+  selectedStepKey: LaunchpadCreateStepKey;
+  setSelectedStepKey: Dispatch<React.SetStateAction<LaunchpadCreateStepKey>>;
+}
+
+interface LaunchpadCreateStep {
   key: LaunchpadCreateStepKey;
   title: string;
 }
 
-interface LaunchpadStepperProps {
-  selectedStepKey: LaunchpadCreateStepKey;
-  steps: LaunchpadCreateStep[];
-  setSelectedStepKey: Dispatch<React.SetStateAction<LaunchpadCreateStepKey>>;
-}
+const steps: LaunchpadCreateStep[] = [
+  {
+    key: 1,
+    title: "Basic",
+  },
+  {
+    key: 2,
+    title: "Details",
+  },
+  {
+    key: 3,
+    title: "Team & Investments",
+  },
+  {
+    key: 4,
+    title: "Additional",
+  },
+  {
+    key: 5,
+    title: "Minting",
+  },
+  {
+    key: 6,
+    title: "Assets & Metadata",
+  },
+];
 
 export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
   selectedStepKey,
-  steps,
   setSelectedStepKey,
 }) => {
   const { width: windowWidth } = useWindowDimensions();
   const scrollViewRef = useRef<ScrollView>(null);
   const isMobile = useIsMobile();
+  const collectionForm = useFormContext<CollectionFormValues>();
+
+  const hasErrors = (stepKey: number) => {
+    if (
+      stepKey === 1 &&
+      (!!collectionForm.getFieldState("name").error ||
+        !!collectionForm.getFieldState("description").error ||
+        !!collectionForm.getFieldState("symbol").error ||
+        !!collectionForm.getFieldState("coverImage").error ||
+        !!collectionForm.getFieldState("externalLink").error)
+    ) {
+      return true;
+    }
+    if (
+      stepKey === 2 &&
+      (!!collectionForm.getFieldState("websiteLink").error ||
+        !!collectionForm.getFieldState("twitterProfileUrl").error ||
+        !!collectionForm.getFieldState("nbTwitterFollowers").error ||
+        !!collectionForm.getFieldState("discordName").error ||
+        !!collectionForm.getFieldState("isDerivativeProject").error ||
+        !!collectionForm.getFieldState("projectTypes").error ||
+        !!collectionForm.getFieldState("projectDescription").error ||
+        !!collectionForm.getFieldState("isPreviouslyApplied").error ||
+        !!collectionForm.getFieldState("email").error)
+    ) {
+      return true;
+    }
+    if (
+      stepKey === 3 &&
+      (!!collectionForm.getFieldState("teamDescription").error ||
+        !!collectionForm.getFieldState("teamLink").error ||
+        !!collectionForm.getFieldState("partnersDescription").error ||
+        !!collectionForm.getFieldState("investDescription").error ||
+        !!collectionForm.getFieldState("investLink").error ||
+        !!collectionForm.getFieldState("roadmapLink").error)
+    ) {
+      return true;
+    }
+    if (
+      stepKey === 4 &&
+      (!!collectionForm.getFieldState("artworkDescription").error ||
+        !!collectionForm.getFieldState("isReadyForMint").error ||
+        !!collectionForm.getFieldState("expectedSupply").error ||
+        !!collectionForm.getFieldState("expectedPublicMintPrice").error ||
+        !!collectionForm.getFieldState("isDox").error ||
+        !!collectionForm.getFieldState("daoWhitelistCount").error ||
+        !!collectionForm.getFieldState("escrowMintProceedsPeriod").error ||
+        !!collectionForm.getFieldState("expectedMintDate").error)
+    ) {
+      return true;
+    }
+    if (
+      stepKey === 5 &&
+      (!!collectionForm.getFieldState("tokensCount").error ||
+        !!collectionForm.getFieldState("revealTime").error ||
+        !!collectionForm.getFieldState("mintPeriods").error ||
+        !!collectionForm.getFieldState("royaltyAddress").error ||
+        !!collectionForm.getFieldState("royaltyPercentage").error)
+    ) {
+      return true;
+    }
+    if (
+      stepKey === 6 &&
+      !!collectionForm.getFieldState("assetsMetadatas").error
+    ) {
+      return true;
+    }
+  };
 
   const onSelectedItemLayout = (e: LayoutChangeEvent) => {
     scrollViewRef.current?.scrollTo({
@@ -99,15 +196,6 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
                   },
                 ]}
               >
-                {/*TODO: Get which step has invalid fields, show the warning and hide it when the step's fields are valid*/}
-                {/*{!!item.invalidFields.length && (*/}
-                {/*  <SVG*/}
-                {/*    source={warningSVG}*/}
-                {/*    height={24}*/}
-                {/*    width={24}*/}
-                {/*    style={{ position: "absolute", top: 0, left: 0, zIndex: 1 }}*/}
-                {/*  />*/}
-                {/*)}*/}
                 <View
                   style={{
                     width: layout.iconButton,
@@ -119,6 +207,14 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
                     marginRight: layout.spacing_x0_75,
                   }}
                 >
+                  {hasErrors(step.key) && (
+                    <SVG
+                      source={RejectSVG}
+                      width={14}
+                      height={14}
+                      style={{ position: "absolute", top: -6, right: -6 }}
+                    />
+                  )}
                   <BrandText
                     style={[
                       fontSemibold14,

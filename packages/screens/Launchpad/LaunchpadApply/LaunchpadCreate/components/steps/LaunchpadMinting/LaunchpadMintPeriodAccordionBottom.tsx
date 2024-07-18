@@ -125,6 +125,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
             label="Start Time"
             onChange={onChange}
             timestamp={startTime}
+            isDirty={collectionForm.getFieldState(startTimePath).isDirty}
           />
         )}
       />
@@ -138,6 +139,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
             label="End Time"
             onChange={onChange}
             timestamp={endTime}
+            isDirty={collectionForm.getFieldState(endTimePath).isDirty}
           />
         )}
       />

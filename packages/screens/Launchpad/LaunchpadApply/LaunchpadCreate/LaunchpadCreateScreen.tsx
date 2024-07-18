@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { View } from "react-native";
 
@@ -7,13 +7,14 @@ import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useCreateCollection } from "@/hooks/launchpad/useCreateCollection";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
 import {
-  LaunchpadCreateStep,
   LaunchpadCreateStepKey,
+  LaunchpadStepper,
 } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/LaunchpadStepper";
 import { LaunchpadAdditional } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadAdditional";
 import { LaunchpadAssetsAndMetadata } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadAssetsAndMetadata/LaunchpadAssetsAndMetadata";
@@ -28,33 +29,6 @@ import {
   CollectionFormValues,
   ZodCollectionFormValues,
 } from "@/utils/types/launchpad";
-
-const steps: LaunchpadCreateStep[] = [
-  {
-    key: 1,
-    title: "Basic",
-  },
-  {
-    key: 2,
-    title: "Details",
-  },
-  {
-    key: 3,
-    title: "Team & Investments",
-  },
-  {
-    key: 4,
-    title: "Additional",
-  },
-  {
-    key: 5,
-    title: "Minting",
-  },
-  {
-    key: 6,
-    title: "Assets & Metadata",
-  },
-];
 
 export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const navigation = useAppNavigation();
@@ -83,54 +57,19 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const stepContent = useMemo(() => {
     switch (selectedStepKey) {
       case 1:
-        return (
-          <LaunchpadBasic
-            steps={steps}
-            setSelectedStepKey={setSelectedStepKey}
-          />
-        );
+        return <LaunchpadBasic />;
       case 2:
-        return (
-          <LaunchpadDetails
-            steps={steps}
-            setSelectedStepKey={setSelectedStepKey}
-          />
-        );
+        return <LaunchpadDetails />;
       case 3:
-        return (
-          <LaunchpadTeamAndInvestment
-            steps={steps}
-            setSelectedStepKey={setSelectedStepKey}
-          />
-        );
+        return <LaunchpadTeamAndInvestment />;
       case 4:
-        return (
-          <LaunchpadAdditional
-            steps={steps}
-            setSelectedStepKey={setSelectedStepKey}
-          />
-        );
+        return <LaunchpadAdditional />;
       case 5:
-        return (
-          <LaunchpadMinting
-            steps={steps}
-            setSelectedStepKey={setSelectedStepKey}
-          />
-        );
+        return <LaunchpadMinting />;
       case 6:
-        return (
-          <LaunchpadAssetsAndMetadata
-            steps={steps}
-            setSelectedStepKey={setSelectedStepKey}
-          />
-        );
+        return <LaunchpadAssetsAndMetadata />;
       default:
-        return (
-          <LaunchpadBasic
-            steps={steps}
-            setSelectedStepKey={setSelectedStepKey}
-          />
-        );
+        return <LaunchpadBasic />;
     }
   }, [selectedStepKey]);
 
@@ -152,20 +91,16 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
     }, 1000);
   };
 
-  const onInvalid = () =>
-    // fieldsErrors: FieldErrors<CollectionFormValues>
-    {
-      // FIXME: Show which step is concerned
-      // console.error('Fields errors: ', fieldsErrors)
-      setToast({
-        mode: "normal",
-        type: "error",
-        title: "Unable to create the collection",
-        message:
-          "Some fields are not correctly filled." +
-          "\nMaybe from the mapping file, please complete it properly.\nCheck the description for more information.",
-      });
-    };
+  const onInvalid = () => {
+    setToast({
+      mode: "normal",
+      type: "error",
+      title: "Unable to create the collection",
+      message:
+        "Some fields are not correctly filled." +
+        "\nMaybe from the mapping file, please complete it properly.\nCheck the description for more information.",
+    });
+  };
 
   const onPressSubmit = () => collectionForm.handleSubmit(onValid, onInvalid)();
 
@@ -186,7 +121,15 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
           height: "100%",
         }}
       >
-        <FormProvider {...collectionForm}>{stepContent}</FormProvider>
+        <FormProvider {...collectionForm}>
+          <LaunchpadStepper
+            selectedStepKey={selectedStepKey}
+            setSelectedStepKey={setSelectedStepKey}
+          />
+          <SpacerColumn size={4} />
+          {stepContent}
+        </FormProvider>
+
         <View
           style={{
             zIndex: 1,
@@ -212,7 +155,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
               />
             )}
 
-            {selectedStepKey === steps.length ? (
+            {selectedStepKey === 6 ? (
               <PrimaryButton
                 width={160}
                 size="M"
