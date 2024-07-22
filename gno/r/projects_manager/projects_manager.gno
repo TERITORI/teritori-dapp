@@ -9,8 +9,8 @@ import (
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/json"
 	"gno.land/p/demo/seqid"
-	"gno.land/p/demo/teritori/jsonutil"
 	"gno.land/p/demo/ufmt"
+	"gno.land/p/teritori/jsonutil"
 )
 
 type ContractStatus uint32
