@@ -53,7 +53,7 @@ export const MapFeed = () => {
   // ======= Getting MusicAudio posts as single tracks
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useFetchFeed(mapFeedRequest);
-
+    
   return (
     <ScrollView style={{ height }}>
       {isMobile && <MobileTitle title="SOCIAL FEED" />}
@@ -66,6 +66,7 @@ export const MapFeed = () => {
             width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
             maxWidth: screenContentMaxWidth,
           }}
+          data={data || {}}
         />
       </Suspense>
     </ScrollView>
