@@ -141,6 +141,7 @@ export const generatePostMetadata = ({
   mentions,
   gifs,
   premium,
+  location,
 }: GeneratePostMetadataParams): SocialFeedPostMetadata => {
   const m = ZodSocialFeedPostMetadata.parse({
     title,
@@ -148,6 +149,7 @@ export const generatePostMetadata = ({
     files,
     hashtags,
     mentions,
+    location,
     gifs: gifs || [],
     ...(premium ? { premium: 1 } : {}), // save blockchain space by not including premium if it's 0
   });

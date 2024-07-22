@@ -74,6 +74,7 @@ export const ZodSocialFeedPostMetadata = z.object({
   gifs: z.array(z.string()).optional(),
   hashtags: z.array(z.string()),
   mentions: z.array(z.string()),
+  location: z.array(z.number()),
   ...zodSocialFeedCommonMetadata.shape,
 });
 export type SocialFeedPostMetadata = z.infer<typeof ZodSocialFeedPostMetadata>;

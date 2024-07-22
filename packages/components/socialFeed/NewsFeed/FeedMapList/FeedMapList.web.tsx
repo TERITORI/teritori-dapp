@@ -12,6 +12,7 @@ interface MarkerPopup {
   position: LatLngExpression;
   popUp: string;
   type: "picture" | "text" | "video" | "audio";
+  fileURL?: string;
 }
 
 // custom cluster icon
@@ -33,30 +34,59 @@ const getIcon = (type: string) => {
   return new Icon({ iconUrl: iconList[`${type}`], iconSize: [38, 38] });
 };
 
-const markers: MarkerPopup[] = [
-  {
-    position: [48.86, 2.3522],
-    popUp: "Hello, I am pop up 1",
-    type: "picture",
-  },
-  {
-    position: [48.85, 2.3522],
-    popUp: "Hello, I am pop up 2",
-    type: "text",
-  },
-  {
-    position: [48.855, 2.34],
-    popUp: "Hello, I am pop up 3",
-    type: "video",
-  },
-  {
-    position: [48.85, 2.31],
-    popUp: "Hello, I am pop up 3",
-    type: "audio",
-  },
-];
+const getPostType = (metadata: JSON) => {
+  if (metadata.files?.length < 1) {
+    return "text";
+  }
+  if (metadata.files?.[0].fileType.includes("video")) {
+    return "video";
+  }
+  if (metadata.files?.[0].fileType.includes("audio")) {
+    return "audio";
+  }
+  return "picture";
+};
 
-const FeedMapList: React.FC<FeedMapListProps> = ({ style }) => {
+
+const FeedMapList: React.FC<FeedMapListProps> = ({ style, data }) => {
+  console.log("FeedMapList DATA", data);
+  if (!data.pages?.length) {
+    return null;
+  }
+
+  let markers: MarkerPopup[] = [
+    {
+      position: [48.86, 2.3522],
+      popUp: "Hello, I am pop up 1",
+      type: "picture",
+    },
+    {
+      position: [48.85, 2.3522],
+      popUp: "Hello, I am pop up 2",
+      type: "text",
+    },
+    {
+      position: [48.855, 2.34],
+      popUp: "Hello, I am pop up 3",
+      type: "video",
+    },
+    {
+      position: [48.85, 2.31],
+      popUp: "Hello, I am pop up 3",
+      type: "audio",
+    },
+  ];
+
+  for (let item of data.pages[0].list) {
+    let metadata =JSON.parse(item.metadata);
+    if (metadata.location) {
+      markers.push({
+        position: metadata.location,
+        popUp: metadata.message,
+        type: getPostType(metadata),
+      });
+    }
+  }
   return (
     <View style={[containerCStyle, style]}>
       <MapContainer
