@@ -4652,6 +4652,43 @@
     "gnowebURL": "https://test3.gno.land"
   },
   {
+    "id": "gno-test4",
+    "kind": "Gno",
+    "displayName": "Gno Test4",
+    "icon": "gno.svg",
+    "features": [
+      "SocialFeed",
+      "UPP"
+    ],
+    "currencies": [
+      {
+        "denom": "ugnot",
+        "displayName": "GNOT",
+        "decimals": 6,
+        "coingeckoId": "gno",
+        "icon": "gno.svg",
+        "kind": "native",
+        "color": "#232800"
+      }
+    ],
+    "stakeCurrency": "ugnot",
+    "idPrefix": "gnotest4",
+    "chainId": "test4",
+    "endpoint": "https://rpc.test4.gno.land:443",
+    "txExplorer": "https://gnoscan.io/transactions/details?txhash=$hash",
+    "accountExplorer": "https://gnoscan.io/accounts/$address",
+    "contractExplorer": "https://gnoscan.io/realms/details?path=$address",
+    "testnet": true,
+    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "gnowebURL": "https://gno.land",
+    "vaultContractAddress": "",
+    "nameServiceContractAddress": "gno.land/r/demo/users",
+    "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+    "socialFeedsPkgPath": "gno.land/r/teritori/social_feeds",
+    "socialFeedsDAOPkgPath": "gno.land/r/teritori/social_feeds_dao",
+    "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces"
+  },
+  {
     "id": "cosmos-registry:gravitybridge",
     "displayName": "Gravity Bridge",
     "chainId": "gravity-bridge-3",
@@ -9200,7 +9237,8 @@
     "toriBridgedTokenAddress": "0x69ded9b7658507ca8c5a6f1f6ff53276802ec228",
     "riotOriginalCollectionIdGen0": "eth-0x8f8304ea566affeb96ad0ffb593bbebd8876d124",
     "riotContractAddressGen0": "0x0e8021622cff2950a35369b336004dea0cd63b5d",
-    "riotBridgedNFTAddressGen0": "0xe23b470c8b10f7c98c5016d47bd4f98ce4f819f8"
+    "riotBridgedNFTAddressGen0": "0xe23b470c8b10f7c98c5016d47bd4f98ce4f819f8",
+    "riotNFTAddressGen0": "0xe23b470c8b10f7c98c5016d47bd4f98ce4f819f8"
   },
   {
     "id": "polygon-mumbai",

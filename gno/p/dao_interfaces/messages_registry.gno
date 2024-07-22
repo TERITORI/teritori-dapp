@@ -2,7 +2,7 @@ package dao_interfaces
 
 import (
 	"gno.land/p/demo/avl"
-	"gno.land/p/demo/teritori/ujson"
+	"gno.land/p/teritori/ujson"
 )
 
 type MessagesRegistry struct {
@@ -62,7 +62,7 @@ type RegisterHandlerExecutableMessage struct {
 }
 
 func (m RegisterHandlerExecutableMessage) Type() string {
-	return "gno.land/p/demo/teritori/dao_interfaces.RegisterHandler"
+	return "gno.land/p/teritori/dao_interfaces.RegisterHandler"
 }
 
 func (m *RegisterHandlerExecutableMessage) FromJSON(ast *ujson.JSONASTNode) {
@@ -102,7 +102,7 @@ type RemoveHandlerExecutableMessage struct {
 }
 
 func (m RemoveHandlerExecutableMessage) Type() string {
-	return "gno.land/p/demo/teritori/dao_interfaces.RemoveHandler"
+	return "gno.land/p/teritori/dao_interfaces.RemoveHandler"
 }
 
 func (m *RemoveHandlerExecutableMessage) FromJSON(ast *ujson.JSONASTNode) {

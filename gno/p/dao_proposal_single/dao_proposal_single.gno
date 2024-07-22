@@ -5,9 +5,9 @@ import (
 	"strconv"
 
 	"gno.land/p/demo/avl"
-	"gno.land/p/demo/teritori/dao_interfaces"
-	"gno.land/p/demo/teritori/dao_utils"
-	"gno.land/p/demo/teritori/ujson"
+	"gno.land/p/teritori/dao_interfaces"
+	"gno.land/p/teritori/dao_utils"
+	"gno.land/p/teritori/ujson"
 )
 
 type DAOProposalSingleOpts struct {

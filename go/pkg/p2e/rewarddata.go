@@ -29,6 +29,10 @@ type RewardData struct {
 	Amount *big.Int
 }
 
+func (d RewardData) GetID() string {
+	return d.To.Hex()
+}
+
 // CalculateHash hashes the values of a TestContent
 func (d RewardData) CalculateHash() ([]byte, error) {
 	args := abi.Arguments{

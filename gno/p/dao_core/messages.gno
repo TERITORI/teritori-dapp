@@ -1,8 +1,8 @@
 package core
 
 import (
-	dao_interfaces "gno.land/p/demo/teritori/dao_interfaces"
-	"gno.land/p/demo/teritori/ujson"
+	dao_interfaces "gno.land/p/teritori/dao_interfaces"
+	"gno.land/p/teritori/ujson"
 )
 
 // UpdateProposalModules
@@ -13,7 +13,7 @@ type UpdateProposalModulesExecutableMessage struct {
 }
 
 func (msg UpdateProposalModulesExecutableMessage) Type() string {
-	return "gno.land/p/demo/teritori/dao_core.UpdateProposalModules"
+	return "gno.land/p/teritori/dao_core.UpdateProposalModules"
 }
 
 func (msg *UpdateProposalModulesExecutableMessage) String() string {
@@ -56,7 +56,7 @@ type UpdateVotingModuleExecutableMessage struct {
 }
 
 func (msg UpdateVotingModuleExecutableMessage) Type() string {
-	return "gno.land/p/demo/teritori/dao_core.UpdateVotingModule"
+	return "gno.land/p/teritori/dao_core.UpdateVotingModule"
 }
 
 func (msg *UpdateVotingModuleExecutableMessage) String() string {

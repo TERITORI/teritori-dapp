@@ -30,4 +30,5 @@ export const polygonNetwork: EthereumNetworkInfo = {
     "eth-0x8f8304ea566affeb96ad0ffb593bbebd8876d124",
   riotContractAddressGen0: "0x0e8021622cff2950a35369b336004dea0cd63b5d",
   riotBridgedNFTAddressGen0: "0xe23b470c8b10f7c98c5016d47bd4f98ce4f819f8",
+  riotNFTAddressGen0: "0xe23b470c8b10f7c98c5016d47bd4f98ce4f819f8",
 };
