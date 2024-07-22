@@ -4668,7 +4668,8 @@
         "coingeckoId": "gno",
         "icon": "gno.svg",
         "kind": "native",
-        "color": "#232800"
+        "color": "#232800",
+        "variant": "gno"
       }
     ],
     "stakeCurrency": "ugnot",
