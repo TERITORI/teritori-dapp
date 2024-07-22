@@ -5,8 +5,8 @@ import path from "path";
 
 import sqh from "./sqh";
 
-const ref = "gnodev-api-reset";
-const remote = "https://github.com/TERITORI/gno.git";
+const ref = "fec2d18f630b44ccc2121472aa2284cd9c8caf6f";
+const remote = "https://github.com/gnolang/gno.git";
 
 const main = async () => {
   const buildDir = await fs.mkdtemp(path.join(os.tmpdir(), "gno-build-"));
