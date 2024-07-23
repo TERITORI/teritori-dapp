@@ -104,6 +104,10 @@ export const useFeedPosting = (
         setStep(feedPostingStep(FeedPostingStepId.DONE));
       } else {
         if (network?.kind === NetworkKind.Gno) {
+          parentPostIdentifier = !parentPostIdentifier
+            ? "0"
+            : parentPostIdentifier.split("-")[1];
+
           const vmCall = {
             caller: userAddress,
             send: "",
@@ -111,7 +115,7 @@ export const useFeedPosting = (
             func: "CreatePost",
             args: [
               TERITORI_FEED_ID,
-              "0",
+              parentPostIdentifier,
               msg.category.toString(),
               msg.metadata,
             ],
