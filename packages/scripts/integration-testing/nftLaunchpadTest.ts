@@ -3,7 +3,8 @@ import fs from "fs/promises";
 
 import { buildCosmos, startCosmosLocalnet } from "./cosmos";
 import { teritoriLocalnetNetwork } from "../../networks/teritori-localnet";
-import { deployTeritoriEcosystem } from "../network-setup/deployLib";
+
+import { deployNftLaunchpad } from "@/scripts/network-setup/deployNftLaunchpad";
 
 const main = async () => {
   program.argument(
@@ -22,11 +23,11 @@ const main = async () => {
 
   // test cosmwasm
 
-  await deployTeritoriEcosystem({
+  await deployNftLaunchpad({
     opts: { binaryPath: binary, home, signer: admSigner },
     networkId: teritoriLocalnetNetwork.id,
     wallet: "testnet-adm",
-  });
+});
 
   // clean
 

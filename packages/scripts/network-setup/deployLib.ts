@@ -26,13 +26,16 @@ import {
   getCosmosNetwork,
   mustGetNonSigningCosmWasmClient,
 } from "@/networks";
+import { deployNftLaunchpad } from "@/scripts/network-setup/deployNftLaunchpad";
 import { zodTryParseJSON } from "@/utils/sanitize";
 
-export const deployTeritoriEcosystem = async (
-  opts: { home: string; binaryPath: string; signer: OfflineSigner | undefined },
-  networkId: string,
-  wallet: string,
-) => {
+export interface DeployProps {
+  opts: { home: string; binaryPath: string; signer: OfflineSigner | undefined };
+  networkId: string;
+  wallet: string;
+}
+
+export const initDeploy = async ({ opts, networkId, wallet }: DeployProps) => {
   const network = cloneDeep(getCosmosNetwork(networkId));
   if (!network) {
     console.error(`Cosmos network ${networkId} not found`);
@@ -52,6 +55,16 @@ export const deployTeritoriEcosystem = async (
   bech32.decode(walletAddr);
 
   console.log("Wallet address:", walletAddr);
+
+  return { network, walletAddr };
+};
+
+export const deployTeritoriEcosystem = async ({
+  opts,
+  networkId,
+  wallet,
+}: DeployProps) => {
+  const { network, walletAddr } = await initDeploy({ opts, networkId, wallet });
 
   console.log("Storing name service");
   const nameServiceWasmFilePath = path.join(__dirname, "name-service.wasm");
@@ -109,6 +122,8 @@ export const deployTeritoriEcosystem = async (
     walletAddr,
     network,
   );
+
+  await deployNftLaunchpad({ opts, networkId, wallet });
 
   if (opts.signer) {
     await registerTNSHandle(network, opts.signer);
