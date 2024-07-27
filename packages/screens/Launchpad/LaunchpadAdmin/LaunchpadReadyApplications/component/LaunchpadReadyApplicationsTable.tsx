@@ -93,7 +93,15 @@ const LaunchpadReadyApplicationsTableRow: React.FC<{
             flex: columns.whitelistQuantity.flex,
           }}
         >
-          <StateBadge text="TODO" />
+          <StateBadge
+            text={collection.mint_periods
+              .reduce(
+                (total, period) =>
+                  total + (period.whitelist_info?.addresses_count || 0),
+                0,
+              )
+              .toString()}
+          />
         </TableCell>
 
         <TableCell

@@ -4,13 +4,11 @@ import { View } from "react-native";
 import { Sort, SortDirection, Status } from "@/api/launchpad/v1/launchpad";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
-import { HighVolSortButton } from "@/components/sorts/HighVolSortButton";
 import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
 import { useLaunchpadProjects } from "@/hooks/launchpad/useLaunchpadProjects";
 import { useLaunchpadProjectsCounts } from "@/hooks/launchpad/useLaunchpadProjectsCounts";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
-import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
@@ -24,7 +22,6 @@ type TabsListType = "pendingApplications" | "pendingConfirmations";
 
 export const LaunchpadApplicationsScreen: React.FC = () => {
   const navigation = useAppNavigation();
-  const isMobile = useIsMobile();
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
   const { counts } = useLaunchpadProjectsCounts(
@@ -93,15 +90,6 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
             onSelect={setSelectedTab}
             noUnderline
           />
-
-          {!isMobile && (
-            <HighVolSortButton
-              style={{ marginLeft: 12 }}
-              sortDirection={1}
-              onChangeSortDirection={() => {}} // TODO: don't forget to rewrite onPress function if possible
-              height={42}
-            />
-          )}
         </View>
         <View
           style={{
