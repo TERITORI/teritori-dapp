@@ -137,7 +137,7 @@ export const SocialCardWrapper: FC<{
 
     try {
       const msg: GnoBanPostMessage = {
-        type: "gno.land/r/demo/teritori/social_feeds.BanPost",
+        type: "gno.land/r/teritori/social_feeds.BanPost",
         payload: {
           feedId: +TERITORI_FEED_ID,
           postId: +localPost.localIdentifier,

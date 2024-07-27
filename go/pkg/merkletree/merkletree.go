@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"hash"
 	"math/big"
+	"sort"
 
 	"github.com/pkg/errors"
 
@@ -22,6 +23,7 @@ type Content interface {
 	CalculateHash() ([]byte, error)
 	Equals(other Content) (bool, error)
 	ToJSONB() interface{}
+	GetID() string
 }
 
 type MerkleTree struct {
@@ -66,6 +68,12 @@ func New(cs []Content, sort bool) (*MerkleTree, error) {
 		hashStrategy: sha3.NewLegacyKeccak256,
 		sort:         sort,
 	}
+
+	// Sort Nodes to ensure that we have always the same tree from a given set of data
+	sort.Slice(cs, func(i, j int) bool {
+		return cs[i].GetID() < cs[j].GetID()
+	})
+
 	root, leafs, err := buildWithContent(cs, t)
 	if err != nil {
 		return nil, err

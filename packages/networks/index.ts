@@ -14,6 +14,7 @@ import { gnoDevNetwork } from "./gno-dev";
 import { gnoPortalNetwork } from "./gno-portal";
 import { gnoTeritoriNetwork } from "./gno-teritori";
 import { gnoTest3Network } from "./gno-test3";
+import { gnoTest4Network } from "./gno-test4";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
 // import { solanaNetwork } from "./solana";
@@ -48,6 +49,7 @@ const packageNetworks = [
   gnoPortalNetwork,
   gnoTeritoriNetwork,
   gnoTest3Network,
+  gnoTest4Network,
   gnoDevNetwork,
   polygonMumbaiNetwork,
   polygonNetwork,
@@ -65,6 +67,7 @@ export const defaultEnabledNetworks = [
   "cosmos-hub",
   "osmosis",
   "gno-portal",
+  "gno-test4",
   "cosmos-registry:juno",
   "cosmos-registry:kujira",
   "cosmos-registry:axelar",

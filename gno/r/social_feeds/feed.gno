@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"gno.land/p/demo/avl"
-	"gno.land/p/demo/teritori/flags_index"
-	ujson "gno.land/p/demo/teritori/ujson"
 	"gno.land/p/demo/ufmt"
+	"gno.land/p/teritori/flags_index"
+	ujson "gno.land/p/teritori/ujson"
 )
 
 type FeedID uint64
