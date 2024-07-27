@@ -69,7 +69,7 @@ pub fn get_default_nfts() -> Vec<Metadata> {
 
 pub fn get_default_period() -> MintPeriod {
     MintPeriod {
-        price: Some(Coin{
+        price: Some(Coin {
             denom: "denom".to_string(),
             amount: Uint128::new(1),
         }),

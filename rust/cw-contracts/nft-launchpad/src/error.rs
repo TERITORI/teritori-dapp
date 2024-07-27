@@ -1,6 +1,6 @@
 use cosmwasm_std::{Instantiate2AddressError, StdError};
-use thiserror::Error;
 use cw_utils::ParseReplyError;
+use thiserror::Error;
 
 #[derive(Error, Debug, PartialEq)]
 pub enum ContractError {
@@ -15,6 +15,9 @@ pub enum ContractError {
 
     #[error("Deployer missing.")]
     DeployerMissing,
+
+    #[error("Unauthorized.")]
+    Unauthorized,
 
     #[error("Must provide atleast 1 mint period.")]
     MintPeriodRequired,

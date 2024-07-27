@@ -2,7 +2,8 @@ use std::ops::Add;
 
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    to_json_binary, Addr, Order, Reply, Response, StdResult, SubMsg, WasmMsg,
+    attr, to_json_binary, Addr, MessageInfo, Order, Reply, Response,
+    StdResult, SubMsg, WasmMsg,
 };
 use cw_storage_plus::{Item, Map};
 use cw_utils::parse_reply_instantiate_data;
@@ -53,10 +54,30 @@ impl NftLaunchpad {
     }
 
     #[msg(exec)]
-    pub fn update_config(&self, ctx: ExecCtx, changes: Config) -> StdResult<Response> {
-        self.config.save(ctx.deps.storage, &changes)?;
+    // Only owner can execute it.
+    pub fn update_config(
+        &self,
+        ctx: ExecCtx,
+        changes: ConfigChanges,
+    ) -> Result<Response, ContractError> {
+        let mut config = self.config.load(ctx.deps.storage)?;
+        let mut attributes = vec![attr("action", "update_config")];
 
-        Ok(Response::new().add_attribute("action", "update_config"))
+        // Permission check
+        if ctx.info.sender != config.owner {
+            return return Err(ContractError::Unauthorized);
+        }
+        // Save new config
+        config.deployer = changes.deployer;
+        config.nft_code_id = changes.nft_code_id;
+        config.supported_networks = changes.supported_networks;
+        if let Some(owner) = changes.owner {
+            config.owner = ctx.deps.api.addr_validate(&owner)?;
+            attributes.push(attr("new_owner", owner))
+        }
+        self.config.save(ctx.deps.storage, &config)?;
+
+        Ok(Response::new().add_attributes(attributes))
     }
 
     #[msg(exec)]
@@ -68,7 +89,12 @@ impl NftLaunchpad {
         let storage = ctx.deps.storage;
 
         // Check if collection symbol is alphanumeric
-        if !collection.to_owned().symbol.chars().all(|char| char.is_numeric() || char.is_uppercase()) {
+        if !collection
+            .to_owned()
+            .symbol
+            .chars()
+            .all(|char| char.is_numeric() || char.is_uppercase())
+        {
             return Err(ContractError::CollectionSymbolInvalid);
         }
 
@@ -91,14 +117,13 @@ impl NftLaunchpad {
         collection_with_owner.owner = Some(sender.to_owned());
 
         // Add new collection
-        self.collections.save(storage, collection_id.to_owned(), &collection_with_owner)?;
+        self.collections
+            .save(storage, collection_id.to_owned(), &collection_with_owner)?;
 
-        Ok(
-            Response::new()
+        Ok(Response::new()
             .add_attribute("action", "submit_collection")
             .add_attribute("collection_id", collection_id)
-            .add_attribute("owner", sender)
-        )
+            .add_attribute("owner", sender))
     }
 
     #[msg(exec)]
@@ -145,6 +170,11 @@ impl NftLaunchpad {
         let sender = ctx.info.sender.to_string();
         let config = self.config.load(ctx.deps.storage)?;
 
+        // Permission check
+        if ctx.info.sender != config.owner {
+            return Err(ContractError::Unauthorized);
+        }
+
         // Only allow deployer to deploy
         if config.deployer.is_none() {
             return Err(ContractError::DeployerMissing);
@@ -157,7 +187,7 @@ impl NftLaunchpad {
         let collection = self
             .collections
             .load(ctx.deps.storage, collection_id.to_owned())
-            .map_err(|_| ContractError::CollectionNotFound)?;        
+            .map_err(|_| ContractError::CollectionNotFound)?;
 
         // Do not allow to deploy collection if merkle root is not set
         if collection.metadatas_merkle_root.is_none() {
@@ -211,7 +241,11 @@ impl NftLaunchpad {
     }
 
     #[msg(query)]
-    pub fn get_collection_by_id(&self, ctx: QueryCtx, collection_id: String) -> StdResult<Collection> {
+    pub fn get_collection_by_id(
+        &self,
+        ctx: QueryCtx,
+        collection_id: String,
+    ) -> StdResult<Collection> {
         let collection = self.collections.load(ctx.deps.storage, collection_id)?;
         Ok(collection)
     }
@@ -258,7 +292,8 @@ impl NftLaunchpad {
             // Update collection states
             let mut collection = self.collections.load(storage, collection_id.to_owned())?;
             collection.deployed_address = Some(deployed_addr.clone());
-            self.collections.save(storage, collection_id.to_owned(), &collection)?;
+            self.collections
+                .save(storage, collection_id.to_owned(), &collection)?;
 
             return Ok(Response::new()
                 .add_attribute("action", "collection_instantiated")
@@ -277,6 +312,16 @@ pub struct Config {
     pub nft_code_id: Option<u64>,
     pub supported_networks: Vec<String>,
     pub deployer: Option<String>,
+    pub owner: Addr,
+}
+
+#[cw_serde]
+pub struct ConfigChanges {
+    pub name: String,
+    pub nft_code_id: Option<u64>,
+    pub supported_networks: Vec<String>,
+    pub deployer: Option<String>,
+    pub owner: Option<String>,
 }
 
 #[cw_serde]
@@ -285,7 +330,7 @@ pub struct Collection {
     // Collection info ----------------------------
     pub name: String,
     pub desc: String,
-    pub symbol: String,  // Unique
+    pub symbol: String, // Unique
     pub cover_img_uri: String,
     pub target_network: String,
     pub external_link: Option<String>,

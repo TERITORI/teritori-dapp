@@ -6,6 +6,7 @@ use crate::{
     error::ContractError,
 };
 
+use crate::contract::ConfigChanges;
 use nft_tr721::contract::{
     sv::multitest_utils::CodeId as NftTr721CodeId, MintPeriod, WhitelistInfo,
 };
@@ -110,6 +111,7 @@ fn instantiate() {
         supported_networks: vec![],
         nft_code_id: None,
         deployer: None,
+        owner: Addr::unchecked(sender),
     };
 
     let contract = code_id.instantiate(config).call(sender).unwrap();
@@ -143,6 +145,7 @@ fn full_flow() {
             supported_networks: vec![],
             nft_code_id: None,
             deployer: None,
+            owner: Addr::unchecked(sender),
         })
         .call(sender)
         .unwrap();
@@ -221,11 +224,12 @@ fn full_flow() {
     // Deploy when sender is not deployer  ---------------------------------------------------------
     {
         contract
-            .update_config(Config {
+            .update_config(ConfigChanges {
                 name: "test".to_string(),
                 supported_networks: vec![],
                 nft_code_id: None,
                 deployer: Some("deployer".to_string()),
+                owner: Some(sender.to_string()),
             })
             .call(sender)
             .unwrap();
@@ -240,11 +244,12 @@ fn full_flow() {
     // Set sender as deployer and Deploy inexist collection  ---------------------------------------------------------
     {
         contract
-            .update_config(Config {
+            .update_config(ConfigChanges {
                 name: "test".to_string(),
                 supported_networks: vec![],
                 nft_code_id: None,
                 deployer: Some(sender.to_string()),
+                owner: Some(sender.to_string()),
             })
             .call(sender)
             .unwrap();
@@ -304,11 +309,12 @@ fn full_flow() {
     // Update config to have deployed nft_code_id
     {
         contract
-            .update_config(Config {
+            .update_config(ConfigChanges {
                 name: "test".to_string(),
                 nft_code_id: Some(deployed_nft_code_id),
                 supported_networks: vec![],
                 deployer: Some(sender.to_string()),
+                owner: Some(sender.to_string()),
             })
             .call(sender)
             .unwrap();

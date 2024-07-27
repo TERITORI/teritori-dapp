@@ -2,12 +2,12 @@ use cosmwasm_schema::cw_serde;
 
 #[cw_serde]
 pub struct TokensMintedToUserResp {
-    pub count: u128
+    pub count: u128,
 }
 
 #[cw_serde]
 pub struct MintableTokensResp {
-   pub count: u128
+    pub count: u128,
 }
 
 #[cw_serde]

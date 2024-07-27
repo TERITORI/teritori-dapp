@@ -51,7 +51,7 @@ pub struct Tr721 {
     pub(crate) mint_periods: Map<'static, u32, MintPeriod>,
 
     pub(crate) user_minted_count: Map<'static, (u32, String), u32>, // Map (period, user) => count
-    pub(crate) user_total_minted_count: Map<'static, String, u32>,         // Map user => count
+    pub(crate) user_total_minted_count: Map<'static, String, u32>,  // Map user => count
     pub(crate) period_minted_count: Map<'static, u32, u32>,         // Map period => count
 }
 
@@ -375,8 +375,10 @@ impl Tr721 {
 
         // If max per period is given then check if we reach max tokens for current period
         if period.max_tokens.is_some() {
-            let current_period_minted_count =
-                self.period_minted_count.load(ctx.deps.storage, period_id).unwrap_or(0);
+            let current_period_minted_count = self
+                .period_minted_count
+                .load(ctx.deps.storage, period_id)
+                .unwrap_or(0);
             if current_period_minted_count >= period.max_tokens.unwrap() {
                 return Err(ContractError::MintExceedMaxPerPeriod);
             }
@@ -386,7 +388,8 @@ impl Tr721 {
         if period.limit_per_address.is_some() {
             let current_user_minted = self
                 .user_minted_count
-                .load(ctx.deps.storage, (period_id, sender)).unwrap_or(0);
+                .load(ctx.deps.storage, (period_id, sender))
+                .unwrap_or(0);
             if current_user_minted >= period.limit_per_address.unwrap() {
                 return Err(ContractError::MintExceedMaxPerUser);
             }
@@ -547,11 +550,7 @@ impl Tr721 {
     }
 
     #[msg(query)]
-    pub fn total_minted_count_by_user(
-        &self,
-        ctx: QueryCtx,
-        user: String,
-    ) -> StdResult<u32> {
+    pub fn total_minted_count_by_user(&self, ctx: QueryCtx, user: String) -> StdResult<u32> {
         let validated_addr = ctx.deps.api.addr_validate(&user)?.to_string();
         let count = self
             .user_total_minted_count

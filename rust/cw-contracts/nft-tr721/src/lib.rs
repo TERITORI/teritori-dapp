@@ -1,5 +1,5 @@
-pub mod error;
 pub mod contract;
+pub mod error;
 pub mod hasher;
 pub mod utils;
 
