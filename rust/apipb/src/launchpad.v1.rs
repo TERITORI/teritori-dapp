@@ -250,10 +250,11 @@ impl SortDirection {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum Status {
-    Incomplete = 0,
-    Complete = 1,
-    Confirmed = 2,
-    Deployed = 3,
+    Unspecified = 0,
+    Incomplete = 1,
+    Complete = 2,
+    Confirmed = 3,
+    Deployed = 4,
 }
 impl Status {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -262,6 +263,7 @@ impl Status {
     /// (if the ProtoBuf definition does not change) and safe for programmatic use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
+            Status::Unspecified => "STATUS_UNSPECIFIED",
             Status::Incomplete => "STATUS_INCOMPLETE",
             Status::Complete => "STATUS_COMPLETE",
             Status::Confirmed => "STATUS_CONFIRMED",
@@ -271,6 +273,7 @@ impl Status {
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
+            "STATUS_UNSPECIFIED" => Some(Self::Unspecified),
             "STATUS_INCOMPLETE" => Some(Self::Incomplete),
             "STATUS_COMPLETE" => Some(Self::Complete),
             "STATUS_CONFIRMED" => Some(Self::Confirmed),

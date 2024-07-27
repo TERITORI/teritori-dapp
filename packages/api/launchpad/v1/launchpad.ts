@@ -79,25 +79,29 @@ export function sortDirectionToJSON(object: SortDirection): string {
 }
 
 export enum Status {
-  STATUS_INCOMPLETE = 0,
-  STATUS_COMPLETE = 1,
-  STATUS_CONFIRMED = 2,
-  STATUS_DEPLOYED = 3,
+  STATUS_UNSPECIFIED = 0,
+  STATUS_INCOMPLETE = 1,
+  STATUS_COMPLETE = 2,
+  STATUS_CONFIRMED = 3,
+  STATUS_DEPLOYED = 4,
   UNRECOGNIZED = -1,
 }
 
 export function statusFromJSON(object: any): Status {
   switch (object) {
     case 0:
+    case "STATUS_UNSPECIFIED":
+      return Status.STATUS_UNSPECIFIED;
+    case 1:
     case "STATUS_INCOMPLETE":
       return Status.STATUS_INCOMPLETE;
-    case 1:
+    case 2:
     case "STATUS_COMPLETE":
       return Status.STATUS_COMPLETE;
-    case 2:
+    case 3:
     case "STATUS_CONFIRMED":
       return Status.STATUS_CONFIRMED;
-    case 3:
+    case 4:
     case "STATUS_DEPLOYED":
       return Status.STATUS_DEPLOYED;
     case -1:
@@ -109,6 +113,8 @@ export function statusFromJSON(object: any): Status {
 
 export function statusToJSON(object: Status): string {
   switch (object) {
+    case Status.STATUS_UNSPECIFIED:
+      return "STATUS_UNSPECIFIED";
     case Status.STATUS_INCOMPLETE:
       return "STATUS_INCOMPLETE";
     case Status.STATUS_COMPLETE:
