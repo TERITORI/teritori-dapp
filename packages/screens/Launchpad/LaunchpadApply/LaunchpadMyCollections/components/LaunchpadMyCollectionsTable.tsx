@@ -1,12 +1,12 @@
 import React from "react";
 import { FlatList, View } from "react-native";
 
-import { StateBadge } from "../../../../../components/badges/StateBadge";
-
 import defaultCollectionImagePNG from "@/assets/default-images/ava.png";
 import checkBadgeSVG from "@/assets/icons/certified.svg";
 import solanaCircleSVG from "@/assets/icons/networks/solana-circle.svg";
 import { SVG } from "@/components/SVG";
+import { StateBadge } from "@/components/badges/StateBadge";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
 import { TableCell } from "@/components/table/TableCell";
 import { TableHeader } from "@/components/table/TableHeader";
@@ -16,6 +16,7 @@ import { TableWrapper } from "@/components/table/TableWrapper";
 import { TableColumns } from "@/components/table/utils";
 import { getNetwork } from "@/networks";
 import { web3ToWeb2URI } from "@/utils/ipfs";
+import { collectionStatus } from "@/utils/launchpad";
 import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
 import { CollectionDataResult } from "@/utils/types/launchpad";
 
@@ -40,31 +41,21 @@ const columns: TableColumns = {
     minWidth: 150,
     flex: 1.8,
   },
-  projectReadinessForMint: {
-    label: "Project Readiness for Mint",
+  status: {
+    label: "Status",
     minWidth: 200,
     flex: 2,
   },
-  whitelistQuantity: {
-    label: "Whitelist quantity",
-    minWidth: 100,
-    flex: 1,
-  },
-  premiumMarketingPackage: {
-    label: "Premium marketing package",
-    minWidth: 160,
-    flex: 1.8,
-  },
-  basicMarketingPackage: {
-    label: "Basic marketing package",
-    minWidth: 140,
-    flex: 1.2,
+  cta: {
+    label: "",
+    minWidth: 180,
+    flex: 2,
   },
 };
 
 const breakpointM = 1120;
 
-export const LaunchpadReadyApplicationsTable: React.FC<{
+export const LaunchpadMyCollectionsTable: React.FC<{
   rows: CollectionDataResult[];
 }> = ({ rows }) => {
   return (
@@ -79,7 +70,7 @@ export const LaunchpadReadyApplicationsTable: React.FC<{
         <FlatList
           data={rows}
           renderItem={({ item, index }) => (
-            <LaunchpadReadyApplicationsTableRow
+            <LaunchpadReadyMyCollectionsTableRow
               collection={item}
               index={index}
             />
@@ -91,7 +82,7 @@ export const LaunchpadReadyApplicationsTable: React.FC<{
   );
 };
 
-const LaunchpadReadyApplicationsTableRow: React.FC<{
+const LaunchpadReadyMyCollectionsTableRow: React.FC<{
   collection: CollectionDataResult;
   index: number;
 }> = ({ collection, index }) => {
@@ -164,43 +155,25 @@ const LaunchpadReadyApplicationsTableRow: React.FC<{
           </CellBrandText>
         </TableCell>
 
-        {/*TODO: "Project readiness for mint", "Whitelist quantity", "Premium marketing package", "Basic marketing package"*/}
-
         <TableCell
           style={{
-            minWidth: columns.projectReadinessForMint.minWidth,
-            flex: columns.projectReadinessForMint.flex,
+            minWidth: columns.status.minWidth,
+            flex: columns.status.flex,
           }}
         >
-          <StateBadge text="TODO" />
+          <StateBadge text={collectionStatus(collection)} />
         </TableCell>
 
-        <TableCell
-          style={{
-            minWidth: columns.whitelistQuantity.minWidth,
-            flex: columns.whitelistQuantity.flex,
-          }}
-        >
-          <StateBadge text="TODO" />
-        </TableCell>
-
-        <TableCell
-          style={{
-            minWidth: columns.premiumMarketingPackage.minWidth,
-            flex: columns.premiumMarketingPackage.flex,
-          }}
-        >
-          <StateBadge text="TODO" />
-        </TableCell>
-
-        <TableCell
-          style={{
-            minWidth: columns.basicMarketingPackage.minWidth,
-            flex: columns.basicMarketingPackage.flex,
-          }}
-        >
-          <StateBadge text="TODO" />
-        </TableCell>
+        {collectionStatus(collection) === "INCOMPLETE" && (
+          <TableCell
+            style={{
+              minWidth: columns.cta.minWidth,
+              flex: columns.cta.flex,
+            }}
+          >
+            <PrimaryButton text="Complete collection" size="XXS" />
+          </TableCell>
+        )}
       </TableRow>
     </View>
   );

@@ -6,7 +6,7 @@ import checkBadgeSVG from "@/assets/icons/certified.svg";
 import SolanaCircleSVG from "@/assets/icons/networks/solana-circle.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
-import { StateBadge } from "@/screens/Launchpad/LaunchpadAdmin/components/StateBadge";
+import { StateBadge } from "@/components/badges/StateBadge";
 import { neutral77 } from "@/utils/style/colors";
 import { fontSemibold12, fontSemibold16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";

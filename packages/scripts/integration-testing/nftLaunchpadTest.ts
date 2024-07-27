@@ -27,7 +27,7 @@ const main = async () => {
     opts: { binaryPath: binary, home, signer: admSigner },
     networkId: teritoriLocalnetNetwork.id,
     wallet: "testnet-adm",
-});
+  });
 
   // clean
 

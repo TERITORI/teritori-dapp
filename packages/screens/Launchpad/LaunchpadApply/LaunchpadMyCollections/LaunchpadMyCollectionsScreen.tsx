@@ -7,13 +7,12 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { Box } from "@/components/boxes/Box";
-import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useCollectionsByCreator } from "@/hooks/launchpad/useCollectionsByCreator";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
-import { collectionStatus } from "@/utils/launchpad";
+import { LaunchpadMyCollectionsTable } from "@/screens/Launchpad/LaunchpadApply/LaunchpadMyCollections/components/LaunchpadMyCollectionsTable";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import {
   neutral17,
@@ -34,7 +33,7 @@ export const LaunchpadMyCollectionsScreen: ScreenFC<
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
-  const { userCollections } = useCollectionsByCreator({
+  const { userCollections = [] } = useCollectionsByCreator({
     networkId: selectedNetworkId,
     creatorId: selectedWallet?.userId || "",
     offset: 0,
@@ -84,52 +83,8 @@ export const LaunchpadMyCollectionsScreen: ScreenFC<
 
         <SpacerColumn size={3} />
 
-        {/*TODO: Refacto CollectionsTable*/}
-        {/*<CollectionsTable rows={userCollections}/>*/}
-
         {userCollections?.length ? (
-          userCollections.map((collection) => (
-            <View
-              key={collection.symbol}
-              style={{
-                backgroundColor: neutral17,
-                padding: layout.spacing_x2,
-                borderRadius: 16,
-                marginBottom: layout.spacing_x2,
-              }}
-            >
-              <BrandText style={[fontSemibold13, { color: neutral77 }]}>
-                Name
-              </BrandText>
-              <BrandText>{collection.name}</BrandText>
-              <SpacerColumn size={0.5} />
-              <BrandText style={[fontSemibold13, { color: neutral77 }]}>
-                Symbol
-              </BrandText>
-              <BrandText>{collection.symbol}</BrandText>
-              <SpacerColumn size={0.5} />
-              <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
-                <View>
-                  <BrandText style={[fontSemibold13, { color: neutral77 }]}>
-                    Status
-                  </BrandText>
-                  <BrandText>{collectionStatus(collection)}</BrandText>
-                </View>
-                {collectionStatus(collection) === "INCOMPLETE" && (
-                  <PrimaryButton
-                    text="Complete metadata"
-                    size="XXS"
-                    boxStyle={{ marginLeft: layout.spacing_x3 }}
-                    onPress={() =>
-                      navigation.navigate("LaunchpadComplete", {
-                        id: collection.symbol,
-                      })
-                    }
-                  />
-                )}
-              </View>
-            </View>
-          ))
+          <LaunchpadMyCollectionsTable rows={userCollections} />
         ) : (
           <Box
             style={{

@@ -187,7 +187,6 @@ export const ZodCollectionFormValues = z.object({
       (value) => !value || isIpfsPathValid(value),
       DEFAULT_FORM_ERRORS.onlyIpfsUri,
     )
-    .optional()
     .optional(),
   coverImageUri: z
     .string()
@@ -196,7 +195,6 @@ export const ZodCollectionFormValues = z.object({
       (value) => !value || isIpfsPathValid(value),
       DEFAULT_FORM_ERRORS.onlyIpfsUri,
     )
-    .optional()
     .optional(),
 });
 

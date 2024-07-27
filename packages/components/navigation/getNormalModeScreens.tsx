@@ -17,14 +17,13 @@ import { GuardiansScreen } from "@/screens/Guardians/GuardiansScreen";
 import { HashtagFeedScreen } from "@/screens/HashtagFeed/HashtagFeedScreen";
 import { HomeScreen } from "@/screens/Home/HomeScreen";
 import { LaunchpadAdministrationOverviewScreen } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/LaunchpadAdministrationOverviewScreen";
-import { LaunchpadAllProjectsScreen } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAllProjects/LaunchpadAllProjectsScreen";
 import { LaunchpadApplicationReviewScreen } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplicationReview/LaunchpadApplicationReviewScreen";
 import { LaunchpadApplicationsScreen } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplications/LaunchpadApplicationsScreen";
 import { LaunchpadReadyApplicationsScreen } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadReadyApplications/LaunchpadReadyApplicationsScreen";
 import { LaunchpadApplyScreen } from "@/screens/Launchpad/LaunchpadApply/LaunchpadApplyScreen";
 import { LaunchpadCompleteScreen } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCompleteScreen";
 import { LaunchpadCreateScreen } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/LaunchpadCreateScreen";
-import { LaunchpadMyCollectionsScreen } from "@/screens/Launchpad/LaunchpadApply/LaunchpadMyCollectionsScreen";
+import { LaunchpadMyCollectionsScreen } from "@/screens/Launchpad/LaunchpadApply/LaunchpadMyCollections/LaunchpadMyCollectionsScreen";
 import { LaunchpadScreen } from "@/screens/Launchpad/LaunchpadHome/LaunchpadScreen";
 import { MintCollectionScreen } from "@/screens/Launchpad/LaunchpadHome/MintCollectionScreen";
 import { CollectionScreen } from "@/screens/Marketplace/CollectionScreen";
@@ -263,14 +262,6 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         options={{
           header: () => null,
           title: screenTitle("Launchpad Ready Applications"),
-        }}
-      />
-      <Nav.Screen
-        name="LaunchpadAllProjects"
-        component={LaunchpadAllProjectsScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Launchpad All Applications"),
         }}
       />
       <Nav.Screen

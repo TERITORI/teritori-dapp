@@ -2,8 +2,6 @@ import React, { FC, useMemo, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 
 import { ApplicationStatusCard } from "./component/ApplicationStatusCard";
-import { CurrentlyHighlightedProject } from "./component/CurrentlyHighLightedProject";
-import { GenesisExplore } from "./component/GenesisExplore";
 import { LaunchpadCollectionsTable } from "../LaunchpadApplications/component/LaunchpadCollectionsTable";
 
 import { Sort, SortDirection, Status } from "@/api/launchpad/v1/launchpad";
@@ -18,16 +16,13 @@ import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
+import { MarketingEdition } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/component/MarketingEdition/MarketingEdition";
 import { collectionsData } from "@/utils/launchpad";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 const MD_BREAKPOINT = 820;
 type TabsListType = "pendingApplications" | "pendingConfirmations";
-type SecTabsListType =
-  | "highlightedNewsHero"
-  | "upcomingProjectsCarousel"
-  | "liveSaleinProgress";
 
 export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
   const navigation = useAppNavigation();
@@ -55,30 +50,9 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
     };
   }, [counts]);
 
-  const herosTabs = {
-    highlightedNewsHero: {
-      name: "Highlighted News Hero",
-      badgeCount: 3,
-    },
-    upcomingProjectsCarousel: {
-      name: "Upcoming Projects Carousel",
-      badgeCount: 12,
-    },
-    liveSaleinProgress: {
-      name: "Live Sale in Progress",
-      badgeCount: 52,
-    },
-  };
-
   const [selectedTab, setSelectedTab] = useState<TabsListType>(
     "pendingApplications",
   );
-
-  const [selectedHerosTab, setSelectedSecTab] = useState<SecTabsListType>(
-    "highlightedNewsHero",
-  );
-
-  const [isEditHighlighted, setIsEditHighlighted] = useState<boolean>(false);
 
   return (
     <ScreenContainer
@@ -169,22 +143,7 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
           style={{ alignSelf: "center" }}
         />
 
-        <View style={{ marginTop: layout.spacing_x4 }}>
-          <Tabs
-            items={herosTabs}
-            selected={selectedHerosTab}
-            style={{ height: 48 }}
-            onSelect={setSelectedSecTab}
-          />
-
-          {isEditHighlighted ? (
-            <CurrentlyHighlightedProject
-              setIsEditHighlighted={setIsEditHighlighted}
-            />
-          ) : (
-            <GenesisExplore setIsEditHighlighted={setIsEditHighlighted} />
-          )}
-        </View>
+        <MarketingEdition />
       </View>
     </ScreenContainer>
   );

@@ -17,6 +17,7 @@ import { CellBrandText, TableTextCell } from "@/components/table/TableTextCell";
 import { TableWrapper } from "@/components/table/TableWrapper";
 import { TableColumns } from "@/components/table/utils";
 import { getNetwork } from "@/networks";
+import { web3ToWeb2URI } from "@/utils/ipfs";
 import { secondaryColor } from "@/utils/style/colors";
 import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
 import { CollectionDataResult } from "@/utils/types/launchpad";
@@ -132,7 +133,8 @@ const LaunchpadCollectionsTableRow: React.FC<{
         >
           <RoundedGradientImage
             size="XS"
-            sourceURI={defaultCollectionImagePNG}
+            sourceURI={web3ToWeb2URI(collection.cover_img_uri)}
+            fallbackURI={defaultCollectionImagePNG}
             style={{
               marginRight: layout.spacing_x1,
             }}

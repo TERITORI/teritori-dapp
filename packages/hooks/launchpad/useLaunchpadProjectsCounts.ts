@@ -36,7 +36,7 @@ export const useLaunchpadProjectsCounts = (
         if (!client || !userAddress) {
           return counts;
         }
-        // TODO: Could be done in one db request in go/pkg/launchpad/service.go
+        // TODO: Getting these status could be done in one db request in go/pkg/launchpad/service.go
         if (wantedStatus.includes(Status.STATUS_INCOMPLETE)) {
           const responseIncomplete = await client.LaunchpadProjectsCount({
             ...req,
@@ -52,7 +52,7 @@ export const useLaunchpadProjectsCounts = (
           counts.countComplete = responseComplete.count;
         }
         if (wantedStatus.includes(Status.STATUS_CONFIRMED)) {
-          // TODO: Handle status confirmed in in go/pkg/launchpad/service.go
+          // TODO: Handle status confirmed in go/pkg/launchpad/service.go
           const responseConfirmed = await client.LaunchpadProjectsCount({
             ...req,
             status: Status.STATUS_CONFIRMED,

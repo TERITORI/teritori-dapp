@@ -1,15 +1,20 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
+import { Sort, SortDirection, Status } from "@/api/launchpad/v1/launchpad";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { HighVolSortButton } from "@/components/sorts/HighVolSortButton";
 import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
+import { useLaunchpadProjects } from "@/hooks/launchpad/useLaunchpadProjects";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
 import { LaunchpadReadyApplicationsTable } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadReadyApplications/component/LaunchpadReadyApplicationsTable";
+import { collectionsData } from "@/utils/launchpad";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -28,8 +33,20 @@ export interface DummyLaunchpadReadyCollection {
 }
 
 export const LaunchpadReadyApplicationsScreen: React.FC = () => {
+  const selectedNetworkId = useSelectedNetworkId();
+  const selectedWallet = useSelectedWallet();
   const navigation = useAppNavigation();
   const isMobile = useIsMobile();
+  const { launchpadProjects = [] } = useLaunchpadProjects({
+    networkId: selectedNetworkId,
+    userAddress: selectedWallet?.address || "",
+    offset: 0,
+    limit: 100, // TODO: Pagination
+    sort: Sort.SORT_UNSPECIFIED,
+    sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+    //TODO: STATUS_INCOMPLETE here is just for tests ==> Use STATUS_COMPLETE finally.
+    status: Status.STATUS_INCOMPLETE, // TODO: Or STATUS_CONFIRMED ?
+  });
 
   // TODO: Should we remove the tabs ? ("Waiting for Approval" useless ?)
   const tabs = {
@@ -43,19 +60,6 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
     },
   };
 
-  const dummyData: DummyLaunchpadReadyCollection[] = Array(25)
-    .fill({
-      id: 0,
-      rank: 0,
-      collectionName: "The R!ot",
-      collectionNetwork: "teritori",
-      projectReadinessForMint: "Complete and ready to mint",
-      whitelistQuantity: "0",
-      premiumMarketingPackage: "No",
-      basicMarketingPackage: "Yes",
-    })
-    .map((item, index) => ({ ...item, id: index + 1, rank: index + 1 }));
-
   const [selectedTab, setSelectedTab] =
     useState<TabsListType>("readyForListing");
 
@@ -67,7 +71,7 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
         <BrandText style={fontSemibold20}>Administration Dashboard</BrandText>
       }
       responsive
-      onBackPress={() => navigation.goBack()}
+      onBackPress={() => navigation.navigate("LaunchpadAdministrationOverview")}
       forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
     >
       <View
@@ -123,7 +127,9 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
             marginTop: layout.spacing_x4,
           }}
         >
-          <LaunchpadReadyApplicationsTable rows={dummyData} />
+          <LaunchpadReadyApplicationsTable
+            rows={collectionsData(launchpadProjects)}
+          />
         </View>
 
         <SpacerColumn size={16} />

@@ -41,7 +41,6 @@ export type RootStackParamList = {
   LaunchpadApplications: undefined;
   LaunchpadApplicationReview: { id: string };
   LaunchpadReadyApplications: undefined;
-  LaunchpadAllProjects: undefined;
 
   MintCollection: { id: string };
   TNSHome: { modal: string; name?: string } | undefined;
@@ -208,7 +207,6 @@ const navConfig: {
     LaunchpadApplications: "launchpad/admin/applications",
     LaunchpadApplicationReview: "launchpad/admin/review/:id",
     LaunchpadReadyApplications: "launchpad/admin/ready-applications",
-    LaunchpadAllProjects: "launchpad/admin/all-projects",
 
     // Mint NFT collection
     MintCollection: "collection/:id/mint",
