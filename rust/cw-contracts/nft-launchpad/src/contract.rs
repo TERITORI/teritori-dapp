@@ -2,7 +2,7 @@ use std::ops::Add;
 
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    attr, to_json_binary, Addr, MessageInfo, Order, Reply, Response,
+    attr, to_json_binary, Addr, Order, Reply, Response,
     StdResult, SubMsg, WasmMsg,
 };
 use cw_storage_plus::{Item, Map};
@@ -65,7 +65,7 @@ impl NftLaunchpad {
 
         // Permission check
         if ctx.info.sender != config.owner {
-            return return Err(ContractError::Unauthorized);
+            return Err(ContractError::Unauthorized);
         }
         // Save new config
         config.deployer = changes.deployer;
