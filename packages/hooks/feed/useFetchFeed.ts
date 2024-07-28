@@ -90,7 +90,7 @@ export const useFetchFeed = (req: DeepPartial<PostsRequest>) => {
         if (selectedNetwork?.kind === NetworkKind.Cosmos) {
           return fetchTeritoriFeed(selectedNetwork, req, pageParam);
         } else if (selectedNetwork?.kind === NetworkKind.Gno) {
-          return fetchGnoFeed(selectedNetwork, wallet?.address, req, pageParam);
+          return fetchTeritoriFeed(selectedNetwork, req, pageParam);
         }
 
         throw Error(`Network ${selectedNetwork?.id} is not supported`);

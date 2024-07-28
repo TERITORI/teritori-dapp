@@ -100,6 +100,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		premiumLevelMax = filter.PremiumLevelMax
 		hasLocation = filter.HasLocation
 	}
+	_ = hasLocation
 
 	queryUserID := req.GetQueryUserId()
 
@@ -112,7 +113,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		offset = 0
 	}
 
-	query := s.conf.IndexerDB.
+	query := s.conf.IndexerDB.Debug().
 		Table("posts as p1").
 		Where("p1.parent_post_identifier = ?", "").
 		Select(`
@@ -154,42 +155,44 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	}
 
 	if premiumLevelMin > 0 {
+		fmt.Println("premiumLevelMin", premiumLevelMin)
+
 		query = query.Where("premium_level >= ?", premiumLevelMin)
 	}
 	if premiumLevelMax >= 0 {
+		fmt.Println("premiumLevelMax", premiumLevelMax)
 		query = query.Where("premium_level <= ?", premiumLevelMax)
 	}
-	if hasLocation {
-		query = query.Where("array_length(array_remove(location, NULL), 1) = 2")
-	}
+	//if hasLocation {
+	//	query = query.Where("array_length(array_remove(location, NULL), 1) = 2")
+	//}
 
 	query = query.
 		Order("created_at DESC").
 		Limit(int(limit)).
 		Offset(int(offset))
-
 	var dbPostWithExtras []DBPostWithExtra
 	if err := query.Find(&dbPostWithExtras).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to query posts")
 	}
-
+	fmt.Printf("Found %d posts", len(dbPostWithExtras))
 	posts := make([]*feedpb.Post, len(dbPostWithExtras))
 	for idx, dbPost := range dbPostWithExtras {
 		var reactions []*feedpb.Reaction
-		for icon, users := range dbPost.UserReactions {
+		for icon, _ := range dbPost.UserReactions {
 			ownState := false
 			if queryUserID != "" {
 				// TODO: create a reactions table to store user reactions and have performant query
-				for _, user := range users.([]interface{}) {
-					if user.(string) == queryUserID {
-						ownState = true
-						break
-					}
-				}
+				//for _, user := range users.([]interface{}) {
+				//	if user.(string) == queryUserID {
+				//		ownState = true
+				//		break
+				//	}
+				//}
 			}
 			reactions = append(reactions, &feedpb.Reaction{
-				Icon:     icon,
-				Count:    uint32(len(users.([]interface{}))),
+				Icon:     "icon",
+				Count:    uint32(icon), //uint32(len(users.([]interface{}))),
 				OwnState: ownState,
 			})
 		}
@@ -219,7 +222,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 			Reactions:            reactions,
 			TipAmount:            dbPost.TipAmount,
 			PremiumLevel:         dbPost.PremiumLevel,
-			Location:             dbPost.Location,
+			Location:             []float32{float32(dbPost.Lat), float32(dbPost.Lng)},
 		}
 	}
 
