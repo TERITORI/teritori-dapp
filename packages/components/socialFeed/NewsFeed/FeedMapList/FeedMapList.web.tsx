@@ -2,9 +2,10 @@ import L, { DivIcon, Icon, LatLngExpression, Point } from "leaflet";
 import React from "react";
 import "../../modals/MapModal/styles.css";
 import "leaflet/dist/leaflet.css";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer,useMap } from "react-leaflet";
+import { useEventHandlers } from '@react-leaflet/core'
 import MarkerClusterGroup from "react-leaflet-cluster";
-import { View, ViewStyle } from "react-native";
+import { View, ViewStyle, } from "react-native";
 
 import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
 
@@ -77,6 +78,20 @@ const FeedMapList: React.FC<FeedMapListProps> = ({ style, data }) => {
     },
   ];
 
+  const FetchMarkersOnMove = () => {
+    const map = useMap()
+
+    // Listen to events when moving map
+    const onChange = React.useCallback(() => {
+      console.log(map.getBounds())
+    }, [map])
+
+    const handlers = React.useMemo(() => ({ zoomend: onChange, moveend: onChange }), [map])
+    useEventHandlers({ instance: map }, handlers)
+
+  return null
+}
+
   for (let item of data.pages[0].list) {
     let metadata =JSON.parse(item.metadata);
     if (metadata.location) {
@@ -92,7 +107,7 @@ const FeedMapList: React.FC<FeedMapListProps> = ({ style, data }) => {
       <MapContainer
         center={[48.8566, 2.3522]}
         zoom={12}
-        attributionControl={false}
+        attributionControl={false}  
       >
         <TileLayer
           noWrap
@@ -114,6 +129,7 @@ const FeedMapList: React.FC<FeedMapListProps> = ({ style, data }) => {
             </Marker>
           ))}
         </MarkerClusterGroup>
+        <FetchMarkersOnMove/>
       </MapContainer>
     </View>
   );

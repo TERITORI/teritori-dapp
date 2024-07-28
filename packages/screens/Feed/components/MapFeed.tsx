@@ -46,7 +46,7 @@ export const MapFeed = () => {
       premiumLevelMax: -1,
       hasLocation: true
     },
-    limit: 10,
+    limit: 300,
     offset: 0,
   };
 
