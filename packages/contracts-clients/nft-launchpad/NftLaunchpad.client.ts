@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { InstantiateMsg, Config, ExecuteMsg, Uint128, Addr, Collection, MintPeriod, Coin, WhitelistInfo, QueryMsg } from "./NftLaunchpad.types";
+import { Addr, InstantiateMsg, Config, ExecuteMsg, Uint128, ConfigChanges, Collection, MintPeriod, Coin, WhitelistInfo, QueryMsg } from "./NftLaunchpad.types";
 export interface NftLaunchpadReadOnlyInterface {
   contractAddress: string;
   getCollectionById: ({
@@ -67,7 +67,7 @@ export interface NftLaunchpadInterface extends NftLaunchpadReadOnlyInterface {
   updateConfig: ({
     changes
   }: {
-    changes: Config;
+    changes: ConfigChanges;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   submitCollection: ({
     collection
@@ -106,7 +106,7 @@ export class NftLaunchpadClient extends NftLaunchpadQueryClient implements NftLa
   updateConfig = async ({
     changes
   }: {
-    changes: Config;
+    changes: ConfigChanges;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       update_config: {

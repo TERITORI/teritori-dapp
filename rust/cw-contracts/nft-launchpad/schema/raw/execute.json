@@ -15,7 +15,7 @@
           ],
           "properties": {
             "changes": {
-              "$ref": "#/definitions/Config"
+              "$ref": "#/definitions/ConfigChanges"
             }
           }
         }
@@ -314,7 +314,7 @@
       },
       "additionalProperties": false
     },
-    "Config": {
+    "ConfigChanges": {
       "type": "object",
       "required": [
         "name",
@@ -337,6 +337,12 @@
           ],
           "format": "uint64",
           "minimum": 0.0
+        },
+        "owner": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "supported_networks": {
           "type": "array",

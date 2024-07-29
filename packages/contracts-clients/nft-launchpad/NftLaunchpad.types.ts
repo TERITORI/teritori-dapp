@@ -4,6 +4,7 @@
 * and run the @cosmwasm/ts-codegen generate command to regenerate this file.
 */
 
+export type Addr = string;
 export interface InstantiateMsg {
   config: Config;
   [k: string]: unknown;
@@ -12,11 +13,12 @@ export interface Config {
   deployer?: string | null;
   name: string;
   nft_code_id?: number | null;
+  owner: Addr;
   supported_networks: string[];
 }
 export type ExecuteMsg = {
   update_config: {
-    changes: Config;
+    changes: ConfigChanges;
     [k: string]: unknown;
   };
 } | {
@@ -37,7 +39,13 @@ export type ExecuteMsg = {
   };
 };
 export type Uint128 = string;
-export type Addr = string;
+export interface ConfigChanges {
+  deployer?: string | null;
+  name: string;
+  nft_code_id?: number | null;
+  owner?: string | null;
+  supported_networks: string[];
+}
 export interface Collection {
   artwork_desc: string;
   base_token_uri?: string | null;
