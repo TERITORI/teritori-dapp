@@ -248,7 +248,7 @@ func (s *P2eService) MerkleData(ctx context.Context, req *p2epb.MerkleDataReques
 		return nil, errors.New("user does not have reward")
 	}
 
-	tree, err := merkletree.New(leaves, true)
+	tree, err := merkletree.New(leaves)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to build merkletree from DB")
 	}
