@@ -10,7 +10,7 @@ const main = async () => {
     sender,
   } = await getClientInfos();
 
-  client.console.log({ client, sender });
+  console.log({ client, sender });
 };
 
 main();

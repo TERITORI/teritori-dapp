@@ -4,7 +4,7 @@ import { GasPrice } from "@cosmjs/stargate";
 import * as fs from "fs";
 import path from "path";
 
-import { MNEMONIC } from "./mnemonic";
+// import { MNEMONIC } from "./mnemonic";
 
 const GAS_PRICE = GasPrice.fromString("0.025utori");
 
@@ -12,9 +12,13 @@ const NODE_RPC = "https://rpc.testnet.teritori.com:443";
 // const CHAIN_ID = "teritori-test-7";
 
 export const getClientInfos = async () => {
-  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(MNEMONIC, {
-    prefix: "tori",
-  });
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(
+    "???",
+    // MNEMONIC
+    {
+      prefix: "tori",
+    },
+  );
 
   const client = await SigningCosmWasmClient.connectWithSigner(
     NODE_RPC,
