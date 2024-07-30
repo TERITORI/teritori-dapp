@@ -74,6 +74,7 @@ export const instantiateNftLaunchpad = async (
       supported_networks: allNetworks
         .filter((n) => n.features.includes(NetworkFeature.NFTLaunchpad))
         .map((n) => n.id),
+      owner: "FIXME",
     },
   };
   return await instantiateContract(
