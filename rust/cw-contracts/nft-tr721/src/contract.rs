@@ -6,13 +6,14 @@ use cw2981_royalties::{
     check_royalties,
     msg::{CheckRoyaltiesResponse, Cw2981QueryMsg, RoyaltiesInfoResponse},
     query_royalties_info, Cw2981Contract as Tr721Contract, ExecuteMsg as Tr721ExecuteMsg,
-    Extension, Metadata,
+    Extension, Metadata as Tr721Metadata,
 };
 use cw721::{
     AllNftInfoResponse, ApprovalResponse, ApprovalsResponse, ContractInfoResponse, Expiration,
     NftInfoResponse, NumTokensResponse, OperatorResponse, OperatorsResponse, OwnerOfResponse,
     TokensResponse,
 };
+use cw721_metadata_onchain::Metadata;
 use cw_storage_plus::{IndexedMap, Item, Map, MultiIndex};
 use rs_merkle::{Hasher, MerkleProof};
 use serde::de::DeserializeOwned;
@@ -32,6 +33,7 @@ use cw721_base::{
     MinterResponse, Ownership,
 };
 
+pub type NftExtension = Metadata;
 pub type Tr721QueryMsg = cw721_base::QueryMsg<Cw2981QueryMsg>;
 
 // Version info for migration
@@ -43,7 +45,7 @@ pub struct Tr721 {
     pub(crate) contract_version: Item<'static, ContractVersion>,
     pub(crate) admin: Item<'static, String>,
     pub(crate) tokens:
-        IndexedMap<'static, &'static str, TokenInfo<Metadata>, TokenIndexes<'static, Metadata>>,
+        IndexedMap<'static, &'static str, TokenInfo<Tr721Metadata>, TokenIndexes<'static, Tr721Metadata>>,
     pub(crate) requested_mints: Map<'static, String, Addr>, //  token id => User address
     pub(crate) launchpad_contract: Item<'static, String>,
 
@@ -453,7 +455,7 @@ impl Tr721 {
         &self,
         ctx: ExecCtx,
         token_id: String,
-        metadata: Metadata,
+        metadata: Tr721Metadata,
         merkle_proof: String,
     ) -> Result<Response, ContractError> {
         let sender = ctx.deps.api.addr_validate(ctx.info.sender.as_str())?;
@@ -597,9 +599,9 @@ impl Tr721 {
         &self,
         ctx: QueryCtx,
         token_id: String,
-    ) -> StdResult<NftInfoResponse<Extension>> {
+    ) -> StdResult<NftInfoResponse<NftExtension>> {
         let msg = Tr721QueryMsg::NftInfo { token_id };
-        self.proxy_query::<NftInfoResponse<Extension>>(ctx, msg)
+        self.proxy_query::<NftInfoResponse<NftExtension>>(ctx, msg)
     }
 
     #[msg(query)]
@@ -622,12 +624,12 @@ impl Tr721 {
         ctx: QueryCtx,
         token_id: String,
         include_expired: Option<bool>,
-    ) -> StdResult<AllNftInfoResponse<Extension>> {
+    ) -> StdResult<AllNftInfoResponse<NftExtension>> {
         let msg = Tr721QueryMsg::AllNftInfo {
             token_id,
             include_expired,
         };
-        self.proxy_query::<AllNftInfoResponse<Extension>>(ctx, msg)
+        self.proxy_query::<AllNftInfoResponse<NftExtension>>(ctx, msg)
     }
 
     #[msg(query)]
@@ -813,3 +815,4 @@ pub struct MintInfo {
     pub royalty_address: Option<Addr>,
     pub royalty_percentage: Option<u8>,
 }
+

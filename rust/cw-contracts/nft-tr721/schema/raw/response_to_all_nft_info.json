@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "AllNftInfoResponse_for_Nullable_Metadata",
+  "title": "AllNftInfoResponse_for_Metadata",
   "type": "object",
   "required": [
     "access",
@@ -19,7 +19,7 @@
       "description": "Data on the token itself,",
       "allOf": [
         {
-          "$ref": "#/definitions/NftInfoResponse_for_Nullable_Metadata"
+          "$ref": "#/definitions/NftInfoResponse_for_Metadata"
         }
       ]
     }
@@ -149,22 +149,6 @@
             "null"
           ]
         },
-        "royalty_payment_address": {
-          "description": "The payment address, may be different to or the same as the minter addr question: how do we validate this?",
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "royalty_percentage": {
-          "description": "This is how much the minter takes as a cut when sold royalties are owed on this token if it is Some",
-          "type": [
-            "integer",
-            "null"
-          ],
-          "format": "uint64",
-          "minimum": 0.0
-        },
         "youtube_url": {
           "type": [
             "string",
@@ -174,17 +158,17 @@
       },
       "additionalProperties": false
     },
-    "NftInfoResponse_for_Nullable_Metadata": {
+    "NftInfoResponse_for_Metadata": {
       "type": "object",
+      "required": [
+        "extension"
+      ],
       "properties": {
         "extension": {
           "description": "You can add any custom metadata here when you extend cw721-base",
-          "anyOf": [
+          "allOf": [
             {
               "$ref": "#/definitions/Metadata"
-            },
-            {
-              "type": "null"
             }
           ]
         },

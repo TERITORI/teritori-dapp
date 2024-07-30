@@ -1032,6 +1032,7 @@ dependencies = [
  "cw2981-royalties",
  "cw721 0.18.0",
  "cw721-base 0.18.0",
+ "cw721-metadata-onchain",
  "prost 0.12.3",
  "rs_merkle",
  "schemars",

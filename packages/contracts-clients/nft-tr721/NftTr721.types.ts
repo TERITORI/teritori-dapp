@@ -129,8 +129,6 @@ export interface Metadata {
   image?: string | null;
   image_data?: string | null;
   name?: string | null;
-  royalty_payment_address?: string | null;
-  royalty_percentage?: number | null;
   youtube_url?: string | null;
 }
 export interface Trait {
@@ -267,9 +265,9 @@ export type QueryMsg = {
     [k: string]: unknown;
   };
 };
-export interface AllNftInfoResponseForNullable_Metadata {
+export interface AllNftInfoResponseForMetadata {
   access: OwnerOfResponse;
-  info: NftInfoResponseForNullable_Metadata;
+  info: NftInfoResponseForMetadata;
 }
 export interface OwnerOfResponse {
   approvals: Approval[];
@@ -279,8 +277,8 @@ export interface Approval {
   expires: Expiration;
   spender: string;
 }
-export interface NftInfoResponseForNullable_Metadata {
-  extension?: Metadata | null;
+export interface NftInfoResponseForMetadata {
+  extension: Metadata;
   token_uri?: string | null;
 }
 export interface OperatorsResponse {

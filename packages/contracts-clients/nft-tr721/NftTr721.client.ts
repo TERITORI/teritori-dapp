@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { Addr, Uint128, InstantiateMsg, MintInfo, MintPeriod, Coin, WhitelistInfo, ExecuteMsg, Binary, Expiration, Timestamp, Uint64, Metadata, Trait, WhitelistProof, QueryMsg, AllNftInfoResponseForNullable_Metadata, OwnerOfResponse, Approval, NftInfoResponseForNullable_Metadata, OperatorsResponse, TokensResponse, ApprovalResponse, ApprovalsResponse, CheckRoyaltiesResponse, ContractInfoResponse, ContractVersion, CosmosMsgForEmpty, BankMsg, StakingMsg, DistributionMsg, WasmMsg, ReplyOn, ResponseForEmpty, Attribute, Event, SubMsgForEmpty, Empty, String, ArrayOfMintPeriod, Uint32, MinterResponse, NumTokensResponse, OperatorResponse, OwnershipForAddr, RoyaltiesInfoResponse } from "./NftTr721.types";
+import { Addr, Uint128, InstantiateMsg, MintInfo, MintPeriod, Coin, WhitelistInfo, ExecuteMsg, Binary, Expiration, Timestamp, Uint64, Metadata, Trait, WhitelistProof, QueryMsg, AllNftInfoResponseForMetadata, OwnerOfResponse, Approval, NftInfoResponseForMetadata, OperatorsResponse, TokensResponse, ApprovalResponse, ApprovalsResponse, CheckRoyaltiesResponse, ContractInfoResponse, ContractVersion, CosmosMsgForEmpty, BankMsg, StakingMsg, DistributionMsg, WasmMsg, ReplyOn, ResponseForEmpty, Attribute, Event, SubMsgForEmpty, Empty, String, ArrayOfMintPeriod, Uint32, MinterResponse, NumTokensResponse, OperatorResponse, OwnershipForAddr, RoyaltiesInfoResponse } from "./NftTr721.types";
 export interface NftTr721ReadOnlyInterface {
   contractAddress: string;
   totalMinted: () => Promise<Uint64>;
@@ -35,7 +35,7 @@ export interface NftTr721ReadOnlyInterface {
     tokenId
   }: {
     tokenId: string;
-  }) => Promise<NftInfoResponseForNullableMetadata>;
+  }) => Promise<NftInfoResponseForMetadata>;
   ownerOf: ({
     includeExpired,
     tokenId
@@ -49,7 +49,7 @@ export interface NftTr721ReadOnlyInterface {
   }: {
     includeExpired?: boolean;
     tokenId: string;
-  }) => Promise<AllNftInfoResponseForNullableMetadata>;
+  }) => Promise<AllNftInfoResponseForMetadata>;
   operator: ({
     includeExpired,
     operator,
@@ -214,7 +214,7 @@ export class NftTr721QueryClient implements NftTr721ReadOnlyInterface {
     tokenId
   }: {
     tokenId: string;
-  }): Promise<NftInfoResponseForNullableMetadata> => {
+  }): Promise<NftInfoResponseForMetadata> => {
     return this.client.queryContractSmart(this.contractAddress, {
       nft_info: {
         token_id: tokenId
@@ -241,7 +241,7 @@ export class NftTr721QueryClient implements NftTr721ReadOnlyInterface {
   }: {
     includeExpired?: boolean;
     tokenId: string;
-  }): Promise<AllNftInfoResponseForNullableMetadata> => {
+  }): Promise<AllNftInfoResponseForMetadata> => {
     return this.client.queryContractSmart(this.contractAddress, {
       all_nft_info: {
         include_expired: includeExpired,
