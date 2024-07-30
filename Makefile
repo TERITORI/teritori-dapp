@@ -417,7 +417,7 @@ generate.internal-contracts-clients: node_modules
 	done
 
 clone-gno:
-	cd gnobuild && git clone https://github.com/gnolang/gno.git
+	cd gnobuild && git clone https://github.com/gnolang/gno.git && cd gno && git checkout 9b114172063feaf2da4ae7ebb8263cada3ba699b
 	cp -r ./gno/p ./gnobuild/gno/examples/gno.land/p/teritori
 
 build-gno:
