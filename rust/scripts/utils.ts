@@ -1,8 +1,6 @@
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { GasPrice } from "@cosmjs/stargate";
-import * as fs from "fs";
-import path from "path";
 
 // import { MNEMONIC } from "./mnemonic";
 
@@ -33,28 +31,27 @@ export const getClientInfos = async () => {
   return { wallet, client, sender };
 };
 
-const getWasmFile = (wasmFile: string) => {
-  const filePath = path.join(__dirname, "../..", "artifacts", wasmFile);
-  console.log("filePath:", filePath);
-  return fs.readFileSync(filePath);
-};
+// const getWasmFile = (wasmFile: string) => {
+//   const filePath = path.join(__dirname, "../..", "artifacts", wasmFile);
+//   console.log("filePath:", filePath);
+//   return fs.readFileSync(filePath);
+// };
 
-export const deploy = async (wasmFile: string) => {
-  const { client, sender } = await getClientInfos();
-  const uploadRes = await client.upload(sender, getWasmFile(wasmFile), "auto");
-
-  return uploadRes.codeId;
-};
-
-export const instantiate = async (codeId: number, label: string, msg: any) => {
-  const { client, sender } = await getClientInfos();
-
-  const instantiateRes = await client.instantiate(
-    sender,
-    codeId,
-    msg,
-    `${label} - ${codeId}`,
-    "auto",
-  );
-  return instantiateRes.contractAddress;
-};
+// const deploy = async (wasmFile: string) => {
+//   const { client, sender } = await getClientInfos();
+//   const uploadRes = await client.upload(sender, getWasmFile(wasmFile), "auto");
+//
+//   return uploadRes.codeId;
+// };
+// const instantiate = async (codeId: number, label: string, msg: any) => {
+//   const { client, sender } = await getClientInfos();
+//
+//   const instantiateRes = await client.instantiate(
+//     sender,
+//     codeId,
+//     msg,
+//     `${label} - ${codeId}`,
+//     "auto",
+//   );
+//   return instantiateRes.contractAddress;
+// };

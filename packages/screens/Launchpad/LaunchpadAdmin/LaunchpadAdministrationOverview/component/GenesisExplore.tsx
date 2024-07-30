@@ -9,7 +9,6 @@ import { SVG } from "@/components/SVG";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { SecondaryBox } from "@/components/boxes/SecondaryBox";
 import { GradientText } from "@/components/gradientText";
-import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { neutral17, primaryColor } from "@/utils/style/colors";
 import {
   fontSemibold12,
@@ -24,7 +23,6 @@ const LG_BREAKPOINT = 1200;
 type Props = { setIsEditHighlighted: (val: boolean) => void };
 
 export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
-  const navigation = useAppNavigation();
   const { width } = useWindowDimensions();
   const isBreakPoint = width >= MD_BREAKPOINT;
 
@@ -88,7 +86,7 @@ export const GenesisExplore = ({ setIsEditHighlighted }: Props) => {
             EXCLUSIVE GENESIS TERITORI COLLECTION
           </GradientText>
           <TouchableOpacity
-            onPress={() => navigation.navigate("AllProjectAdministrationDash")}
+          // onPress={() => navigation.navigate("AllProjectAdministrationDash")}
           >
             <SecondaryBox
               style={{

@@ -51,7 +51,7 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 
 // TODO: Refacto TextInputCustom. Too much props
 
-export type TextInputCustomRules = Omit<
+type TextInputCustomRules = Omit<
   RegisterOptions,
   "valueAsNumber" | "valueAsDate" | "setValueAs"
 >;
