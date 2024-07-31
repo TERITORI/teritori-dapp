@@ -43,7 +43,7 @@ const zodToGoType = (zodType: unknown) => {
     case zodType instanceof ZodString:
       return "string";
     case zodType instanceof ZodNumber:
-      return "uint"
+      return "float64"
     default:
       throw new Error(`failed to convert zod type ${zodType} to go type`);
   }
