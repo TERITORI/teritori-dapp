@@ -50,7 +50,7 @@ const zodCosmWasmLaunchpad = z.object({
   launchpadContractAddress: z.string(),
   defaultMintDenom: z.string(),
   launchpadEndpoint: z.string(),
-  codeId: z.number().optional(),
+  codeId: z.number(),
   // allowedMintDenoms: z.array(z.string()), // for future
 });
 
