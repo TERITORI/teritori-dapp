@@ -200,8 +200,8 @@ export function getAvailableApps(): dAppGroup {
           description: "Projects Program",
           route: "Projects",
           groupKey: "top-apps",
-          selectedByDefault: true,
-          alwaysOn: true,
+          selectedByDefault: false,
+          alwaysOn: false,
         },
         toripunks: {
           id: "toripunks",
