@@ -41,8 +41,6 @@ export const MilestoneItem: React.FC<{
     NetworkFeature.GnoProjectManager,
   );
 
-  console.log("milestone", milestone);
-
   return (
     <View>
       <TouchableOpacity onPress={() => onPress?.(milestone.id)}>

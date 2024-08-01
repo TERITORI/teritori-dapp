@@ -28,6 +28,7 @@ export const adenaDoContract = async (
   const adena = (window as any).adena;
   const network = mustGetGnoNetwork(networkId);
   const client = new GnoJSONRPCProvider(network.endpoint);
+  const height = await client.getBlockNumber();
   const req: RequestDocontractMessage = {
     messages,
     gasFee: opts?.gasFee === undefined ? 1 : opts.gasFee,
@@ -35,27 +36,17 @@ export const adenaDoContract = async (
     memo: opts?.memo,
   };
   const res = await adena.DoContract(req);
-
   if (res.status === "failure") {
-    const regex = /Data:.*s:"(.*)"}\n/;
-    const matches = res.data.error.log.match(regex);
-    const errMsg = matches && matches.length > 1 ? matches[1] : res.message;
-
-    console.error("Transaction failed:", {
-      error: errMsg,
-      stack: res.data.error.log,
-    });
-
-    throw new Error(errMsg);
+    throw new Error(res.message);
   }
-  const { hash, height: txHeight } = res.data;
-  await client.waitForTransaction(hash);
+  const hash: string = res.data.hash;
+  const { height: txHeight, index } = await client.waitForTransaction(
+    hash,
+    height,
+  );
   const blockResult = await client.getBlockResult(txHeight);
-  // FIXME: force to index 0 for now
-  const index = 0;
-
   const deliverResults = blockResult.results.deliver_tx || [];
-  if (!deliverResults.length) {
+  if (deliverResults.length <= index) {
     throw new Error("tx result not found in block");
   }
   const err = deliverResults[index].ResponseBase.Error;

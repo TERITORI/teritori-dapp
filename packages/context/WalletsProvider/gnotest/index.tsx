@@ -182,7 +182,7 @@ const useGnotestStore = create<GnotestState>((set, get) => ({
   },
 }));
 
-export const setupAdenaMock = () => {
+const setupAdenaMock = () => {
   (window as any).adena = {
     SetTestUser: async (name: string) => {
       const testUser = testUsers.find((u) => u.name === name);

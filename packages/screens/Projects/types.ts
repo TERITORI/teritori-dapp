@@ -131,8 +131,6 @@ const zodProjectMetadata = z.object({
   teamAndLinkData: zodProjectTeamAndLinkData.optional(),
 });
 
-// export type ProjectMetadata = z.infer<typeof zodProjectMetadata>;
-
 export const zodProject = z.object({
   id: z.string(),
   sender: z.string(),
