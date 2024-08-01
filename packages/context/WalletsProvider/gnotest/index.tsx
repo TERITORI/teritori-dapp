@@ -182,88 +182,86 @@ const useGnotestStore = create<GnotestState>((set, get) => ({
   },
 }));
 
-(window as any).adena = {
-  SetTestUser: async (name: string) => {
-    const testUser = testUsers.find((u) => u.name === name);
-    if (!testUser) {
-      throw new Error("Test user not found: " + name);
-    }
-    const newAddr = await (
-      await GnoWallet.fromMnemonic(testUser.mnemonic)
-    ).getAddress();
-    const state = useGnotestStore.getState();
-    const account = state.accounts.find((a) => a.address === newAddr);
-    if (!account) {
-      throw new Error("Account not found: " + newAddr);
-    }
-    useGnotestStore.setState({
-      wallet: account.wallet,
-      address: account.address,
-    });
-    return getUserId(network.id, account.address);
-  },
-  GetAccount: async () => {
-    const state = useGnotestStore.getState();
-    return {
-      data: {
-        address: state.address,
-        chainId: network.chainId,
-      },
-    };
-  },
-  DoContract: async (req: RequestDocontractMessage) => {
-    try {
-      console.log("docontract req", req);
+export const setupAdenaMock = () => {
+  (window as any).adena = {
+    SetTestUser: async (name: string) => {
+      const testUser = testUsers.find((u) => u.name === name);
+      if (!testUser) {
+        throw new Error("Test user not found: " + name);
+      }
+      const newAddr = await (
+        await GnoWallet.fromMnemonic(testUser.mnemonic)
+      ).getAddress();
       const state = useGnotestStore.getState();
-      if (!state.wallet) {
-        throw new Error("Wallet not connected");
+      const account = state.accounts.find((a) => a.address === newAddr);
+      if (!account) {
+        throw new Error("Account not found: " + newAddr);
       }
-      const msg = req.messages[0];
-      if (msg.type !== "/vm.m_call") {
-        throw new Error("Unsupported message type: " + msg.type);
-      }
-      console.log("docontract msg", msg);
-      const txFee: TxFee = {
-        gasWanted: Long.fromNumber(req.gasWanted),
-        gasFee: req.gasFee.toString() + "ugnot",
-      };
-      let sendMap;
-      if (msg.value.send) {
-        sendMap = new Map<string, number>();
-        const end = msg.value.send.length - "ugnot".length;
-        const sendAmount = (msg.value.send as string).substring(0, end);
-        console.log("docontract sendAmount", sendAmount);
-        sendMap.set("ugnot", +sendAmount);
-      }
-      console.log("docontract sendMap", sendMap);
-      const res = await state.wallet.callMethod(
-        msg.value.pkg_path,
-        msg.value.func,
-        msg.value.args,
-        TransactionEndpoint.BROADCAST_TX_COMMIT,
-        sendMap,
-        txFee,
-      );
-      console.log("docontract res", res);
+      useGnotestStore.setState({
+        wallet: account.wallet,
+        address: account.address,
+      });
+      return getUserId(network.id, account.address);
+    },
+    GetAccount: async () => {
+      const state = useGnotestStore.getState();
       return {
-        status: "success",
         data: {
-          hash: res.hash,
-          height: res.height,
+          address: state.address,
+          chainId: network.chainId,
         },
       };
-    } catch (e) {
-      console.error("docontract error", e);
-      const errMsg = e instanceof Error ? e.message : `${e}`;
-      return {
-        status: "failure",
-        message: errMsg,
-        data: {
-          error: e,
-        },
-      };
-    }
-  },
+    },
+    DoContract: async (req: RequestDocontractMessage) => {
+      try {
+        const state = useGnotestStore.getState();
+        if (!state.wallet) {
+          throw new Error("Wallet not connected");
+        }
+        const msg = req.messages[0];
+        if (msg.type !== "/vm.m_call") {
+          throw new Error("Unsupported message type: " + msg.type);
+        }
+        const txFee: TxFee = {
+          gasWanted: Long.fromNumber(req.gasWanted),
+          gasFee: req.gasFee.toString() + "ugnot",
+        };
+        let sendMap;
+        if (msg.value.send) {
+          sendMap = new Map<string, number>();
+          const end = msg.value.send.length - "ugnot".length;
+          const sendAmount = (msg.value.send as string).substring(0, end);
+          console.log("docontract sendAmount", sendAmount);
+          sendMap.set("ugnot", +sendAmount);
+        }
+        const res = await state.wallet.callMethod(
+          msg.value.pkg_path,
+          msg.value.func,
+          msg.value.args,
+          TransactionEndpoint.BROADCAST_TX_COMMIT,
+          sendMap,
+          txFee,
+        );
+        return {
+          status: "success",
+          data: {
+            hash: res.hash,
+            height: res.height,
+          },
+        };
+      } catch (e) {
+        console.error("docontract error", e);
+        const errMsg = e instanceof Error ? e.message : `${e}`;
+        return {
+          status: "failure",
+          message: errMsg,
+          data: {
+            error: e,
+          },
+        };
+      }
+    },
+  };
 };
 
 export const useGnotest: () => UseGnotestResult = () => {
@@ -291,6 +289,7 @@ export const ConnectGnotestButton: React.FC<{
   return (
     <TestHiddenButton
       onPress={() => {
+        setupAdenaMock();
         connect();
         dispatch(setSelectedWalletId("gnotest"));
         onDone?.();
