@@ -13,6 +13,7 @@ export interface dAppType {
   selectedByDefault: boolean;
   alwaysOn: boolean;
   order?: number;
+  devOnly?: boolean;
 }
 
 export interface dAppGroup {

@@ -202,6 +202,7 @@ export function getAvailableApps(): dAppGroup {
           groupKey: "top-apps",
           selectedByDefault: false,
           alwaysOn: false,
+          devOnly: true,
         },
         toripunks: {
           id: "toripunks",
