@@ -64,19 +64,9 @@ export const useNSNameInfo = (
             if (!address) {
               return null;
             }
-            const query = `GetUserByName(${JSON.stringify(tokenId.slice(0, -".gno".length))}).Profile`;
-            const provider = new GnoJSONRPCProvider(network.endpoint);
-            const metadata = await provider.evaluateExpression(
-              network.nameServiceContractAddress,
-              query,
-            );
-            const mt = extractGnoJSONString(metadata);
+            // TODO: use profile realm
             const res: NftInfoResponse = {
-              extension: {
-                public_name: mt.displayName,
-                image: mt.imageURI,
-                public_bio: mt.bio,
-              },
+              extension: {},
             };
             return res;
           }
