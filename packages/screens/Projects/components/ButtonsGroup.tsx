@@ -53,23 +53,6 @@ export const ButtonsGroup: React.FC<ButtonsGroupType> = ({
           />
         );
       })}
-
-      {/*<SimpleButton*/}
-      {/*  text="Squad 1"*/}
-      {/*  size="XS"*/}
-      {/*  color={activeSquadId === 1 ? neutral00 : secondaryColor}*/}
-      {/*  bgColor={activeSquadId === 1 ? yellowDefault : neutral33}*/}
-      {/*  style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}*/}
-      {/*  onPress={() => setActiveSquadId(1)}*/}
-      {/*/>*/}
-      {/*<SimpleButton*/}
-      {/*  text="Squad 2"*/}
-      {/*  size="XS"*/}
-      {/*  color={activeSquadId === 2 ? neutral00 : secondaryColor}*/}
-      {/*  bgColor={activeSquadId === 2 ? yellowDefault : neutral33}*/}
-      {/*  style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}*/}
-      {/*  onPress={() => setActiveSquadId(2)}*/}
-      {/*/>*/}
     </View>
   );
 };

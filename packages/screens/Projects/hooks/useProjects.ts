@@ -38,16 +38,12 @@ export const useProject = (projectId: string | undefined) => {
 
       const client = new GnoJSONRPCProvider(gnoNetwork.endpoint);
       const query = `RenderContractJSON(${parseInt(localIdentifierStr, 10)})`;
-      console.log("query", query);
       const contractData = await client.evaluateExpression(
         pmFeature.projectsManagerPkgPath,
         query,
       );
-      console.log("ret", contractData);
 
       const j = extractGnoJSONString(contractData);
-
-      console.log("parsed", j);
 
       return zodProject.parse(j);
     },
@@ -92,11 +88,7 @@ export const useProjects = (
       const pkgPath = pmFeature.projectsManagerPkgPath;
       const expr = `RenderContractsJSON(${pageParam},${limit},${JSON.stringify(JSON.stringify(filter))})`;
 
-      console.log("projhook fetching", pkgPath, expr);
-
       const contractsData = await client.evaluateExpression(pkgPath, expr);
-
-      console.log("projhook res", contractsData);
 
       const j = extractGnoJSONString(contractsData);
 

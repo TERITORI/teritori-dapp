@@ -7,16 +7,6 @@ import { useAppNavigation } from "../../../utils/navigation";
 import { emptyProjectFormData, fakeTeamAndLink } from "../defaultValues";
 import { MilestoneFormValues } from "../types";
 
-/*
-export const yupProjectTeamAndLinkFormData = yup.object({
-  websiteLink: yup.string().required().url(),
-  twitterProfile: yup.string().required().url(),
-  discordLink: yup.string().required().url(),
-  githubLink: yup.string().required().url(),
-  teamDesc: yup.string().required(),
-});
-*/
-
 export const zodProjectTeamAndLinkFormData = z.object({
   websiteLink: z.string().url(),
   twitterProfile: z.string().url(),
@@ -28,22 +18,6 @@ export const zodProjectTeamAndLinkFormData = z.object({
 export type ProjectTeamAndLinkFormData = z.infer<
   typeof zodProjectTeamAndLinkFormData
 >;
-
-/*
-export const yupProjectFormData = yup.object({
-  name: yup.string().required().min(3),
-  desc: yup.string().required().min(10),
-  creator: yup
-    .mixed()
-    .oneOf([
-      yup.object({ funder: yup.string() }),
-      yup.object({ contractor: yup.string() }),
-    ]),
-  arbitrator: yup.string().required(),
-  tags: yup.string().nullable(),
-  coverImg: yup.object(),
-});
-*/
 
 export const zodProjectFormData = z.object({
   name: z.string().min(3),
@@ -64,7 +38,6 @@ type MakeRequestState = {
   teamAndLinkData: ProjectTeamAndLinkFormData;
   milestones: MilestoneFormValues[];
   actions: {
-    // setStepIndice: (stepIndice: number) => void;
     setShortDesc: (shortDescData: ProjectFormData) => void;
     setTeamAndLink: (teamAndLinkData: ProjectTeamAndLinkFormData) => void;
 
@@ -81,7 +54,6 @@ const useMakeRequestStore = create<MakeRequestState>((set, get) => ({
   teamAndLinkData: fakeTeamAndLink,
   milestones: [],
   actions: {
-    // setStepIndice: (stepIndice: number) => set({ stepIndice }),
     setShortDesc: (shortDescData) => set({ projectFormData: shortDescData }),
     setTeamAndLink: (teamAndLinkData) => {
       set({ teamAndLinkData });
@@ -126,10 +98,7 @@ export const useMakeRequestState = () => {
     }
   }, [step]);
 
-  // const setStep = store.actions.setStepIndice;
-
   const gotoStep = (stepIndex: number) => {
-    // store.actions.setStepIndice(stepIndice);
     navigation.navigate("ProjectsMakeRequest", { step: stepIndex });
   };
 
@@ -151,7 +120,6 @@ export const useMakeRequestState = () => {
       goNextStep,
       goPrevStep,
       gotoStep,
-      // setStep,
     },
   };
 };

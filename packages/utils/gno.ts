@@ -36,8 +36,6 @@ export const adenaDoContract = async (
   };
   const res = await adena.DoContract(req);
 
-  console.log("doContract res", res);
-
   if (res.status === "failure") {
     const regex = /Data:.*s:"(.*)"}\n/;
     const matches = res.data.error.log.match(regex);

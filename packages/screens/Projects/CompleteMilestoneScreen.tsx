@@ -149,35 +149,6 @@ export const ProjectsCompleteMilestoneScreen: ScreenFC<
 
           <SpacerColumn size={2} />
 
-          {/*<TertiaryBox*/}
-          {/*  style={{*/}
-          {/*    backgroundColor: neutral17,*/}
-          {/*    padding: layout.spacing_x2,*/}
-          {/*    borderWidth: 0,*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  <FlexRow>*/}
-          {/*    <BrandText style={[fontSemibold14, { color: neutralFF }]}>*/}
-          {/*      Tags:*/}
-          {/*    </BrandText>*/}
-
-          {/*    {project?.metadata?.shortDescData?.tags.split(",").map((tag) => {*/}
-          {/*      return (*/}
-          {/*        <Tag*/}
-          {/*          text={tag}*/}
-          {/*          containerStyle={{ marginLeft: layout.spacing_x1_5 }}*/}
-          {/*        />*/}
-          {/*      );*/}
-          {/*    })}*/}
-
-          {/*    <View style={{ flexGrow: 1, alignItems: "flex-end" }}>*/}
-          {/*      <Tag text={moment(project?.createdAt).format("L")} />*/}
-          {/*    </View>*/}
-          {/*  </FlexRow>*/}
-          {/*</TertiaryBox>*/}
-
-          {/*<SpacerColumn size={2} />*/}
-
           <TertiaryBox
             style={{
               backgroundColor: neutral17,

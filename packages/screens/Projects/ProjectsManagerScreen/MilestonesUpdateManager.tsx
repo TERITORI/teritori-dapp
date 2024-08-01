@@ -108,24 +108,6 @@ export const MilestonesUpdateManager: React.FC = () => {
                       </BrandText>
 
                       <MilestoneStatusTag status="MS_REVIEW" />
-
-                      {/*   <FlexRow>*/}
-                      {/*  //   <MilestoneStatusTag status={MsStatus.MS_OPEN} />*/}
-                      {/*  //*/}
-                      {/*  //   <BrandText*/}
-                      {/*  /!*    style={[*!/*/}
-                      {/*  /!*      fontSemibold16,*!/*/}
-                      {/*  /!*      {*!/*/}
-                      {/*  /!*        color: neutral77,*!/*/}
-                      {/*  /!*        marginHorizontal: layout.spacing_x1_5,*!/*/}
-                      {/*  /!*      },*!/*/}
-                      {/*  /!*    ]}*!/*/}
-                      {/*  /!*  >*!/*/}
-                      {/*  /!*    {">"}*!/*/}
-                      {/*  /!*  </BrandText>*!/*/}
-
-                      {/*  /!*  <MilestoneStatusTag status={MsStatus.MS_COMPLETED} />*!/*/}
-                      {/*  /!*</FlexRow>*!/*/}
                     </View>
 
                     <Separator
