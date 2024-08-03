@@ -127,6 +127,7 @@ export type NetworkInfo =
 
 export type NativeCurrencyInfo = {
   kind: "native";
+  variant: "cosmos" | "ethereum" | "gno" | "grc20";
   denom: string;
   displayName: string;
   decimals: number;

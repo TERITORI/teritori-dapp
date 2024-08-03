@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { StyleProp, TextInput, StyleSheet } from "react-native";
+import { StyleProp, TextInput, StyleSheet, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
 import searchSVG from "../../../assets/icons/search.svg";
@@ -32,8 +32,19 @@ export const SearchBarInput: React.FC<{
   text: string;
   onChangeText: (text: string) => void;
   onInteraction?: () => void;
+  placeholder?: string;
   style?: StyleProp<BoxStyle>;
-}> = ({ onInteraction, text, onChangeText, style }) => {
+  inputStyle?: StyleProp<ViewStyle>;
+  noBrokenCorners?: boolean;
+}> = ({
+  onInteraction,
+  text,
+  onChangeText,
+  style,
+  placeholder,
+  inputStyle,
+  noBrokenCorners = false,
+}) => {
   const ref = useRef<TextInput>(null);
   const fullWidth = StyleSheet.flatten(style)?.width === "100%";
   return (
@@ -52,6 +63,7 @@ export const SearchBarInput: React.FC<{
     >
       <SVG source={searchSVG} width={16} height={16} />
       <TextInput
+        placeholder={placeholder}
         value={text}
         ref={ref}
         style={[

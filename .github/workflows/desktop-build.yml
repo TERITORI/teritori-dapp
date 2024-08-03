@@ -14,16 +14,16 @@ jobs:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.12.1
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           cache: "yarn"
           node-version-file: ".nvmrc"
 
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.19"
+          go-version: "1.20"
 
       - name: Install node modules
         run: yarn
@@ -54,16 +54,16 @@ jobs:
     runs-on: ${{ matrix.runner }}
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          cache: "npm"
+          cache: "yarn"
           node-version-file: ".nvmrc"
 
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.19"
+          go-version: "1.20"
 
       - name: Download web build
         uses: actions/download-artifact@v3

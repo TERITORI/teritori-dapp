@@ -13,6 +13,7 @@ export enum NetworkFeature {
   RiotP2E = "RiotP2E",
   NFTBridge = "NFTBridge",
   CosmWasmPremiumFeed = "CosmWasmPremiumFeed",
+  GnoProjectManager = "GnoProjectManager",
   NFTMarketplaceLeaderboard = "NFTMarketplaceLeaderboard",
   CosmWasmNFTsBurner = "CosmWasmNFTsBurner",
 }
@@ -56,10 +57,23 @@ const zodCosmWasmLaunchpad = z.object({
 
 export type CosmWasmLaunchpad = z.infer<typeof zodCosmWasmLaunchpad>;
 
+// Gno Project Manager
+
+const zodGnoProjectManager = z.object({
+  type: z.literal(NetworkFeature.GnoProjectManager),
+  projectsManagerPkgPath: z.string(),
+  paymentsDenom: z.string(),
+});
+
+type GnoProjectManager = z.infer<typeof zodGnoProjectManager>;
+
+// Registry
+
 export const allFeatureObjects = [
   zodCosmWasmPremiumFeed,
   zodCosmWasmNFTsBurner,
   zodCosmWasmLaunchpad,
+  zodGnoProjectManager,
 ];
 
 export type NetworkFeatureObject =
@@ -67,3 +81,5 @@ export type NetworkFeatureObject =
   | CosmWasmSocialFeed
   | CosmWasmNFTsBurner
   | CosmWasmLaunchpad;
+  | CosmWasmNFTsBurner
+  | GnoProjectManager;

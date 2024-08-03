@@ -43,6 +43,7 @@ export const neutral77 = "#777777";
 export const neutral88 = "#888888";
 export const neutral99 = "#999999";
 export const neutralA3 = "#A3A3A3";
+export const neutralFF = "#FFFFFF";
 export const transparentColor = "transparent";
 
 export const additionalRed = "#FFAEAE";
