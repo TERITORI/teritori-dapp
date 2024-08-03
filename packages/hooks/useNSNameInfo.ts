@@ -64,6 +64,7 @@ export const useNSNameInfo = (
             if (!address) {
               return null;
             }
+            // TODO: use profile realm
             const res: NftInfoResponse = {
               extension: {},
             };
@@ -111,7 +112,7 @@ const gnoGetAddressByUsername = async (
   try {
     const res = await provider.evaluateExpression(
       network.nameServiceContractAddress,
-      `GetUserByName(${JSON.stringify(name)}).address`,
+      `GetUserByName(${JSON.stringify(name)}).Address`,
     );
     const address = extractGnoString(res);
     return address;

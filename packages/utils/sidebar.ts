@@ -12,6 +12,7 @@ import messagesSVG from "../../assets/icons/messages.svg";
 import multisigSVG from "../../assets/icons/multisig.svg";
 import osmosisCircleSVG from "../../assets/icons/networks/osmosis-circle.svg";
 import pathwarSVG from "../../assets/icons/pathwar.svg";
+import projectsProgramSVG from "../../assets/icons/projects-program.svg";
 import riotersGameSVG from "../../assets/icons/rioters-game.svg";
 import stakingSVG from "../../assets/icons/staking.svg";
 import tnsServiceSVG from "../../assets/icons/tns-service.svg";
@@ -122,6 +123,12 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     id: "Join The R!ot",
     route: "RiotGame",
     icon: riotersGameSVG,
+  },
+  projectsProgram: {
+    title: "Projects Program",
+    id: "Projects Program",
+    route: "Projects",
+    icon: projectsProgramSVG,
   },
   riotersFooter: {
     title: "Rioters Footer",
