@@ -79,7 +79,6 @@ export const allFeatureObjects = [
 export type NetworkFeatureObject =
   | CosmWasmPremiumFeed
   | CosmWasmSocialFeed
-  | CosmWasmNFTsBurner
-  | CosmWasmLaunchpad;
+  | CosmWasmLaunchpad
   | CosmWasmNFTsBurner
   | GnoProjectManager;

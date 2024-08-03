@@ -48,7 +48,6 @@ import { ProjectsMakeRequestScreen } from "@/screens/Projects/ProjectsMakeReques
 import { ProjectsManagerScreen } from "@/screens/Projects/ProjectsManagerScreen";
 import { ProjectsPaymentScreen } from "@/screens/Projects/ProjectsPaymentScreen";
 import { ProjectsScreen } from "@/screens/Projects/ProjectsScreen";
-import { ReadyLaunchpadApplicationsScreen } from "@/screens/ReadyLaunchpadApplications/ReadyLaunchpadApplicationsScreen";
 import { RiotGameBreedingScreen } from "@/screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "@/screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "@/screens/RiotGame/RiotGameFightScreen";
