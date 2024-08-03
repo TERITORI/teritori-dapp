@@ -35,32 +35,42 @@ export const LaunchpadDetails: FC = () => {
 
         <TextInputLaunchpad<CollectionFormValues>
           label="Website Link"
+          sublabel={
+            <View>
+              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+                Your project's website. It must display the project's discord
+                and twitter, the roadmap/whitepaper and team's information.
+                Please, be fully transparent to facilitate your project's review
+                !
+              </BrandText>
+            </View>
+          }
           placeHolder="https://website..."
           name="websiteLink"
           form={collectionForm}
           required={false}
         />
 
-        <TextInputLaunchpad<CollectionFormValues>
-          label="Twitter Profile "
-          placeHolder="https://twitter..."
-          name="twitterProfileUrl"
-          form={collectionForm}
-        />
+        {/*<TextInputLaunchpad<CollectionFormValues>*/}
+        {/*  label="Twitter Profile "*/}
+        {/*  placeHolder="https://twitter..."*/}
+        {/*  name="twitterProfileUrl"*/}
+        {/*  form={collectionForm}*/}
+        {/*/>*/}
 
-        <TextInputLaunchpad<CollectionFormValues>
-          label="How many Twitter followers does your project have? "
-          placeHolder="10,000"
-          name="nbTwitterFollowers"
-          form={collectionForm}
-        />
+        {/*<TextInputLaunchpad<CollectionFormValues>*/}
+        {/*  label="How many Twitter followers does your project have? "*/}
+        {/*  placeHolder="10,000"*/}
+        {/*  name="nbTwitterFollowers"*/}
+        {/*  form={collectionForm}*/}
+        {/*/>*/}
 
-        <TextInputLaunchpad<CollectionFormValues>
-          label="Discord name of your main contact: "
-          placeHolder="nickname#0000"
-          name="discordName"
-          form={collectionForm}
-        />
+        {/*<TextInputLaunchpad<CollectionFormValues>*/}
+        {/*  label="Discord name of your main contact: "*/}
+        {/*  placeHolder="nickname#0000"*/}
+        {/*  name="discordName"*/}
+        {/*  form={collectionForm}*/}
+        {/*/>*/}
 
         <TextInputLaunchpad<CollectionFormValues>
           label="Main contact email address: "

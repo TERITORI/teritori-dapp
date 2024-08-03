@@ -333,15 +333,15 @@ pub struct Collection {
     pub symbol: String, // Unique
     pub cover_img_uri: String,
     pub target_network: String,
-    pub external_link: Option<String>,
+    // pub external_link: Option<String>,
 
     // Collection details ----------------------------
     pub website_link: Option<String>,
 
-    pub twitter_profile: String,
-    pub twitter_followers_count: u64,
+    // pub twitter_profile: String,
+    // pub twitter_followers_count: u64,
 
-    pub contact_discord_name: String,
+    // pub contact_discord_name: String,
     pub contact_email: String,
 
     pub is_project_derivative: bool,
@@ -353,15 +353,15 @@ pub struct Collection {
 
     // Team info --------------------------------------
     pub team_desc: String,
-    pub team_link: String,
+    // pub team_link: String,
 
     pub partners: String,
 
     pub investment_desc: String,
     pub investment_link: String,
 
-    pub whitepaper_link: String,
-    pub roadmap_link: String,
+    // pub whitepaper_link: String,
+    // pub roadmap_link: String,
 
     // Additional info ----------------------------
     pub artwork_desc: String,

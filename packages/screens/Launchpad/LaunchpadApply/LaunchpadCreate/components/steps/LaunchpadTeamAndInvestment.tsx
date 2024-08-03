@@ -53,20 +53,20 @@ export const LaunchpadTeamAndInvestment: FC = () => {
           form={collectionForm}
         />
 
-        <TextInputLaunchpad<CollectionFormValues>
-          label="Team links and attachments "
-          sublabel={
-            <View>
-              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-                Please provide any relevant links regarding your team. You can
-                also post a google drive link.
-              </BrandText>
-            </View>
-          }
-          placeHolder="Type here..."
-          name="teamLink"
-          form={collectionForm}
-        />
+        {/*<TextInputLaunchpad<CollectionFormValues>*/}
+        {/*  label="Team links and attachments "*/}
+        {/*  sublabel={*/}
+        {/*    <View>*/}
+        {/*      <BrandText style={[fontSemibold13, { color: neutral55 }]}>*/}
+        {/*        Please provide any relevant links regarding your team. You can*/}
+        {/*        also post a google drive link.*/}
+        {/*      </BrandText>*/}
+        {/*    </View>*/}
+        {/*  }*/}
+        {/*  placeHolder="Type here..."*/}
+        {/*  name="teamLink"*/}
+        {/*  form={collectionForm}*/}
+        {/*/>*/}
 
         <TextInputLaunchpad<CollectionFormValues>
           label="Do you have any partners on the project? "
@@ -120,20 +120,20 @@ export const LaunchpadTeamAndInvestment: FC = () => {
           form={collectionForm}
         />
 
-        <TextInputLaunchpad<CollectionFormValues>
-          label="Whitepaper and roadmap: "
-          sublabel={
-            <View>
-              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-                Please provide any relevant link regarding your white paper and
-                roadmap. You can also post a google drive link.
-              </BrandText>
-            </View>
-          }
-          placeHolder="Type here..."
-          name="roadmapLink"
-          form={collectionForm}
-        />
+        {/*<TextInputLaunchpad<CollectionFormValues>*/}
+        {/*  label="Whitepaper and roadmap: "*/}
+        {/*  sublabel={*/}
+        {/*    <View>*/}
+        {/*      <BrandText style={[fontSemibold13, { color: neutral55 }]}>*/}
+        {/*        Please provide any relevant link regarding your white paper and*/}
+        {/*        roadmap. You can also post a google drive link.*/}
+        {/*      </BrandText>*/}
+        {/*    </View>*/}
+        {/*  }*/}
+        {/*  placeHolder="Type here..."*/}
+        {/*  name="roadmapLink"*/}
+        {/*  form={collectionForm}*/}
+        {/*/>*/}
       </View>
     </View>
   );

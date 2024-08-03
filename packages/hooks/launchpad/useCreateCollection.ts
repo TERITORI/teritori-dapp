@@ -121,13 +121,13 @@ export const useCreateCollection = () => {
           name: collectionFormValues.name || "",
           desc: collectionFormValues.description || "",
           symbol: collectionFormValues.symbol || "",
-          external_link: collectionFormValues.externalLink || "",
+          // external_link: collectionFormValues.externalLink || "",
           website_link: collectionFormValues.websiteLink || "",
-          twitter_profile: collectionFormValues.twitterProfileUrl || "",
-          twitter_followers_count: collectionFormValues.nbTwitterFollowers
-            ? parseInt(collectionFormValues.nbTwitterFollowers, 10)
-            : 0,
-          contact_discord_name: collectionFormValues.discordName || "",
+          // twitter_profile: collectionFormValues.twitterProfileUrl || "",
+          // twitter_followers_count: collectionFormValues.nbTwitterFollowers
+          //   ? parseInt(collectionFormValues.nbTwitterFollowers, 10)
+          //   : 0,
+          // contact_discord_name: collectionFormValues.discordName || "",
           contact_email: collectionFormValues.email || "",
           project_type: collectionFormValues.projectTypes?.join() || "",
           project_desc: collectionFormValues.projectDescription || "",
@@ -136,11 +136,11 @@ export const useCreateCollection = () => {
             : 0,
           reveal_time: collectionFormValues.revealTime,
           team_desc: collectionFormValues.teamDescription || "",
-          team_link: collectionFormValues.teamLink || "",
+          // team_link: collectionFormValues.teamLink || "",
           partners: collectionFormValues.partnersDescription || "",
           investment_desc: collectionFormValues.investDescription || "",
           investment_link: collectionFormValues.investLink || "",
-          roadmap_link: collectionFormValues.roadmapLink || "",
+          // roadmap_link: collectionFormValues.roadmapLink || "",
           artwork_desc: collectionFormValues.artworkDescription || "",
           expected_supply: collectionFormValues.expectedSupply
             ? parseInt(collectionFormValues.expectedSupply, 10)

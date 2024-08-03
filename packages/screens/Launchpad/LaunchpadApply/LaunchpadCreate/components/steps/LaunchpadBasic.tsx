@@ -97,13 +97,13 @@ export const LaunchpadBasic: FC = () => {
         />
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpad<CollectionFormValues>
-          label="External Link"
-          placeHolder="https://collection..."
-          name="externalLink"
-          form={collectionForm}
-          required={false}
-        />
+        {/*<TextInputLaunchpad<CollectionFormValues>*/}
+        {/*  label="External Link"*/}
+        {/*  placeHolder="https://collection..."*/}
+        {/*  name="externalLink"*/}
+        {/*  form={collectionForm}*/}
+        {/*  required={false}*/}
+        {/*/>*/}
 
         <NetworkSelectorWithLabel
           forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}

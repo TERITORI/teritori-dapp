@@ -89,14 +89,14 @@ export const ZodCollectionFormValues = z.object({
       (value) => LETTERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyLetters,
     ),
-  externalLink: z
-    .string()
-    .trim()
-    .refine(
-      (value) => !value || URL_REGEX.test(value),
-      DEFAULT_FORM_ERRORS.onlyUrl,
-    )
-    .optional(),
+  // externalLink: z
+  //   .string()
+  //   .trim()
+  //   .refine(
+  //     (value) => !value || URL_REGEX.test(value),
+  //     DEFAULT_FORM_ERRORS.onlyUrl,
+  //   )
+  //   .optional(),
   websiteLink: z
     .string()
     .trim()
@@ -105,20 +105,20 @@ export const ZodCollectionFormValues = z.object({
       DEFAULT_FORM_ERRORS.onlyUrl,
     )
     .optional(),
-  twitterProfileUrl: z
-    .string()
-    .trim()
-    .min(1, DEFAULT_FORM_ERRORS.required)
-    .refine((value) => URL_REGEX.test(value), DEFAULT_FORM_ERRORS.onlyUrl),
-  nbTwitterFollowers: z
-    .string()
-    .trim()
-    .min(1, DEFAULT_FORM_ERRORS.required)
-    .refine(
-      (value) => NUMBERS_REGEXP.test(value),
-      DEFAULT_FORM_ERRORS.onlyNumbers,
-    ),
-  discordName: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
+  // twitterProfileUrl: z
+  //   .string()
+  //   .trim()
+  //   .min(1, DEFAULT_FORM_ERRORS.required)
+  //   .refine((value) => URL_REGEX.test(value), DEFAULT_FORM_ERRORS.onlyUrl),
+  // nbTwitterFollowers: z
+  //   .string()
+  //   .trim()
+  //   .min(1, DEFAULT_FORM_ERRORS.required)
+  //   .refine(
+  //     (value) => NUMBERS_REGEXP.test(value),
+  //     DEFAULT_FORM_ERRORS.onlyNumbers,
+  //   ),
+  // discordName: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   email: z
     .string()
     .trim()
@@ -136,11 +136,11 @@ export const ZodCollectionFormValues = z.object({
     ),
   revealTime: z.number().min(1, DEFAULT_FORM_ERRORS.required),
   teamDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
-  teamLink: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
+  // teamLink: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   partnersDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   investDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   investLink: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
-  roadmapLink: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
+  // roadmapLink: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   artworkDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   expectedSupply: z
     .string()
@@ -231,7 +231,7 @@ const ZodMintPeriodDataResult = z.object({
 export const ZodCollectionDataResult = z.object({
   artwork_desc: z.string(),
   base_token_uri: z.string().optional(),
-  contact_discord_name: z.string(),
+  // contact_discord_name: z.string(),
   contact_email: z.string(),
   cover_img_uri: z.string(),
   dao_whitelist_count: z.number(),
@@ -241,7 +241,7 @@ export const ZodCollectionDataResult = z.object({
   expected_mint_date: z.number(),
   expected_public_mint_price: z.number(),
   expected_supply: z.number(),
-  external_link: z.string().optional(),
+  // external_link: z.string().optional(),
   investment_desc: z.string(),
   investment_link: z.string(),
   is_applied_previously: z.boolean(),
@@ -255,18 +255,18 @@ export const ZodCollectionDataResult = z.object({
   project_desc: z.string(),
   project_type: z.string(),
   reveal_time: z.number().optional(),
-  roadmap_link: z.string(),
+  // roadmap_link: z.string(),
   royalty_address: z.string().optional(),
   royalty_percentage: z.number().optional(),
   symbol: z.string(),
   target_network: z.string(),
   team_desc: z.string(),
-  team_link: z.string(),
+  // team_link: z.string(),
   tokens_count: z.number(),
-  twitter_followers_count: z.number(),
-  twitter_profile: z.string(),
+  // twitter_followers_count: z.number(),
+  // twitter_profile: z.string(),
   website_link: z.string().optional(),
-  whitepaper_link: z.string(),
+  // whitepaper_link: z.string(),
 });
 
 export type CollectionDataResult = z.infer<typeof ZodCollectionDataResult>;
