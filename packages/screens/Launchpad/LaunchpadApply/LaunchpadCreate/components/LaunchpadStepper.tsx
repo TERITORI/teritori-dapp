@@ -77,18 +77,18 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
       stepKey === 1 &&
       (!!collectionForm.getFieldState("name").error ||
         !!collectionForm.getFieldState("description").error ||
-        !!collectionForm.getFieldState("symbol").error ||
-        !!collectionForm.getFieldState("coverImage").error ||
-        !!collectionForm.getFieldState("externalLink").error)
+        !!collectionForm.getFieldState("symbol").error)
+      // !!collectionForm.getFieldState("coverImage").error ||
+      // !!collectionForm.getFieldState("externalLink").error
     ) {
       return true;
     }
     if (
       stepKey === 2 &&
       (!!collectionForm.getFieldState("websiteLink").error ||
-        !!collectionForm.getFieldState("twitterProfileUrl").error ||
-        !!collectionForm.getFieldState("nbTwitterFollowers").error ||
-        !!collectionForm.getFieldState("discordName").error ||
+        // !!collectionForm.getFieldState("twitterProfileUrl").error ||
+        // !!collectionForm.getFieldState("nbTwitterFollowers").error ||
+        // !!collectionForm.getFieldState("discordName").error ||
         !!collectionForm.getFieldState("isDerivativeProject").error ||
         !!collectionForm.getFieldState("projectTypes").error ||
         !!collectionForm.getFieldState("projectDescription").error ||
@@ -100,11 +100,11 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
     if (
       stepKey === 3 &&
       (!!collectionForm.getFieldState("teamDescription").error ||
-        !!collectionForm.getFieldState("teamLink").error ||
+        // !!collectionForm.getFieldState("teamLink").error ||
         !!collectionForm.getFieldState("partnersDescription").error ||
         !!collectionForm.getFieldState("investDescription").error ||
-        !!collectionForm.getFieldState("investLink").error ||
-        !!collectionForm.getFieldState("roadmapLink").error)
+        !!collectionForm.getFieldState("investLink").error)
+      // !!collectionForm.getFieldState("roadmapLink").error
     ) {
       return true;
     }
