@@ -7,6 +7,7 @@ import (
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/dao"
+	"github.com/TERITORI/teritori-dapp/go/pkg/daopb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/pkg/errors"
@@ -324,11 +325,13 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		NetStore:  &s.conf.NetworkStore,
 	})
 
-	isUserAdmin, err := daoService.IsUserAdmin(userAddress)
+	isUserAdminResponse, err := daoService.IsUserAdmin(context.Background(), &daopb.IsUserAdminRequest{
+		UserAddress: userAddress,
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to verify user's authentication")
 	}
-	if !isUserAdmin {
+	if !isUserAdminResponse.IsUserAdmin {
 		return nil, errors.New("Unauthorized")
 	}
 
@@ -412,11 +415,19 @@ func (s *Launchpad) LaunchpadProjectById(ctx context.Context, req *launchpadpb.L
 		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
 	}
 
-	isUserAdmin, err := s.IsUserAdmin(userAddress)
+	daoService := dao.NewDAOService(context.Background(), &dao.Config{
+		Logger:    s.conf.Logger,
+		IndexerDB: s.conf.IndexerDB,
+		NetStore:  &s.conf.NetworkStore,
+	})
+
+	isUserAdminResponse, err := daoService.IsUserAdmin(context.Background(), &daopb.IsUserAdminRequest{
+		UserAddress: userAddress,
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to verify user's authentication")
 	}
-	if !isUserAdmin {
+	if !isUserAdminResponse.IsUserAdmin {
 		return nil, errors.New("Unauthorized")
 	}
 
@@ -470,11 +481,19 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
 	}
 
-	isUserAdmin, err := s.IsUserAdmin(userAddress)
+	daoService := dao.NewDAOService(context.Background(), &dao.Config{
+		Logger:    s.conf.Logger,
+		IndexerDB: s.conf.IndexerDB,
+		NetStore:  &s.conf.NetworkStore,
+	})
+
+	isUserAdminResponse, err := daoService.IsUserAdmin(context.Background(), &daopb.IsUserAdminRequest{
+		UserAddress: userAddress,
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to verify user's authentication")
 	}
-	if !isUserAdmin {
+	if !isUserAdminResponse.IsUserAdmin {
 		return nil, errors.New("Unauthorized")
 	}
 
@@ -510,4 +529,3 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 // 	}
 // 	return isUserAuthorized, nil
 // }
-
