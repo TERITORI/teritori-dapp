@@ -4,6 +4,7 @@ option go_package = "./daopb";
 
 service DAOService {
     rpc DAOs(DAOsRequest) returns (DAOsResponse);
+    rpc IsUserAdmin(IsUserAdminRequest) returns (IsUserAdminResponse);
 }
 
 message DAOsRequest {
@@ -13,6 +14,14 @@ message DAOsRequest {
 
 message DAOsResponse {
     repeated DAO daos = 1;
+}
+
+message IsUserAdminRequest {
+  string userAddress = 1;
+}
+
+message IsUserAdminResponse {
+  bool isUserAdmin = 1;
 }
 
 message DAO {
@@ -28,3 +37,4 @@ message DAO {
     string token_symbol = 10;
     uint64 unstaking_duration = 11;
 }
+

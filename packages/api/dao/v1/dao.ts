@@ -15,6 +15,14 @@ export interface DAOsResponse {
   daos: DAO[];
 }
 
+export interface IsUserAdminRequest {
+  userAddress: string;
+}
+
+export interface IsUserAdminResponse {
+  isUserAdmin: boolean;
+}
+
 export interface DAO {
   id: string;
   admin: string;
@@ -156,6 +164,120 @@ export const DAOsResponse = {
   fromPartial<I extends Exact<DeepPartial<DAOsResponse>, I>>(object: I): DAOsResponse {
     const message = createBaseDAOsResponse();
     message.daos = object.daos?.map((e) => DAO.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseIsUserAdminRequest(): IsUserAdminRequest {
+  return { userAddress: "" };
+}
+
+export const IsUserAdminRequest = {
+  encode(message: IsUserAdminRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userAddress !== "") {
+      writer.uint32(10).string(message.userAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IsUserAdminRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIsUserAdminRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userAddress = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsUserAdminRequest {
+    return { userAddress: isSet(object.userAddress) ? globalThis.String(object.userAddress) : "" };
+  },
+
+  toJSON(message: IsUserAdminRequest): unknown {
+    const obj: any = {};
+    if (message.userAddress !== "") {
+      obj.userAddress = message.userAddress;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<IsUserAdminRequest>, I>>(base?: I): IsUserAdminRequest {
+    return IsUserAdminRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<IsUserAdminRequest>, I>>(object: I): IsUserAdminRequest {
+    const message = createBaseIsUserAdminRequest();
+    message.userAddress = object.userAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseIsUserAdminResponse(): IsUserAdminResponse {
+  return { isUserAdmin: false };
+}
+
+export const IsUserAdminResponse = {
+  encode(message: IsUserAdminResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.isUserAdmin === true) {
+      writer.uint32(8).bool(message.isUserAdmin);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IsUserAdminResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIsUserAdminResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.isUserAdmin = reader.bool();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsUserAdminResponse {
+    return { isUserAdmin: isSet(object.isUserAdmin) ? globalThis.Boolean(object.isUserAdmin) : false };
+  },
+
+  toJSON(message: IsUserAdminResponse): unknown {
+    const obj: any = {};
+    if (message.isUserAdmin === true) {
+      obj.isUserAdmin = message.isUserAdmin;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<IsUserAdminResponse>, I>>(base?: I): IsUserAdminResponse {
+    return IsUserAdminResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<IsUserAdminResponse>, I>>(object: I): IsUserAdminResponse {
+    const message = createBaseIsUserAdminResponse();
+    message.isUserAdmin = object.isUserAdmin ?? false;
     return message;
   },
 };
@@ -383,6 +505,7 @@ export const DAO = {
 
 export interface DAOService {
   DAOs(request: DeepPartial<DAOsRequest>, metadata?: grpc.Metadata): Promise<DAOsResponse>;
+  IsUserAdmin(request: DeepPartial<IsUserAdminRequest>, metadata?: grpc.Metadata): Promise<IsUserAdminResponse>;
 }
 
 export class DAOServiceClientImpl implements DAOService {
@@ -391,10 +514,15 @@ export class DAOServiceClientImpl implements DAOService {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.DAOs = this.DAOs.bind(this);
+    this.IsUserAdmin = this.IsUserAdmin.bind(this);
   }
 
   DAOs(request: DeepPartial<DAOsRequest>, metadata?: grpc.Metadata): Promise<DAOsResponse> {
     return this.rpc.unary(DAOServiceDAOsDesc, DAOsRequest.fromPartial(request), metadata);
+  }
+
+  IsUserAdmin(request: DeepPartial<IsUserAdminRequest>, metadata?: grpc.Metadata): Promise<IsUserAdminResponse> {
+    return this.rpc.unary(DAOServiceIsUserAdminDesc, IsUserAdminRequest.fromPartial(request), metadata);
   }
 }
 
@@ -413,6 +541,29 @@ export const DAOServiceDAOsDesc: UnaryMethodDefinitionish = {
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = DAOsResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const DAOServiceIsUserAdminDesc: UnaryMethodDefinitionish = {
+  methodName: "IsUserAdmin",
+  service: DAOServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return IsUserAdminRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = IsUserAdminResponse.decode(data);
       return {
         ...value,
         toObject() {

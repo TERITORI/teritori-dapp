@@ -74,3 +74,26 @@ func (s *DAOService) DAOs(ctx context.Context, req *daopb.DAOsRequest) (*daopb.D
 		Daos: pbdaos,
 	}, nil
 }
+
+func (s *DAOService) IsUserAdmin(userAddress string) (bool, error) {
+	//  TODO: user authentication (Member of the admin DAO)
+	// Control if sender is member of the admin DAO
+	daoAdminAddress := "tori129kpfu7krgumuc38hfyxwfluq7eu06rhr3awcztr3a9cgjjcx5hswlqj8v"
+	var isUserAuthorized bool
+	err := s.conf.IndexerDB.Raw(`SELECT EXISTS (
+		SELECT 1
+		FROM dao_members dm
+		JOIN daos d ON dm.dao_contract_address = d.contract_address
+		WHERE d.contract_address = ?
+		AND dm.member_address = ?
+	) AS dao_exists;
+	`,
+		daoAdminAddress,
+		userAddress,
+	).Scan(&isUserAuthorized).Error
+	if err != nil {
+		return false, errors.Wrap(err, "failed to query database")
+	}
+	return isUserAuthorized, nil
+}
+

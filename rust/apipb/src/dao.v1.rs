@@ -15,6 +15,18 @@ pub struct DaOsResponse {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct IsUserAdminRequest {
+    #[prost(string, tag="1")]
+    pub user_address: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct IsUserAdminResponse {
+    #[prost(bool, tag="1")]
+    pub is_user_admin: bool,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Dao {
     #[prost(string, tag="1")]
     pub id: ::prost::alloc::string::String,
