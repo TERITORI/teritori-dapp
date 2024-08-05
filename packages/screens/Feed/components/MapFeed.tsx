@@ -35,24 +35,6 @@ export const MapFeed = () => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const { width, height } = useMaxResolution();
   const isMobile = useIsMobile();
-
-  const mapFeedRequest: Partial<PostsRequest> = {
-    filter: {
-      categories: [],
-      user: "",
-      mentions: [],
-      hashtags: [],
-      premiumLevelMin: 0,
-      premiumLevelMax: -1,
-      hasLocation: true
-    },
-    limit: 300,
-    offset: 0,
-  };
-
-  // ======= Getting MusicAudio posts as single tracks
-  const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
-    useFetchFeed(mapFeedRequest);
     
   return (
     <ScrollView style={{ height }}>
@@ -66,7 +48,6 @@ export const MapFeed = () => {
             width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
             maxWidth: screenContentMaxWidth,
           }}
-          data={data || {}}
         />
       </Suspense>
     </ScrollView>

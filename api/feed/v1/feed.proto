@@ -5,7 +5,7 @@ option go_package = "./feedpb";
 
 service FeedService {
   rpc Posts(PostsRequest) returns (PostsResponse);
-  rpc PostsWithLocation(PostsRequest) returns (PostsResponse);
+  rpc PostsWithLocation(PostLocationFilter) returns (PostsResponse);
   rpc IPFSKey(IPFSKeyRequest) returns (IPFSKeyResponse);
 }
 
@@ -48,6 +48,15 @@ message PostFilter {
   int32 premium_level_min = 5; // inclusive
   int32 premium_level_max = 6; // inclusive, -1 means infinity
   bool hasLocation = 7;
+}
+
+message PostLocationFilter {
+  float north = 1;
+  float south = 2;
+  float west = 3;
+  float est = 4;
+  repeated string hashtags = 5;
+  uint32 limit = 6;
 }
 
 message PostsRequest {

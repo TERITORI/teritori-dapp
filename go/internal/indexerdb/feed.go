@@ -16,6 +16,8 @@ type Post struct {
 	PremiumLevel         uint32          `gorm:"index"`
 	Lat                  float64         `gorm:"type:double precision"`
 	Lng                  float64         `gorm:"type:double precision"`
+	LatInt               int             `gorm:"index"`
+	LngInt               int             `gorm:"index"`
 	CreatedAt            int64
 	IsDeleted            bool
 	IsFree               bool

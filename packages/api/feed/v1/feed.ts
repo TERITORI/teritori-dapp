@@ -55,6 +55,15 @@ export interface PostFilter {
   hasLocation: boolean;
 }
 
+export interface PostLocationFilter {
+  north: number;
+  south: number;
+  west: number;
+  est: number;
+  hashtags: string[];
+  limit: number;
+}
+
 export interface PostsRequest {
   filter: PostFilter | undefined;
   limit: number;
@@ -739,6 +748,140 @@ export const PostFilter = {
   },
 };
 
+function createBasePostLocationFilter(): PostLocationFilter {
+  return { north: 0, south: 0, west: 0, est: 0, hashtags: [], limit: 0 };
+}
+
+export const PostLocationFilter = {
+  encode(message: PostLocationFilter, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.north !== 0) {
+      writer.uint32(13).float(message.north);
+    }
+    if (message.south !== 0) {
+      writer.uint32(21).float(message.south);
+    }
+    if (message.west !== 0) {
+      writer.uint32(29).float(message.west);
+    }
+    if (message.est !== 0) {
+      writer.uint32(37).float(message.est);
+    }
+    for (const v of message.hashtags) {
+      writer.uint32(42).string(v!);
+    }
+    if (message.limit !== 0) {
+      writer.uint32(48).uint32(message.limit);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PostLocationFilter {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePostLocationFilter();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 13) {
+            break;
+          }
+
+          message.north = reader.float();
+          continue;
+        case 2:
+          if (tag !== 21) {
+            break;
+          }
+
+          message.south = reader.float();
+          continue;
+        case 3:
+          if (tag !== 29) {
+            break;
+          }
+
+          message.west = reader.float();
+          continue;
+        case 4:
+          if (tag !== 37) {
+            break;
+          }
+
+          message.est = reader.float();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.hashtags.push(reader.string());
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.limit = reader.uint32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PostLocationFilter {
+    return {
+      north: isSet(object.north) ? globalThis.Number(object.north) : 0,
+      south: isSet(object.south) ? globalThis.Number(object.south) : 0,
+      west: isSet(object.west) ? globalThis.Number(object.west) : 0,
+      est: isSet(object.est) ? globalThis.Number(object.est) : 0,
+      hashtags: globalThis.Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => globalThis.String(e)) : [],
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+    };
+  },
+
+  toJSON(message: PostLocationFilter): unknown {
+    const obj: any = {};
+    if (message.north !== 0) {
+      obj.north = message.north;
+    }
+    if (message.south !== 0) {
+      obj.south = message.south;
+    }
+    if (message.west !== 0) {
+      obj.west = message.west;
+    }
+    if (message.est !== 0) {
+      obj.est = message.est;
+    }
+    if (message.hashtags?.length) {
+      obj.hashtags = message.hashtags;
+    }
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PostLocationFilter>, I>>(base?: I): PostLocationFilter {
+    return PostLocationFilter.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<PostLocationFilter>, I>>(object: I): PostLocationFilter {
+    const message = createBasePostLocationFilter();
+    message.north = object.north ?? 0;
+    message.south = object.south ?? 0;
+    message.west = object.west ?? 0;
+    message.est = object.est ?? 0;
+    message.hashtags = object.hashtags?.map((e) => e) || [];
+    message.limit = object.limit ?? 0;
+    return message;
+  },
+};
+
 function createBasePostsRequest(): PostsRequest {
   return { filter: undefined, limit: 0, offset: 0, queryUserId: "" };
 }
@@ -904,6 +1047,7 @@ export const PostsResponse = {
 
 export interface FeedService {
   Posts(request: DeepPartial<PostsRequest>, metadata?: grpc.Metadata): Promise<PostsResponse>;
+  PostsWithLocation(request: DeepPartial<PostLocationFilter>, metadata?: grpc.Metadata): Promise<PostsResponse>;
   IPFSKey(request: DeepPartial<IPFSKeyRequest>, metadata?: grpc.Metadata): Promise<IPFSKeyResponse>;
 }
 
@@ -913,11 +1057,16 @@ export class FeedServiceClientImpl implements FeedService {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Posts = this.Posts.bind(this);
+    this.PostsWithLocation = this.PostsWithLocation.bind(this);
     this.IPFSKey = this.IPFSKey.bind(this);
   }
 
   Posts(request: DeepPartial<PostsRequest>, metadata?: grpc.Metadata): Promise<PostsResponse> {
     return this.rpc.unary(FeedServicePostsDesc, PostsRequest.fromPartial(request), metadata);
+  }
+
+  PostsWithLocation(request: DeepPartial<PostLocationFilter>, metadata?: grpc.Metadata): Promise<PostsResponse> {
+    return this.rpc.unary(FeedServicePostsWithLocationDesc, PostLocationFilter.fromPartial(request), metadata);
   }
 
   IPFSKey(request: DeepPartial<IPFSKeyRequest>, metadata?: grpc.Metadata): Promise<IPFSKeyResponse> {
@@ -935,6 +1084,29 @@ export const FeedServicePostsDesc: UnaryMethodDefinitionish = {
   requestType: {
     serializeBinary() {
       return PostsRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = PostsResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const FeedServicePostsWithLocationDesc: UnaryMethodDefinitionish = {
+  methodName: "PostsWithLocation",
+  service: FeedServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return PostLocationFilter.encode(this).finish();
     },
   } as any,
   responseType: {

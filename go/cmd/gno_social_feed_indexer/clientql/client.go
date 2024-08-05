@@ -94,6 +94,8 @@ func (client *IndexerQL) getPostWithData(data *indexerql.GetPostTransactionsTran
 	if len(metadata.Location) == 2 {
 		post.Lat = metadata.Location[0]
 		post.Lng = metadata.Location[1]
+		post.LatInt = int(metadata.Location[0])
+		post.LngInt = int(metadata.Location[1])
 	}
 
 	return post, nil
