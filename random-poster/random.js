@@ -26,8 +26,8 @@ function randomMetadata() {
     hashtags: [],
     mentions: [],
     location: [
-      faker.number.float({ min: 40, max: 50, precision: 0.0001 }),
-      faker.number.float({ min: -5, max: 5, precision: 0.0001 }),
+      faker.number.float({ min: -90, max: 90, precision: 0.0001 }),
+      faker.number.float({ min: -180, max: 180, precision: 0.0001 }),
     ],
     title: "",
     createdAt: moment(
@@ -39,7 +39,7 @@ async function main() {
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   // Generate the random data structure
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 300; i++) {
     let metadataPased = JSON.stringify(
       JSON.stringify(randomMetadata()).replace(/"/g, '\\"'),
     );

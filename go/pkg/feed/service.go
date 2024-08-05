@@ -175,7 +175,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	if err := query.Find(&dbPostWithExtras).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to query posts")
 	}
-	fmt.Printf("Found %d posts", len(dbPostWithExtras))
+
 	posts := make([]*feedpb.Post, len(dbPostWithExtras))
 	for idx, dbPost := range dbPostWithExtras {
 		var reactions []*feedpb.Reaction
@@ -227,4 +227,96 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	}
 
 	return &feedpb.PostsResponse{Posts: posts}, nil
+}
+
+func (s *FeedService) PostsWithLocation(ctx context.Context, data *feedpb.PostLocationFilter) (*feedpb.PostsResponse, error) {
+	locationFilter := locationFilter(data)
+	posts, err := s.getPostsWithLocationFilter(locationFilter)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get posts with location filter")
+	}
+	res := &feedpb.PostsResponse{
+		Posts: make([]*feedpb.Post, 0, len(posts)),
+	}
+
+	for _, post := range posts {
+		if len(res.Posts) >= int(data.Limit) {
+			break
+		}
+
+		if post.Lat > float64(data.North) || post.Lat < float64(data.South) || post.Lng > float64(data.Est) || post.Lng < float64(data.West) {
+			continue
+		}
+
+		n, err := s.conf.Networks.GetNetwork(post.NetworkID)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get post network")
+		}
+
+		res.Posts = append(res.Posts, &feedpb.Post{
+			Id:                   string(n.GetBase().PostID(post.Identifier)),
+			Category:             post.Category,
+			IsDeleted:            post.IsDeleted,
+			Identifier:           post.Identifier,
+			LocalIdentifier:      post.Identifier,
+			NetworkId:            post.NetworkID,
+			Metadata:             string(post.Metadata),
+			ParentPostIdentifier: post.ParentPostIdentifier,
+			AuthorId:             string(post.AuthorId),
+			CreatedAt:            post.CreatedAt,
+			Reactions:            nil,
+			TipAmount:            post.TipAmount,
+			PremiumLevel:         post.PremiumLevel,
+			Location:             []float32{float32(post.Lat), float32(post.Lng)},
+		})
+
+	}
+
+	return res, nil
+}
+func (s *FeedService) getPostsWithLocationFilter(locationFilter *locationQueryData) ([]indexerdb.Post, error) {
+	posts := make([]indexerdb.Post, 0)
+	cachekey := locationFilter.cacheKey()
+	fmt.Println(cachekey)
+	data, ok := s.cache.Get(cachekey)
+	if ok {
+		return data.([]indexerdb.Post), nil
+	}
+	err := s.conf.IndexerDB.Model(&indexerdb.Post{}).Where("lat_int < ? AND lat_int > ? AND lng_int < ? AND lng_int > ?", locationFilter.N, locationFilter.S, locationFilter.E, locationFilter.W).Find(&posts).Error
+	if err != nil {
+		return nil, err
+	}
+
+	s.cache.SetWithTTL(cachekey, posts, 0, time.Minute*5)
+
+	return posts, nil
+}
+func (data *locationQueryData) cacheKey() string {
+	return fmt.Sprintf("%d_%d_%d_%d", data.N, data.S, data.W, data.E)
+}
+
+func locationFilter(data *feedpb.PostLocationFilter) *locationQueryData {
+
+	return &locationQueryData{
+		N: getNextTenth(int(data.North)),
+		S: getLowerTenth(int(data.South)),
+		W: getLowerTenth(int(data.West)),
+		E: getNextTenth(int(data.Est)),
+	}
+}
+
+type locationQueryData struct {
+	N int
+	S int
+	W int
+	E int
+}
+
+// getNextTenth return the nearest upper 10 divisible number ex= 43 -> 50 40 -> 40
+func getNextTenth(number int) int {
+	return (number + 10) / 10 * 10
+}
+
+func getLowerTenth(number int) int {
+	return (number - 10) / 10 * 10
 }
