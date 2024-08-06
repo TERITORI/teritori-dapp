@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import emptyCircleFrameSVG from "../../../assets/empty-circle-frame.svg";
 import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { getNetwork, parseUserId } from "../../networks";
+import { getNetwork, NetworkKind, parseUserId } from "../../networks";
 import { primaryColor } from "../../utils/style/colors";
 import { nameServiceDefaultImage } from "../../utils/tns";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { AnimationFadeIn } from "../animations/AnimationFadeIn";
+
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 type AvatarWithFrameSize = "XL" | "L" | "M" | "S" | "XS" | "XXS";
 
@@ -21,10 +23,14 @@ export const UserAvatarWithFrame: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ userId, size = "M", style }) => {
   const [network] = parseUserId(userId);
-  const {
-    metadata: { image },
-  } = useNSUserInfo(userId);
+  const { metadata } = useNSUserInfo(userId);
   const { isDAO } = useIsDAO(userId);
+  const { data: profile, isLoading } = useUserProfile(userId);
+
+  const image = useMemo(() => {
+    if (isLoading) return "";
+    return network?.kind === NetworkKind.Gno ? profile?.avatar : metadata.image;
+  }, [isLoading, network?.kind, profile?.avatar, metadata.image]);
 
   return (
     <AvatarWithFrame

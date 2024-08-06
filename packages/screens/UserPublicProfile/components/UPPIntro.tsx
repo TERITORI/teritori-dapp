@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Linking, Platform, useWindowDimensions, View } from "react-native";
 
 import { PremiumSubscriptionModal } from "./modals/PremiumSubscriptionModal";
@@ -26,10 +26,12 @@ import { usePremiumIsSubscribed } from "@/hooks/feed/usePremiumIsSubscribed";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import {
   accountExplorerLink,
   getNetworkFeature,
   NetworkFeature,
+  NetworkKind,
   parseUserId,
 } from "@/networks";
 import { DEFAULT_NAME } from "@/utils/social-feed";
@@ -51,6 +53,8 @@ export const UPPIntro: React.FC<{
 }> = ({ userId, isUserOwner, setIsEditProfileModal = (val) => {} }) => {
   const selectedWallet = useSelectedWallet();
   const { metadata } = useNSUserInfo(userId);
+  const { data: profile, isLoading: isLoadingProfile } = useUserProfile(userId);
+
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { margin: layout.spacing_x0_75 };
   const [network, userAddress] = parseUserId(userId);
@@ -71,6 +75,28 @@ export const UPPIntro: React.FC<{
     useState(false);
   const [premiumSubscriptionModalVisible, setPremiumSubscriptionModalVisible] =
     useState(false);
+
+  const { bio, displayName } = useMemo(() => {
+    if (isLoadingProfile) return {};
+
+    let bio = metadata.public_bio;
+    let displayName = metadata.public_name;
+
+    if (network?.kind === NetworkKind.Gno) {
+      bio = profile?.bio;
+      displayName = profile?.displayName;
+    }
+    return { bio, displayName };
+  }, [
+    network?.kind,
+    profile?.bio,
+    profile?.displayName,
+    metadata.public_bio,
+    metadata.public_name,
+    isLoadingProfile,
+  ]);
+
+  const username = metadata.tokenId;
 
   return (
     <>
@@ -262,6 +288,7 @@ export const UPPIntro: React.FC<{
           size="XL"
         />
       </LegacyTertiaryBox>
+
       <View
         style={{
           width: "100%",
@@ -275,15 +302,13 @@ export const UPPIntro: React.FC<{
       >
         <View>
           {/* Pseudo and bio */}
-          {metadata?.tokenId ? (
+          {username ? (
             <>
-              <BrandText style={[fontBold16]}>
-                {metadata?.public_name}
-              </BrandText>
+              <BrandText style={[fontBold16]}>{displayName}</BrandText>
               <BrandText
                 style={[fontMedium14, { color: neutral55, marginTop: 2 }]}
               >
-                @{metadata.tokenId}
+                @{username}
               </BrandText>
             </>
           ) : (
@@ -302,7 +327,7 @@ export const UPPIntro: React.FC<{
               { maxWidth: 735, marginTop: layout.spacing_x1 },
             ]}
           >
-            {metadata?.public_bio}
+            {bio}
           </BrandText>
         </View>
         {/* Stats and public address */}

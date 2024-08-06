@@ -11,6 +11,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
     NetworkFeature.SocialFeed,
     NetworkFeature.UPP,
     NetworkFeature.GnoProjectManager,
+    NetworkFeature.NameService,
   ],
   featureObjects: [
     {
@@ -39,6 +40,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   groupsPkgPath: "gno.land/r/teritori/groups",
   votingGroupPkgPath: "gno.land/p/teritori/dao_voting_group",
   daoProposalSinglePkgPath: "gno.land/p/teritori/dao_proposal_single",
+  profilePkgPath: "gno.land/r/demo/profile",
 
   daoInterfacesPkgPath: "gno.land/p/teritori/dao_interfaces",
   daoCorePkgPath: "gno.land/p/teritori/dao_core",
