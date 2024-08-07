@@ -262,7 +262,6 @@ export const UPPIntro: React.FC<{
           size="XL"
         />
       </LegacyTertiaryBox>
-
       <View
         style={{
           width: "100%",

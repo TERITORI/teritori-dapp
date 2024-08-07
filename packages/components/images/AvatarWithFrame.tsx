@@ -21,13 +21,15 @@ export const UserAvatarWithFrame: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ userId, size = "M", style }) => {
   const [network] = parseUserId(userId);
-  const { metadata } = useNSUserInfo(userId);
+  const {
+    metadata: { image },
+  } = useNSUserInfo(userId);
   const { isDAO } = useIsDAO(userId);
 
   return (
     <AvatarWithFrame
       networkId={network?.id}
-      image={metadata?.image}
+      image={image}
       isDAO={isDAO}
       size={size}
       style={style}
