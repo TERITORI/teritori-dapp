@@ -25,4 +25,5 @@ export const gnoTest4Network: GnoNetworkInfo = {
   socialFeedsPkgPath: "gno.land/r/teritori/social_feeds",
   socialFeedsDAOPkgPath: "gno.land/r/teritori/social_feeds_dao",
   daoInterfacesPkgPath: "gno.land/p/teritori/dao_interfaces",
+  profilePkgPath: "gno.land/r/teritori/profile",
 };

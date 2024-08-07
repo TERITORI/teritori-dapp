@@ -4690,7 +4690,8 @@
     "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
     "socialFeedsPkgPath": "gno.land/r/teritori/social_feeds",
     "socialFeedsDAOPkgPath": "gno.land/r/teritori/social_feeds_dao",
-    "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces"
+    "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
+    "profilePkgPath": "gno.land/r/teritori/profile"
   },
   {
     "id": "cosmos-registry:gravitybridge",
