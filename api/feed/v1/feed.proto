@@ -40,6 +40,12 @@ message Post {
   repeated float location = 15;
 }
 
+message AggregatedPost {
+  float lat = 1;
+  float long = 2;
+  int64 total_points = 3;
+}
+
 message PostFilter {
   string user = 1;
   repeated string mentions = 2;
@@ -55,7 +61,7 @@ message PostLocationFilter {
   float north = 1;
   float south = 2;
   float west = 3;
-  float est = 4;
+  float east = 4;
   repeated string hashtags = 5;
   uint32 limit = 6;
 }
@@ -70,4 +76,6 @@ message PostsRequest {
 
 message PostsResponse {
     repeated Post posts = 1;
+    repeated AggregatedPost aggregatedPosts = 2;
+    bool is_aggregated = 3;
 }

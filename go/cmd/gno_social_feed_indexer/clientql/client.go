@@ -62,7 +62,7 @@ func (client *IndexerQL) SyncPosts() error {
 
 func (client *IndexerQL) getLastPost() *indexerdb.Post {
 	post := &indexerdb.Post{}
-	client.db.Last(post)
+	client.db.Order("created_at desc").Find(post)
 
 	return post
 }

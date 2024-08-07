@@ -51,7 +51,7 @@ const getPostType = (metadata: JSON) => {
 };
 
 
-const FeedMapList: React.FC<FeedMapListProps> ({ style }) {
+const FeedMapList=({ style })=> {
   const [bounds, setBounds] = React.useState<L.LatLngBounds | null>(null);
   const [posts, setPosts] = React.useState<Post[] | null>(null);
   
@@ -70,7 +70,7 @@ const FeedMapList: React.FC<FeedMapListProps> ({ style }) {
       north: bounds?.getNorth(),
       south: bounds?.getSouth(),
       west: bounds?.getWest(),
-      est: bounds?.getEast(),
+      east: bounds?.getEast(),
       limit: 100,
     }).then(res => {
       console.log("res", res);

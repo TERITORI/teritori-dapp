@@ -231,6 +231,68 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 
 func (s *FeedService) PostsWithLocation(ctx context.Context, data *feedpb.PostLocationFilter) (*feedpb.PostsResponse, error) {
 	locationFilter := locationFilter(data)
+	totalPosts, err := s.getPostsCountWithLocationFilter(locationFilter)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get posts with location filter")
+	}
+
+	if totalPosts > 250 {
+		//Load heatmap
+		return s.loadHeatMap(data)
+	}
+
+	return s.loadDetailedPosts(data, locationFilter)
+}
+func (s *FeedService) getPostsWithLocationFilter(locationFilter *locationQueryData) ([]indexerdb.Post, error) {
+	posts := make([]indexerdb.Post, 0)
+	cachekey := locationFilter.cacheKey()
+	data, ok := s.cache.Get(cachekey)
+	if ok {
+		return data.([]indexerdb.Post), nil
+	}
+	err := s.conf.IndexerDB.Model(&indexerdb.Post{}).Where("lat_int < ? AND lat_int > ? AND lng_int < ? AND lng_int > ?", locationFilter.N, locationFilter.S, locationFilter.E, locationFilter.W).Find(&posts).Error
+	if err != nil {
+		return nil, err
+	}
+
+	s.cache.SetWithTTL(cachekey, posts, 0, time.Minute*5)
+
+	return posts, nil
+}
+
+func (s *FeedService) getPostsCountWithLocationFilter(locationFilter *locationQueryData) (int64, error) {
+	cachekey := locationFilter.countCacheKey()
+	data, ok := s.cache.Get(cachekey)
+	if ok {
+		return data.(int64), nil
+	}
+	var totalPost int64
+
+	err := s.conf.IndexerDB.Model(&indexerdb.Post{}).Where("lat_int < ? AND lat_int > ? AND lng_int < ? AND lng_int > ?", locationFilter.N, locationFilter.S, locationFilter.E, locationFilter.W).Count(&totalPost).Error
+	if err != nil {
+		return 0, err
+	}
+
+	s.cache.SetWithTTL(cachekey, totalPost, 0, time.Minute*5)
+
+	return totalPost, nil
+}
+
+func (s *FeedService) loadHeatMap(data *feedpb.PostLocationFilter) (*feedpb.PostsResponse, error) {
+	aggregatedPosts := []*feedpb.AggregatedPost{}
+	err := s.conf.IndexerDB.Raw("select * from map_cluster($1, $2 ,$3 ,$4 ,5)", data.North, data.South, data.East, data.West).Scan(&aggregatedPosts).Error
+	if err != nil {
+		fmt.Printf("error: %s\n", err.Error())
+		return nil, err
+	}
+
+	return &feedpb.PostsResponse{
+		AggregatedPosts: aggregatedPosts,
+		IsAggregated:    true,
+	}, nil
+}
+
+func (s *FeedService) loadDetailedPosts(data *feedpb.PostLocationFilter, locationFilter *locationQueryData) (*feedpb.PostsResponse, error) {
 	posts, err := s.getPostsWithLocationFilter(locationFilter)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get posts with location filter")
@@ -240,11 +302,7 @@ func (s *FeedService) PostsWithLocation(ctx context.Context, data *feedpb.PostLo
 	}
 
 	for _, post := range posts {
-		if len(res.Posts) >= int(data.Limit) {
-			break
-		}
-
-		if post.Lat > float64(data.North) || post.Lat < float64(data.South) || post.Lng > float64(data.Est) || post.Lng < float64(data.West) {
+		if post.Lat > float64(data.North) || post.Lat < float64(data.South) || post.Lng > float64(data.East) || post.Lng < float64(data.West) {
 			continue
 		}
 
@@ -269,39 +327,23 @@ func (s *FeedService) PostsWithLocation(ctx context.Context, data *feedpb.PostLo
 			PremiumLevel:         post.PremiumLevel,
 			Location:             []float32{float32(post.Lat), float32(post.Lng)},
 		})
-
 	}
 
 	return res, nil
 }
-func (s *FeedService) getPostsWithLocationFilter(locationFilter *locationQueryData) ([]indexerdb.Post, error) {
-	posts := make([]indexerdb.Post, 0)
-	cachekey := locationFilter.cacheKey()
-	fmt.Println(cachekey)
-	data, ok := s.cache.Get(cachekey)
-	if ok {
-		return data.([]indexerdb.Post), nil
-	}
-	err := s.conf.IndexerDB.Model(&indexerdb.Post{}).Where("lat_int < ? AND lat_int > ? AND lng_int < ? AND lng_int > ?", locationFilter.N, locationFilter.S, locationFilter.E, locationFilter.W).Find(&posts).Error
-	if err != nil {
-		return nil, err
-	}
-
-	s.cache.SetWithTTL(cachekey, posts, 0, time.Minute*5)
-
-	return posts, nil
+func (data *locationQueryData) countCacheKey() string {
+	return "count_" + data.cacheKey()
 }
 func (data *locationQueryData) cacheKey() string {
 	return fmt.Sprintf("%d_%d_%d_%d", data.N, data.S, data.W, data.E)
 }
 
 func locationFilter(data *feedpb.PostLocationFilter) *locationQueryData {
-
 	return &locationQueryData{
 		N: getNextTenth(int(data.North)),
 		S: getLowerTenth(int(data.South)),
 		W: getLowerTenth(int(data.West)),
-		E: getNextTenth(int(data.Est)),
+		E: getNextTenth(int(data.East)),
 	}
 }
 
