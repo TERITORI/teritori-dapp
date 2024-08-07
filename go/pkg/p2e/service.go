@@ -212,7 +212,7 @@ func (s *P2eService) MerkleData(ctx context.Context, req *p2epb.MerkleDataReques
 		NetworkID: networkID,
 	}
 
-	if err := s.conf.IndexerDB.First(&currentReward).Error; err != nil {
+	if err := s.conf.IndexerDB.Order("day_id desc").First(&currentReward).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to get current daily reward")
 	}
 

@@ -43,17 +43,7 @@ func (h *Handler) handleClaim(contractABI *abi.ABI, tx *pb.Tx, args map[string]i
 		return errors.Wrap(err, "failed to get total claimed")
 	}
 
-	var amount *big.Int
-	if totalClaimed.Amount == "" {
-		amount = big.NewInt(0)
-	} else {
-		amount = new(big.Int)
-		if _, ok := amount.SetString(totalClaimed.Amount, 10); !ok {
-			return errors.New("failed to get current claimed amount")
-		}
-	}
-
-	totalClaimed.Amount = amount.Add(amount, input.Allocation).String()
+	totalClaimed.Amount = input.Allocation.String()
 
 	if err := h.dbTransaction.Save(&totalClaimed).Error; err != nil {
 		return errors.New("failed to update claimed amount")
