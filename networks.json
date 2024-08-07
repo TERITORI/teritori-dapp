@@ -4516,6 +4516,7 @@
     "groupsPkgPath": "gno.land/r/teritori/groups",
     "votingGroupPkgPath": "gno.land/p/teritori/dao_voting_group",
     "daoProposalSinglePkgPath": "gno.land/p/teritori/dao_proposal_single",
+    "profilePkgPath": "gno.land/r/demo/profile",
     "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
     "daoCorePkgPath": "gno.land/p/teritori/dao_core",
     "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
@@ -4563,7 +4564,8 @@
     "votingGroupPkgPath": "gno.land/p/teritori/dao_voting_group",
     "daoProposalSinglePkgPath": "gno.land/p/teritori/dao_proposal_single",
     "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
-    "daoCorePkgPath": "gno.land/p/teritori/dao_core"
+    "daoCorePkgPath": "gno.land/p/teritori/dao_core",
+    "profilePkgPath": "gno.land/r/demo/profile"
   },
   {
     "id": "gno-teritori",
@@ -4616,6 +4618,7 @@
     "daoProposalSinglePkgPath": "gno.land/p/teritori/dao_proposal_single_v4",
     "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces_v5",
     "daoCorePkgPath": "gno.land/p/teritori/dao_core_v4",
+    "profilePkgPath": "gno.land/r/demo/profile",
     "gnowebURL": "https://testnet.gno.teritori.com",
     "faucetURL": "https://testnet.gno.teritori.com:5050/?toaddr=$addr"
   },

@@ -16,6 +16,12 @@ export const nsNameInfoQueryKey = (
   tokenId: string | null | undefined,
 ) => ["nsNameInfo", networkId, tokenId];
 
+type UserProfile = {
+  displayName: string;
+  bio: string;
+  avatar: string;
+};
+
 export const useNSNameInfo = (
   networkId: string | undefined,
   tokenId: string | null | undefined,
@@ -32,7 +38,6 @@ export const useNSNameInfo = (
       if (!network) {
         return null;
       }
-
       switch (network?.kind) {
         case NetworkKind.Cosmos: {
           const nsClient = await getCosmosNameServiceQueryClient(networkId);
@@ -64,12 +69,19 @@ export const useNSNameInfo = (
             if (!address) {
               return null;
             }
+            const profile = await gnoGetUserProfile(network, address);
+
             // TODO: use profile realm
             const res: NftInfoResponse = {
-              extension: {},
+              extension: {
+                public_bio: profile.bio,
+                public_name: profile.displayName,
+                image: profile.avatar,
+              },
             };
             return res;
           }
+
           if (!tokenId.startsWith("gno.land/")) {
             return null;
           }
@@ -99,6 +111,33 @@ export const useNSNameInfo = (
     { staleTime: Infinity, enabled },
   );
   return { nsInfo, notFound: nsInfo === null, ...other };
+};
+
+const gnoGetUserProfile = async (network: GnoNetworkInfo, address: string) => {
+  const provider = new GnoJSONRPCProvider(network?.endpoint);
+  const { profilePkgPath } = network;
+  if (!profilePkgPath) {
+    throw Error("profilePkgPath is not given");
+  }
+
+  const profileFields = ["DisplayName", "Bio", "Avatar"];
+  const promises = profileFields.map((field) =>
+    provider.evaluateExpression(
+      profilePkgPath,
+      `GetStringField("${address}","${field}","")`,
+    ),
+  );
+
+  const dataRaw = await Promise.all(promises);
+  const extractedData = dataRaw.map(extractGnoString);
+
+  const profile: UserProfile = {
+    displayName: extractedData[0],
+    bio: extractedData[1],
+    avatar: extractedData[2],
+  };
+
+  return profile;
 };
 
 const gnoGetAddressByUsername = async (
