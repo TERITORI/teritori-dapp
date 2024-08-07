@@ -42,7 +42,6 @@ export const gnoTeritoriNetwork: GnoNetworkInfo = {
   daoProposalSinglePkgPath: "gno.land/p/teritori/dao_proposal_single_v4",
   daoInterfacesPkgPath: "gno.land/p/teritori/dao_interfaces_v5",
   daoCorePkgPath: "gno.land/p/teritori/dao_core_v4",
-  profilePkgPath: "gno.land/r/demo/profile",
   gnowebURL: "https://testnet.gno.teritori.com",
   faucetURL: "https://testnet.gno.teritori.com:5050/?toaddr=$addr",
 };
