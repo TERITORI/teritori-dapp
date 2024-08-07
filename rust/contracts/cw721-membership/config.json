@@ -1,0 +1,8 @@
+{
+  "name": "Premium Memberships",
+  "symbol": "PMEM",
+  "mint_royalties_per10k_default": 500,
+  "image_uri": "ipfs://bafybeiaznarsgwk7stav6qrzjnwqw4j7eu7drm3xx4p3fokgsnrouelse4",
+  "admin_addr": "__EXTERNAL__",
+  "description": "__EXTERNAL__"
+}

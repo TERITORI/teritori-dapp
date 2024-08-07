@@ -3,7 +3,7 @@ BUNKER_MINTER_PACKAGE=teritori-bunker-minter
 GO?=go
 GOFMT?=$(shell $(GO) env GOROOT)/bin/gofmt
 
-COSMWASM_CONTRACTS_DIR=rust/cw-contracts
+COSMWASM_CONTRACTS_DIR=rust/contracts
 INTERNAL_COSMWASM_CONTRACTS=$(wildcard $(COSMWASM_CONTRACTS_DIR)/*)
 
 TOKEN_REPO=teritori-nfts
