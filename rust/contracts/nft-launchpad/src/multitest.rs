@@ -36,15 +36,15 @@ fn get_default_collection() -> Collection {
         symbol: "SYMBOL".to_string(),
         cover_img_uri: "img".to_string(),
         target_network: "network".to_string(),
-        external_link: None,
+        // external_link: None,
 
         // Collection details ----------------------------
         website_link: None,
 
-        twitter_profile: "twitter_profile".to_string(),
-        twitter_followers_count: 1,
+        // twitter_profile: "twitter_profile".to_string(),
+        // twitter_followers_count: 1,
 
-        contact_discord_name: "contact_discord_name".to_string(),
+        // contact_discord_name: "contact_discord_name".to_string(),
         contact_email: "contact_email".to_string(),
 
         is_project_derivative: true,
@@ -56,15 +56,15 @@ fn get_default_collection() -> Collection {
 
         // Team info --------------------------------------
         team_desc: "team_desc".to_string(),
-        team_link: "team_link".to_string(),
+        // team_link: "team_link".to_string(),
 
         partners: "partners".to_string(),
 
         investment_desc: "investment_desc".to_string(),
         investment_link: "investment_link".to_string(),
 
-        whitepaper_link: "whitepaper_link".to_string(),
-        roadmap_link: "roadmap_link".to_string(),
+        // whitepaper_link: "whitepaper_link".to_string(),
+        // roadmap_link: "roadmap_link".to_string(),
 
         // Additional info ----------------------------
         artwork_desc: "artwork_desc".to_string(),
