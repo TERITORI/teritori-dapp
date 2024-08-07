@@ -43,6 +43,12 @@ export interface Post {
   location: number[];
 }
 
+export interface AggregatedPost {
+  lat: number;
+  long: number;
+  totalPoints: number;
+}
+
 export interface PostFilter {
   user: string;
   mentions: string[];
@@ -59,7 +65,7 @@ export interface PostLocationFilter {
   north: number;
   south: number;
   west: number;
-  est: number;
+  east: number;
   hashtags: string[];
   limit: number;
 }
@@ -73,6 +79,8 @@ export interface PostsRequest {
 
 export interface PostsResponse {
   posts: Post[];
+  aggregatedPosts: AggregatedPost[];
+  isAggregated: boolean;
 }
 
 function createBaseIPFSKeyRequest(): IPFSKeyRequest {
@@ -577,6 +585,95 @@ export const Post = {
   },
 };
 
+function createBaseAggregatedPost(): AggregatedPost {
+  return { lat: 0, long: 0, totalPoints: 0 };
+}
+
+export const AggregatedPost = {
+  encode(message: AggregatedPost, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.lat !== 0) {
+      writer.uint32(13).float(message.lat);
+    }
+    if (message.long !== 0) {
+      writer.uint32(21).float(message.long);
+    }
+    if (message.totalPoints !== 0) {
+      writer.uint32(24).int64(message.totalPoints);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): AggregatedPost {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAggregatedPost();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 13) {
+            break;
+          }
+
+          message.lat = reader.float();
+          continue;
+        case 2:
+          if (tag !== 21) {
+            break;
+          }
+
+          message.long = reader.float();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.totalPoints = longToNumber(reader.int64() as Long);
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AggregatedPost {
+    return {
+      lat: isSet(object.lat) ? globalThis.Number(object.lat) : 0,
+      long: isSet(object.long) ? globalThis.Number(object.long) : 0,
+      totalPoints: isSet(object.totalPoints) ? globalThis.Number(object.totalPoints) : 0,
+    };
+  },
+
+  toJSON(message: AggregatedPost): unknown {
+    const obj: any = {};
+    if (message.lat !== 0) {
+      obj.lat = message.lat;
+    }
+    if (message.long !== 0) {
+      obj.long = message.long;
+    }
+    if (message.totalPoints !== 0) {
+      obj.totalPoints = Math.round(message.totalPoints);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AggregatedPost>, I>>(base?: I): AggregatedPost {
+    return AggregatedPost.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<AggregatedPost>, I>>(object: I): AggregatedPost {
+    const message = createBaseAggregatedPost();
+    message.lat = object.lat ?? 0;
+    message.long = object.long ?? 0;
+    message.totalPoints = object.totalPoints ?? 0;
+    return message;
+  },
+};
+
 function createBasePostFilter(): PostFilter {
   return {
     user: "",
@@ -749,7 +846,7 @@ export const PostFilter = {
 };
 
 function createBasePostLocationFilter(): PostLocationFilter {
-  return { north: 0, south: 0, west: 0, est: 0, hashtags: [], limit: 0 };
+  return { north: 0, south: 0, west: 0, east: 0, hashtags: [], limit: 0 };
 }
 
 export const PostLocationFilter = {
@@ -763,8 +860,8 @@ export const PostLocationFilter = {
     if (message.west !== 0) {
       writer.uint32(29).float(message.west);
     }
-    if (message.est !== 0) {
-      writer.uint32(37).float(message.est);
+    if (message.east !== 0) {
+      writer.uint32(37).float(message.east);
     }
     for (const v of message.hashtags) {
       writer.uint32(42).string(v!);
@@ -808,7 +905,7 @@ export const PostLocationFilter = {
             break;
           }
 
-          message.est = reader.float();
+          message.east = reader.float();
           continue;
         case 5:
           if (tag !== 42) {
@@ -838,7 +935,7 @@ export const PostLocationFilter = {
       north: isSet(object.north) ? globalThis.Number(object.north) : 0,
       south: isSet(object.south) ? globalThis.Number(object.south) : 0,
       west: isSet(object.west) ? globalThis.Number(object.west) : 0,
-      est: isSet(object.est) ? globalThis.Number(object.est) : 0,
+      east: isSet(object.east) ? globalThis.Number(object.east) : 0,
       hashtags: globalThis.Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => globalThis.String(e)) : [],
       limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
     };
@@ -855,8 +952,8 @@ export const PostLocationFilter = {
     if (message.west !== 0) {
       obj.west = message.west;
     }
-    if (message.est !== 0) {
-      obj.est = message.est;
+    if (message.east !== 0) {
+      obj.east = message.east;
     }
     if (message.hashtags?.length) {
       obj.hashtags = message.hashtags;
@@ -875,7 +972,7 @@ export const PostLocationFilter = {
     message.north = object.north ?? 0;
     message.south = object.south ?? 0;
     message.west = object.west ?? 0;
-    message.est = object.est ?? 0;
+    message.east = object.east ?? 0;
     message.hashtags = object.hashtags?.map((e) => e) || [];
     message.limit = object.limit ?? 0;
     return message;
@@ -989,13 +1086,19 @@ export const PostsRequest = {
 };
 
 function createBasePostsResponse(): PostsResponse {
-  return { posts: [] };
+  return { posts: [], aggregatedPosts: [], isAggregated: false };
 }
 
 export const PostsResponse = {
   encode(message: PostsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.posts) {
       Post.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    for (const v of message.aggregatedPosts) {
+      AggregatedPost.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.isAggregated === true) {
+      writer.uint32(24).bool(message.isAggregated);
     }
     return writer;
   },
@@ -1014,6 +1117,20 @@ export const PostsResponse = {
 
           message.posts.push(Post.decode(reader, reader.uint32()));
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.aggregatedPosts.push(AggregatedPost.decode(reader, reader.uint32()));
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isAggregated = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1024,13 +1141,25 @@ export const PostsResponse = {
   },
 
   fromJSON(object: any): PostsResponse {
-    return { posts: globalThis.Array.isArray(object?.posts) ? object.posts.map((e: any) => Post.fromJSON(e)) : [] };
+    return {
+      posts: globalThis.Array.isArray(object?.posts) ? object.posts.map((e: any) => Post.fromJSON(e)) : [],
+      aggregatedPosts: globalThis.Array.isArray(object?.aggregatedPosts)
+        ? object.aggregatedPosts.map((e: any) => AggregatedPost.fromJSON(e))
+        : [],
+      isAggregated: isSet(object.isAggregated) ? globalThis.Boolean(object.isAggregated) : false,
+    };
   },
 
   toJSON(message: PostsResponse): unknown {
     const obj: any = {};
     if (message.posts?.length) {
       obj.posts = message.posts.map((e) => Post.toJSON(e));
+    }
+    if (message.aggregatedPosts?.length) {
+      obj.aggregatedPosts = message.aggregatedPosts.map((e) => AggregatedPost.toJSON(e));
+    }
+    if (message.isAggregated === true) {
+      obj.isAggregated = message.isAggregated;
     }
     return obj;
   },
@@ -1041,6 +1170,8 @@ export const PostsResponse = {
   fromPartial<I extends Exact<DeepPartial<PostsResponse>, I>>(object: I): PostsResponse {
     const message = createBasePostsResponse();
     message.posts = object.posts?.map((e) => Post.fromPartial(e)) || [];
+    message.aggregatedPosts = object.aggregatedPosts?.map((e) => AggregatedPost.fromPartial(e)) || [];
+    message.isAggregated = object.isAggregated ?? false;
     return message;
   },
 };

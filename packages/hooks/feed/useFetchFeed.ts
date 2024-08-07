@@ -4,7 +4,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
 
-import { Post, PostLocationFilter, PostsRequest } from "@/api/feed/v1/feed";
+import { AggregatedPost, Post, PostLocationFilter, PostsRequest } from "@/api/feed/v1/feed";
 import {
   GnoNetworkInfo,
   NetworkInfo,
@@ -114,7 +114,7 @@ export const useFetchFeed = (req: Partial<PostsRequest>) => {
   return { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading };
 };
 
-export const useFetchFeedLocation = (): (req: Partial<PostLocationFilter>) => Promise<{ list:Post[], totalCount: number }> => {
+export const useFetchFeedLocation = (): (req: Partial<PostLocationFilter>) => Promise<{ list:Post[],aggreations: AggregatedPost[], totalCount: number }> => {
   const selectedNetwork = useSelectedNetworkInfo();
   
   return async (req: Partial<PostLocationFilter>): Promise<{ list:Post[], totalCount: number }> =>  {
@@ -130,5 +130,5 @@ const fetchTeritoriFeedLocation = async (
   const feedClient = mustGetFeedClient(selectedNetwork.id);
   const response = await feedClient.PostsWithLocation(req);
   const list = response.posts.sort((a, b) => b.createdAt - a.createdAt);
-  return { list, totalCount: list.length };
+  return { list, totalCount: list.length, aggreations: response.aggregatedPosts };
 };
