@@ -35,4 +35,5 @@ export const gnoPortalNetwork: GnoNetworkInfo = {
   daoProposalSinglePkgPath: "gno.land/p/teritori/dao_proposal_single",
   daoInterfacesPkgPath: "gno.land/p/teritori/dao_interfaces",
   daoCorePkgPath: "gno.land/p/teritori/dao_core",
+  profilePkgPath: "gno.land/r/demo/profile",
 };
