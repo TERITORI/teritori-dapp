@@ -111,7 +111,6 @@
       "type": "object",
       "required": [
         "artwork_desc",
-        "contact_discord_name",
         "contact_email",
         "cover_img_uri",
         "dao_whitelist_count",
@@ -131,15 +130,10 @@
         "partners",
         "project_desc",
         "project_type",
-        "roadmap_link",
         "symbol",
         "target_network",
         "team_desc",
-        "team_link",
-        "tokens_count",
-        "twitter_followers_count",
-        "twitter_profile",
-        "whitepaper_link"
+        "tokens_count"
       ],
       "properties": {
         "artwork_desc": {
@@ -150,9 +144,6 @@
             "string",
             "null"
           ]
-        },
-        "contact_discord_name": {
-          "type": "string"
         },
         "contact_email": {
           "type": "string"
@@ -193,12 +184,6 @@
           "type": "integer",
           "format": "uint64",
           "minimum": 0.0
-        },
-        "external_link": {
-          "type": [
-            "string",
-            "null"
-          ]
         },
         "investment_desc": {
           "type": "string"
@@ -256,9 +241,6 @@
           "format": "uint64",
           "minimum": 0.0
         },
-        "roadmap_link": {
-          "type": "string"
-        },
         "royalty_address": {
           "anyOf": [
             {
@@ -286,30 +268,16 @@
         "team_desc": {
           "type": "string"
         },
-        "team_link": {
-          "type": "string"
-        },
         "tokens_count": {
           "type": "integer",
           "format": "uint64",
           "minimum": 0.0
-        },
-        "twitter_followers_count": {
-          "type": "integer",
-          "format": "uint64",
-          "minimum": 0.0
-        },
-        "twitter_profile": {
-          "type": "string"
         },
         "website_link": {
           "type": [
             "string",
             "null"
           ]
-        },
-        "whitepaper_link": {
-          "type": "string"
         }
       },
       "additionalProperties": false

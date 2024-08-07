@@ -49,7 +49,6 @@ export interface ConfigChanges {
 export interface Collection {
   artwork_desc: string;
   base_token_uri?: string | null;
-  contact_discord_name: string;
   contact_email: string;
   cover_img_uri: string;
   dao_whitelist_count: number;
@@ -59,7 +58,6 @@ export interface Collection {
   expected_mint_date: number;
   expected_public_mint_price: number;
   expected_supply: number;
-  external_link?: string | null;
   investment_desc: string;
   investment_link: string;
   is_applied_previously: boolean;
@@ -74,18 +72,13 @@ export interface Collection {
   project_desc: string;
   project_type: string;
   reveal_time?: number | null;
-  roadmap_link: string;
   royalty_address?: Addr | null;
   royalty_percentage?: number | null;
   symbol: string;
   target_network: string;
   team_desc: string;
-  team_link: string;
   tokens_count: number;
-  twitter_followers_count: number;
-  twitter_profile: string;
   website_link?: string | null;
-  whitepaper_link: string;
 }
 export interface MintPeriod {
   end_time?: number | null;
