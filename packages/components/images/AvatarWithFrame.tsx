@@ -27,7 +27,7 @@ export const UserAvatarWithFrame: React.FC<{
   return (
     <AvatarWithFrame
       networkId={network?.id}
-      image={metadata.image}
+      image={metadata?.image}
       isDAO={isDAO}
       size={size}
       style={style}
