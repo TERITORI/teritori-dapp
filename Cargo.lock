@@ -1043,6 +1043,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "nfts-burner"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cw-ownable",
+ "cw-storage-plus 1.2.0",
+ "cw2981-royalties",
+ "cw721 0.18.0",
+ "cw721-metadata-onchain",
+ "integer-encoding",
+ "schemars",
+ "serde",
+ "serde_json",
+ "sylvia 0.7.1",
+ "thiserror",
+]
+
+[[package]]
 name = "once_cell"
 version = "1.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
