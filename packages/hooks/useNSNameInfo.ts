@@ -71,7 +71,6 @@ export const useNSNameInfo = (
             }
             const profile = await gnoGetUserProfile(network, address);
 
-            // TODO: use profile realm
             const res: NftInfoResponse = {
               extension: {
                 public_bio: profile.bio,

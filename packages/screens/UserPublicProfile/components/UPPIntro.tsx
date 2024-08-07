@@ -276,7 +276,7 @@ export const UPPIntro: React.FC<{
       >
         <View>
           {/* Pseudo and bio */}
-          {metadata.tokenId ? (
+          {metadata?.tokenId ? (
             <>
               <BrandText style={[fontBold16]}>
                 {metadata?.public_name}
