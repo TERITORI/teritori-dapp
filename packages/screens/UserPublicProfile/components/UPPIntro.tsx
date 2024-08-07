@@ -303,7 +303,7 @@ export const UPPIntro: React.FC<{
               { maxWidth: 735, marginTop: layout.spacing_x1 },
             ]}
           >
-            {metadata.public_bio}
+            {metadata?.public_bio}
           </BrandText>
         </View>
         {/* Stats and public address */}
