@@ -31,13 +31,20 @@ const ZodBaseFileData = z.object({
   isCoverImage: z.boolean().optional(),
   isThumbnailImage: z.boolean().optional(),
   base64Image: z.string().optional(),
+  hash: z.string().optional(),
 });
-type BaseFileData = z.infer<typeof ZodBaseFileData>;
 
-export interface LocalFileData extends BaseFileData {
-  file: File;
-  thumbnailFileData?: BaseFileData & { file: File };
-}
+export const ZodLocalFileData = z
+  .object({
+    ...ZodBaseFileData.shape,
+    thumbnailFileData: ZodBaseFileData.extend({
+      file: z.instanceof(File),
+    }).optional(),
+  })
+  .extend({
+    file: z.instanceof(File),
+  });
+export type LocalFileData = z.infer<typeof ZodLocalFileData>;
 
 export const ZodRemoteFileData = z.object({
   ...ZodBaseFileData.shape,

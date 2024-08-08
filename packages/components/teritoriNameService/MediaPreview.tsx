@@ -64,11 +64,11 @@ export const MediaPreview: React.FC<{
       return;
     }
     if (documentPickerResult.output) {
-      const fileIpfsHash = await pinataPinFileToIPFS({
+      const pinFileToIPFSResult = await pinataPinFileToIPFS({
         pinataJWTKey,
         file: { file: documentPickerResult.output[0] },
       } as PinataFileProps);
-      callback(`ipfs://${fileIpfsHash}`);
+      callback(`ipfs://${pinFileToIPFSResult?.ipfsCid || ""}`);
     }
   };
 

@@ -44,6 +44,19 @@ type CosmWasmSocialFeed = {
   feedContractAddress: string;
 };
 
+// CosmWasm Launchpad
+
+const zodCosmWasmLaunchpad = z.object({
+  type: z.literal(NetworkFeature.NFTLaunchpad),
+  launchpadContractAddress: z.string(),
+  defaultMintDenom: z.string(),
+  launchpadEndpoint: z.string(),
+  codeId: z.number(),
+  // allowedMintDenoms: z.array(z.string()), // for future
+});
+
+export type CosmWasmLaunchpad = z.infer<typeof zodCosmWasmLaunchpad>;
+
 // Gno Project Manager
 
 const zodGnoProjectManager = z.object({
@@ -59,11 +72,13 @@ type GnoProjectManager = z.infer<typeof zodGnoProjectManager>;
 export const allFeatureObjects = [
   zodCosmWasmPremiumFeed,
   zodCosmWasmNFTsBurner,
+  zodCosmWasmLaunchpad,
   zodGnoProjectManager,
 ];
 
 export type NetworkFeatureObject =
   | CosmWasmPremiumFeed
   | CosmWasmSocialFeed
+  | CosmWasmLaunchpad
   | CosmWasmNFTsBurner
   | GnoProjectManager;

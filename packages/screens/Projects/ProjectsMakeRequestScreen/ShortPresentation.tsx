@@ -7,7 +7,6 @@ import { MakeRequestFooter } from "./Footer";
 import addSVG from "../../../../assets/icons/add.svg";
 import { BrandText } from "../../../components/BrandText";
 import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
-import { FileUploader } from "../../../components/fileUploader";
 import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
@@ -23,6 +22,7 @@ import {
   zodProjectFormData,
 } from "../hooks/useMakeRequestHook";
 
+import { FileUploader } from "@/components/inputs/fileUploader";
 import { LoaderFullScreen } from "@/components/loaders/LoaderFullScreen";
 import { useIpfs } from "@/hooks/useIpfs";
 import { ButtonsGroup } from "@/screens/Projects/components/ButtonsGroup";
