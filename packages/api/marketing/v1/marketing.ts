@@ -27,6 +27,11 @@ export interface News {
   actions: Action[];
 }
 
+export interface Banner {
+  image: string;
+  url: string;
+}
+
 export interface NewsRequest {
   testnet: boolean;
 }
@@ -35,8 +40,16 @@ export interface NewsResponse {
   news: News[];
 }
 
-export interface LiveCollectionsRequest {
+export interface BannersRequest {
   testnet: boolean;
+}
+
+export interface BannersResponse {
+  banners: Banner[];
+}
+
+export interface LiveCollectionsRequest {
+  networkId: string;
 }
 
 export interface LiveCollectionsResponse {
@@ -44,7 +57,7 @@ export interface LiveCollectionsResponse {
 }
 
 export interface UpcomingCollectionsRequest {
-  testnet: boolean;
+  networkId: string;
 }
 
 export interface UpcomingCollectionsResponse {
@@ -378,6 +391,80 @@ export const News = {
   },
 };
 
+function createBaseBanner(): Banner {
+  return { image: "", url: "" };
+}
+
+export const Banner = {
+  encode(message: Banner, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.image !== "") {
+      writer.uint32(10).string(message.image);
+    }
+    if (message.url !== "") {
+      writer.uint32(18).string(message.url);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Banner {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBanner();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.image = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.url = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Banner {
+    return {
+      image: isSet(object.image) ? globalThis.String(object.image) : "",
+      url: isSet(object.url) ? globalThis.String(object.url) : "",
+    };
+  },
+
+  toJSON(message: Banner): unknown {
+    const obj: any = {};
+    if (message.image !== "") {
+      obj.image = message.image;
+    }
+    if (message.url !== "") {
+      obj.url = message.url;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<Banner>, I>>(base?: I): Banner {
+    return Banner.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<Banner>, I>>(object: I): Banner {
+    const message = createBaseBanner();
+    message.image = object.image ?? "";
+    message.url = object.url ?? "";
+    return message;
+  },
+};
+
 function createBaseNewsRequest(): NewsRequest {
   return { testnet: false };
 }
@@ -492,22 +579,22 @@ export const NewsResponse = {
   },
 };
 
-function createBaseLiveCollectionsRequest(): LiveCollectionsRequest {
+function createBaseBannersRequest(): BannersRequest {
   return { testnet: false };
 }
 
-export const LiveCollectionsRequest = {
-  encode(message: LiveCollectionsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+export const BannersRequest = {
+  encode(message: BannersRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.testnet === true) {
       writer.uint32(8).bool(message.testnet);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): LiveCollectionsRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): BannersRequest {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseLiveCollectionsRequest();
+    const message = createBaseBannersRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -527,14 +614,130 @@ export const LiveCollectionsRequest = {
     return message;
   },
 
-  fromJSON(object: any): LiveCollectionsRequest {
+  fromJSON(object: any): BannersRequest {
     return { testnet: isSet(object.testnet) ? globalThis.Boolean(object.testnet) : false };
+  },
+
+  toJSON(message: BannersRequest): unknown {
+    const obj: any = {};
+    if (message.testnet === true) {
+      obj.testnet = message.testnet;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<BannersRequest>, I>>(base?: I): BannersRequest {
+    return BannersRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<BannersRequest>, I>>(object: I): BannersRequest {
+    const message = createBaseBannersRequest();
+    message.testnet = object.testnet ?? false;
+    return message;
+  },
+};
+
+function createBaseBannersResponse(): BannersResponse {
+  return { banners: [] };
+}
+
+export const BannersResponse = {
+  encode(message: BannersResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.banners) {
+      Banner.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): BannersResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBannersResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.banners.push(Banner.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BannersResponse {
+    return {
+      banners: globalThis.Array.isArray(object?.banners) ? object.banners.map((e: any) => Banner.fromJSON(e)) : [],
+    };
+  },
+
+  toJSON(message: BannersResponse): unknown {
+    const obj: any = {};
+    if (message.banners?.length) {
+      obj.banners = message.banners.map((e) => Banner.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<BannersResponse>, I>>(base?: I): BannersResponse {
+    return BannersResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<BannersResponse>, I>>(object: I): BannersResponse {
+    const message = createBaseBannersResponse();
+    message.banners = object.banners?.map((e) => Banner.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseLiveCollectionsRequest(): LiveCollectionsRequest {
+  return { networkId: "" };
+}
+
+export const LiveCollectionsRequest = {
+  encode(message: LiveCollectionsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.networkId !== "") {
+      writer.uint32(10).string(message.networkId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): LiveCollectionsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLiveCollectionsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): LiveCollectionsRequest {
+    return { networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "" };
   },
 
   toJSON(message: LiveCollectionsRequest): unknown {
     const obj: any = {};
-    if (message.testnet === true) {
-      obj.testnet = message.testnet;
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
     }
     return obj;
   },
@@ -544,7 +747,7 @@ export const LiveCollectionsRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<LiveCollectionsRequest>, I>>(object: I): LiveCollectionsRequest {
     const message = createBaseLiveCollectionsRequest();
-    message.testnet = object.testnet ?? false;
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -611,13 +814,13 @@ export const LiveCollectionsResponse = {
 };
 
 function createBaseUpcomingCollectionsRequest(): UpcomingCollectionsRequest {
-  return { testnet: false };
+  return { networkId: "" };
 }
 
 export const UpcomingCollectionsRequest = {
   encode(message: UpcomingCollectionsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.testnet === true) {
-      writer.uint32(8).bool(message.testnet);
+    if (message.networkId !== "") {
+      writer.uint32(10).string(message.networkId);
     }
     return writer;
   },
@@ -630,11 +833,11 @@ export const UpcomingCollectionsRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 8) {
+          if (tag !== 10) {
             break;
           }
 
-          message.testnet = reader.bool();
+          message.networkId = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -646,13 +849,13 @@ export const UpcomingCollectionsRequest = {
   },
 
   fromJSON(object: any): UpcomingCollectionsRequest {
-    return { testnet: isSet(object.testnet) ? globalThis.Boolean(object.testnet) : false };
+    return { networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "" };
   },
 
   toJSON(message: UpcomingCollectionsRequest): unknown {
     const obj: any = {};
-    if (message.testnet === true) {
-      obj.testnet = message.testnet;
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
     }
     return obj;
   },
@@ -662,7 +865,7 @@ export const UpcomingCollectionsRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<UpcomingCollectionsRequest>, I>>(object: I): UpcomingCollectionsRequest {
     const message = createBaseUpcomingCollectionsRequest();
-    message.testnet = object.testnet ?? false;
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
