@@ -1,1 +1,0 @@
-/home/dadidou/DEV/teritori-dapp/rust/target/debug/libnfts_burner.so: /home/dadidou/DEV/teritori-dapp/rust/contracts/nfts-burner/src/contract.rs /home/dadidou/DEV/teritori-dapp/rust/contracts/nfts-burner/src/error.rs /home/dadidou/DEV/teritori-dapp/rust/contracts/nfts-burner/src/lib.rs

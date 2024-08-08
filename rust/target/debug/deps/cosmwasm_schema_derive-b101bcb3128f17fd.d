@@ -1,9 +1,0 @@
-C:\Users\wadad\DEV\teritori-dapp\rust\target\debug\deps\cosmwasm_schema_derive-b101bcb3128f17fd.dll: C:\Users\wadad\.cargo\registry\src\index.crates.io-6f17d22bba15001f\cosmwasm-schema-derive-1.5.3\src\lib.rs C:\Users\wadad\.cargo\registry\src\index.crates.io-6f17d22bba15001f\cosmwasm-schema-derive-1.5.3\src\cw_serde.rs C:\Users\wadad\.cargo\registry\src\index.crates.io-6f17d22bba15001f\cosmwasm-schema-derive-1.5.3\src\generate_api.rs C:\Users\wadad\.cargo\registry\src\index.crates.io-6f17d22bba15001f\cosmwasm-schema-derive-1.5.3\src\query_responses.rs C:\Users\wadad\.cargo\registry\src\index.crates.io-6f17d22bba15001f\cosmwasm-schema-derive-1.5.3\src\query_responses\context.rs
-
-C:\Users\wadad\DEV\teritori-dapp\rust\target\debug\deps\cosmwasm_schema_derive-b101bcb3128f17fd.d: C:\Users\wadad\.cargo\registry\src\index.crates.io-6f17d22bba15001f\cosmwasm-schema-derive-1.5.3\src\lib.rs C:\Users\wadad\.cargo\registry\src\index.crates.io-6f17d22bba15001f\cosmwasm-schema-derive-1.5.3\src\cw_serde.rs C:\Users\wadad\.cargo\registry\src\index.crates.io-6f17d22bba15001f\cosmwasm-schema-derive-1.5.3\src\generate_api.rs C:\Users\wadad\.cargo\registry\src\index.crates.io-6f17d22bba15001f\cosmwasm-schema-derive-1.5.3\src\query_responses.rs C:\Users\wadad\.cargo\registry\src\index.crates.io-6f17d22bba15001f\cosmwasm-schema-derive-1.5.3\src\query_responses\context.rs
-
-C:\Users\wadad\.cargo\registry\src\index.crates.io-6f17d22bba15001f\cosmwasm-schema-derive-1.5.3\src\lib.rs:
-C:\Users\wadad\.cargo\registry\src\index.crates.io-6f17d22bba15001f\cosmwasm-schema-derive-1.5.3\src\cw_serde.rs:
-C:\Users\wadad\.cargo\registry\src\index.crates.io-6f17d22bba15001f\cosmwasm-schema-derive-1.5.3\src\generate_api.rs:
-C:\Users\wadad\.cargo\registry\src\index.crates.io-6f17d22bba15001f\cosmwasm-schema-derive-1.5.3\src\query_responses.rs:
-C:\Users\wadad\.cargo\registry\src\index.crates.io-6f17d22bba15001f\cosmwasm-schema-derive-1.5.3\src\query_responses\context.rs:
