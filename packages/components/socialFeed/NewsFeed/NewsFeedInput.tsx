@@ -155,6 +155,8 @@ export const NewsFeedInput = React.forwardRef<
     const [description, setDescription] = useState("");
     const [developerMode] = useDeveloperMode();
 
+    console.log('locationSelectedlocationSelected', locationSelected)
+
     // useEffect(() => {
     //   if (Platform.OS === "web") {
     //     navigator.geolocation.getCurrentPosition(
@@ -303,6 +305,7 @@ export const NewsFeedInput = React.forwardRef<
           mentions,
           gifs: formValues?.gifs || [],
           premium,
+          location: locationSelected
         });
 
         await makePost(

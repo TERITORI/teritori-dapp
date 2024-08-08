@@ -1,10 +1,13 @@
 import L, { DivIcon, Icon, LatLngExpression, Point } from "leaflet";
-import React from "react";
+import React, {useEffect} from "react";
 import "../../modals/MapModal/styles.css";
 import "leaflet/dist/leaflet.css";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer,useMap } from "react-leaflet";
+import { useEventHandlers } from '@react-leaflet/core'
 import MarkerClusterGroup from "react-leaflet-cluster";
-import { View, ViewStyle } from "react-native";
+import { View, ViewStyle, } from "react-native";
+import { useFetchFeedLocation } from "@/hooks/feed/useFetchFeed";
+import { Post } from "@/api/feed/v1/feed";
 
 import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
 
@@ -12,6 +15,7 @@ interface MarkerPopup {
   position: LatLngExpression;
   popUp: string;
   type: "picture" | "text" | "video" | "audio";
+  fileURL?: string;
 }
 
 // custom cluster icon
@@ -33,30 +37,60 @@ const getIcon = (type: string) => {
   return new Icon({ iconUrl: iconList[`${type}`], iconSize: [38, 38] });
 };
 
-const markers: MarkerPopup[] = [
-  {
-    position: [48.86, 2.3522],
-    popUp: "Hello, I am pop up 1",
-    type: "picture",
-  },
-  {
-    position: [48.85, 2.3522],
-    popUp: "Hello, I am pop up 2",
-    type: "text",
-  },
-  {
-    position: [48.855, 2.34],
-    popUp: "Hello, I am pop up 3",
-    type: "video",
-  },
-  {
-    position: [48.85, 2.31],
-    popUp: "Hello, I am pop up 3",
-    type: "audio",
-  },
-];
+const getPostType = (metadata: JSON) => {
+  if (metadata.files?.length < 1) {
+    return "text";
+  }
+  if (metadata.files?.[0].fileType.includes("video")) {
+    return "video";
+  }
+  if (metadata.files?.[0].fileType.includes("audio")) {
+    return "audio";
+  }
+  return "picture";
+};
 
-const FeedMapList: React.FC<FeedMapListProps> = ({ style }) => {
+
+const FeedMapList=({ style })=> {
+  const [bounds, setBounds] = React.useState<L.LatLngBounds | null>(null);
+  const [posts, setPosts] = React.useState<Post[] | null>(null);
+  
+   const getFeedLocation =  useFetchFeedLocation()
+
+  let markers: MarkerPopup[] = posts ? posts?.map(post => {
+    let metadata = JSON.parse(post.metadata);
+    return {
+      position: metadata.location,
+      popUp: metadata.message,
+      type: getPostType(metadata),
+    };
+  }) : [];
+  useEffect(() => {
+    getFeedLocation({ // Ensure proper hook call
+      north: bounds?.getNorth(),
+      south: bounds?.getSouth(),
+      west: bounds?.getWest(),
+      east: bounds?.getEast(),
+      limit: 100,
+    }).then(res => {
+      console.log("res", res);
+      setPosts(res.list);
+    });
+  }, [bounds])
+  const FetchMarkersOnMove = () => {
+    const map = useMap();
+
+    // Listen to events when moving map
+    const onChange = React.useCallback(() => {
+      setBounds(map.getBounds());
+    }, [map]);
+
+    const handlers = React.useMemo(() => ({ zoomend: onChange, moveend: onChange }), [map]);
+    useEventHandlers({ instance: map }, handlers);
+
+    return null;
+  };
+
   return (
     <View style={[containerCStyle, style]}>
       <MapContainer
@@ -73,8 +107,8 @@ const FeedMapList: React.FC<FeedMapListProps> = ({ style }) => {
           chunkedLoading
           iconCreateFunction={createClusterCustomIcon}
         >
-          {/* Mapping through the markers */}
-          {markers.map((marker, index) => (
+        {/* Mapping through the markers */}
+          {markers?.map((marker, index) => (
             <Marker
               position={marker.position}
               icon={getIcon(marker.type)}
@@ -84,6 +118,7 @@ const FeedMapList: React.FC<FeedMapListProps> = ({ style }) => {
             </Marker>
           ))}
         </MarkerClusterGroup>
+        <FetchMarkersOnMove/>
       </MapContainer>
     </View>
   );

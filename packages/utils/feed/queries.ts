@@ -22,6 +22,7 @@ import { RemoteFileData } from "../types/files";
 
 import { gnoTeritoriNetwork } from "@/networks/gno-teritori";
 import { teritoriNetwork } from "@/networks/teritori";
+import {LatLng} from "react-native-leaflet-view";
 
 export const convertLegacyPostId = (legacyId: string) => {
   // a "legacy id" has no network prefix, we need to support those to preserve early permalinks
@@ -119,6 +120,7 @@ export const getPostCategory = ({
 interface GeneratePostMetadataParams extends Omit<NewPostFormValues, "files"> {
   files: RemoteFileData[];
   premium: boolean;
+  location?: LatLng;
 }
 
 interface GenerateArticleMetadataParams
@@ -139,6 +141,7 @@ export const generatePostMetadata = ({
   mentions,
   gifs,
   premium,
+  location,
 }: GeneratePostMetadataParams): SocialFeedPostMetadata => {
   const m = ZodSocialFeedPostMetadata.parse({
     title,
@@ -146,6 +149,7 @@ export const generatePostMetadata = ({
     files,
     hashtags,
     mentions,
+    location,
     gifs: gifs || [],
     ...(premium ? { premium: 1 } : {}), // save blockchain space by not including premium if it's 0
   });

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             (unknown)
-// source: feed/v1/feed.proto
+// source: api/feed/v1/feed.proto
 
 package feedpb
 
@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FeedServiceClient interface {
 	Posts(ctx context.Context, in *PostsRequest, opts ...grpc.CallOption) (*PostsResponse, error)
+	PostsWithLocation(ctx context.Context, in *PostLocationFilter, opts ...grpc.CallOption) (*PostsResponse, error)
 	IPFSKey(ctx context.Context, in *IPFSKeyRequest, opts ...grpc.CallOption) (*IPFSKeyResponse, error)
 }
 
@@ -43,6 +44,15 @@ func (c *feedServiceClient) Posts(ctx context.Context, in *PostsRequest, opts ..
 	return out, nil
 }
 
+func (c *feedServiceClient) PostsWithLocation(ctx context.Context, in *PostLocationFilter, opts ...grpc.CallOption) (*PostsResponse, error) {
+	out := new(PostsResponse)
+	err := c.cc.Invoke(ctx, "/feed.v1.FeedService/PostsWithLocation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *feedServiceClient) IPFSKey(ctx context.Context, in *IPFSKeyRequest, opts ...grpc.CallOption) (*IPFSKeyResponse, error) {
 	out := new(IPFSKeyResponse)
 	err := c.cc.Invoke(ctx, "/feed.v1.FeedService/IPFSKey", in, out, opts...)
@@ -57,6 +67,7 @@ func (c *feedServiceClient) IPFSKey(ctx context.Context, in *IPFSKeyRequest, opt
 // for forward compatibility
 type FeedServiceServer interface {
 	Posts(context.Context, *PostsRequest) (*PostsResponse, error)
+	PostsWithLocation(context.Context, *PostLocationFilter) (*PostsResponse, error)
 	IPFSKey(context.Context, *IPFSKeyRequest) (*IPFSKeyResponse, error)
 	mustEmbedUnimplementedFeedServiceServer()
 }
@@ -67,6 +78,9 @@ type UnimplementedFeedServiceServer struct {
 
 func (UnimplementedFeedServiceServer) Posts(context.Context, *PostsRequest) (*PostsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Posts not implemented")
+}
+func (UnimplementedFeedServiceServer) PostsWithLocation(context.Context, *PostLocationFilter) (*PostsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostsWithLocation not implemented")
 }
 func (UnimplementedFeedServiceServer) IPFSKey(context.Context, *IPFSKeyRequest) (*IPFSKeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IPFSKey not implemented")
@@ -102,6 +116,24 @@ func _FeedService_Posts_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FeedService_PostsWithLocation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostLocationFilter)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FeedServiceServer).PostsWithLocation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/feed.v1.FeedService/PostsWithLocation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FeedServiceServer).PostsWithLocation(ctx, req.(*PostLocationFilter))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _FeedService_IPFSKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(IPFSKeyRequest)
 	if err := dec(in); err != nil {
@@ -132,10 +164,14 @@ var FeedService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _FeedService_Posts_Handler,
 		},
 		{
+			MethodName: "PostsWithLocation",
+			Handler:    _FeedService_PostsWithLocation_Handler,
+		},
+		{
 			MethodName: "IPFSKey",
 			Handler:    _FeedService_IPFSKey_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "feed/v1/feed.proto",
+	Metadata: "api/feed/v1/feed.proto",
 }
