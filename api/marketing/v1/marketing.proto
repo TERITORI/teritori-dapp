@@ -31,6 +31,11 @@ message News {
   repeated Action actions = 5;
 }
 
+message Banner {
+  string image = 1;
+  string url = 2;
+}
+
 message NewsRequest {
   bool testnet = 1;
 }
@@ -39,8 +44,16 @@ message NewsResponse {
   repeated News news = 1;
 }
 
-message LiveCollectionsRequest {
+message BannersRequest {
   bool testnet = 1;
+}
+
+message BannersResponse {
+  repeated Banner banners = 1;
+}
+
+message LiveCollectionsRequest {
+  string network_id = 1;
 }
 
 message LiveCollectionsResponse {
@@ -48,7 +61,7 @@ message LiveCollectionsResponse {
 }
 
 message UpcomingCollectionsRequest {
-  bool testnet = 1;
+  string network_id = 1;
 }
 
 message UpcomingCollectionsResponse {
