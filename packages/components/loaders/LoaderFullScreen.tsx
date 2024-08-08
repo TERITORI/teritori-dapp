@@ -17,7 +17,7 @@ export const LoaderFullScreen: React.FC<{ visible: boolean }> = ({
           zIndex: 10,
         }}
       >
-        <AnimatedLoader />
+        <AnimatedLoader testID="loader-full-screen" />
       </View>
     </Modal>
   );

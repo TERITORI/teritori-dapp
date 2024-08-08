@@ -6,6 +6,7 @@ export const osmosisTestnetCurrencies: CurrencyInfo[] = [
     denom: "uosmo",
     displayName: "OSMO",
     decimals: 6,
+    variant: "cosmos",
     coingeckoId: "osmosis",
     icon: "osmosis-circle.svg",
     kind: "native",

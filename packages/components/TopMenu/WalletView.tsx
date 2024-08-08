@@ -22,6 +22,7 @@ export const WalletView: React.FC<{
       <BrandText
         style={[fontMedium14, { marginLeft: 12 }]}
         ellipsizeMode="middle"
+        testID={`selected-wallet-${wallet?.userId}`}
       >
         {tinyAddress(userInfo?.metadata?.tokenId || wallet?.address || "", 16)}
       </BrandText>
