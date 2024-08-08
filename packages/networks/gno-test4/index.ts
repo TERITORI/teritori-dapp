@@ -12,9 +12,11 @@ export const gnoTest4Network: GnoNetworkInfo = {
   idPrefix: "gnotest4",
   chainId: "test4",
   endpoint: "https://rpc.test4.gno.land:443",
-  txExplorer: "https://gnoscan.io/transactions/details?txhash=$hash",
-  accountExplorer: "https://gnoscan.io/accounts/$address",
-  contractExplorer: "https://gnoscan.io/realms/details?path=$address",
+  txExplorer:
+    "https://gnoscan.io/transactions/details?txhash=$hash&chainId=test4",
+  accountExplorer: "https://gnoscan.io/accounts/$address?chainId=test4",
+  contractExplorer:
+    "https://gnoscan.io/realms/details?path=$address&chainId=test4",
   testnet: true,
   backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   gnowebURL: "https://gno.land",

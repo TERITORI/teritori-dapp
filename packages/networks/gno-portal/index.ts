@@ -16,9 +16,11 @@ export const gnoPortalNetwork: GnoNetworkInfo = {
   idPrefix: "gnoport",
   chainId: "portal-loop",
   endpoint: "https://rpc.gno.land:443",
-  txExplorer: "https://gnoscan.io/transactions/details?txhash=$hash",
-  accountExplorer: "https://gnoscan.io/accounts/$address",
-  contractExplorer: "https://gnoscan.io/realms/details?path=$address",
+  txExplorer:
+    "https://gnoscan.io/transactions/details?txhash=$hash&chainId=portal-loop",
+  accountExplorer: "https://gnoscan.io/accounts/$address?chainId=portal-loop",
+  contractExplorer:
+    "https://gnoscan.io/realms/details?path=$address&chainId=portal-loop",
   testnet: true,
   backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   gnowebURL: "https://gno.land",
