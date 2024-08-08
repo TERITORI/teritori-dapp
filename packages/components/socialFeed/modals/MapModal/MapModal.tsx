@@ -96,7 +96,10 @@ export const MapModal: React.FC<TMapModalProps> = ({
             color={primaryColor}
             borderColor={transparentColor}
             text="Skip location"
-            onPress={handleSubmit}
+            onPress={() => {
+              onClose();
+              handleSubmit?.();
+            }}
             squaresBackgroundColor={neutral17}
           />
           <SpacerRow size={2} />
@@ -105,7 +108,10 @@ export const MapModal: React.FC<TMapModalProps> = ({
             loader
             size="M"
             text="Add location"
-            onPress={handleSubmit}
+            onPress={() => {
+              onClose();
+              handleSubmit?.();
+            }}
           />
         </View>
       </View>
