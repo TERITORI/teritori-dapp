@@ -245,7 +245,7 @@ func (s *FeedService) getPostsWithLocationFilter(locationFilter *locationQueryDa
 	if ok {
 		return data.([]indexerdb.Post), nil
 	}
-	err := s.conf.IndexerDB.Model(&indexerdb.Post{}).Where("lat_int < ? AND lat_int > ? AND lng_int < ? AND lng_int > ?", locationFilter.N, locationFilter.S, locationFilter.E, locationFilter.W).Find(&posts).Error
+	err := s.conf.IndexerDB.Model(&indexerdb.Post{}).Where("lat_int < ? AND lat_int > ? AND lng_int < ? AND lng_int > ? AND  lat_int <> 0 AND lng_int <> 0 ", locationFilter.N, locationFilter.S, locationFilter.E, locationFilter.W).Find(&posts).Error
 	if err != nil {
 		return nil, err
 	}
