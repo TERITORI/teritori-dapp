@@ -17,11 +17,11 @@ message DAOsResponse {
 }
 
 message IsUserAdminRequest {
-  string userAddress = 1;
+  string user_address = 1;
 }
 
 message IsUserAdminResponse {
-  bool isUserAdmin = 1;
+  bool is_user_admin = 1;
 }
 
 message DAO {
