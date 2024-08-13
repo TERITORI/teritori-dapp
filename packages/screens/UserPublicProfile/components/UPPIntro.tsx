@@ -43,6 +43,7 @@ import { fontBold16, fontMedium14 } from "@/utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
 import { normalizeTwitterId } from "@/utils/twitter";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 
 export const UPPIntro: React.FC<{
   userId: string;
@@ -72,7 +73,7 @@ export const UPPIntro: React.FC<{
   const [premiumSubscriptionModalVisible, setPremiumSubscriptionModalVisible] =
     useState(false);
 
-  return (
+    return (
     <>
       <LegacyTertiaryBox
         height={320}

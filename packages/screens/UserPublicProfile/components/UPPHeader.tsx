@@ -85,9 +85,9 @@ export const UPPHeader = memo(
           borderColorTabSelected={primaryColor}
         />
 
-        {isEditProfileModal ? (
+        {isEditProfileModal && (
           <TNSUpdateNameScreen onClose={() => onCloseModalHandler()} />
-        ) : null}
+        )}
       </>
     );
   },

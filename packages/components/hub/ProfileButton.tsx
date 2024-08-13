@@ -57,46 +57,46 @@ export const ProfileButton: React.FC<{
   if (!network?.features.includes(NetworkFeature.NameService)) {
     return null;
   }
+  if (!selectedWallet || !metadata?.tokenId) {
+    return (
+      <RegisterButton networkId={network?.id} style={style} size={buttonSize} />
+    );
+  }
 
-  if (selectedWallet && metadata?.tokenId)
-    if (isEdit) {
-      return (
-        <SecondaryButtonOutline
-          size={buttonSize}
-          disabled={network?.kind !== NetworkKind.Cosmos}
-          text="Edit profile"
-          backgroundColor={neutral00}
-          onPress={() => {
-            const tokenName = metadata?.tokenId?.replace(".tori", "");
-            setIsEditProfileModal(true);
-            setName(tokenName || "");
-          }}
-        />
-      );
-    } else {
-      return (
-        <OmniLink
-          style={style}
-          disabled={network?.kind !== NetworkKind.Cosmos}
-          to={{
-            screen: "UserPublicProfile",
-            params: {
-              id: selectedWallet.userId,
-            },
-          }}
-        >
-          <SecondaryButtonOutline
-            size={buttonSize}
-            disabled={network?.kind !== NetworkKind.Cosmos}
-            text="My profile"
-            backgroundColor={neutral00}
-          />
-        </OmniLink>
-      );
-    }
+  if (isEdit) {
+    return (
+      <SecondaryButtonOutline
+        size={buttonSize}
+        disabled={!network?.features.includes(NetworkFeature.UPP)}
+        text="Edit profile"
+        backgroundColor={neutral00}
+        onPress={() => {
+          const tokenName = metadata?.tokenId?.replace(".tori", "");
+          setIsEditProfileModal(true);
+          setName(tokenName || "");
+        }}
+      />
+    );
+  }
 
   return (
-    <RegisterButton networkId={network?.id} style={style} size={buttonSize} />
+    <OmniLink
+      style={style}
+      disabled={network?.kind !== NetworkKind.Cosmos}
+      to={{
+        screen: "UserPublicProfile",
+        params: {
+          id: selectedWallet.userId,
+        },
+      }}
+    >
+      <SecondaryButtonOutline
+        size={buttonSize}
+        disabled={network?.kind !== NetworkKind.Cosmos}
+        text="My profile"
+        backgroundColor={neutral00}
+      />
+    </OmniLink>
   );
 };
 
