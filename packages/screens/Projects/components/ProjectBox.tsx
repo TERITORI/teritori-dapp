@@ -92,6 +92,8 @@ export const ProjectBox: React.FC<{
     />,
   ];
 
+  const nameAndTagsWidth = width - (32 + 56 + layout.spacing_x2);
+
   return (
     <TertiaryBox style={{ width }}>
       {/* Body ============================================================== */}
@@ -113,7 +115,10 @@ export const ProjectBox: React.FC<{
             }}
           >
             <TouchableOpacity onPress={onPress}>
-              <BrandText style={fontSemibold20}>
+              <BrandText
+                style={[fontSemibold20, { width: nameAndTagsWidth }]}
+                numberOfLines={1}
+              >
                 {project.metadata?.shortDescData?.name}
               </BrandText>
             </TouchableOpacity>
@@ -121,7 +126,7 @@ export const ProjectBox: React.FC<{
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                style={{ width: width - (32 + 56 + layout.spacing_x2) }}
+                style={{ width: nameAndTagsWidth }}
               >
                 {project.metadata?.shortDescData?.tags
                   ?.split(",")
