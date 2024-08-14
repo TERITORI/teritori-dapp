@@ -12,6 +12,8 @@ const main = async () => {
   program
     .option("-n, --network <network>", "Network ID")
     .option("-w, --wallet <wallet>", "Wallet name")
+    .option("-a, --addr <address>", "Wallet address")
+    .option("-r, --arbit <arbitrator>", "Arbitrator address")
     .option("-c, --count <count>", "Number of projects to create")
     .parse();
 
@@ -19,6 +21,8 @@ const main = async () => {
     network: string;
     wallet: string;
     count: string;
+    addr: string;
+    arbit: string;
   };
 
   const count = parseInt(opts.count, 10);
@@ -89,7 +93,7 @@ const main = async () => {
       BigInt(0),
     );
 
-    const cmd = `gnokey maketx call -insecure-password-stdin -pkgpath ${sqh(pmFeature.projectsManagerPkgPath)} -func "CreateContractJSON" -gas-fee 1000000ugnot -gas-wanted 10000000 -send "${totalPrice}ugnot" -broadcast -chainid ${sqh(network.chainId)} -args "" -args "g1xfjfdfyka23agew9g6qst030pr85q0ggac7vuj" -args ${sqh(pmFeature.paymentsDenom)} -args ${sqh(JSON.stringify(metadata))} -args "200000" -args ${sqh(JSON.stringify(milestones))} -args "g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv" -remote ${sqh(network.endpoint)} ${sqh(opts.wallet)}`;
+    const cmd = `gnokey maketx call -insecure-password-stdin -pkgpath ${sqh(pmFeature.projectsManagerPkgPath)} -func "CreateContractJSON" -gas-fee 1000000ugnot -gas-wanted 10000000 -send "${totalPrice}ugnot" -broadcast -chainid ${sqh(network.chainId)} -args "" -args ${sqh(opts.addr)} -args ${sqh(pmFeature.paymentsDenom)} -args ${sqh(JSON.stringify(metadata))} -args "200000" -args ${sqh(JSON.stringify(milestones))} -args ${sqh(opts.arbit)} -remote ${sqh(network.endpoint)} ${sqh(opts.wallet)}`;
     console.log(">", cmd);
     child_process.execSync(cmd, { input: "\n" });
   }

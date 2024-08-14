@@ -14,7 +14,7 @@ export const zodProjectFormData = z.object({
   creatorKind: z.enum(["funder", "contractor"]),
   creatorAddress: z.string().min(1),
   targetAddress: z.string().min(1).optional(),
-  sourceLink: z.string().optional(),
+  sourceLink: z.string().url().optional(),
   arbitratorAddress: z.string().min(1),
   tags: z.string(),
   coverImg: z.string().min(1), // web3 uri

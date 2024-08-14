@@ -99,13 +99,14 @@ export const ConfirmAndSign: React.FC = () => {
       const coverImg = projectFormData.coverImg;
 
       // other party can't accept contract after duration expired
-      const expiryDuration = 24 * 60 * 60; // 1 day in seconds
+      const expiryDuration = 7 * 24 * 60 * 60; // 1 day in seconds
 
       const shortDescData: ProjectShortDescData = {
         name: projectFormData.name,
         desc: projectFormData.description,
         coverImg,
         tags: projectFormData.tags || "",
+        sourceLink: projectFormData.sourceLink,
       };
 
       const metadata = JSON.stringify({
@@ -140,7 +141,7 @@ export const ConfirmAndSign: React.FC = () => {
             const req: MilestoneRequest = {
               title: ms.title,
               desc: ms.desc,
-              duration: ms.duration.toString(),
+              duration: (ms.durationHours * 3600).toString(),
               amount: ms.amount.toString(),
               link: ms.link || "",
               priority: ms.priority,

@@ -21,7 +21,7 @@ describe("Contractor proposer full flow", () => {
 
     // first step: basic project info
     cy.get("input[placeholder='Your Grant name']").type(projectName);
-    cy.get("input[placeholder='Project GitHub']").type("https//github.com");
+    cy.get("input[placeholder='Project GitHub']").type("https://github.com");
     cy.get("textarea[placeholder='Your Grant description']").type(
       "Bli blu Bli blu Bli blu Bli blu Bli blu",
     );
@@ -47,8 +47,9 @@ describe("Contractor proposer full flow", () => {
     cy.get("textarea[placeholder='Type description here...']").type(
       "Bli blu bla bleh",
     );
-    cy.get("input[data-testid='milestone-budget']").clear().type("42");
-    cy.get("input[data-testid='milestone-duration']").clear().type("3600");
+    cy.get("input[data-testid='milestone-budget']").type("42");
+    cy.get("input[data-testid='milestone-duration']").type("10");
+    cy.get("input[data-testid='milestone-link']").type("https://github.com");
     cy.get("div[data-testid='milestone-confirm']").click();
     cy.contains("Next").click();
 

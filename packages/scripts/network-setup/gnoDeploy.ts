@@ -20,7 +20,7 @@ const main = async () => {
   const cmd = `gnokey maketx addpkg \
     --pkgpath "${pkgpath}" \
     --pkgdir "${pkgdir}" \
-    --gas-fee 10000000ugnot \
+    --gas-fee 1ugnot \
     --gas-wanted 10000000 \
     --broadcast \
     --chainid "${network.chainId}" \
