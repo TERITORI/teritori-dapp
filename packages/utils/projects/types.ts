@@ -112,24 +112,16 @@ const zodProjectShortDescData = z.object({
   desc: z.string().optional(),
   coverImg: z.string().optional(),
   tags: z.string().optional(),
+  sourceLink: z.string().optional(),
 });
 
 export type ProjectShortDescData = z.infer<typeof zodProjectShortDescData>;
 
-const zodProjectTeamAndLinkData = z.object({
-  websiteLink: z.string().optional(),
-  twitterProfile: z.string().optional(),
-  discordLink: z.string().optional(),
-  githubLink: z.string().optional(),
-  teamDesc: z.string().optional(),
-});
-
-export type ProjectTeamAndLinkData = z.infer<typeof zodProjectTeamAndLinkData>;
-
 const zodProjectMetadata = z.object({
   shortDescData: zodProjectShortDescData.optional(),
-  teamAndLinkData: zodProjectTeamAndLinkData.optional(),
 });
+
+export type ProjectMetadata = z.infer<typeof zodProjectMetadata>;
 
 export const zodProject = z.object({
   id: z.string(),

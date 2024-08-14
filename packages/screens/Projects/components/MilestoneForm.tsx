@@ -17,6 +17,11 @@ import {
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
 import {
+  MilestoneFormValues,
+  MilestonePriority,
+  zodMilestoneFormValues,
+} from "../../../utils/projects/types";
+import {
   neutral22,
   neutral33,
   neutral44,
@@ -27,11 +32,6 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import {
-  MilestoneFormValues,
-  MilestonePriority,
-  zodMilestoneFormValues,
-} from "../types";
 
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
@@ -184,7 +184,7 @@ export const MilestoneForm: React.FC<{
           </BrandText>
           <TextInputCustom
             onChangeText={(val) => setValue("link", val)}
-            name="milestoneGithubLink"
+            name="milestoneSourceLink"
             label=""
             placeHolder="Github link..."
             hideLabel

@@ -7,6 +7,7 @@ import FlexRow from "../../../components/FlexRow";
 import { SearchBarInput } from "../../../components/Search/SearchBarInput";
 import { Separator } from "../../../components/separators/Separator";
 import { SpacerRow } from "../../../components/spacer";
+import { ProjectMilestone } from "../../../utils/projects/types";
 import {
   neutral77,
   neutral33,
@@ -15,7 +16,6 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ProjectMilestone } from "../types";
 
 export const ProjectMilestones: React.FC<{
   milestones: ProjectMilestone[];

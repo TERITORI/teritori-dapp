@@ -1,13 +1,8 @@
-import { Link } from "@react-navigation/native";
 import moment from "moment/moment";
 import React from "react";
 import { View } from "react-native";
 
 import copySVG from "@/assets/icons/copy.svg";
-import discordSVG from "@/assets/icons/discord.svg";
-import githubSVG from "@/assets/icons/github.svg";
-import twitterSVG from "@/assets/icons/twitter.svg";
-import websiteSVG from "@/assets/icons/website.svg";
 import { BrandText } from "@/components/BrandText";
 import FlexRow from "@/components/FlexRow";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
@@ -15,8 +10,8 @@ import { IconWithTextButton } from "@/components/buttons/SocialButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import Clipboard from "@/modules/Clipboard";
-import { Project } from "@/screens/Projects/types";
 import { prettyPrice } from "@/utils/coins";
+import { Project } from "@/utils/projects/types";
 import { joinElements } from "@/utils/react";
 import {
   neutral22,
@@ -27,7 +22,6 @@ import {
 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { normalizeTwitterId } from "@/utils/twitter";
 
 type RightBlockProps = {
   project: Project;
@@ -41,7 +35,6 @@ export const RightBlock: React.FC<RightBlockProps> = ({
   const { setToast } = useFeedbacks();
 
   const isFunded = project.funded;
-  const teamAndLinkData = project.metadata?.teamAndLinkData;
 
   const actions = [
     <IconWithTextButton
@@ -60,57 +53,6 @@ export const RightBlock: React.FC<RightBlockProps> = ({
       }}
     />,
   ];
-
-  if (teamAndLinkData?.websiteLink) {
-    actions.push(
-      <Link key="website" to={teamAndLinkData?.websiteLink}>
-        <IconWithTextButton
-          text="Website URL"
-          iconSvg={websiteSVG}
-          textColor={neutralA3}
-        />
-      </Link>,
-    );
-  }
-
-  if (teamAndLinkData?.discordLink) {
-    actions.push(
-      <Link key="discord" to={teamAndLinkData?.discordLink}>
-        <IconWithTextButton
-          text="Discord URL"
-          iconSvg={discordSVG}
-          textColor={neutralA3}
-        />
-      </Link>,
-    );
-  }
-
-  if (teamAndLinkData?.githubLink) {
-    actions.push(
-      <Link key="github" to={teamAndLinkData?.githubLink}>
-        <IconWithTextButton
-          text="Github URL"
-          iconSvg={githubSVG}
-          textColor={neutralA3}
-        />
-      </Link>,
-    );
-  }
-
-  if (teamAndLinkData?.twitterProfile) {
-    actions.push(
-      <Link
-        key="twitter"
-        to={normalizeTwitterId(teamAndLinkData?.twitterProfile)}
-      >
-        <IconWithTextButton
-          text="Twitter URL"
-          iconSvg={twitterSVG}
-          textColor={neutralA3}
-        />
-      </Link>,
-    );
-  }
 
   return (
     <View>
