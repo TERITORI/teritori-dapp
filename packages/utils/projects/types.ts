@@ -24,7 +24,7 @@ export const zodMilestoneFormValues = zod.object({
   amount: zod.number().positive().int(),
   priority: zodMilestonePriority,
   link: zod.string().url().optional(),
-  duration: zod.number().min(1),
+  durationHours: zod.number().positive().int(),
 });
 
 export type MilestoneFormValues = zod.infer<typeof zodMilestoneFormValues>;
@@ -71,6 +71,7 @@ export const previewMilestoneForm = (fm: MilestoneFormValues) => {
     amount: fm.amount.toString(),
     link: fm.link || "",
     funded: false,
+    duration: fm.durationHours * 3600,
   };
   return m;
 };

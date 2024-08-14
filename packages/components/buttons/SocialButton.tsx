@@ -1,3 +1,4 @@
+import { Link } from "@react-navigation/native";
 import React from "react";
 import {
   ViewStyle,
@@ -90,27 +91,34 @@ export const SocialButton: React.FC<{
   textColor?: ColorValue;
   iconColor?: ColorValue;
   onPress?: () => void;
+  link?: string;
   style?: StyleProp<ViewStyle>;
-}> = ({ text, onPress, iconSvg, style, textColor, iconColor }) => {
+}> = ({ text, onPress, link, iconSvg, style, textColor, iconColor }) => {
+  const content = (
+    <Box
+      style={{
+        paddingVertical: outerPadding,
+        backgroundColor: withAlpha(neutral22, 0.64),
+        paddingLeft: outerPadding,
+        paddingRight: outerPadding + (text ? innerGap : 0),
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
+      <IconWithText
+        text={text}
+        textColor={textColor}
+        iconColor={iconColor}
+        iconSvg={iconSvg}
+      />
+    </Box>
+  );
+  if (link) {
+    return <Link to={link}>{content}</Link>;
+  }
   return (
     <TouchableOpacity onPress={onPress} style={style}>
-      <Box
-        style={{
-          paddingVertical: outerPadding,
-          backgroundColor: withAlpha(neutral22, 0.64),
-          paddingLeft: outerPadding,
-          paddingRight: outerPadding + (text ? innerGap : 0),
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <IconWithText
-          text={text}
-          textColor={textColor}
-          iconColor={iconColor}
-          iconSvg={iconSvg}
-        />
-      </Box>
+      {content}
     </TouchableOpacity>
   );
 };

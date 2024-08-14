@@ -1,8 +1,10 @@
+import { Link } from "@react-navigation/native";
 import moment from "moment/moment";
 import React from "react";
 import { View } from "react-native";
 
 import copySVG from "@/assets/icons/copy.svg";
+import githubSVG from "@/assets/icons/github.svg";
 import { BrandText } from "@/components/BrandText";
 import FlexRow from "@/components/FlexRow";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
@@ -53,6 +55,18 @@ export const RightBlock: React.FC<RightBlockProps> = ({
       }}
     />,
   ];
+
+  if (project.metadata?.shortDescData?.sourceLink) {
+    actions.push(
+      <Link key="github" to={project.metadata.shortDescData.sourceLink}>
+        <IconWithTextButton
+          text="Github URL"
+          iconSvg={githubSVG}
+          textColor={neutralA3}
+        />
+      </Link>,
+    );
+  }
 
   return (
     <View>
