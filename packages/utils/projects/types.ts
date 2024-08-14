@@ -13,14 +13,8 @@ export type MilestonePriority = z.infer<typeof zodMilestonePriority>;
 
 export const zodMilestoneFormValues = zod.object({
   id: zod.string().optional(),
-  title: zod
-    .string()
-    .min(3)
-    .regex(/^[^,]*$/, "Should not contain ,"),
-  desc: zod
-    .string()
-    .min(10)
-    .regex(/^[^,]*$/, "Should not contain ,"),
+  title: zod.string().min(3),
+  desc: zod.string().min(10),
   amount: zod.number().positive().int(),
   priority: zodMilestonePriority,
   link: zod.string().url().optional(),
