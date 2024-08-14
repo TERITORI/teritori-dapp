@@ -1,6 +1,7 @@
 import React from "react";
 
 import { SimpleButton } from "../../../components/buttons/SimpleButton";
+import { ContractStatusFilter } from "../../../utils/projects/types";
 import {
   neutral00,
   neutral22,
@@ -8,7 +9,6 @@ import {
   redDefault,
   secondaryColor,
 } from "../../../utils/style/colors";
-import { ContractStatusFilter } from "../types";
 
 export const ProjectStatusTag: React.FC<{
   status: ContractStatusFilter | undefined;

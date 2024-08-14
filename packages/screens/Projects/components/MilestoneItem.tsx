@@ -11,6 +11,7 @@ import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SocialButton } from "../../../components/buttons/SocialButton";
 import { SpacerColumn } from "../../../components/spacer";
+import { ProjectMilestone } from "../../../utils/projects/types";
 import {
   neutral00,
   neutral22,
@@ -22,7 +23,6 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ProjectMilestone } from "../types";
 
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature, getNetworkFeature } from "@/networks";

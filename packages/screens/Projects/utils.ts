@@ -1,4 +1,4 @@
-import { Project } from "./types";
+import { Project } from "../../utils/projects/types";
 
 export const getProjectStats = (project: Project) => {
   if (!project.milestones)

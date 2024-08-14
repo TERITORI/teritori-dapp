@@ -9,7 +9,7 @@ import {
   getNetworkFeature,
   parseNetworkObjectId,
 } from "../../../networks";
-import { Project, zodProject } from "../types";
+import { Project, zodProject } from "../../../utils/projects/types";
 
 import { extractGnoJSONString } from "@/utils/gno";
 

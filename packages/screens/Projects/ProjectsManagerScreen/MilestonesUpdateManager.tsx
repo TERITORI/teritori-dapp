@@ -5,10 +5,10 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import githubSVG from "../../../../assets/icons/github.svg";
 import FlexRow from "../../../components/FlexRow";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { ProjectMilestone } from "../../../utils/projects/types";
 import { MilestonePriorityTag } from "../components/MilestonePriorityTag";
 import { MilestoneStatusTag } from "../components/MilestoneStatusTag";
 import { useProjects } from "../hooks/useProjects";
-import { ProjectMilestone } from "../types";
 
 import { BrandText } from "@/components/BrandText";
 import { Link } from "@/components/Link";

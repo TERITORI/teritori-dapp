@@ -6,6 +6,7 @@ import { capitalize, range } from "lodash";
 import sqh from "./sqh";
 
 import { NetworkFeature, getGnoNetwork, getNetworkFeature } from "@/networks";
+import { ProjectMetadata, ProjectShortDescData } from "@/utils/projects/types";
 
 const main = async () => {
   program
@@ -42,43 +43,27 @@ const main = async () => {
   );
 
   for (let i = 0; i < count; i++) {
-    const teamAndLinkData: Record<string, string> = {};
+    const shortDescData: ProjectShortDescData = {
+      name: faker.lorem.sentence(3).slice(0, -1),
+      desc:
+        capitalize(faker.hacker.phrase()) + "\n\n" + faker.lorem.paragraphs(10),
+      tags: [
+        ...new Set(
+          range(0, faker.number.int({ min: 3, max: 10 })).map(() =>
+            faker.hacker.noun(),
+          ),
+        ),
+      ].join(","),
+      coverImg: faker.image.urlPicsumPhotos(),
+    };
 
     if (faker.helpers.maybe(() => true)) {
-      teamAndLinkData.websiteLink = faker.internet.url();
-    }
-    if (faker.helpers.maybe(() => true)) {
-      teamAndLinkData.twitterProfile =
-        "@" + faker.person.firstName().toLowerCase();
-    }
-    if (faker.helpers.maybe(() => true)) {
-      teamAndLinkData.discordLink = "https://discord.com";
-    }
-    if (faker.helpers.maybe(() => true)) {
-      teamAndLinkData.githubLink =
+      shortDescData.sourceLink =
         "https://github.com/" + faker.person.firstName().toLowerCase();
     }
-    if (faker.helpers.maybe(() => true)) {
-      teamAndLinkData.teamDesc = faker.lorem.paragraph();
-    }
 
-    const metadata = {
-      shortDescData: {
-        name: faker.lorem.sentence(3).slice(0, -1),
-        desc:
-          capitalize(faker.hacker.phrase()) +
-          "\n\n" +
-          faker.lorem.paragraphs(10),
-        tags: [
-          ...new Set(
-            range(0, faker.number.int({ min: 3, max: 10 })).map(() =>
-              faker.hacker.noun(),
-            ),
-          ),
-        ].join(","),
-        coverImg: faker.image.urlPicsumPhotos(),
-      },
-      teamAndLinkData,
+    const metadata: ProjectMetadata = {
+      shortDescData,
     };
 
     const milestones = [];

@@ -6,13 +6,12 @@ import gnoSVG from "../../../../assets/icons/networks/gno.svg";
 import projectSuccessPaymentPNG from "../../../../assets/project-success-payment.png";
 import ModalBase from "../../../components/modals/ModalBase";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { Tag } from "../components/Milestone";
-import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 import {
   MilestoneRequest,
   ProjectShortDescData,
-  ProjectTeamAndLinkData,
-} from "../types";
+} from "../../../utils/projects/types";
+import { Tag } from "../components/Milestone";
+import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 
 import { BrandText } from "@/components/BrandText";
 import FlexRow from "@/components/FlexRow";
@@ -54,11 +53,7 @@ export const ConfirmAndSign: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const navigation = useAppNavigation();
-  const {
-    projectFormData,
-    milestones,
-    teamAndLinkData: teamAndLinkFormData,
-  } = useMakeRequestState();
+  const { projectFormData, milestones } = useMakeRequestState();
   const networkId = useSelectedNetworkId();
 
   const pmFeature = getNetworkFeature(
@@ -113,17 +108,8 @@ export const ConfirmAndSign: React.FC = () => {
         tags: projectFormData.tags || "",
       };
 
-      const teamAndLinkData: ProjectTeamAndLinkData = {
-        websiteLink: teamAndLinkFormData.websiteLink,
-        twitterProfile: teamAndLinkFormData.twitterProfile,
-        discordLink: teamAndLinkFormData.discordLink,
-        githubLink: teamAndLinkFormData.githubLink,
-        teamDesc: teamAndLinkFormData.teamDesc,
-      };
-
       const metadata = JSON.stringify({
         shortDescData,
-        teamAndLinkData,
       });
 
       const conflictHandler = projectFormData.arbitratorAddress;

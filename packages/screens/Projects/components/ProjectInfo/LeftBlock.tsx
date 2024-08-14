@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { Project } from "../../types";
+import { Project } from "../../../../utils/projects/types";
 import { FundProjectModal } from "../FundProjectModal";
 import { Tag } from "../Milestone";
 import { ProjectStatusTag } from "../ProjectStatusTag";

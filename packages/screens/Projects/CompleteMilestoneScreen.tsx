@@ -5,10 +5,10 @@ import { SvgProps } from "react-native-svg";
 import { HeaderBackButton } from "./components/HeaderBackButton";
 import { MilestoneStatusTag } from "./components/MilestoneStatusTag";
 import { useProject } from "./hooks/useProjects";
-import { Project, ProjectMilestone } from "./types";
 import githubSVG from "../../../assets/icons/github.svg";
 import FlexRow from "../../components/FlexRow";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { Project, ProjectMilestone } from "../../utils/projects/types";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
