@@ -6,7 +6,18 @@ export const gnoTest4Network: GnoNetworkInfo = {
   kind: NetworkKind.Gno,
   displayName: "Gno Test4",
   icon: "gno.svg",
-  features: [NetworkFeature.SocialFeed, NetworkFeature.UPP],
+  features: [
+    NetworkFeature.SocialFeed,
+    NetworkFeature.UPP,
+    NetworkFeature.GnoProjectManager,
+  ],
+  featureObjects: [
+    {
+      type: NetworkFeature.GnoProjectManager,
+      projectsManagerPkgPath: "gno.land/r/teritori/projects_manager",
+      paymentsDenom: "ugnot",
+    },
+  ],
   currencies: gnoCurrencies,
   stakeCurrency: "ugnot",
   idPrefix: "gnotest4",
