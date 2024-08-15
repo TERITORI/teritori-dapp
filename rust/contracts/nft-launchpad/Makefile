@@ -1,7 +1,13 @@
-WALLET_NAME=deploy
-CHAIN_ID=teritori-test-6
-NODE_RPC=https://rpc.testnet.teritori.com:443
-NFT_LAUNCHPAD_WASM=nft_launchpad.wasm
+ADMIN=testnet-adm
+ADMIN_ADDR=$(shell teritorid keys show $(ADMIN) --keyring-backend test --output json | jq -r .address)
+NODE_FLAG=--node https://rpc.testnet.teritori.com:443
+TX_FLAGS=--from $(ADMIN) --chain-id teritori-test-7 $(NODE_FLAG) --gas auto --gas-adjustment 1.3 -y -b sync --output json --keyring-backend test -o json
+QUERY_FLAGS=$(NODE_FLAG) -o json
+CODE_ID=47
+CONFIG=$(shell cat config.json | jq --rawfile desc desc.txt -r '.admin_addr="$(ADMIN_ADDR)" | .description=$$desc | tojson | @sh')
+
+# only informative
+# CONTRACT_ADDRESS=tori1rs244rjrhap2v4setxlugkh8ungxlrsh8asvh0trsgvqvplvkd5q7752l6
 
 .PHONY: artifacts/nft_launchpad.wasm
 artifacts/nft_launchpad.wasm:
@@ -9,13 +15,16 @@ artifacts/nft_launchpad.wasm:
 		--platform linux/amd64 \
 		--mount type=volume,source=nft_launchpad_cache,target=/target \
 		--mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
-		cosmwasm/rust-optimizer:0.14.0
+		cosmwasm/optimizer:0.16.0
 
-.PHONY: store.nft_launchpad
-store.nft_launchpad: 
-	teritorid tx wasm store --from $(WALLET_NAME) --chain-id $(CHAIN_ID) --node $(NODE_RPC) $(NFT_LAUNCHPAD_WASM) --gas auto --gas-adjustment 1.3 -y
+.PHONY: deploy.testnet
+deploy.testnet: artifacts/cw721_membership.wasm
+	set -o pipefail; \
+	TXHASH=$$(teritorid tx wasm store artifacts/nft_launchpad.wasm $(TX_FLAGS) | jq -r .txhash); \
+	while ! teritorid query tx $$TXHASH $(QUERY_FLAGS) 2>/dev/null | jq -r '.logs[0].events[] | select(.type=="store_code").attributes[] | select(.key=="code_id").value'; do sleep 1; done
 
-.PHONY: instantiate.nft_launchpad
-instantiate.nft_launchpad:
-	INIT='{"config":{"name":"Teritori launchpad","supported_networks":[]}}';
-	teritorid tx wasm instantiate 69 "$${INIT}" --from deploy --label "NFT Launchpad" -y --no-admin;
+.PHONY: instantiate.testnet
+instantiate.testnet: config.json
+	set -o pipefail; \
+	TXHASH=$$(teritorid tx wasm instantiate $(CODE_ID) $(CONFIG) --label NftLaunchpad --admin $(ADMIN_ADDR) $(TX_FLAGS) | jq -r .txhash); \
+	while ! teritorid query tx $$TXHASH $(QUERY_FLAGS) 2>/dev/null | jq -r '.logs[0].events[] | select(.type=="instantiate").attributes[] | select(.key=="_contract_address").value'; do sleep 1; done
