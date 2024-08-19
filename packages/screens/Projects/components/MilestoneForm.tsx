@@ -17,6 +17,11 @@ import {
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
 import { SpacerColumn } from "../../../components/spacer";
 import {
+  MilestoneFormValues,
+  MilestonePriority,
+  zodMilestoneFormValues,
+} from "../../../utils/projects/types";
+import {
   neutral22,
   neutral33,
   neutral44,
@@ -27,11 +32,6 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import {
-  MilestoneFormValues,
-  MilestonePriority,
-  zodMilestoneFormValues,
-} from "../types";
 
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
@@ -50,7 +50,7 @@ const initialValues: MilestoneFormValues = {
   desc: "",
   priority: "MS_PRIORITY_MEDIUM",
   amount: 0,
-  duration: 0,
+  durationHours: 0,
 };
 
 export const MilestoneForm: React.FC<{
@@ -87,7 +87,7 @@ export const MilestoneForm: React.FC<{
       >
         <TextInputCustom
           onChangeText={(val) => setValue("title", val)}
-          name="milestoneName"
+          name="title"
           label=""
           placeHolder="⚡️ Type name here..."
           hideLabel
@@ -136,11 +136,11 @@ export const MilestoneForm: React.FC<{
 
         <FlexRow style={{ padding: 0 }}>
           <BrandText style={[fontSemibold12, { color: neutral77, flex: 1 }]}>
-            Budget
+            Budget (GNOT)
           </BrandText>
           <TextInputCustom
             onChangeText={(val) => setValue("amount", +val)}
-            name="milestoneBudget"
+            name="amount"
             label=""
             placeHolder="Type here..."
             hideLabel
@@ -148,7 +148,7 @@ export const MilestoneForm: React.FC<{
             noBrokenCorners
             containerStyle={{ flex: 1 }}
             height={32}
-            value={"" + values.amount}
+            value={values.amount ? "" + values.amount : ""}
             error={errors.amount?.message}
             testID="milestone-budget"
           />
@@ -158,11 +158,11 @@ export const MilestoneForm: React.FC<{
 
         <FlexRow style={{ padding: 0 }}>
           <BrandText style={[fontSemibold12, { color: neutral77, flex: 1 }]}>
-            Duration
+            Duration (Hours)
           </BrandText>
           <TextInputCustom
-            onChangeText={(val) => setValue("duration", +val)}
-            name="milestoneDuration"
+            onChangeText={(val) => setValue("durationHours", +val)}
+            name="durationHours"
             label=""
             placeHolder="Type here..."
             hideLabel
@@ -170,8 +170,8 @@ export const MilestoneForm: React.FC<{
             noBrokenCorners
             containerStyle={{ flex: 1 }}
             height={32}
-            value={"" + values.duration}
-            error={errors.duration?.message}
+            value={values.durationHours ? "" + values.durationHours : ""}
+            error={errors.durationHours?.message}
             testID="milestone-duration"
           />
         </FlexRow>
@@ -184,7 +184,7 @@ export const MilestoneForm: React.FC<{
           </BrandText>
           <TextInputCustom
             onChangeText={(val) => setValue("link", val)}
-            name="milestoneGithubLink"
+            name="link"
             label=""
             placeHolder="Github link..."
             hideLabel
@@ -194,6 +194,7 @@ export const MilestoneForm: React.FC<{
             height={32}
             value={values.link}
             error={errors.link?.message}
+            testID="milestone-link"
           />
         </FlexRow>
 

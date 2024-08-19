@@ -10,7 +10,7 @@ import { SpacerColumn } from "@/components/spacer";
 import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getUserId } from "@/networks";
-import { Project } from "@/screens/Projects/types";
+import { Project } from "@/utils/projects/types";
 import { neutral22, neutralA3 } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";

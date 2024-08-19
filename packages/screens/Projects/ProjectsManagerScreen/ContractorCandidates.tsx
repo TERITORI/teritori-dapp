@@ -4,9 +4,9 @@ import { TouchableOpacity, View } from "react-native";
 
 import FlexRow from "../../../components/FlexRow";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { Project } from "../../../utils/projects/types";
 import { ProjectStatusTag } from "../components/ProjectStatusTag";
 import { useProjects } from "../hooks/useProjects";
-import { Project } from "../types";
 
 import { BrandText } from "@/components/BrandText";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";

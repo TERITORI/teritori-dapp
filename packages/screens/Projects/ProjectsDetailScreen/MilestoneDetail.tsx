@@ -25,7 +25,7 @@ import {
   Project,
   ProjectMilestone,
   zodMilestoneStatus,
-} from "@/screens/Projects/types";
+} from "@/utils/projects/types";
 import {
   neutral00,
   neutral22,

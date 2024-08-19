@@ -3,7 +3,7 @@ import React from "react";
 import { ProjectStatusTag } from "./ProjectStatusTag";
 import FlexRow from "../../../components/FlexRow";
 import { SpacerRow } from "../../../components/spacer";
-import { ContractStatusFilter } from "../types";
+import { ContractStatusFilter } from "../../../utils/projects/types";
 
 export const ProjectsStatusFilterButtons: React.FC<{
   status: ContractStatusFilter;

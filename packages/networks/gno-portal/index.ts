@@ -16,9 +16,11 @@ export const gnoPortalNetwork: GnoNetworkInfo = {
   idPrefix: "gnoport",
   chainId: "portal-loop",
   endpoint: "https://rpc.gno.land:443",
-  txExplorer: "https://gnoscan.io/transactions/details?txhash=$hash",
-  accountExplorer: "https://gnoscan.io/accounts/$address",
-  contractExplorer: "https://gnoscan.io/realms/details?path=$address",
+  txExplorer:
+    "https://gnoscan.io/transactions/details?txhash=$hash&chainId=portal-loop",
+  accountExplorer: "https://gnoscan.io/accounts/$address?chainId=portal-loop",
+  contractExplorer:
+    "https://gnoscan.io/realms/details?path=$address&chainId=portal-loop",
   testnet: true,
   backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   gnowebURL: "https://gno.land",
@@ -35,4 +37,5 @@ export const gnoPortalNetwork: GnoNetworkInfo = {
   daoProposalSinglePkgPath: "gno.land/p/teritori/dao_proposal_single",
   daoInterfacesPkgPath: "gno.land/p/teritori/dao_interfaces",
   daoCorePkgPath: "gno.land/p/teritori/dao_core",
+  profilePkgPath: "gno.land/r/demo/profile",
 };

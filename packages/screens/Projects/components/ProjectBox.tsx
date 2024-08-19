@@ -1,16 +1,12 @@
-import { Link, useLinkBuilder } from "@react-navigation/native";
+import { useLinkBuilder } from "@react-navigation/native";
 import React, { memo, useMemo } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 
 import { Tag } from "./Milestone";
 import { ProjectStatusTag } from "./ProjectStatusTag";
-import { Project } from "../types";
+import { Project } from "../../../utils/projects/types";
 
-import discordSVG from "@/assets/icons/discord.svg";
-import githubSVG from "@/assets/icons/github.svg";
 import shareSVG from "@/assets/icons/share.svg";
-import twitterSVG from "@/assets/icons/twitter.svg";
-import websiteSVG from "@/assets/icons/website.svg";
 import { BrandText } from "@/components/BrandText";
 import FlexRow from "@/components/FlexRow";
 import { ProgressLine } from "@/components/ProgressLine";
@@ -39,7 +35,6 @@ import {
   fontSemibold20,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { normalizeTwitterId } from "@/utils/twitter";
 
 export const ProjectBox: React.FC<{
   project: Project;
@@ -96,38 +91,8 @@ export const ProjectBox: React.FC<{
       }}
     />,
   ];
-  if (project.metadata?.teamAndLinkData?.discordLink) {
-    bottomElems.push(
-      <Link to={project.metadata?.teamAndLinkData?.discordLink}>
-        <SocialButton text="" iconSvg={discordSVG} />
-      </Link>,
-    );
-  }
-  if (project.metadata?.teamAndLinkData?.websiteLink) {
-    bottomElems.push(
-      <Link to={project.metadata?.teamAndLinkData?.websiteLink}>
-        <SocialButton text="" iconSvg={websiteSVG} />
-      </Link>,
-    );
-  }
-  if (project.metadata?.teamAndLinkData?.githubLink) {
-    bottomElems.push(
-      <Link to={project.metadata?.teamAndLinkData?.githubLink}>
-        <SocialButton text="" iconSvg={githubSVG} />
-      </Link>,
-    );
-  }
-  if (project.metadata?.teamAndLinkData?.twitterProfile) {
-    bottomElems.push(
-      <Link
-        to={normalizeTwitterId(
-          project.metadata?.teamAndLinkData?.twitterProfile,
-        )}
-      >
-        <SocialButton text="" iconSvg={twitterSVG} />
-      </Link>,
-    );
-  }
+
+  const nameAndTagsWidth = width - (32 + 56 + layout.spacing_x2);
 
   return (
     <TertiaryBox style={{ width }}>
@@ -150,7 +115,10 @@ export const ProjectBox: React.FC<{
             }}
           >
             <TouchableOpacity onPress={onPress}>
-              <BrandText style={fontSemibold20}>
+              <BrandText
+                style={[fontSemibold20, { width: nameAndTagsWidth }]}
+                numberOfLines={1}
+              >
                 {project.metadata?.shortDescData?.name}
               </BrandText>
             </TouchableOpacity>
@@ -158,7 +126,7 @@ export const ProjectBox: React.FC<{
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                style={{ width: width - (32 + 56 + layout.spacing_x2) }}
+                style={{ width: nameAndTagsWidth }}
               >
                 {project.metadata?.shortDescData?.tags
                   ?.split(",")

@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
-import { Project } from "../../types";
+import { Project } from "../../../../utils/projects/types";
 
 import FlexRow from "@/components/FlexRow";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";

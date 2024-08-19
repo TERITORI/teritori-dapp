@@ -3,21 +3,10 @@ import { useMemo } from "react";
 import { z } from "zod";
 import { create } from "zustand";
 
-import { useAppNavigation } from "../../../utils/navigation";
-import { emptyProjectFormData, fakeTeamAndLink } from "../defaultValues";
-import { MilestoneFormValues } from "../types";
+import { emptyProjectFormData } from "../defaultValues";
 
-export const zodProjectTeamAndLinkFormData = z.object({
-  websiteLink: z.string().url(),
-  twitterProfile: z.string().url(),
-  discordLink: z.string().url(),
-  githubLink: z.string().url(),
-  teamDesc: z.string(),
-});
-
-export type ProjectTeamAndLinkFormData = z.infer<
-  typeof zodProjectTeamAndLinkFormData
->;
+import { useAppNavigation } from "@/utils/navigation";
+import { MilestoneFormValues } from "@/utils/projects/types";
 
 export const zodProjectFormData = z.object({
   name: z.string().min(3),
@@ -25,6 +14,7 @@ export const zodProjectFormData = z.object({
   creatorKind: z.enum(["funder", "contractor"]),
   creatorAddress: z.string().min(1),
   targetAddress: z.string().min(1).optional(),
+  sourceLink: z.string().url().optional(),
   arbitratorAddress: z.string().min(1),
   tags: z.string(),
   coverImg: z.string().min(1), // web3 uri
@@ -35,12 +25,9 @@ export type ProjectFormData = z.infer<typeof zodProjectFormData>;
 type MakeRequestState = {
   stepIndice: number;
   projectFormData: ProjectFormData;
-  teamAndLinkData: ProjectTeamAndLinkFormData;
   milestones: MilestoneFormValues[];
   actions: {
     setShortDesc: (shortDescData: ProjectFormData) => void;
-    setTeamAndLink: (teamAndLinkData: ProjectTeamAndLinkFormData) => void;
-
     addMilestone: (milestone: MilestoneFormValues) => void;
     removeMilestone: (id: string) => void;
   };
@@ -51,13 +38,9 @@ const TOTAL_STEPS = 5;
 const useMakeRequestStore = create<MakeRequestState>((set, get) => ({
   stepIndice: 1,
   projectFormData: emptyProjectFormData,
-  teamAndLinkData: fakeTeamAndLink,
   milestones: [],
   actions: {
     setShortDesc: (shortDescData) => set({ projectFormData: shortDescData }),
-    setTeamAndLink: (teamAndLinkData) => {
-      set({ teamAndLinkData });
-    },
     addMilestone: (milestone) => {
       const updatedMilestones = [...get().milestones, milestone].map(
         (t, idx) => {

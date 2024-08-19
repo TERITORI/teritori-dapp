@@ -1,8 +1,8 @@
 import React from "react";
 
 import { Tag } from "./Milestone";
+import { MilestonePriority } from "../../../utils/projects/types";
 import { neutral33, neutralFF } from "../../../utils/style/colors";
-import { MilestonePriority } from "../types";
 
 export const MilestonePriorityTag: React.FC<{
   priority: MilestonePriority;

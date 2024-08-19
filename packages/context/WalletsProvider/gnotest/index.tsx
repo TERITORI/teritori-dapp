@@ -151,10 +151,10 @@ const useGnotestStore = create<GnotestState>((set, get) => ({
           const nsRealm = network.nameServiceContractAddress;
           const send = new Map<string, number>();
           send.set("ugnot", 200000000);
-          wallet.callMethod(
+          await wallet.callMethod(
             nsRealm,
             "Register",
-            ["", testUser.nsName, JSON.stringify(testUser.extra)],
+            ["", testUser.nsName, ""],
             TransactionEndpoint.BROADCAST_TX_COMMIT,
             send,
             {
@@ -162,6 +162,43 @@ const useGnotestStore = create<GnotestState>((set, get) => ({
               gasFee: "1ugnot",
             },
           );
+
+          const profileRealm = network.profilePkgPath;
+          if (profileRealm) {
+            await wallet.callMethod(
+              profileRealm,
+              "SetStringField",
+              ["DisplayName", testUser.extra.displayName],
+              TransactionEndpoint.BROADCAST_TX_COMMIT,
+              undefined,
+              {
+                gasWanted: Long.fromNumber(1000000),
+                gasFee: "1ugnot",
+              },
+            );
+            await wallet.callMethod(
+              profileRealm,
+              "SetStringField",
+              ["Avatar", testUser.extra.imageURI],
+              TransactionEndpoint.BROADCAST_TX_COMMIT,
+              undefined,
+              {
+                gasWanted: Long.fromNumber(1000000),
+                gasFee: "1ugnot",
+              },
+            );
+            await wallet.callMethod(
+              profileRealm,
+              "SetStringField",
+              ["Bio", testUser.extra.bio],
+              TransactionEndpoint.BROADCAST_TX_COMMIT,
+              undefined,
+              {
+                gasWanted: Long.fromNumber(1000000),
+                gasFee: "1ugnot",
+              },
+            );
+          }
         } catch (e) {
           console.warn("Failed to register user", testUser, e);
         }

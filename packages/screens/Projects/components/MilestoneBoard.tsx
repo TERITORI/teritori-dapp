@@ -18,6 +18,11 @@ import { SVG } from "../../../components/SVG";
 import { SimpleButton } from "../../../components/buttons/SimpleButton";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
+  ProjectMilestone,
+  MilestoneStatus,
+  MilestoneFormValues,
+} from "../../../utils/projects/types";
+import {
   neutral00,
   neutral33,
   neutral77,
@@ -26,11 +31,6 @@ import {
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
-import {
-  ProjectMilestone,
-  MilestoneStatus,
-  MilestoneFormValues,
-} from "../types";
 
 export type Step = {
   status: MilestoneStatus;

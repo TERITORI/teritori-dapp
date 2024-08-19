@@ -150,6 +150,19 @@ export const ShortPresentation: React.FC = () => {
       <SpacerColumn size={2.5} />
 
       <TextInputCustom
+        label="GitHub link"
+        name="sourceLink"
+        fullWidth
+        placeholder="Project GitHub"
+        variant="labelOutside"
+        onChangeText={(val) => setValue("sourceLink", val)}
+        value={values.sourceLink}
+        error={errors.sourceLink?.message}
+      />
+
+      <SpacerColumn size={2.5} />
+
+      <TextInputCustom
         label="Description *"
         name="description"
         fullWidth

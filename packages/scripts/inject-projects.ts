@@ -6,11 +6,14 @@ import { capitalize, range } from "lodash";
 import sqh from "./sqh";
 
 import { NetworkFeature, getGnoNetwork, getNetworkFeature } from "@/networks";
+import { ProjectMetadata, ProjectShortDescData } from "@/utils/projects/types";
 
 const main = async () => {
   program
     .option("-n, --network <network>", "Network ID")
     .option("-w, --wallet <wallet>", "Wallet name")
+    .option("-a, --addr <address>", "Wallet address")
+    .option("-r, --arbit <arbitrator>", "Arbitrator address")
     .option("-c, --count <count>", "Number of projects to create")
     .parse();
 
@@ -18,6 +21,8 @@ const main = async () => {
     network: string;
     wallet: string;
     count: string;
+    addr: string;
+    arbit: string;
   };
 
   const count = parseInt(opts.count, 10);
@@ -42,43 +47,27 @@ const main = async () => {
   );
 
   for (let i = 0; i < count; i++) {
-    const teamAndLinkData: Record<string, string> = {};
+    const shortDescData: ProjectShortDescData = {
+      name: faker.lorem.sentence(3).slice(0, -1),
+      desc:
+        capitalize(faker.hacker.phrase()) + "\n\n" + faker.lorem.paragraphs(10),
+      tags: [
+        ...new Set(
+          range(0, faker.number.int({ min: 3, max: 10 })).map(() =>
+            faker.hacker.noun(),
+          ),
+        ),
+      ].join(","),
+      coverImg: faker.image.urlPicsumPhotos(),
+    };
 
     if (faker.helpers.maybe(() => true)) {
-      teamAndLinkData.websiteLink = faker.internet.url();
-    }
-    if (faker.helpers.maybe(() => true)) {
-      teamAndLinkData.twitterProfile =
-        "@" + faker.person.firstName().toLowerCase();
-    }
-    if (faker.helpers.maybe(() => true)) {
-      teamAndLinkData.discordLink = "https://discord.com";
-    }
-    if (faker.helpers.maybe(() => true)) {
-      teamAndLinkData.githubLink =
+      shortDescData.sourceLink =
         "https://github.com/" + faker.person.firstName().toLowerCase();
     }
-    if (faker.helpers.maybe(() => true)) {
-      teamAndLinkData.teamDesc = faker.lorem.paragraph();
-    }
 
-    const metadata = {
-      shortDescData: {
-        name: faker.lorem.sentence(3).slice(0, -1),
-        desc:
-          capitalize(faker.hacker.phrase()) +
-          "\n\n" +
-          faker.lorem.paragraphs(10),
-        tags: [
-          ...new Set(
-            range(0, faker.number.int({ min: 3, max: 10 })).map(() =>
-              faker.hacker.noun(),
-            ),
-          ),
-        ].join(","),
-        coverImg: faker.image.urlPicsumPhotos(),
-      },
-      teamAndLinkData,
+    const metadata: ProjectMetadata = {
+      shortDescData,
     };
 
     const milestones = [];
@@ -104,7 +93,7 @@ const main = async () => {
       BigInt(0),
     );
 
-    const cmd = `gnokey maketx call -insecure-password-stdin -pkgpath ${sqh(pmFeature.projectsManagerPkgPath)} -func "CreateContractJSON" -gas-fee 1000000ugnot -gas-wanted 10000000 -send "${totalPrice}ugnot" -broadcast -chainid ${sqh(network.chainId)} -args "" -args "g1xfjfdfyka23agew9g6qst030pr85q0ggac7vuj" -args ${sqh(pmFeature.paymentsDenom)} -args ${sqh(JSON.stringify(metadata))} -args "200000" -args ${sqh(JSON.stringify(milestones))} -args "g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv" -remote ${sqh(network.endpoint)} ${sqh(opts.wallet)}`;
+    const cmd = `gnokey maketx call -insecure-password-stdin -pkgpath ${sqh(pmFeature.projectsManagerPkgPath)} -func "CreateContractJSON" -gas-fee 1000000ugnot -gas-wanted 10000000 -send "${totalPrice}ugnot" -broadcast -chainid ${sqh(network.chainId)} -args "" -args ${sqh(opts.addr)} -args ${sqh(pmFeature.paymentsDenom)} -args ${sqh(JSON.stringify(metadata))} -args "200000" -args ${sqh(JSON.stringify(milestones))} -args ${sqh(opts.arbit)} -remote ${sqh(network.endpoint)} ${sqh(opts.wallet)}`;
     console.log(">", cmd);
     child_process.execSync(cmd, { input: "\n" });
   }
