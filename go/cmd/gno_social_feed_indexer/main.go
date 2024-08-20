@@ -4,20 +4,16 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"regexp"
+	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/cmd/gno_social_feed_indexer/clientql"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+	"github.com/go-co-op/gocron"
 	"github.com/peterbourgon/ff/v3"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
-
-var contractRegexp = regexp.MustCompile(`/r/teritori/social_feeds:teritori/(\d+)`)
-var postRegexp = regexp.MustCompile(`<pre id="source">(.+?)</pre>`)
-
-const socialFeedRealPath = "/r/teritori/social_feeds:teritori"
 
 func main() {
 	// handle args
@@ -30,6 +26,7 @@ func main() {
 		dbUser       = fs.String("postgres-user", "", "username for postgreSQL")
 		networksFile = fs.String("networks-file", "networks.json", "path to networks config file")
 		networkID    = fs.String("gno-network-id", "devLocal", "network id to index")
+		txIndexerURL = fs.String("gno-tx-indexer-endpoint", "http://localhost:8546/graphql/query", "Tx indexer GraphQL endpoint")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -55,7 +52,6 @@ func main() {
 	if err != nil {
 		panic(errors.Wrap(err, "failed to unmarshal networks config"))
 	}
-	fmt.Println(*networkID)
 	// get and validate selected network
 	network := netstore.MustGetGnoNetwork(*networkID)
 	if network.ChainID == "" {
@@ -77,10 +73,17 @@ func main() {
 		panic(errors.Wrap(err, "failed migrate database models"))
 	}
 
-	clientql := clientql.New(network.ID, "http://localhost:8546/graphql/query", db)
-	err = clientql.SyncPosts()
-	if err != nil {
-		logger.Error("failed to get names list", zap.Error(err))
-		panic(err)
-	}
+	clientql := clientql.New(network.ID, *txIndexerURL, db)
+	schedule := gocron.NewScheduler(time.UTC)
+
+	schedule.Every(2).Minutes().Do(func() {
+		logger.Info("indexing")
+		err = clientql.SyncPosts()
+		if err != nil {
+			logger.Error("failed to get names list", zap.Error(err))
+			panic(err)
+		}
+	})
+
+	schedule.StartBlocking()
 }

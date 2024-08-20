@@ -111,7 +111,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		offset = 0
 	}
 
-	query := s.conf.IndexerDB.Debug().
+	query := s.conf.IndexerDB.
 		Table("posts as p1").
 		Where("p1.parent_post_identifier = ?", "").
 		Select(`
@@ -150,17 +150,11 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	}
 
 	if premiumLevelMin > 0 {
-		fmt.Println("premiumLevelMin", premiumLevelMin)
-
 		query = query.Where("premium_level >= ?", premiumLevelMin)
 	}
 	if premiumLevelMax >= 0 {
-		fmt.Println("premiumLevelMax", premiumLevelMax)
 		query = query.Where("premium_level <= ?", premiumLevelMax)
 	}
-	//if hasLocation {
-	//	query = query.Where("array_length(array_remove(location, NULL), 1) = 2")
-	//}
 
 	query = query.
 		Order("created_at DESC").
@@ -174,20 +168,22 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	posts := make([]*feedpb.Post, len(dbPostWithExtras))
 	for idx, dbPost := range dbPostWithExtras {
 		var reactions []*feedpb.Reaction
-		for icon, _ := range dbPost.UserReactions {
+		reactionsMap := map[string]interface{}{}
+		dbPost.UserReactions.Scan(&reactionsMap)
+		for icon, users := range reactionsMap {
 			ownState := false
 			if queryUserID != "" {
 				// TODO: create a reactions table to store user reactions and have performant query
-				//for _, user := range users.([]interface{}) {
-				//	if user.(string) == queryUserID {
-				//		ownState = true
-				//		break
-				//	}
-				//}
+				for _, user := range users.([]interface{}) {
+					if user.(string) == queryUserID {
+						ownState = true
+						break
+					}
+				}
 			}
 			reactions = append(reactions, &feedpb.Reaction{
-				Icon:     "icon",
-				Count:    uint32(icon), //uint32(len(users.([]interface{}))),
+				Icon:     icon,
+				Count:    uint32(len(users.([]interface{}))),
 				OwnState: ownState,
 			})
 		}
