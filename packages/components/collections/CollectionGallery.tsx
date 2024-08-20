@@ -10,7 +10,7 @@ import { Section } from "../Section";
 import { GridList } from "../layout/GridList";
 
 export const CollectionGallery: React.FC<{
-  title: string;
+  title?: string;
   linkToMint?: boolean;
   req: CollectionsRequest;
   filter?: (c: Collection) => boolean;

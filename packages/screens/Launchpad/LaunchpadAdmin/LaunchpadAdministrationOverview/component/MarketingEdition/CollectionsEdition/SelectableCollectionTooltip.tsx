@@ -1,17 +1,21 @@
-import React from "react";
-import { Image, View, ViewStyle } from "react-native";
+import React, { FC } from "react";
+import { View, ViewStyle } from "react-native";
 
-import avaPNG from "@/assets/default-images/ava.png";
+import { Collection } from "@/api/marketplace/v1/marketplace";
 import checkBadgeSVG from "@/assets/icons/certified.svg";
-import SolanaCircleSVG from "@/assets/icons/networks/solana-circle.svg";
 import { BrandText } from "@/components/BrandText";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import { SVG } from "@/components/SVG";
 import { StateBadge } from "@/components/badges/StateBadge";
-import { neutral77 } from "@/utils/style/colors";
+import { getNetwork } from "@/networks";
+import { errorColor, neutral77 } from "@/utils/style/colors";
 import { fontSemibold12, fontSemibold16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-export const TooltipContent = () => {
+export const SelectableCollectionTooltip: FC<{
+  collection: Collection;
+}> = ({ collection }) => {
+  const collectionNetwork = getNetwork(collection.networkId);
   return (
     <>
       <View style={flexRowCenter}>
@@ -23,15 +27,17 @@ export const TooltipContent = () => {
                 { color: neutral77, marginBottom: layout.spacing_x1 },
               ]}
             >
-              Collection Name
+              Collection name
             </BrandText>
             <View style={listToggle}>
-              <Image
+              <OptimizedImage
                 style={{
                   width: 28,
                   height: 28,
                 }}
-                source={avaPNG}
+                width={28}
+                height={28}
+                sourceURI={collection.imageUri}
               />
               <BrandText
                 style={[
@@ -42,7 +48,7 @@ export const TooltipContent = () => {
                   },
                 ]}
               >
-                Meebits
+                {collection.collectionName}
               </BrandText>
               <SVG source={checkBadgeSVG} width={18} height={18} />
             </View>
@@ -57,7 +63,7 @@ export const TooltipContent = () => {
             >
               Project Readiness for Mint
             </BrandText>
-            <StateBadge text="Complete and ready to mint" />
+            <StateBadge text="TODO" />
           </View>
         </View>
 
@@ -71,19 +77,27 @@ export const TooltipContent = () => {
             >
               Collection network
             </BrandText>
-            <View style={listToggle}>
-              <SVG
-                width={28}
-                height={28}
-                source={SolanaCircleSVG}
-                color="white"
-              />
-              <BrandText
-                style={[fontSemibold16, { marginLeft: layout.spacing_x1 }]}
-              >
-                Solana
+            {collectionNetwork ? (
+              <View style={listToggle}>
+                {collectionNetwork.icon && (
+                  <SVG
+                    width={28}
+                    height={28}
+                    source={collectionNetwork.icon}
+                    color="white"
+                  />
+                )}
+                <BrandText
+                  style={[fontSemibold16, { marginLeft: layout.spacing_x1 }]}
+                >
+                  {collectionNetwork.displayName}
+                </BrandText>
+              </View>
+            ) : (
+              <BrandText style={[fontSemibold16, { color: errorColor }]}>
+                Not found
               </BrandText>
-            </View>
+            )}
           </View>
 
           <View style={{ marginTop: layout.spacing_x1_5 }}>
@@ -95,7 +109,7 @@ export const TooltipContent = () => {
             >
               Basic marketing package
             </BrandText>
-            <StateBadge text="Yes" />
+            <StateBadge text="TODO" />
           </View>
         </View>
       </View>
