@@ -3776,9 +3776,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/cli@npm:0.17.12":
-  version: 0.17.12
-  resolution: "@expo/cli@npm:0.17.12"
+"@expo/cli@npm:0.17.13":
+  version: 0.17.13
+  resolution: "@expo/cli@npm:0.17.13"
   dependencies:
     "@babel/runtime": ^7.20.0
     "@expo/code-signing-certificates": 0.0.5
@@ -3788,7 +3788,7 @@ __metadata:
     "@expo/env": ~0.2.2
     "@expo/image-utils": ^0.4.0
     "@expo/json-file": ^8.2.37
-    "@expo/metro-config": ~0.17.0
+    "@expo/metro-config": 0.17.8
     "@expo/osascript": ^2.0.31
     "@expo/package-manager": ^1.1.1
     "@expo/plist": ^0.1.0
@@ -3858,7 +3858,7 @@ __metadata:
     ws: ^8.12.1
   bin:
     expo-internal: build/bin/cli
-  checksum: cd49b7efad4a7e54a1eed90c30253605c779acecf19c7b88f23a8d856a15ae0c7e778df4c3e8d1657f560baca9292d0f83379d1e155cf76432e445a5112cc639
+  checksum: 937fe8e0aa962afff85177dcac7b14536f2798276484d10beec6d7d15309326e284321b005f96be94802333fc8e04c0de228afb37f4984436130ba6747760c0a
   languageName: node
   linkType: hard
 
@@ -4013,19 +4013,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/env@npm:~0.2.0":
-  version: 0.2.1
-  resolution: "@expo/env@npm:0.2.1"
-  dependencies:
-    chalk: ^4.0.0
-    debug: ^4.3.4
-    dotenv: ~16.0.3
-    dotenv-expand: ~10.0.0
-    getenv: ^1.0.0
-  checksum: 2b454582f0d0f267dd394add3e617f06fd05f2aa0ffd88cf8179fc69f3fc26b432a057d359886d380a168e1a6e44f6675750f59ab4d4d1866cb6767dc700570a
-  languageName: node
-  linkType: hard
-
 "@expo/env@npm:~0.2.2":
   version: 0.2.2
   resolution: "@expo/env@npm:0.2.2"
@@ -4085,9 +4072,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/metro-config@npm:0.17.7":
-  version: 0.17.7
-  resolution: "@expo/metro-config@npm:0.17.7"
+"@expo/metro-config@npm:0.17.8":
+  version: 0.17.8
+  resolution: "@expo/metro-config@npm:0.17.8"
   dependencies:
     "@babel/core": ^7.20.0
     "@babel/generator": ^7.20.5
@@ -4111,37 +4098,7 @@ __metadata:
     sucrase: 3.34.0
   peerDependencies:
     "@react-native/babel-preset": "*"
-  checksum: 2e1ff484e286a2d66bbbf925c42609ef347cb84ee66fcb567ddad7effc3f833d448ae955c98624926b7895c1eeaedd100cb4e325973c40288183131b39e4d76e
-  languageName: node
-  linkType: hard
-
-"@expo/metro-config@npm:~0.17.0":
-  version: 0.17.3
-  resolution: "@expo/metro-config@npm:0.17.3"
-  dependencies:
-    "@babel/core": ^7.20.0
-    "@babel/generator": ^7.20.5
-    "@babel/parser": ^7.20.0
-    "@babel/types": ^7.20.0
-    "@expo/config": ~8.5.0
-    "@expo/env": ~0.2.0
-    "@expo/json-file": ~8.3.0
-    "@expo/spawn-async": ^1.7.2
-    babel-preset-fbjs: ^3.4.0
-    chalk: ^4.1.0
-    debug: ^4.3.2
-    find-yarn-workspace-root: ~2.0.0
-    fs-extra: ^9.1.0
-    getenv: ^1.0.0
-    glob: ^7.2.3
-    jsc-safe-url: ^0.2.4
-    lightningcss: ~1.19.0
-    postcss: ~8.4.32
-    resolve-from: ^5.0.0
-    sucrase: 3.34.0
-  peerDependencies:
-    "@react-native/babel-preset": "*"
-  checksum: d4b5eac0c024a222d66f2d58e0d77dc7412a4eb462f093fae458a90e3e0c723a24c1b5a4f59383555075ece72dd74defae6bc914ddd819f7d80919196ae6d5ec
+  checksum: 2168f07871383e2183a39185e61985e2b100714f219af68227207a6fb85723a2b26648ce2c1dcfd4b6df06f99a9dd7da6483de81d97a1eb368521db8f297a52e
   languageName: node
   linkType: hard
 
@@ -11786,15 +11743,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:~50.0.19":
-  version: 50.0.19
-  resolution: "expo@npm:50.0.19"
+"expo@npm:~50.0.20":
+  version: 50.0.20
+  resolution: "expo@npm:50.0.20"
   dependencies:
     "@babel/runtime": ^7.20.0
-    "@expo/cli": 0.17.12
+    "@expo/cli": 0.17.13
     "@expo/config": 8.5.6
     "@expo/config-plugins": 7.9.2
-    "@expo/metro-config": 0.17.7
+    "@expo/metro-config": 0.17.8
     "@expo/vector-icons": ^14.0.0
     babel-preset-expo: ~10.0.2
     expo-asset: ~9.0.2
@@ -11807,7 +11764,7 @@ __metadata:
     whatwg-url-without-unicode: 8.0.0-3
   bin:
     expo: bin/cli
-  checksum: f5b914e07899c41f673783ea313afa0a88fe41afae1712ee8d5cf78a7f94c4563401503f85e9f29b1e9b9c1efcd786620e41d2575f2ffe348988e4cb98418ae5
+  checksum: 64e1537418780b7fd9ad1cfd23c09dc7f3be9b359b443de57455ffc70b431d3d0ff100e16de974eaa3c809f466bd781493c0663e10bca5ab0992527ff8b4cc98
   languageName: node
   linkType: hard
 
@@ -20276,7 +20233,7 @@ __metadata:
     eslint-config-universe: ^12.0.0
     eslint-plugin-react-hooks: ^4.6.0
     ethers: ^5.7.2
-    expo: ~50.0.19
+    expo: ~50.0.20
     expo-av: ~13.10.6
     expo-blur: ~12.9.2
     expo-clipboard: ~5.0.1

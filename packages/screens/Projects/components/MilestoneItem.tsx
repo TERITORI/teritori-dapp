@@ -6,11 +6,11 @@ import { Tag } from "./Milestone";
 import githubSVG from "../../../../assets/icons/github.svg";
 import trashSVG from "../../../../assets/icons/trash.svg";
 import { BrandText } from "../../../components/BrandText";
-import FlexRow from "../../../components/FlexRow";
 import { SVG } from "../../../components/SVG";
 import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
 import { SocialButton } from "../../../components/buttons/SocialButton";
 import { SpacerColumn } from "../../../components/spacer";
+import { ProjectMilestone } from "../../../utils/projects/types";
 import {
   neutral00,
   neutral22,
@@ -22,7 +22,6 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { ProjectMilestone } from "../types";
 
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature, getNetworkFeature } from "@/networks";
@@ -93,13 +92,30 @@ export const MilestoneItem: React.FC<{
             {moment.duration(milestone.duration, "seconds").humanize()}
           </BrandText>
 
-          <FlexRow
+          <SpacerColumn size={1} />
+
+          <Tag
+            containerStyle={{ alignSelf: "flex-start" }}
+            text={prettyPrice(
+              networkId,
+              milestone.amount.toString(),
+              pmFeature?.paymentsDenom,
+            )}
+            color={neutral77}
+            borderColor={neutral33}
+            bgColor={neutral00}
+          />
+
+          <SpacerColumn size={1} />
+
+          <View
             style={{
-              marginTop: layout.spacing_x2,
-              justifyContent: "space-between",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: layout.spacing_x1,
             }}
           >
-            <View style={{ flexGrow: 1, alignItems: "flex-start" }}>
+            <View>
               {milestone.priority === "MS_PRIORITY_HIGH" && (
                 <Tag bgColor="#673932" color="#ffffff" text="High 🔥" />
               )}
@@ -113,20 +129,10 @@ export const MilestoneItem: React.FC<{
               )}
             </View>
 
-            <Tag
-              text={prettyPrice(
-                networkId,
-                milestone.amount.toString(),
-                pmFeature?.paymentsDenom,
-              )}
-              color={neutral77}
-              borderColor={neutral33}
-              bgColor={neutral00}
-              containerStyle={{ marginRight: layout.spacing_x2 }}
-            />
-
-            <SocialButton iconSvg={githubSVG} style={{ height: 32 }} />
-          </FlexRow>
+            {!!milestone.link && (
+              <SocialButton iconSvg={githubSVG} link={milestone.link} />
+            )}
+          </View>
         </TertiaryBox>
       </TouchableOpacity>
 

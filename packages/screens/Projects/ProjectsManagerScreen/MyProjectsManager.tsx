@@ -3,10 +3,10 @@ import React, { useMemo, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { ContractStatusFilter, Project } from "../../../utils/projects/types";
 import { ProjectStatusTag } from "../components/ProjectStatusTag";
 import { ProjectsStatusFilterButtons } from "../components/ProjectsStatusFilterButtons";
 import { ProjectFilter, useProjects } from "../hooks/useProjects";
-import { ContractStatusFilter, Project } from "../types";
 import { getProjectStats } from "../utils";
 
 import { BrandText } from "@/components/BrandText";

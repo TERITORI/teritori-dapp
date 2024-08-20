@@ -13,18 +13,12 @@ export type MilestonePriority = z.infer<typeof zodMilestonePriority>;
 
 export const zodMilestoneFormValues = zod.object({
   id: zod.string().optional(),
-  title: zod
-    .string()
-    .min(3)
-    .regex(/^[^,]*$/, "Should not contain ,"),
-  desc: zod
-    .string()
-    .min(10)
-    .regex(/^[^,]*$/, "Should not contain ,"),
+  title: zod.string().min(3),
+  desc: zod.string().min(10),
   amount: zod.number().positive().int(),
   priority: zodMilestonePriority,
   link: zod.string().url().optional(),
-  duration: zod.number().min(1),
+  durationHours: zod.number().positive().int(),
 });
 
 export type MilestoneFormValues = zod.infer<typeof zodMilestoneFormValues>;
@@ -71,6 +65,7 @@ export const previewMilestoneForm = (fm: MilestoneFormValues) => {
     amount: fm.amount.toString(),
     link: fm.link || "",
     funded: false,
+    duration: fm.durationHours * 3600,
   };
   return m;
 };
@@ -112,24 +107,16 @@ const zodProjectShortDescData = z.object({
   desc: z.string().optional(),
   coverImg: z.string().optional(),
   tags: z.string().optional(),
+  sourceLink: z.string().optional(),
 });
 
 export type ProjectShortDescData = z.infer<typeof zodProjectShortDescData>;
 
-const zodProjectTeamAndLinkData = z.object({
-  websiteLink: z.string().optional(),
-  twitterProfile: z.string().optional(),
-  discordLink: z.string().optional(),
-  githubLink: z.string().optional(),
-  teamDesc: z.string().optional(),
-});
-
-export type ProjectTeamAndLinkData = z.infer<typeof zodProjectTeamAndLinkData>;
-
 const zodProjectMetadata = z.object({
   shortDescData: zodProjectShortDescData.optional(),
-  teamAndLinkData: zodProjectTeamAndLinkData.optional(),
 });
+
+export type ProjectMetadata = z.infer<typeof zodProjectMetadata>;
 
 export const zodProject = z.object({
   id: z.string(),

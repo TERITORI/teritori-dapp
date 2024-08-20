@@ -6,15 +6,28 @@ export const gnoTest4Network: GnoNetworkInfo = {
   kind: NetworkKind.Gno,
   displayName: "Gno Test4",
   icon: "gno.svg",
-  features: [NetworkFeature.SocialFeed, NetworkFeature.UPP],
+  features: [
+    NetworkFeature.SocialFeed,
+    NetworkFeature.UPP,
+    NetworkFeature.GnoProjectManager,
+  ],
+  featureObjects: [
+    {
+      type: NetworkFeature.GnoProjectManager,
+      projectsManagerPkgPath: "gno.land/r/teritori/projects_manager",
+      paymentsDenom: "ugnot",
+    },
+  ],
   currencies: gnoCurrencies,
   stakeCurrency: "ugnot",
   idPrefix: "gnotest4",
   chainId: "test4",
   endpoint: "https://rpc.test4.gno.land:443",
-  txExplorer: "https://gnoscan.io/transactions/details?txhash=$hash",
-  accountExplorer: "https://gnoscan.io/accounts/$address",
-  contractExplorer: "https://gnoscan.io/realms/details?path=$address",
+  txExplorer:
+    "https://gnoscan.io/transactions/details?txhash=$hash&chainId=test4",
+  accountExplorer: "https://gnoscan.io/accounts/$address?chainId=test4",
+  contractExplorer:
+    "https://gnoscan.io/realms/details?path=$address&chainId=test4",
   testnet: true,
   backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   gnowebURL: "https://gno.land",
@@ -25,4 +38,5 @@ export const gnoTest4Network: GnoNetworkInfo = {
   socialFeedsPkgPath: "gno.land/r/teritori/social_feeds",
   socialFeedsDAOPkgPath: "gno.land/r/teritori/social_feeds_dao",
   daoInterfacesPkgPath: "gno.land/p/teritori/dao_interfaces",
+  profilePkgPath: "gno.land/r/teritori/profile",
 };

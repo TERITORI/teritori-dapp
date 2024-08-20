@@ -6,9 +6,9 @@ import githubSVG from "../../../../assets/icons/github.svg";
 import FlexRow from "../../../components/FlexRow";
 import ModalBase from "../../../components/modals/ModalBase";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { Project } from "../../../utils/projects/types";
 import { ProjectStatusTag } from "../components/ProjectStatusTag";
 import { ProjectFilter, useProjects } from "../hooks/useProjects";
-import { Project } from "../types";
 
 import { BrandText } from "@/components/BrandText";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
@@ -56,7 +56,7 @@ const RequestItem: React.FC<{
 
   const { execEscrowMethod } = useEscrowContract(networkId, walletAddress);
 
-  const githubLink = project.metadata?.teamAndLinkData?.githubLink;
+  const sourceLink = project.metadata?.shortDescData?.sourceLink;
 
   const gotoProjectDetail = (project: Project) => {
     if (!project.id) {
@@ -190,12 +190,12 @@ const RequestItem: React.FC<{
             <ProjectStatusTag size="XS" status={project.status} />
           </View>
 
-          {githubLink && (
+          {sourceLink && (
             <>
               <Spacing />
 
               <View style={{ flex: 1 }}>
-                <Link to={githubLink}>
+                <Link to={sourceLink}>
                   <SocialButton
                     iconSvg={githubSVG}
                     style={{
