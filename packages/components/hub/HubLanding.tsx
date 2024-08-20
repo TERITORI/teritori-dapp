@@ -11,7 +11,7 @@ import {
   Sort,
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
-import { useBanners } from "../../hooks/useBanners";
+import { useBanners } from "../../hooks/marketing/useBanners";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { Section } from "../Section";

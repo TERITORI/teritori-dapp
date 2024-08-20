@@ -50,6 +50,7 @@ export const EditButton: FC<{
               alignItems: "center",
               justifyContent: "center",
               flexDirection: "row",
+              height: 40,
             }}
           >
             <View style={{ marginBottom: layout.spacing_x0_5 }}>
@@ -76,5 +77,5 @@ const boxBtn: BoxStyle = {
   paddingHorizontal: layout.spacing_x1_5,
   paddingVertical: layout.spacing_x1,
   backgroundColor: primaryColor,
-  marginTop: layout.spacing_x3,
+  height: 40,
 };

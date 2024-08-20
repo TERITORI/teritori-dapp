@@ -21,18 +21,22 @@ import {
   CollectionsRequest,
 } from "@/api/marketplace/v1/marketplace";
 import addCircleSVG from "@/assets/icons/add-circle.svg";
-import dotSVG from "@/assets/icons/dot-more.svg";
+import leftSVG from "@/assets/icons/chevron-left.svg";
+import rightSVG from "@/assets/icons/chevron-right.svg";
 import downSVG from "@/assets/icons/down.svg";
 import trashSVG from "@/assets/icons/trash-white.svg";
 import upSVG from "@/assets/icons/up.svg";
 import { BrandText } from "@/components/BrandText";
+import { CollectionView } from "@/components/CollectionView";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { SVG } from "@/components/SVG";
 import { BoxStyle } from "@/components/boxes/Box";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
-import { CollectionGallery } from "@/components/collections/CollectionGallery";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { GridList } from "@/components/layout/GridList";
 import { SearchInput } from "@/components/sorts/SearchInput";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useCollections } from "@/hooks/useCollections";
 import { SelectableCollection } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/component/MarketingEdition/CollectionsEdition/SelectableCollection";
 import { EditButton } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/component/MarketingEdition/EditButton";
@@ -41,6 +45,8 @@ import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 const MD_BREAKPOINT = 820;
+const ALL_LISTS_CLOSED = -1;
+const ADD_MORE_LIST_OPENED = -2;
 
 export const CollectionsEdition: FC<{
   req: CollectionsRequest;
@@ -48,9 +54,8 @@ export const CollectionsEdition: FC<{
 }> = ({ req, filter }) => {
   const { width } = useWindowDimensions();
   const [isEditing, setIsEditing] = useState(false);
-  const [openedList, setOpenedList] = useState<number>(-1);
-  const [isAddMoreOpen, setIsAdMoreOpen] = useState(false);
   const { collections } = useCollections(req, filter);
+  const [openedList, setOpenedList] = useState<number>(ALL_LISTS_CLOSED);
 
   // TODO: Better pattern to init editedCollections with collections value. I'm dumb tonight sorry
   const [editedCollections, setEditedCollections] = useState<Collection[]>([]);
@@ -74,6 +79,7 @@ export const CollectionsEdition: FC<{
   };
 
   const changeCollection = (index: number, newCollection: Collection) => {
+    setOpenedList(ALL_LISTS_CLOSED);
     setEditedCollections((collections) =>
       collections.map((collection, i) => {
         if (i === index) {
@@ -84,11 +90,12 @@ export const CollectionsEdition: FC<{
   };
 
   const addCollection = (collectionToAdd: Collection) => {
+    setOpenedList(ALL_LISTS_CLOSED);
     setEditedCollections((collections) => [...collections, collectionToAdd]);
   };
 
   return (
-    <View style={{ flexDirection: width >= MD_BREAKPOINT ? "row" : "column" }}>
+    <View>
       <EditButton
         isEditing={isEditing}
         setIsEditing={setIsEditing}
@@ -96,9 +103,11 @@ export const CollectionsEdition: FC<{
           // TODO
         }}
       />
-
+      <SpacerColumn size={2} />
       {isEditing ? (
-        <>
+        <View
+          style={{ flexDirection: width >= MD_BREAKPOINT ? "row" : "column" }}
+        >
           {editedCollections?.map((collection: Collection, index: number) => (
             <CollectionItem
               key={index}
@@ -111,6 +120,24 @@ export const CollectionsEdition: FC<{
               changeCollection={(newCollection) =>
                 changeCollection(index, newCollection)
               }
+              onPressMoveLeft={() => {
+                setEditedCollections((editedCollections) => {
+                  const collections = Array.from(editedCollections);
+                  collections[index - 1] = collection;
+                  collections[index] = editedCollections[index - 1];
+                  return collections;
+                });
+              }}
+              isMoveLeftDisabled={index === 0}
+              onPressMoveRight={() => {
+                setEditedCollections((editedCollections) => {
+                  const collections = Array.from(editedCollections);
+                  collections[index + 1] = collection;
+                  collections[index] = editedCollections[index + 1];
+                  return collections;
+                });
+              }}
+              isMoveRightDisabled={index === editedCollections.length - 1}
             />
           ))}
           {editedCollections?.length < 5 && !!selectableCollections.length ? (
@@ -122,9 +149,11 @@ export const CollectionsEdition: FC<{
                 height: 325,
               }}
             >
-              {isAddMoreOpen ? (
+              {openedList === ADD_MORE_LIST_OPENED ? (
                 <View>
-                  <TouchableOpacity onPress={() => setIsAdMoreOpen(false)}>
+                  <TouchableOpacity
+                    onPress={() => setOpenedList(ALL_LISTS_CLOSED)}
+                  >
                     <SVG
                       source={downSVG}
                       style={{
@@ -135,12 +164,12 @@ export const CollectionsEdition: FC<{
                   </TouchableOpacity>
                   <CollectionSearch
                     selectableCollections={selectableCollections}
-                    selectCollection={addCollection}
+                    selectCollection={(collection) => addCollection(collection)}
                   />
                 </View>
               ) : (
                 <TouchableOpacity
-                  onPress={() => setIsAdMoreOpen(true)}
+                  onPress={() => setOpenedList(ADD_MORE_LIST_OPENED)}
                   style={plusBox}
                 >
                   <View style={dotBackground}>
@@ -153,9 +182,23 @@ export const CollectionsEdition: FC<{
               )}
             </TertiaryBox>
           ) : null}
-        </>
+        </View>
       ) : (
-        <CollectionGallery linkToMint filter={filter} req={req} />
+        <GridList<Collection>
+          data={collections}
+          minElemWidth={250}
+          keyExtractor={(item) => item.id}
+          // onEndReached={handleEndReached}
+          noFixedHeight
+          renderItem={(props, width) => (
+            <CollectionView
+              item={props.item}
+              // linkToMint={linkToMint}
+              mintState={req.mintState}
+              width={width}
+            />
+          )}
+        />
       )}
     </View>
   );
@@ -169,6 +212,10 @@ const CollectionItem: FC<{
   selectableCollections: Collection[];
   changeCollection: (newCollection: Collection) => void;
   removeCollection: () => void;
+  onPressMoveLeft: () => void;
+  onPressMoveRight: () => void;
+  isMoveLeftDisabled: boolean;
+  isMoveRightDisabled: boolean;
 }> = ({
   collection,
   index,
@@ -177,28 +224,50 @@ const CollectionItem: FC<{
   selectableCollections,
   changeCollection,
   removeCollection,
+  onPressMoveLeft,
+  onPressMoveRight,
+  isMoveLeftDisabled,
+  isMoveRightDisabled,
 }) => {
   const { width } = useWindowDimensions();
 
   return (
     <View style={[viewBox, { width: width >= MD_BREAKPOINT ? "19%" : "100%" }]}>
       <View style={insideBoxMap}>
-        <View style={dotBackground}>
-          <BrandText style={[fontSemibold14]}>{index + 1}</BrandText>
-        </View>
-        <View>
-          <SVG source={dotSVG} />
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={dotBackground}>
+            <BrandText style={[fontSemibold14]}>{index + 1}</BrandText>
+          </View>
+          <SpacerRow size={1} />
+          <CustomPressable
+            style={[leftRightButton, isMoveLeftDisabled && { opacity: 0.5 }]}
+            disabled={isMoveLeftDisabled}
+            onPress={onPressMoveLeft}
+          >
+            <SVG source={leftSVG} style={{ width: 16, height: 16 }} />
+          </CustomPressable>
+          <SpacerRow size={1} />
+          <CustomPressable
+            style={[leftRightButton, isMoveRightDisabled && { opacity: 0.5 }]}
+            disabled={isMoveRightDisabled}
+            onPress={onPressMoveRight}
+          >
+            <SVG source={rightSVG} style={{ width: 16, height: 16 }} />
+          </CustomPressable>
         </View>
       </View>
       <TertiaryBox style={herosLisBox}>
         <TouchableOpacity
-          onPress={() => setOpenedList((old) => (old === index ? -1 : index))}
+          onPress={() =>
+            setOpenedList((old) => (old === index ? ALL_LISTS_CLOSED : index))
+          }
           style={toggleBox}
+          disabled={!selectableCollections.length}
         >
           <BrandText style={[fontSemibold14]}>
             {collection.collectionName}
           </BrandText>
-          <View>
+          <View style={!selectableCollections.length && { opacity: 0.5 }}>
             {openedList === index ? (
               <SVG source={downSVG} />
             ) : (
@@ -331,4 +400,13 @@ const imageBgStyle: ImageStyle = {
   justifyContent: "center",
   height: 260,
   width: "100%",
+};
+
+const leftRightButton: ViewStyle = {
+  borderRadius: 999,
+  width: 24,
+  height: 24,
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: neutral33,
 };

@@ -8,7 +8,7 @@ import {
   SortDirection,
 } from "@/api/marketplace/v1/marketplace";
 import { Tabs } from "@/components/tabs/Tabs";
-import { useBanners } from "@/hooks/useBanners";
+import { useBanners } from "@/hooks/marketing/useBanners";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { getNetwork } from "@/networks";
 import { BannersEdition } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/component/MarketingEdition/BannersEdition";

@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 
 import { HubBanner } from "@/components/hub/HubBanner";
-import { useBanners } from "@/hooks/useBanners";
+import { useBanners } from "@/hooks/marketing/useBanners";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { EditButton } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/component/MarketingEdition/EditButton";
 
