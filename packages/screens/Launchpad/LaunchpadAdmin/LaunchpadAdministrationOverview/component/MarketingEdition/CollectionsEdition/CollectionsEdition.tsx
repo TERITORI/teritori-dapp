@@ -38,6 +38,7 @@ import { GridList } from "@/components/layout/GridList";
 import { SearchInput } from "@/components/sorts/SearchInput";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useCollections } from "@/hooks/useCollections";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { SelectableCollection } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/component/MarketingEdition/CollectionsEdition/SelectableCollection";
 import { EditButton } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/component/MarketingEdition/EditButton";
 import { neutral00, neutral33 } from "@/utils/style/colors";
@@ -52,7 +53,8 @@ export const CollectionsEdition: FC<{
   req: CollectionsRequest;
   filter?: (c: Collection) => boolean;
 }> = ({ req, filter }) => {
-  const { width } = useWindowDimensions();
+  const { width: windowWidth } = useWindowDimensions();
+  const { width } = useMaxResolution();
   const [isEditing, setIsEditing] = useState(false);
   const { collections } = useCollections(req, filter);
   const [openedList, setOpenedList] = useState<number>(ALL_LISTS_CLOSED);
@@ -95,18 +97,23 @@ export const CollectionsEdition: FC<{
   };
 
   return (
-    <View>
+    <View style={{ width, alignSelf: "center" }}>
       <EditButton
         isEditing={isEditing}
         setIsEditing={setIsEditing}
-        saveChanges={() => {
+        onPressSave={() => {
+          // TODO
+        }}
+        onPressCancel={() => {
           // TODO
         }}
       />
       <SpacerColumn size={2} />
       {isEditing ? (
         <View
-          style={{ flexDirection: width >= MD_BREAKPOINT ? "row" : "column" }}
+          style={{
+            flexDirection: windowWidth >= MD_BREAKPOINT ? "row" : "column",
+          }}
         >
           {editedCollections?.map((collection: Collection, index: number) => (
             <CollectionItem
@@ -143,7 +150,7 @@ export const CollectionsEdition: FC<{
           {editedCollections?.length < 5 && !!selectableCollections.length ? (
             <TertiaryBox
               style={{
-                width: width >= MD_BREAKPOINT ? "19%" : "100%",
+                width: windowWidth >= MD_BREAKPOINT ? "19%" : "100%",
                 marginTop: 52,
                 padding: 12,
                 height: 325,
@@ -229,10 +236,15 @@ const CollectionItem: FC<{
   isMoveLeftDisabled,
   isMoveRightDisabled,
 }) => {
-  const { width } = useWindowDimensions();
+  const { width: windowWidth } = useWindowDimensions();
 
   return (
-    <View style={[viewBox, { width: width >= MD_BREAKPOINT ? "19%" : "100%" }]}>
+    <View
+      style={[
+        viewBox,
+        { width: windowWidth >= MD_BREAKPOINT ? "19%" : "100%" },
+      ]}
+    >
       <View style={insideBoxMap}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View style={dotBackground}>
@@ -377,6 +389,7 @@ const toggleBox: ViewStyle = {
 };
 
 const viewBox: ViewStyle = {
+  // TODO: Refacto this to have cards like CollectionView
   width: "19%",
   marginHorizontal: 8,
 };

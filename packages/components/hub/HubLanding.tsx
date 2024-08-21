@@ -12,7 +12,6 @@ import {
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
 import { useBanners } from "../../hooks/marketing/useBanners";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { Section } from "../Section";
 import { DAppCard } from "../cards/DAppCard";
@@ -21,21 +20,26 @@ import { MyWalletsCard } from "../cards/MyWalletsCard";
 import { CollectionsCarouselSection } from "../carousels/CollectionsCarouselSection";
 import { NewsCarouselSection } from "../carousels/NewsCarouselSection";
 
-import { HubBanner } from "@/components/hub/HubBanner";
+import { HubBanner } from "@/components/hub/HubBanner/HubBanner";
+import { SpacerColumn } from "@/components/spacer";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const gridHalfGutter = 12;
 
 export const HubLanding: React.FC = () => {
   const navigation = useAppNavigation();
-  const { width } = useMaxResolution();
   const networkId = useSelectedNetworkId();
   const banners = useBanners(networkId);
   const banner = banners?.length ? banners[0] : undefined;
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
       <View style={{ flex: 1 }}>
-        {!!banner && <HubBanner width={width} banner={banner} />}
+        {!!banner && (
+          <>
+            <SpacerColumn size={7} />
+            <HubBanner banner={banner} />
+          </>
+        )}
 
         <NewsCarouselSection />
 

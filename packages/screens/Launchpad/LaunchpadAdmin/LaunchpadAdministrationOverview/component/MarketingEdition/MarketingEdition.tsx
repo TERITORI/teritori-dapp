@@ -43,11 +43,11 @@ export const MarketingEdition: FC = () => {
     useState<keyof typeof marketingTabs>("banners");
 
   return (
-    <View style={{ marginTop: layout.spacing_x4 }}>
+    <View style={{ marginVertical: layout.spacing_x4 }}>
       <Tabs
         items={marketingTabs}
         selected={selectedMarketingTab}
-        style={{ height: 48, marginBottom: layout.spacing_x2 }}
+        style={{ height: 48, marginBottom: layout.spacing_x4 }}
         onSelect={setSelectedMarketingTab}
       />
       {selectedMarketingTab === "banners" && !!banner && <BannersEdition />}
