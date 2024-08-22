@@ -1,15 +1,15 @@
 import L, { DivIcon, Icon, LatLngExpression, Point } from "leaflet";
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import "../../modals/MapModal/styles.css";
 import "leaflet/dist/leaflet.css";
-import { MapContainer, Marker, Popup, TileLayer,useMap } from "react-leaflet";
-import { useEventHandlers } from '@react-leaflet/core'
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { useEventHandlers } from "@react-leaflet/core";
 import MarkerClusterGroup from "react-leaflet-cluster";
-import { View, ViewStyle, } from "react-native";
-import { useFetchFeedLocation } from "@/hooks/feed/useFetchFeed";
-import { Post } from "@/api/feed/v1/feed";
+import { HeatmapLayer } from "react-leaflet-heatmap-layer-v3";
+import { View, ViewStyle } from "react-native";
 
-import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
+import { Post } from "@/api/feed/v1/feed";
+import { useFetchFeedLocation } from "@/hooks/feed/useFetchFeed";
 
 interface MarkerPopup {
   position: LatLngExpression;
@@ -18,6 +18,11 @@ interface MarkerPopup {
   fileURL?: string;
 }
 
+type AggregatedPost = {
+  lat: number;
+  long: number;
+  totalPoints: number;
+};
 // custom cluster icon
 const createClusterCustomIcon = function (cluster: any): DivIcon {
   return new L.DivIcon({
@@ -50,33 +55,48 @@ const getPostType = (metadata: JSON) => {
   return "picture";
 };
 
-
-const FeedMapList=({ style })=> {
+const FeedMapList = ({ style }) => {
   const [bounds, setBounds] = React.useState<L.LatLngBounds | null>(null);
   const [posts, setPosts] = React.useState<Post[] | null>(null);
-  
-   const getFeedLocation =  useFetchFeedLocation()
+  const [aggregatedPosts, setAggregatedPosts] = React.useState<
+    AggregatedPost[] | null
+  >(null);
 
-  let markers: MarkerPopup[] = posts ? posts?.map(post => {
-    let metadata = JSON.parse(post.metadata);
-    return {
-      position: metadata.location,
-      popUp: metadata.message,
-      type: getPostType(metadata),
-    };
-  }) : [];
+  const getFeedLocation = useFetchFeedLocation();
+
+  const markers: MarkerPopup[] = posts
+    ? posts?.map((post) => {
+        const metadata = JSON.parse(post.metadata);
+        return {
+          position: metadata.location,
+          popUp: metadata.message,
+          type: getPostType(metadata),
+        };
+      })
+    : [];
+  const heat = aggregatedPosts
+    ? aggregatedPosts.map((aggregatedPost) => {
+        return [
+          aggregatedPost.lat,
+          aggregatedPost.long,
+          aggregatedPost.totalPoints,
+        ];
+      })
+    : [];
   useEffect(() => {
-    getFeedLocation({ // Ensure proper hook call
+    getFeedLocation({
+      // Ensure proper hook call
       north: bounds?.getNorth(),
       south: bounds?.getSouth(),
       west: bounds?.getWest(),
       east: bounds?.getEast(),
       limit: 100,
-    }).then(res => {
+    }).then((res) => {
       console.log("res", res);
       setPosts(res.list);
+      setAggregatedPosts(res.aggreations);
     });
-  }, [bounds])
+  }, [bounds]);
   const FetchMarkersOnMove = () => {
     const map = useMap();
 
@@ -85,7 +105,10 @@ const FeedMapList=({ style })=> {
       setBounds(map.getBounds());
     }, [map]);
 
-    const handlers = React.useMemo(() => ({ zoomend: onChange, moveend: onChange }), [map]);
+    const handlers = React.useMemo(
+      () => ({ zoomend: onChange, moveend: onChange }),
+      [map],
+    );
     useEventHandlers({ instance: map }, handlers);
 
     return null;
@@ -98,6 +121,20 @@ const FeedMapList=({ style })=> {
         zoom={12}
         attributionControl={false}
       >
+        <HeatmapLayer
+          points={heat}
+          gardients={{
+            0.1: "#89BDE0",
+            0.2: "#96E3E6",
+            0.4: "#82CEB6",
+            0.6: "#FAF3A5",
+            0.8: "#F5D98B",
+            "1.0": "#DE9A96",
+          }}
+          intensityExtractor={(m) => parseFloat(m[2])}
+          longitudeExtractor={(m) => m[1]}
+          latitudeExtractor={(m) => m[0]}
+        />
         <TileLayer
           noWrap
           attribution=""
@@ -107,7 +144,7 @@ const FeedMapList=({ style })=> {
           chunkedLoading
           iconCreateFunction={createClusterCustomIcon}
         >
-        {/* Mapping through the markers */}
+          {/* Mapping through the markers */}
           {markers?.map((marker, index) => (
             <Marker
               position={marker.position}
@@ -118,7 +155,7 @@ const FeedMapList=({ style })=> {
             </Marker>
           ))}
         </MarkerClusterGroup>
-        <FetchMarkersOnMove/>
+        <FetchMarkersOnMove />
       </MapContainer>
     </View>
   );
