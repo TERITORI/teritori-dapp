@@ -337,7 +337,7 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 		BossImage:  "https://gateway.pinata.cloud/ipfs/Qmd98tXCe7bxULC2X8wAhSN7KgJ2M5UESqRzhFT9VrBTpn",
 		TopN:       500,
 		StartsAt:   "2024-08-27T00:00:00",
-		EndsAt:     "2024-09-23T00:00:00",
+		EndsAt:     "2024-09-24T00:00:00",
 	},
 	// After PepeTest2
 	{
@@ -345,7 +345,7 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 		GameID:    THE_RIOT_GAME_ID,
 		BossName:  `== $*=|'¤?")à-£_%`,
 		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.cf-ipfs.com/",
-		StartsAt:  "2024-09-23T00:00:00",
+		StartsAt:  "2024-09-24T00:00:00",
 		EndsAt:    "2030-01-01T00:00:00",
 		IsPre:     true,
 	},
