@@ -322,7 +322,7 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 		BossName:  `== $*=|'¤?")à-£_%`,
 		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.cf-ipfs.com/",
 		StartsAt:  "2024-07-15T00:00:00",
-		EndsAt:    "2024-08-26T00:00:00",
+		EndsAt:    "2024-08-27T00:00:00",
 		IsPre:     true,
 	},
 	// ------------------------------
@@ -336,7 +336,7 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 		BossName:   "Alexander Aldrin",
 		BossImage:  "https://gateway.pinata.cloud/ipfs/Qmd98tXCe7bxULC2X8wAhSN7KgJ2M5UESqRzhFT9VrBTpn",
 		TopN:       500,
-		StartsAt:   "2024-08-26T00:00:00",
+		StartsAt:   "2024-08-27T00:00:00",
 		EndsAt:     "2024-09-23T00:00:00",
 	},
 	// After PepeTest2
