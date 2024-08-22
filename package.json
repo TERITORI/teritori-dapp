@@ -124,6 +124,8 @@
     "react-hook-form": "^7.50.1",
     "react-leaflet": "^4.2.1",
     "react-leaflet-cluster": "^2.1.0",
+    "react-leaflet-heatmap-layer": "^2.0.0",
+    "react-leaflet-heatmap-layer-v3": "^3.0.3-beta-1",
     "react-native": "0.73.6",
     "react-native-click-outside": "^0.1.1",
     "react-native-confetti-cannon": "^1.5.2",

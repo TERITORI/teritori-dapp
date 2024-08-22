@@ -31,6 +31,11 @@ interface MarkerPopup {
   fileURL?: string;
 }
 
+type AggregatedPost = {
+  lat: number;
+  long: number;
+  totalPoints: number;
+};
 // custom cluster icon
 const createClusterCustomIcon = function (cluster: any): DivIcon {
   return new L.DivIcon({
@@ -101,6 +106,7 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
     }).then((res) => {
       console.log("res", res);
       setPosts(res.list);
+      setAggregatedPosts(res.aggreations);
     });
   }, [bounds, getFeedLocation]);
 
@@ -131,6 +137,20 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
         zoom={12}
         attributionControl={false}
       >
+        <HeatmapLayer
+          points={heat}
+          gardients={{
+            0.1: "#89BDE0",
+            0.2: "#96E3E6",
+            0.4: "#82CEB6",
+            0.6: "#FAF3A5",
+            0.8: "#F5D98B",
+            "1.0": "#DE9A96",
+          }}
+          intensityExtractor={(m) => parseFloat(m[2])}
+          longitudeExtractor={(m) => m[1]}
+          latitudeExtractor={(m) => m[0]}
+        />
         <TileLayer
           noWrap
           attribution=""
