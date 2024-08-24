@@ -59,7 +59,7 @@ export const CollectionsEdition: FC<{
   const { collections } = useCollections(req, filter);
   const [openedList, setOpenedList] = useState<number>(ALL_LISTS_CLOSED);
 
-  // TODO: Better pattern to init editedCollections with collections value. I'm dumb tonight sorry
+  // TODO: Better pattern to init editedCollections with collections value
   const [editedCollections, setEditedCollections] = useState<Collection[]>([]);
   const [isInit, setIsInit] = useState(false);
   useEffect(() => {
@@ -104,9 +104,7 @@ export const CollectionsEdition: FC<{
         onPressSave={() => {
           // TODO
         }}
-        onPressCancel={() => {
-          // TODO
-        }}
+        onPressCancel={() => setEditedCollections(collections)}
       />
       <SpacerColumn size={2} />
       {isEditing ? (

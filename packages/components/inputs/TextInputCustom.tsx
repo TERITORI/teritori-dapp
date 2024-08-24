@@ -36,7 +36,6 @@ import {
   neutral00,
   neutral22,
   neutral33,
-  neutral77,
   neutralA3,
   secondaryColor,
 } from "../../utils/style/colors";
@@ -302,7 +301,7 @@ export const TextInputCustom = <T extends FieldValues>({
               placeholder={placeHolder}
               onChangeText={handleChangeText}
               onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
-              placeholderTextColor={neutral77}
+              placeholderTextColor={neutralA3}
               value={field.value}
               style={[styles.textInput, textInputStyle]}
               {...restProps}

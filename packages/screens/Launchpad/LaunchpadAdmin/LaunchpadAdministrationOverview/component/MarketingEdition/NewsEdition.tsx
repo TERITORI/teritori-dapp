@@ -5,7 +5,10 @@ import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { News } from "@/api/marketplace/v1/marketplace";
 import { FullWidthSeparator } from "@/components/FullWidthSeparator";
 import { LeftRightButtons } from "@/components/carousels/LeftRightButtons";
-import { NewsBox } from "@/components/hub/NewsBox";
+import {
+  actionUrlInputContainerHeight,
+  NewsBox,
+} from "@/components/hub/NewsBox";
 import { SpacerColumn } from "@/components/spacer";
 import { useNews } from "@/hooks/marketing/useNews";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
@@ -16,9 +19,22 @@ export const NewsEdition: FC = () => {
   const networkId = useSelectedNetworkId();
   const { width } = useMaxResolution();
   const carouselRef = useRef<ICarouselInstance | null>(null);
-  const renderItem = (props: { item: News }) => <NewsBox news={props.item} />;
-  const news = useNews(networkId);
+  const newsList = useNews(networkId);
   const [isEditing, setIsEditing] = useState(false);
+  // const [hasInvalidNews, setHasInvalidNews] = useState(false);
+  // const [hasChanges, setHasChanges] = useState(false);
+
+  // console.log('hasChangeshasChangeshasChangeshasChanges', hasChanges)
+  // console.log('hasInvalidNewshasInvalidNewshasInvalidNews', hasInvalidNews)
+
+  const renderItem = (props: { item: News }) => (
+    <NewsBox
+      news={props.item}
+      isEditing={isEditing}
+      // setHasInvalidNews={setHasInvalidNews}
+      // setHasChanges={setHasChanges}
+    />
+  );
 
   return (
     <View style={{ width, alignSelf: "center" }}>
@@ -34,11 +50,14 @@ export const NewsEdition: FC = () => {
           isEditing={isEditing}
           setIsEditing={setIsEditing}
           onPressSave={() => {
+            // if (!hasInvalidNews) {
             // TODO
+            // }
           }}
           onPressCancel={() => {
             // TODO
           }}
+          // isSaveDisabled={hasInvalidNews || !hasChanges}
         />
 
         <LeftRightButtons
@@ -50,16 +69,17 @@ export const NewsEdition: FC = () => {
       <SpacerColumn size={2} />
       <FullWidthSeparator />
 
-      {/*TODO: Edition*/}
+      {/*TODO: One Edit button per NewsBox ?*/}
       <Carousel
         width={width}
-        data={news || []}
+        data={newsList || []}
         ref={carouselRef}
         onConfigurePanGesture={(g) => g.enableTrackpadTwoFingerGesture(true)}
-        height={382}
+        height={isEditing ? 382 + actionUrlInputContainerHeight : 382}
         pagingEnabled
         loop
-        autoPlay
+        enabled={!isEditing}
+        autoPlay={!isEditing}
         autoPlayInterval={3000}
         renderItem={renderItem}
         style={{ alignSelf: "center" }}

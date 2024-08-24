@@ -9,7 +9,7 @@ import { SVG } from "@/components/SVG";
 import { BoxStyle } from "@/components/boxes/Box";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { SpacerRow } from "@/components/spacer";
-import { neutral17, primaryColor } from "@/utils/style/colors";
+import { primaryColor, primaryTextColor } from "@/utils/style/colors";
 import { fontSemibold12, fontSemibold13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
@@ -40,13 +40,13 @@ export const EditButton: FC<{
             <View style={boxBtn}>
               <SVG
                 source={crossSVG}
-                color={neutral17}
+                color={primaryTextColor}
                 style={{ height: 16, width: 16 }}
               />
               <BrandText
                 style={[
                   fontSemibold13,
-                  { color: neutral17, marginLeft: layout.spacing_x1 },
+                  { color: primaryTextColor, marginLeft: layout.spacing_x1 },
                 ]}
               >
                 Cancel
@@ -69,7 +69,7 @@ export const EditButton: FC<{
               <BrandText
                 style={[
                   fontSemibold13,
-                  { color: neutral17, marginLeft: layout.spacing_x0_75 },
+                  { color: primaryTextColor, marginLeft: layout.spacing_x0_75 },
                 ]}
               >
                 Save changes

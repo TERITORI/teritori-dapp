@@ -16,6 +16,9 @@ import { CollectionsEdition } from "@/screens/Launchpad/LaunchpadAdmin/Launchpad
 import { NewsEdition } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/component/MarketingEdition/NewsEdition";
 import { layout } from "@/utils/style/layout";
 
+// TODO: Enhance that by making a big form and use FormProvider or a custom Context Provider
+// TODO: Responsive
+
 const marketingTabs = {
   banners: {
     name: "Home Banner",

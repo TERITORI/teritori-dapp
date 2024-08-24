@@ -1,19 +1,18 @@
 import { z } from "zod";
 
 import { DEFAULT_FORM_ERRORS } from "@/utils/errors";
-import { URL_REGEX } from "@/utils/regex";
-import { ZodLocalFileData } from "@/utils/types/files";
+import { PAGE_REGEX, URL_REGEX } from "@/utils/regex";
 
 export const ZodBannerForm = z.object({
   url: z
     .string()
     .trim()
     .refine(
-      (value) => !value || URL_REGEX.test(value),
-      DEFAULT_FORM_ERRORS.onlyUrl,
+      (value) => !value || URL_REGEX.test(value) || PAGE_REGEX.test(value),
+      DEFAULT_FORM_ERRORS.onlyUrlOrPage,
     )
     .optional(),
-  image: ZodLocalFileData,
+  image: z.string(),
 });
 
 export type BannerForm = z.infer<typeof ZodBannerForm>;

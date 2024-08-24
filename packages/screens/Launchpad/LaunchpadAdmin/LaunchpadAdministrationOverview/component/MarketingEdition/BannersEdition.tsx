@@ -1,9 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { FC, useMemo, useState } from "react";
+import React, { FC, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { Banner } from "@/api/marketplace/v1/marketplace";
 import cameraSVG from "@/assets/icons/camera.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
@@ -34,15 +33,13 @@ export const BannersEdition: FC = () => {
   const bannerForm = useForm<BannerForm>({
     mode: "all",
     resolver: zodResolver(ZodBannerForm),
+    defaultValues: {
+      image: banner?.image || "",
+      url: banner?.url || "",
+    },
   });
-  const url = bannerForm.watch("url");
   const image = bannerForm.watch("image");
-  const newBanner: Banner = useMemo(() => {
-    return {
-      image: image?.url || banner?.image || "",
-      url: url || banner?.url || "",
-    };
-  }, [url, image?.url, banner?.url, banner?.image]);
+  const url = bannerForm.watch("url");
 
   return (
     <View style={{ width, alignSelf: "center" }}>
@@ -56,10 +53,13 @@ export const BannersEdition: FC = () => {
         <EditButton
           isEditing={isEditing}
           setIsEditing={setIsEditing}
-          isSaveDisabled={!bannerForm.formState.isValid}
+          isSaveDisabled={
+            !bannerForm.formState.isValid ||
+            (banner?.url === url && banner?.image === image)
+          }
           onPressSave={() => {
             bannerForm.handleSubmit(() => {
-              // TODO
+              // TODO:
               bannerForm.reset();
             })();
           }}
@@ -80,7 +80,7 @@ export const BannersEdition: FC = () => {
               name="url"
               noBrokenCorners
               variant="regular"
-              placeHolder="Banner redirection URL"
+              placeHolder="Banner URL or page"
               control={bannerForm.control}
               containerStyle={{
                 maxWidth: 400,
@@ -96,7 +96,7 @@ export const BannersEdition: FC = () => {
               render={({ field: { onChange } }) => (
                 <FileUploader
                   onUpload={(files) => {
-                    onChange(files[0]);
+                    onChange(files[0].url);
                   }}
                   mimeTypes={IMAGE_MIME_TYPES}
                 >
@@ -133,9 +133,7 @@ export const BannersEdition: FC = () => {
       </View>
       <SpacerColumn size={3} />
 
-      {isEditing && (
-        <HubBannerImage sourceURI={newBanner.image} width={width} />
-      )}
+      {isEditing && <HubBannerImage sourceURI={image} width={width} />}
 
       {!isEditing && banner && <HubBanner banner={banner} />}
     </View>
