@@ -11,6 +11,7 @@ pub struct MarketingContract {
     pub(crate) news: Map<u64, News>,
     pub(crate) upcoming_collections: Map<u64, MarketingCollectionPreview>,
     pub(crate) live_collections: Map<u64, MarketingCollectionPreview>,
+    pub(crate) highlighted_collections: Map<u64, MarketingCollectionPreview>,
 }
 
 #[entry_points]
@@ -33,12 +34,14 @@ impl MarketingContract {
                      , news: Option<Vec<News>>
                      , upcoming_collections: Option<Vec<MarketingCollectionPreview>>
                      , live_collections: Option<Vec<MarketingCollectionPreview>>
+                     , highlighted_collections: Option<Vec<MarketingCollectionPreview>>
   ) -> StdResult<Response> {
     self.config.save(deps.storage, &config)?;
     self.banners.save(deps.storage, &banners)?;
     self.news.save(deps.storage, &news)?;
     self.upcoming_collections.save(deps.storage, &upcoming_collections)?;
     self.live_collections.save(deps.storage, &live_collections)?;
+    self.highlighted_collections.save(deps.storage, &highlighted_collections)?;
 
     Ok(Response::default())
   }
@@ -134,6 +137,23 @@ impl MarketingContract {
     Ok(Response::new().add_attributes(attributes))
   }
 
+  #[msg(exec)]
+  // Only the admin can execute it
+  pub fn update_highlighted_collections(
+    &self,
+    ctx: ExecCtx,
+    collections: Vec<News>,
+  ) -> Result<Response, ContractError> {
+    let mut attributes = vec![attr("action", "update_highlighted_collections")];
+    // Permission check
+    if ctx.info.sender != config.admin_addr {
+      return Err(ContractError::Unauthorized);
+    }
+    self.highlighted_collections.save(ctx.deps.storage, &collections)?;
+
+    Ok(Response::new().add_attributes(attributes))
+  }
+
   #[msg(query)]
   pub fn get_config(&self, ctx: QueryCtx) -> StdResult<Config> {
     let config = self.config.load(ctx.deps.storage)?;
@@ -162,6 +182,12 @@ impl MarketingContract {
   pub fn get_upcoming_collections(&self, ctx: QueryCtx) -> StdResult<Vec<MarketingCollectionPreview>> {
     let upcoming_collections = self.upcoming_collections.load(ctx.deps.storage)?;
     Ok(upcoming_collections)
+  }
+
+  #[msg(query)]
+  pub fn get_highlighted_collections(&self, ctx: QueryCtx) -> StdResult<Vec<MarketingCollectionPreview>> {
+    let highlighted_collections = self.highlighted_collections.load(ctx.deps.storage)?;
+    Ok(highlighted_collections)
   }
 }
 
