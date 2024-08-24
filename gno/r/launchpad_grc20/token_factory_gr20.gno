@@ -13,6 +13,9 @@ import (
 type instance struct {
 	banker *grc20.Banker
 	admin  *ownable.Ownable
+	totalSupplyCap uint
+	allowMint bool
+	allowBurn bool
 }
 
 var instances avl.Tree // symbol -> instance
@@ -22,10 +25,13 @@ func New(name, symbol string, decimals uint, initialSupply) {
 	NewWithAdmin(name, symbol, decimals, initialSupply, caller)
 }
 
-func NewWithAdmin(name, symbol string, decimals uint, initialSupply, admin std.Address) {
+func NewWithAdmin(name, symbol string, decimals, initialSupply, totalSupplyCap uint, allowMint, allowBurn bool, admin std.Address) {
 	exists := instances.Has(symbol)
 	if exists {
 		panic("this token already exists")
+	}
+	if totalSupplyCap > 0 && initialSupply > totalSupplyCap {
+		panic("initial supply exceeds total supply cap")
 	}
 
 	banker := grc20.NewBanker(name, symbol, decimals)
@@ -36,7 +42,9 @@ func NewWithAdmin(name, symbol string, decimals uint, initialSupply, admin std.A
 	inst := instance{
 		banker: banker,
 		admin:  ownable.NewWithAddress(admin),
-		faucet: faucet,
+		totalSupplyCap: totalSupplyCap,
+		allowMint: allowMint,
+		allowBurn: allowBurn,
 	}
 
 	instances.Set(symbol, &inst)
@@ -77,12 +85,27 @@ func TransferFrom(symbol string, from, to std.Address, amount uint64) {
 func Mint(symbol string, to std.Address, amount uint64) {
 	inst := mustGetInstance(symbol)
 	inst.admin.AssertCallerIsOwner()
+
+	if !inst.allowMint {
+		panic("minting is not allowed")
+	}
+
+	if inst.totalSupplyCap > 0 {
+		totalSupply := inst.Token().TotalSupply()
+		if totalSupply + amount > inst.totalSupplyCap {
+			panic("minting would exceed total supply cap")
+		}
+	}
+	
 	checkErr(inst.banker.Mint(to, amount))
 }
 
 func Burn(symbol string, from std.Address, amount uint64) {
 	inst := mustGetInstance(symbol)
 	inst.admin.AssertCallerIsOwner()
+	if !inst.allowBurn {
+		panic("burning is not allowed")
+	}
 	checkErr(inst.banker.Burn(from, amount))
 }
 
