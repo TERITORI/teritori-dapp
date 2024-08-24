@@ -8,24 +8,16 @@ import {
   SortDirection,
 } from "@/api/marketplace/v1/marketplace";
 import { Tabs } from "@/components/tabs/Tabs";
-import { useBanners } from "@/hooks/marketing/useBanners";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { getNetwork } from "@/networks";
-import { BannersEdition } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/component/MarketingEdition/BannersEdition";
 import { CollectionsEdition } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/component/MarketingEdition/CollectionsEdition/CollectionsEdition";
-import { NewsEdition } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/component/MarketingEdition/NewsEdition";
 import { layout } from "@/utils/style/layout";
 
-// TODO: Enhance that by making a big form and use FormProvider or a custom Context Provider
 // TODO: Responsive
 
 const marketingTabs = {
-  banners: {
-    name: "Home Banner",
-    badgeCount: 42,
-  },
-  news: {
-    name: "Highlighted News",
+  highlightedCollections: {
+    name: "Highlighted",
     badgeCount: 3,
   },
   upcomingCollections: {
@@ -40,10 +32,9 @@ const marketingTabs = {
 
 export const MarketingEdition: FC = () => {
   const networkId = useSelectedNetworkId();
-  const banners = useBanners(networkId);
-  const banner = banners?.length ? banners[0] : undefined;
-  const [selectedMarketingTab, setSelectedMarketingTab] =
-    useState<keyof typeof marketingTabs>("banners");
+  const [selectedMarketingTab, setSelectedMarketingTab] = useState<
+    keyof typeof marketingTabs
+  >("highlightedCollections");
 
   return (
     <View style={{ marginVertical: layout.spacing_x4 }}>
@@ -53,8 +44,20 @@ export const MarketingEdition: FC = () => {
         style={{ height: 48, marginBottom: layout.spacing_x4 }}
         onSelect={setSelectedMarketingTab}
       />
-      {selectedMarketingTab === "banners" && !!banner && <BannersEdition />}
-      {selectedMarketingTab === "news" && <NewsEdition />}
+      {selectedMarketingTab === "highlightedCollections" && (
+        <CollectionsEdition
+          filter={filter}
+          req={{
+            networkId,
+            sortDirection: SortDirection.SORT_DIRECTION_DESCENDING,
+            upcoming: false,
+            sort: Sort.SORT_VOLUME,
+            limit: 16,
+            offset: 0,
+            mintState: MintState.MINT_STATE_RUNNING,
+          }}
+        />
+      )}
       {selectedMarketingTab === "upcomingCollections" && (
         <CollectionsEdition
           filter={filter}
