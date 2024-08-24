@@ -1,3 +1,5 @@
+import { LatLng } from "react-native-leaflet-view";
+
 import {
   nonSigningSocialFeedClient,
   signingSocialFeedClient,
@@ -22,7 +24,6 @@ import { RemoteFileData } from "../types/files";
 
 import { gnoTeritoriNetwork } from "@/networks/gno-teritori";
 import { teritoriNetwork } from "@/networks/teritori";
-import {LatLng} from "react-native-leaflet-view";
 
 export const convertLegacyPostId = (legacyId: string) => {
   // a "legacy id" has no network prefix, we need to support those to preserve early permalinks
