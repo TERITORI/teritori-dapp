@@ -1,10 +1,10 @@
 import { faker } from "@faker-js/faker";
-import moment from "moment";
 import { exec } from "child_process";
+import moment from "moment";
 
 // Function to generate a random metadata object
 function randomMetadata() {
-  const fileNames = ["calanques.jpg", "paris.jpg", "london.jpg", "madrid.jpg"];
+  // const fileNames = ["calanques.jpg", "paris.jpg", "london.jpg", "madrid.jpg"];
   const urls = [
     "ipfs://bafybeiehspbhuqp7hyoicpzhrbbmj62c6drjaulvodr2r3qgvxisr6wcya",
     "ipfs://bafybeifd23sdf23dfs23f23sdf32f23f23sdf23",
@@ -40,7 +40,7 @@ async function main() {
 
   // Generate the random data structure
   for (let i = 0; i < 300; i++) {
-    let metadataPased = JSON.stringify(
+    const metadataPased = JSON.stringify(
       JSON.stringify(randomMetadata()).replace(/"/g, '\\"'),
     );
     console.log(metadataPased);

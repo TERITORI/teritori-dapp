@@ -68,13 +68,28 @@ export type SocialFeedCommonMetadata = z.infer<
   typeof zodSocialFeedCommonMetadata
 >;
 
+export const ZodLatLngLiteral = z.object({
+  lat: z.number(),
+  lng: z.number(),
+  // alt: z.number().optional()
+});
+export const ZodLatLngTuple = z.tuple([
+  z.number(),
+  z.number(),
+  // I got the error "too_small" with z.number().optional(). I don't know why because it's optional. Whatever, we don't need altitude
+  // z.number().optional()
+]);
+
+export const ZodLatLngExpression = z.union([ZodLatLngLiteral, ZodLatLngTuple]);
+export type LatLngExpression = z.infer<typeof ZodLatLngExpression>;
+
 export const ZodSocialFeedPostMetadata = z.object({
   message: z.string(),
   files: MaybeFiles.optional(),
   gifs: z.array(z.string()).optional(),
   hashtags: z.array(z.string()),
   mentions: z.array(z.string()),
-  location: z.array(z.number()),
+  location: ZodLatLngExpression.optional(),
   ...zodSocialFeedCommonMetadata.shape,
 });
 export type SocialFeedPostMetadata = z.infer<typeof ZodSocialFeedPostMetadata>;
