@@ -274,9 +274,35 @@ func (s *FeedService) getPostsCountWithLocationFilter(locationFilter *locationQu
 	return totalPost, nil
 }
 
+const agregatedPostQuery = `
+with post_with_cluster as (
+	select *,(p.lat/$5)::int lat_cluster,(p.lng/$6)::int long_cluster from posts p 
+	where p.lat_int >= $2 and p.lat_int <=$1 and p.lng_int <=$3 and p.lng_int >=$4
+)
+select avg(post_with_cluster.lat) lat ,avg(post_with_cluster.lng) long,count(*) total_points, 
+post_with_cluster.lat_cluster, post_with_cluster.long_cluster
+from post_with_cluster group by post_with_cluster.lat_cluster,post_with_cluster.long_cluster
+`
+
+/*
+loadHeatMap
+
+	 _______
+	|       |
+	|       |ySquare
+	|_______|
+	    xSquare
+
+divide the entire world latitude & longitude on  squares and agregate the posts on them
+*/
 func (s *FeedService) loadHeatMap(data *feedpb.PostLocationFilter) (*feedpb.PostsResponse, error) {
 	aggregatedPosts := []*feedpb.AggregatedPost{}
-	err := s.conf.IndexerDB.Raw("select * from map_cluster($1, $2 ,$3 ,$4 ,5)", data.North, data.South, data.East, data.West).Scan(&aggregatedPosts).Error
+	latitudeClusterNumber := 30
+	longitudeClusterNumber := 60
+	xSquare := 360.0 / longitudeClusterNumber
+	ySquare := 180.0 / latitudeClusterNumber
+
+	err := s.conf.IndexerDB.Raw(agregatedPostQuery, data.North, data.South, data.East, data.West, ySquare, xSquare).Scan(&aggregatedPosts).Error
 	if err != nil {
 		fmt.Printf("error: %s\n", err.Error())
 		return nil, err
