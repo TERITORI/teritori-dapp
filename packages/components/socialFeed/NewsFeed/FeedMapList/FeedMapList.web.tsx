@@ -12,8 +12,9 @@ import {
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { View } from "react-native";
 
+import { HeatmapLayer } from "react-leaflet-heatmap-layer-v3";
+
 import { Post } from "@/api/feed/v1/feed";
-import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
 import { useFetchFeedLocation } from "@/hooks/feed/useFetchFeed";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {
@@ -21,6 +22,7 @@ import {
   PostCategory,
   ZodSocialFeedPostMetadata,
 } from "@/utils/types/feed";
+import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
 
 type PostType = "picture" | "text" | "video" | "audio";
 
@@ -31,6 +33,11 @@ interface MarkerPopup {
   fileURL?: string;
 }
 
+type AggregatedPost = {
+  lat: number;
+  long: number;
+  totalPoints: number;
+};
 // custom cluster icon
 const createClusterCustomIcon = function (cluster: any): DivIcon {
   return new L.DivIcon({
@@ -65,11 +72,15 @@ const getPostType = (category: PostCategory) => {
   }
 };
 
-const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
+
+const FeedMapList: FC<FeedMapListProps> = ({ style })=> {
   const [bounds, setBounds] = useState<L.LatLngBounds | null>(null);
   const [posts, setPosts] = useState<Post[] | null>(null);
+  const [aggregatedPosts, setAggregatedPosts] = useState<
+    AggregatedPost[] | null
+  >(null);
 
-  const getFeedLocation = useFetchFeedLocation();
+   const getFeedLocation =  useFetchFeedLocation()
 
   const markers: MarkerPopup[] = useMemo(() => {
     if (!posts) return [];
@@ -90,6 +101,16 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
     return results;
   }, [posts]);
 
+  const heat = aggregatedPosts
+    ? aggregatedPosts.map((aggregatedPost) => {
+      return [
+        aggregatedPost.lat,
+        aggregatedPost.long,
+        aggregatedPost.totalPoints,
+      ];
+    })
+    : [];
+
   useEffect(() => {
     getFeedLocation({
       // Ensure proper hook call
@@ -101,10 +122,11 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
     }).then((res) => {
       console.log("res", res);
       setPosts(res.list);
+      setAggregatedPosts(res.aggreations);
     });
   }, [bounds, getFeedLocation]);
 
-  const SetBoundsOnMapEvents: FC = () => {
+  const FetchMarkersOnMove = () => {
     const map = useMapEvents({
       // Map events
       moveend: () => {
@@ -131,6 +153,20 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
         zoom={12}
         attributionControl={false}
       >
+        <HeatmapLayer
+          points={heat}
+          gardients={{
+            0.1: "#89BDE0",
+            0.2: "#96E3E6",
+            0.4: "#82CEB6",
+            0.6: "#FAF3A5",
+            0.8: "#F5D98B",
+            "1.0": "#DE9A96",
+          }}
+          intensityExtractor={(m) => parseFloat(m[2])}
+          longitudeExtractor={(m) => m[1]}
+          latitudeExtractor={(m) => m[0]}
+        />
         <TileLayer
           noWrap
           attribution=""
@@ -141,22 +177,17 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
           iconCreateFunction={createClusterCustomIcon}
         >
           {/* Mapping through the markers */}
-          {markers?.map(
-            (marker, index) =>
-              !!marker && (
-                <Marker
-                  position={marker.position}
-                  // icon={getIcon(marker.category)}
-                  icon={getIcon(marker.type)}
-                  key={index}
-                >
-                  <Popup>{marker.popUp}</Popup>
-                </Marker>
-              ),
-          )}
+          {markers?.map((marker, index) => (
+            <Marker
+              position={marker.position}
+              icon={getIcon(marker.type)}
+              key={index}
+            >
+              <Popup>{marker.popUp}</Popup>
+            </Marker>
+          ))}
         </MarkerClusterGroup>
-
-        <SetBoundsOnMapEvents />
+        <FetchMarkersOnMove />
       </MapContainer>
     </View>
   );
