@@ -7,6 +7,7 @@ import { DAppBox } from "./DAppBox";
 import { BrandText } from "@/components/BrandText";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
 import { GridList } from "@/components/layout/GridList";
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { selectAvailableApps } from "@/store/slices/dapps-store";
 import { layout } from "@/utils/style/layout";
 import { dAppType } from "@/utils/types/dapp-store";
@@ -14,6 +15,7 @@ import { dAppType } from "@/utils/types/dapp-store";
 export const RightRail = ({ searchInput }: { searchInput: string }) => {
   const availableApps = useSelector(selectAvailableApps);
   const { width } = useWindowDimensions();
+  const [developerMode] = useDeveloperMode();
   const isMobile = width < 760;
   return (
     <View
@@ -53,10 +55,14 @@ export const RightRail = ({ searchInput }: { searchInput: string }) => {
                   noFixedHeight
                   keyExtractor={(item) => item.id}
                   data={Object.values(element.options).filter(
-                    (option: dAppType) =>
-                      option.title
+                    (option: dAppType) => {
+                      if (option.devOnly && !developerMode) {
+                        return false;
+                      }
+                      return option.title
                         .toLowerCase()
-                        .includes(searchInput.toLowerCase()),
+                        .includes(searchInput.toLowerCase());
+                    },
                   )}
                   minElemWidth={300}
                   renderItem={({ item: option }, elemWidth) => {

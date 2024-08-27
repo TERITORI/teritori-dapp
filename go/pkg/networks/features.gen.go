@@ -18,6 +18,7 @@ const (
 	FeatureTypeRiotP2E                   = FeatureType("RiotP2E")
 	FeatureTypeNFTBridge                 = FeatureType("NFTBridge")
 	FeatureTypeCosmWasmPremiumFeed       = FeatureType("CosmWasmPremiumFeed")
+	FeatureTypeGnoProjectManager         = FeatureType("GnoProjectManager")
 	FeatureTypeNFTMarketplaceLeaderboard = FeatureType("NFTMarketplaceLeaderboard")
 	FeatureTypeCosmWasmNFTsBurner        = FeatureType("CosmWasmNFTsBurner")
 )
@@ -61,6 +62,26 @@ func (nb *NetworkBase) GetFeatureCosmWasmNFTsBurner() (*FeatureCosmWasmNFTsBurne
 	return feature.(*FeatureCosmWasmNFTsBurner), nil
 }
 
+type FeatureGnoProjectManager struct {
+	*FeatureBase
+	ProjectsManagerPkgPath string `json:"projectsManagerPkgPath"`
+	PaymentsDenom          string `json:"paymentsDenom"`
+}
+
+var _ Feature = &FeatureGnoProjectManager{}
+
+func (f FeatureGnoProjectManager) Type() FeatureType {
+	return FeatureTypeGnoProjectManager
+}
+
+func (nb *NetworkBase) GetFeatureGnoProjectManager() (*FeatureGnoProjectManager, error) {
+	feature, err := nb.GetFeature(FeatureTypeGnoProjectManager)
+	if err != nil {
+		return nil, err
+	}
+	return feature.(*FeatureGnoProjectManager), nil
+}
+
 func UnmarshalFeature(b []byte) (Feature, error) {
 	var base FeatureBase
 	if err := json.Unmarshal(b, &base); err != nil {
@@ -77,6 +98,12 @@ func UnmarshalFeature(b []byte) (Feature, error) {
 		var f FeatureCosmWasmNFTsBurner
 		if err := json.Unmarshal(b, &f); err != nil {
 			return nil, errors.Wrap(err, "failed to unmarshal feature CosmWasmNFTsBurner")
+		}
+		return &f, nil
+	case FeatureTypeGnoProjectManager:
+		var f FeatureGnoProjectManager
+		if err := json.Unmarshal(b, &f); err != nil {
+			return nil, errors.Wrap(err, "failed to unmarshal feature GnoProjectManager")
 		}
 		return &f, nil
 	}

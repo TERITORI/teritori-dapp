@@ -5,6 +5,7 @@ export const teritoriTestnetCurrencies: CurrencyInfo[] = [
   {
     denom: "utori",
     displayName: "TORI",
+    variant: "cosmos",
     decimals: 6,
     coingeckoId: "teritori",
     icon: "teritori-circle.svg",

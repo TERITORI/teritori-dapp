@@ -5,7 +5,8 @@ import { StyleProp, View, ViewStyle } from "react-native";
 export const AnimatedLoader: React.FC<{
   size?: number;
   style?: StyleProp<ViewStyle>;
-}> = memo(({ size: sizeProp, style }) => {
+  testID?: string | undefined;
+}> = memo(({ size: sizeProp, style, testID }) => {
   const size = sizeProp || 80;
   return (
     <View
@@ -18,6 +19,7 @@ export const AnimatedLoader: React.FC<{
         },
         style,
       ]}
+      testID={testID}
     >
       <Lottie source={require("./animation-full-screen.json")} autoPlay loop />
     </View>
