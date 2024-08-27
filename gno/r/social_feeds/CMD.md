@@ -6,11 +6,11 @@ gnokey maketx addpkg  \
   -remote="https://rpc.gno.land:443" \
   -chainid="portal-loop" \
   -pkgdir="." \
-  -pkgpath="gno.land/p/demo/teritori/base64" \
+  -pkgpath="gno.land/p/teritori/base64" \
   mykey2
 
 gnokey maketx call \
-    -pkgpath "gno.land/r/demo/teritori/social_feeds" \
+    -pkgpath "gno.land/r/teritori/social_feeds" \
     -func "CreateFeed" \
     -gas-fee 1000000ugnot \
     -gas-wanted 3000000 \
@@ -21,7 +21,7 @@ gnokey maketx call \
     mykey2
 
 gnokey maketx call \
-    -pkgpath "gno.land/r/demo/teritori/social_feeds" \
+    -pkgpath "gno.land/r/teritori/social_feeds" \
     -func "CreatePost" \
     -gas-fee 1000000ugnot \
     -gas-wanted 2000000 \
@@ -35,7 +35,7 @@ gnokey maketx call \
     mykey2 
 
 gnokey maketx call \
-    -pkgpath "gno.land/r/demo/teritori/social_feeds" \
+    -pkgpath "gno.land/r/teritori/social_feeds" \
     -func "TipPost" \
     -gas-fee 1000000ugnot \
     -gas-wanted 3000000 \
@@ -48,7 +48,7 @@ gnokey maketx call \
     mykey2
 
 gnokey maketx call \
-    -pkgpath "gno.land/r/demo/teritori/social_feeds" \
+    -pkgpath "gno.land/r/teritori/social_feeds" \
     -func "HidePostForMe" \
     -gas-fee 1000000ugnot \
     -gas-wanted 3000000 \
@@ -59,7 +59,7 @@ gnokey maketx call \
     mykey2
 
 // Query posts
-gnokey query vm/qeval --data 'gno.land/r/demo/teritori/social_feeds
+gnokey query vm/qeval --data 'gno.land/r/teritori/social_feeds
 GetPosts(1, "", []uint64{}, 0, 10)'
 
 

@@ -9,8 +9,8 @@ import (
 	"testing"
 
 	"gno.land/p/demo/avl"
-	ujson "gno.land/p/demo/teritori/ujson"
 	"gno.land/p/demo/testutils"
+	ujson "gno.land/p/teritori/ujson"
 )
 
 var (

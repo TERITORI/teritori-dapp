@@ -7,7 +7,7 @@ interface AdenaDoContractMessage {
   value: { [key in string]: any };
 }
 
-interface RequestDocontractMessage {
+export interface RequestDocontractMessage {
   messages: AdenaDoContractMessage[];
   gasFee: number;
   gasWanted: number;

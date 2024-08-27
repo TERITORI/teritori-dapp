@@ -13,7 +13,6 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { RipperAvatar } from "./RipperAvatar";
 import { RipperStatsSection } from "./RipperStatsSection";
-import { SimpleButton } from "./SimpleButton";
 import controllerSVG from "../../../../assets/game/controller.svg";
 import dashedBorderPNG from "../../../../assets/game/dashed-border.png";
 import closeSVG from "../../../../assets/icons/close.svg";
@@ -23,6 +22,7 @@ import { NFT } from "@/api/marketplace/v1/marketplace";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { SimpleButton } from "@/components/buttons/SimpleButton";
 import { SpacerRow } from "@/components/spacer";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { getRipperRarity, isNFTStaked } from "@/utils/game";

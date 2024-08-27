@@ -416,19 +416,37 @@ generate.internal-contracts-clients: node_modules
 		npx tsx packages/scripts/makeTypescriptIndex $${outdir} || exit 1 ; \
 	done
 
-clone-gno:
-	cd gnobuild && git clone https://github.com/gnolang/gno.git
-	cp -r ./gno/p ./gnobuild/gno/examples/gno.land/p/demo/teritori
+.PHONY: install-gno
+install-gno: node_modules
+	yarn install-gno
 
+.PHONY: start.gnodev-e2e
+start.gnodev-e2e:
+	gnodev --unsafe-api --server-mode --add-account g193vp9tjhfpldvgg3gn433ayv8pn7rtfv8shyeq $$(find gno -name gno.mod -type f -exec dirname {} \;)
+
+.PHONY: clone-gno
+clone-gno:
+	mkdir -p gnobuild
+	cd gnobuild && git clone https://github.com/gnolang/gno.git && cd gno && git checkout 9b114172063feaf2da4ae7ebb8263cada3ba699b
+	cp -r ./gno/p ./gnobuild/gno/examples/gno.land/p/teritori
+
+.PHONY: build-gno
 build-gno:
 	cd gnobuild/gno/gnovm && make build
 
+.PHONY: lint-gno
 lint-gno:
 	./gnobuild/gno/gnovm/build/gno lint ./gno/. -v
 
+.PHONY: test-gno
 test-gno:
 	./gnobuild/gno/gnovm/build/gno test ./gno/... -v
 
+.PHONY: gno-mod-tidy
+gno-mod-tidy:
+	export gno=$$(pwd)/gnobuild/gno/gnovm/build/gno; \
+	find gno -name gno.mod -type f | xargs -I'{}' sh -c 'cd $$(dirname {}); $$gno mod tidy' \;
+
+.PHONY: clean-gno
 clean-gno:
 	rm -rf gnobuild
-	mkdir gnobuild

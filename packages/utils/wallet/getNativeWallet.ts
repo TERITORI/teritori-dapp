@@ -1,5 +1,5 @@
 import { Secp256k1HdWallet } from "@cosmjs/amino";
-import { stringToPath } from "@cosmjs/amino/node_modules/@cosmjs/crypto/build/slip10";
+import { stringToPath } from "@cosmjs/crypto";
 
 import { getValueFor, remove, save } from "./secure-store";
 

@@ -3,8 +3,8 @@ package dao_proposal_single
 import (
 	"strings"
 
-	"gno.land/p/demo/teritori/dao_interfaces"
-	"gno.land/p/demo/teritori/ujson"
+	"gno.land/p/teritori/dao_interfaces"
+	"gno.land/p/teritori/ujson"
 )
 
 // TODO: convert to json
@@ -16,7 +16,7 @@ type UpdateSettingsMessage struct {
 }
 
 func (usm UpdateSettingsMessage) Type() string {
-	return "gno.land/p/demo/teritori/dao_proposal_single.UpdateSettings"
+	return "gno.land/p/teritori/dao_proposal_single.UpdateSettings"
 }
 
 func (usm *UpdateSettingsMessage) String() string {
