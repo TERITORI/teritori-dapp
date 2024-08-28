@@ -9,9 +9,9 @@ import (
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
-	indexerql "github.com/TERITORI/teritori-dapp/go/pkg/indexerQL"
+	"github.com/TERITORI/teritori-dapp/go/pkg/gnoindexerql"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
-	"github.com/gofrs/uuid"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -19,11 +19,12 @@ type IndexerQL struct {
 	gqlClient graphql.Client
 	db        *gorm.DB
 	networkID string
+	logger    *zap.SugaredLogger
 }
 
-func New(networkID string, graphqlEndpoint string, db *gorm.DB) *IndexerQL {
+func New(networkID string, graphqlEndpoint string, db *gorm.DB, logger *zap.SugaredLogger) *IndexerQL {
 	gqlClient := graphql.NewClient(graphqlEndpoint, nil)
-	return &IndexerQL{gqlClient: gqlClient, db: db, networkID: networkID}
+	return &IndexerQL{gqlClient: gqlClient, db: db, networkID: networkID, logger: logger}
 }
 
 func (client *IndexerQL) SyncPosts() error {
@@ -33,19 +34,20 @@ func (client *IndexerQL) SyncPosts() error {
 		fromBlock = int(lastPost.CreatedAt) + 1
 	}
 
-	posts, err := indexerql.GetPostTransactions(context.Background(), client.gqlClient, fromBlock)
+	posts, err := gnoindexerql.GetPostTransactions(context.Background(), client.gqlClient, fromBlock)
 	if err != nil {
 		return err
 	}
 
 	for _, transaction := range posts.Transactions {
 		for _, post := range transaction.Messages {
-			data, ok := post.Value.(*indexerql.GetPostTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgCall)
+
+			data, ok := post.Value.(*gnoindexerql.GetPostTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgCall)
 			if !ok {
-				fmt.Println("not ok, skipping")
+				client.logger.Errorf("failed to get data from post %s", transaction.Hash)
 				continue
 			}
-			post, err := client.getPostWithData(data, int(transaction.Block_height))
+			post, err := client.getPostWithData(data, transaction)
 			if err != nil {
 				return err
 			}
@@ -67,7 +69,7 @@ func (client *IndexerQL) getLastPost() *indexerdb.Post {
 	return post
 }
 
-func (client *IndexerQL) getPostWithData(data *indexerql.GetPostTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgCall, blockHeight int) (indexerdb.Post, error) {
+func (client *IndexerQL) getPostWithData(data *gnoindexerql.GetPostTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgCall, transaction gnoindexerql.GetPostTransactionsTransactionsTransaction) (indexerdb.Post, error) {
 	if len(data.Args) != 4 {
 		return indexerdb.Post{}, fmt.Errorf("invalid args length")
 	}
@@ -82,12 +84,12 @@ func (client *IndexerQL) getPostWithData(data *indexerql.GetPostTransactionsTran
 		return indexerdb.Post{}, err
 	}
 	post := indexerdb.Post{
-		Identifier:           uuid.Must(uuid.NewV4()).String(),
+		Identifier:           fmt.Sprintf("%s-%s", data.Caller, transaction.Hash),
 		ParentPostIdentifier: data.Args[1],
 		Category:             uint32(categoryID),
 		Metadata:             metadataJSON,
 		NetworkID:            client.networkID,
-		CreatedAt:            int64(blockHeight),
+		CreatedAt:            int64(transaction.Block_height),
 		AuthorId:             networks.UserID(data.Caller),
 	}
 
