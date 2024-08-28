@@ -5,7 +5,6 @@ import { FlatList, View } from "react-native";
 import { screenContentMaxWidthLarge } from "../../../utils/style/layout";
 
 import { LeaderboardEntry } from "@/api/marketplace/v1/marketplace";
-import { UserNameInline } from "@/components/UserNameInline";
 import { SpacerColumn } from "@/components/spacer";
 import { TableCell } from "@/components/table/TableCell";
 import { TableHeader } from "@/components/table/TableHeader";
@@ -13,6 +12,7 @@ import { TableRow } from "@/components/table/TableRow";
 import { TableTextCell } from "@/components/table/TableTextCell";
 import { TableWrapper } from "@/components/table/TableWrapper";
 import { TableColumns } from "@/components/table/utils";
+import { UsernameWithAvatar } from "@/components/user/UsernameWithAvatar";
 import { getMarketplaceClient } from "@/utils/backend";
 
 const columns: TableColumns = {
@@ -125,7 +125,7 @@ const MarketplaceLeaderboardTableRow: React.FC<{
             flex: columns.userId.flex,
           }}
         >
-          <UserNameInline userId={leaderboardEntry.userId} />
+          <UsernameWithAvatar userId={leaderboardEntry.userId} />
         </TableCell>
 
         <TableTextCell

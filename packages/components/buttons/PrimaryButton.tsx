@@ -35,6 +35,7 @@ export const PrimaryButton: React.FC<{
   RightComponent?: React.FC;
   color?: string;
   isLoading?: boolean;
+  testID?: string;
 }> = ({
   // If no width, the buttons will fit the content including paddingHorizontal 20
   width,
@@ -51,6 +52,7 @@ export const PrimaryButton: React.FC<{
   iconColor,
   color = primaryColor,
   isLoading: isLoadingProp,
+  testID,
 }) => {
   const [isLocalLoading, setIsLocalLoading] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -89,6 +91,7 @@ export const PrimaryButton: React.FC<{
       onHoverOut={() => {
         setHovered(false);
       }}
+      testID={testID}
     >
       <SecondaryBox
         style={[

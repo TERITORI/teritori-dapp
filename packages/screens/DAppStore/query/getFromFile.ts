@@ -14,6 +14,7 @@ import multisig from "@/assets/icons/multisig.svg";
 import osmosisSVG from "@/assets/icons/networks/osmosis.svg";
 import teritoriSVG from "@/assets/icons/networks/teritori.svg";
 import pathwar from "@/assets/icons/pathwar.svg";
+import projectsProgramSVG from "@/assets/icons/projects-program.svg";
 import otherAppsIcon from "@/assets/icons/random-goods-icon.svg";
 import riot from "@/assets/icons/rioters-game.svg";
 import staking from "@/assets/icons/staking.svg";
@@ -191,6 +192,17 @@ export function getAvailableApps(): dAppGroup {
           groupKey: "top-apps",
           selectedByDefault: true,
           alwaysOn: true,
+        },
+        projects: {
+          id: "projects",
+          title: "Projects Program",
+          icon: projectsProgramSVG,
+          description: "Projects Program",
+          route: "Projects",
+          groupKey: "top-apps",
+          selectedByDefault: false,
+          alwaysOn: false,
+          devOnly: true,
         },
         toripunks: {
           id: "toripunks",

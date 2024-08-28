@@ -55,6 +55,7 @@ export const IconButton: React.FC<{
             borderRadius: borderRadiusButton(size),
             backgroundColor,
             paddingHorizontal: 20,
+            alignItems: "center",
           },
         ]}
       >

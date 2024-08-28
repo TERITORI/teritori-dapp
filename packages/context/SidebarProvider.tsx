@@ -15,12 +15,14 @@ import {
 import { useAppDispatch } from "../store/store";
 import { SIDEBAR_LIST } from "../utils/sidebar";
 
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { getValuesFromId, SEPARATOR } from "@/utils/dapp-store";
 
 export const useSidebar = () => {
   const isSidebarExpanded = useSelector(selectSidebarExpanded);
   const selectedApps = useSelector(selectCheckedApps);
   const availableApps = useSelector(selectAvailableApps);
+  const [developerMode] = useDeveloperMode();
   const dispatch = useAppDispatch();
   // on mobile sidebar is not expanded on load
   const isMobile = useIsMobile();
@@ -51,31 +53,46 @@ export const useSidebar = () => {
       [key: string]: any;
     };
 
-    selectedApps.map((element) => {
-      const { appId, groupKey } = getValuesFromId(element);
-      if (!availableApps[groupKey]) {
-        return;
-      }
-      const option = availableApps[groupKey].options[appId];
-      if (option === undefined) {
-        return;
-      }
+    selectedApps
+      .filter((element) => {
+        const { appId, groupKey } = getValuesFromId(element);
+        if (!availableApps[groupKey]) {
+          return false;
+        }
+        const option = availableApps[groupKey].options[appId];
+        if (option === undefined) {
+          return false;
+        }
+        if (option.devOnly && !developerMode) {
+          return false;
+        }
+        return true;
+      })
+      .map((element) => {
+        const { appId, groupKey } = getValuesFromId(element);
+        if (!availableApps[groupKey]) {
+          return;
+        }
+        const option = availableApps[groupKey].options[appId];
+        if (option === undefined) {
+          return;
+        }
 
-      dynamicAppsSelection[element] = SIDEBAR_LIST[option.id]
-        ? SIDEBAR_LIST[option.id]
-        : {
-            id: option.id,
-            title: option.title,
-            route: option.route,
-            url: option.url,
-            icon: option.icon,
-          };
-    });
+        dynamicAppsSelection[element] = SIDEBAR_LIST[option.id]
+          ? SIDEBAR_LIST[option.id]
+          : {
+              id: option.id,
+              title: option.title,
+              route: option.route,
+              url: option.url,
+              icon: option.icon,
+            };
+      });
 
     dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
 
     return dynamicAppsSelection;
-  }, [availableApps, selectedApps]);
+  }, [availableApps, selectedApps, developerMode]);
 
   const toggleSidebar = () => {
     dispatch(setSidebarExpanded(!isSidebarExpanded));
