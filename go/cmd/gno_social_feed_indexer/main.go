@@ -26,7 +26,6 @@ func main() {
 		dbUser       = fs.String("postgres-user", "", "username for postgreSQL")
 		networksFile = fs.String("networks-file", "networks.json", "path to networks config file")
 		networkID    = fs.String("gno-network-id", "devLocal", "network id to index")
-		txIndexerURL = fs.String("gno-tx-indexer-endpoint", "http://localhost:8546/graphql/query", "Tx indexer GraphQL endpoint")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -73,7 +72,7 @@ func main() {
 		panic(errors.Wrap(err, "failed migrate database models"))
 	}
 
-	clientql := clientql.New(network.ID, *txIndexerURL, db)
+	clientql := clientql.New(network.ID, network.GnoTxIndexerURL, db, logger.Sugar())
 	schedule := gocron.NewScheduler(time.UTC)
 
 	schedule.Every(2).Minutes().Do(func() {

@@ -117,6 +117,7 @@ type GnoNetwork struct {
 	ChainID                    string `json:"chainId"`
 	NameServiceContractAddress string `json:"nameServiceContractAddress"`
 	GnowebURL                  string `json:"gnowebURL"`
+	GnoTxIndexerURL            string `json:"gnoTxIndexerURL"`
 }
 
 var _ Network = &GnoNetwork{}

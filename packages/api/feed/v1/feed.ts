@@ -40,13 +40,6 @@ export interface Post {
   id: string;
   localIdentifier: string;
   networkId: string;
-  location: number[];
-}
-
-export interface AggregatedPost {
-  lat: number;
-  long: number;
-  totalPoints: number;
 }
 
 export interface PostFilter {
@@ -58,16 +51,6 @@ export interface PostFilter {
   premiumLevelMin: number;
   /** inclusive, -1 means infinity */
   premiumLevelMax: number;
-  hasLocation: boolean;
-}
-
-export interface PostLocationFilter {
-  north: number;
-  south: number;
-  west: number;
-  east: number;
-  hashtags: string[];
-  limit: number;
 }
 
 export interface PostsRequest {
@@ -77,7 +60,26 @@ export interface PostsRequest {
   queryUserId: string;
 }
 
+export interface PostsWithLocationRequest {
+  north: number;
+  south: number;
+  west: number;
+  east: number;
+  hashtags: string[];
+  limit: number;
+}
+
+export interface AggregatedPost {
+  lat: number;
+  long: number;
+  totalPoints: number;
+}
+
 export interface PostsResponse {
+  posts: Post[];
+}
+
+export interface PostsWithLocationResponse {
   posts: Post[];
   aggregatedPosts: AggregatedPost[];
   isAggregated: boolean;
@@ -302,7 +304,6 @@ function createBasePost(): Post {
     id: "",
     localIdentifier: "",
     networkId: "",
-    location: [],
   };
 }
 
@@ -350,11 +351,6 @@ export const Post = {
     if (message.networkId !== "") {
       writer.uint32(114).string(message.networkId);
     }
-    writer.uint32(122).fork();
-    for (const v of message.location) {
-      writer.float(v);
-    }
-    writer.ldelim();
     return writer;
   },
 
@@ -463,23 +459,6 @@ export const Post = {
 
           message.networkId = reader.string();
           continue;
-        case 15:
-          if (tag === 125) {
-            message.location.push(reader.float());
-
-            continue;
-          }
-
-          if (tag === 122) {
-            const end2 = reader.uint32() + reader.pos;
-            while (reader.pos < end2) {
-              message.location.push(reader.float());
-            }
-
-            continue;
-          }
-
-          break;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -507,7 +486,6 @@ export const Post = {
       id: isSet(object.id) ? globalThis.String(object.id) : "",
       localIdentifier: isSet(object.localIdentifier) ? globalThis.String(object.localIdentifier) : "",
       networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
-      location: globalThis.Array.isArray(object?.location) ? object.location.map((e: any) => globalThis.Number(e)) : [],
     };
   },
 
@@ -555,9 +533,6 @@ export const Post = {
     if (message.networkId !== "") {
       obj.networkId = message.networkId;
     }
-    if (message.location?.length) {
-      obj.location = message.location;
-    }
     return obj;
   },
 
@@ -580,110 +555,12 @@ export const Post = {
     message.id = object.id ?? "";
     message.localIdentifier = object.localIdentifier ?? "";
     message.networkId = object.networkId ?? "";
-    message.location = object.location?.map((e) => e) || [];
-    return message;
-  },
-};
-
-function createBaseAggregatedPost(): AggregatedPost {
-  return { lat: 0, long: 0, totalPoints: 0 };
-}
-
-export const AggregatedPost = {
-  encode(message: AggregatedPost, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.lat !== 0) {
-      writer.uint32(13).float(message.lat);
-    }
-    if (message.long !== 0) {
-      writer.uint32(21).float(message.long);
-    }
-    if (message.totalPoints !== 0) {
-      writer.uint32(24).int64(message.totalPoints);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AggregatedPost {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAggregatedPost();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 13) {
-            break;
-          }
-
-          message.lat = reader.float();
-          continue;
-        case 2:
-          if (tag !== 21) {
-            break;
-          }
-
-          message.long = reader.float();
-          continue;
-        case 3:
-          if (tag !== 24) {
-            break;
-          }
-
-          message.totalPoints = longToNumber(reader.int64() as Long);
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): AggregatedPost {
-    return {
-      lat: isSet(object.lat) ? globalThis.Number(object.lat) : 0,
-      long: isSet(object.long) ? globalThis.Number(object.long) : 0,
-      totalPoints: isSet(object.totalPoints) ? globalThis.Number(object.totalPoints) : 0,
-    };
-  },
-
-  toJSON(message: AggregatedPost): unknown {
-    const obj: any = {};
-    if (message.lat !== 0) {
-      obj.lat = message.lat;
-    }
-    if (message.long !== 0) {
-      obj.long = message.long;
-    }
-    if (message.totalPoints !== 0) {
-      obj.totalPoints = Math.round(message.totalPoints);
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<AggregatedPost>, I>>(base?: I): AggregatedPost {
-    return AggregatedPost.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<AggregatedPost>, I>>(object: I): AggregatedPost {
-    const message = createBaseAggregatedPost();
-    message.lat = object.lat ?? 0;
-    message.long = object.long ?? 0;
-    message.totalPoints = object.totalPoints ?? 0;
     return message;
   },
 };
 
 function createBasePostFilter(): PostFilter {
-  return {
-    user: "",
-    mentions: [],
-    categories: [],
-    hashtags: [],
-    premiumLevelMin: 0,
-    premiumLevelMax: 0,
-    hasLocation: false,
-  };
+  return { user: "", mentions: [], categories: [], hashtags: [], premiumLevelMin: 0, premiumLevelMax: 0 };
 }
 
 export const PostFilter = {
@@ -707,9 +584,6 @@ export const PostFilter = {
     }
     if (message.premiumLevelMax !== 0) {
       writer.uint32(48).int32(message.premiumLevelMax);
-    }
-    if (message.hasLocation === true) {
-      writer.uint32(56).bool(message.hasLocation);
     }
     return writer;
   },
@@ -773,13 +647,6 @@ export const PostFilter = {
 
           message.premiumLevelMax = reader.int32();
           continue;
-        case 7:
-          if (tag !== 56) {
-            break;
-          }
-
-          message.hasLocation = reader.bool();
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -799,7 +666,6 @@ export const PostFilter = {
       hashtags: globalThis.Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => globalThis.String(e)) : [],
       premiumLevelMin: isSet(object.premiumLevelMin) ? globalThis.Number(object.premiumLevelMin) : 0,
       premiumLevelMax: isSet(object.premiumLevelMax) ? globalThis.Number(object.premiumLevelMax) : 0,
-      hasLocation: isSet(object.hasLocation) ? globalThis.Boolean(object.hasLocation) : false,
     };
   },
 
@@ -823,9 +689,6 @@ export const PostFilter = {
     if (message.premiumLevelMax !== 0) {
       obj.premiumLevelMax = Math.round(message.premiumLevelMax);
     }
-    if (message.hasLocation === true) {
-      obj.hasLocation = message.hasLocation;
-    }
     return obj;
   },
 
@@ -840,141 +703,6 @@ export const PostFilter = {
     message.hashtags = object.hashtags?.map((e) => e) || [];
     message.premiumLevelMin = object.premiumLevelMin ?? 0;
     message.premiumLevelMax = object.premiumLevelMax ?? 0;
-    message.hasLocation = object.hasLocation ?? false;
-    return message;
-  },
-};
-
-function createBasePostLocationFilter(): PostLocationFilter {
-  return { north: 0, south: 0, west: 0, east: 0, hashtags: [], limit: 0 };
-}
-
-export const PostLocationFilter = {
-  encode(message: PostLocationFilter, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.north !== 0) {
-      writer.uint32(13).float(message.north);
-    }
-    if (message.south !== 0) {
-      writer.uint32(21).float(message.south);
-    }
-    if (message.west !== 0) {
-      writer.uint32(29).float(message.west);
-    }
-    if (message.east !== 0) {
-      writer.uint32(37).float(message.east);
-    }
-    for (const v of message.hashtags) {
-      writer.uint32(42).string(v!);
-    }
-    if (message.limit !== 0) {
-      writer.uint32(48).uint32(message.limit);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): PostLocationFilter {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePostLocationFilter();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 13) {
-            break;
-          }
-
-          message.north = reader.float();
-          continue;
-        case 2:
-          if (tag !== 21) {
-            break;
-          }
-
-          message.south = reader.float();
-          continue;
-        case 3:
-          if (tag !== 29) {
-            break;
-          }
-
-          message.west = reader.float();
-          continue;
-        case 4:
-          if (tag !== 37) {
-            break;
-          }
-
-          message.east = reader.float();
-          continue;
-        case 5:
-          if (tag !== 42) {
-            break;
-          }
-
-          message.hashtags.push(reader.string());
-          continue;
-        case 6:
-          if (tag !== 48) {
-            break;
-          }
-
-          message.limit = reader.uint32();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): PostLocationFilter {
-    return {
-      north: isSet(object.north) ? globalThis.Number(object.north) : 0,
-      south: isSet(object.south) ? globalThis.Number(object.south) : 0,
-      west: isSet(object.west) ? globalThis.Number(object.west) : 0,
-      east: isSet(object.east) ? globalThis.Number(object.east) : 0,
-      hashtags: globalThis.Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => globalThis.String(e)) : [],
-      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
-    };
-  },
-
-  toJSON(message: PostLocationFilter): unknown {
-    const obj: any = {};
-    if (message.north !== 0) {
-      obj.north = message.north;
-    }
-    if (message.south !== 0) {
-      obj.south = message.south;
-    }
-    if (message.west !== 0) {
-      obj.west = message.west;
-    }
-    if (message.east !== 0) {
-      obj.east = message.east;
-    }
-    if (message.hashtags?.length) {
-      obj.hashtags = message.hashtags;
-    }
-    if (message.limit !== 0) {
-      obj.limit = Math.round(message.limit);
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<PostLocationFilter>, I>>(base?: I): PostLocationFilter {
-    return PostLocationFilter.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<PostLocationFilter>, I>>(object: I): PostLocationFilter {
-    const message = createBasePostLocationFilter();
-    message.north = object.north ?? 0;
-    message.south = object.south ?? 0;
-    message.west = object.west ?? 0;
-    message.east = object.east ?? 0;
-    message.hashtags = object.hashtags?.map((e) => e) || [];
-    message.limit = object.limit ?? 0;
     return message;
   },
 };
@@ -1085,12 +813,292 @@ export const PostsRequest = {
   },
 };
 
+function createBasePostsWithLocationRequest(): PostsWithLocationRequest {
+  return { north: 0, south: 0, west: 0, east: 0, hashtags: [], limit: 0 };
+}
+
+export const PostsWithLocationRequest = {
+  encode(message: PostsWithLocationRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.north !== 0) {
+      writer.uint32(13).float(message.north);
+    }
+    if (message.south !== 0) {
+      writer.uint32(21).float(message.south);
+    }
+    if (message.west !== 0) {
+      writer.uint32(29).float(message.west);
+    }
+    if (message.east !== 0) {
+      writer.uint32(37).float(message.east);
+    }
+    for (const v of message.hashtags) {
+      writer.uint32(42).string(v!);
+    }
+    if (message.limit !== 0) {
+      writer.uint32(48).uint32(message.limit);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PostsWithLocationRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePostsWithLocationRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 13) {
+            break;
+          }
+
+          message.north = reader.float();
+          continue;
+        case 2:
+          if (tag !== 21) {
+            break;
+          }
+
+          message.south = reader.float();
+          continue;
+        case 3:
+          if (tag !== 29) {
+            break;
+          }
+
+          message.west = reader.float();
+          continue;
+        case 4:
+          if (tag !== 37) {
+            break;
+          }
+
+          message.east = reader.float();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.hashtags.push(reader.string());
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.limit = reader.uint32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PostsWithLocationRequest {
+    return {
+      north: isSet(object.north) ? globalThis.Number(object.north) : 0,
+      south: isSet(object.south) ? globalThis.Number(object.south) : 0,
+      west: isSet(object.west) ? globalThis.Number(object.west) : 0,
+      east: isSet(object.east) ? globalThis.Number(object.east) : 0,
+      hashtags: globalThis.Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => globalThis.String(e)) : [],
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+    };
+  },
+
+  toJSON(message: PostsWithLocationRequest): unknown {
+    const obj: any = {};
+    if (message.north !== 0) {
+      obj.north = message.north;
+    }
+    if (message.south !== 0) {
+      obj.south = message.south;
+    }
+    if (message.west !== 0) {
+      obj.west = message.west;
+    }
+    if (message.east !== 0) {
+      obj.east = message.east;
+    }
+    if (message.hashtags?.length) {
+      obj.hashtags = message.hashtags;
+    }
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PostsWithLocationRequest>, I>>(base?: I): PostsWithLocationRequest {
+    return PostsWithLocationRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<PostsWithLocationRequest>, I>>(object: I): PostsWithLocationRequest {
+    const message = createBasePostsWithLocationRequest();
+    message.north = object.north ?? 0;
+    message.south = object.south ?? 0;
+    message.west = object.west ?? 0;
+    message.east = object.east ?? 0;
+    message.hashtags = object.hashtags?.map((e) => e) || [];
+    message.limit = object.limit ?? 0;
+    return message;
+  },
+};
+
+function createBaseAggregatedPost(): AggregatedPost {
+  return { lat: 0, long: 0, totalPoints: 0 };
+}
+
+export const AggregatedPost = {
+  encode(message: AggregatedPost, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.lat !== 0) {
+      writer.uint32(13).float(message.lat);
+    }
+    if (message.long !== 0) {
+      writer.uint32(21).float(message.long);
+    }
+    if (message.totalPoints !== 0) {
+      writer.uint32(24).int64(message.totalPoints);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): AggregatedPost {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAggregatedPost();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 13) {
+            break;
+          }
+
+          message.lat = reader.float();
+          continue;
+        case 2:
+          if (tag !== 21) {
+            break;
+          }
+
+          message.long = reader.float();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.totalPoints = longToNumber(reader.int64() as Long);
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AggregatedPost {
+    return {
+      lat: isSet(object.lat) ? globalThis.Number(object.lat) : 0,
+      long: isSet(object.long) ? globalThis.Number(object.long) : 0,
+      totalPoints: isSet(object.totalPoints) ? globalThis.Number(object.totalPoints) : 0,
+    };
+  },
+
+  toJSON(message: AggregatedPost): unknown {
+    const obj: any = {};
+    if (message.lat !== 0) {
+      obj.lat = message.lat;
+    }
+    if (message.long !== 0) {
+      obj.long = message.long;
+    }
+    if (message.totalPoints !== 0) {
+      obj.totalPoints = Math.round(message.totalPoints);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AggregatedPost>, I>>(base?: I): AggregatedPost {
+    return AggregatedPost.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<AggregatedPost>, I>>(object: I): AggregatedPost {
+    const message = createBaseAggregatedPost();
+    message.lat = object.lat ?? 0;
+    message.long = object.long ?? 0;
+    message.totalPoints = object.totalPoints ?? 0;
+    return message;
+  },
+};
+
 function createBasePostsResponse(): PostsResponse {
-  return { posts: [], aggregatedPosts: [], isAggregated: false };
+  return { posts: [] };
 }
 
 export const PostsResponse = {
   encode(message: PostsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.posts) {
+      Post.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PostsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePostsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.posts.push(Post.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PostsResponse {
+    return { posts: globalThis.Array.isArray(object?.posts) ? object.posts.map((e: any) => Post.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: PostsResponse): unknown {
+    const obj: any = {};
+    if (message.posts?.length) {
+      obj.posts = message.posts.map((e) => Post.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PostsResponse>, I>>(base?: I): PostsResponse {
+    return PostsResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<PostsResponse>, I>>(object: I): PostsResponse {
+    const message = createBasePostsResponse();
+    message.posts = object.posts?.map((e) => Post.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBasePostsWithLocationResponse(): PostsWithLocationResponse {
+  return { posts: [], aggregatedPosts: [], isAggregated: false };
+}
+
+export const PostsWithLocationResponse = {
+  encode(message: PostsWithLocationResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     for (const v of message.posts) {
       Post.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -1103,10 +1111,10 @@ export const PostsResponse = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): PostsResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): PostsWithLocationResponse {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBasePostsResponse();
+    const message = createBasePostsWithLocationResponse();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1140,7 +1148,7 @@ export const PostsResponse = {
     return message;
   },
 
-  fromJSON(object: any): PostsResponse {
+  fromJSON(object: any): PostsWithLocationResponse {
     return {
       posts: globalThis.Array.isArray(object?.posts) ? object.posts.map((e: any) => Post.fromJSON(e)) : [],
       aggregatedPosts: globalThis.Array.isArray(object?.aggregatedPosts)
@@ -1150,7 +1158,7 @@ export const PostsResponse = {
     };
   },
 
-  toJSON(message: PostsResponse): unknown {
+  toJSON(message: PostsWithLocationResponse): unknown {
     const obj: any = {};
     if (message.posts?.length) {
       obj.posts = message.posts.map((e) => Post.toJSON(e));
@@ -1164,11 +1172,11 @@ export const PostsResponse = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<PostsResponse>, I>>(base?: I): PostsResponse {
-    return PostsResponse.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<PostsWithLocationResponse>, I>>(base?: I): PostsWithLocationResponse {
+    return PostsWithLocationResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<PostsResponse>, I>>(object: I): PostsResponse {
-    const message = createBasePostsResponse();
+  fromPartial<I extends Exact<DeepPartial<PostsWithLocationResponse>, I>>(object: I): PostsWithLocationResponse {
+    const message = createBasePostsWithLocationResponse();
     message.posts = object.posts?.map((e) => Post.fromPartial(e)) || [];
     message.aggregatedPosts = object.aggregatedPosts?.map((e) => AggregatedPost.fromPartial(e)) || [];
     message.isAggregated = object.isAggregated ?? false;
@@ -1178,7 +1186,10 @@ export const PostsResponse = {
 
 export interface FeedService {
   Posts(request: DeepPartial<PostsRequest>, metadata?: grpc.Metadata): Promise<PostsResponse>;
-  PostsWithLocation(request: DeepPartial<PostLocationFilter>, metadata?: grpc.Metadata): Promise<PostsResponse>;
+  PostsWithLocation(
+    request: DeepPartial<PostsWithLocationRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<PostsWithLocationResponse>;
   IPFSKey(request: DeepPartial<IPFSKeyRequest>, metadata?: grpc.Metadata): Promise<IPFSKeyResponse>;
 }
 
@@ -1196,8 +1207,11 @@ export class FeedServiceClientImpl implements FeedService {
     return this.rpc.unary(FeedServicePostsDesc, PostsRequest.fromPartial(request), metadata);
   }
 
-  PostsWithLocation(request: DeepPartial<PostLocationFilter>, metadata?: grpc.Metadata): Promise<PostsResponse> {
-    return this.rpc.unary(FeedServicePostsWithLocationDesc, PostLocationFilter.fromPartial(request), metadata);
+  PostsWithLocation(
+    request: DeepPartial<PostsWithLocationRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<PostsWithLocationResponse> {
+    return this.rpc.unary(FeedServicePostsWithLocationDesc, PostsWithLocationRequest.fromPartial(request), metadata);
   }
 
   IPFSKey(request: DeepPartial<IPFSKeyRequest>, metadata?: grpc.Metadata): Promise<IPFSKeyResponse> {
@@ -1237,12 +1251,12 @@ export const FeedServicePostsWithLocationDesc: UnaryMethodDefinitionish = {
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return PostLocationFilter.encode(this).finish();
+      return PostsWithLocationRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = PostsResponse.decode(data);
+      const value = PostsWithLocationResponse.decode(data);
       return {
         ...value,
         toObject() {

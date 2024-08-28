@@ -1,9 +1,9 @@
 schema: indexer-schema.graphql
 operations:
 - indexer-operations.graphql
-generated: indexerQL.go
+generated: gnoindexerQL.go
 
-package: indexerql
+package: gnoindexerql
 
 # We bind github's DateTime scalar type to Go's time.Time (which conveniently
 # already defines MarshalJSON and UnmarshalJSON).  This means genqlient will

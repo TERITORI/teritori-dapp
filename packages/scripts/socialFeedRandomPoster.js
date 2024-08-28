@@ -37,6 +37,11 @@ function randomMetadata() {
 }
 async function main() {
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const KEY = "YOURKEY";
+  const BASE = "teritori";
+  const REMOTE = "http://127.0.0.1:26657";
+  const CHAIN_ID = "dev";
+  const PASSWORD = "PASSWORD";
 
   // Generate the random data structure
   for (let i = 0; i < 300; i++) {
@@ -45,7 +50,20 @@ async function main() {
     );
     console.log(metadataPased);
     await exec(
-      `make add_post metadata=${metadataPased}`,
+      `echo ${PASSWORD} | gnokey maketx call \
+      -pkgpath "gno.land/r/${BASE}/social_feeds" \
+      -func="CreatePost" \
+      -gas-fee="1000000ugnot" \
+      -gas-wanted="3000000" \
+      -remote="${REMOTE}" \
+      -chainid="${CHAIN_ID}" \
+      -broadcast \
+      --insecure-password-stdin \
+      -args 1 \
+      -args 0 \
+      -args 0 \
+      -args "$(metadataPased)" \
+      ${KEY} `,
       async (error, stdout, stderr) => {
         if (error) {
           console.error(`error: ${error.message}`);
