@@ -37,7 +37,6 @@ message Post {
   string id = 12;
   string local_identifier = 13;
   string network_id = 14;
-  repeated float location = 15;
 }
 
 message AggregatedPost {
@@ -54,7 +53,7 @@ message PostFilter {
   int32 premium_level_min = 5; // inclusive
   int32 premium_level_max = 6; // inclusive, -1 means infinity
   string network_id = 7;
-  bool hasLocation = 7;
+  bool hasLocation = 8;
 }
 
 message PostLocationFilter {

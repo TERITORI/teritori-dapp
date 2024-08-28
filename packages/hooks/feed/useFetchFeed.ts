@@ -22,6 +22,12 @@ import { decodeGnoPost } from "@/utils/feed/gno";
 import { extractGnoJSONString } from "@/utils/gno";
 import { DeepPartial } from "@/utils/typescript";
 
+interface PostsWithAggregations {
+  list: Post[],
+  totalCount: number,
+  aggregations: AggregatedPost[],
+}
+
 export type PostsList = {
   list: Post[];
   totalCount: number | undefined;
@@ -122,17 +128,13 @@ export const useFetchFeed = (req: DeepPartial<PostsRequest>) => {
 
 export const useFetchFeedLocation = (): ((
   req: Partial<PostLocationFilter>,
-) => Promise<{
-  list: Post[];
-  aggreations: AggregatedPost[];
-  totalCount: number;
-}>) => {
+) => Promise<PostsWithAggregations>) => {
   const selectedNetwork = useSelectedNetworkInfo();
 
   return async (
     req: Partial<PostLocationFilter>,
-  ): Promise<{ list: Post[]; totalCount: number }> => {
-    if (!selectedNetwork) return Promise.resolve({ list: [], totalCount: 0 });
+  ): Promise<PostsWithAggregations> => {
+    if (!selectedNetwork) return Promise.resolve({ list: [], totalCount: 0, aggregations: [] });
     return await fetchTeritoriFeedLocation(selectedNetwork, req);
   };
 };
@@ -140,13 +142,13 @@ export const useFetchFeedLocation = (): ((
 const fetchTeritoriFeedLocation = async (
   selectedNetwork: NetworkInfo,
   req: Partial<PostLocationFilter>,
-) => {
+): Promise<PostsWithAggregations> => {
   const feedClient = mustGetFeedClient(selectedNetwork.id);
   const response = await feedClient.PostsWithLocation(req);
   const list = response.posts.sort((a, b) => b.createdAt - a.createdAt);
   return {
     list,
     totalCount: list.length,
-    aggreations: response.aggregatedPosts,
+    aggregations: response.aggregatedPosts,
   };
 };

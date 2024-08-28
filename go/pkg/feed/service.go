@@ -87,7 +87,6 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		hashtags        []string
 		premiumLevelMin int32
 		premiumLevelMax int32
-		hasLocation     bool
 	)
 
 	if filter != nil {
@@ -98,9 +97,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		mentions = filter.Mentions
 		premiumLevelMin = filter.PremiumLevelMin
 		premiumLevelMax = filter.PremiumLevelMax
-		hasLocation = filter.HasLocation
 	}
-	_ = hasLocation
 
 	queryUserID := req.GetQueryUserId()
 
