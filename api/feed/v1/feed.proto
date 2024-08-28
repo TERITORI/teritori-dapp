@@ -5,7 +5,7 @@ option go_package = "./feedpb";
 
 service FeedService {
   rpc Posts(PostsRequest) returns (PostsResponse);
-  rpc PostsWithLocation(PostLocationFilter) returns (PostsResponse);
+  rpc PostsWithLocation(PostsWithLocationRequest) returns (PostsWithLocationResponse);
   rpc IPFSKey(IPFSKeyRequest) returns (IPFSKeyResponse);
 }
 
@@ -39,12 +39,6 @@ message Post {
   string network_id = 14;
 }
 
-message AggregatedPost {
-  float lat = 1;
-  float long = 2;
-  int64 total_points = 3;
-}
-
 message PostFilter {
   string user = 1;
   repeated string mentions = 2;
@@ -56,15 +50,6 @@ message PostFilter {
   bool hasLocation = 8;
 }
 
-message PostLocationFilter {
-  float north = 1;
-  float south = 2;
-  float west = 3;
-  float east = 4;
-  repeated string hashtags = 5;
-  uint32 limit = 6;
-}
-
 message PostsRequest {
     PostFilter filter = 1;
     uint32 limit = 2;
@@ -72,9 +57,27 @@ message PostsRequest {
     string query_user_id = 4;
 }
 
+message PostsWithLocationRequest {
+    float north = 1;
+    float south = 2;
+    float west = 3;
+    float east = 4;
+    repeated string hashtags = 5;
+    uint32 limit = 6;
+}
+
+message AggregatedPost {
+  float lat = 1;
+  float long = 2;
+  int64 total_points = 3;
+}
 
 message PostsResponse {
     repeated Post posts = 1;
-    repeated AggregatedPost aggregatedPosts = 2;
+}
+
+message PostsWithLocationResponse {
+    repeated Post posts = 1;
+    repeated AggregatedPost aggregated_posts = 2;
     bool is_aggregated = 3;
 }

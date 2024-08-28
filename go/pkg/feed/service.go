@@ -215,14 +215,13 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 			Reactions:            reactions,
 			TipAmount:            dbPost.TipAmount,
 			PremiumLevel:         dbPost.PremiumLevel,
-			Location:             []float32{float32(dbPost.Lat), float32(dbPost.Lng)},
 		}
 	}
 
 	return &feedpb.PostsResponse{Posts: posts}, nil
 }
 
-func (s *FeedService) PostsWithLocation(ctx context.Context, data *feedpb.PostLocationFilter) (*feedpb.PostsResponse, error) {
+func (s *FeedService) PostsWithLocation(ctx context.Context, data *feedpb.PostsWithLocationRequest) (*feedpb.PostsWithLocationResponse, error) {
 	locationFilter := locationFilter(data)
 	totalPosts, err := s.getPostsCountWithLocationFilter(locationFilter)
 	if err != nil {
@@ -288,11 +287,11 @@ loadHeatMap
 	|       |
 	|       |ySquare
 	|_______|
-	    xSquare
+	 xSquare
 
 divide the entire world latitude & longitude on  squares and agregate the posts on them
 */
-func (s *FeedService) loadHeatMap(data *feedpb.PostLocationFilter) (*feedpb.PostsResponse, error) {
+func (s *FeedService) loadHeatMap(data *feedpb.PostsWithLocationRequest) (*feedpb.PostsWithLocationResponse, error) {
 	aggregatedPosts := []*feedpb.AggregatedPost{}
 	latitudeClusterNumber := 30
 	longitudeClusterNumber := 60
@@ -305,18 +304,18 @@ func (s *FeedService) loadHeatMap(data *feedpb.PostLocationFilter) (*feedpb.Post
 		return nil, err
 	}
 
-	return &feedpb.PostsResponse{
+	return &feedpb.PostsWithLocationResponse{
 		AggregatedPosts: aggregatedPosts,
 		IsAggregated:    true,
 	}, nil
 }
 
-func (s *FeedService) loadDetailedPosts(data *feedpb.PostLocationFilter, locationFilter *locationQueryData) (*feedpb.PostsResponse, error) {
+func (s *FeedService) loadDetailedPosts(data *feedpb.PostsWithLocationRequest, locationFilter *locationQueryData) (*feedpb.PostsWithLocationResponse, error) {
 	posts, err := s.getPostsWithLocationFilter(locationFilter)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get posts with location filter")
 	}
-	res := &feedpb.PostsResponse{
+	res := &feedpb.PostsWithLocationResponse{
 		Posts: make([]*feedpb.Post, 0, len(posts)),
 	}
 
@@ -344,7 +343,6 @@ func (s *FeedService) loadDetailedPosts(data *feedpb.PostLocationFilter, locatio
 			Reactions:            nil,
 			TipAmount:            post.TipAmount,
 			PremiumLevel:         post.PremiumLevel,
-			Location:             []float32{float32(post.Lat), float32(post.Lng)},
 		})
 	}
 
@@ -357,7 +355,7 @@ func (data *locationQueryData) cacheKey() string {
 	return fmt.Sprintf("%d_%d_%d_%d", data.N, data.S, data.W, data.E)
 }
 
-func locationFilter(data *feedpb.PostLocationFilter) *locationQueryData {
+func locationFilter(data *feedpb.PostsWithLocationRequest) *locationQueryData {
 	return &locationQueryData{
 		N: getNextTenth(int(data.North)),
 		S: getLowerTenth(int(data.South)),

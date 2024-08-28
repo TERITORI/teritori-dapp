@@ -92,10 +92,10 @@ lint.js: node_modules
 go/pkg/holagql/holaplex-schema.graphql:
 	rover graph introspect https://graph.65.108.73.219.nip.io/v1 > $@
 
-.PHONY: go/pkg/indexerQL/indexer-schema.graphql
-go/pkg/indexerQL/indexer-schema.graphql:
+.PHONY: go/pkg/gnoindexerql/indexer-schema.graphql
+go/pkg/gnoindexerql/indexer-schema.graphql:
 	rover graph introspect http://localhost:8546/graphql/query > $@
-	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/indexerQL/genqlient.yaml
+	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/gnoindexerql/genqlient.yaml
 
 .PHONY: docker.backend
 docker.backend:
