@@ -1,5 +1,5 @@
 import MaskedView from "@react-native-masked-view/masked-view";
-import { LinearGradient } from "expo-linear-gradient";
+import { LinearGradient, LinearGradientProps } from "expo-linear-gradient";
 import React, { ReactNode } from "react";
 import { StyleProp, StyleSheet, TextStyle } from "react-native";
 
@@ -16,9 +16,11 @@ import {
   gradientColorPink,
   gradientColorPurple,
   gradientColorSalmon,
-  gradientColorTurquoise,
+  gradientColorTurquoise
 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
+import { getMapPostTextGradient, getMapPostTextGradientType } from "@/utils/feed/map";
+import { PostCategory } from "@/utils/types/feed";
 
 export type GradientType =
   | "blue"
@@ -27,7 +29,12 @@ export type GradientType =
   | "purple"
   | "pink"
   | "gray"
-  | "grayLight";
+  | "grayLight"
+  | "feed-map-normal-post"
+  | "feed-map-article-post"
+  | "feed-map-video-post"
+  | "feed-map-music-post"
+  | "feed-map-picture-post"
 
 export interface GradientTextProps {
   style?: StyleProp<
@@ -48,7 +55,7 @@ export interface GradientTextProps {
   children: ReactNode;
 }
 
-const gradient = (type: GradientType) => {
+const gradient = (type: GradientType): LinearGradientProps => {
   const start = { x: 0, y: 0.5 };
   const end = { x: 1, y: 0.5 };
 
@@ -99,14 +106,30 @@ const gradient = (type: GradientType) => {
         start,
         end,
       };
+    case getMapPostTextGradientType(PostCategory.Normal):
+      return getMapPostTextGradient(PostCategory.Normal);
+    case getMapPostTextGradientType(PostCategory.Article):
+      return getMapPostTextGradient(PostCategory.Article);
+    case getMapPostTextGradientType(PostCategory.Video):
+      return getMapPostTextGradient(PostCategory.Video);
+    case getMapPostTextGradientType(PostCategory.Picture):
+      return getMapPostTextGradient(PostCategory.Picture);
+    case getMapPostTextGradientType(PostCategory.MusicAudio):
+      return getMapPostTextGradient(PostCategory.MusicAudio);
+    default:
+      return {
+        colors: [gradientColorLightBlue, gradientColorDarkBlue],
+        start,
+        end,
+      };
   }
 };
 
 export const GradientText: React.FC<GradientTextProps> = ({
-  gradientType,
-  children,
-  style,
-}) => {
+                                                            gradientType,
+                                                            children,
+                                                            style,
+                                                          }) => {
   const flatStyle = StyleSheet.flatten(style);
 
   return (
