@@ -3,6 +3,7 @@ package launchpad_grc20
 import (
 	"std"
 	"strings"
+	"hash/adler32"
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/grc/grc20"
@@ -13,19 +14,27 @@ import (
 type instance struct {
 	banker *grc20.Banker
 	admin  *ownable.Ownable
+	image string
 	totalSupplyCap uint
 	allowMint bool
 	allowBurn bool
 }
 
 var instances avl.Tree // symbol -> instance
+var factoryVault std.Address
 
-func New(name, symbol string, decimals uint, initialSupply) {
+// Initialize tori address as admin & vault for fees
+func init() {
+	instances = avl.NewWithStringKey()
+	admin = std.Address("g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r")
+}
+
+func CreateToken(name, symbol string, decimals uint, initialSupply) {
 	caller := std.PrevRealm().Addr()
 	NewWithAdmin(name, symbol, decimals, initialSupply, caller)
 }
 
-func NewWithAdmin(name, symbol string, decimals, initialSupply, totalSupplyCap uint, allowMint, allowBurn bool, admin std.Address) {
+func NewWithAdmin(name, symbol, image string, decimals, initialSupply, totalSupplyCap uint, allowMint, allowBurn bool, admin std.Address) {
 	exists := instances.Has(symbol)
 	if exists {
 		panic("this token already exists")
@@ -35,19 +44,32 @@ func NewWithAdmin(name, symbol string, decimals, initialSupply, totalSupplyCap u
 	}
 
 	banker := grc20.NewBanker(name, symbol, decimals)
-	if initialSupply > 0 {
-		banker.Mint(admin, initialSupply)
+
+	// Fee is 2.5% of initial supply
+	fee := initialSupply * 25 / 1000
+	netSupply := initialSupply - fee
+	if fee > 0 {
+		banker.Mint(factoryVault, fee)
+	}
+
+	if netSupply > 0 {
+		banker.Mint(admin, netSupply)
 	}
 
 	inst := instance{
 		banker: banker,
 		admin:  ownable.NewWithAddress(admin),
+		image: image,
 		totalSupplyCap: totalSupplyCap,
 		allowMint: allowMint,
 		allowBurn: allowBurn,
 	}
 
-	instances.Set(symbol, &inst)
+	if instances.Has(name) {
+		panic("this combination of symbol and name is already in use")
+	}
+
+	instances.Set(name, &inst)
 }
 
 func (inst instance) Token() grc20.Token { return inst.banker.Token() }
