@@ -10,27 +10,27 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
+import { HeatmapLayer } from "react-leaflet-heatmap-layer-v3/lib";
 import { View } from "react-native";
 
 import { Post } from "@/api/feed/v1/feed";
+import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
+import { ArticlePostPreview } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/ArticlePostPreview";
+import { MusicPostPreview } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/MusicPostPreview";
+import { NormalPostPreview } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/NormalPostPreview";
+import { PicturePostPreview } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/PicturePostPreview";
+import { VideoPostPreview } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/VideoPostPreview";
 import { useFetchFeedLocation } from "@/hooks/feed/useFetchFeed";
+import {
+  getMapPostIconColorRgba,
+  getMapPostIconSVGString,
+} from "@/utils/feed/map";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {
   LatLngExpression,
   PostCategory,
   ZodSocialFeedPostMetadata,
 } from "@/utils/types/feed";
-import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
-import { HeatmapLayer } from "react-leaflet-heatmap-layer-v3/lib";
-import {
-  getMapPostIconColorRgba,
-  getMapPostIconSVGString
-} from "@/utils/feed/map";
-import { NormalPostPreview } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/NormalPostPreview";
-import { ArticlePostPreview } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/ArticlePostPreview";
-import { VideoPostPreview } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/VideoPostPreview";
-import { MusicPostPreview } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/MusicPostPreview";
-import { PicturePostPreview } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/PicturePostPreview";
 
 interface MarkerPopup {
   position: LatLngExpression;
@@ -57,24 +57,24 @@ const createClusterCustomIcon = function (cluster: any): DivIcon {
 const getIcon = (postCategory: PostCategory) => {
   const size = 32;
   const borderWidth = 1;
-  const sizeWithBorders = 32 + borderWidth*2;
+  const sizeWithBorders = 32 + borderWidth * 2;
   return new DivIcon({
     html: `<div style="border-radius: 99px;
     height: ${size}px; width: ${size}px; border: 1px solid #A3A3A3;
      background-color: rgba(${getMapPostIconColorRgba(postCategory)}); display: flex; align-items: center; justify-content: center;">${getMapPostIconSVGString(postCategory)}</div>`,
     className: "",
-     iconSize: [sizeWithBorders, sizeWithBorders],
+    iconSize: [sizeWithBorders, sizeWithBorders],
   });
 };
 
-const FeedMapList: FC<FeedMapListProps> = ({ style })=> {
+const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
   const [bounds, setBounds] = useState<L.LatLngBounds | null>(null);
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [aggregatedPosts, setAggregatedPosts] = useState<
     AggregatedPost[] | null
   >(null);
 
-   const getFeedLocation =  useFetchFeedLocation()
+  const getFeedLocation = useFetchFeedLocation();
 
   const markers: MarkerPopup[] = useMemo(() => {
     if (!posts) return [];
@@ -96,12 +96,12 @@ const FeedMapList: FC<FeedMapListProps> = ({ style })=> {
 
   const heatPoints = aggregatedPosts
     ? aggregatedPosts.map((aggregatedPost) => {
-      return [
-        aggregatedPost.lat,
-        aggregatedPost.long,
-        aggregatedPost.totalPoints,
-      ];
-    })
+        return [
+          aggregatedPost.lat,
+          aggregatedPost.long,
+          aggregatedPost.totalPoints,
+        ];
+      })
     : [];
 
   useEffect(() => {
@@ -155,9 +155,17 @@ const FeedMapList: FC<FeedMapListProps> = ({ style })=> {
             0.8: "#F5D98B",
             "1.0": "#DE9A96",
           }}
-          intensityExtractor={(point) => Array.isArray(point) && typeof point[2] === "string" ? parseFloat(point[2]) : 0}
-          longitudeExtractor={(point) => Array.isArray(point) && typeof point[1] === "number" ? point[1] : 0}
-          latitudeExtractor={(point) => Array.isArray(point) && typeof point[0] === "number" ? point[0] : 0}
+          intensityExtractor={(point) =>
+            Array.isArray(point) && typeof point[2] === "string"
+              ? parseFloat(point[2])
+              : 0
+          }
+          longitudeExtractor={(point) =>
+            Array.isArray(point) && typeof point[1] === "number" ? point[1] : 0
+          }
+          latitudeExtractor={(point) =>
+            Array.isArray(point) && typeof point[0] === "number" ? point[0] : 0
+          }
         />
         <TileLayer
           noWrap
@@ -170,18 +178,18 @@ const FeedMapList: FC<FeedMapListProps> = ({ style })=> {
         >
           {/* Mapping through the markers */}
 
-
           {/*{markers?.map((marker, index) => */}
-            <Marker
-              // position={marker.position}
-              position={[0,0]}
-              icon={getIcon(PostCategory.Normal)}
-              // key={index}
-            >
-              <Popup closeButton={false} className="marker-popup"><NormalPostPreview/></Popup>
-            </Marker>
+          <Marker
+            // position={marker.position}
+            position={[0, 0]}
+            icon={getIcon(PostCategory.Normal)}
+            // key={index}
+          >
+            <Popup closeButton={false} className="marker-popup">
+              <NormalPostPreview />
+            </Popup>
+          </Marker>
           {/*)} */}
-
 
           {/*maxWidth?: number | undefined;*/}
           {/*minWidth?: number | undefined;*/}
@@ -196,48 +204,54 @@ const FeedMapList: FC<FeedMapListProps> = ({ style })=> {
           {/*closeOnClick?: boolean | undefined;*/}
           {/*closeOnEscapeKey?: boolean | undefined;*/}
 
-
           <Marker
             // position={marker.position}
-            position={[1,1]}
+            position={[1, 1]}
             icon={getIcon(PostCategory.Article)}
             // key={index}
           >
-            <Popup closeButton={false} className="marker-popup"><ArticlePostPreview/></Popup>
+            <Popup closeButton={false} className="marker-popup">
+              <ArticlePostPreview />
+            </Popup>
           </Marker>
           <Marker
             // position={marker.position}
-            position={[2,2]}
+            position={[2, 2]}
             icon={getIcon(PostCategory.Video)}
             // key={index}
           >
-            <Popup closeButton={false} className="marker-popup"><VideoPostPreview/></Popup>
+            <Popup closeButton={false} className="marker-popup">
+              <VideoPostPreview />
+            </Popup>
           </Marker>
           <Marker
             // position={marker.position}
-            position={[3,3]}
+            position={[3, 3]}
             icon={getIcon(PostCategory.MusicAudio)}
             // key={index}
           >
-            <Popup closeButton={false} className="marker-popup"><MusicPostPreview/></Popup>
+            <Popup closeButton={false} className="marker-popup">
+              <MusicPostPreview />
+            </Popup>
           </Marker>
           <Marker
             // position={marker.position}
-            position={[4,4]}
+            position={[4, 4]}
             icon={getIcon(PostCategory.Picture)}
             // key={index}
           >
-            <Popup closeButton={false} className="marker-popup"><PicturePostPreview/></Popup>
+            <Popup closeButton={false} className="marker-popup">
+              <PicturePostPreview />
+            </Popup>
           </Marker>
           <Marker
             // position={marker.position}
-            position={[5,5]}
+            position={[5, 5]}
             icon={getIcon(PostCategory.Comment)}
             // key={index}
           />
-            {/*<Popup closeButton={false} className="marker-popup"><{"uidbguidbgibiubig"}></Popup>*/}
+          {/*<Popup closeButton={false} className="marker-popup"><{"uidbguidbgibiubig"}></Popup>*/}
           {/*</Marker>*/}
-
         </MarkerClusterGroup>
         <FetchMarkersOnMove />
       </MapContainer>

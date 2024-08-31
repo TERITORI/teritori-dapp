@@ -16,10 +16,14 @@ import {
   gradientColorPink,
   gradientColorPurple,
   gradientColorSalmon,
-  gradientColorTurquoise
+  gradientColorTurquoise,
 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
-import { getMapPostTextGradient, getMapPostTextGradientType } from "@/utils/feed/map";
+
+import {
+  getMapPostTextGradient,
+  getMapPostTextGradientType,
+} from "@/utils/feed/map";
 import { PostCategory } from "@/utils/types/feed";
 
 export type GradientType =
@@ -34,7 +38,7 @@ export type GradientType =
   | "feed-map-article-post"
   | "feed-map-video-post"
   | "feed-map-music-post"
-  | "feed-map-picture-post"
+  | "feed-map-picture-post";
 
 export interface GradientTextProps {
   style?: StyleProp<
@@ -126,10 +130,10 @@ const gradient = (type: GradientType): LinearGradientProps => {
 };
 
 export const GradientText: React.FC<GradientTextProps> = ({
-                                                            gradientType,
-                                                            children,
-                                                            style,
-                                                          }) => {
+  gradientType,
+  children,
+  style,
+}) => {
   const flatStyle = StyleSheet.flatten(style);
 
   return (
