@@ -59,6 +59,9 @@ func main() {
 	if network.NameServiceContractAddress == "" {
 		panic(errors.New("missing nameServiceContractAddress in network config"))
 	}
+	if network.TxIndexerURL == nil || *network.TxIndexerURL == "" {
+		panic(errors.New("missing txIndexerURL in network config"))
+	}
 
 	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		*dbHost, *dbUser, *dbPass, *dbName, *dbPort)
@@ -72,7 +75,7 @@ func main() {
 		panic(errors.Wrap(err, "failed migrate database models"))
 	}
 
-	clientql := clientql.New(network.ID, network.GnoTxIndexerURL, db, logger.Sugar())
+	clientql := clientql.New(network.ID, *network.TxIndexerURL, db, logger.Sugar())
 	schedule := gocron.NewScheduler(time.UTC)
 
 	schedule.Every(2).Minutes().Do(func() {

@@ -114,10 +114,10 @@ var _ Network = &SolanaNetwork{}
 type GnoNetwork struct {
 	*NetworkBase
 
-	ChainID                    string `json:"chainId"`
-	NameServiceContractAddress string `json:"nameServiceContractAddress"`
-	GnowebURL                  string `json:"gnowebURL"`
-	GnoTxIndexerURL            string `json:"gnoTxIndexerURL"`
+	ChainID                    string  `json:"chainId"`
+	NameServiceContractAddress string  `json:"nameServiceContractAddress"`
+	GnowebURL                  string  `json:"gnowebURL"`
+	TxIndexerURL               *string `json:"txIndexerURL"`
 }
 
 var _ Network = &GnoNetwork{}
