@@ -4520,7 +4520,8 @@
     "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
     "daoCorePkgPath": "gno.land/p/teritori/dao_core",
     "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
-    "gnowebURL": "http://127.0.0.1:8888"
+    "gnowebURL": "http://127.0.0.1:8888",
+    "txIndexerURL": "http://127.0.0.1:8546"
   },
   {
     "id": "gno-portal",
