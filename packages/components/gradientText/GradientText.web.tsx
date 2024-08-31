@@ -17,7 +17,11 @@ import {
   gradientColorTurquoise,
 } from "../../utils/style/colors";
 import { exoFontFamilyFromFontWeight } from "../../utils/style/fonts";
-import { getMapPostTextGradientString, getMapPostTextGradientType } from "@/utils/feed/map";
+
+import {
+  getMapPostTextGradientString,
+  getMapPostTextGradientType,
+} from "@/utils/feed/map";
 import { PostCategory } from "@/utils/types/feed";
 
 const gradient = (type: GradientType) => {

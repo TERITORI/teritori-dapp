@@ -1,28 +1,37 @@
 import { FC } from "react";
 import { Image, View } from "react-native";
-import { gradientColorDarkBlue, gradientColorLightBlue, neutral33, neutralFF, withAlpha } from "@/utils/style/colors";
-import { layout } from "@/utils/style/layout";
+
+import { Post } from "@/api/feed/v1/feed";
+import { BrandText } from "@/components/BrandText";
 import FlexRow from "@/components/FlexRow";
 import { SVG } from "@/components/SVG";
-import { BrandText } from "@/components/BrandText";
-import { Post } from "@/api/feed/v1/feed";
-import { getMapPostIconSVG, getMapPostTextGradient } from "@/utils/feed/map";
-import { tinyAddress } from "@/utils/text";
-import { DEFAULT_USERNAME } from "@/utils/social-feed";
+import { GradientText } from "@/components/gradientText";
+import { PostPreviewWrapper } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/PostPreviewWrapper";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
-import { GradientText } from "@/components/gradientText";
-import { SpacerColumn, SpacerRow } from "@/components/spacer";
-import { PostPreviewWrapper } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/PostPreviewWrapper";
+import { getMapPostIconSVG, getMapPostTextGradient } from "@/utils/feed/map";
 import { zodTryParseJSON } from "@/utils/sanitize";
-import { ZodSocialFeedPostMetadata } from "@/utils/types/feed";
+import { DEFAULT_USERNAME } from "@/utils/social-feed";
+import {
+  gradientColorDarkBlue,
+  gradientColorLightBlue,
+  neutral33,
+  neutralFF,
+  withAlpha,
+} from "@/utils/style/colors";
 import { fontSemibold10 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { tinyAddress } from "@/utils/text";
+import { ZodSocialFeedPostMetadata } from "@/utils/types/feed";
 
 export const PicturePostPreview: FC<{
   // post: Post;
-}> = ({
-        // post
-      }) => {
+}> = (
+  {
+    // post
+  },
+) => {
   // const postMetadata = zodTryParseJSON(
   //   ZodSocialFeedPostMetadata,
   //   post.metadata,
@@ -31,11 +40,10 @@ export const PicturePostPreview: FC<{
   return (
     <PostPreviewWrapper
 
-      // post={post}
-
+    // post={post}
     >
       <></>
-     {/*TODO: Image*/}
+      {/*TODO: Image*/}
     </PostPreviewWrapper>
-  )
-}
+  );
+};

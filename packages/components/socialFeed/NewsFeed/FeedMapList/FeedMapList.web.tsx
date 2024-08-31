@@ -10,11 +10,16 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
+import { HeatmapLayer } from "react-leaflet-heatmap-layer-v3/lib";
 import { View } from "react-native";
 
 import { Post } from "@/api/feed/v1/feed";
 import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
 import { useFetchFeedLocation } from "@/hooks/feed/useFetchFeed";
+import {
+  getMapPostIconColorRgba,
+  getMapPostIconSVGString,
+} from "@/utils/feed/map";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {
   LatLngExpression,
@@ -49,13 +54,13 @@ const createClusterCustomIcon = function (cluster: any): DivIcon {
 const getIcon = (postCategory: PostCategory) => {
   const size = 32;
   const borderWidth = 1;
-  const sizeWithBorders = 32 + borderWidth*2;
+  const sizeWithBorders = 32 + borderWidth * 2;
   return new DivIcon({
     html: `<div style="border-radius: 99px;
     height: ${size}px; width: ${size}px; border: 1px solid #A3A3A3;
      background-color: rgba(${getMapPostIconColorRgba(postCategory)}); display: flex; align-items: center; justify-content: center;">${getMapPostIconSVGString(postCategory)}</div>`,
     className: "",
-     iconSize: [sizeWithBorders, sizeWithBorders],
+    iconSize: [sizeWithBorders, sizeWithBorders],
   });
 };
 
@@ -134,9 +139,17 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
             0.8: "#F5D98B",
             "1.0": "#DE9A96",
           }}
-          intensityExtractor={(point) => Array.isArray(point) && typeof point[2] === "string" ? parseFloat(point[2]) : 0}
-          longitudeExtractor={(point) => Array.isArray(point) && typeof point[1] === "number" ? point[1] : 0}
-          latitudeExtractor={(point) => Array.isArray(point) && typeof point[0] === "number" ? point[0] : 0}
+          intensityExtractor={(point) =>
+            Array.isArray(point) && typeof point[2] === "string"
+              ? parseFloat(point[2])
+              : 0
+          }
+          longitudeExtractor={(point) =>
+            Array.isArray(point) && typeof point[1] === "number" ? point[1] : 0
+          }
+          latitudeExtractor={(point) =>
+            Array.isArray(point) && typeof point[0] === "number" ? point[0] : 0
+          }
         />
         <TileLayer
           noWrap

@@ -23,9 +23,9 @@ import { extractGnoJSONString } from "@/utils/gno";
 import { DeepPartial } from "@/utils/typescript";
 
 interface PostsWithAggregations {
-  list: Post[],
-  totalCount: number,
-  aggregations: AggregatedPost[],
+  list: Post[];
+  totalCount: number;
+  aggregations: AggregatedPost[];
 }
 
 export type PostsList = {
@@ -134,7 +134,8 @@ export const useFetchFeedLocation = (): ((
   return async (
     req: Partial<PostLocationFilter>,
   ): Promise<PostsWithAggregations> => {
-    if (!selectedNetwork) return Promise.resolve({ list: [], totalCount: 0, aggregations: [] });
+    if (!selectedNetwork)
+      return Promise.resolve({ list: [], totalCount: 0, aggregations: [] });
     return await fetchTeritoriFeedLocation(selectedNetwork, req);
   };
 };
