@@ -4699,7 +4699,8 @@
     "socialFeedsPkgPath": "gno.land/r/teritori/social_feeds",
     "socialFeedsDAOPkgPath": "gno.land/r/teritori/social_feeds_dao",
     "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
-    "profilePkgPath": "gno.land/r/teritori/profile"
+    "profilePkgPath": "gno.land/r/teritori/profile",
+    "txIndexerURL": "https://indexer.test4.gno.land"
   },
   {
     "id": "cosmos-registry:gravitybridge",
