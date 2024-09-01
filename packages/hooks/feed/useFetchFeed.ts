@@ -7,7 +7,7 @@ import useSelectedWallet from "../useSelectedWallet";
 import {
   AggregatedPost,
   Post,
-  PostLocationFilter,
+  PostsWithLocationRequest,
   PostsRequest,
 } from "@/api/feed/v1/feed";
 import {
@@ -126,12 +126,12 @@ export const useFetchFeed = (req: Partial<PostsRequest>) => {
 };
 
 export const useFetchFeedLocation = (): ((
-  req: Partial<PostLocationFilter>,
+  req: Partial<PostsWithLocationRequest>,
 ) => Promise<PostsWithAggregations>) => {
   const selectedNetwork = useSelectedNetworkInfo();
 
   return async (
-    req: Partial<PostLocationFilter>,
+    req: Partial<PostsWithLocationRequest>,
   ): Promise<PostsWithAggregations> => {
     if (!selectedNetwork)
       return Promise.resolve({ list: [], totalCount: 0, aggregations: [] });
@@ -141,7 +141,7 @@ export const useFetchFeedLocation = (): ((
 
 const fetchTeritoriFeedLocation = async (
   selectedNetwork: NetworkInfo,
-  req: Partial<PostLocationFilter>,
+  req: Partial<PostsWithLocationRequest>,
 ): Promise<PostsWithAggregations> => {
   const feedClient = mustGetFeedClient(selectedNetwork.id);
   const response = await feedClient.PostsWithLocation(req);
