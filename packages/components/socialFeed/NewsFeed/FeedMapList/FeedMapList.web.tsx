@@ -15,11 +15,6 @@ import { View } from "react-native";
 
 import { Post } from "@/api/feed/v1/feed";
 import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
-import { ArticlePostPreview } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/ArticlePostPreview";
-import { MusicPostPreview } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/MusicPostPreview";
-import { NormalPostPreview } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/NormalPostPreview";
-import { PicturePostPreview } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/PicturePostPreview";
-import { VideoPostPreview } from "@/components/socialFeed/NewsFeed/FeedMapList/PostsPreviews/VideoPostPreview";
 import { useFetchFeedLocation } from "@/hooks/feed/useFetchFeed";
 import {
   getMapPostIconColorRgba,
@@ -92,7 +87,7 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
       });
     });
     return results;
-  }, []);
+  }, [posts]);
 
   const heatPoints = aggregatedPosts
     ? aggregatedPosts.map((aggregatedPost) => {
@@ -177,81 +172,17 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
           iconCreateFunction={createClusterCustomIcon}
         >
           {/* Mapping through the markers */}
-
-          {/*{markers?.map((marker, index) => */}
-          <Marker
-            // position={marker.position}
-            position={[0, 0]}
-            icon={getIcon(PostCategory.Normal)}
-            // key={index}
-          >
-            <Popup closeButton={false} className="marker-popup">
-              <NormalPostPreview />
-            </Popup>
-          </Marker>
-          {/*)} */}
-
-          {/*maxWidth?: number | undefined;*/}
-          {/*minWidth?: number | undefined;*/}
-          {/*maxHeight?: number | undefined;*/}
-          {/*keepInView?: boolean | undefined;*/}
-          {/*closeButton?: boolean | undefined;*/}
-          {/*autoPan?: boolean | undefined;*/}
-          {/*autoPanPaddingTopLeft?: PointExpression | undefined;*/}
-          {/*autoPanPaddingBottomRight?: PointExpression | undefined;*/}
-          {/*autoPanPadding?: PointExpression | undefined;*/}
-          {/*autoClose?: boolean | undefined;*/}
-          {/*closeOnClick?: boolean | undefined;*/}
-          {/*closeOnEscapeKey?: boolean | undefined;*/}
-
-          <Marker
-            // position={marker.position}
-            position={[1, 1]}
-            icon={getIcon(PostCategory.Article)}
-            // key={index}
-          >
-            <Popup closeButton={false} className="marker-popup">
-              <ArticlePostPreview />
-            </Popup>
-          </Marker>
-          <Marker
-            // position={marker.position}
-            position={[2, 2]}
-            icon={getIcon(PostCategory.Video)}
-            // key={index}
-          >
-            <Popup closeButton={false} className="marker-popup">
-              <VideoPostPreview />
-            </Popup>
-          </Marker>
-          <Marker
-            // position={marker.position}
-            position={[3, 3]}
-            icon={getIcon(PostCategory.MusicAudio)}
-            // key={index}
-          >
-            <Popup closeButton={false} className="marker-popup">
-              <MusicPostPreview />
-            </Popup>
-          </Marker>
-          <Marker
-            // position={marker.position}
-            position={[4, 4]}
-            icon={getIcon(PostCategory.Picture)}
-            // key={index}
-          >
-            <Popup closeButton={false} className="marker-popup">
-              <PicturePostPreview />
-            </Popup>
-          </Marker>
-          <Marker
-            // position={marker.position}
-            position={[5, 5]}
-            icon={getIcon(PostCategory.Comment)}
-            // key={index}
-          />
-          {/*<Popup closeButton={false} className="marker-popup"><{"uidbguidbgibiubig"}></Popup>*/}
-          {/*</Marker>*/}
+          {markers?.map((marker, index) => (
+            <Marker
+              position={marker.position}
+              icon={getIcon(PostCategory.Normal)}
+              key={index}
+            >
+              <Popup closeButton={false} className="marker-popup">
+                TODO
+              </Popup>
+            </Marker>
+          ))}
         </MarkerClusterGroup>
         <FetchMarkersOnMove />
       </MapContainer>
