@@ -26,5 +26,11 @@
 
 .marker-popup .leaflet-popup-content {
   margin: 0;
-  min-width: 200px;
+  /*min-width: 200px;*/
+}
+
+.leaflet-popup-tip {
+  background-color: rgba(135,135, 135, .2);
+  border-bottom: 1px solid rgba(255,255,255, .24);
+  border-right: 1px solid rgba(255,255,255, .24);
 }

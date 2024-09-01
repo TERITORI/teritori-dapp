@@ -1,3 +1,11 @@
+import { FunctionComponent } from "react";
+
+import unknownSvg from "@/assets/icons/question-gray.svg";
+import articlePostSvg from "@/assets/icons/social-feed-map/article-post.svg";
+import musicPostSvg from "@/assets/icons/social-feed-map/music-post.svg";
+import normalPostSvg from "@/assets/icons/social-feed-map/normal-post.svg";
+import picturePostSvg from "@/assets/icons/social-feed-map/picture-post.svg";
+import videoPostSvg from "@/assets/icons/social-feed-map/video-post.svg";
 import { PostCategory } from "@/utils/types/feed";
 
 //TODO: Get <svg/> as string from svg files (These svg strings are used in FeedMapList.web.tsx)
@@ -155,6 +163,25 @@ const unknownSvgString = `<svg width="16" height="16" viewBox="0 0 16 16" fill="
 </g>
 </svg>
 `;
+
+export const getMapPostIconSVG = (
+  postCategory: PostCategory,
+): FunctionComponent => {
+  switch (postCategory) {
+    case PostCategory.MusicAudio:
+      return musicPostSvg;
+    case PostCategory.Picture:
+      return picturePostSvg;
+    case PostCategory.Video:
+      return videoPostSvg;
+    case PostCategory.Article:
+      return articlePostSvg;
+    case PostCategory.Normal:
+      return normalPostSvg;
+    default:
+      return unknownSvg;
+  }
+};
 
 export const getMapPostIconSVGString = (postCategory: PostCategory) => {
   switch (postCategory) {

@@ -18,15 +18,16 @@ interface VideoPreviewProps {
   postId?: string;
   authorId: string;
   showSmallPreview?: boolean;
+  height?: number;
 }
 
 export const VideoView: React.FC<VideoPreviewProps> = ({
   file,
   onDelete,
-  authorId,
   postId,
   isEditable = false,
   showSmallPreview = false,
+  height,
 }) => {
   const videoMetadata: SocialFeedVideoMetadata = {
     title: "Video from Social Feed",
@@ -55,14 +56,14 @@ export const VideoView: React.FC<VideoPreviewProps> = ({
           source={{ uri: web3ToWeb2URI(videoMetadata.videoFile.url) }}
           resizeMode={ResizeMode.CONTAIN}
           style={{
-            height: showSmallPreview ? 120 : 400,
+            height: height || showSmallPreview ? 120 : 400,
           }}
         />
       ) : (
         <MediaPlayerVideo
           videoMetadata={videoMetadata}
           style={{
-            height: showSmallPreview ? 120 : 400,
+            height: height || showSmallPreview ? 120 : 400,
           }}
           resizeMode={ResizeMode.CONTAIN}
           postId={postId}

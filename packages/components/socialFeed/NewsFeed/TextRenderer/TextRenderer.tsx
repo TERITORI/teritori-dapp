@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { StyleProp, TextStyle } from "react-native";
 
 import { HashtagRenderer } from "./HashtagRenderer";
 import { MentionRenderer } from "./MentionRenderer";
@@ -43,9 +44,11 @@ const Component = ({ type, text }: MatchText) => {
 export const TextRenderer = ({
   text,
   isPreview,
+  style,
 }: {
   text: string;
   isPreview?: boolean;
+  style?: StyleProp<TextStyle>;
 }) => {
   const refText = useMemo(
     () => text.replace("/generate", "🖼️").replace("/question", "❓"),
@@ -105,7 +108,7 @@ export const TextRenderer = ({
   }, [refText, isTruncateNeeded]);
 
   return (
-    <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
+    <BrandText style={[fontSemibold14, { color: neutralA3 }, style]}>
       {formattedText}
       {isTruncateNeeded && (
         <BrandText style={[fontSemibold14, { color: neutral77 }]}>

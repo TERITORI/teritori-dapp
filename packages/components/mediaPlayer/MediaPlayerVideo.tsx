@@ -10,11 +10,18 @@ import React, {
   FC,
   RefObject,
   SetStateAction,
+  useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import {
+  AnimatableNumericValue,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
 import { TimerSlider } from "./TimerSlider";
@@ -37,7 +44,7 @@ import { useMousePosition } from "@/hooks/useMousePosition";
 import { web3ToWeb2URI } from "@/utils/ipfs";
 import { prettyMediaDuration } from "@/utils/mediaPlayer";
 import { SOCIAl_CARD_BORDER_RADIUS } from "@/utils/social-feed";
-import { neutralA3, secondaryColor } from "@/utils/style/colors";
+import { neutral00, neutralA3, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { SocialFeedVideoMetadata } from "@/utils/types/feed";
@@ -48,6 +55,8 @@ interface MediaPlayerVideoProps {
   postId?: string;
   resizeMode?: ResizeMode;
   style?: StyleProp<ViewStyle>;
+  hideControls?: boolean;
+  isThumbnailShown?: boolean;
 }
 
 const CONTROLS_HEIGHT = 68;
@@ -59,6 +68,8 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   postId,
   resizeMode,
   style,
+  hideControls,
+  isThumbnailShown,
 }) => {
   const { media, onLayoutPlayerVideo } = useMediaPlayer();
   const { current: id } = useRef(uuidv4());
@@ -69,6 +80,7 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   const [containerWidth, setContainerWidth] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
   const [isControlsShown, setControlsShown] = useState(false);
+  const { borderRadius } = StyleSheet.flatten(style);
 
   return (
     <View
@@ -87,13 +99,15 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
         containerRef={containerRef}
         containerWidth={containerWidth}
         containerHeight={containerHeight}
-        isControlsShown={isControlsShown}
+        isControlsShown={!hideControls && isControlsShown}
         isInMediaPlayer={isInMediaPlayer}
         videoMetadata={videoMetadata}
         postId={postId}
         resizeMode={resizeMode}
         id={id}
+        borderRadius={borderRadius}
         setControlsShown={setControlsShown}
+        isThumbnailShown={isThumbnailShown}
       />
     </View>
   );
@@ -107,10 +121,12 @@ type ExpoAvVideoType = {
   containerHeight: number;
   isControlsShown: boolean;
   videoMetadata: SocialFeedVideoMetadata;
+  borderRadius?: AnimatableNumericValue | number;
   postId?: string;
   resizeMode?: ResizeMode;
   id: string;
   setControlsShown: Dispatch<SetStateAction<boolean>>;
+  isThumbnailShown?: boolean;
 };
 
 function ExpoAvVideo({
@@ -120,11 +136,13 @@ function ExpoAvVideo({
   containerHeight,
   isControlsShown,
   videoMetadata,
+  borderRadius,
   postId,
   resizeMode,
   id,
   containerRef,
   setControlsShown,
+  isThumbnailShown,
 }: ExpoAvVideoType) {
   const {
     onVideoStatusUpdate,
@@ -138,7 +156,11 @@ function ExpoAvVideo({
   const [localStatus, setLocalStatus] = useState<AVPlaybackStatusSuccess>();
   const [extraPressCount, setExtraPressCount] = useState(0);
   const [pressTimer, setPressTimer] = useState<NodeJS.Timeout>();
-  const [isThumbnailShown, setThumbnailShown] = useState(true);
+  const [localIsThumbnailShown, setLocalThumbnailShown] = useState(false);
+
+  useEffect(() => {
+    setLocalThumbnailShown(!!isThumbnailShown);
+  }, [isThumbnailShown]);
 
   // Handle show/hide controls by hovering the video area with mouse
   const mousePosition = useMousePosition();
@@ -169,7 +191,7 @@ function ExpoAvVideo({
   };
 
   const onPressPlayPause = async () => {
-    setThumbnailShown(false);
+    setLocalThumbnailShown(false);
     if (isInMediaPlayer || !videoRef.current) {
       await handlePlayPause();
     } else {
@@ -179,7 +201,7 @@ function ExpoAvVideo({
 
   // Handle play/pause and trigger fullscreen on double press
   const onPressVideoWrapper = () => {
-    setThumbnailShown(false);
+    setLocalThumbnailShown(false);
     setExtraPressCount((backCount) => backCount + 1);
     if (extraPressCount === 1) {
       if (isInMediaPlayer) {
@@ -235,7 +257,7 @@ function ExpoAvVideo({
           height: "100%",
         }}
       >
-        {isThumbnailShown && (
+        {localIsThumbnailShown && (
           <OptimizedImage
             sourceURI={thumbnailURI}
             fallbackURI={defaultThumbnailImage}
@@ -244,7 +266,7 @@ function ExpoAvVideo({
             style={{
               width: containerWidth,
               height: containerHeight,
-              borderRadius: SOCIAl_CARD_BORDER_RADIUS,
+              borderRadius: borderRadius || SOCIAl_CARD_BORDER_RADIUS,
               position: "absolute",
               zIndex: 1,
             }}
@@ -264,7 +286,8 @@ function ExpoAvVideo({
           videoStyle={{
             width: "100%",
             height: "100%",
-            borderRadius: SOCIAl_CARD_BORDER_RADIUS,
+            borderRadius: borderRadius || SOCIAl_CARD_BORDER_RADIUS,
+            backgroundColor: neutral00,
           }}
           resizeMode={resizeMode}
         />

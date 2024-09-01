@@ -1,4 +1,4 @@
-import { DivIcon, PointExpression, point } from "leaflet";
+import { DivIcon, point, PointExpression } from "leaflet";
 import { FC, useEffect, useMemo, useState } from "react";
 import "../../modals/MapModal/styles.css";
 import "leaflet/dist/leaflet.css";
@@ -13,9 +13,19 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 import { HeatmapLayer } from "react-leaflet-heatmap-layer-v3/lib";
 import { View } from "react-native";
 
-import { Post } from "@/api/feed/v1/feed";
+import { Post, PostsRequest } from "@/api/feed/v1/feed";
 import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
-import { useFetchFeedLocation } from "@/hooks/feed/useFetchFeed";
+import { ArticleMapPost } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/ArticleMapPost";
+import { MusicMapPost } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/MusicMapPost";
+import { NormalMapPost } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/NormalMapPost";
+import { PictureMapPost } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/PictureMapPost";
+import { VideoMapPost } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/VideoMapPost";
+import {
+  combineFetchFeedPages,
+  useFetchFeed,
+  useFetchFeedLocation,
+} from "@/hooks/feed/useFetchFeed";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import {
   getMapPostIconColorRgba,
   getMapPostIconSVGString,
@@ -31,8 +41,7 @@ type PostType = "picture" | "text" | "video" | "audio";
 
 interface MarkerPopup {
   position: LatLngExpression;
-  popUp: string;
-  postCategory: PostCategory;
+  post: Post;
   fileURL?: string;
 }
 
@@ -68,6 +77,29 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
   const [bounds, setBounds] = useState<L.LatLngBounds | null>(null);
   const [posts, setPosts] = useState<Post[] | null>(null);
 
+  //TODO: remove this test block
+  ////////////////////////////////////////////////
+  const reqTest: Partial<PostsRequest> = {
+    filter: {
+      categories: [],
+      user: "",
+      mentions: [],
+      hashtags: [],
+      premiumLevelMin: 0,
+      premiumLevelMax: -1,
+    },
+    limit: 50,
+    offset: 0,
+  };
+  const selectedWallet = useSelectedWallet();
+  const reqWithQueryUser = { ...reqTest, queryUserId: selectedWallet?.userId };
+  const { data } = useFetchFeed(reqWithQueryUser);
+  const postsTest = useMemo(
+    () => (data ? combineFetchFeedPages(data.pages) : []),
+    [data],
+  );
+  ////////////////////////////////////////////////
+
   const getFeedLocation = useFetchFeedLocation();
 
   const markers: MarkerPopup[] = useMemo(() => {
@@ -81,8 +113,7 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
       if (!metadata?.location) return;
       results.push({
         position: metadata.location,
-        popUp: metadata.message,
-        postCategory: post.category,
+        post,
       });
     });
     return results;
