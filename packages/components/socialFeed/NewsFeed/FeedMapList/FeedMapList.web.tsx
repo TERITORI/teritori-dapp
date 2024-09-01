@@ -86,7 +86,7 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
       });
     });
     return results;
-  }, []);
+  }, [posts]);
 
   useEffect(() => {
     getFeedLocation({
