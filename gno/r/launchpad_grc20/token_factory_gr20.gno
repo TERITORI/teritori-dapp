@@ -11,7 +11,7 @@ import (
 	"gno.land/p/demo/ufmt"
 )
 
-type instance struct {
+type Token struct {
 	banker *grc20.Banker
 	admin  *ownable.Ownable
 	image string
@@ -20,22 +20,22 @@ type instance struct {
 	allowBurn bool
 }
 
-var instances avl.Tree // symbol -> instance
+var tokens avl.Tree // symbol -> token
 var factoryVault std.Address
 
 // Initialize tori address as admin & vault for fees
 func init() {
-	instances = avl.NewWithStringKey()
+	tokens = avl.NewWithStringKey()
 	admin = std.Address("g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r")
 }
 
-func CreateToken(name, symbol string, decimals uint, initialSupply) {
+func New(name, symbol string, decimals uint, initialSupply) {
 	caller := std.PrevRealm().Addr()
 	NewWithAdmin(name, symbol, decimals, initialSupply, caller)
 }
 
 func NewWithAdmin(name, symbol, image string, decimals, initialSupply, totalSupplyCap uint, allowMint, allowBurn bool, admin std.Address) {
-	exists := instances.Has(symbol)
+	exists := tokens.Has(name)
 	if exists {
 		panic("this token already exists")
 	}
@@ -56,7 +56,7 @@ func NewWithAdmin(name, symbol, image string, decimals, initialSupply, totalSupp
 		banker.Mint(admin, netSupply)
 	}
 
-	inst := instance{
+	inst := Token{
 		banker: banker,
 		admin:  ownable.NewWithAddress(admin),
 		image: image,
@@ -65,47 +65,47 @@ func NewWithAdmin(name, symbol, image string, decimals, initialSupply, totalSupp
 		allowBurn: allowBurn,
 	}
 
-	if instances.Has(name) {
-		panic("this combination of symbol and name is already in use")
+	if tokens.Has(name) {
+		panic("this name is already in use")
 	}
 
-	instances.Set(name, &inst)
+	tokens.Set(name, &inst)
 }
 
-func (inst instance) Token() grc20.Token { return inst.banker.Token() }
+func (inst Token) Token() grc20.Token { return inst.banker.Token() }
 
-func TotalSupply(symbol string) uint64 {
-	inst := mustGetInstance(symbol)
+func TotalSupply(name string) uint64 {
+	inst := mustGetToken(name)
 	return inst.Token().TotalSupply()
 }
 
-func BalanceOf(symbol string, owner std.Address) uint64 {
-	inst := mustGetInstance(symbol)
+func BalanceOf(name string, owner std.Address) uint64 {
+	inst := mustGetToken(name)
 	return inst.Token().BalanceOf(owner)
 }
 
-func Allowance(symbol string, owner, spender std.Address) uint64 {
-	inst := mustGetInstance(symbol)
+func Allowance(name string, owner, spender std.Address) uint64 {
+	inst := mustGetToken(name)
 	return inst.Token().Allowance(owner, spender)
 }
 
-func Transfer(symbol string, to std.Address, amount uint64) {
-	inst := mustGetInstance(symbol)
+func Transfer(name string, to std.Address, amount uint64) {
+	inst := mustGetToken(name)
 	checkErr(inst.Token().Transfer(to, amount))
 }
 
-func Approve(symbol string, spender std.Address, amount uint64) {
-	inst := mustGetInstance(symbol)
+func Approve(name string, spender std.Address, amount uint64) {
+	inst := mustGetToken(name)
 	checkErr(inst.Token().Approve(spender, amount))
 }
 
-func TransferFrom(symbol string, from, to std.Address, amount uint64) {
-	inst := mustGetInstance(symbol)
+func TransferFrom(name string, from, to std.Address, amount uint64) {
+	inst := mustGetToken(name)
 	checkErr(inst.Token().TransferFrom(from, to, amount))
 }
 
-func Mint(symbol string, to std.Address, amount uint64) {
-	inst := mustGetInstance(symbol)
+func Mint(name string, to std.Address, amount uint64) {
+	inst := mustGetToken(name)
 	inst.admin.AssertCallerIsOwner()
 
 	if !inst.allowMint {
@@ -122,8 +122,8 @@ func Mint(symbol string, to std.Address, amount uint64) {
 	checkErr(inst.banker.Mint(to, amount))
 }
 
-func Burn(symbol string, from std.Address, amount uint64) {
-	inst := mustGetInstance(symbol)
+func Burn(name string, from std.Address, amount uint64) {
+	inst := mustGetToken(name)
 	inst.admin.AssertCallerIsOwner()
 	if !inst.allowBurn {
 		panic("burning is not allowed")
@@ -139,12 +139,12 @@ func Render(path string) string {
 	case path == "":
 		return "TODO: list existing tokens and admins"
 	case c == 1:
-		symbol := parts[0]
-		inst := mustGetInstance(symbol)
+		name := parts[0]
+		inst := mustGetToken(name)
 		return inst.banker.RenderHome()
 	case c == 3 && parts[1] == "balance":
-		symbol := parts[0]
-		inst := mustGetInstance(symbol)
+		name := parts[0]
+		inst := mustGetToken(name)
 		owner := std.Address(parts[2])
 		balance := inst.Token().BalanceOf(owner)
 		return ufmt.Sprintf("%d", balance)
@@ -153,12 +153,12 @@ func Render(path string) string {
 	}
 }
 
-func mustGetInstance(symbol string) *instance {
-	t, exists := instances.Get(symbol)
+func mustGetToken(name string) *Token {
+	t, exists := tokens.Get(name)
 	if !exists {
 		panic("token instance does not exist")
 	}
-	return t.(*instance)
+	return t.(*Token)
 }
 
 func checkErr(err error) {
