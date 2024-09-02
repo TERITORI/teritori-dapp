@@ -4,7 +4,6 @@ package launchpad_grc20
 import (
 	"std"
 	"strings"
-	"strconv"
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/ufmt"
@@ -75,44 +74,21 @@ func GetAirdrop(airdropID uint64) *Airdrop {
 	return airdropRaw.(*Airdrop)
 }
 
-// ListAirdrops returns a list of all active airdrop IDs
-func ListAirdrops() []uint64 {
-	var airdropIDs []uint64
-	airdrops.Iterate("", "", func(key string, value interface{}) bool {
-		_, id := strconv.ParseUint(key, 10, 64)
-		airdropIDs = append(airdropIDs, id)
-		return false
-	})
-	return airdropIDs
-}
-
-func assertIsTokenOwner(tokenName string, caller std.Address) {
-	// This function should be implemented to check if the caller is the owner of the token
-	// You may need to add a method in your launchpad_grc20 package to check ownership
-	// For now, we'll use a placeholder implementation
-	panic("not implemented: assertIsTokenOwner")
-}
-
+// To be used in Render (next step not done yet)
 func renderAirdropList() string {
 	var output strings.Builder
 	output.WriteString("Active Airdrops:\n\n")
 
-	airdropIDs := ListAirdrops()
-	for _, id := range airdropIDs {
-		airdrop := GetAirdrop(id)
-		output.WriteString(ufmt.Sprintf("ID: %d, Token: %s\n", id, airdrop.token))
-	}
-
-	return output.String()
-}
-
-func renderAirdrop(airdropID uint64) string {
-	airdrop := GetAirdrop(airdropID)
-	
-	var output strings.Builder
-	output.WriteString(ufmt.Sprintf("Airdrop ID: %d\n", airdropID))
-	output.WriteString(ufmt.Sprintf("Token: %s\n", airdrop.token))
-	output.WriteString(ufmt.Sprintf("Amount per claim: %d\n", airdrop.amountPerClaim))
+	airdrops.Iterate("", "", func(key string, value interface{}) bool {
+		airdrop, ok := value.(*Airdrop)
+		if !ok {
+			panic("value should have type of *Airdrop")
+		}
+		output.WriteString(ufmt.Sprintf("Airdrop ID: %s\n", key))
+		output.WriteString(ufmt.Sprintf("Token: %s\n", airdrop.token.banker.GetName()))
+		output.WriteString(ufmt.Sprintf("Amount per claim: %d\n\n", airdrop.amountPerClaim))
+		return false
+	})
 
 	return output.String()
 }

@@ -10,6 +10,7 @@ import (
 	"gno.land/p/demo/ufmt"
 )
 
+// Maybe rename since banker contains a struct grc20.Token, could be source of confusion maybe call it Instance
 type Token struct {
 	banker *grc20.Banker
 	admin  *ownable.Ownable
