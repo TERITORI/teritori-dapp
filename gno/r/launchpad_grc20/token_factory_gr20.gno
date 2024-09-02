@@ -2,12 +2,10 @@ package launchpad_grc20
 
 import (
 	"std"
-	"strings"
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/grc/grc20"
 	"gno.land/p/demo/ownable"
-	"gno.land/p/demo/ufmt"
 )
 
 // Maybe rename since banker contains a struct grc20.Token, could be source of confusion maybe call it Instance
@@ -125,29 +123,6 @@ func Burn(name string, from std.Address, amount uint64) {
 		panic("burning is not allowed")
 	}
 	checkErr(inst.banker.Burn(from, amount))
-}
-
-// TODO: Handle render of Airdrop
-func Render(path string) string {
-	parts := strings.Split(path, "/")
-	c := len(parts)
-
-	switch {
-	case path == "":
-		return "TODO: list existing tokens and admins"
-	case c == 1:
-		name := parts[0]
-		inst := mustGetToken(name)
-		return inst.banker.RenderHome()
-	case c == 3 && parts[1] == "balance":
-		name := parts[0]
-		inst := mustGetToken(name)
-		owner := std.Address(parts[2])
-		balance := inst.Token().BalanceOf(owner)
-		return ufmt.Sprintf("%d", balance)
-	default:
-		return "404\n"
-	}
 }
 
 func mustGetToken(name string) *Token {
