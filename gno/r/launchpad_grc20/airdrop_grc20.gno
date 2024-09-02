@@ -4,31 +4,31 @@ package launchpad_grc20
 import (
 	"std"
 	"strings"
+	"strconv"
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/ufmt"
-	"gno.land/p/demo/merkle"
 )
 
 type Airdrop struct {
-	token Token
-	merkleRoot []byte
+	token *Token
+	merkleRoot string
 	amountPerClaim uint64
 }
 
-var claimed avl.Tree // std.address -> bool
-var airdrops avl.Tree // airdrop ID -> airdrop
+var claimed *avl.Tree // std.address -> bool
+var airdrops *avl.Tree // airdrop ID -> airdrop
 var nextAirdropID uint64
 
 func init() {
-	airdrops = avl.NewWithStringKey()
+	airdrops = avl.NewTree()
 	nextAirdropID = 1
 }
 
-func New(tokenName string, merkleRoot string amountPerClaim uint64) uint64 {
+func NewAirdrop(tokenName, merkleRoot string, amountPerClaim uint64) uint64 {
 
 	// check if the caller is the owner of the token
-	token := GetToken(tokenName)
+	token := mustGetToken(tokenName)
 	token.admin.AssertCallerIsOwner()
 
 	// check that the token is mintable
@@ -50,16 +50,14 @@ func New(tokenName string, merkleRoot string amountPerClaim uint64) uint64 {
 	return airdropID
 }
 
-func Redeem(airdropID uint64, claim std.Address, proofs []merkle.Node) {
+func Redeem(airdropID uint64, claim std.Address, proofs []string) {
 	airdrop := GetAirdrop(airdropID)
 
 	if claimed.Has(claim.String()) {
 		panic("already claimed")
 	}
 
-	if !merkle.Verify(airdrop.merkleRoot, claim, proofs) {
-		panic("invalid proof")
-	}
+	// TODO: Verify the proof
 
 	// Redeem the airdrop
 	airdrop.token.banker.Mint(claim, airdrop.amountPerClaim)
@@ -81,7 +79,7 @@ func GetAirdrop(airdropID uint64) *Airdrop {
 func ListAirdrops() []uint64 {
 	var airdropIDs []uint64
 	airdrops.Iterate("", "", func(key string, value interface{}) bool {
-		id := parseUint64(key)
+		_, id := strconv.ParseUint(key, 10, 64)
 		airdropIDs = append(airdropIDs, id)
 		return false
 	})
@@ -93,21 +91,6 @@ func assertIsTokenOwner(tokenName string, caller std.Address) {
 	// You may need to add a method in your launchpad_grc20 package to check ownership
 	// For now, we'll use a placeholder implementation
 	panic("not implemented: assertIsTokenOwner")
-}
-
-func Render(path string) string {
-	parts := strings.Split(path, "/")
-	c := len(parts)
-
-	switch {
-	case path == "":
-		return renderAirdropList()
-	case c == 1:
-		_, airdropID := ufmt.ParseUint64(parts[0])
-		return renderAirdrop(airdropID)
-	default:
-		return "404\n"
-	}
 }
 
 func renderAirdropList() string {
@@ -129,7 +112,7 @@ func renderAirdrop(airdropID uint64) string {
 	var output strings.Builder
 	output.WriteString(ufmt.Sprintf("Airdrop ID: %d\n", airdropID))
 	output.WriteString(ufmt.Sprintf("Token: %s\n", airdrop.token))
-	output.WriteString(ufmt.Sprintf("Amount per claim: %d\n", len(airdrop.amountPerClaim)))
+	output.WriteString(ufmt.Sprintf("Amount per claim: %d\n", airdrop.amountPerClaim))
 
 	return output.String()
 }

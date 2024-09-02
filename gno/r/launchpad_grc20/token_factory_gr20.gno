@@ -3,7 +3,6 @@ package launchpad_grc20
 import (
 	"std"
 	"strings"
-	"hash/adler32"
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/grc/grc20"
@@ -15,26 +14,25 @@ type Token struct {
 	banker *grc20.Banker
 	admin  *ownable.Ownable
 	image string
-	totalSupplyCap uint
+	totalSupplyCap uint64
 	allowMint bool
 	allowBurn bool
 }
 
-var tokens avl.Tree // symbol -> token
+var tokens *avl.Tree // symbol -> token
 var factoryVault std.Address
 
 // Initialize tori address as admin & vault for fees
 func init() {
-	tokens = avl.NewWithStringKey()
-	admin = std.Address("g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r")
+	tokens = avl.NewTree()
+	factoryVault = std.Address("g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r")
 }
 
-func New(name, symbol string, decimals uint, initialSupply) {
-	caller := std.PrevRealm().Addr()
-	NewWithAdmin(name, symbol, decimals, initialSupply, caller)
-}
+func NewToken(name, symbol, image string, decimals uint, initialSupply, totalSupplyCap uint64, allowMint, allowBurn bool) {
+	// Admin of the token is the caller
+	admin := std.PrevRealm().Addr()
 
-func NewWithAdmin(name, symbol, image string, decimals, initialSupply, totalSupplyCap uint, allowMint, allowBurn bool, admin std.Address) {
+	// Check if token already exists in our factory
 	exists := tokens.Has(name)
 	if exists {
 		panic("this token already exists")
@@ -43,6 +41,7 @@ func NewWithAdmin(name, symbol, image string, decimals, initialSupply, totalSupp
 		panic("initial supply exceeds total supply cap")
 	}
 
+	// Create a new token
 	banker := grc20.NewBanker(name, symbol, decimals)
 
 	// Fee is 2.5% of initial supply
@@ -63,10 +62,6 @@ func NewWithAdmin(name, symbol, image string, decimals, initialSupply, totalSupp
 		totalSupplyCap: totalSupplyCap,
 		allowMint: allowMint,
 		allowBurn: allowBurn,
-	}
-
-	if tokens.Has(name) {
-		panic("this name is already in use")
 	}
 
 	tokens.Set(name, &inst)
@@ -131,6 +126,7 @@ func Burn(name string, from std.Address, amount uint64) {
 	checkErr(inst.banker.Burn(from, amount))
 }
 
+// TODO: Handle render of Airdrop
 func Render(path string) string {
 	parts := strings.Split(path, "/")
 	c := len(parts)
