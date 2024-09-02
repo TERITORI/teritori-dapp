@@ -7,14 +7,16 @@ import (
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/ufmt"
+	"gno.land/p/demo/merkle"
 )
 
 type Airdrop struct {
 	token Token
-	merkleRoot string
+	merkleRoot []byte
 	amountPerClaim uint64
 }
 
+var claimed avl.Tree // std.address -> bool
 var airdrops avl.Tree // airdrop ID -> airdrop
 var nextAirdropID uint64
 
@@ -26,10 +28,16 @@ func init() {
 func New(tokenName string, merkleRoot string amountPerClaim uint64) uint64 {
 
 	// check if the caller is the owner of the token
-	// check if the token exists and have enough balance
+	token := GetToken(tokenName)
+	token.admin.AssertCallerIsOwner()
+
+	// check that the token is mintable
+	if !token.allowMint {
+		panic("token is not mintable")
+	}
 
 	airdrop := Airdrop{
-		TokenName:  tokenName,
+		token:  token,
 		merkleRoot: merkleRoot,
 		amountPerClaim: amountPerClaim,
 	}
@@ -37,11 +45,26 @@ func New(tokenName string, merkleRoot string amountPerClaim uint64) uint64 {
 	airdropID := nextAirdropID
 	nextAirdropID++
 
-	// lock the funds in the token contract
-
 	airdrops.Set(ufmt.Sprintf("%d", airdropID), &airdrop)
 
 	return airdropID
+}
+
+func Redeem(airdropID uint64, claim std.Address, proofs []merkle.Node) {
+	airdrop := GetAirdrop(airdropID)
+
+	if claimed.Has(claim.String()) {
+		panic("already claimed")
+	}
+
+	if !merkle.Verify(airdrop.merkleRoot, claim, proofs) {
+		panic("invalid proof")
+	}
+
+	// Redeem the airdrop
+	airdrop.token.banker.Mint(claim, airdrop.amountPerClaim)
+
+	claimed.Set(claim.String(), true)
 }
 
 // GetAirdrop retrieves the information for a specific airdrop
