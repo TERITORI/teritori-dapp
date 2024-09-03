@@ -10,16 +10,18 @@ import (
 
 // Maybe rename since banker contains a struct grc20.Token, could be source of confusion maybe call it Instance
 type Token struct {
-	banker *grc20.Banker
-	admin  *ownable.Ownable
-	image string
+	banker         *grc20.Banker
+	admin          *ownable.Ownable
+	image          string
 	totalSupplyCap uint64
-	allowMint bool
-	allowBurn bool
+	allowMint      bool
+	allowBurn      bool
 }
 
-var tokens *avl.Tree // symbol -> token
-var factoryVault std.Address
+var (
+	tokens       *avl.Tree // symbol -> token
+	factoryVault std.Address
+)
 
 // Initialize tori address as admin & vault for fees
 func init() {
@@ -55,12 +57,12 @@ func NewToken(name, symbol, image string, decimals uint, initialSupply, totalSup
 	}
 
 	inst := Token{
-		banker: banker,
-		admin:  ownable.NewWithAddress(admin),
-		image: image,
+		banker:         banker,
+		admin:          ownable.NewWithAddress(admin),
+		image:          image,
 		totalSupplyCap: totalSupplyCap,
-		allowMint: allowMint,
-		allowBurn: allowBurn,
+		allowMint:      allowMint,
+		allowBurn:      allowBurn,
 	}
 
 	tokens.Set(name, &inst)
@@ -108,11 +110,11 @@ func Mint(name string, to std.Address, amount uint64) {
 
 	if inst.totalSupplyCap > 0 {
 		totalSupply := inst.Token().TotalSupply()
-		if totalSupply + amount > inst.totalSupplyCap {
+		if totalSupply+amount > inst.totalSupplyCap {
 			panic("minting would exceed total supply cap")
 		}
 	}
-	
+
 	checkErr(inst.banker.Mint(to, amount))
 }
 

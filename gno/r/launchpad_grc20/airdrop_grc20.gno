@@ -1,6 +1,5 @@
 package launchpad_grc20
 
-
 import (
 	"std"
 	"strings"
@@ -10,14 +9,16 @@ import (
 )
 
 type Airdrop struct {
-	token *Token
-	merkleRoot string
+	token          *Token
+	merkleRoot     string
 	amountPerClaim uint64
 }
 
-var claimed *avl.Tree // std.address -> bool
-var airdrops *avl.Tree // airdrop ID -> airdrop
-var nextAirdropID uint64
+var (
+	claimed       *avl.Tree // std.address -> bool
+	airdrops      *avl.Tree // airdrop ID -> airdrop
+	nextAirdropID uint64
+)
 
 func init() {
 	airdrops = avl.NewTree()
@@ -25,7 +26,6 @@ func init() {
 }
 
 func NewAirdrop(tokenName, merkleRoot string, amountPerClaim uint64) uint64 {
-
 	// check if the caller is the owner of the token
 	token := mustGetToken(tokenName)
 	token.admin.AssertCallerIsOwner()
@@ -36,8 +36,8 @@ func NewAirdrop(tokenName, merkleRoot string, amountPerClaim uint64) uint64 {
 	}
 
 	airdrop := Airdrop{
-		token:  token,
-		merkleRoot: merkleRoot,
+		token:          token,
+		merkleRoot:     merkleRoot,
 		amountPerClaim: amountPerClaim,
 	}
 
