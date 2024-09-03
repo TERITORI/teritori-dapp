@@ -1,8 +1,6 @@
 package launchpad_grc20
 
 import (
-	"strings"
-
 	"gno.land/p/demo/mux"
 	"gno.land/p/demo/ufmt"
 )
@@ -30,17 +28,6 @@ func init() {
 	router.HandleFunc(TOKEN_BALANCE_PATH, renderTokenBalancePage)
 }
 
-func renderSingleToken(token *Token) string {
-	var sb strings.Builder
-
-	sb.WriteString(ufmt.Sprintf("### Name: %s - %s\n", token.banker.GetName(), token.banker.GetSymbol()))
-	sb.WriteString(ufmt.Sprintf("#### Total Supply: %d\n", token.banker.TotalSupply()))
-	sb.WriteString(ufmt.Sprintf("#### Decimals: %d\n", token.banker.GetDecimals()))
-	sb.WriteString(ufmt.Sprintf("#### Admin: %s\n\n", token.admin.Owner().String()))
-
-	return sb.String()
-}
-
 func renderTokenPage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write("# 🪙 Tokens GRC20 Homepage 🪙\n")
 	res.Write("A GRC20 token is a digital asset standard on the Gno Chain, similar to ERC20 tokens on Ethereum.\nIt defines a set of rules for creating and managing fungible tokens, ensuring compatibility across the Gno ecosystem.\n\n")
@@ -48,7 +35,28 @@ func renderTokenPage(res *mux.ResponseWriter, req *mux.Request) {
 }
 
 func renderTokenDetailPage(res *mux.ResponseWriter, req *mux.Request) {
-	res.Write("Coming soon...")
+	tokenName := req.GetVar("name")
+	token := mustGetToken(tokenName)
+
+	res.Write("# 🪙 Token Details 🪙\n")
+
+	res.Write(ufmt.Sprintf("### Name: %s - Symbol: %s\n", token.banker.GetName(), token.banker.GetSymbol()))
+	res.Write(ufmt.Sprintf("#### Total Supply: %d %s\n", token.banker.TotalSupply(), token.banker.GetSymbol()))
+	res.Write(ufmt.Sprintf("#### Decimals: %d\n", token.banker.GetDecimals()))
+	res.Write(ufmt.Sprintf("#### Admin: %s\n\n", token.admin.Owner().String()))
+	res.Write(ufmt.Sprintf("#### Total Supply Cap (0 = unlimited): %d %s\n\n", token.totalSupplyCap, token.banker.GetSymbol()))
+
+	if token.allowMint {
+		res.Write("#### Mintable: true\n\n")
+	} else {
+		res.Write("#### Mintable: false\n\n")
+	}
+
+	if token.allowBurn {
+		res.Write("#### Burnable: true\n\n")
+	} else {
+		res.Write("#### Burnable: false\n\n")
+	}
 }
 
 func renderTokenBalancePage(res *mux.ResponseWriter, req *mux.Request) {
