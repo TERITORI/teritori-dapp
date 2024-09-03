@@ -1,6 +1,8 @@
 package launchpad_grc20
 
 import (
+	"std"
+
 	"gno.land/p/demo/mux"
 	"gno.land/p/demo/ufmt"
 )
@@ -26,6 +28,9 @@ func init() {
 	router.HandleFunc(TOKEN_PATH, renderTokenPage)
 	router.HandleFunc(TOKEN_DETAIL_PATH, renderTokenDetailPage)
 	router.HandleFunc(TOKEN_BALANCE_PATH, renderTokenBalancePage)
+	router.HandleFunc(AIRDROP_PATH, renderAirdropPage)
+	router.HandleFunc(AIRDROP_DETAIL_PATH, renderAirdropDetailPage)
+	router.HandleFunc(SALES_PATH, renderSalesPage)
 }
 
 func renderTokenPage(res *mux.ResponseWriter, req *mux.Request) {
@@ -60,11 +65,21 @@ func renderTokenDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 }
 
 func renderTokenBalancePage(res *mux.ResponseWriter, req *mux.Request) {
-	res.Write("Coming soon...")
+	tokenName := req.GetVar("name")
+	address := req.GetVar("address")
+	token := mustGetToken(tokenName)
+	balance := token.banker.BalanceOf(std.Address(address))
+
+	res.Write("# 🪙 Token Balance 🪙\n")
+	res.Write(ufmt.Sprintf("### 📍 Address: %s\n ### 🏦 Balance: %d %s\n", address, balance, token.banker.GetSymbol()))
 }
 
 func renderAirdropPage(res *mux.ResponseWriter, req *mux.Request) {
-	res.Write("Coming soon...")
+	res.Write("# 🎁 GRC20 Token Airdrops 🎁\n")
+	res.Write("An airdrop is a distribution of GRC20 tokens to multiple wallet addresses, often as part of a promotional campaign or community incentive on the Gno Chain.\n")
+	res.Write("Airdrops are commonly used to raise awareness, reward loyal users, or distribute tokens in a decentralized manner.\n\n")
+	res.Write("To participate in an airdrop, your addresses have to be included in the whitelist. Then you can claim your tokens.\n")
+	res.Write("For more detailed information about a specific airdrop, including eligibility criteria and distribution details, visit the page ``:airdrop/{id}``, replacing ``{id}`` with the airdrop's unique identifier.\n")
 }
 
 func renderAirdropDetailPage(res *mux.ResponseWriter, req *mux.Request) {
