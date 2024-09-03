@@ -26,7 +26,7 @@ var (
 // Initialize tori address as admin & vault for fees
 func init() {
 	tokens = avl.NewTree()
-	factoryVault = std.Address("g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r")
+	factoryVault = std.Address("g1ctt28t7sdyp28qzkvlfyx0hyxuz6vz7nplwm9c")
 }
 
 func NewToken(name, symbol, image string, decimals uint, initialSupply, totalSupplyCap uint64, allowMint, allowBurn bool) {
@@ -41,6 +41,9 @@ func NewToken(name, symbol, image string, decimals uint, initialSupply, totalSup
 	if totalSupplyCap > 0 && initialSupply > totalSupplyCap {
 		panic("initial supply exceeds total supply cap")
 	}
+	if decimals > 18 {
+		panic("decimals must be 18 or less")
+	}
 
 	// Create a new token
 	banker := grc20.NewBanker(name, symbol, decimals)
@@ -51,7 +54,6 @@ func NewToken(name, symbol, image string, decimals uint, initialSupply, totalSup
 	if fee > 0 {
 		banker.Mint(factoryVault, fee)
 	}
-
 	if netSupply > 0 {
 		banker.Mint(admin, netSupply)
 	}
