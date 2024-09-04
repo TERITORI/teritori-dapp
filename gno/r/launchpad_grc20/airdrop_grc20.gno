@@ -22,6 +22,7 @@ var (
 
 func init() {
 	airdrops = avl.NewTree()
+	claimed = avl.NewTree()
 	nextAirdropID = 1
 }
 
@@ -49,19 +50,22 @@ func NewAirdrop(tokenName, merkleRoot string, amountPerClaim uint64) uint64 {
 	return airdropID
 }
 
-func Redeem(airdropID uint64, claim std.Address, proofs []string) {
+func Redeem(airdropID uint64, proofs []Node) {
 	airdrop := GetAirdrop(airdropID)
+	claimer := std.PrevRealm().Addr()
 
-	if claimed.Has(claim.String()) {
+	if claimed.Has(claimer.String()) {
 		panic("already claimed")
 	}
 
-	// TODO: Verify the proof
+	leaf := Leaf{[]byte(claimer.String())}
+	if !Verify(airdrop.merkleRoot, leaf, proofs) {
+		panic("invalid proof")
+	}
 
-	// Redeem the airdrop
-	airdrop.token.banker.Mint(claim, airdrop.amountPerClaim)
+	airdrop.token.banker.Mint(claimer, airdrop.amountPerClaim)
 
-	claimed.Set(claim.String(), true)
+	claimed.Set(claimer.String(), true)
 }
 
 // GetAirdrop retrieves the information for a specific airdrop
