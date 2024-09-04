@@ -1,6 +1,5 @@
 package launchpad_grc20
 
-
 import (
 	"fmt"
 	"std"
@@ -24,4 +23,4 @@ func TestRedeem(t *testing.T) {
 	if balance != 100 {
 		t.Errorf("Expected balance to be 100, got %d", balance)
 	}
-} 
+}
