@@ -2,7 +2,6 @@ package launchpad_grc20
 
 import (
 	"std"
-	"strings"
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/ufmt"
@@ -11,22 +10,21 @@ import (
 type Airdrop struct {
 	token          *Token
 	merkleRoot     string
-	amountPerClaim uint64
+	amountPerAddr  uint64
+	alreadyClaimed *avl.Tree
 }
 
 var (
-	claimed       *avl.Tree // std.address -> bool
 	airdrops      *avl.Tree // airdrop ID -> airdrop
 	nextAirdropID uint64
 )
 
 func init() {
 	airdrops = avl.NewTree()
-	claimed = avl.NewTree()
 	nextAirdropID = 1
 }
 
-func NewAirdrop(tokenName, merkleRoot string, amountPerClaim uint64) uint64 {
+func NewAirdrop(tokenName, merkleRoot string, amountPerAddr uint64) uint64 {
 	// check if the caller is the owner of the token
 	token := mustGetToken(tokenName)
 	token.admin.AssertCallerIsOwner()
@@ -39,7 +37,8 @@ func NewAirdrop(tokenName, merkleRoot string, amountPerClaim uint64) uint64 {
 	airdrop := Airdrop{
 		token:          token,
 		merkleRoot:     merkleRoot,
-		amountPerClaim: amountPerClaim,
+		amountPerAddr:  amountPerAddr,
+		alreadyClaimed: avl.NewTree(),
 	}
 
 	airdropID := nextAirdropID
@@ -51,25 +50,25 @@ func NewAirdrop(tokenName, merkleRoot string, amountPerClaim uint64) uint64 {
 }
 
 func Redeem(airdropID uint64, proofs []Node) {
-	airdrop := GetAirdrop(airdropID)
-	claimer := std.PrevRealm().Addr()
+	airdrop := mustGetAirdrop(airdropID)
+	caller := std.PrevRealm().Addr()
 
-	if claimed.Has(claimer.String()) {
+	if airdrop.hasAlreadyClaimed(caller) {
 		panic("already claimed")
 	}
 
-	leaf := Leaf{[]byte(claimer.String())}
+	leaf := Leaf{[]byte(caller.String())}
 	if !Verify(airdrop.merkleRoot, leaf, proofs) {
 		panic("invalid proof")
 	}
 
-	airdrop.token.banker.Mint(claimer, airdrop.amountPerClaim)
+	airdrop.token.banker.Mint(caller, airdrop.amountPerAddr)
 
-	claimed.Set(claimer.String(), true)
+	airdrop.alreadyClaimed.Set(caller.String(), true)
 }
 
-// GetAirdrop retrieves the information for a specific airdrop
-func GetAirdrop(airdropID uint64) *Airdrop {
+// mustGetAirdrop retrieves the information for a specific airdrop
+func mustGetAirdrop(airdropID uint64) *Airdrop {
 	airdropRaw, exists := airdrops.Get(ufmt.Sprintf("%d", airdropID))
 	if !exists {
 		panic("airdrop not found")
@@ -78,21 +77,6 @@ func GetAirdrop(airdropID uint64) *Airdrop {
 	return airdropRaw.(*Airdrop)
 }
 
-// To be used in Render (next step not done yet)
-func renderAirdropList() string {
-	var output strings.Builder
-	output.WriteString("Active Airdrops:\n\n")
-
-	airdrops.Iterate("", "", func(key string, value interface{}) bool {
-		airdrop, ok := value.(*Airdrop)
-		if !ok {
-			panic("value should have type of *Airdrop")
-		}
-		output.WriteString(ufmt.Sprintf("Airdrop ID: %s\n", key))
-		output.WriteString(ufmt.Sprintf("Token: %s\n", airdrop.token.banker.GetName()))
-		output.WriteString(ufmt.Sprintf("Amount per claim: %d\n\n", airdrop.amountPerClaim))
-		return false
-	})
-
-	return output.String()
+func (a *Airdrop) hasAlreadyClaimed(caller std.Address) bool {
+	return a.alreadyClaimed.Has(caller.String())
 }

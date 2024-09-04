@@ -2,6 +2,7 @@ package launchpad_grc20
 
 import (
 	"std"
+	"strconv"
 
 	"gno.land/p/demo/mux"
 	"gno.land/p/demo/ufmt"
@@ -16,8 +17,9 @@ const (
 	TOKEN_DETAIL_PATH  = "token/{name}"                   // {name} is a placeholder for the token name
 	TOKEN_BALANCE_PATH = "token/{name}/balance/{address}" // {name} is a placeholder for the token name, {address} is a placeholder for the address of the account
 
-	AIRDROP_PATH        = "airdrop"
-	AIRDROP_DETAIL_PATH = "airdrop/{id}" // {id} is a placeholder for the airdrop id
+	AIRDROP_PATH             = "airdrop"
+	AIRDROP_DETAIL_PATH      = "airdrop/{id}"                 // {id} is a placeholder for the airdrop id
+	AIRDROP_CLAIM_CHECK_PATH = "airdrop/{id}/claim/{address}" // {id} is a placeholder for the airdrop id, {address} is a placeholder for the address of the account
 
 	SALES_PATH = "sales"
 )
@@ -30,6 +32,7 @@ func init() {
 	router.HandleFunc(TOKEN_BALANCE_PATH, renderTokenBalancePage)
 	router.HandleFunc(AIRDROP_PATH, renderAirdropPage)
 	router.HandleFunc(AIRDROP_DETAIL_PATH, renderAirdropDetailPage)
+	router.HandleFunc(AIRDROP_CLAIM_CHECK_PATH, renderAirdropClaimCheckPage)
 	router.HandleFunc(SALES_PATH, renderSalesPage)
 }
 
@@ -83,7 +86,39 @@ func renderAirdropPage(res *mux.ResponseWriter, req *mux.Request) {
 }
 
 func renderAirdropDetailPage(res *mux.ResponseWriter, req *mux.Request) {
-	res.Write("Coming soon...")
+	airdropID, err := strconv.Atoi(req.GetVar("id"))
+	if err != nil {
+		panic("invalid airdrop ID")
+	}
+	airdrop := mustGetAirdrop(uint64(airdropID))
+
+	res.Write(ufmt.Sprintf("# 🎁 Airdrop #%d Details 🎁\n", airdropID))
+	res.Write(ufmt.Sprintf("### Token: %s\n", airdrop.token.banker.GetName()))
+	res.Write(ufmt.Sprintf("### Amount to claim per address: %d\n", airdrop.amountPerAddr))
+	res.Write(ufmt.Sprintf("### Merkle Root: %s\n", airdrop.merkleRoot))
+	res.Write(ufmt.Sprintf("### Total addresses claimed: %d\n\n", airdrop.alreadyClaimed.Size()))
+	res.Write("## Claim Instructions\n")
+	res.Write("To try to claim your tokens, call the redeem function with the airdrop ID and the proof of your address.\n")
+	res.Write("If you are eligible, you will receive the tokens in your wallet.\n")
+}
+
+func renderAirdropClaimCheckPage(res *mux.ResponseWriter, req *mux.Request) {
+	airdropID, err := strconv.Atoi(req.GetVar("id"))
+	if err != nil {
+		panic("invalid airdrop ID")
+	}
+	address := req.GetVar("address")
+	airdrop := mustGetAirdrop(uint64(airdropID))
+
+	res.Write(ufmt.Sprintf("# 🎁 Airdrop #%d Claim Check 🎁\n", airdropID))
+	res.Write(ufmt.Sprintf("### Address: %s\n", address))
+	res.Write(ufmt.Sprintf("### Amount to claim: %d\n", airdrop.amountPerAddr))
+	if airdrop.hasAlreadyClaimed(std.Address(address)) {
+		res.Write("### Address already claimed\n")
+		return
+	} else {
+		res.Write("### Address not yet claimed or not eligible\n")
+	}
 }
 
 func renderSalesPage(res *mux.ResponseWriter, req *mux.Request) {
