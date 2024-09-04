@@ -9236,7 +9236,7 @@
     "accountExplorer": "https://polygonscan.com/address/$address",
     "contractExplorer": "https://polygonscan.com/address/$address",
     "testnet": false,
-    "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
+    "backendEndpoint": "http://localhost:9090",
     "chainId": 137,
     "alchemyApiKey": "TCahW5rzmCaegxHVyhXh3vmCG2sS9Yu3",
     "vaultContractAddress": "0x037ecf2480df7b0e8b46d0a9a650cb5371d89573",
