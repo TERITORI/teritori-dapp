@@ -104,7 +104,7 @@ export const AddressSearch: React.FC<AddressSearchProps> = ({
             <ScrollView showsVerticalScrollIndicator>
               {results.map((item, index) => (
                 <TouchableOpacity
-                  key={index.toString()}
+                  key={index}
                   style={[locationItem]}
                   onPress={() => {
                     setLocationSelected([

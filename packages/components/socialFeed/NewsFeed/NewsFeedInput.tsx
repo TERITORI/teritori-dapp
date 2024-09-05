@@ -675,6 +675,7 @@ export const NewsFeedInput = React.forwardRef<
                   <>
                     {developerMode && (
                       <SecondaryButtonOutline
+                        disabled={!formValues?.message.length}
                         size="M"
                         color={
                           formValues?.message.length >

@@ -12,7 +12,11 @@ import {
 
 // TODO: Factorize stuff from here with FeedMapList.web.tsx
 
-const Map: FC<MapProps> = ({ locationSelected, postCategory = -1 }) => {
+const Map: FC<MapProps> = ({
+  // FIXME: locationSelected not updated
+  locationSelected,
+  postCategory = -1,
+}) => {
   const customIcon = useMemo(
     () =>
       new DivIcon({
@@ -27,7 +31,7 @@ const Map: FC<MapProps> = ({ locationSelected, postCategory = -1 }) => {
 
   return (
     <MapContainer
-      center={[48.8566, 2.3522]}
+      center={locationSelected || [48.8566, 2.3522]}
       zoom={12}
       attributionControl={false}
     >
