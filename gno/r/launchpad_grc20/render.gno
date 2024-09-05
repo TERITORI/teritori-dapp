@@ -110,7 +110,7 @@ func renderAirdropDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write(ufmt.Sprintf("### Merkle Root: %s\n", airdrop.merkleRoot))
 	res.Write(ufmt.Sprintf("### Total addresses claimed: %d\n\n", airdrop.alreadyClaimed.Size()))
 	res.Write("## Claim Instructions\n")
-	res.Write("To try to claim your tokens, call the redeem function with the airdrop ID and the proof of your address.\n")
+	res.Write("To try to claim your tokens, call the claim function with the airdrop ID and the proof of your address.\n")
 	res.Write("If you are eligible, you will receive the tokens in your wallet.\n")
 }
 

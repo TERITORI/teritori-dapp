@@ -58,7 +58,7 @@ func NewAirdrop(tokenName, merkleRoot string, amountPerAddr uint64, startTimesta
 	return airdropID
 }
 
-func Redeem(airdropID uint64, proofs []Node) {
+func Claim(airdropID uint64, proofs []Node) {
 	airdrop := mustGetAirdrop(airdropID)
 	caller := std.PrevRealm().Addr()
 
@@ -96,19 +96,6 @@ func (a *Airdrop) hasAlreadyClaimed(caller std.Address) bool {
 
 func (a *Airdrop) isOnGoing() bool {
 	now := time.Now().Unix()
-
-	// if startTimestamp and endTimestamp are both 0, the airdrop is always ongoing
-	if a.startTimestamp == 0 && a.endTimestamp == 0 {
-		return true
-	}
-	// if startTimestamp is 0, the airdrop is ongoing until endTimestamp
-	if a.startTimestamp == 0 {
-		return now < a.endTimestamp
-	}
-
-	// if endTimestamp is 0, the airdrop is ongoing since startTimestamp
-	if a.endTimestamp == 0 {
-		return a.startTimestamp <= now
-	}
-	return a.startTimestamp <= now && now < a.endTimestamp
+    return (a.startTimestamp == 0 || a.startTimestamp <= now) &&
+           (a.endTimestamp == 0 || now < a.endTimestamp)
 }

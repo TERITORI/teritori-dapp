@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestRedeem(t *testing.T) {
+func TestClaim(t *testing.T) {
 	leaves := []Hashable{
 		Leaf{[]byte("g126gx6p6d3da4ymef35ury6874j6kys044r7zlg")},
 		Leaf{[]byte("g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv")},
@@ -17,7 +17,7 @@ func TestRedeem(t *testing.T) {
 	NewToken("MikaelVallenetCoin", "MVC", "https://mikaelvallenet.com", 18, 1000000, 1000000000, true, true)
 	airdropID := NewAirdrop("MikaelVallenetCoin", root, 100, 0, 0)
 	std.TestSetOrigCaller(std.Address("g126gx6p6d3da4ymef35ury6874j6kys044r7zlg"))
-	Redeem(airdropID, proofs)
+	Claim(airdropID, proofs)
 	token := mustGetToken("MikaelVallenetCoin")
 	balance := token.Token().BalanceOf(std.Address("g126gx6p6d3da4ymef35ury6874j6kys044r7zlg"))
 	if balance != 100 {
