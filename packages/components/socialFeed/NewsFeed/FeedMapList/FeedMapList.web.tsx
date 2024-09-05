@@ -30,12 +30,7 @@ import {
   getMapPostIconColorRgba,
   getMapPostIconSVGString,
 } from "@/utils/feed/map";
-import { zodTryParseJSON } from "@/utils/sanitize";
-import {
-  LatLngExpression,
-  PostCategory,
-  ZodSocialFeedPostMetadata,
-} from "@/utils/types/feed";
+import { PostCategory } from "@/utils/types/feed";
 
 type PostType = "picture" | "text" | "video" | "audio";
 
@@ -79,6 +74,7 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
 
   //TODO: remove this test block
   ////////////////////////////////////////////////
+  console.log("postspostsposts", posts?.[0]);
   const reqTest: Partial<PostsRequest> = {
     filter: {
       categories: [],
@@ -102,22 +98,22 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
 
   const getFeedLocation = useFetchFeedLocation();
 
-  const markers: MarkerPopup[] = useMemo(() => {
-    if (!posts) return [];
-    const results: MarkerPopup[] = [];
-    posts.forEach((post) => {
-      const metadata = zodTryParseJSON(
-        ZodSocialFeedPostMetadata,
-        post.metadata,
-      );
-      if (!metadata?.location) return;
-      results.push({
-        position: metadata.location,
-        post,
-      });
-    });
-    return results;
-  }, [posts]);
+  // const markers: MarkerPopup[] = useMemo(() => {
+  //   if (!posts) return [];
+  //   const results: MarkerPopup[] = [];
+  //   posts.forEach((post) => {
+  //     const metadata = zodTryParseJSON(
+  //       ZodSocialFeedPostMetadata,
+  //       post.metadata,
+  //     );
+  //     if (!metadata?.location) return;
+  //     results.push({
+  //       position: metadata.location,
+  //       post,
+  //     });
+  //   });
+  //   return results;
+  // }, [posts]);
 
   useEffect(() => {
     getFeedLocation({

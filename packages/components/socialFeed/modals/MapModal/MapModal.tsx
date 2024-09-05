@@ -21,7 +21,8 @@ import { SpacerColumn, SpacerRow } from "../../../spacer";
 import { ModalWithoutHeader } from "@/components/modals/ModalWithoutHeader";
 import { AddressSearch } from "@/components/socialFeed/modals/MapModal/AddressSearch";
 import { MapDescriptionInput } from "@/components/socialFeed/modals/MapModal/MapDescriptionInput";
-import { MapHeader } from "@/components/socialFeed/modals/MapModal/MapHeader";
+import { MapModalHeader } from "@/components/socialFeed/modals/MapModal/MapModalHeader";
+import { PostCategory } from "@/utils/types/feed";
 
 const MapView = Platform.select({
   native: () =>
@@ -35,24 +36,27 @@ const MapView = Platform.select({
 interface TMapModalProps {
   visible: boolean;
   onClose: () => void;
-  handleSubmit?: () => void;
-  locationSelected: LatLng;
-  setLocationSelected: Dispatch<SetStateAction<LatLng>>;
+  setLocation: Dispatch<SetStateAction<LatLng>>;
   description: string;
   setDescription: (newDescription: string) => void;
+  location?: LatLng;
+  postCategory?: PostCategory;
 }
 
 export const MapModal: React.FC<TMapModalProps> = ({
-  handleSubmit,
   onClose,
   visible,
-  locationSelected,
-  setLocationSelected,
+  setLocation,
   description,
   setDescription,
+  location,
+  postCategory,
 }) => {
   const [addressPlaceHolder, setAddressPlaceHolder] = useState("Address");
   const [address, setAddress] = useState("");
+  const [locationSelected, setLocationSelected] = useState<LatLng | undefined>(
+    location,
+  );
 
   return (
     <ModalWithoutHeader
@@ -62,7 +66,7 @@ export const MapModal: React.FC<TMapModalProps> = ({
       onClose={onClose}
       width={457}
     >
-      <MapHeader onClose={onClose} />
+      <MapModalHeader onClose={onClose} />
 
       <View style={[unitCardStyle]}>
         <AddressSearch
@@ -77,7 +81,10 @@ export const MapModal: React.FC<TMapModalProps> = ({
 
         <View style={[mapContainer]}>
           <Suspense fallback={<></>}>
-            <MapView locationSelected={locationSelected} />
+            <MapView
+              locationSelected={locationSelected}
+              postCategory={postCategory}
+            />
           </Suspense>
         </View>
 
@@ -91,25 +98,36 @@ export const MapModal: React.FC<TMapModalProps> = ({
         <SpacerColumn size={2} />
 
         <View style={[bottomButtom]}>
-          <SecondaryButtonOutline
-            size="M"
-            color={primaryColor}
-            borderColor={transparentColor}
-            text="Skip location"
-            onPress={handleSubmit}
-            squaresBackgroundColor={neutral17}
-          />
-          <SpacerRow size={2} />
+          {location && (
+            <>
+              <SecondaryButtonOutline
+                size="M"
+                color={primaryColor}
+                borderColor={transparentColor}
+                text="Remove Location"
+                onPress={() => {
+                  setLocationSelected(undefined);
+                  setLocation(undefined);
+                  onClose();
+                }}
+                squaresBackgroundColor={neutral17}
+              />
+              <SpacerRow size={2} />
+            </>
+          )}
+
           <PrimaryButton
             disabled={addressPlaceHolder === "Address"}
             loader
             size="M"
-            text="Add location"
-            onPress={handleSubmit}
+            text={location ? "Update Location" : "Add Location"}
+            onPress={() => {
+              setLocation(locationSelected);
+              onClose();
+            }}
           />
         </View>
       </View>
-
       <SpacerColumn size={2} />
     </ModalWithoutHeader>
   );

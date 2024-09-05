@@ -1,34 +1,24 @@
 import React from "react";
 import { TouchableOpacity, View, ViewStyle } from "react-native";
 
-import { neutralA3, secondaryColor } from "../../../../utils/style/colors";
-import { fontMedium16, fontSemibold16 } from "../../../../utils/style/fonts";
+import { secondaryColor } from "../../../../utils/style/colors";
+import { fontSemibold16 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText";
 import { SVG } from "../../../SVG";
-import { SpacerRow } from "../../../spacer";
 
-import chevronLeft from "@/assets/icons/chevron-left.svg";
 import close from "@/assets/icons/close.svg";
 
 interface TMapHeaderProps {
   onClose: () => void;
 }
 
-export const MapHeader: React.FC<TMapHeaderProps> = ({ onClose }) => {
+export const MapModalHeader: React.FC<TMapHeaderProps> = ({ onClose }) => {
   return (
     <View style={[header]}>
       <View style={[headerText]}>
-        <TouchableOpacity style={[button32]} onPress={onClose}>
-          <SVG
-            source={chevronLeft}
-            height={24}
-            width={24}
-            color={secondaryColor}
-          />
-        </TouchableOpacity>
-        <BrandText style={[fontSemibold16]}>Add location</BrandText>
-        <SpacerRow size={2} />
-        <BrandText style={[fontMedium16, { color: neutralA3 }]}>2/2</BrandText>
+        <BrandText style={[fontSemibold16]}>
+          Add a Location to this post
+        </BrandText>
       </View>
 
       <TouchableOpacity style={[button32]} onPress={onClose}>
@@ -38,7 +28,6 @@ export const MapHeader: React.FC<TMapHeaderProps> = ({ onClose }) => {
   );
 };
 
-// MapHeader styles
 const header: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",

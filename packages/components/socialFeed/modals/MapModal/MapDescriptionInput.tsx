@@ -14,7 +14,7 @@ export const MapDescriptionInput: React.FC<TDescriptionInputProps> = ({
 }) => {
   return (
     <>
-      <TextInputOutsideLabel label="Describe for people that will find this track on map" />
+      <TextInputOutsideLabel label="Say something to people who will find this post on map" />
       <TextInputCustom
         noBrokenCorners
         label=""

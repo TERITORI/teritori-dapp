@@ -1,29 +1,44 @@
 import "./styles.css";
 import "leaflet/dist/leaflet.css";
-import { Icon } from "leaflet";
-import { FC } from "react";
+import { DivIcon } from "leaflet";
+import { FC, useMemo } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 
 import { MapProps } from "@/components/socialFeed/modals/MapModal/Map.types";
+import {
+  getMapPostIconColorRgba,
+  getMapPostIconSVGString,
+} from "@/utils/feed/map";
 
-const Map: FC<MapProps> = ({ locationSelected }) => {
-  const customIcon = new Icon({
-    iconUrl: "https://i.ibb.co/gSnJ70P/location.png", //load image from web; not work with local image
-    iconSize: [32, 32],
-  });
+// TODO: Factorize stuff from here with FeedMapList.web.tsx
+
+const Map: FC<MapProps> = ({ locationSelected, postCategory = -1 }) => {
+  const customIcon = useMemo(
+    () =>
+      new DivIcon({
+        html: `<div style="border-radius: 99px;
+    height: 32px; width: 32px; border: 1px solid #A3A3A3;
+     background-color: rgba(${getMapPostIconColorRgba(postCategory)}); display: flex; align-items: center; justify-content: center;">${getMapPostIconSVGString(postCategory)}</div>`,
+        className: "",
+        iconSize: [34, 34],
+      }),
+    [postCategory],
+  );
 
   return (
     <MapContainer
-      key={locationSelected.toString()}
-      center={locationSelected}
+      center={[48.8566, 2.3522]}
       zoom={12}
       attributionControl={false}
     >
       <TileLayer
-        url={`https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=${process.env.EXPO_PUBLIC_LEAFLET_MAP_TOKEN}`}
         noWrap
+        attribution=""
+        url="https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=QkwJFLzzxPan25YCgnDExGpMFPxA3x4lnyKiUf8zmaqXLP5XyOR8n3yEM8jlKV3W"
       />
-      <Marker position={locationSelected} icon={customIcon} />
+      {locationSelected && (
+        <Marker position={locationSelected} icon={customIcon} />
+      )}
     </MapContainer>
   );
 };

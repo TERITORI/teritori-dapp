@@ -149,29 +149,9 @@ export const NewsFeedInput = React.forwardRef<
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
     const [premium, setPremium] = useState(false);
     const [isShowMap, setShowMap] = useState(false);
-    const [locationSelected, setLocationSelected] = useState<LatLng>([
-      48.8566, 2.3522,
-    ]);
+    const [location, setLocation] = useState<LatLng | undefined>();
     const [description, setDescription] = useState("");
     const [developerMode] = useDeveloperMode();
-
-    console.log("locationSelectedlocationSelected", locationSelected);
-
-    // useEffect(() => {
-    //   if (Platform.OS === "web") {
-    //     navigator.geolocation.getCurrentPosition(
-    //       (position) => {
-    //         setLocationSelected([
-    //           position.coords.latitude,
-    //           position.coords.longitude,
-    //         ]);
-    //       },
-    //       (error) => {
-    //         console.error("Error getting geolocation:", error);
-    //       },
-    //     );
-    //   }
-    // }, []);
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
@@ -305,7 +285,7 @@ export const NewsFeedInput = React.forwardRef<
           mentions,
           gifs: formValues?.gifs || [],
           premium,
-          location: locationSelected,
+          location,
         });
 
         await makePost(
@@ -363,13 +343,13 @@ export const NewsFeedInput = React.forwardRef<
       >
         {isShowMap && (
           <MapModal
-            handleSubmit={() => handleSubmit(processSubmit)()}
             visible
             onClose={() => setShowMap(false)}
-            locationSelected={locationSelected}
-            setLocationSelected={setLocationSelected}
+            setLocation={setLocation}
             description={description}
             setDescription={setDescription}
+            location={location}
+            postCategory={postCategory}
           />
         )}
         <View style={{ backgroundColor: neutral22, zIndex: 9 }}>
@@ -692,29 +672,56 @@ export const NewsFeedInput = React.forwardRef<
                 }}
               >
                 {type === "post" && (
-                  <OmniLink to={{ screen: "FeedNewArticle" }}>
-                    <SecondaryButtonOutline
-                      size="M"
-                      color={
-                        formValues?.message.length >
-                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                          ? primaryTextColor
-                          : primaryColor
-                      }
-                      borderColor={primaryColor}
-                      touchableStyle={{
-                        marginRight: layout.spacing_x2,
-                      }}
-                      backgroundColor={
-                        formValues?.message.length >
-                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                          ? primaryColor
-                          : neutral17
-                      }
-                      text="Create an Article"
-                      squaresBackgroundColor={neutral17}
-                    />
-                  </OmniLink>
+                  <>
+                    {developerMode && (
+                      <SecondaryButtonOutline
+                        size="M"
+                        color={
+                          formValues?.message.length >
+                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                            ? primaryTextColor
+                            : primaryColor
+                        }
+                        borderColor={primaryColor}
+                        touchableStyle={{
+                          marginRight: layout.spacing_x2,
+                        }}
+                        backgroundColor={
+                          formValues?.message.length >
+                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                            ? primaryColor
+                            : neutral17
+                        }
+                        text={location ? "Handle Location" : "Add Location"}
+                        squaresBackgroundColor={neutral17}
+                        onPress={() => setShowMap(true)}
+                      />
+                    )}
+
+                    <OmniLink to={{ screen: "FeedNewArticle" }}>
+                      <SecondaryButtonOutline
+                        size="M"
+                        color={
+                          formValues?.message.length >
+                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                            ? primaryTextColor
+                            : primaryColor
+                        }
+                        borderColor={primaryColor}
+                        touchableStyle={{
+                          marginRight: layout.spacing_x2,
+                        }}
+                        backgroundColor={
+                          formValues?.message.length >
+                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                            ? primaryColor
+                            : neutral17
+                        }
+                        text="Create an Article"
+                        squaresBackgroundColor={neutral17}
+                      />
+                    </OmniLink>
+                  </>
                 )}
 
                 <PrimaryButton
@@ -737,11 +744,7 @@ export const NewsFeedInput = React.forwardRef<
                         : "Publish"
                   }
                   onPress={() => {
-                    if (developerMode) {
-                      setShowMap(true);
-                    } else {
-                      handleSubmit(processSubmit)();
-                    }
+                    handleSubmit(processSubmit)();
                   }}
                 />
               </View>
