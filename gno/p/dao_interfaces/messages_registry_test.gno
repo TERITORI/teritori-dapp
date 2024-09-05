@@ -2,6 +2,8 @@ package dao_interfaces
 
 import (
 	"testing"
+
+	"gno.land/p/demo/json"
 )
 
 func TestRegistry(t *testing.T) {
@@ -15,10 +17,11 @@ func TestRegistry(t *testing.T) {
 	registry.Execute(registerMsg)
 
 	// Test messages execution
-	msgs := registry.MessagesFromJSON(`[{"type":"CopyMessage","payload":"Hello"}]`)
+	msgs := registry.MessagesFromJSON(json.Must(json.Unmarshal([]byte(`[{"type":"CopyMessage","payload":"Hello"}]`))).MustArray())
 	if len(msgs) != 1 {
 		t.Errorf("Expected 1 message, got %d", len(msgs))
 	}
+
 	registry.Execute(msgs[0])
 	if value != "Hello" {
 		t.Errorf("Expected value to be 'Hello', got '%s'", value)

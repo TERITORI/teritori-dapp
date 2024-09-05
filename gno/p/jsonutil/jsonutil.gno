@@ -48,10 +48,6 @@ func DurationNode(value time.Duration) *json.Node {
 	return Int64Node(value.Nanoseconds())
 }
 
-func MustDurationSeconds(value *json.Node) time.Duration {
-	return time.Duration(MustInt64(value)) * time.Second
-}
-
 func EmptyObjectNode() *json.Node {
 	return json.ObjectNode("", nil)
 }
@@ -127,5 +123,9 @@ func AddressOrNameNode(aon users.AddressOrName) *json.Node {
 
 func MustAddressOrName(value *json.Node) users.AddressOrName {
 	aon := users.AddressOrName(value.MustString())
+	if !aon.IsValid() {
+		panic("invalid address or name")
+	}
+
 	return aon
 }
