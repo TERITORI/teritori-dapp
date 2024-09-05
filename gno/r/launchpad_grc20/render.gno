@@ -22,7 +22,8 @@ const (
 	AIRDROP_DETAIL_PATH      = "airdrop/{id}"                 // {id} is a placeholder for the airdrop id
 	AIRDROP_CLAIM_CHECK_PATH = "airdrop/{id}/claim/{address}" // {id} is a placeholder for the airdrop id, {address} is a placeholder for the address of the account
 
-	SALES_PATH = "sales"
+	SALE_PATH = "sale"
+	SALE_DETAIL_PATH = "sale/{id}" // {id} is a placeholder for the sale id
 )
 
 func init() {
@@ -34,7 +35,8 @@ func init() {
 	router.HandleFunc(AIRDROP_PATH, renderAirdropPage)
 	router.HandleFunc(AIRDROP_DETAIL_PATH, renderAirdropDetailPage)
 	router.HandleFunc(AIRDROP_CLAIM_CHECK_PATH, renderAirdropClaimCheckPage)
-	router.HandleFunc(SALES_PATH, renderSalesPage)
+	router.HandleFunc(SALE_PATH, renderSalePage)
+	router.HandleFunc(SALE_DETAIL_PATH, renderSaleDetailPage)
 }
 
 func renderTokenPage(res *mux.ResponseWriter, req *mux.Request) {
@@ -133,8 +135,42 @@ func renderAirdropClaimCheckPage(res *mux.ResponseWriter, req *mux.Request) {
 	}
 }
 
-func renderSalesPage(res *mux.ResponseWriter, req *mux.Request) {
-	res.Write("Coming soon...")
+func renderSalePage(res *mux.ResponseWriter, req *mux.Request) {
+	res.Write("# 🛒 GRC20 Token Sales 🛒\n")
+	res.Write("A token sale is a fundraising event where a new GRC20 token is offered to the public at a fixed price.\n")
+	res.Write("Sales can be used to raise capital for a project, distribute tokens to a wide audience, or establish a market value for the token.\n\n")
+	res.Write("To participate in a token sale, you can buy tokens at the specified price during the sale period.\n")
+	res.Write("For more detailed information about a specific sale, including the price per token, sale limits, and goals, visit the page ``:sale/{id}``, replacing ``{id}`` with the sale's unique identifier.\n") 
+}
+
+func renderSaleDetailPage(res *mux.ResponseWriter, req *mux.Request) {
+	saleID, err := strconv.Atoi(req.GetVar("id"))
+	if err != nil {
+		panic("invalid sale ID")
+	}
+	sale := mustGetSale(uint64(saleID))
+
+	res.Write(ufmt.Sprintf("# 🛒 Sale #%d Details 🛒\n", saleID))
+	res.Write(ufmt.Sprintf("### Token: %s\n", sale.token.banker.GetName()))
+	if sale.isOnGoing() {
+		res.Write("### Status: Ongoing\n")
+	} else {
+		res.Write("### Status: Not Started or Ended\n")
+	}
+	if sale.startTimestamp > 0 {
+		res.Write(ufmt.Sprintf("### Start Date: %s\n", time.Unix(sale.startTimestamp, 0).Format("2006-01-02 15:04:05")))
+	}
+	if sale.endTimestamp > 0 {
+		res.Write(ufmt.Sprintf("### End Date: %s\n", time.Unix(sale.endTimestamp, 0).Format("2006-01-02 15:04:05")))
+	}
+	res.Write(ufmt.Sprintf("### Price per token: %d $GNOT\n", sale.pricePerToken))
+	res.Write(ufmt.Sprintf("### Limit per address: %d $%s\n", sale.limitPerAddr, sale.token.banker.GetSymbol()))
+	res.Write(ufmt.Sprintf("### Min goal: %d $GNOT\n", sale.minGoal))
+	res.Write(ufmt.Sprintf("### Max goal: %d $GNOT\n", sale.maxGoal))
+	res.Write(ufmt.Sprintf("### Already sold: %d $GNOT\n\n", sale.alreadySold))
+	res.Write("## Buy Instructions\n")
+	res.Write("To participate in the sale, call the buy function with the sale ID and the amount of tokens you want to buy.\n")
+	res.Write("If the sale is ongoing and you meet the criteria, you will receive the tokens in your wallet.\n")
 }
 
 func renderHomePage(res *mux.ResponseWriter, req *mux.Request) {
