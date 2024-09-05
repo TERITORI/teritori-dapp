@@ -11,8 +11,8 @@ import (
 type Airdrop struct {
 	token          *Token
 	merkleRoot     string
-	startTimestamp uint64
-	endTimestamp   uint64
+	startTimestamp int64
+	endTimestamp   int64
 	amountPerAddr  uint64
 	alreadyClaimed *avl.Tree
 }
@@ -27,7 +27,7 @@ func init() {
 	nextAirdropID = 1
 }
 
-func NewAirdrop(tokenName, merkleRoot string, amountPerAddr, startTimestamp, endTimestamp uint64) uint64 {
+func NewAirdrop(tokenName, merkleRoot string, amountPerAddr uint64, startTimestamp, endTimestamp int64) uint64 {
 	// check if the caller is the owner of the token
 	token := mustGetToken(tokenName)
 	token.admin.AssertCallerIsOwner()
@@ -44,6 +44,8 @@ func NewAirdrop(tokenName, merkleRoot string, amountPerAddr, startTimestamp, end
 	airdrop := Airdrop{
 		token:          token,
 		merkleRoot:     merkleRoot,
+		startTimestamp: startTimestamp,
+		endTimestamp:   endTimestamp,
 		amountPerAddr:  amountPerAddr,
 		alreadyClaimed: avl.NewTree(),
 	}
@@ -93,12 +95,11 @@ func (a *Airdrop) hasAlreadyClaimed(caller std.Address) bool {
 }
 
 func (a *Airdrop) isOnGoing() bool {
-	now := uint64(time.Now().Unix())
+	now := time.Now().Unix()
 
 	// if startTimestamp and endTimestamp are both 0, the airdrop is always ongoing
 	if a.startTimestamp == 0 && a.endTimestamp == 0 {
 		return true
-	
 	}
 	// if startTimestamp is 0, the airdrop is ongoing until endTimestamp
 	if a.startTimestamp == 0 {

@@ -3,6 +3,7 @@ package launchpad_grc20
 import (
 	"std"
 	"strconv"
+	"time"
 
 	"gno.land/p/demo/mux"
 	"gno.land/p/demo/ufmt"
@@ -94,6 +95,17 @@ func renderAirdropDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 
 	res.Write(ufmt.Sprintf("# 🎁 Airdrop #%d Details 🎁\n", airdropID))
 	res.Write(ufmt.Sprintf("### Token: %s\n", airdrop.token.banker.GetName()))
+	if airdrop.isOnGoing() {
+		res.Write("### Status: Ongoing\n")
+	} else {
+		res.Write("### Status: Ended\n")
+	}
+	if airdrop.startTimestamp > 0 {
+		res.Write(ufmt.Sprintf("### Start Date: %s\n", time.Unix(airdrop.startTimestamp, 0).Format("2006-01-02 15:04:05")))
+	}
+	if airdrop.endTimestamp > 0 {
+		res.Write(ufmt.Sprintf("### End Date: %s\n", time.Unix(airdrop.endTimestamp, 0).Format("2006-01-02 15:04:05")))
+	}
 	res.Write(ufmt.Sprintf("### Amount to claim per address: %d\n", airdrop.amountPerAddr))
 	res.Write(ufmt.Sprintf("### Merkle Root: %s\n", airdrop.merkleRoot))
 	res.Write(ufmt.Sprintf("### Total addresses claimed: %d\n\n", airdrop.alreadyClaimed.Size()))
