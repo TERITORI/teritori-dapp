@@ -15,7 +15,7 @@ func TestRedeem(t *testing.T) {
 	root := tree.Root()
 	proofs, err := tree.Proof(leaves[0])
 	NewToken("MikaelVallenetCoin", "MVC", "https://mikaelvallenet.com", 18, 1000000, 1000000000, true, true)
-	airdropID := NewAirdrop("MikaelVallenetCoin", root, 100)
+	airdropID := NewAirdrop("MikaelVallenetCoin", root, 100, 0, 0)
 	std.TestSetOrigCaller(std.Address("g126gx6p6d3da4ymef35ury6874j6kys044r7zlg"))
 	Redeem(airdropID, proofs)
 	token := mustGetToken("MikaelVallenetCoin")
