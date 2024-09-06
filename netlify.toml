@@ -7,4 +7,4 @@ NODE_OPTIONS = "--max_old_space_size=4096"
 from = "/*"
 to = "/index.html"
 status = 200
-TESTI2345678
+TESTI23456789
