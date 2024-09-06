@@ -35,7 +35,7 @@ func TestNewAirdrop(t *testing.T) {
 	tests := testNewAirdropTestTable{
 		"Success": {
 			input: testNewAidropInput{
-				tokenName:     "MintableTestToken",
+				tokenName:     "TestNewAirdropMintableToken",
 				root:          "root",
 				amountPerAddr: 100,
 				start:         0,
@@ -43,7 +43,7 @@ func TestNewAirdrop(t *testing.T) {
 			},
 			expected: testNewAirdropExpected{
 				panic:         false,
-				tokenName:     "MintableTestToken",
+				tokenName:     "TestNewAirdropMintableToken",
 				root:          "root",
 				amountPerAddr: 100,
 				start:         0,
@@ -64,7 +64,7 @@ func TestNewAirdrop(t *testing.T) {
 		},
 		"Token that is not mintable": {
 			input: testNewAidropInput{
-				tokenName:     "NotMintableTestToken",
+				tokenName:     "TestNewAirdropNotMintableToken",
 				root:          "root",
 				amountPerAddr: 100,
 				start:         0,
@@ -76,7 +76,7 @@ func TestNewAirdrop(t *testing.T) {
 		},
 		"Airdrop should start in the future or be equal to 0": {
 			input: testNewAidropInput{
-				tokenName:     "MintableTestToken",
+				tokenName:     "TestNewAirdropMintableToken",
 				root:          "root",
 				amountPerAddr: 100,
 				start:         100,
@@ -88,7 +88,7 @@ func TestNewAirdrop(t *testing.T) {
 		},
 		"Airdrop should end in the future or be equal to 0": {
 			input: testNewAidropInput{
-				tokenName:     "MintableTestToken",
+				tokenName:     "TestNewAirdropMintableToken",
 				root:          "root",
 				amountPerAddr: 100,
 				start:         0,
@@ -100,7 +100,7 @@ func TestNewAirdrop(t *testing.T) {
 		},
 		"Airdrop should start before it ends": {
 			input: testNewAidropInput{
-				tokenName:     "MintableTestToken",
+				tokenName:     "TestNewAirdropMintableToken",
 				root:          "root",
 				amountPerAddr: 100,
 				start:         100,
@@ -113,7 +113,8 @@ func TestNewAirdrop(t *testing.T) {
 	}
 
 	// Create tokens for testing
-	createTestingTokens()
+	NewToken("TestNewAirdropMintableToken", "TestNewAirdropMintableToken", "noimage", 18, 21_000_000, 23_000_000, true, true)
+	NewToken("TestNewAirdropNotMintableToken", "TestNewAirdropNotMintableToken", "noimage", 18, 21_000_000, 23_000_000, false, true)
 	for testName, test := range tests {
 		t.Run(testName, func(t *testing.T) {
 			if test.expected.panic {
@@ -179,8 +180,9 @@ func TestClaim(t *testing.T) {
 	}
 
 	now := time.Now().Unix()
-	notStartedAirDropID := NewAirdrop("MintableTestToken", root, 100, now+100, now+200)
-	airdropID := NewAirdrop("MintableTestToken", root, 100, 0, 0)
+	NewToken("TestClaimAirDropToken", "TestClaimAirDropToken", "noimage", 18, 21_000_000, 23_000_000, true, true)
+	notStartedAirDropID := NewAirdrop("TestClaimAirDropToken", root, 100, now+100, now+200)
+	airdropID := NewAirdrop("TestClaimAirDropToken", root, 100, 0, 0)
 
 	tests := testClaimTestTable{
 		"Success": {

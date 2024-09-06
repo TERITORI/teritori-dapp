@@ -1,6 +1,9 @@
 package launchpad_grc20
 
-import "testing"
+import (
+	"std"
+	"testing"
+)
 
 func TestNewToken(t *testing.T) {
 	type testNewTokenInput struct {
@@ -36,7 +39,7 @@ func TestNewToken(t *testing.T) {
 	tests := testNewTokenTestTable{
 		"Success": {
 			input: testNewTokenInput{
-				name:      "TestToken",
+				name:      "TestNewToken",
 				symbol:    "TST",
 				image:     "image",
 				decimals:  18,
@@ -47,7 +50,7 @@ func TestNewToken(t *testing.T) {
 			},
 			expected: testNewTokenExpected{
 				panic:     false,
-				name:      "TestToken",
+				name:      "TestNewToken",
 				symbol:    "TST",
 				image:     "image",
 				decimals:  18,
@@ -59,7 +62,7 @@ func TestNewToken(t *testing.T) {
 		},
 		"Decimals greater than 18": {
 			input: testNewTokenInput{
-				name:      "TestToke2n",
+				name:      "TestNewToken2",
 				symbol:    "TST",
 				image:     "image",
 				decimals:  19,
@@ -74,7 +77,7 @@ func TestNewToken(t *testing.T) {
 		},
 		"Token already exists": {
 			input: testNewTokenInput{
-				name:      "TestToken",
+				name:      "TestNewToken",
 				symbol:    "TST",
 				image:     "image",
 				decimals:  18,
@@ -89,7 +92,7 @@ func TestNewToken(t *testing.T) {
 		},
 		"Initial supply exceeds total supply cap": {
 			input: testNewTokenInput{
-				name:      "TestToken2",
+				name:      "TestNewToken2",
 				symbol:    "TST2",
 				image:     "image",
 				decimals:  18,
@@ -141,4 +144,105 @@ func TestNewToken(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestMint(t *testing.T) {
+	type testMintInput struct {
+		name   string
+		to std.Address
+		amount uint64
+	}
+
+	type testMintExpected struct {
+		panic  bool
+		totalSupply uint64
+	}
+
+	type testMint struct {
+		input    testMintInput
+		expected testMintExpected
+	}
+
+	type testMintTestTable = map[string]testMint
+
+	bob := std.Address("g126gx6p6d3da4ymef35ury6874j6kys044r7zlg")
+	alice := std.Address("g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv")
+
+	std.TestSetOrigCaller(bob)
+
+	NewToken("TestMintTokenMintable", "TestMintTokenMintable", "image", 18, 21_000_000, 23_000_000, true, true)
+	NewToken("TestMintTokenNotMintable", "TestMintTokenNotMintable", "image", 18, 21_000_000, 23_000_000, false, true)
+
+	tests := testMintTestTable{
+		"Success": {
+			input: testMintInput{
+				name:   "TestMintTokenMintable",
+				to: bob,
+				amount: 1,
+			},
+			expected: testMintExpected{
+				panic: false,
+				totalSupply: 21_000_001,
+			},
+		},
+		"Token does not exist": {
+			input: testMintInput{
+				name:   "TestToken2",
+				to: bob,
+				amount: 1000000000000000000,
+			},
+			expected: testMintExpected{
+				panic: true,
+			},
+		},
+		"Minting not allowed": {
+			input: testMintInput{
+				name:   "TestMintTokenNotMintable",
+				to: bob,
+				amount: 1000000000000000000,
+			},
+			expected: testMintExpected{
+				panic: true,
+			},
+		},
+		"Total supply cap exceeded": {
+			input: testMintInput{
+				name:   "TestMintTokenMintable",
+				to: bob,
+				amount: 1000000000000000000,
+			},
+			expected: testMintExpected{
+				panic: true,
+			},
+		},
+		"Is not the owner": {
+			input: testMintInput{
+				name:   "TestMintTokenMintable",
+				to: alice,
+				amount: 1000000000000000000,
+			},
+			expected: testMintExpected{
+				panic: true,
+			},
+		},
+	}
+
+
+	for testName, test := range tests {
+		t.Run(testName, func(t *testing.T) {
+			defer func() {
+				if r := recover(); (r != nil) != test.expected.panic {
+					t.Errorf("panic = %v, want %v", r != nil, test.expected.panic)
+				}
+			}()
+
+			Mint(test.input.name, test.input.to, test.input.amount)
+
+			inst := mustGetToken(test.input.name)
+			if inst.banker.TotalSupply() != test.expected.totalSupply {
+				t.Errorf("totalSupply = %v, want %v", inst.banker.TotalSupply(), test.expected.totalSupply)
+			}
+		})
+	}
+
 }
