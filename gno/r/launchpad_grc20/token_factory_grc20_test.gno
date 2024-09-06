@@ -246,3 +246,104 @@ func TestMint(t *testing.T) {
 	}
 
 }
+
+func TestBurn(t *testing.T) {
+	type testBurnInput struct {
+		name   string
+		from std.Address
+		amount uint64
+	}
+
+	type testBurnExpected struct {
+		panic  bool
+		totalSupply uint64
+	}
+
+	type testBurn struct {
+		input    testBurnInput
+		expected testBurnExpected
+	}
+
+	type testBurnTestTable = map[string]testBurn
+
+	bob := std.Address("g126gx6p6d3da4ymef35ury6874j6kys044r7zlg")
+	alice := std.Address("g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv")
+
+	std.TestSetOrigCaller(bob)
+
+	NewToken("TestBurnTokenBurnable", "TestBurnTokenBurnable", "image", 18, 21_000_000, 23_000_000, true, true)
+	NewToken("TestBurnTokenNotBurnable", "TestBurnTokenNotBurnable", "image", 18, 21_000_000, 23_000_000, true, false)
+
+	tests := testBurnTestTable{
+		"Success": {
+			input: testBurnInput{
+				name:   "TestBurnTokenBurnable",
+				from: bob,
+				amount: 1,
+			},
+			expected: testBurnExpected{
+				panic: false,
+				totalSupply: 20_999_999,
+			},
+		},
+		"Token does not exist": {
+			input: testBurnInput{
+				name:   "TestToken2",
+				from: bob,
+				amount: 1000000000000000000,
+			},
+			expected: testBurnExpected{
+				panic: true,
+			},
+		},
+		"Burning not allowed": {
+			input: testBurnInput{
+				name:   "TestBurnTokenNotBurnable",
+				from: bob,
+				amount: 1000000000000000000,
+			},
+			expected: testBurnExpected{
+				panic: true,
+			},
+		},
+		"Not enough in balance": {
+			input: testBurnInput{
+				name:   "TestBurnTokenBurnable",
+				from: bob,
+				amount: 1000000000000000000,
+			},
+			expected: testBurnExpected{
+				panic: true,
+			},
+		},
+		"Is not the owner": {
+			input: testBurnInput{
+				name:   "TestBurnTokenBurnable",
+				from: alice,
+				amount: 1000000000000000000,
+			},
+			expected: testBurnExpected{
+				panic: true,
+			},
+		},
+	}
+
+	for testName, test := range tests {
+		t.Run(testName, func(t *testing.T) {
+			defer func() {
+				if r := recover(); (r != nil) != test.expected.panic {
+					t.Errorf("panic = %v, want %v", r != nil, test.expected.panic)
+				}
+			}()
+
+			Burn(test.input.name, test.input.from, test.input.amount)
+
+			inst := mustGetToken(test.input.name)
+			if !test.expected.panic {
+				if inst.banker.TotalSupply() != test.expected.totalSupply {
+					t.Errorf("totalSupply = %v, want %v", inst.banker.TotalSupply(), test.expected.totalSupply)
+				}
+			}
+		})
+	}
+}
