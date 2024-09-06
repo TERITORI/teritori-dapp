@@ -8,7 +8,7 @@ interface TDescriptionInputProps {
   setDescription: any;
 }
 
-export const MapDescriptionInput: React.FC<TDescriptionInputProps> = ({
+export const c: React.FC<TDescriptionInputProps> = ({
   description,
   setDescription,
 }) => {

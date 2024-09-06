@@ -20,7 +20,6 @@ import { SpacerColumn, SpacerRow } from "../../../spacer";
 
 import { ModalWithoutHeader } from "@/components/modals/ModalWithoutHeader";
 import { AddressSearch } from "@/components/socialFeed/modals/MapModal/AddressSearch";
-import { MapDescriptionInput } from "@/components/socialFeed/modals/MapModal/MapDescriptionInput";
 import { MapModalHeader } from "@/components/socialFeed/modals/MapModal/MapModalHeader";
 import { PostCategory } from "@/utils/types/feed";
 
@@ -37,8 +36,9 @@ interface TMapModalProps {
   visible: boolean;
   onClose: () => void;
   setLocation: Dispatch<SetStateAction<LatLng>>;
-  description: string;
-  setDescription: (newDescription: string) => void;
+  // TODO: Description ?
+  // description: string;
+  // setDescription: (newDescription: string) => void;
   location?: LatLng;
   postCategory?: PostCategory;
 }
@@ -47,8 +47,6 @@ export const MapModal: React.FC<TMapModalProps> = ({
   onClose,
   visible,
   setLocation,
-  description,
-  setDescription,
   location,
   postCategory,
 }) => {
@@ -88,16 +86,16 @@ export const MapModal: React.FC<TMapModalProps> = ({
           </Suspense>
         </View>
 
+        {/*TODO: Description ?*/}
+        {/*<SpacerColumn size={2} />*/}
+        {/*<MapDescriptionInput*/}
+        {/*  description={description}*/}
+        {/*  setDescription={setDescription}*/}
+        {/*/>*/}
+
         <SpacerColumn size={2} />
 
-        <MapDescriptionInput
-          description={description}
-          setDescription={setDescription}
-        />
-
-        <SpacerColumn size={2} />
-
-        <View style={[bottomButtom]}>
+        <View style={[bottomButton]}>
           {location && (
             <>
               <SecondaryButtonOutline
@@ -133,7 +131,7 @@ export const MapModal: React.FC<TMapModalProps> = ({
   );
 };
 
-const bottomButtom: ViewStyle = {
+const bottomButton: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "center",

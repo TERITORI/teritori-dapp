@@ -74,7 +74,11 @@ import {
   replaceFileInArray,
   urlMatch,
 } from "../../../utils/social-feed";
-import { neutral77 } from "../../../utils/style/colors";
+import {
+  neutral17,
+  neutral77,
+  primaryColor,
+} from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout, SOCIAL_FEED_BREAKPOINT_M } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/files";
@@ -87,6 +91,9 @@ import { FileUploader } from "../../fileUploader";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
+
+import { SecondaryButtonOutline } from "@/components/buttons/SecondaryButtonOutline";
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 
 const VIDEOTYPE = "draft-js-video-plugin-video"; // See @draft-js-plugins/video/lib/video/constants
 const MAX_IMAGES = 8;
@@ -132,6 +139,7 @@ export const RichText: React.FC<RichTextProps> = ({
   publishDisabled,
   authorId,
   postId,
+  setIsMapShown,
 }) => {
   const compositeDecorator = {
     decorators: [
@@ -187,6 +195,7 @@ export const RichText: React.FC<RichTextProps> = ({
     () => uploadedVideos.length >= MAX_VIDEOS,
     [uploadedVideos.length],
   );
+  const [developerMode] = useDeveloperMode();
 
   // Truncate using initialValue, only if isPreview
   const isTruncateNeeded = useMemo(
@@ -475,6 +484,20 @@ export const RichText: React.FC<RichTextProps> = ({
               <SpacerColumn size={1.5} />
             ) : (
               <SpacerRow size={3} />
+            )}
+
+            {developerMode && (
+              <SecondaryButtonOutline
+                disabled={publishDisabled}
+                size="M"
+                borderColor={primaryColor}
+                touchableStyle={{
+                  marginRight: layout.spacing_x2,
+                }}
+                text="Handle Location"
+                squaresBackgroundColor={neutral17}
+                onPress={() => setIsMapShown(true)}
+              />
             )}
             <PrimaryButton
               disabled={publishDisabled}

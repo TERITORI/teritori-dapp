@@ -10,10 +10,11 @@ import {
   getMapPostIconSVGString,
 } from "@/utils/feed/map";
 
-// TODO: Factorize stuff from here with FeedMapList.web.tsx
+// TODO: Factorize stuff from here with FeedMapList.web.tsx ?
+// Remember: This component is used for location selection on MapModal, at creation post.
 
 const Map: FC<MapProps> = ({
-  // FIXME: locationSelected not updated
+  // FIXME: locationSelected not updated when selecting an address from AddressSearch
   locationSelected,
   postCategory = -1,
 }) => {

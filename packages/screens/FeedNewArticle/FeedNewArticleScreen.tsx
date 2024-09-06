@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ScrollView, View } from "react-native";
+import { LatLng } from "react-native-leaflet-view";
 import { useSelector } from "react-redux";
 
 import priceSVG from "../../../assets/icons/price.svg";
@@ -16,6 +17,7 @@ import { Label, TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgressBar";
 import { RichText } from "@/components/socialFeed/RichText";
 import { PublishValues } from "@/components/socialFeed/RichText/RichText.type";
+import { MapModal } from "@/components/socialFeed/modals/MapModal/MapModal";
 import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
@@ -86,7 +88,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const { setToastSuccess, setToastError } = useFeedbacks();
   const navigation = useAppNavigation();
   const scrollViewRef = useRef<ScrollView>(null);
-
+  const [location, setLocation] = useState<LatLng | undefined>();
+  const [isMapShown, setIsMapShown] = useState(false);
   const {
     control,
     setValue,
@@ -196,6 +199,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         mentions: values.mentions,
         hashtags: values.hashtags,
         message,
+        location,
       });
 
       await makePost(JSON.stringify(metadata));
@@ -382,6 +386,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                 onPublish={onPublish}
                 authorId={userId || ""}
                 postId=""
+                setIsMapShown={setIsMapShown}
               />
             )}
           />
@@ -397,6 +402,16 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           </>
         )}
       </ScrollView>
+
+      {isMapShown && (
+        <MapModal
+          visible
+          onClose={() => setIsMapShown(false)}
+          setLocation={setLocation}
+          location={location}
+          postCategory={postCategory}
+        />
+      )}
     </ScreenContainer>
   );
 };

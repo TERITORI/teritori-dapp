@@ -32,6 +32,7 @@ export interface NewArticleFormValues {
   thumbnailImage?: LocalFileData;
   coverImage?: LocalFileData;
   shortDescription?: string;
+  location?: LatLngExpression;
 }
 
 export interface NewPostFormValues {
@@ -59,15 +60,6 @@ const MaybeFiles = z
     ),
   );
 
-export const zodSocialFeedCommonMetadata = z.object({
-  title: z.string(),
-  premium: z.number().int().gte(0).optional(),
-});
-
-export type SocialFeedCommonMetadata = z.infer<
-  typeof zodSocialFeedCommonMetadata
->;
-
 export const ZodLatLngLiteral = z.object({
   lat: z.number(),
   lng: z.number(),
@@ -83,13 +75,22 @@ export const ZodLatLngTuple = z.tuple([
 export const ZodLatLngExpression = z.union([ZodLatLngLiteral, ZodLatLngTuple]);
 export type LatLngExpression = z.infer<typeof ZodLatLngExpression>;
 
+export const zodSocialFeedCommonMetadata = z.object({
+  title: z.string(),
+  premium: z.number().int().gte(0).optional(),
+  location: ZodLatLngExpression.optional(),
+});
+
+export type SocialFeedCommonMetadata = z.infer<
+  typeof zodSocialFeedCommonMetadata
+>;
+
 export const ZodSocialFeedPostMetadata = z.object({
   message: z.string(),
   files: MaybeFiles.optional(),
   gifs: z.array(z.string()).optional(),
   hashtags: z.array(z.string()),
   mentions: z.array(z.string()),
-  location: ZodLatLngExpression.optional(),
   ...zodSocialFeedCommonMetadata.shape,
 });
 export type SocialFeedPostMetadata = z.infer<typeof ZodSocialFeedPostMetadata>;

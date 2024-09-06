@@ -148,9 +148,8 @@ export const NewsFeedInput = React.forwardRef<
     const [isUploadLoading, setIsUploadLoading] = useState(false);
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
     const [premium, setPremium] = useState(false);
-    const [isShowMap, setShowMap] = useState(false);
+    const [isMapShown, setIsMapShown] = useState(false);
     const [location, setLocation] = useState<LatLng | undefined>();
-    const [description, setDescription] = useState("");
     const [developerMode] = useDeveloperMode();
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
@@ -198,6 +197,12 @@ export const NewsFeedInput = React.forwardRef<
       start: 10,
       end: 10,
     });
+    const isPublishDisabled =
+      (!formValues?.message &&
+        !formValues?.files?.length &&
+        !formValues?.gifs?.length) ||
+      formValues?.message.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
+      !selectedWallet;
 
     const processSubmit = async () => {
       const action = premium ? "Publish a Premium Post" : "Publish a Post";
@@ -341,13 +346,11 @@ export const NewsFeedInput = React.forwardRef<
         style={[{ width }, style]}
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       >
-        {isShowMap && (
+        {isMapShown && (
           <MapModal
             visible
-            onClose={() => setShowMap(false)}
+            onClose={() => setIsMapShown(false)}
             setLocation={setLocation}
-            description={description}
-            setDescription={setDescription}
             location={location}
             postCategory={postCategory}
           />
@@ -675,7 +678,7 @@ export const NewsFeedInput = React.forwardRef<
                   <>
                     {developerMode && (
                       <SecondaryButtonOutline
-                        disabled={!formValues?.message.length}
+                        disabled={isPublishDisabled}
                         size="M"
                         color={
                           formValues?.message.length >
@@ -693,9 +696,9 @@ export const NewsFeedInput = React.forwardRef<
                             ? primaryColor
                             : neutral17
                         }
-                        text={location ? "Handle Location" : "Add Location"}
+                        text="Handle Location"
                         squaresBackgroundColor={neutral17}
-                        onPress={() => setShowMap(true)}
+                        onPress={() => setIsMapShown(true)}
                       />
                     )}
 
@@ -726,14 +729,7 @@ export const NewsFeedInput = React.forwardRef<
                 )}
 
                 <PrimaryButton
-                  disabled={
-                    (!formValues?.message &&
-                      !formValues?.files?.length &&
-                      !formValues?.gifs?.length) ||
-                    formValues?.message.length >
-                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
-                    !selectedWallet
-                  }
+                  disabled={isPublishDisabled}
                   isLoading={isLoading}
                   loader
                   size="M"

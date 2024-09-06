@@ -170,6 +170,7 @@ export const generateArticleMetadata = ({
   thumbnailImage,
   coverImage,
   shortDescription,
+  location,
 }: GenerateArticleMetadataParams): SocialFeedArticleMetadata => {
   const m = ZodSocialFeedArticleMetadata.parse({
     title,
@@ -182,6 +183,7 @@ export const generateArticleMetadata = ({
     thumbnailImage,
     coverImage,
     shortDescription: shortDescription || "",
+    location,
   });
   // we need this hack until the createdAt field is properly provided by the contract
   // @ts-expect-error: description todo
