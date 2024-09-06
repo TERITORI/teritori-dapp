@@ -115,7 +115,7 @@ func TestNewAirdrop(t *testing.T) {
 	// Create tokens for testing
 	createTestingTokens()
 	for testName, test := range tests {
-		t.Run(testName, func (t *testing.T) {
+		t.Run(testName, func(t *testing.T) {
 			if test.expected.panic {
 				defer func() {
 					if r := recover(); r == nil {
@@ -123,10 +123,10 @@ func TestNewAirdrop(t *testing.T) {
 					}
 				}()
 			}
-	
+
 			airdropID := NewAirdrop(test.input.tokenName, test.input.root, test.input.amountPerAddr, int64(test.input.start), int64(test.input.end))
 			airdrop := mustGetAirdrop(airdropID)
-	
+
 			if !test.expected.panic {
 				if airdrop.merkleRoot != test.expected.root {
 					t.Errorf("Expected root to be %s, got %s", test.expected.root, airdrop.merkleRoot)
@@ -237,7 +237,7 @@ func TestClaim(t *testing.T) {
 	}
 
 	for testName, test := range tests {
-		t.Run(testName, func (t *testing.T) {
+		t.Run(testName, func(t *testing.T) {
 			if test.expected.panic {
 				defer func() {
 					if r := recover(); r == nil {
@@ -245,11 +245,11 @@ func TestClaim(t *testing.T) {
 					}
 				}()
 			}
-	
+
 			std.TestSetOrigCaller(test.input.addr)
 			Claim(test.input.airdropID, test.input.proofs)
 			airdrop := mustGetAirdrop(test.input.airdropID)
-	
+
 			if !test.expected.panic {
 				if !airdrop.hasAlreadyClaimed(test.input.addr) {
 					t.Errorf("Expected address be set as claimed, but it is not")
