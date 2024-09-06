@@ -37,6 +37,15 @@ func NewAirdrop(tokenName, merkleRoot string, amountPerAddr uint64, startTimesta
 		panic("token is not mintable")
 	}
 
+	now := time.Now().Unix()
+	if startTimestamp != 0 && startTimestamp < now {
+		panic("invalid start timestamp, must be in the future or be equal to 0 to start immediately")
+	}
+
+	if endTimestamp != 0 && endTimestamp < now {
+		panic("invalid end timestamp, must be in the future or be equal to 0 to never end")
+	}
+
 	if endTimestamp != 0 && startTimestamp >= endTimestamp {
 		panic("invalid timestamps, start must be before end")
 	}
@@ -96,6 +105,6 @@ func (a *Airdrop) hasAlreadyClaimed(caller std.Address) bool {
 
 func (a *Airdrop) isOnGoing() bool {
 	now := time.Now().Unix()
-    return (a.startTimestamp == 0 || a.startTimestamp <= now) &&
-           (a.endTimestamp == 0 || now < a.endTimestamp)
+	return (a.startTimestamp == 0 || a.startTimestamp <= now) &&
+		(a.endTimestamp == 0 || now < a.endTimestamp)
 }

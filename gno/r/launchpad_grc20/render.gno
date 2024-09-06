@@ -22,7 +22,7 @@ const (
 	AIRDROP_DETAIL_PATH      = "airdrop/{id}"                 // {id} is a placeholder for the airdrop id
 	AIRDROP_CLAIM_CHECK_PATH = "airdrop/{id}/claim/{address}" // {id} is a placeholder for the airdrop id, {address} is a placeholder for the address of the account
 
-	SALE_PATH = "sale"
+	SALE_PATH        = "sale"
 	SALE_DETAIL_PATH = "sale/{id}" // {id} is a placeholder for the sale id
 )
 
@@ -140,7 +140,7 @@ func renderSalePage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write("A token sale is a fundraising event where a new GRC20 token is offered to the public at a fixed price.\n")
 	res.Write("Sales can be used to raise capital for a project, distribute tokens to a wide audience, or establish a market value for the token.\n\n")
 	res.Write("To participate in a token sale, you can buy tokens at the specified price during the sale period.\n")
-	res.Write("For more detailed information about a specific sale, including the price per token, sale limits, and goals, visit the page ``:sale/{id}``, replacing ``{id}`` with the sale's unique identifier.\n") 
+	res.Write("For more detailed information about a specific sale, including the price per token, sale limits, and goals, visit the page ``:sale/{id}``, replacing ``{id}`` with the sale's unique identifier.\n")
 }
 
 func renderSaleDetailPage(res *mux.ResponseWriter, req *mux.Request) {

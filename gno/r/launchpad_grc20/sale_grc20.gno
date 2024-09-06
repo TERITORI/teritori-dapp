@@ -9,14 +9,14 @@ import (
 )
 
 type Sale struct {
-	token *Token
+	token          *Token
 	startTimestamp int64
-	endTimestamp int64
-	pricePerToken uint64
-	alreadySold uint64
-	limitPerAddr uint64
-	minGoal uint64
-	maxGoal uint64
+	endTimestamp   int64
+	pricePerToken  uint64
+	alreadySold    uint64
+	limitPerAddr   uint64
+	minGoal        uint64
+	maxGoal        uint64
 
 	vault std.Address
 }
@@ -59,13 +59,13 @@ func NewSale(tokenName string, startTimestamp, endTimestamp int64, pricePerToken
 	}
 
 	sale := Sale{
-		token: token,
+		token:          token,
 		startTimestamp: startTimestamp,
-		endTimestamp: endTimestamp,
-		pricePerToken: pricePerToken,
-		limitPerAddr: limitPerAddr,
-		minGoal: minGoal,
-		maxGoal: maxGoal,
+		endTimestamp:   endTimestamp,
+		pricePerToken:  pricePerToken,
+		limitPerAddr:   limitPerAddr,
+		minGoal:        minGoal,
+		maxGoal:        maxGoal,
 	}
 
 	saleID := nextSaleID
@@ -141,6 +141,4 @@ func (s *Sale) buy(buyer std.Address, amount uint64) {
 	}
 
 	checkErr(s.token.Token().TransferFrom(buyer, std.Address("g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv"), amount*s.pricePerToken))
-	
 }
-
