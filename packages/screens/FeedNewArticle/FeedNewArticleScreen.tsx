@@ -387,6 +387,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                 authorId={userId || ""}
                 postId=""
                 setIsMapShown={setIsMapShown}
+                hasLocation={!!location}
               />
             )}
           />

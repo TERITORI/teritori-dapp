@@ -75,8 +75,8 @@ import {
   urlMatch,
 } from "../../../utils/social-feed";
 import {
-  neutral17,
   neutral77,
+  neutralFF,
   primaryColor,
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
@@ -92,7 +92,7 @@ import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
 
-import { SecondaryButtonOutline } from "@/components/buttons/SecondaryButtonOutline";
+import { LocationButton } from "@/components/socialFeed/NewsFeed/LocationButton";
 import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 
 const VIDEOTYPE = "draft-js-video-plugin-video"; // See @draft-js-plugins/video/lib/video/constants
@@ -140,6 +140,7 @@ export const RichText: React.FC<RichTextProps> = ({
   authorId,
   postId,
   setIsMapShown,
+  hasLocation,
 }) => {
   const compositeDecorator = {
     decorators: [
@@ -322,6 +323,32 @@ export const RichText: React.FC<RichTextProps> = ({
   /////////////// TOOLBAR BUTTONS ////////////////
   const Buttons: React.FC<{ externalProps: any }> = ({ externalProps }) => (
     <View style={toolbarButtonsWrapperCStyle}>
+      {developerMode && (
+        <>
+          <SpacerRow size={1} />
+          <LocationButton
+            onPress={() => setIsMapShown?.(true)}
+            color={
+              publishDisabled
+                ? neutral77
+                : hasLocation
+                  ? primaryColor
+                  : neutralFF
+            }
+            disabled={publishDisabled}
+          />
+          <View
+            style={{
+              height: layout.spacing_x2,
+              width: 1,
+              backgroundColor: "#515151",
+              marginLeft: layout.spacing_x1_25,
+              marginRight: layout.spacing_x0_75,
+            }}
+          />
+        </>
+      )}
+
       <EmojiSelector
         onEmojiSelected={(emoji) => addEmoji(emoji)}
         buttonStyle={toolbarCustomButtonCStyle}
@@ -486,19 +513,6 @@ export const RichText: React.FC<RichTextProps> = ({
               <SpacerRow size={3} />
             )}
 
-            {developerMode && (
-              <SecondaryButtonOutline
-                disabled={publishDisabled}
-                size="M"
-                borderColor={primaryColor}
-                touchableStyle={{
-                  marginRight: layout.spacing_x2,
-                }}
-                text="Handle Location"
-                squaresBackgroundColor={neutral17}
-                onPress={() => setIsMapShown(true)}
-              />
-            )}
             <PrimaryButton
               disabled={publishDisabled}
               loader

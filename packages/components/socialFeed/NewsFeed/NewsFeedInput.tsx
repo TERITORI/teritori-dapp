@@ -33,6 +33,7 @@ import { MapModal } from "../modals/MapModal/MapModal";
 
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import ToggleButton from "@/components/buttons/ToggleButton";
+import { LocationButton } from "@/components/socialFeed/NewsFeed/LocationButton";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
@@ -66,6 +67,7 @@ import {
   neutral17,
   neutral22,
   neutral77,
+  neutralFF,
   primaryColor,
   primaryTextColor,
   secondaryColor,
@@ -77,11 +79,7 @@ import {
   fontSemibold13,
   fontSemibold16,
 } from "@/utils/style/fonts";
-import {
-  RESPONSIVE_BREAKPOINT_S,
-  SOCIAL_FEED_BREAKPOINT_M,
-  layout,
-} from "@/utils/style/layout";
+import { RESPONSIVE_BREAKPOINT_S, layout } from "@/utils/style/layout";
 import { replaceBetweenString } from "@/utils/text";
 import { NewPostFormValues, ReplyToType } from "@/utils/types/feed";
 import { LocalFileData, RemoteFileData } from "@/utils/types/files";
@@ -109,7 +107,8 @@ export interface NewsFeedInputHandle {
 
 const CHARS_LIMIT_WARNING_MULTIPLIER = 0.92;
 const MAX_IMAGES = 4;
-const BREAKPOINT_S = 559;
+const BREAKPOINT_S = 690;
+const BREAKPOINT_M = 912;
 
 export const NewsFeedInput = React.forwardRef<
   NewsFeedInputHandle,
@@ -369,8 +368,8 @@ export const NewsFeedInput = React.forwardRef<
                 paddingRight: isMobile
                   ? layout.spacing_x1_5
                   : layout.spacing_x2_5,
-                paddingLeft: isMobile ? layout.spacing_x1_5 : layout.spacing_x3,
-                paddingTop: isMobile ? layout.spacing_x1_5 : layout.spacing_x3,
+                paddingLeft: layout.spacing_x1_5,
+                paddingTop: layout.spacing_x1_5,
                 paddingBottom: layout.spacing_x1_5,
               }}
             >
@@ -495,10 +494,8 @@ export const NewsFeedInput = React.forwardRef<
         >
           <View
             style={{
-              flexDirection:
-                viewWidth < SOCIAL_FEED_BREAKPOINT_M ? "column" : "row",
-              alignItems:
-                viewWidth < SOCIAL_FEED_BREAKPOINT_M ? "flex-end" : "center",
+              flexDirection: viewWidth < BREAKPOINT_M ? "column" : "row",
+              alignItems: viewWidth < BREAKPOINT_M ? "flex-end" : "center",
               justifyContent: "space-between",
             }}
           >
@@ -508,7 +505,7 @@ export const NewsFeedInput = React.forwardRef<
                   flexDirection: "row",
                   alignItems: "center",
                 },
-                viewWidth < SOCIAL_FEED_BREAKPOINT_M && {
+                viewWidth < BREAKPOINT_M && {
                   alignSelf: "flex-start",
                 },
               ]}
@@ -544,22 +541,54 @@ export const NewsFeedInput = React.forwardRef<
             >
               {viewWidth < BREAKPOINT_S && <SpacerColumn size={1.5} />}
 
-              {networkHasPremiumFeed && (
-                <>
-                  <PremiumPostToggle
-                    premium={premium}
-                    setPremium={setPremium}
-                  />
-                  <View
-                    style={{
-                      height: layout.spacing_x2,
-                      width: 1,
-                      backgroundColor: "#515151",
-                      marginHorizontal: layout.spacing_x2,
-                    }}
-                  />
-                </>
-              )}
+              <View style={{ flexDirection: "row" }}>
+                {networkHasPremiumFeed && (
+                  <>
+                    <PremiumPostToggle
+                      premium={premium}
+                      setPremium={setPremium}
+                    />
+                    <View
+                      style={{
+                        height: layout.spacing_x2,
+                        width: 1,
+                        backgroundColor: "#515151",
+                        marginHorizontal: layout.spacing_x2,
+                      }}
+                    />
+                  </>
+                )}
+
+                {type === "post" && developerMode && (
+                  <>
+                    <LocationButton
+                      onPress={() => setIsMapShown(true)}
+                      color={
+                        isPublishDisabled
+                          ? neutral77
+                          : location
+                            ? primaryColor
+                            : neutralFF
+                      }
+                      disabled={isPublishDisabled}
+                    />
+                    {viewWidth >= BREAKPOINT_S && (
+                      <View
+                        style={{
+                          height: layout.spacing_x2,
+                          width: 1,
+                          backgroundColor: "#515151",
+                          marginHorizontal: layout.spacing_x2,
+                        }}
+                      />
+                    )}
+                  </>
+                )}
+              </View>
+              {viewWidth < BREAKPOINT_S &&
+                (networkHasPremiumFeed || type === "post") && (
+                  <SpacerColumn size={1.5} />
+                )}
 
               <View
                 style={{
@@ -675,57 +704,29 @@ export const NewsFeedInput = React.forwardRef<
                 }}
               >
                 {type === "post" && (
-                  <>
-                    {developerMode && (
-                      <SecondaryButtonOutline
-                        disabled={isPublishDisabled}
-                        size="M"
-                        color={
-                          formValues?.message.length >
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                            ? primaryTextColor
-                            : primaryColor
-                        }
-                        borderColor={primaryColor}
-                        touchableStyle={{
-                          marginRight: layout.spacing_x2,
-                        }}
-                        backgroundColor={
-                          formValues?.message.length >
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                            ? primaryColor
-                            : neutral17
-                        }
-                        text="Handle Location"
-                        squaresBackgroundColor={neutral17}
-                        onPress={() => setIsMapShown(true)}
-                      />
-                    )}
-
-                    <OmniLink to={{ screen: "FeedNewArticle" }}>
-                      <SecondaryButtonOutline
-                        size="M"
-                        color={
-                          formValues?.message.length >
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                            ? primaryTextColor
-                            : primaryColor
-                        }
-                        borderColor={primaryColor}
-                        touchableStyle={{
-                          marginRight: layout.spacing_x2,
-                        }}
-                        backgroundColor={
-                          formValues?.message.length >
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                            ? primaryColor
-                            : neutral17
-                        }
-                        text="Create an Article"
-                        squaresBackgroundColor={neutral17}
-                      />
-                    </OmniLink>
-                  </>
+                  <OmniLink to={{ screen: "FeedNewArticle" }}>
+                    <SecondaryButtonOutline
+                      size="M"
+                      color={
+                        formValues?.message.length >
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                          ? primaryTextColor
+                          : primaryColor
+                      }
+                      borderColor={primaryColor}
+                      touchableStyle={{
+                        marginRight: layout.spacing_x2,
+                      }}
+                      backgroundColor={
+                        formValues?.message.length >
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                          ? primaryColor
+                          : neutral17
+                      }
+                      text="Create an Article"
+                      squaresBackgroundColor={neutral17}
+                    />
+                  </OmniLink>
                 )}
 
                 <PrimaryButton
