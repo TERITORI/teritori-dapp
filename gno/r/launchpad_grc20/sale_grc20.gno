@@ -17,9 +17,9 @@ type Sale struct {
 	limitPerAddr   uint64
 	minGoal        uint64
 	maxGoal        uint64
-	mintToken 	bool
-	vault std.Address
+	owner std.Address
 	buyers avl*Tree // address -> amount
+	finalized bool
 }
 
 var (
@@ -42,7 +42,7 @@ func NewSale(tokenName string, startTimestamp, endTimestamp int64, pricePerToken
 		panic("token is not mintable")
 	}
 
-	vault := std.PrevRealm().Addr()
+	owner := std.PrevRealm().Addr()
 
 	now := time.Now().Unix()
 	if startTimestamp < now {
@@ -61,6 +61,14 @@ func NewSale(tokenName string, startTimestamp, endTimestamp int64, pricePerToken
 		panic("price per token must be greater than 0")
 	}
 
+	// Mint or transfer the max goal to the realm to be sure that the sale can distribute the tokens
+	realmAddr := std.CurrentRealm().Addr()
+	if mintToken {
+		token.banker.Mint(realmAddr, maxGoal)
+	} else {
+		token.banker.TransferFrom(owner, realmAddr, maxGoal)
+	}
+
 	sale := Sale{
 		token:          token,
 		startTimestamp: startTimestamp,
@@ -69,8 +77,8 @@ func NewSale(tokenName string, startTimestamp, endTimestamp int64, pricePerToken
 		limitPerAddr:   limitPerAddr,
 		minGoal:        minGoal,
 		maxGoal:        maxGoal,
-		mintToken:	mintToken,
-		vault: vault,
+		owner: owner,
+		finalized: bool,
 	}
 
 	saleID := nextSaleID
@@ -87,7 +95,31 @@ func Buy(saleID, amount uint64) {
 	sale.buy(buyer, amount)
 }
 
-func Finalize() {
+// Finalize the sale, send the funds to the token owner if the min goal is reached and mint the tokens
+func Finalize(saleID uint64) {
+	sale := mustGetSale(saleID)
+	realmAddr := std.CurrentRealm().Addr()
+	banker := std.GetBanker(std.BankerTypeRealmSend)
+
+	if sale.finalized {
+		panic("sale already finalized")
+	}
+
+	if !sale.isOnGoing() {
+		panic("sale is not ongoing")
+	}
+
+	// If the min goal is not reached, refund all the buyers and send the tokens back to the owner
+	if sale.alreadySold < sale.minGoal {
+		sale.refundAllBuyers()
+		sale.token.banker.TransferFrom(realmAddr, sale.owner, sale.alreadySold)
+	} else {
+		transferAllBuyers()
+		banker.SendCoins(realmAddr, sale.owner, std.NewCoin("ugnot", sale.alreadySold*sale.pricePerToken))
+	}
+
+	sale.finalized = true
+
 }
 
 func mustGetSale(saleID uint64) *Sale {
@@ -144,5 +176,31 @@ func (s *Sale) buy(buyer std.Address, amount uint64) {
 		banker.SendCoins(realmAddr, buyer, change)
 	}
 
-	banker.SendCoins(realmAddr, s.vault, minCoins)
+	// Set the new amount of tokens bought by the buyer, it will be send or refunded in the finalize function
+	s.buyers.Set(buyer.String(), total)
+	s.alreadySold += amount
+}
+
+func (s *Sale) refundAllBuyers() {
+	banker := std.GetBanker(std.BankerTypeRealmSend)
+	realmAddr := std.CurrentRealm().Addr()
+	
+	s.buyers.Iterate("", "", func(key, value interface{}) bool {
+		buyer := std.Address(key)
+		amount := value.(uint64)
+		banker.SendCoins(realmAddr, buyer, std.NewCoin("ugnot", amount*s.pricePerToken))
+		return false
+	})
+}
+
+func (s *Sale) transferAllBuyers() {
+	banker := std.GetBanker(std.BankerTypeRealmSend)
+	realmAddr := std.CurrentRealm().Addr()
+	
+	s.buyers.Iterate("", "", func(key, value interface{}) bool {
+		buyer := std.Address(key)
+		amount := value.(uint64)
+		s.token.banker.TransferFrom(realmAddr, buyer, amount)
+		return false
+	})
 }
