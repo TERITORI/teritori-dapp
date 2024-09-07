@@ -17,9 +17,9 @@ type Sale struct {
 	limitPerAddr   uint64
 	minGoal        uint64
 	maxGoal        uint64
-	owner std.Address
-	buyers avl*Tree // address -> amount
-	finalized bool
+	owner          std.Address
+	buyers         *avl.Tree // address -> amount
+	finalized      bool
 }
 
 var (
@@ -66,7 +66,7 @@ func NewSale(tokenName string, startTimestamp, endTimestamp int64, pricePerToken
 	if mintToken {
 		token.banker.Mint(realmAddr, maxGoal)
 	} else {
-		token.banker.TransferFrom(owner, realmAddr, maxGoal)
+		token.Token().TransferFrom(owner, realmAddr, maxGoal)
 	}
 
 	sale := Sale{
@@ -77,8 +77,9 @@ func NewSale(tokenName string, startTimestamp, endTimestamp int64, pricePerToken
 		limitPerAddr:   limitPerAddr,
 		minGoal:        minGoal,
 		maxGoal:        maxGoal,
-		owner: owner,
-		finalized: bool,
+		owner:          owner,
+		buyers:         avl.NewTree(),
+		finalized:      false,
 	}
 
 	saleID := nextSaleID
@@ -112,14 +113,14 @@ func Finalize(saleID uint64) {
 	// If the min goal is not reached, refund all the buyers and send the tokens back to the owner
 	if sale.alreadySold < sale.minGoal {
 		sale.refundAllBuyers()
-		sale.token.banker.TransferFrom(realmAddr, sale.owner, sale.alreadySold)
+		sale.token.Token().TransferFrom(realmAddr, sale.owner, sale.alreadySold)
 	} else {
-		transferAllBuyers()
-		banker.SendCoins(realmAddr, sale.owner, std.NewCoin("ugnot", sale.alreadySold*sale.pricePerToken))
+		sale.payAllBuyers()
+		totalCoins := std.NewCoins(std.NewCoin("ugnot", int64(sale.alreadySold*sale.pricePerToken)))
+		banker.SendCoins(realmAddr, sale.owner, totalCoins)
 	}
 
 	sale.finalized = true
-
 }
 
 func mustGetSale(saleID uint64) *Sale {
@@ -135,7 +136,14 @@ func (s *Sale) isOnGoing() bool {
 }
 
 func (s *Sale) buy(buyer std.Address, amount uint64) {
-	sentCoins := std.GetOrigSend()[0]
+	sentCoins := std.GetOrigSend()
+
+	if len(sentCoins) != 1 {
+		panic("Please send only only gnot coins")
+	}
+
+	sentCoin := sentCoins[0]
+
 	banker := std.GetBanker(std.BankerTypeOrigSend)
 	realmAddr := std.CurrentRealm().Addr()
 
@@ -157,23 +165,18 @@ func (s *Sale) buy(buyer std.Address, amount uint64) {
 		panic("amount exceeds limit per address")
 	}
 
-	if len(sentCoins) != 1 {
-		panic("Please send coins to buy tokens, price per token is " + ufmt.Sprintf("%d", s.pricePerToken) + " $GNOT") 
-	}
-
 	if s.alreadySold+amount > s.maxGoal {
 		panic("amount exceeds max goal of the sale")
 	}
 
-	sentCoin := sentCoins[0]
-	minCoins := std.NewCoin("ugnot", amount*s.pricePerToken)
+	minCoins := std.NewCoin("ugnot", int64(amount*s.pricePerToken))
 	if !sentCoin.IsGTE(minCoins) {
-		panic("Please send enough coins, price per token is " + ufmt.Sprintf("%d", s.pricePerToken) + " $GNOT") 
+		panic("Please send enough coins, price per token is " + ufmt.Sprintf("%d", s.pricePerToken) + " $GNOT")
 	}
 
 	change := sentCoin.Sub(minCoins)
 	if change.IsPositive() {
-		banker.SendCoins(realmAddr, buyer, change)
+		banker.SendCoins(realmAddr, buyer, std.NewCoins(change))
 	}
 
 	// Set the new amount of tokens bought by the buyer, it will be send or refunded in the finalize function
@@ -184,23 +187,23 @@ func (s *Sale) buy(buyer std.Address, amount uint64) {
 func (s *Sale) refundAllBuyers() {
 	banker := std.GetBanker(std.BankerTypeRealmSend)
 	realmAddr := std.CurrentRealm().Addr()
-	
-	s.buyers.Iterate("", "", func(key, value interface{}) bool {
+
+	s.buyers.Iterate("", "", func(key string, value interface{}) bool {
 		buyer := std.Address(key)
 		amount := value.(uint64)
-		banker.SendCoins(realmAddr, buyer, std.NewCoin("ugnot", amount*s.pricePerToken))
+		refundCoins := std.NewCoins(std.NewCoin("ugnot", int64(amount*s.pricePerToken)))
+		banker.SendCoins(realmAddr, buyer, refundCoins)
 		return false
 	})
 }
 
-func (s *Sale) transferAllBuyers() {
-	banker := std.GetBanker(std.BankerTypeRealmSend)
+func (s *Sale) payAllBuyers() {
 	realmAddr := std.CurrentRealm().Addr()
-	
-	s.buyers.Iterate("", "", func(key, value interface{}) bool {
+
+	s.buyers.Iterate("", "", func(key string, value interface{}) bool {
 		buyer := std.Address(key)
 		amount := value.(uint64)
-		s.token.banker.TransferFrom(realmAddr, buyer, amount)
+		s.token.Token().TransferFrom(realmAddr, buyer, amount)
 		return false
 	})
 }

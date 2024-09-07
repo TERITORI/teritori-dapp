@@ -149,12 +149,12 @@ func TestNewToken(t *testing.T) {
 func TestMint(t *testing.T) {
 	type testMintInput struct {
 		name   string
-		to std.Address
+		to     std.Address
 		amount uint64
 	}
 
 	type testMintExpected struct {
-		panic  bool
+		panic       bool
 		totalSupply uint64
 	}
 
@@ -177,18 +177,18 @@ func TestMint(t *testing.T) {
 		"Success": {
 			input: testMintInput{
 				name:   "TestMintTokenMintable",
-				to: bob,
+				to:     bob,
 				amount: 1,
 			},
 			expected: testMintExpected{
-				panic: false,
+				panic:       false,
 				totalSupply: 21_000_001,
 			},
 		},
 		"Token does not exist": {
 			input: testMintInput{
 				name:   "TestToken2",
-				to: bob,
+				to:     bob,
 				amount: 1000000000000000000,
 			},
 			expected: testMintExpected{
@@ -198,7 +198,7 @@ func TestMint(t *testing.T) {
 		"Minting not allowed": {
 			input: testMintInput{
 				name:   "TestMintTokenNotMintable",
-				to: bob,
+				to:     bob,
 				amount: 1000000000000000000,
 			},
 			expected: testMintExpected{
@@ -208,7 +208,7 @@ func TestMint(t *testing.T) {
 		"Total supply cap exceeded": {
 			input: testMintInput{
 				name:   "TestMintTokenMintable",
-				to: bob,
+				to:     bob,
 				amount: 1000000000000000000,
 			},
 			expected: testMintExpected{
@@ -218,7 +218,7 @@ func TestMint(t *testing.T) {
 		"Is not the owner": {
 			input: testMintInput{
 				name:   "TestMintTokenMintable",
-				to: alice,
+				to:     alice,
 				amount: 1000000000000000000,
 			},
 			expected: testMintExpected{
@@ -226,7 +226,6 @@ func TestMint(t *testing.T) {
 			},
 		},
 	}
-
 
 	for testName, test := range tests {
 		t.Run(testName, func(t *testing.T) {
@@ -244,18 +243,17 @@ func TestMint(t *testing.T) {
 			}
 		})
 	}
-
 }
 
 func TestBurn(t *testing.T) {
 	type testBurnInput struct {
 		name   string
-		from std.Address
+		from   std.Address
 		amount uint64
 	}
 
 	type testBurnExpected struct {
-		panic  bool
+		panic       bool
 		totalSupply uint64
 	}
 
@@ -278,18 +276,18 @@ func TestBurn(t *testing.T) {
 		"Success": {
 			input: testBurnInput{
 				name:   "TestBurnTokenBurnable",
-				from: bob,
+				from:   bob,
 				amount: 1,
 			},
 			expected: testBurnExpected{
-				panic: false,
+				panic:       false,
 				totalSupply: 20_999_999,
 			},
 		},
 		"Token does not exist": {
 			input: testBurnInput{
 				name:   "TestToken2",
-				from: bob,
+				from:   bob,
 				amount: 1000000000000000000,
 			},
 			expected: testBurnExpected{
@@ -299,7 +297,7 @@ func TestBurn(t *testing.T) {
 		"Burning not allowed": {
 			input: testBurnInput{
 				name:   "TestBurnTokenNotBurnable",
-				from: bob,
+				from:   bob,
 				amount: 1000000000000000000,
 			},
 			expected: testBurnExpected{
@@ -309,7 +307,7 @@ func TestBurn(t *testing.T) {
 		"Not enough in balance": {
 			input: testBurnInput{
 				name:   "TestBurnTokenBurnable",
-				from: bob,
+				from:   bob,
 				amount: 1000000000000000000,
 			},
 			expected: testBurnExpected{
@@ -319,7 +317,7 @@ func TestBurn(t *testing.T) {
 		"Is not the owner": {
 			input: testBurnInput{
 				name:   "TestBurnTokenBurnable",
-				from: alice,
+				from:   alice,
 				amount: 1000000000000000000,
 			},
 			expected: testBurnExpected{
