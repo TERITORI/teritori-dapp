@@ -1,5 +1,5 @@
-import { DivIcon, point, PointExpression } from "leaflet";
-import { FC, useEffect, useMemo, useState } from "react";
+import { DivIcon, LatLngExpression, point, PointExpression } from "leaflet";
+import { FC, useMemo, useState } from "react";
 import "../../modals/MapModal/styles.css";
 import "leaflet/dist/leaflet.css";
 import {
@@ -13,7 +13,8 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 import { HeatmapLayer } from "react-leaflet-heatmap-layer-v3/lib";
 import { View } from "react-native";
 
-import { Post, PostsRequest } from "@/api/feed/v1/feed";
+import { Post } from "@/api/feed/v1/feed";
+import { BrandText } from "@/components/BrandText";
 import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
 import { ArticleMapPost } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/ArticleMapPost";
 import { MusicMapPost } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/MusicMapPost";
@@ -21,29 +22,23 @@ import { NormalMapPost } from "@/components/socialFeed/NewsFeed/FeedMapList/MapP
 import { PictureMapPost } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/PictureMapPost";
 import { VideoMapPost } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/VideoMapPost";
 import {
+  combineFetchFeedAggregationsPages,
   combineFetchFeedPages,
-  useFetchFeed,
   useFetchFeedLocation,
 } from "@/hooks/feed/useFetchFeed";
-import useSelectedWallet from "@/hooks/useSelectedWallet";
 import {
   getMapPostIconColorRgba,
   getMapPostIconSVGString,
 } from "@/utils/feed/map";
-import { PostCategory } from "@/utils/types/feed";
-
-type PostType = "picture" | "text" | "video" | "audio";
+import { zodTryParseJSON } from "@/utils/sanitize";
+import { errorColor } from "@/utils/style/colors";
+import { fontSemibold10 } from "@/utils/style/fonts";
+import { PostCategory, ZodSocialFeedPostMetadata } from "@/utils/types/feed";
 
 interface MarkerPopup {
   position: LatLngExpression;
   post: Post;
   fileURL?: string;
-}
-
-interface AggregatedPost {
-  lat: number;
-  long: number;
-  totalPoints: number;
 }
 
 // custom cluster icon
@@ -70,66 +65,68 @@ const getIcon = (postCategory: PostCategory) => {
 
 const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
   const [bounds, setBounds] = useState<L.LatLngBounds | null>(null);
-  const [posts, setPosts] = useState<Post[] | null>(null);
-
-  //TODO: remove this test block
-  ////////////////////////////////////////////////
-  console.log("postspostsposts", posts?.[0]);
-  const reqTest: Partial<PostsRequest> = {
-    filter: {
-      categories: [],
-      user: "",
-      mentions: [],
-      hashtags: [],
-      premiumLevelMin: 0,
-      premiumLevelMax: -1,
-    },
-    limit: 50,
-    offset: 0,
-  };
-  const selectedWallet = useSelectedWallet();
-  const reqWithQueryUser = { ...reqTest, queryUserId: selectedWallet?.userId };
-  const { data } = useFetchFeed(reqWithQueryUser);
-  const postsTest = useMemo(
+  // TODO: loading, nextPage, limit? etc
+  const { data } = useFetchFeedLocation({
+    // Ensure proper hook call
+    north: bounds?.getNorth(),
+    south: bounds?.getSouth(),
+    west: bounds?.getWest(),
+    east: bounds?.getEast(),
+    limit: 100,
+  });
+  const posts = useMemo(
     () => (data ? combineFetchFeedPages(data.pages) : []),
     [data],
   );
-  ////////////////////////////////////////////////
+  const aggregatedPosts = useMemo(
+    () => (data ? combineFetchFeedAggregationsPages(data.pages) : []),
+    [data],
+  );
 
-  const getFeedLocation = useFetchFeedLocation();
+  const markers: MarkerPopup[] = useMemo(() => {
+    if (!posts) return [];
+    const results: MarkerPopup[] = [];
+    posts
+      .map((post, index) => {
+        return {
+          ...post,
+          category:
+            index % 5 === 0
+              ? PostCategory.Normal
+              : index + (1 % 5) === 0
+                ? PostCategory.Article
+                : index + (2 % 5) === 0
+                  ? PostCategory.MusicAudio
+                  : index + (3 % 5) === 0
+                    ? PostCategory.Video
+                    : PostCategory.Picture,
+        };
+      })
+      .forEach((post) => {
+        const metadata = zodTryParseJSON(
+          ZodSocialFeedPostMetadata,
+          post.metadata,
+        );
+        if (!metadata?.location) return;
+        results.push({
+          position: metadata.location,
+          post,
+        });
+      });
+    return results;
+  }, [posts]);
 
-  // const markers: MarkerPopup[] = useMemo(() => {
-  //   if (!posts) return [];
-  //   const results: MarkerPopup[] = [];
-  //   posts.forEach((post) => {
-  //     const metadata = zodTryParseJSON(
-  //       ZodSocialFeedPostMetadata,
-  //       post.metadata,
-  //     );
-  //     if (!metadata?.location) return;
-  //     results.push({
-  //       position: metadata.location,
-  //       post,
-  //     });
-  //   });
-  //   return results;
-  // }, [posts]);
+  const heatPoints = aggregatedPosts
+    ? aggregatedPosts.map((aggregatedPost) => {
+        return [
+          aggregatedPost.lat,
+          aggregatedPost.long,
+          aggregatedPost.totalPoints,
+        ];
+      })
+    : [];
 
-  useEffect(() => {
-    getFeedLocation({
-      // Ensure proper hook call
-      north: bounds?.getNorth(),
-      south: bounds?.getSouth(),
-      west: bounds?.getWest(),
-      east: bounds?.getEast(),
-      limit: 100,
-    }).then((res) => {
-      setPosts(res.list);
-      setAggregatedPosts(res.aggregations);
-    });
-  }, [bounds, getFeedLocation]);
-
-  const SetBoundsOnMapEvents: FC = () => {
+  const FetchMarkersOnMove = () => {
     const map = useMapEvents({
       // Map events
       moveend: () => {
@@ -188,19 +185,31 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
           iconCreateFunction={createClusterCustomIcon}
         >
           {/* Mapping through the markers */}
-          {markers?.map(
-            (marker, index) =>
-              !!marker && (
-                <Marker
-                  position={marker.position}
-                  // icon={getIcon(marker.category)}
-                  icon={getIcon(marker.type)}
-                  key={index}
-                >
-                  <Popup>{marker.popUp}</Popup>
-                </Marker>
-              ),
-          )}
+          {markers?.map((marker, index) => (
+            <Marker
+              position={marker.position}
+              icon={getIcon(marker.post.category)}
+              key={index}
+            >
+              <Popup closeButton={false} className="marker-popup">
+                {marker.post.category === PostCategory.Normal ? (
+                  <NormalMapPost post={marker.post} />
+                ) : marker.post.category === PostCategory.MusicAudio ? (
+                  <MusicMapPost post={marker.post} />
+                ) : marker.post.category === PostCategory.Video ? (
+                  <VideoMapPost post={marker.post} />
+                ) : marker.post.category === PostCategory.Picture ? (
+                  <PictureMapPost post={marker.post} />
+                ) : marker.post.category === PostCategory.Article ? (
+                  <ArticleMapPost post={marker.post} />
+                ) : (
+                  <BrandText style={[fontSemibold10, { color: errorColor }]}>
+                    No render for this post category
+                  </BrandText>
+                )}
+              </Popup>
+            </Marker>
+          ))}
         </MarkerClusterGroup>
 
         <SetBoundsOnMapEvents />
