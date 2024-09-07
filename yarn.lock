@@ -14773,41 +14773,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.min@npm:^4.0.0":
-  version: 4.0.1
-  resolution: "lodash.min@npm:4.0.1"
-  checksum: 61e93e1b9d348ecc4c0fc7d1cec0ad8240c8229c73a8de0f69d6299b418b66422312611fb72264563eb8ce68b3c2ed69e95e2392c09766a6da9a8d449b7fb2e8
-  languageName: node
-  linkType: hard
-
-"lodash.pairs@npm:^3.0.0":
-  version: 3.0.1
-  resolution: "lodash.pairs@npm:3.0.1"
-  dependencies:
-    lodash.keys: ^3.0.0
-  checksum: 32cc738e1276245a0c08cf9936d07332464713488703dc17eb78b480c694bced23b2c2d5bd6042db890b87aacdd5dc7d031a9223bbf622e940fb39a6fdfa9112
-  languageName: node
-  linkType: hard
-
-"lodash.pluck@npm:^3.1.2":
-  version: 3.1.2
-  resolution: "lodash.pluck@npm:3.1.2"
-  dependencies:
-    lodash._baseget: ^3.0.0
-    lodash._topath: ^3.0.0
-    lodash.isarray: ^3.0.0
-    lodash.map: ^3.0.0
-  checksum: cec1950e9aa065ae7d46d8f739877554161cfea097fede81197f45351646d135bd5ad67a4d03912a103cec635b29e7085bb90c075633eb2d182d23542a2bad61
-  languageName: node
-  linkType: hard
-
-"lodash.reduce@npm:^4.3.0":
-  version: 4.6.0
-  resolution: "lodash.reduce@npm:4.6.0"
-  checksum: 81f2a1045440554f8427f895ef479f1de5c141edd7852dde85a894879312801efae0295116e5cf830c531c1a51cdab8f3628c3ad39fa21a9874bb9158d9ea075
-  languageName: node
-  linkType: hard
-
 "lodash.once@npm:^4.1.1":
   version: 4.1.1
   resolution: "lodash.once@npm:4.1.1"
