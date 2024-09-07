@@ -1,5 +1,5 @@
-import React, { Suspense, lazy } from "react";
-import { Platform, ScrollView, useWindowDimensions } from "react-native";
+import React, { Suspense } from "react";
+import { ScrollView, useWindowDimensions } from "react-native";
 
 import { FeedHeader } from "./FeedHeader";
 import { useIsMobile } from "../../../hooks/useIsMobile";
@@ -11,26 +11,7 @@ import {
 } from "../../../utils/style/layout";
 
 import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
-
-const MapView = Platform.select({
-  native: () =>
-    lazy(
-      () =>
-        import(
-          "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.native"
-        ),
-    ),
-  web: () =>
-    lazy(
-      () =>
-        import("@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.web"),
-    ),
-  default: () =>
-    lazy(
-      () =>
-        import("@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.web"),
-    ),
-})();
+import { Map } from "@/components/socialFeed/Map";
 
 export const MapFeed = () => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
@@ -42,9 +23,8 @@ export const MapFeed = () => {
       {isMobile && <MobileTitle title="SOCIAL FEED" />}
       <FeedHeader selectedTab="map" />
       <Suspense fallback={<></>}>
-        <MapView
+        <Map
           style={{
-            alignSelf: "center",
             height: windowHeight - (headerHeight + 110),
             width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
             maxWidth: screenContentMaxWidth,

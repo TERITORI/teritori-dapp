@@ -1,12 +1,18 @@
-import { DivIcon, LatLngExpression, point, PointExpression } from "leaflet";
-import { FC, useMemo, useState } from "react";
-import "../../modals/MapModal/styles.css";
+import "./styles.css";
 import "leaflet/dist/leaflet.css";
 import {
+  DivIcon,
+  LatLngBounds,
+  LatLngExpression,
+  point,
+  PointExpression,
+} from "leaflet";
+import { FC, useMemo, useState } from "react";
+import {
   MapContainer,
+  TileLayer,
   Marker,
   Popup,
-  TileLayer,
   useMapEvents,
 } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
@@ -15,12 +21,12 @@ import { View } from "react-native";
 
 import { Post } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
-import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
-import { ArticleMapPost } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/ArticleMapPost";
-import { MusicMapPost } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/MusicMapPost";
-import { NormalMapPost } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/NormalMapPost";
-import { PictureMapPost } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/PictureMapPost";
-import { VideoMapPost } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/VideoMapPost";
+import { MapProps } from "@/components/socialFeed/Map/Map.types";
+import { ArticleMapPost } from "@/components/socialFeed/Map/MapPosts/ArticleMapPost";
+import { MusicMapPost } from "@/components/socialFeed/Map/MapPosts/MusicMapPost";
+import { NormalMapPost } from "@/components/socialFeed/Map/MapPosts/NormalMapPost";
+import { PictureMapPost } from "@/components/socialFeed/Map/MapPosts/PictureMapPost";
+import { VideoMapPost } from "@/components/socialFeed/Map/MapPosts/VideoMapPost";
 import {
   combineFetchFeedAggregationsPages,
   combineFetchFeedPages,
@@ -41,15 +47,7 @@ interface MarkerPopup {
   fileURL?: string;
 }
 
-// custom cluster icon
-const createClusterCustomIcon = function (cluster: any): DivIcon {
-  return new DivIcon({
-    html: `<span class="cluster-icon">${cluster.getChildCount()}</span>`,
-    className: "custom-marker-cluster",
-    iconSize: point(33, 33, true) as PointExpression,
-  });
-};
-
+// Custom map post icon
 const getIcon = (postCategory: PostCategory) => {
   const size = 32;
   const borderWidth = 1;
@@ -63,9 +61,35 @@ const getIcon = (postCategory: PostCategory) => {
   });
 };
 
-const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
-  const [bounds, setBounds] = useState<L.LatLngBounds | null>(null);
-  // TODO: loading, nextPage, limit? etc
+// Custom cluster icon TODO: Make better style respecting the Figma
+const createClusterCustomIcon = function (cluster: any): DivIcon {
+  return new DivIcon({
+    html: `<span class="cluster-icon">${cluster.getChildCount()}</span>`,
+    className: "custom-marker-cluster",
+    iconSize: point(33, 33, true) as PointExpression,
+  });
+};
+
+export const Map: FC<MapProps> = ({
+  // FIXME: locationSelected not updated when selecting an address from AddressSearch
+  locationSelected,
+  style,
+  postCategory = -1,
+}) => {
+  const customIcon = useMemo(
+    () =>
+      new DivIcon({
+        html: `<div style="border-radius: 99px;
+    height: 32px; width: 32px; border: 1px solid #A3A3A3;
+     background-color: rgba(${getMapPostIconColorRgba(postCategory)}); display: flex; align-items: center; justify-content: center;">${getMapPostIconSVGString(postCategory)}</div>`,
+        className: "",
+        iconSize: [34, 34],
+      }),
+    [postCategory],
+  );
+  const [bounds, setBounds] = useState<LatLngBounds | null>(null);
+
+  // ---- Existing posts that have a location
   const { data } = useFetchFeedLocation({
     // Ensure proper hook call
     north: bounds?.getNorth(),
@@ -82,7 +106,6 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
     () => (data ? combineFetchFeedAggregationsPages(data.pages) : []),
     [data],
   );
-
   const markers: MarkerPopup[] = useMemo(() => {
     if (!posts) return [];
     const results: MarkerPopup[] = [];
@@ -116,6 +139,7 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
     return results;
   }, [posts]);
 
+  // ---- Heatmap
   const heatPoints = aggregatedPosts
     ? aggregatedPosts.map((aggregatedPost) => {
         return [
@@ -126,6 +150,7 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
       })
     : [];
 
+  // ---- Updates existing posts on map manipulation
   const FetchMarkersOnMove = () => {
     const map = useMapEvents({
       // Map events
@@ -144,15 +169,30 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
       style={[
         {
           width: "100%",
+          height: "100%",
+          alignSelf: "center",
         },
         style,
       ]}
     >
       <MapContainer
-        center={[48.8566, 2.3522]}
+        center={locationSelected || [48.8566, 2.3522]}
         zoom={12}
         attributionControl={false}
       >
+        {/*----Loads and displays tiles on the map*/}
+        <TileLayer
+          noWrap
+          attribution=""
+          url="https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=QkwJFLzzxPan25YCgnDExGpMFPxA3x4lnyKiUf8zmaqXLP5XyOR8n3yEM8jlKV3W"
+        />
+
+        {/*---- When the user creates a post and want to add a location to it*/}
+        {locationSelected && (
+          <Marker position={locationSelected} icon={customIcon} />
+        )}
+
+        {/*---- Heatmap displayed when dezoom*/}
         <HeatmapLayer
           points={heatPoints}
           gradient={{
@@ -175,11 +215,8 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
             Array.isArray(point) && typeof point[0] === "number" ? point[0] : 0
           }
         />
-        <TileLayer
-          noWrap
-          attribution=""
-          url="https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=QkwJFLzzxPan25YCgnDExGpMFPxA3x4lnyKiUf8zmaqXLP5XyOR8n3yEM8jlKV3W"
-        />
+
+        {/*---- Existing posts that have a location*/}
         <MarkerClusterGroup
           chunkedLoading
           iconCreateFunction={createClusterCustomIcon}
@@ -212,10 +249,9 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
           ))}
         </MarkerClusterGroup>
 
-        <SetBoundsOnMapEvents />
+        {/*---- Updates existing posts on map manipulation*/}
+        <FetchMarkersOnMove />
       </MapContainer>
     </View>
   );
 };
-
-export default FeedMapList;

@@ -2,7 +2,7 @@ import { FC } from "react";
 
 import { Post } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
-import { MapPostWrapper } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/MapPostWrapper";
+import { MapPostWrapper } from "@/components/socialFeed/Map/MapPosts/MapPostWrapper";
 import { TextRenderer } from "@/components/socialFeed/NewsFeed/TextRenderer/TextRenderer";
 import { HTML_TAG_REGEXP } from "@/utils/regex";
 import { zodTryParseJSON } from "@/utils/sanitize";

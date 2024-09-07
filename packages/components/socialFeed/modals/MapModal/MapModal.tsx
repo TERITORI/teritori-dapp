@@ -1,36 +1,22 @@
-import React, {
-  Suspense,
-  lazy,
-  useState,
-  Dispatch,
-  SetStateAction,
-} from "react";
-import { Platform, View, ViewStyle } from "react-native";
+import React, { Suspense, useState, Dispatch, SetStateAction } from "react";
+import { View } from "react-native";
 import { LatLng } from "react-native-leaflet-view";
 
-import {
-  neutral17,
-  primaryColor,
-  transparentColor,
-} from "../../../../utils/style/colors";
-import { layout } from "../../../../utils/style/layout";
 import { PrimaryButton } from "../../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../../buttons/SecondaryButtonOutline";
 import { SpacerColumn, SpacerRow } from "../../../spacer";
 
 import { ModalWithoutHeader } from "@/components/modals/ModalWithoutHeader";
+import { Map } from "@/components/socialFeed/Map";
 import { AddressSearch } from "@/components/socialFeed/modals/MapModal/AddressSearch";
 import { MapModalHeader } from "@/components/socialFeed/modals/MapModal/MapModalHeader";
+import {
+  neutral17,
+  primaryColor,
+  transparentColor,
+} from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 import { PostCategory } from "@/utils/types/feed";
-
-const MapView = Platform.select({
-  native: () =>
-    lazy(() => import("@/components/socialFeed/modals/MapModal/Map.native")),
-  web: () =>
-    lazy(() => import("@/components/socialFeed/modals/MapModal/Map.web")),
-  default: () =>
-    lazy(() => import("@/components/socialFeed/modals/MapModal/Map.web")),
-})();
 
 interface TMapModalProps {
   visible: boolean;
@@ -62,11 +48,28 @@ export const MapModal: React.FC<TMapModalProps> = ({
       hideHeader
       visible={visible}
       onClose={onClose}
-      width={457}
+      boxStyle={{
+        width: "100%",
+        height: "100%",
+        maxWidth: 700,
+        maxHeight: 800,
+      }}
+      childrenContainerStyle={{
+        height: "100%",
+      }}
     >
       <MapModalHeader onClose={onClose} />
 
-      <View style={[unitCardStyle]}>
+      <View
+        style={{
+          width: "100%",
+          flex: 1,
+          backgroundColor: neutral17,
+          padding: layout.spacing_x1_5,
+          borderRadius: 12,
+          justifyContent: "space-between",
+        }}
+      >
         <AddressSearch
           addressPlaceHolder={addressPlaceHolder}
           setAddressPlaceHolder={setAddressPlaceHolder}
@@ -77,9 +80,14 @@ export const MapModal: React.FC<TMapModalProps> = ({
 
         <SpacerColumn size={2} />
 
-        <View style={[mapContainer]}>
+        <View
+          style={{
+            flex: 1,
+            height: "100%",
+          }}
+        >
           <Suspense fallback={<></>}>
-            <MapView
+            <Map
               locationSelected={locationSelected}
               postCategory={postCategory}
             />
@@ -95,7 +103,13 @@ export const MapModal: React.FC<TMapModalProps> = ({
 
         <SpacerColumn size={2} />
 
-        <View style={[bottomButton]}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           {location && (
             <>
               <SecondaryButtonOutline
@@ -129,24 +143,4 @@ export const MapModal: React.FC<TMapModalProps> = ({
       <SpacerColumn size={2} />
     </ModalWithoutHeader>
   );
-};
-
-const bottomButton: ViewStyle = {
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "center",
-};
-
-const mapContainer: ViewStyle = {
-  flexDirection: "row",
-  alignItems: "center",
-  aspectRatio: 6 / 3,
-  zIndex: 10,
-};
-
-const unitCardStyle: ViewStyle = {
-  backgroundColor: neutral17,
-  padding: layout.spacing_x1_5,
-  borderRadius: 12,
-  justifyContent: "space-between",
 };

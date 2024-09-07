@@ -8,7 +8,7 @@ import { BrandText } from "@/components/BrandText";
 import { MediaPlayerBarRefined } from "@/components/mediaPlayer/MediaPlayerBarRefined";
 import { MediaPlayerVideo } from "@/components/mediaPlayer/MediaPlayerVideo";
 import { Separator } from "@/components/separators/Separator";
-import { MapPostWrapper } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/MapPostWrapper";
+import { MapPostWrapper } from "@/components/socialFeed/Map/MapPosts/MapPostWrapper";
 import { SpacerColumn } from "@/components/spacer";
 import { useMediaPlayer } from "@/context/MediaPlayerProvider";
 import { zodTryParseJSON } from "@/utils/sanitize";

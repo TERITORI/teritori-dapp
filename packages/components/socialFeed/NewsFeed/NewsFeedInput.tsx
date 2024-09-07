@@ -40,7 +40,6 @@ import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
 import { useAppMode } from "@/hooks/useAppMode";
 import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { useIpfs } from "@/hooks/useIpfs";
-import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
@@ -108,7 +107,7 @@ export interface NewsFeedInputHandle {
 const CHARS_LIMIT_WARNING_MULTIPLIER = 0.92;
 const MAX_IMAGES = 4;
 const BREAKPOINT_S = 690;
-const BREAKPOINT_M = 912;
+const BREAKPOINT_M = 930;
 
 export const NewsFeedInput = React.forwardRef<
   NewsFeedInputHandle,
@@ -132,7 +131,6 @@ export const NewsFeedInput = React.forwardRef<
     const [appMode] = useAppMode();
     const { width: windowWidth } = useWindowDimensions();
     const { width } = useMaxResolution();
-    const isMobile = useIsMobile();
     const [viewWidth, setViewWidth] = useState(0);
     const { uploadFilesToPinata, ipfsUploadProgress } = useIpfs();
     const inputMaxHeight = 400;
@@ -365,12 +363,22 @@ export const NewsFeedInput = React.forwardRef<
               onPress={focusInput}
               style={{
                 width: "100%",
-                paddingRight: isMobile
-                  ? layout.spacing_x1_5
-                  : layout.spacing_x2_5,
-                paddingLeft: layout.spacing_x1_5,
-                paddingTop: layout.spacing_x1_5,
-                paddingBottom: layout.spacing_x1_5,
+                paddingRight:
+                  windowWidth < BREAKPOINT_M
+                    ? layout.spacing_x1_5
+                    : layout.spacing_x2_5,
+                paddingLeft:
+                  windowWidth < BREAKPOINT_M
+                    ? layout.spacing_x1_5
+                    : layout.spacing_x3,
+                paddingTop:
+                  windowWidth < BREAKPOINT_M
+                    ? layout.spacing_x2
+                    : layout.spacing_x3,
+                paddingBottom:
+                  windowWidth < BREAKPOINT_M
+                    ? layout.spacing_x1
+                    : layout.spacing_x1_5,
               }}
             >
               <FlexRow style={{ marginTop: layout.spacing_x1 }}>
@@ -483,12 +491,14 @@ export const NewsFeedInput = React.forwardRef<
           style={{
             backgroundColor: appMode === "mini" ? neutral00 : neutral17,
 
-            paddingVertical: isMobile
-              ? layout.spacing_x1_5
-              : layout.spacing_x1_5,
-            paddingHorizontal: isMobile
-              ? layout.spacing_x1_5
-              : layout.spacing_x2_5,
+            paddingVertical:
+              windowWidth < BREAKPOINT_M
+                ? layout.spacing_x1_5
+                : layout.spacing_x1_5,
+            paddingHorizontal:
+              windowWidth < BREAKPOINT_M
+                ? layout.spacing_x1_5
+                : layout.spacing_x2_5,
             borderRadius: 8,
           }}
         >

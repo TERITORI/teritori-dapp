@@ -4,7 +4,7 @@ import { View } from "react-native";
 import { Post } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
 import { Separator } from "@/components/separators/Separator";
-import { MapPostWrapper } from "@/components/socialFeed/NewsFeed/FeedMapList/MapPosts/MapPostWrapper";
+import { MapPostWrapper } from "@/components/socialFeed/Map/MapPosts/MapPostWrapper";
 import {
   createStateFromHTML,
   getTruncatedArticleHTML,
