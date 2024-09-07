@@ -67,7 +67,7 @@ const getIcon = (postCategory: PostCategory) => {
 // Custom cluster icon TODO: Make better style respecting the Figma
 const createClusterCustomIcon = function (cluster: any): DivIcon {
   return new DivIcon({
-    html: `<span class="cluster-icon">${cluster.getChildCount()}</span>`,
+    html: `<div class="cluster-icon-wrapper"><span class="cluster-icon">${cluster.getChildCount()}</span></div>`,
     className: "custom-marker-cluster",
     iconSize: point(33, 33, true) as PointExpression,
   });
