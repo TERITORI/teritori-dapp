@@ -7,17 +7,19 @@ import {
   point,
   PointExpression,
 } from "leaflet";
-import { FC, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import {
   MapContainer,
   TileLayer,
   Marker,
   Popup,
   useMapEvents,
+  useMap,
 } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { HeatmapLayer } from "react-leaflet-heatmap-layer-v3/lib";
 import { View } from "react-native";
+import { LatLng } from "react-native-leaflet-view";
 
 import { Post } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
@@ -78,6 +80,15 @@ export const Map: FC<MapProps> = ({
   style,
   postCategory = -1,
 }) => {
+  const [bounds, setBounds] = useState<LatLngBounds | null>(null);
+
+  // Prevent infinite rendering after locationSelected update
+  const [localLocationSelected, setLocalLocationSelected] =
+    useState<LatLng>(locationSelected);
+  useEffect(() => {
+    setLocalLocationSelected(locationSelected);
+  }, [locationSelected]);
+
   const customIcon = useMemo(
     () =>
       new DivIcon({
@@ -89,9 +100,8 @@ export const Map: FC<MapProps> = ({
       }),
     [postCategory],
   );
-  const [bounds, setBounds] = useState<LatLngBounds | null>(null);
 
-  // ---- Existing posts that have a location
+  // ---- Fetch existing posts that have a location and display them as markers
   const { data } = useFetchFeedLocation({
     // Ensure proper hook call
     north: bounds?.getNorth(),
@@ -152,8 +162,8 @@ export const Map: FC<MapProps> = ({
       })
     : [];
 
-  // ---- Updates existing posts on map manipulation
-  const FetchMarkersOnMove = () => {
+  // ---- Updates map bounds on map manipulation
+  const UpdateBoundsOnMapEvents = () => {
     const map = useMapEvents({
       // Map events
       moveend: () => {
@@ -163,6 +173,18 @@ export const Map: FC<MapProps> = ({
         setBounds(map.getBounds());
       },
     });
+    return null;
+  };
+
+  // ---- Center to locationSelected when it's updated (Once)
+  const UpdateToLocationSelected = () => {
+    const map = useMap();
+    useEffect(() => {
+      if (localLocationSelected) {
+        map.setView(localLocationSelected);
+        setLocalLocationSelected(undefined);
+      }
+    }, [map]);
     return null;
   };
 
@@ -178,7 +200,7 @@ export const Map: FC<MapProps> = ({
       ]}
     >
       <MapContainer
-        center={locationToCenter || locationSelected}
+        center={locationSelected || locationToCenter}
         zoom={12}
         attributionControl={false}
       >
@@ -203,7 +225,7 @@ export const Map: FC<MapProps> = ({
             0.4: "#82CEB6",
             0.6: "#FAF3A5",
             0.8: "#F5D98B",
-            "1.0": "#DE9A96",
+            1.0: "#DE9A96",
           }}
           intensityExtractor={(point) =>
             Array.isArray(point) && typeof point[2] === "string"
@@ -251,8 +273,9 @@ export const Map: FC<MapProps> = ({
           ))}
         </MarkerClusterGroup>
 
-        {/*---- Updates existing posts on map manipulation*/}
-        <FetchMarkersOnMove />
+        {/*---- Map state updates*/}
+        <UpdateBoundsOnMapEvents />
+        <UpdateToLocationSelected />
       </MapContainer>
     </View>
   );

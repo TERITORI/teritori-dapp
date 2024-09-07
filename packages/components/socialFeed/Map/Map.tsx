@@ -12,7 +12,7 @@ export const Map: FC<MapProps> = ({
     <LeafletView
       renderLoading={() => <></>}
       zoom={12}
-      mapCenterPosition={locationToCenter || locationSelected}
+      mapCenterPosition={locationSelected || locationToCenter}
       mapLayers={[
         {
           url: `https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=${process.env.EXPO_PUBLIC_LEAFLET_MAP_TOKEN}`,
@@ -20,7 +20,7 @@ export const Map: FC<MapProps> = ({
       ]}
       mapMarkers={[
         {
-          position: locationToCenter || locationSelected,
+          position: locationSelected || locationToCenter,
           icon: "https://i.ibb.co/gSnJ70P/location.png", //load image from web; not work with local image
           size: [32, 32],
         },

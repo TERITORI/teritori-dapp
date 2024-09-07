@@ -10,19 +10,16 @@ import {
 import { LatLng } from "react-native-leaflet-view";
 import { z } from "zod";
 
-import {
-  neutral77,
-  primaryColor,
-  secondaryColor,
-} from "../../../../utils/style/colors";
-import { fontSemibold13 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText";
 import { SVG } from "../../../SVG";
 import { TextInputCustom } from "../../../inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../../inputs/TextInputOutsideLabel";
 
-import location from "@/assets/icons/location.svg";
+import locationRefinedSVG from "@/assets/icons/location-refined.svg";
 import { useDebounce } from "@/hooks/useDebounce";
+import { neutral77, neutralFF, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const zodAddressSearchResult = z.array(
   z.object({
@@ -61,8 +58,7 @@ export const AddressSearch: React.FC<AddressSearchProps> = ({
       if (!response.ok) {
         throw new Error("Invalid HTTP status: " + response.status);
       }
-      const data = zodAddressSearchResult.parse(await response.json());
-      return data;
+      return zodAddressSearchResult.parse(await response.json());
     },
   );
 
@@ -92,20 +88,17 @@ export const AddressSearch: React.FC<AddressSearchProps> = ({
           }}
           value={address}
         />
-        <View
-          style={[
-            locationContainer,
-            { paddingVertical: results.length || isLoading ? 20 : 0 },
-          ]}
-        >
+        <View style={locationContainerCStyle}>
           {isLoading ? (
-            <ActivityIndicator size="large" color={secondaryColor} />
+            <View style={{ margin: layout.spacing_x1 }}>
+              <ActivityIndicator size="large" color={secondaryColor} />
+            </View>
           ) : (
             <ScrollView showsVerticalScrollIndicator>
               {results.map((item, index) => (
                 <TouchableOpacity
                   key={index}
-                  style={[locationItem]}
+                  style={locationItemCStyle}
                   onPress={() => {
                     setLocationSelected([
                       parseFloat(item.lat),
@@ -115,12 +108,19 @@ export const AddressSearch: React.FC<AddressSearchProps> = ({
                     setAddress("");
                   }}
                 >
-                  <View style={[button24]}>
+                  <View
+                    style={{
+                      height: 28,
+                      width: 32,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
                     <SVG
-                      source={location}
-                      height={24}
-                      width={24}
-                      color={primaryColor}
+                      source={locationRefinedSVG}
+                      height={20}
+                      width={20}
+                      color={neutralFF}
                     />
                   </View>
                   <BrandText style={[fontSemibold13]}>
@@ -137,26 +137,20 @@ export const AddressSearch: React.FC<AddressSearchProps> = ({
 };
 
 // AddressSearch
-const locationContainer: ViewStyle = {
+const locationContainerCStyle: ViewStyle = {
   flexDirection: "column",
   position: "absolute",
   top: 50,
   left: 0,
   width: "100%",
-  maxHeight: 200,
+  maxHeight: 600,
   backgroundColor: "rgba(0,0,0,0.8)",
 };
 
-const locationItem: ViewStyle = {
+const locationItemCStyle: ViewStyle = {
   flexDirection: "row",
+  alignItems: "center",
   borderBottomColor: neutral77,
   borderBottomWidth: 0.5,
-  paddingVertical: 5,
-};
-
-const button24: ViewStyle = {
-  height: 24,
-  width: 24,
-  alignItems: "center",
-  justifyContent: "center",
+  paddingVertical: layout.spacing_x0_75,
 };
