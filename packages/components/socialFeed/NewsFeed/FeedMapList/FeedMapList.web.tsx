@@ -1,5 +1,5 @@
 import { DivIcon, PointExpression, point } from "leaflet";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import "../../modals/MapModal/styles.css";
 import "leaflet/dist/leaflet.css";
 import {
@@ -13,9 +13,12 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 import { HeatmapLayer } from "react-leaflet-heatmap-layer-v3/lib";
 import { View } from "react-native";
 
-import { Post } from "@/api/feed/v1/feed";
 import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
-import { useFetchFeedLocation } from "@/hooks/feed/useFetchFeed";
+import {
+  combineFetchFeedAggregationsPages,
+  combineFetchFeedPages,
+  useFetchFeedLocation,
+} from "@/hooks/feed/useFetchFeed";
 import {
   getMapPostIconColorRgba,
   getMapPostIconSVGString,
@@ -32,12 +35,6 @@ interface MarkerPopup {
   popUp: string;
   postCategory: PostCategory;
   fileURL?: string;
-}
-
-interface AggregatedPost {
-  lat: number;
-  long: number;
-  totalPoints: number;
 }
 
 // custom cluster icon
@@ -64,12 +61,22 @@ const getIcon = (postCategory: PostCategory) => {
 
 const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
   const [bounds, setBounds] = useState<L.LatLngBounds | null>(null);
-  const [posts, setPosts] = useState<Post[] | null>(null);
-  const [aggregatedPosts, setAggregatedPosts] = useState<
-    AggregatedPost[] | null
-  >(null);
-
-  const getFeedLocation = useFetchFeedLocation();
+  //TODO: Handle loading, limit, etc
+  const { data } = useFetchFeedLocation({
+    north: bounds?.getNorth(),
+    south: bounds?.getSouth(),
+    west: bounds?.getWest(),
+    east: bounds?.getEast(),
+    limit: 100,
+  });
+  const posts = useMemo(
+    () => (data ? combineFetchFeedPages(data.pages) : []),
+    [data],
+  );
+  const aggregatedPosts = useMemo(
+    () => (data ? combineFetchFeedAggregationsPages(data.pages) : []),
+    [data],
+  );
 
   const markers: MarkerPopup[] = useMemo(() => {
     if (!posts) return [];
@@ -98,20 +105,6 @@ const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
         ];
       })
     : [];
-
-  useEffect(() => {
-    getFeedLocation({
-      // Ensure proper hook call
-      north: bounds?.getNorth(),
-      south: bounds?.getSouth(),
-      west: bounds?.getWest(),
-      east: bounds?.getEast(),
-      limit: 100,
-    }).then((res) => {
-      setPosts(res.list);
-      setAggregatedPosts(res.aggregations);
-    });
-  }, [bounds, getFeedLocation]);
 
   const FetchMarkersOnMove = () => {
     const map = useMapEvents({

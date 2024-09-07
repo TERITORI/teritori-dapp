@@ -35,6 +35,14 @@ export type PostsList = {
 export const combineFetchFeedPages = (pages: PostsList[]) =>
   pages.reduce((acc: Post[], page) => [...acc, ...(page?.list || [])], []);
 
+export const combineFetchFeedAggregationsPages = (
+  pages: PostsWithAggregations[],
+) =>
+  pages.reduce(
+    (acc: AggregatedPost[], page) => [...acc, ...(page?.aggregations || [])],
+    [],
+  );
+
 const fetchTeritoriFeed = async (
   selectedNetwork: NetworkInfo,
   req: Partial<PostsRequest>,
@@ -125,18 +133,33 @@ export const useFetchFeed = (req: Partial<PostsRequest>) => {
   return { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading };
 };
 
-export const useFetchFeedLocation = (): ((
+export const useFetchFeedLocation = (
   req: Partial<PostsWithLocationRequest>,
-) => Promise<PostsWithAggregations>) => {
+) => {
   const selectedNetwork = useSelectedNetworkInfo();
+  const wallet = useSelectedWallet();
 
-  return async (
-    req: Partial<PostsWithLocationRequest>,
-  ): Promise<PostsWithAggregations> => {
-    if (!selectedNetwork)
-      return Promise.resolve({ list: [], totalCount: 0, aggregations: [] });
-    return await fetchTeritoriFeedLocation(selectedNetwork, req);
-  };
+  const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
+    useInfiniteQuery(
+      ["posts", selectedNetwork?.id, wallet?.address, { ...req }],
+      async () =>
+        //TODO? { pageParam = req.offset }
+        {
+          if (!selectedNetwork)
+            return Promise.resolve({
+              list: [],
+              totalCount: 0,
+              aggregations: [],
+            });
+          return fetchTeritoriFeedLocation(selectedNetwork, req);
+        },
+      {
+        // TODO? getNextPageParam: (lastPage, pages) => {},
+        staleTime: Infinity,
+        refetchOnWindowFocus: false,
+      },
+    );
+  return { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading };
 };
 
 const fetchTeritoriFeedLocation = async (
