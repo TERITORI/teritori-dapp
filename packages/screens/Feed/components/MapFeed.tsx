@@ -1,19 +1,22 @@
-import React, { Suspense } from "react";
+import React, { FC, Suspense } from "react";
 import { ScrollView, useWindowDimensions } from "react-native";
+import { LatLng } from "react-native-leaflet-view";
 
 import { FeedHeader } from "./FeedHeader";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
+
+import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
+import { Map } from "@/components/socialFeed/Map";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
 import {
   headerHeight,
   RESPONSIVE_BREAKPOINT_S,
   screenContentMaxWidth,
-} from "../../../utils/style/layout";
+} from "@/utils/style/layout";
 
-import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
-import { Map } from "@/components/socialFeed/Map";
-
-export const MapFeed = () => {
+export const MapFeed: FC<{
+  locationToCenter?: LatLng;
+}> = ({ locationToCenter }) => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const { width, height } = useMaxResolution();
   const isMobile = useIsMobile();
@@ -29,6 +32,7 @@ export const MapFeed = () => {
             width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
             maxWidth: screenContentMaxWidth,
           }}
+          locationToCenter={locationToCenter}
         />
       </Suspense>
     </ScrollView>

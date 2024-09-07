@@ -146,6 +146,7 @@ export const SocialVideoCard: FC<{
             <SocialCardHeader
               authorId={localPost.authorId}
               createdAt={localPost.createdAt}
+              postLocation={metadata?.location}
             />
             {windowWidth < SOCIAL_FEED_BREAKPOINT_M && (
               <SpacerColumn size={0.5} />

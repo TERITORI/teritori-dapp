@@ -261,6 +261,7 @@ export const FeedPostArticleView: FC<{
               <SocialCardHeader
                 authorId={localPost.authorId}
                 createdAt={post.createdAt}
+                postLocation={articleMetadata?.location}
               />
               <SpacerColumn size={1.5} />
 

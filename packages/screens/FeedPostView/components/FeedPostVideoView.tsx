@@ -315,6 +315,7 @@ export const FeedPostVideoView: FC<{
                   <SocialCardHeader
                     authorId={localPost.authorId}
                     createdAt={localPost.createdAt}
+                    postLocation={video.location}
                   />
                   {viewWidth < SOCIAL_FEED_BREAKPOINT_M && (
                     <SpacerColumn size={1} />

@@ -35,7 +35,9 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
       case "music":
         return <MusicFeed />;
       case "map":
-        return developerMode === true ? <MapFeed /> : null;
+        return developerMode ? (
+          <MapFeed locationToCenter={params?.locationToCenter} />
+        ) : null;
       case "pics":
         return <PicsFeed />;
       case "videos":
@@ -60,7 +62,7 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
           />
         );
     }
-  }, [params?.tab, isMobile, developerMode, defaultFeedRequest]);
+  }, [params?.tab, params?.locationToCenter, isMobile, developerMode, defaultFeedRequest]);
 
   return (
     <ScreenContainer

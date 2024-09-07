@@ -1,5 +1,6 @@
 import React, { memo, useEffect, useState } from "react";
 import { StyleProp, ViewStyle } from "react-native";
+import { LatLng } from "react-native-leaflet-view";
 
 import FlexRow from "../../../FlexRow";
 import { CustomPressable } from "../../../buttons/CustomPressable";
@@ -16,6 +17,7 @@ import { Post } from "@/api/feed/v1/feed";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
+import { zodTryParseJSON } from "@/utils/sanitize";
 import { SOCIAl_CARD_BORDER_RADIUS } from "@/utils/social-feed";
 import {
   neutral00,
@@ -24,7 +26,11 @@ import {
   withAlpha,
 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
-import { OnPressReplyType, PostCategory } from "@/utils/types/feed";
+import {
+  OnPressReplyType,
+  PostCategory,
+  ZodSocialFeedPostMetadata,
+} from "@/utils/types/feed";
 
 export const SocialThreadCard: React.FC<{
   post: Post;
@@ -52,6 +58,10 @@ export const SocialThreadCard: React.FC<{
     const [, authorAddress] = parseUserId(localPost.authorId);
     const navigation = useAppNavigation();
     const replyTo = authorNSInfo?.metadata?.tokenId || authorAddress;
+    const postLocation: LatLng = zodTryParseJSON(
+      ZodSocialFeedPostMetadata,
+      post.metadata,
+    )?.location;
 
     const handleReply = () =>
       onPressReply?.({
@@ -94,6 +104,7 @@ export const SocialThreadCard: React.FC<{
           <SocialCardHeader
             authorId={localPost.authorId}
             createdAt={post.createdAt}
+            postLocation={postLocation}
           />
 
           <SpacerColumn size={1.5} />

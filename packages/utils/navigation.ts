@@ -1,13 +1,13 @@
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
+import { LatLng } from "react-native-leaflet-view";
 
 import { feedsTabItems } from "./social-feed";
 import { AppMode } from "./types/app-mode";
 import { NewPostFormValues } from "./types/feed";
 import { MessageFriendsTabItem } from "./types/message";
 import { uppTabItems } from "./upp";
-
 export type RouteName = keyof RootStackParamList;
 
 type MiniTabsScreen = {
@@ -49,7 +49,11 @@ export type RootStackParamList = {
   Collection: { id: string };
   CollectionTools: { id: string };
   NFTDetail: { id: string; openBuy?: boolean };
-  Feed?: { tab: keyof typeof feedsTabItems; network?: string };
+  Feed?: {
+    tab: keyof typeof feedsTabItems;
+    network?: string;
+    locationToCenter?: LatLng;
+  };
   FeedNewArticle:
     | (NewPostFormValues & {
         additionalMention?: string;

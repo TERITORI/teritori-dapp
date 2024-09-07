@@ -183,6 +183,7 @@ export const MiniVideoPostDetails = ({ post, refetchPost }: Props) => {
               <SocialCardHeader
                 authorId={localPost.authorId}
                 createdAt={localPost.createdAt}
+                postLocation={video.location}
               />
               <SpacerColumn size={1} />
               <View style={{ flexDirection: "row", alignItems: "center" }}>

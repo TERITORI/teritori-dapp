@@ -1,26 +1,32 @@
 import React, { FC } from "react";
 import { useWindowDimensions, View } from "react-native";
+import { LatLng } from "react-native-leaflet-view";
 
 import { DateTime } from "./DateTime";
-import { neutral77 } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
 import { OmniLink } from "../../OmniLink";
 import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { UserAvatarWithFrame } from "../../images/AvatarWithFrame";
 import { DotSeparator } from "../../separators/DotSeparator";
 import { SpacerRow } from "../../spacer";
 
+import { LocationButton } from "@/components/socialFeed/NewsFeed/LocationButton";
 import { UserDisplayName } from "@/components/user/UserDisplayName";
 import { Username } from "@/components/user/Username";
+import { useAppNavigation } from "@/utils/navigation";
+import { neutral77, neutralFF } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 
 // ====== Handle author image and username, date
 export const SocialCardHeader: FC<{
   authorId: string;
   createdAt?: number;
   isWrapped?: boolean;
-}> = ({ authorId, createdAt, isWrapped }) => {
+  postLocation?: LatLng;
+}> = ({ authorId, createdAt, isWrapped, postLocation }) => {
   const { width } = useWindowDimensions();
+  const navigation = useAppNavigation();
+
   return (
     <View
       style={{
@@ -44,6 +50,7 @@ export const SocialCardHeader: FC<{
             size={width < RESPONSIVE_BREAKPOINT_S ? "XS" : "S"}
           />
         </OmniLink>
+
         <View
           style={{
             flexDirection:
@@ -91,6 +98,21 @@ export const SocialCardHeader: FC<{
             )}
           </View>
         </View>
+
+        {postLocation && (
+          <>
+            <SpacerRow size={2} />
+            <LocationButton
+              onPress={() =>
+                navigation.navigate("Feed", {
+                  tab: "map",
+                  locationToCenter: postLocation,
+                })
+              }
+              color={neutralFF}
+            />
+          </>
+        )}
       </View>
     </View>
   );

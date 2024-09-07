@@ -20,10 +20,16 @@ import { Username } from "../user/Username";
 import { Post } from "@/api/feed/v1/feed";
 import defaultThumbnailImage from "@/assets/default-images/default-track-thumbnail.png";
 import NormalPlay from "@/assets/icons/music/normal-play.svg";
+import { LocationButton } from "@/components/socialFeed/NewsFeed/LocationButton";
 import { useMediaPlayer } from "@/context/MediaPlayerProvider";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { zodTryParseJSON } from "@/utils/sanitize";
-import { neutral17, neutral77, primaryColor } from "@/utils/style/colors";
+import {
+  neutral17,
+  neutral77,
+  neutralFF,
+  primaryColor,
+} from "@/utils/style/colors";
 import { fontMedium13, fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { ZodSocialFeedTrackMetadata } from "@/utils/types/feed";
@@ -102,6 +108,20 @@ export const TrackCard: React.FC<{
               />
             </CustomPressable>
           </View>
+
+          {track?.location && (
+            <View style={positionButtonBoxStyle}>
+              <LocationButton
+                onPress={() =>
+                  navigation.navigate("Feed", {
+                    tab: "map",
+                    locationToCenter: track.location,
+                  })
+                }
+                color={neutralFF}
+              />
+            </View>
+          )}
         </CustomPressable>
         <BrandText style={[fontSemibold14, { height: 40 }]} numberOfLines={2}>
           {track?.title || ""}
@@ -146,6 +166,12 @@ const imgButtonsBoxStyle: ViewStyle = {
   bottom: layout.spacing_x1_5 * 2,
   right: 0,
   justifyContent: "space-between",
+};
+
+const positionButtonBoxStyle: ViewStyle = {
+  position: "absolute",
+  top: layout.spacing_x1_5,
+  right: layout.spacing_x1_5,
 };
 
 const contentDescriptionStyle: TextStyle = {

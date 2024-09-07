@@ -20,6 +20,7 @@ import {
   neutral00,
   neutral22,
   neutral77,
+  neutralFF,
   withAlpha,
 } from "../../utils/style/colors";
 import {
@@ -38,6 +39,7 @@ import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 import { DateTime } from "../socialFeed/SocialCard/DateTime";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
+import { LocationButton } from "@/components/socialFeed/NewsFeed/LocationButton";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const IMAGE_HEIGHT = 173;
@@ -119,6 +121,20 @@ export const VideoCard: React.FC<{
               {prettyMediaDuration(video.videoFile.videoMetadata?.duration)}
             </BrandText>
           </View>
+
+          {video?.location && (
+            <View style={positionButtonBoxStyle}>
+              <LocationButton
+                onPress={() =>
+                  navigation.navigate("Feed", {
+                    tab: "map",
+                    locationToCenter: video.location,
+                  })
+                }
+                color={neutralFF}
+              />
+            </View>
+          )}
         </CustomPressable>
 
         <SpacerColumn size={1.5} />
@@ -194,6 +210,7 @@ export const VideoCard: React.FC<{
 const imgBoxStyle: ViewStyle = {
   position: "relative",
 };
+
 const imgDurationBoxStyle: ViewStyle = {
   justifyContent: "center",
   alignItems: "center",
@@ -205,6 +222,13 @@ const imgDurationBoxStyle: ViewStyle = {
   top: layout.spacing_x1,
   left: layout.spacing_x1,
 };
+
+const positionButtonBoxStyle: ViewStyle = {
+  position: "absolute",
+  top: layout.spacing_x1,
+  right: layout.spacing_x1,
+};
+
 const contentNameStyle: TextStyle = {
   ...fontSemibold14,
 };

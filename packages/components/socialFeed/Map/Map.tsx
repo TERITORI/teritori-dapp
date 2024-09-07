@@ -1,21 +1,18 @@
 import { FC } from "react";
-import { LatLng, LeafletView } from "react-native-leaflet-view";
+import { LeafletView } from "react-native-leaflet-view";
 
 import { MapProps } from "@/components/socialFeed/Map/Map.types";
+import { DEFAULT_MAP_POSITION } from "@/utils/feed/map";
 
-export const Map: FC<MapProps> = ({ locationSelected }) => {
-  const DEFAULT_COORDINATE: LatLng = locationSelected
-    ? {
-        lat: locationSelected[0],
-        lng: locationSelected[1],
-      }
-    : [48.8566, 2.3522];
-
+export const Map: FC<MapProps> = ({
+  locationSelected,
+  locationToCenter = DEFAULT_MAP_POSITION,
+}) => {
   return (
     <LeafletView
       renderLoading={() => <></>}
       zoom={12}
-      mapCenterPosition={DEFAULT_COORDINATE}
+      mapCenterPosition={locationToCenter || locationSelected}
       mapLayers={[
         {
           url: `https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=${process.env.EXPO_PUBLIC_LEAFLET_MAP_TOKEN}`,
@@ -23,7 +20,7 @@ export const Map: FC<MapProps> = ({ locationSelected }) => {
       ]}
       mapMarkers={[
         {
-          position: DEFAULT_COORDINATE,
+          position: locationToCenter || locationSelected,
           icon: "https://i.ibb.co/gSnJ70P/location.png", //load image from web; not work with local image
           size: [32, 32],
         },

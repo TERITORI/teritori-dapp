@@ -33,6 +33,7 @@ import {
   useFetchFeedLocation,
 } from "@/hooks/feed/useFetchFeed";
 import {
+  DEFAULT_MAP_POSITION,
   getMapPostIconColorRgba,
   getMapPostIconSVGString,
 } from "@/utils/feed/map";
@@ -73,6 +74,7 @@ const createClusterCustomIcon = function (cluster: any): DivIcon {
 export const Map: FC<MapProps> = ({
   // FIXME: locationSelected not updated when selecting an address from AddressSearch
   locationSelected,
+  locationToCenter = DEFAULT_MAP_POSITION,
   style,
   postCategory = -1,
 }) => {
@@ -176,7 +178,7 @@ export const Map: FC<MapProps> = ({
       ]}
     >
       <MapContainer
-        center={locationSelected || [48.8566, 2.3522]}
+        center={locationToCenter || locationSelected}
         zoom={12}
         attributionControl={false}
       >
