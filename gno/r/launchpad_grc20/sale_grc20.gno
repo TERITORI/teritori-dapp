@@ -102,12 +102,12 @@ func Finalize(saleID uint64) {
 	realmAddr := std.CurrentRealm().Addr()
 	banker := std.GetBanker(std.BankerTypeRealmSend)
 
-	if sale.finalized {
-		panic("sale already finalized")
+	if sale.isOnGoing() {
+		panic("sale is still ongoing, wait for the end")
 	}
 
-	if !sale.isOnGoing() {
-		panic("sale is not ongoing")
+	if sale.finalized {
+		panic("sale already finalized")
 	}
 
 	// If the min goal is not reached, refund all the buyers and send the tokens back to the owner
@@ -139,7 +139,7 @@ func (s *Sale) buy(buyer std.Address, amount uint64) {
 	sentCoins := std.GetOrigSend()
 
 	if len(sentCoins) != 1 {
-		panic("Please send only only gnot coins")
+		panic("Please send only gnot coins")
 	}
 
 	sentCoin := sentCoins[0]
