@@ -15,6 +15,7 @@ import { mustGetFeedClient } from "@/utils/backend";
 import { TERITORI_FEED_ID } from "@/utils/feed/constants";
 import { decodeGnoPost } from "@/utils/feed/gno";
 import { extractGnoJSONString } from "@/utils/gno";
+import { DeepPartial } from "@/utils/typescript";
 
 export type PostsList = {
   list: Post[];
@@ -26,10 +27,10 @@ export const combineFetchFeedPages = (pages: PostsList[]) =>
 
 const fetchTeritoriFeed = async (
   selectedNetwork: NetworkInfo,
-  req: Partial<PostsRequest>,
+  req: DeepPartial<PostsRequest>,
   pageParam: number,
 ) => {
-  const postsRequest: Partial<PostsRequest> = {
+  const postsRequest: DeepPartial<PostsRequest> = {
     ...req,
     offset: pageParam || 0,
   };
@@ -42,7 +43,7 @@ const fetchTeritoriFeed = async (
 const fetchGnoFeed = async (
   selectedNetwork: GnoNetworkInfo,
   callerAddress: string | undefined,
-  req: Partial<PostsRequest>,
+  req: DeepPartial<PostsRequest>,
   pageParam: number,
 ) => {
   if (!selectedNetwork.socialFeedsPkgPath) return { list: [], totalCount: 0 };
@@ -78,7 +79,7 @@ const fetchGnoFeed = async (
   return result;
 };
 
-export const useFetchFeed = (req: Partial<PostsRequest>) => {
+export const useFetchFeed = (req: DeepPartial<PostsRequest>) => {
   const selectedNetwork = useSelectedNetworkInfo();
   const wallet = useSelectedWallet();
 

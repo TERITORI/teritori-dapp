@@ -80,6 +80,7 @@ func (s *FeedService) IPFSKey(ctx context.Context, req *feedpb.IPFSKeyRequest) (
 func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*feedpb.PostsResponse, error) {
 	filter := req.GetFilter()
 	var (
+		networkId       string
 		user            string
 		mentions        []string
 		categories      []uint32
@@ -89,6 +90,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	)
 
 	if filter != nil {
+		networkId = filter.NetworkId
 		categories = filter.Categories
 		user = filter.User
 		hashtags = filter.Hashtags
@@ -125,6 +127,9 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	}
 	if user != "" {
 		query = query.Where("author_id = ?", user)
+	}
+	if networkId != "" {
+		query = query.Where("network_id = ?", networkId)
 	}
 	if len(hashtags) > 0 {
 		formattedHashtags := make([]string, 0)
@@ -195,11 +200,11 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		}
 
 		posts[idx] = &feedpb.Post{
-			Id:                   string(n.GetBase().PostID(dbPost.Identifier)),
+			Id:                   string(n.GetBase().PostID(dbPost.LocalIdentifier)),
 			Category:             dbPost.Category,
 			IsDeleted:            dbPost.IsDeleted,
-			Identifier:           dbPost.Identifier,
-			LocalIdentifier:      dbPost.Identifier,
+			Identifier:           dbPost.LocalIdentifier,
+			LocalIdentifier:      dbPost.LocalIdentifier,
 			NetworkId:            dbPost.NetworkID,
 			Metadata:             string(metadata),
 			ParentPostIdentifier: dbPost.ParentPostIdentifier,
