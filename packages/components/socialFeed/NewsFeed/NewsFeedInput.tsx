@@ -573,14 +573,8 @@ export const NewsFeedInput = React.forwardRef<
                   <>
                     <LocationButton
                       onPress={() => setIsMapShown(true)}
-                      color={
-                        isPublishDisabled
-                          ? neutral77
-                          : location
-                            ? primaryColor
-                            : neutralFF
-                      }
-                      disabled={isPublishDisabled}
+                      stroke={!location ? neutralFF : undefined}
+                      color={!location ? undefined : neutralFF}
                     />
                     {viewWidth >= BREAKPOINT_S && (
                       <View

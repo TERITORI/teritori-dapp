@@ -118,7 +118,7 @@ export const TrackCard: React.FC<{
                     locationToCenter: track.location,
                   })
                 }
-                color={neutralFF}
+                stroke={neutralFF}
               />
             </View>
           )}

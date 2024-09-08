@@ -131,7 +131,7 @@ export const VideoCard: React.FC<{
                     locationToCenter: video.location,
                   })
                 }
-                color={neutralFF}
+                stroke={neutralFF}
               />
             </View>
           )}

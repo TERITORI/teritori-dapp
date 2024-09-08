@@ -109,7 +109,7 @@ export const SocialCardHeader: FC<{
                   locationToCenter: postLocation,
                 })
               }
-              color={neutralFF}
+              stroke={neutralFF}
             />
           </>
         )}

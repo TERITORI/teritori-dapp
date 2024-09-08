@@ -74,11 +74,7 @@ import {
   replaceFileInArray,
   urlMatch,
 } from "../../../utils/social-feed";
-import {
-  neutral77,
-  neutralFF,
-  primaryColor,
-} from "../../../utils/style/colors";
+import { neutral77, neutralFF } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout, SOCIAL_FEED_BREAKPOINT_M } from "../../../utils/style/layout";
 import { LocalFileData } from "../../../utils/types/files";
@@ -328,14 +324,8 @@ export const RichText: React.FC<RichTextProps> = ({
           <SpacerRow size={1} />
           <LocationButton
             onPress={() => setIsMapShown?.(true)}
-            color={
-              publishDisabled
-                ? neutral77
-                : hasLocation
-                  ? primaryColor
-                  : neutralFF
-            }
-            disabled={publishDisabled}
+            stroke={!hasLocation ? neutralFF : undefined}
+            color={!hasLocation ? undefined : neutralFF}
           />
           <View
             style={{

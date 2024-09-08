@@ -264,12 +264,9 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
         <>
           <SpacerColumn size={2.5} />
           <TouchableOpacity
-            style={[
-              buttonContainerStyle,
-              (isPublishDisabled || isLoading) && { opacity: 0.5 },
-            ]}
+            style={[buttonContainerStyle, isLoading && { opacity: 0.5 }]}
             onPress={() => setIsMapShown(true)}
-            disabled={isPublishDisabled || isLoading}
+            disabled={isLoading}
           >
             <SVG
               source={LocationRefinedSvg}
