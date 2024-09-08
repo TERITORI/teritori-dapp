@@ -239,3 +239,333 @@ func TestNewSale(t *testing.T) {
 		})
 	}
 }
+
+func TestBuy(t *testing.T) {
+	type testBuyInput struct {
+		saleID uint64
+		amount uint64
+		coins  std.Coins
+		addr   std.Address
+	}
+
+	type testBuyExpected struct {
+		panic   bool
+		balance uint64
+	}
+
+	type testBuy struct {
+		input    testBuyInput
+		expected testBuyExpected
+	}
+
+	type testBuyTestTable = map[string]testBuy
+
+	startTimestamp := time.Now().Unix()
+	endTimestamp := time.Now().Unix() + 1000
+
+	bob := std.Address("g126gx6p6d3da4ymef35ury6874j6kys044r7zlg")
+	alice := std.Address("g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv")
+
+	std.TestSetOrigCaller(bob)
+
+	NewToken("TestBuyToken", "TestBuyToken", "image", 18, 21_000_000, 23_000_000, true, true)
+	saleID := NewSale("TestBuyToken", startTimestamp, endTimestamp, 100, 15, 0, 20, true)
+	sale := mustGetSale(saleID)
+
+	coins := std.NewCoins(std.NewCoin("ugnot", 100*10))
+	badCoin := std.NewCoins(std.NewCoin("notugnot", 100*10))
+	manyCoins := std.NewCoins(std.NewCoin("ugnot", 100*10), std.NewCoin("notugnot", 100*10))
+	notEnoughCoins := std.NewCoins(std.NewCoin("ugnot", 100*5))
+	tooManyCoins := std.NewCoins(std.NewCoin("ugnot", 100*11))
+	emptyCoins := std.NewCoins()
+
+	tests := testBuyTestTable{
+		"Success": {
+			input: testBuyInput{
+				saleID: saleID,
+				amount: 10,
+				coins:  coins,
+				addr:   bob,
+			},
+			expected: testBuyExpected{
+				panic:   false,
+				balance: 10,
+			},
+		},
+		"Limit per addr reached": {
+			input: testBuyInput{
+				saleID: saleID,
+				amount: 10,
+				coins:  coins,
+				addr:   bob,
+			},
+			expected: testBuyExpected{
+				panic:   true,
+				balance: 10,
+			},
+		},
+		"Exceeds maximum goal": {
+			input: testBuyInput{
+				saleID: saleID,
+				amount: 15,
+				coins:  coins,
+				addr:   alice,
+			},
+			expected: testBuyExpected{
+				panic: true,
+			},
+		},
+		"Send empty coins": {
+			input: testBuyInput{
+				saleID: saleID,
+				amount: 10,
+				coins:  emptyCoins,
+				addr:   alice,
+			},
+			expected: testBuyExpected{
+				panic: true,
+			},
+		},
+		"Send bad coins": {
+			input: testBuyInput{
+				saleID: saleID,
+				amount: 10,
+				coins:  badCoin,
+				addr:   alice,
+			},
+			expected: testBuyExpected{
+				panic: true,
+			},
+		},
+		"Send many coins": {
+			input: testBuyInput{
+				saleID: saleID,
+				amount: 10,
+				coins:  manyCoins,
+				addr:   alice,
+			},
+			expected: testBuyExpected{
+				panic: true,
+			},
+		},
+		"Send not enough coins": {
+			input: testBuyInput{
+				saleID: saleID,
+				amount: 10,
+				coins:  notEnoughCoins,
+				addr:   alice,
+			},
+			expected: testBuyExpected{
+				panic: true,
+			},
+		},
+		"Amount is 0": {
+			input: testBuyInput{
+				saleID: saleID,
+				amount: 0,
+				coins:  coins,
+				addr:   alice,
+			},
+			expected: testBuyExpected{
+				panic: true,
+			},
+		},
+		"Send too many coins": {
+			input: testBuyInput{
+				saleID: saleID,
+				amount: 10,
+				coins:  tooManyCoins,
+				addr:   alice,
+			},
+			expected: testBuyExpected{
+				panic:   false,
+				balance: 10,
+			},
+		},
+	}
+
+	for testName, test := range tests {
+		t.Run(testName, func(t *testing.T) {
+			if test.expected.panic {
+				defer func() {
+					if r := recover(); r == nil {
+						t.Errorf("Expected panic, got none")
+					}
+				}()
+			}
+
+			std.TestSetOrigCaller(test.input.addr)
+			std.TestSetOrigSend(test.input.coins, nil)
+			Buy(test.input.saleID, test.input.amount)
+			if !test.expected.panic {
+				buyer, exists := sale.buyers.Get(test.input.addr.String())
+				if !exists {
+					t.Errorf("Expected buyer to not exist, got %d", buyer)
+				}
+				if buyer.(uint64) != test.expected.balance {
+					t.Errorf("Expected balance to be %d, got %d", test.expected.balance, buyer.(uint64))
+				}
+			}
+		})
+	}
+}
+
+func TestFinalize(t *testing.T) {
+	type testFinalizeInput struct {
+		saleID      uint64
+		buyer       std.Address
+		amount      uint64
+		skipHeights int64
+	}
+
+	type testFinalizeExpected struct {
+		panic bool
+	}
+
+	type testFinalize struct {
+		input    testFinalizeInput
+		expected testFinalizeExpected
+	}
+
+	type testFinalizeTestTable = map[string]testFinalize
+
+	startTimestamp := time.Now().Unix() - 5
+	endTimestamp := time.Now().Unix() - 2
+
+	onGoingEndTimestamp := time.Now().Unix() + 100
+	onGoingEndTimestamp2 := time.Now().Unix() + 200
+
+	bob := std.Address("g126gx6p6d3da4ymef35ury6874j6kys044r7zlg")
+	alice := std.Address("g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv")
+
+	std.TestSetOrigCaller(bob)
+
+	NewToken("TestFinalizeToken", "TestFinalizeToken", "image", 18, 21_000_000, 23_000_000, true, true)
+	saleID := NewSale("TestFinalizeToken", startTimestamp, endTimestamp, 100, 15, 10, 20, true)
+	onGoingSaleID := NewSale("TestFinalizeToken", startTimestamp, onGoingEndTimestamp, 100, 15, 10, 20, true)
+	onGoingSaleID2 := NewSale("TestFinalizeToken", startTimestamp, onGoingEndTimestamp2, 100, 15, 10, 20, true)
+
+	tests := testFinalizeTestTable{
+		"Success with 0 tokens sold": {
+			input: testFinalizeInput{
+				saleID:      saleID,
+				buyer:       alice,
+				amount:      0,
+				skipHeights: 0,
+			},
+			expected: testFinalizeExpected{
+				panic: false,
+			},
+		},
+		"Fail sale not found": {
+			input: testFinalizeInput{
+				saleID:      100,
+				buyer:       bob,
+				amount:      0,
+				skipHeights: 0,
+			},
+			expected: testFinalizeExpected{
+				panic: true,
+			},
+		},
+		"Fail sale already finalized": {
+			input: testFinalizeInput{
+				saleID:      saleID,
+				buyer:       bob,
+				amount:      0,
+				skipHeights: 0,
+			},
+			expected: testFinalizeExpected{
+				panic: true,
+			},
+		},
+		"Fail sale still ongoing": {
+			input: testFinalizeInput{
+				saleID:      onGoingSaleID,
+				buyer:       bob,
+				amount:      0,
+				skipHeights: 0,
+			},
+			expected: testFinalizeExpected{
+				panic: true,
+			},
+		},
+		"Success with min goal not reached but some token sold": {
+			input: testFinalizeInput{
+				saleID:      onGoingSaleID,
+				buyer:       alice,
+				amount:      2,
+				skipHeights: 20, // 20 blocks passed ~= 100 seconds (close the onGoingEndTimestamp1)
+			},
+			expected: testFinalizeExpected{
+				panic: false,
+			},
+		},
+		"Success with min goal reached": {
+			input: testFinalizeInput{
+				saleID:      onGoingSaleID2,
+				buyer:       alice,
+				amount:      15,
+				skipHeights: 20, // 20 blocks passed ~= 100 seconds again (close the onGoingEndTimestamp2)
+			},
+			expected: testFinalizeExpected{
+				panic: false,
+			},
+		},
+	}
+
+	banker := std.GetBanker(std.BankerTypeReadonly)
+
+	for testName, test := range tests {
+		t.Run(testName, func(t *testing.T) {
+			if test.expected.panic {
+				defer func() {
+					if r := recover(); r == nil {
+						t.Errorf("Expected panic, got none")
+					}
+				}()
+			}
+
+			std.TestSetOrigCaller(test.input.buyer)
+
+			buyerBalance := banker.GetCoins(test.input.buyer).AmountOf("ugnot")
+			sale := mustGetSale(test.input.saleID)
+
+			coins := std.NewCoins(std.NewCoin("ugnot", int64(test.input.amount*sale.pricePerToken)))
+			std.TestSetOrigSend(coins, nil)
+
+			if test.input.amount != 0 {
+				Buy(test.input.saleID, test.input.amount)
+			}
+
+			std.TestSkipHeights(test.input.skipHeights)
+
+			Finalize(test.input.saleID)
+
+			if !test.expected.panic {
+				if !sale.finalized {
+					t.Errorf("Expected sale to be finalized, got %t", sale.finalized)
+				}
+
+				if sale.alreadySold != test.input.amount {
+					t.Errorf("Expected alreadySold to be %d, got %d", test.input.amount, sale.alreadySold)
+				}
+
+				if sale.alreadySold < sale.minGoal {
+					if sale.token.banker.BalanceOf(test.input.buyer) != 0 {
+						t.Errorf("Expected tokens balance to be 0 since min goal not reach, got %d", sale.token.banker.BalanceOf(test.input.buyer))
+					}
+
+					// Since coins come from nowhere in the testing context, the refund just add news coins to addr
+					if banker.GetCoins(test.input.buyer).AmountOf("ugnot") != buyerBalance+coins.AmountOf("ugnot") {
+						t.Errorf("Expected money to be refund and be %d since min goal not reach but got %d", buyerBalance, banker.GetCoins(test.input.buyer).AmountOf("ugnot"))
+					}
+				} else {
+					if sale.token.banker.BalanceOf(test.input.buyer) != test.input.amount {
+						t.Errorf("Expected balance to be %d, got %d", test.input.amount, sale.token.banker.BalanceOf(test.input.buyer))
+					}
+				}
+			}
+		})
+	}
+}

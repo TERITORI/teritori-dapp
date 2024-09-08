@@ -37,15 +37,16 @@ func NewSale(tokenName string, startTimestamp, endTimestamp int64, pricePerToken
 	token := mustGetToken(tokenName)
 	token.admin.AssertCallerIsOwner()
 
-	// check that the token is mintable
+	// check that the token is mintable if admin wants to mint the tokens
 	if mintToken && !token.allowMint {
 		panic("token is not mintable")
 	}
 
 	owner := std.PrevRealm().Addr()
 
+	// Subtract 10 seconds to make it easier to create a sale that starts immediately (for testing purposes)
 	now := time.Now().Unix()
-	if startTimestamp < now {
+	if startTimestamp < now-10 {
 		panic("start timestamp must be in the future")
 	}
 
@@ -66,7 +67,10 @@ func NewSale(tokenName string, startTimestamp, endTimestamp int64, pricePerToken
 	if mintToken {
 		token.banker.Mint(realmAddr, maxGoal)
 	} else {
-		token.Token().TransferFrom(owner, realmAddr, maxGoal)
+		err := token.banker.Transfer(owner, realmAddr, maxGoal)
+		if err != nil {
+			panic("error while transferring tokens to the realm, " + err.Error())
+		}
 	}
 
 	sale := Sale{
@@ -113,7 +117,10 @@ func Finalize(saleID uint64) {
 	// If the min goal is not reached, refund all the buyers and send the tokens back to the owner
 	if sale.alreadySold < sale.minGoal {
 		sale.refundAllBuyers()
-		sale.token.Token().TransferFrom(realmAddr, sale.owner, sale.alreadySold)
+		err := sale.token.banker.Transfer(realmAddr, sale.owner, sale.alreadySold)
+		if err != nil {
+			panic("error while transferring back tokens to the owner, " + err.Error())
+		}
 	} else {
 		sale.payAllBuyers()
 		totalCoins := std.NewCoins(std.NewCoin("ugnot", int64(sale.alreadySold*sale.pricePerToken)))
@@ -138,8 +145,12 @@ func (s *Sale) isOnGoing() bool {
 func (s *Sale) buy(buyer std.Address, amount uint64) {
 	sentCoins := std.GetOrigSend()
 
+	if len(sentCoins) == 0 {
+		panic("Please send amount * price per token gnot coins, price per token is " + ufmt.Sprintf("%d", s.pricePerToken) + " $GNOT")
+	}
+
 	if len(sentCoins) != 1 {
-		panic("Please send only gnot coins")
+		panic("Please send only one type of coin, should be GNOT coins")
 	}
 
 	sentCoin := sentCoins[0]
@@ -203,7 +214,10 @@ func (s *Sale) payAllBuyers() {
 	s.buyers.Iterate("", "", func(key string, value interface{}) bool {
 		buyer := std.Address(key)
 		amount := value.(uint64)
-		s.token.Token().TransferFrom(realmAddr, buyer, amount)
+		err := s.token.banker.Transfer(realmAddr, buyer, amount)
+		if err != nil {
+			panic("error while transferring tokens to the buyer, " + err.Error())
+		}
 		return false
 	})
 }
