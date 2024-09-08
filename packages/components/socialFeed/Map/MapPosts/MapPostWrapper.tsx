@@ -43,7 +43,7 @@ export const MapPostWrapper: FC<{
       ]}
     >
       <CustomPressable
-        onPress={() => navigation.navigate("FeedPostView", { id: "post.id" })}
+        onPress={() => navigation.navigate("FeedPostView", { id: post.id })}
         style={{ opacity: isHeaderHovered ? 0.5 : 1 }}
         onHoverOut={() => setHeaderHovered(false)}
         onHoverIn={() => setHeaderHovered(true)}

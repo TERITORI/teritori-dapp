@@ -23,6 +23,7 @@ export const NormalMapPost: FC<{
       {postMetadata ? (
         <TextRenderer
           style={[fontSemibold10, { color: neutralFF }]}
+          seeMoreStyle={fontSemibold10}
           isPreview
           text={postMetadata.message.replace(HTML_TAG_REGEXP, "")}
         />

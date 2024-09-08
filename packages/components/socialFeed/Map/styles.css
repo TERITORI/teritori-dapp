@@ -29,18 +29,16 @@
 
 .marker-popup .leaflet-popup-content-wrapper {
   padding: 0;
-  background-color: rgba(135,135, 135, .2);
+  background-color: rgba(42,42, 42, .9);
   border: 1px solid rgba(255,255,255, .24);
   border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.8);
 }
 
 .marker-popup .leaflet-popup-content {
   margin: 0;
-  /*min-width: 200px;*/
 }
 
 .leaflet-popup-tip {
-  background-color: rgba(135,135, 135, .2);
-  border-bottom: 1px solid rgba(255,255,255, .24);
-  border-right: 1px solid rgba(255,255,255, .24);
+  display: none;
 }

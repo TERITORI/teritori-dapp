@@ -12,7 +12,7 @@ import { MapPostWrapper } from "@/components/socialFeed/Map/MapPosts/MapPostWrap
 import { SpacerColumn } from "@/components/spacer";
 import { useMediaPlayer } from "@/context/MediaPlayerProvider";
 import { zodTryParseJSON } from "@/utils/sanitize";
-import { errorColor } from "@/utils/style/colors";
+import { errorColor, neutralFF, withAlpha } from "@/utils/style/colors";
 import { fontSemibold10 } from "@/utils/style/fonts";
 import {
   zodSocialFeedCommonMetadata,
@@ -45,7 +45,7 @@ export const VideoMapPost: FC<{
         <BrandText style={fontSemibold10}>{title}</BrandText>
         <SpacerColumn size={0.5} />
 
-        <Separator />
+        <Separator color={withAlpha(neutralFF, 0.24)} />
         <SpacerColumn size={0.5} />
 
         {mediaToPlay ? (

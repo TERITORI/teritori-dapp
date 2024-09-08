@@ -22,7 +22,6 @@ import { View } from "react-native";
 import { LatLng } from "react-native-leaflet-view";
 
 import { Post } from "@/api/feed/v1/feed";
-import { BrandText } from "@/components/BrandText";
 import { MapProps } from "@/components/socialFeed/Map/Map.types";
 import { ArticleMapPost } from "@/components/socialFeed/Map/MapPosts/ArticleMapPost";
 import { MusicMapPost } from "@/components/socialFeed/Map/MapPosts/MusicMapPost";
@@ -40,8 +39,6 @@ import {
   getMapPostIconSVGString,
 } from "@/utils/feed/map";
 import { zodTryParseJSON } from "@/utils/sanitize";
-import { errorColor } from "@/utils/style/colors";
-import { fontSemibold10 } from "@/utils/style/fonts";
 import { PostCategory, ZodSocialFeedPostMetadata } from "@/utils/types/feed";
 
 interface MarkerPopup {
@@ -121,33 +118,17 @@ export const Map: FC<MapProps> = ({
   const markers: MarkerPopup[] = useMemo(() => {
     if (!posts) return [];
     const results: MarkerPopup[] = [];
-    posts
-      .map((post, index) => {
-        return {
-          ...post,
-          category:
-            index % 5 === 0
-              ? PostCategory.Normal
-              : index + (1 % 5) === 0
-                ? PostCategory.Article
-                : index + (2 % 5) === 0
-                  ? PostCategory.MusicAudio
-                  : index + (3 % 5) === 0
-                    ? PostCategory.Video
-                    : PostCategory.Picture,
-        };
-      })
-      .forEach((post) => {
-        const metadata = zodTryParseJSON(
-          ZodSocialFeedPostMetadata,
-          post.metadata,
-        );
-        if (!metadata?.location) return;
-        results.push({
-          position: metadata.location,
-          post,
-        });
+    posts.forEach((post, index) => {
+      const metadata = zodTryParseJSON(
+        ZodSocialFeedPostMetadata,
+        post.metadata,
+      );
+      if (!metadata?.location) return;
+      results.push({
+        position: metadata.location,
+        post,
       });
+    });
     return results;
   }, [posts]);
 
@@ -252,23 +233,27 @@ export const Map: FC<MapProps> = ({
               icon={getIcon(marker.post.category)}
               key={index}
             >
-              <Popup closeButton={false} className="marker-popup">
-                {marker.post.category === PostCategory.Normal ? (
+              {marker.post.category === PostCategory.Normal ? (
+                <Popup closeButton={false} className="marker-popup">
                   <NormalMapPost post={marker.post} />
-                ) : marker.post.category === PostCategory.MusicAudio ? (
+                </Popup>
+              ) : marker.post.category === PostCategory.MusicAudio ? (
+                <Popup closeButton={false} className="marker-popup">
                   <MusicMapPost post={marker.post} />
-                ) : marker.post.category === PostCategory.Video ? (
+                </Popup>
+              ) : marker.post.category === PostCategory.Video ? (
+                <Popup closeButton={false} className="marker-popup">
                   <VideoMapPost post={marker.post} />
-                ) : marker.post.category === PostCategory.Picture ? (
+                </Popup>
+              ) : marker.post.category === PostCategory.Picture ? (
+                <Popup closeButton={false} className="marker-popup">
                   <PictureMapPost post={marker.post} />
-                ) : marker.post.category === PostCategory.Article ? (
+                </Popup>
+              ) : marker.post.category === PostCategory.Article ? (
+                <Popup closeButton={false} className="marker-popup">
                   <ArticleMapPost post={marker.post} />
-                ) : (
-                  <BrandText style={[fontSemibold10, { color: errorColor }]}>
-                    No render for this post category
-                  </BrandText>
-                )}
-              </Popup>
+                </Popup>
+              ) : null}
             </Marker>
           ))}
         </MarkerClusterGroup>

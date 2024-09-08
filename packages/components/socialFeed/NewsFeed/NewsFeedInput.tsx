@@ -551,7 +551,7 @@ export const NewsFeedInput = React.forwardRef<
             >
               {viewWidth < BREAKPOINT_S && <SpacerColumn size={1.5} />}
 
-              <View style={{ flexDirection: "row" }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
                 {networkHasPremiumFeed && (
                   <>
                     <PremiumPostToggle

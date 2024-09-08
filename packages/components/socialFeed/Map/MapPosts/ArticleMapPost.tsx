@@ -12,6 +12,7 @@ import {
 } from "@/components/socialFeed/RichText";
 import { SpacerColumn } from "@/components/spacer";
 import { zodTryParseJSON } from "@/utils/sanitize";
+import { neutralFF, withAlpha } from "@/utils/style/colors";
 import { fontSemibold10 } from "@/utils/style/fonts";
 import {
   ZodSocialFeedArticleMetadata,
@@ -50,7 +51,7 @@ export const ArticleMapPost: FC<{
         <BrandText style={fontSemibold10}>{title}</BrandText>
         <SpacerColumn size={0.5} />
 
-        <Separator />
+        <Separator color={withAlpha(neutralFF, 0.24)} />
         <SpacerColumn size={0.5} />
 
         <BrandText style={fontSemibold10} numberOfLines={3}>

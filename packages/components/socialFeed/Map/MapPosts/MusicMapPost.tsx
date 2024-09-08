@@ -1,4 +1,4 @@
-import { FC, useRef } from "react";
+import React, { FC, useRef } from "react";
 import { View } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
@@ -9,7 +9,7 @@ import { Separator } from "@/components/separators/Separator";
 import { MapPostWrapper } from "@/components/socialFeed/Map/MapPosts/MapPostWrapper";
 import { SpacerColumn } from "@/components/spacer";
 import { zodTryParseJSON } from "@/utils/sanitize";
-import { errorColor } from "@/utils/style/colors";
+import { errorColor, neutralFF, withAlpha } from "@/utils/style/colors";
 import { fontSemibold10 } from "@/utils/style/fonts";
 import {
   zodSocialFeedCommonMetadata,
@@ -42,7 +42,7 @@ export const MusicMapPost: FC<{
         <BrandText style={fontSemibold10}>{title}</BrandText>
         <SpacerColumn size={0.5} />
 
-        <Separator />
+        <Separator color={withAlpha(neutralFF, 0.24)} />
         <SpacerColumn size={0.5} />
 
         {mediaToPlay ? (

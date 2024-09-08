@@ -45,10 +45,12 @@ export const TextRenderer = ({
   text,
   isPreview,
   style,
+  seeMoreStyle,
 }: {
   text: string;
   isPreview?: boolean;
   style?: StyleProp<TextStyle>;
+  seeMoreStyle?: StyleProp<TextStyle>;
 }) => {
   const refText = useMemo(
     () => text.replace("/generate", "🖼️").replace("/question", "❓"),
@@ -111,7 +113,7 @@ export const TextRenderer = ({
     <BrandText style={[fontSemibold14, { color: neutralA3 }, style]}>
       {formattedText}
       {isTruncateNeeded && (
-        <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+        <BrandText style={[fontSemibold14, { color: neutral77 }, seeMoreStyle]}>
           {"\n...see more"}
         </BrandText>
       )}
