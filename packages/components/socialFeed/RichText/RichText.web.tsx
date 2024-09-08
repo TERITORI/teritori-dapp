@@ -386,6 +386,7 @@ export const RichText: React.FC<RichTextProps> = ({
             onPress={onPress}
             style={[toolbarCustomButtonIconCStyle, toolbarCustomButtonCStyle]}
             disabled={isVideoUploadDisabled}
+            iconProps={{ color: neutralFF }}
           />
         )}
       </FileUploader>

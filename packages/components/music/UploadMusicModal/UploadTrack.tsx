@@ -6,9 +6,11 @@ import {
   View,
   ViewStyle,
 } from "react-native";
+import { LatLng } from "react-native-leaflet-view";
 import { useSelector } from "react-redux";
 
-import Add from "../../../../assets/icons/add-primary.svg";
+import AudioSVG from "../../../../assets/icons/audio.svg";
+import LocationRefinedSvg from "../../../../assets/icons/location-refined.svg";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useWalletControl } from "../../../context/WalletControlProvider";
 import { useFeedPosting } from "../../../hooks/feed/useFeedPosting";
@@ -43,6 +45,8 @@ import { FeedFeeText } from "../../socialFeed/FeedFeeText";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 
 import { SelectAudioVideo } from "@/components/mini/SelectAudioVideo";
+import { MapModal } from "@/components/socialFeed/modals/MapModal/MapModal";
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
 
 interface Props {
@@ -52,6 +56,10 @@ interface Props {
 const UPLOAD_ALBUM_MODAL_WIDTH = 564;
 
 export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
+  const [developerMode] = useDeveloperMode();
+  const [isMapShown, setIsMapShown] = useState(false);
+  const [location, setLocation] = useState<LatLng | undefined>();
+
   const { setToastError } = useFeedbacks();
   const selectedNetwork = useSelectedNetworkInfo();
   const selectedWallet = useSelectedWallet();
@@ -82,6 +90,8 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [localAudioFile, setLocalAudioFile] = useState<LocalFileData>();
+  const isPublishDisabled =
+    !localAudioFile?.url || !title || isLoading || !canPayForPost;
 
   const processCreateMusicAudioPost = async (
     track: SocialFeedTrackMetadata,
@@ -161,6 +171,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       title,
       description,
       audioFile: uploadedFiles[0],
+      location,
     };
     await processCreateMusicAudioPost(track);
   };
@@ -194,7 +205,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
         </View>
       </View>
 
-      <SpacerColumn size={2} />
+      <SpacerColumn size={3} />
       {localAudioFile?.url ? (
         <EditableAudioPreview
           file={localAudioFile}
@@ -214,7 +225,12 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
               onPress={onPress}
               disabled={isLoading}
             >
-              <SVG source={Add} width={20} height={20} stroke={primaryColor} />
+              <SVG
+                source={AudioSVG}
+                width={20}
+                height={20}
+                stroke={primaryColor}
+              />
               <SpacerRow size={1} />
               <BrandText style={buttonTextStyle}>Add audio</BrandText>
             </TouchableOpacity>
@@ -237,14 +253,38 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
                   paddingVertical: layout.spacing_x2,
                 }}
               >
-                <BrandText style={[fontSemibold14]}>+ Add Audio</BrandText>
+                <BrandText style={[fontSemibold14]}>Add Audio</BrandText>
               </View>
             }
           />
         </View>
       )}
-      <SpacerColumn size={2.5} />
 
+      {developerMode && (
+        <>
+          <SpacerColumn size={2.5} />
+          <TouchableOpacity
+            style={[
+              buttonContainerStyle,
+              (isPublishDisabled || isLoading) && { opacity: 0.5 },
+            ]}
+            onPress={() => setIsMapShown(true)}
+            disabled={isPublishDisabled || isLoading}
+          >
+            <SVG
+              source={LocationRefinedSvg}
+              width={20}
+              height={20}
+              stroke={!location ? primaryColor : undefined}
+              color={location ? primaryColor : undefined}
+            />
+            <SpacerRow size={1} />
+            <BrandText style={buttonTextStyle}>Handle location</BrandText>
+          </TouchableOpacity>
+        </>
+      )}
+
+      <SpacerColumn size={3} />
       <BrandText
         style={[
           fontSemibold14,
@@ -275,10 +315,8 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
           Use.
         </BrandText>
         <PrimaryButton
-          text="Upload"
-          disabled={
-            !localAudioFile?.url || !title || isLoading || !canPayForPost
-          }
+          text="Publish"
+          disabled={isPublishDisabled}
           size="SM"
           onPress={onPressUpload}
           isLoading={isLoading}
@@ -297,19 +335,29 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
           <SpacerColumn size={2} />
         </>
       )}
+
+      {isMapShown && (
+        <MapModal
+          visible
+          onClose={() => setIsMapShown(false)}
+          setLocation={setLocation}
+          location={location}
+          postCategory={postCategory}
+        />
+      )}
     </>
   );
 };
 
 const buttonContainerStyle: ViewStyle = {
-  marginTop: layout.spacing_x2_5,
+  // marginTop: layout.spacing_x2_5,
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "center",
   height: 40,
   borderRadius: 999,
   backgroundColor: neutral30,
-  marginBottom: layout.spacing_x2,
+  // marginBottom: layout.spacing_x2,
 };
 const buttonTextStyle: TextStyle = {
   ...fontSemibold14,
