@@ -46,6 +46,7 @@ message PostFilter {
   repeated string hashtags = 4;
   int32 premium_level_min = 5; // inclusive
   int32 premium_level_max = 6; // inclusive, -1 means infinity
+  string network_id = 7;
 }
 
 message PostsRequest {
@@ -62,6 +63,7 @@ message PostsWithLocationRequest {
     float east = 4;
     repeated string hashtags = 5;
     uint32 limit = 6;
+    string network_id = 7;
 }
 
 message AggregatedPost {

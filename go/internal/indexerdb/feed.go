@@ -6,7 +6,9 @@ import (
 )
 
 type Post struct {
-	Identifier           string          `gorm:"primaryKey"`
+	NetworkID       string `gorm:"primaryKey"`
+	LocalIdentifier string `gorm:"primaryKey"`
+
 	ParentPostIdentifier string          `gorm:"index"`
 	Category             uint32          `gorm:"index"`
 	IsBot                bool            `gorm:"default:false"`
@@ -22,6 +24,4 @@ type Post struct {
 	IsDeleted            bool
 	IsFree               bool
 	TipAmount            int64
-
-	NetworkID string `gorm:"index"`
 }

@@ -75,14 +75,16 @@ func main() {
 		panic(errors.Wrap(err, "failed migrate database models"))
 	}
 
-	clientql := clientql.New(network.ID, *network.TxIndexerURL, db, logger.Sugar())
+	logger.Info("instantiating client", zap.String("indexer_url", *network.TxIndexerURL))
+
+	clientql := clientql.New(*network, *network.TxIndexerURL, db, logger)
 	schedule := gocron.NewScheduler(time.UTC)
 
 	schedule.Every(2).Minutes().Do(func() {
 		logger.Info("indexing")
 		err = clientql.SyncPosts()
 		if err != nil {
-			logger.Error("failed to get names list", zap.Error(err))
+			logger.Error("failed to get posts list", zap.Error(err))
 			panic(err)
 		}
 	})

@@ -1,5 +1,5 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
@@ -136,37 +136,24 @@ export const useFetchFeed = (req: Partial<PostsRequest>) => {
 export const useFetchFeedLocation = (
   req: Partial<PostsWithLocationRequest>,
 ) => {
-  const selectedNetwork = useSelectedNetworkInfo();
-  const wallet = useSelectedWallet();
-
-  const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
-    useInfiniteQuery(
-      ["posts", selectedNetwork?.id, wallet?.address, { ...req }],
-      async () =>
-        //TODO? { pageParam = req.offset }
-        {
-          if (!selectedNetwork)
-            return Promise.resolve({
-              list: [],
-              totalCount: 0,
-              aggregations: [],
-            });
-          return fetchTeritoriFeedLocation(selectedNetwork, req);
-        },
-      {
-        // TODO? getNextPageParam: (lastPage, pages) => {},
-        staleTime: Infinity,
-        refetchOnWindowFocus: false,
-      },
-    );
-  return { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading };
+  return useQuery(
+    ["posts", req],
+    async () => {
+      const res = await fetchTeritoriFeedLocation(req);
+      return res;
+    },
+    {
+      // TODO? getNextPageParam: (lastPage, pages) => {},
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+    },
+  );
 };
 
 const fetchTeritoriFeedLocation = async (
-  selectedNetwork: NetworkInfo,
   req: Partial<PostsWithLocationRequest>,
 ): Promise<PostsWithAggregations> => {
-  const feedClient = mustGetFeedClient(selectedNetwork.id);
+  const feedClient = mustGetFeedClient(req.networkId);
   const response = await feedClient.PostsWithLocation(req);
   const list = response.posts.sort((a, b) => b.createdAt - a.createdAt);
   return {

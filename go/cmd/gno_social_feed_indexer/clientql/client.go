@@ -3,8 +3,10 @@ package clientql
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/Khan/genqlient/graphql"
@@ -18,33 +20,42 @@ import (
 type IndexerQL struct {
 	gqlClient graphql.Client
 	db        *gorm.DB
-	networkID string
-	logger    *zap.SugaredLogger
+	network   networks.GnoNetwork
+	logger    *zap.Logger
 }
 
-func New(networkID string, graphqlEndpoint string, db *gorm.DB, logger *zap.SugaredLogger) *IndexerQL {
+func New(network networks.GnoNetwork, graphqlEndpoint string, db *gorm.DB, logger *zap.Logger) *IndexerQL {
 	gqlClient := graphql.NewClient(graphqlEndpoint, nil)
-	return &IndexerQL{gqlClient: gqlClient, db: db, networkID: networkID, logger: logger}
+	return &IndexerQL{gqlClient: gqlClient, db: db, network: network, logger: logger}
 }
 
 func (client *IndexerQL) SyncPosts() error {
-	lastPost := client.getLastPost()
-	var fromBlock int
-	if lastPost != nil {
-		fromBlock = int(lastPost.CreatedAt) + 1
-	}
+	/*
+		    // FIXME: this is mixing height and timestamp, we need to redo this
+				lastPost := client.getLastPost()
+					var fromBlock int
+					if lastPost != nil {
+						fromBlock = int(lastPost.CreatedAt) + 1
+					}
+	*/
 
-	posts, err := gnoindexerql.GetPostTransactions(context.Background(), client.gqlClient, fromBlock)
+	block := 0                                    // FIXME: use cursor instead
+	pkgPath := "gno.land/r/teritori/social_feeds" // FIXME: get from network feature
+
+	client.logger.Info("fetching", zap.Int("block", block), zap.String("pkg_path", pkgPath))
+
+	posts, err := gnoindexerql.GetPostTransactions(context.Background(), client.gqlClient, block, pkgPath)
 	if err != nil {
 		return err
 	}
 
+	count := 0
 	for _, transaction := range posts.Transactions {
 		for _, post := range transaction.Messages {
 
 			data, ok := post.Value.(*gnoindexerql.GetPostTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgCall)
 			if !ok {
-				client.logger.Errorf("failed to get data from post %s", transaction.Hash)
+				client.logger.Error("failed to get data from post", zap.String("hash", transaction.Hash))
 				continue
 			}
 			post, err := client.getPostWithData(data, transaction)
@@ -56,8 +67,11 @@ func (client *IndexerQL) SyncPosts() error {
 			if err != nil {
 				return err
 			}
+
+			count += 1
 		}
 	}
+	client.logger.Info("saved posts", zap.Int("count", count))
 
 	return nil
 }
@@ -83,14 +97,20 @@ func (client *IndexerQL) getPostWithData(data *gnoindexerql.GetPostTransactionsT
 	if err != nil {
 		return indexerdb.Post{}, err
 	}
+
+	postID, err := extractPostIdentifierFromData(transaction.Response.Data)
+	if err != nil {
+		return indexerdb.Post{}, errors.Join(errors.New("failed to extra post id"), err)
+	}
+
 	post := indexerdb.Post{
-		Identifier:           fmt.Sprintf("%s-%s", data.Caller, transaction.Hash),
+		NetworkID:            client.network.ID,
+		LocalIdentifier:      postID,
 		ParentPostIdentifier: data.Args[1],
 		Category:             uint32(categoryID),
 		Metadata:             metadataJSON,
-		NetworkID:            client.networkID,
 		CreatedAt:            int64(transaction.Block_height),
-		AuthorId:             networks.UserID(data.Caller),
+		AuthorId:             client.network.UserID(data.Caller),
 	}
 
 	if len(metadata.Location) == 2 {
@@ -102,6 +122,18 @@ func (client *IndexerQL) getPostWithData(data *gnoindexerql.GetPostTransactionsT
 
 	return post, nil
 
+}
+
+func extractPostIdentifierFromData(data string) (string, error) {
+	if len(data) < 2 {
+		return "", fmt.Errorf("data too short: %q", data)
+	}
+	data = data[1:]
+	parts := strings.SplitN(data, " ", 2)
+	if len(parts) < 1 {
+		return "", fmt.Errorf("not enough parts in %q", data)
+	}
+	return parts[0], nil
 }
 
 type metadata struct {

@@ -536,9 +536,11 @@ input TransactionFilter {
   hash: String
   """
   Transaction's message to filter Transactions.
-  `message` can be configured as a filter with a transaction message's `router` and `type` and `parameters(bank / vm)`.
+  `messages` can be configured as a filter with a transaction message's `router` and `type` and `parameters(bank / vm)`.
+  `messages` is entered as an array and works exclusively.
+  ex) `messages[0] || messages[1] || messages[2]`
   """
-  message: TransactionMessageInput
+  messages: [TransactionMessageInput!]
   """
   `memo` are string information stored within a transaction.
   `memo` can be utilized to find or distinguish transactions.
@@ -591,4 +593,3 @@ input TransactionVmMessageInput {
 directive @defer(if: Boolean = true, label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 "The @specifiedBy built-in directive is used within the type system definition language to provide a scalar specification URL for specifying the behavior of custom scalar types."
 directive @specifiedBy(url: String!) on SCALAR
-

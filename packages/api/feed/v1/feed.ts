@@ -51,6 +51,7 @@ export interface PostFilter {
   premiumLevelMin: number;
   /** inclusive, -1 means infinity */
   premiumLevelMax: number;
+  networkId: string;
 }
 
 export interface PostsRequest {
@@ -67,6 +68,7 @@ export interface PostsWithLocationRequest {
   east: number;
   hashtags: string[];
   limit: number;
+  networkId: string;
 }
 
 export interface AggregatedPost {
@@ -560,7 +562,15 @@ export const Post = {
 };
 
 function createBasePostFilter(): PostFilter {
-  return { user: "", mentions: [], categories: [], hashtags: [], premiumLevelMin: 0, premiumLevelMax: 0 };
+  return {
+    user: "",
+    mentions: [],
+    categories: [],
+    hashtags: [],
+    premiumLevelMin: 0,
+    premiumLevelMax: 0,
+    networkId: "",
+  };
 }
 
 export const PostFilter = {
@@ -584,6 +594,9 @@ export const PostFilter = {
     }
     if (message.premiumLevelMax !== 0) {
       writer.uint32(48).int32(message.premiumLevelMax);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(58).string(message.networkId);
     }
     return writer;
   },
@@ -647,6 +660,13 @@ export const PostFilter = {
 
           message.premiumLevelMax = reader.int32();
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -666,6 +686,7 @@ export const PostFilter = {
       hashtags: globalThis.Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => globalThis.String(e)) : [],
       premiumLevelMin: isSet(object.premiumLevelMin) ? globalThis.Number(object.premiumLevelMin) : 0,
       premiumLevelMax: isSet(object.premiumLevelMax) ? globalThis.Number(object.premiumLevelMax) : 0,
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
     };
   },
 
@@ -689,6 +710,9 @@ export const PostFilter = {
     if (message.premiumLevelMax !== 0) {
       obj.premiumLevelMax = Math.round(message.premiumLevelMax);
     }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
     return obj;
   },
 
@@ -703,6 +727,7 @@ export const PostFilter = {
     message.hashtags = object.hashtags?.map((e) => e) || [];
     message.premiumLevelMin = object.premiumLevelMin ?? 0;
     message.premiumLevelMax = object.premiumLevelMax ?? 0;
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
@@ -814,7 +839,7 @@ export const PostsRequest = {
 };
 
 function createBasePostsWithLocationRequest(): PostsWithLocationRequest {
-  return { north: 0, south: 0, west: 0, east: 0, hashtags: [], limit: 0 };
+  return { north: 0, south: 0, west: 0, east: 0, hashtags: [], limit: 0, networkId: "" };
 }
 
 export const PostsWithLocationRequest = {
@@ -836,6 +861,9 @@ export const PostsWithLocationRequest = {
     }
     if (message.limit !== 0) {
       writer.uint32(48).uint32(message.limit);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(58).string(message.networkId);
     }
     return writer;
   },
@@ -889,6 +917,13 @@ export const PostsWithLocationRequest = {
 
           message.limit = reader.uint32();
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -906,6 +941,7 @@ export const PostsWithLocationRequest = {
       east: isSet(object.east) ? globalThis.Number(object.east) : 0,
       hashtags: globalThis.Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => globalThis.String(e)) : [],
       limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
     };
   },
 
@@ -929,6 +965,9 @@ export const PostsWithLocationRequest = {
     if (message.limit !== 0) {
       obj.limit = Math.round(message.limit);
     }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
     return obj;
   },
 
@@ -943,6 +982,7 @@ export const PostsWithLocationRequest = {
     message.east = object.east ?? 0;
     message.hashtags = object.hashtags?.map((e) => e) || [];
     message.limit = object.limit ?? 0;
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };

@@ -38,8 +38,6 @@ type GetPostTransactionsTransactionsTransaction struct {
 	Gas_wanted int `json:"gas_wanted"`
 	// The actual amount of computational effort consumed to execute this Transaction. It could be less or equal to `gas_wanted`.
 	Gas_used int `json:"gas_used"`
-	// The payload of the Transaction in a raw format, typically containing the instructions and any data necessary for execution.
-	Content_raw string `json:"content_raw"`
 	// `memo` are string information stored within a transaction.
 	// `memo` can be utilized to find or distinguish transactions.
 	// For example, when trading a specific exchange, you would utilize the memo field of the transaction.
@@ -47,6 +45,9 @@ type GetPostTransactionsTransactionsTransaction struct {
 	// The payload of a message shows the contents of the messages in a transaction.
 	// A message consists of `router`, `type`, and `value` (whose form depends on the `router` and `type`).
 	Messages []GetPostTransactionsTransactionsTransactionMessagesTransactionMessage `json:"messages"`
+	// `response` is the processing result of the transaction.
+	// It has `log`, `info`, `error`, and `data`.
+	Response GetPostTransactionsTransactionsTransactionResponse `json:"response"`
 }
 
 // GetIndex returns GetPostTransactionsTransactionsTransaction.Index, and is useful for accessing the field via an interface.
@@ -67,15 +68,17 @@ func (v *GetPostTransactionsTransactionsTransaction) GetGas_wanted() int { retur
 // GetGas_used returns GetPostTransactionsTransactionsTransaction.Gas_used, and is useful for accessing the field via an interface.
 func (v *GetPostTransactionsTransactionsTransaction) GetGas_used() int { return v.Gas_used }
 
-// GetContent_raw returns GetPostTransactionsTransactionsTransaction.Content_raw, and is useful for accessing the field via an interface.
-func (v *GetPostTransactionsTransactionsTransaction) GetContent_raw() string { return v.Content_raw }
-
 // GetMemo returns GetPostTransactionsTransactionsTransaction.Memo, and is useful for accessing the field via an interface.
 func (v *GetPostTransactionsTransactionsTransaction) GetMemo() string { return v.Memo }
 
 // GetMessages returns GetPostTransactionsTransactionsTransaction.Messages, and is useful for accessing the field via an interface.
 func (v *GetPostTransactionsTransactionsTransaction) GetMessages() []GetPostTransactionsTransactionsTransactionMessagesTransactionMessage {
 	return v.Messages
+}
+
+// GetResponse returns GetPostTransactionsTransactionsTransaction.Response, and is useful for accessing the field via an interface.
+func (v *GetPostTransactionsTransactionsTransaction) GetResponse() GetPostTransactionsTransactionsTransactionResponse {
+	return v.Response
 }
 
 // GetPostTransactionsTransactionsTransactionMessagesTransactionMessage includes the requested fields of the GraphQL type TransactionMessage.
@@ -396,31 +399,58 @@ func (v *GetPostTransactionsTransactionsTransactionMessagesTransactionMessageVal
 	return v.Typename
 }
 
+// GetPostTransactionsTransactionsTransactionResponse includes the requested fields of the GraphQL type TransactionResponse.
+// The GraphQL type's documentation follows.
+//
+// `TransactionResponse` is the processing result of the transaction.
+// It has `log`, `info`, `error`, and `data`.
+type GetPostTransactionsTransactionsTransactionResponse struct {
+	// The response data associated with the Transaction execution, if any.
+	Data string `json:"data"`
+	// The Info associated with the Transaction execution, if any.
+	Info string `json:"info"`
+	// The log value associated with the Transaction execution, if any.
+	Log string `json:"log"`
+}
+
+// GetData returns GetPostTransactionsTransactionsTransactionResponse.Data, and is useful for accessing the field via an interface.
+func (v *GetPostTransactionsTransactionsTransactionResponse) GetData() string { return v.Data }
+
+// GetInfo returns GetPostTransactionsTransactionsTransactionResponse.Info, and is useful for accessing the field via an interface.
+func (v *GetPostTransactionsTransactionsTransactionResponse) GetInfo() string { return v.Info }
+
+// GetLog returns GetPostTransactionsTransactionsTransactionResponse.Log, and is useful for accessing the field via an interface.
+func (v *GetPostTransactionsTransactionsTransactionResponse) GetLog() string { return v.Log }
+
 // __GetPostTransactionsInput is used internally by genqlient
 type __GetPostTransactionsInput struct {
-	StartBlock int `json:"StartBlock"`
+	StartBlock int    `json:"StartBlock"`
+	PkgPath    string `json:"PkgPath"`
 }
 
 // GetStartBlock returns __GetPostTransactionsInput.StartBlock, and is useful for accessing the field via an interface.
 func (v *__GetPostTransactionsInput) GetStartBlock() int { return v.StartBlock }
 
+// GetPkgPath returns __GetPostTransactionsInput.PkgPath, and is useful for accessing the field via an interface.
+func (v *__GetPostTransactionsInput) GetPkgPath() string { return v.PkgPath }
+
 func GetPostTransactions(
 	ctx context.Context,
 	client graphql.Client,
 	StartBlock int,
+	PkgPath string,
 ) (*GetPostTransactionsResponse, error) {
 	req := &graphql.Request{
 		OpName: "GetPostTransactions",
 		Query: `
-query GetPostTransactions ($StartBlock: Int!) {
-	transactions(filter: {message:{vm_param:{exec:{func:"CreatePost"}}},from_block_height:$StartBlock}) {
+query GetPostTransactions ($StartBlock: Int!, $PkgPath: String!) {
+	transactions(filter: {success:true,messages:{vm_param:{exec:{func:"CreatePost",pkg_path:$PkgPath}}},from_block_height:$StartBlock}) {
 		index
 		hash
 		success
 		block_height
 		gas_wanted
 		gas_used
-		content_raw
 		memo
 		messages {
 			typeUrl
@@ -436,11 +466,17 @@ query GetPostTransactions ($StartBlock: Int!) {
 				}
 			}
 		}
+		response {
+			data
+			info
+			log
+		}
 	}
 }
 `,
 		Variables: &__GetPostTransactionsInput{
 			StartBlock: StartBlock,
+			PkgPath:    PkgPath,
 		},
 	}
 	var err error

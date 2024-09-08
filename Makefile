@@ -70,6 +70,7 @@ packages/api/weshnet: node_modules
 .PHONY: generate.graphql
 generate.graphql:
 	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/holagql/genqlient.yaml
+	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/gnoindexerql/genqlient.yaml
 
 .PHONY: generate.graphql-thegraph
 generate.graphql-thegraph:
@@ -95,7 +96,6 @@ go/pkg/holagql/holaplex-schema.graphql:
 .PHONY: go/pkg/gnoindexerql/indexer-schema.graphql
 go/pkg/gnoindexerql/indexer-schema.graphql:
 	rover graph introspect http://localhost:8546/graphql/query > $@
-	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/gnoindexerql/genqlient.yaml
 
 .PHONY: docker.backend
 docker.backend:
