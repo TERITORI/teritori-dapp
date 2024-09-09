@@ -140,6 +140,14 @@ func (s *Sale) isOnGoing() bool {
 	return s.startTimestamp <= time.Now().Unix() && (s.endTimestamp == 0 || time.Now().Unix() < s.endTimestamp)
 }
 
+func (s *Sale) BalanceOf(addr std.Address) uint64 {
+	balance, exists := s.buyers.Get(addr.String())
+	if !exists {
+		return 0
+	}
+	return balance.(uint64)
+}
+
 func (s *Sale) buy(buyer std.Address, amount uint64, proofs []Node) {
 	sentCoins := std.GetOrigSend()
 
