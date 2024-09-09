@@ -17,7 +17,7 @@ func TestNewSale(t *testing.T) {
 		maxGoal        uint64
 		mintToken      bool
 		addr           std.Address
-		merkleRoot    string
+		merkleRoot     string
 	}
 
 	type testNewSaleExpected struct {
@@ -30,7 +30,7 @@ func TestNewSale(t *testing.T) {
 		minGoal        uint64
 		maxGoal        uint64
 		mintToken      bool
-		merkleRoot    string
+		merkleRoot     string
 	}
 
 	type testNewSale struct {
@@ -58,7 +58,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      true,
 				addr:           bob,
-				merkleRoot:    "",
+				merkleRoot:     "",
 			},
 			expected: testNewSaleExpected{
 				panic:          false,
@@ -70,7 +70,7 @@ func TestNewSale(t *testing.T) {
 				minGoal:        100,
 				maxGoal:        100,
 				mintToken:      true,
-				merkleRoot:    "",
+				merkleRoot:     "",
 			},
 		},
 		"Success without mint token": {
@@ -84,7 +84,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      false,
 				addr:           bob,
-				merkleRoot:    "",
+				merkleRoot:     "",
 			},
 			expected: testNewSaleExpected{
 				panic:          false,
@@ -96,7 +96,7 @@ func TestNewSale(t *testing.T) {
 				minGoal:        100,
 				maxGoal:        100,
 				mintToken:      false,
-				merkleRoot:    "",
+				merkleRoot:     "",
 			},
 		},
 		"Success with merkleRoot": {
@@ -110,7 +110,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      true,
 				addr:           bob,
-				merkleRoot:    "merkleRoot",
+				merkleRoot:     "merkleRoot",
 			},
 			expected: testNewSaleExpected{
 				panic:          false,
@@ -122,7 +122,7 @@ func TestNewSale(t *testing.T) {
 				minGoal:        100,
 				maxGoal:        100,
 				mintToken:      true,
-				merkleRoot:    "merkleRoot",
+				merkleRoot:     "merkleRoot",
 			},
 		},
 		"Fail with token not mintable": {
@@ -136,7 +136,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      true,
 				addr:           bob,
-				merkleRoot:    "",
+				merkleRoot:     "",
 			},
 			expected: testNewSaleExpected{
 				panic: true,
@@ -153,7 +153,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      true,
 				addr:           bob,
-				merkleRoot:    "",
+				merkleRoot:     "",
 			},
 			expected: testNewSaleExpected{
 				panic: true,
@@ -170,7 +170,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      true,
 				addr:           bob,
-				merkleRoot:    "",
+				merkleRoot:     "",
 			},
 			expected: testNewSaleExpected{
 				panic: true,
@@ -187,7 +187,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      true,
 				addr:           bob,
-				merkleRoot:    "",
+				merkleRoot:     "",
 			},
 			expected: testNewSaleExpected{
 				panic: true,
@@ -204,7 +204,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      true,
 				addr:           bob,
-				merkleRoot:    "",
+				merkleRoot:     "",
 			},
 			expected: testNewSaleExpected{
 				panic: true,
@@ -221,7 +221,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      true,
 				addr:           alice,
-				merkleRoot:    "",
+				merkleRoot:     "",
 			},
 			expected: testNewSaleExpected{
 				panic: true,
@@ -369,7 +369,7 @@ func TestBuy(t *testing.T) {
 			},
 			expected: testBuyExpected{
 				panic: true,
-			},	
+			},
 		},
 		"Limit per addr reached": {
 			input: testBuyInput{
