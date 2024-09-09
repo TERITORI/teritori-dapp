@@ -17,6 +17,7 @@ func TestNewSale(t *testing.T) {
 		maxGoal        uint64
 		mintToken      bool
 		addr           std.Address
+		merkleRoot    string
 	}
 
 	type testNewSaleExpected struct {
@@ -29,6 +30,7 @@ func TestNewSale(t *testing.T) {
 		minGoal        uint64
 		maxGoal        uint64
 		mintToken      bool
+		merkleRoot    string
 	}
 
 	type testNewSale struct {
@@ -56,6 +58,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      true,
 				addr:           bob,
+				merkleRoot:    "",
 			},
 			expected: testNewSaleExpected{
 				panic:          false,
@@ -67,6 +70,7 @@ func TestNewSale(t *testing.T) {
 				minGoal:        100,
 				maxGoal:        100,
 				mintToken:      true,
+				merkleRoot:    "",
 			},
 		},
 		"Success without mint token": {
@@ -80,6 +84,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      false,
 				addr:           bob,
+				merkleRoot:    "",
 			},
 			expected: testNewSaleExpected{
 				panic:          false,
@@ -91,6 +96,33 @@ func TestNewSale(t *testing.T) {
 				minGoal:        100,
 				maxGoal:        100,
 				mintToken:      false,
+				merkleRoot:    "",
+			},
+		},
+		"Success with merkleRoot": {
+			input: testNewSaleInput{
+				tokenName:      "TestNewSaleMintableToken",
+				startTimestamp: startTimestamp,
+				endTimestamp:   endTimestamp,
+				pricePerToken:  100,
+				limitPerAddr:   100,
+				minGoal:        100,
+				maxGoal:        100,
+				mintToken:      true,
+				addr:           bob,
+				merkleRoot:    "merkleRoot",
+			},
+			expected: testNewSaleExpected{
+				panic:          false,
+				tokenName:      "TestNewSaleMintableToken",
+				startTimestamp: startTimestamp,
+				endTimestamp:   endTimestamp,
+				pricePerToken:  100,
+				limitPerAddr:   100,
+				minGoal:        100,
+				maxGoal:        100,
+				mintToken:      true,
+				merkleRoot:    "merkleRoot",
 			},
 		},
 		"Fail with token not mintable": {
@@ -104,6 +136,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      true,
 				addr:           bob,
+				merkleRoot:    "",
 			},
 			expected: testNewSaleExpected{
 				panic: true,
@@ -120,6 +153,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      true,
 				addr:           bob,
+				merkleRoot:    "",
 			},
 			expected: testNewSaleExpected{
 				panic: true,
@@ -136,6 +170,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      true,
 				addr:           bob,
+				merkleRoot:    "",
 			},
 			expected: testNewSaleExpected{
 				panic: true,
@@ -152,6 +187,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      true,
 				addr:           bob,
+				merkleRoot:    "",
 			},
 			expected: testNewSaleExpected{
 				panic: true,
@@ -168,6 +204,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      true,
 				addr:           bob,
+				merkleRoot:    "",
 			},
 			expected: testNewSaleExpected{
 				panic: true,
@@ -184,6 +221,7 @@ func TestNewSale(t *testing.T) {
 				maxGoal:        100,
 				mintToken:      true,
 				addr:           alice,
+				merkleRoot:    "",
 			},
 			expected: testNewSaleExpected{
 				panic: true,
@@ -207,7 +245,7 @@ func TestNewSale(t *testing.T) {
 			}
 
 			std.TestSetOrigCaller(test.input.addr)
-			saleID := NewSale(test.input.tokenName, "", test.input.startTimestamp, test.input.endTimestamp, test.input.pricePerToken, test.input.limitPerAddr, test.input.minGoal, test.input.maxGoal, test.input.mintToken)
+			saleID := NewSale(test.input.tokenName, test.input.merkleRoot, test.input.startTimestamp, test.input.endTimestamp, test.input.pricePerToken, test.input.limitPerAddr, test.input.minGoal, test.input.maxGoal, test.input.mintToken)
 			sale := mustGetSale(saleID)
 
 			if !test.expected.panic {
@@ -235,6 +273,9 @@ func TestNewSale(t *testing.T) {
 				if sale.token.allowMint != test.expected.mintToken {
 					t.Errorf("Expected mintToken to be %t, got %t", test.expected.mintToken, sale.token.allowMint)
 				}
+				if sale.merkleRoot != test.expected.merkleRoot {
+					t.Errorf("Expected merkleRoot to be %s, got %s", test.expected.merkleRoot, sale.merkleRoot)
+				}
 			}
 		})
 	}
@@ -246,6 +287,7 @@ func TestBuy(t *testing.T) {
 		amount uint64
 		coins  std.Coins
 		addr   std.Address
+		proofs []Node
 	}
 
 	type testBuyExpected struct {
@@ -265,12 +307,23 @@ func TestBuy(t *testing.T) {
 
 	bob := std.Address("g126gx6p6d3da4ymef35ury6874j6kys044r7zlg")
 	alice := std.Address("g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv")
+	carol := std.Address("g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth")
+
+	leaves := []Hashable{
+		Leaf{[]byte("g126gx6p6d3da4ymef35ury6874j6kys044r7zlg")},
+		Leaf{[]byte("g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv")},
+	}
+
+	tree := NewTree(leaves)
+	root := tree.Root()
+	proofs, _ := tree.Proof(leaves[0])
 
 	std.TestSetOrigCaller(bob)
 
 	NewToken("TestBuyToken", "TestBuyToken", "image", 18, 21_000_000, 23_000_000, true, true)
+	NewToken("TestPrivateBuyToken", "TestPrivateBuyToken", "image", 18, 21_000_000, 23_000_000, true, true)
 	saleID := NewSale("TestBuyToken", "", startTimestamp, endTimestamp, 100, 15, 0, 20, true)
-	sale := mustGetSale(saleID)
+	privateSaleID := NewSale("TestPrivateBuyToken", root, startTimestamp, endTimestamp, 100, 15, 0, 20, true)
 
 	coins := std.NewCoins(std.NewCoin("ugnot", 100*10))
 	badCoin := std.NewCoins(std.NewCoin("notugnot", 100*10))
@@ -286,11 +339,37 @@ func TestBuy(t *testing.T) {
 				amount: 10,
 				coins:  coins,
 				addr:   bob,
+				proofs: nil,
 			},
 			expected: testBuyExpected{
 				panic:   false,
 				balance: 10,
 			},
+		},
+		"Success private sale": {
+			input: testBuyInput{
+				saleID: privateSaleID,
+				amount: 1,
+				coins:  coins,
+				addr:   bob,
+				proofs: proofs,
+			},
+			expected: testBuyExpected{
+				panic:   false,
+				balance: 1,
+			},
+		},
+		"Not in the tree / bad proofs": {
+			input: testBuyInput{
+				saleID: privateSaleID,
+				amount: 1,
+				coins:  coins,
+				addr:   carol,
+				proofs: proofs,
+			},
+			expected: testBuyExpected{
+				panic: true,
+			},	
 		},
 		"Limit per addr reached": {
 			input: testBuyInput{
@@ -298,6 +377,7 @@ func TestBuy(t *testing.T) {
 				amount: 10,
 				coins:  coins,
 				addr:   bob,
+				proofs: nil,
 			},
 			expected: testBuyExpected{
 				panic:   true,
@@ -310,6 +390,7 @@ func TestBuy(t *testing.T) {
 				amount: 15,
 				coins:  coins,
 				addr:   alice,
+				proofs: nil,
 			},
 			expected: testBuyExpected{
 				panic: true,
@@ -321,6 +402,7 @@ func TestBuy(t *testing.T) {
 				amount: 10,
 				coins:  emptyCoins,
 				addr:   alice,
+				proofs: nil,
 			},
 			expected: testBuyExpected{
 				panic: true,
@@ -332,6 +414,7 @@ func TestBuy(t *testing.T) {
 				amount: 10,
 				coins:  badCoin,
 				addr:   alice,
+				proofs: nil,
 			},
 			expected: testBuyExpected{
 				panic: true,
@@ -343,6 +426,7 @@ func TestBuy(t *testing.T) {
 				amount: 10,
 				coins:  manyCoins,
 				addr:   alice,
+				proofs: nil,
 			},
 			expected: testBuyExpected{
 				panic: true,
@@ -354,6 +438,7 @@ func TestBuy(t *testing.T) {
 				amount: 10,
 				coins:  notEnoughCoins,
 				addr:   alice,
+				proofs: nil,
 			},
 			expected: testBuyExpected{
 				panic: true,
@@ -365,6 +450,7 @@ func TestBuy(t *testing.T) {
 				amount: 0,
 				coins:  coins,
 				addr:   alice,
+				proofs: nil,
 			},
 			expected: testBuyExpected{
 				panic: true,
@@ -376,6 +462,7 @@ func TestBuy(t *testing.T) {
 				amount: 10,
 				coins:  tooManyCoins,
 				addr:   alice,
+				proofs: nil,
 			},
 			expected: testBuyExpected{
 				panic:   false,
@@ -396,7 +483,8 @@ func TestBuy(t *testing.T) {
 
 			std.TestSetOrigCaller(test.input.addr)
 			std.TestSetOrigSend(test.input.coins, nil)
-			Buy(test.input.saleID, test.input.amount, nil)
+			Buy(test.input.saleID, test.input.amount, test.input.proofs)
+			sale := mustGetSale(test.input.saleID)
 			if !test.expected.panic {
 				buyer, exists := sale.buyers.Get(test.input.addr.String())
 				if !exists {
