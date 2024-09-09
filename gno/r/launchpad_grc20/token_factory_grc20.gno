@@ -8,7 +8,6 @@ import (
 	"gno.land/p/demo/ownable"
 )
 
-// Maybe rename since banker contains a struct grc20.Token, could be source of confusion maybe call it Instance
 type Token struct {
 	banker         *grc20.Banker
 	admin          *ownable.Ownable
@@ -17,6 +16,8 @@ type Token struct {
 	allowMint      bool
 	allowBurn      bool
 }
+
+var _ grc20.Token = (*Token)(nil)
 
 var (
 	tokens       *avl.Tree // symbol -> token
@@ -32,10 +33,8 @@ func init() {
 }
 
 func NewToken(name, symbol, image string, decimals uint, initialSupply, totalSupplyCap uint64, allowMint, allowBurn bool) {
-	// Admin of the token is the caller
 	admin := std.PrevRealm().Addr()
 
-	// Check if token already exists in our factory
 	exists := tokens.Has(name)
 	if exists {
 		panic("this token already exists")
@@ -47,10 +46,8 @@ func NewToken(name, symbol, image string, decimals uint, initialSupply, totalSup
 		panic("decimals must be 18 or less")
 	}
 
-	// Create a new token
 	banker := grc20.NewBanker(name, symbol, decimals)
 
-	// Fee is 2.5% of initial supply
 	fee := initialSupply * 25 / 1000
 	netSupply := initialSupply - fee
 	if fee > 0 {
@@ -72,63 +69,80 @@ func NewToken(name, symbol, image string, decimals uint, initialSupply, totalSup
 	tokens.Set(name, &inst)
 }
 
-func (inst Token) Token() grc20.Token { return inst.banker.Token() }
-
-func TotalSupply(name string) uint64 {
-	inst := mustGetToken(name)
-	return inst.Token().TotalSupply()
-}
-
-func BalanceOf(name string, owner std.Address) uint64 {
-	inst := mustGetToken(name)
-	return inst.Token().BalanceOf(owner)
-}
-
-func Allowance(name string, owner, spender std.Address) uint64 {
-	inst := mustGetToken(name)
-	return inst.Token().Allowance(owner, spender)
-}
-
-func Transfer(name string, to std.Address, amount uint64) {
-	inst := mustGetToken(name)
-	checkErr(inst.Token().Transfer(to, amount))
-}
-
-func Approve(name string, spender std.Address, amount uint64) {
-	inst := mustGetToken(name)
-	checkErr(inst.Token().Approve(spender, amount))
-}
-
-func TransferFrom(name string, from, to std.Address, amount uint64) {
-	inst := mustGetToken(name)
-	checkErr(inst.Token().TransferFrom(from, to, amount))
-}
-
 func Mint(name string, to std.Address, amount uint64) {
-	inst := mustGetToken(name)
-	inst.admin.AssertCallerIsOwner()
+	token := mustGetToken(name)
+	token.admin.AssertCallerIsOwner()
 
-	if !inst.allowMint {
+	if !token.allowMint {
 		panic("minting is not allowed")
 	}
 
-	if inst.totalSupplyCap > 0 {
-		totalSupply := inst.Token().TotalSupply()
-		if totalSupply+amount > inst.totalSupplyCap {
+	if token.totalSupplyCap > 0 {
+		totalSupply := token.TotalSupply()
+		if totalSupply+amount > token.totalSupplyCap {
 			panic("minting would exceed total supply cap")
 		}
 	}
 
-	checkErr(inst.banker.Mint(to, amount))
+	checkErr(token.banker.Mint(to, amount))
 }
 
 func Burn(name string, from std.Address, amount uint64) {
-	inst := mustGetToken(name)
-	inst.admin.AssertCallerIsOwner()
-	if !inst.allowBurn {
+	token := mustGetToken(name)
+	token.admin.AssertCallerIsOwner()
+	if !token.allowBurn {
 		panic("burning is not allowed")
 	}
-	checkErr(inst.banker.Burn(from, amount))
+	checkErr(token.banker.Burn(from, amount))
+}
+
+func TotalSupply(name string) uint64 {
+	token := mustGetToken(name)
+	return token.TotalSupply()
+}
+
+func BalanceOf(name string, owner std.Address) uint64 {
+	token := mustGetToken(name)
+	return token.BalanceOf(owner)
+}
+
+func Allowance(name string, owner, spender std.Address) uint64 {
+	token := mustGetToken(name)
+	return token.Allowance(owner, spender)
+}
+
+func Transfer(name string, to std.Address, amount uint64) {
+	token := mustGetToken(name)
+	checkErr(token.Transfer(to, amount))
+}
+
+func Approve(name string, spender std.Address, amount uint64) {
+	token := mustGetToken(name)
+	checkErr(token.Approve(spender, amount))
+}
+
+func TransferFrom(name string, from, to std.Address, amount uint64) {
+	token := mustGetToken(name)
+	checkErr(token.TransferFrom(from, to, amount))
+}
+
+func (token Token) Token() grc20.Token                 { return token.banker.Token() }
+func (token Token) GetName() string                    { return token.banker.GetName() }
+func (token Token) GetSymbol() string                  { return token.banker.GetSymbol() }
+func (token Token) GetDecimals() uint                  { return token.banker.GetDecimals() }
+func (token Token) TotalSupply() uint64                { return token.Token().TotalSupply() }
+func (token Token) BalanceOf(owner std.Address) uint64 { return token.Token().BalanceOf(owner) }
+func (token Token) Transfer(to std.Address, amount uint64) error {
+	return token.Token().Transfer(to, amount)
+}
+func (token Token) Allowance(owner, spender std.Address) uint64 {
+	return token.Token().Allowance(owner, spender)
+}
+func (token Token) Approve(spender std.Address, amount uint64) error {
+	return token.Token().Approve(spender, amount)
+}
+func (token Token) TransferFrom(from, to std.Address, amount uint64) error {
+	return token.Token().TransferFrom(from, to, amount)
 }
 
 func SetFactoryVault(vault std.Address) {

@@ -34,11 +34,9 @@ func init() {
 }
 
 func NewSale(tokenName, merkleRoot string, startTimestamp, endTimestamp int64, pricePerToken, limitPerAddr, minGoal, maxGoal uint64, mintToken bool) uint64 {
-	// check if the caller is the owner of the token
 	token := mustGetToken(tokenName)
 	token.admin.AssertCallerIsOwner()
 
-	// check that the token is mintable if admin wants to mint the tokens
 	if mintToken && !token.allowMint {
 		panic("token is not mintable")
 	}
@@ -63,7 +61,6 @@ func NewSale(tokenName, merkleRoot string, startTimestamp, endTimestamp int64, p
 		panic("price per token must be greater than 0")
 	}
 
-	// Mint or transfer the max goal to the realm to be sure that the sale can distribute the tokens
 	realmAddr := std.CurrentRealm().Addr()
 	if mintToken {
 		token.banker.Mint(realmAddr, maxGoal)
@@ -102,7 +99,6 @@ func Buy(saleID, amount uint64, proofs []Node) {
 	sale.buy(buyer, amount, proofs)
 }
 
-// Finalize the sale, send the funds to the token owner if the min goal is reached and mint the tokens
 func Finalize(saleID uint64) {
 	sale := mustGetSale(saleID)
 	realmAddr := std.CurrentRealm().Addr()
@@ -203,7 +199,6 @@ func (s *Sale) buy(buyer std.Address, amount uint64, proofs []Node) {
 		banker.SendCoins(realmAddr, buyer, std.NewCoins(change))
 	}
 
-	// Set the new amount of tokens bought by the buyer, it will be send or refunded in the finalize function
 	s.buyers.Set(buyer.String(), total)
 	s.alreadySold += amount
 }

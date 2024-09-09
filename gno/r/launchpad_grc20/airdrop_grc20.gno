@@ -28,11 +28,9 @@ func init() {
 }
 
 func NewAirdrop(tokenName, merkleRoot string, amountPerAddr uint64, startTimestamp, endTimestamp int64) uint64 {
-	// check if the caller is the owner of the token
 	token := mustGetToken(tokenName)
 	token.admin.AssertCallerIsOwner()
 
-	// check that the token is mintable
 	if !token.allowMint {
 		panic("token is not mintable")
 	}
@@ -89,7 +87,6 @@ func Claim(airdropID uint64, proofs []Node) {
 	airdrop.alreadyClaimed.Set(caller.String(), true)
 }
 
-// mustGetAirdrop retrieves the information for a specific airdrop
 func mustGetAirdrop(airdropID uint64) *Airdrop {
 	airdropRaw, exists := airdrops.Get(ufmt.Sprintf("%d", airdropID))
 	if !exists {
