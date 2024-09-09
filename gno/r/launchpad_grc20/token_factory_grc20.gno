@@ -20,12 +20,14 @@ type Token struct {
 
 var (
 	tokens       *avl.Tree // symbol -> token
+	factoryAdmin *ownable.Ownable
 	factoryVault std.Address
 )
 
 // Initialize tori address as admin & vault for fees
 func init() {
 	tokens = avl.NewTree()
+	factoryAdmin = ownable.NewWithAddress(std.Address("g1ctt28t7sdyp28qzkvlfyx0hyxuz6vz7nplwm9c"))
 	factoryVault = std.Address("g1ctt28t7sdyp28qzkvlfyx0hyxuz6vz7nplwm9c")
 }
 
@@ -127,6 +129,11 @@ func Burn(name string, from std.Address, amount uint64) {
 		panic("burning is not allowed")
 	}
 	checkErr(inst.banker.Burn(from, amount))
+}
+
+func SetFactoryVault(vault std.Address) {
+	factoryAdmin.AssertCallerIsOwner()
+	factoryVault = vault
 }
 
 func mustGetToken(name string) *Token {
