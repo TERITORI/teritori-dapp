@@ -207,7 +207,7 @@ func TestNewSale(t *testing.T) {
 			}
 
 			std.TestSetOrigCaller(test.input.addr)
-			saleID := NewSale(test.input.tokenName, test.input.startTimestamp, test.input.endTimestamp, test.input.pricePerToken, test.input.limitPerAddr, test.input.minGoal, test.input.maxGoal, test.input.mintToken)
+			saleID := NewSale(test.input.tokenName, "", test.input.startTimestamp, test.input.endTimestamp, test.input.pricePerToken, test.input.limitPerAddr, test.input.minGoal, test.input.maxGoal, test.input.mintToken)
 			sale := mustGetSale(saleID)
 
 			if !test.expected.panic {
@@ -269,7 +269,7 @@ func TestBuy(t *testing.T) {
 	std.TestSetOrigCaller(bob)
 
 	NewToken("TestBuyToken", "TestBuyToken", "image", 18, 21_000_000, 23_000_000, true, true)
-	saleID := NewSale("TestBuyToken", startTimestamp, endTimestamp, 100, 15, 0, 20, true)
+	saleID := NewSale("TestBuyToken", "", startTimestamp, endTimestamp, 100, 15, 0, 20, true)
 	sale := mustGetSale(saleID)
 
 	coins := std.NewCoins(std.NewCoin("ugnot", 100*10))
@@ -396,7 +396,7 @@ func TestBuy(t *testing.T) {
 
 			std.TestSetOrigCaller(test.input.addr)
 			std.TestSetOrigSend(test.input.coins, nil)
-			Buy(test.input.saleID, test.input.amount)
+			Buy(test.input.saleID, test.input.amount, nil)
 			if !test.expected.panic {
 				buyer, exists := sale.buyers.Get(test.input.addr.String())
 				if !exists {
@@ -441,9 +441,9 @@ func TestFinalize(t *testing.T) {
 	std.TestSetOrigCaller(bob)
 
 	NewToken("TestFinalizeToken", "TestFinalizeToken", "image", 18, 21_000_000, 23_000_000, true, true)
-	saleID := NewSale("TestFinalizeToken", startTimestamp, endTimestamp, 100, 15, 10, 20, true)
-	onGoingSaleID := NewSale("TestFinalizeToken", startTimestamp, onGoingEndTimestamp, 100, 15, 10, 20, true)
-	onGoingSaleID2 := NewSale("TestFinalizeToken", startTimestamp, onGoingEndTimestamp2, 100, 15, 10, 20, true)
+	saleID := NewSale("TestFinalizeToken", "", startTimestamp, endTimestamp, 100, 15, 10, 20, true)
+	onGoingSaleID := NewSale("TestFinalizeToken", "", startTimestamp, onGoingEndTimestamp, 100, 15, 10, 20, true)
+	onGoingSaleID2 := NewSale("TestFinalizeToken", "", startTimestamp, onGoingEndTimestamp2, 100, 15, 10, 20, true)
 
 	tests := testFinalizeTestTable{
 		"Success with 0 tokens sold": {
@@ -535,7 +535,7 @@ func TestFinalize(t *testing.T) {
 			std.TestSetOrigSend(coins, nil)
 
 			if test.input.amount != 0 {
-				Buy(test.input.saleID, test.input.amount)
+				Buy(test.input.saleID, test.input.amount, nil)
 			}
 
 			std.TestSkipHeights(test.input.skipHeights)

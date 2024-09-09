@@ -20,6 +20,7 @@ type Sale struct {
 	owner          std.Address
 	buyers         *avl.Tree // address -> amount
 	finalized      bool
+	merkleRoot     string
 }
 
 var (
@@ -32,7 +33,7 @@ func init() {
 	nextSaleID = 1
 }
 
-func NewSale(tokenName string, startTimestamp, endTimestamp int64, pricePerToken, limitPerAddr, minGoal, maxGoal uint64, mintToken bool) uint64 {
+func NewSale(tokenName, merkleRoot string, startTimestamp, endTimestamp int64, pricePerToken, limitPerAddr, minGoal, maxGoal uint64, mintToken bool) uint64 {
 	// check if the caller is the owner of the token
 	token := mustGetToken(tokenName)
 	token.admin.AssertCallerIsOwner()
@@ -84,6 +85,7 @@ func NewSale(tokenName string, startTimestamp, endTimestamp int64, pricePerToken
 		owner:          owner,
 		buyers:         avl.NewTree(),
 		finalized:      false,
+		merkleRoot:     merkleRoot,
 	}
 
 	saleID := nextSaleID
@@ -94,10 +96,10 @@ func NewSale(tokenName string, startTimestamp, endTimestamp int64, pricePerToken
 	return saleID
 }
 
-func Buy(saleID, amount uint64) {
+func Buy(saleID, amount uint64, proofs []Node) {
 	buyer := std.GetOrigCaller()
 	sale := mustGetSale(saleID)
-	sale.buy(buyer, amount)
+	sale.buy(buyer, amount, proofs)
 }
 
 // Finalize the sale, send the funds to the token owner if the min goal is reached and mint the tokens
@@ -142,8 +144,19 @@ func (s *Sale) isOnGoing() bool {
 	return s.startTimestamp <= time.Now().Unix() && (s.endTimestamp == 0 || time.Now().Unix() < s.endTimestamp)
 }
 
-func (s *Sale) buy(buyer std.Address, amount uint64) {
+func (s *Sale) buy(buyer std.Address, amount uint64, proofs []Node) {
 	sentCoins := std.GetOrigSend()
+
+	if s.merkleRoot != "" {
+		if len(proofs) == 0 {
+			panic("This sale is private, please provide merkle proofs")
+		}
+
+		leaf := Leaf{[]byte(buyer.String())}
+		if !Verify(s.merkleRoot, leaf, proofs) {
+			panic("This sale is private, invalid merkle proofs")
+		}
+	}
 
 	if len(sentCoins) == 0 {
 		panic("Please send amount * price per token gnot coins, price per token is " + ufmt.Sprintf("%d", s.pricePerToken) + " $GNOT")
