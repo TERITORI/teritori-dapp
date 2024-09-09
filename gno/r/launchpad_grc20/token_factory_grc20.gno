@@ -135,12 +135,15 @@ func (token Token) BalanceOf(owner std.Address) uint64 { return token.Token().Ba
 func (token Token) Transfer(to std.Address, amount uint64) error {
 	return token.Token().Transfer(to, amount)
 }
+
 func (token Token) Allowance(owner, spender std.Address) uint64 {
 	return token.Token().Allowance(owner, spender)
 }
+
 func (token Token) Approve(spender std.Address, amount uint64) error {
 	return token.Token().Approve(spender, amount)
 }
+
 func (token Token) TransferFrom(from, to std.Address, amount uint64) error {
 	return token.Token().TransferFrom(from, to, amount)
 }
