@@ -3,6 +3,7 @@ package launchpad_grc20
 import (
 	"fmt"
 	"std"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -146,6 +147,89 @@ func TestNewAirdrop(t *testing.T) {
 	}
 }
 
+func TestClaimJSON(t *testing.T) {
+	type testClaimJSONInput struct {
+		airdropID uint64
+		proofs    string
+	}
+
+	type testClaimJSONExpected struct {
+		panic bool
+	}
+
+	type testClaimJSON struct {
+		input    testClaimJSONInput
+		expected testClaimJSONExpected
+	}
+
+	type testClaimJSONTestTable = map[string]testClaimJSON
+
+	leaves := []Hashable{
+		Leaf{[]byte("g126gx6p6d3da4ymef35ury6874j6kys044r7zlg")},
+		Leaf{[]byte("g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv")},
+	}
+
+	tree := NewTree(leaves)
+	root := tree.Root()
+	proofs, _ := tree.Proof(leaves[0])
+
+	erroneousProofs := []Node{
+		{[]byte("badproof")},
+		{[]byte("badproof")},
+	}
+
+	now := time.Now().Unix()
+	NewToken("TestClaimJSONAirDropToken", "TestClaimJSONAirDropToken", "noimage", 18, 21_000_000, 23_000_000, true, true)
+	airdropID := NewAirdrop("TestClaimJSONAirDropToken", root, 100, 0, 0)
+
+	// JSON proofs should be in format: "[{\"hash\":\"hash1\", "pos\":0}, {\"hash\":\"hash2\", "pos\":1}]"
+	proofsJSON := "["
+	for i, proof := range proofs {
+		proofsJSON += fmt.Sprintf("{\"hash\":\"%s\", \"pos\":\"%s\"}", proof.Hash(), strconv.Itoa(int(proof.position)))
+		if i != len(proofs)-1 {
+			proofsJSON += ", "
+		}
+	}
+	proofsJSON += "]"
+	t.Log(proofsJSON)
+
+	tests := testClaimJSONTestTable{
+		"Success": {
+			input: testClaimJSONInput{
+				airdropID: airdropID,
+				proofs:    proofsJSON,
+			},
+			expected: testClaimJSONExpected{
+				panic: false,
+			},
+		},
+		"Bad JSON format": {
+			input: testClaimJSONInput{
+				airdropID: airdropID,
+				proofs:    "badjson",
+			},
+			expected: testClaimJSONExpected{
+				panic: true,
+			},
+		},
+	}
+
+	for testName, test := range tests {
+		t.Run(testName, func(t *testing.T) {
+			if test.expected.panic {
+				defer func() {
+					if r := recover(); r == nil {
+						t.Errorf("Expected panic, got none")
+					}
+				}()
+			}
+
+			std.TestSetOrigCaller(std.Address("g126gx6p6d3da4ymef35ury6874j6kys044r7zlg"))
+			ClaimJSON(test.input.airdropID, test.input.proofs)
+		})
+	}
+}
+
 func TestClaim(t *testing.T) {
 	type testClaimInput struct {
 		airdropID uint64
@@ -180,6 +264,7 @@ func TestClaim(t *testing.T) {
 	}
 
 	now := time.Now().Unix()
+	std.TestSetOrigCaller(std.Address("g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv"))
 	NewToken("TestClaimAirDropToken", "TestClaimAirDropToken", "noimage", 18, 21_000_000, 23_000_000, true, true)
 	notStartedAirDropID := NewAirdrop("TestClaimAirDropToken", root, 100, now+100, now+200)
 	airdropID := NewAirdrop("TestClaimAirDropToken", root, 100, 0, 0)

@@ -1,11 +1,14 @@
 package launchpad_grc20
 
 import (
+	"encoding/hex"
 	"std"
 	"time"
 
 	"gno.land/p/demo/avl"
+	"gno.land/p/demo/json"
 	"gno.land/p/demo/ufmt"
+	"gno.land/p/teritori/jsonutil"
 )
 
 type Airdrop struct {
@@ -63,6 +66,28 @@ func NewAirdrop(tokenName, merkleRoot string, amountPerAddr uint64, startTimesta
 	airdrops.Set(ufmt.Sprintf("%d", airdropID), &airdrop)
 
 	return airdropID
+}
+
+func ClaimJSON(airdropID uint64, proofsJSON string) {
+	nodes, err := json.Unmarshal([]byte(proofsJSON))
+	if err != nil {
+		panic("invalid json proofs")
+	}
+	vals := nodes.MustArray()
+	proofs := make([]Node, 0, len(vals))
+	for _, val := range vals {
+		obj := val.MustObject()
+		data, err := hex.DecodeString(obj["hash"].MustString())
+		if err != nil {
+			panic("invalid hex encoded hash")
+		}
+		node := Node{
+			hash:     data,
+			position: jsonutil.MustUint8(obj["pos"]),
+		}
+		proofs = append(proofs, node)
+	}
+	Claim(airdropID, proofs)
 }
 
 func Claim(airdropID uint64, proofs []Node) {
