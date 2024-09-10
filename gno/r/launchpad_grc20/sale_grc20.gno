@@ -93,6 +93,33 @@ func NewSale(tokenName, merkleRoot string, startTimestamp, endTimestamp int64, p
 	return saleID
 }
 
+func BuyJSON(saleID, amount uint64, proofsJSON string) {
+	if proofsJSON != "" {
+		proofs, err := json.Unmarshal([]byte(proofsJSON))
+		if err != nil {
+			panic("invalid json proofs")
+		}
+
+		vals := nodes.MustArray()
+		proofs := make([]Node, 0, len(vals))
+		for _, val := range vals {
+			obj := val.MustObject()
+			data, err := hex.DecodeString(obj["hash"].MustString())
+			if err != nil {
+				panic("invalid hex encoded hash")
+			}
+			node := Node{
+				hash:     data,
+				position: jsonutil.MustUint8(obj["pos"]),
+			}
+			proofs = append(proofs, node)
+		}
+		Buy(saleID, amount, proofs)
+		return
+	}
+	Buy(saleID, amount, nil)
+}
+
 func Buy(saleID, amount uint64, proofs []Node) {
 	buyer := std.GetOrigCaller()
 	sale := mustGetSale(saleID)
