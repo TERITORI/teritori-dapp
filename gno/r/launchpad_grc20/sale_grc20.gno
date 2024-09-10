@@ -1,11 +1,14 @@
 package launchpad_grc20
 
 import (
+	"encoding/hex"
 	"std"
 	"time"
 
 	"gno.land/p/demo/avl"
+	"gno.land/p/demo/json"
 	"gno.land/p/demo/ufmt"
+	"gno.land/p/teritori/jsonutil"
 )
 
 type Sale struct {
@@ -95,7 +98,7 @@ func NewSale(tokenName, merkleRoot string, startTimestamp, endTimestamp int64, p
 
 func BuyJSON(saleID, amount uint64, proofsJSON string) {
 	if proofsJSON != "" {
-		proofs, err := json.Unmarshal([]byte(proofsJSON))
+		nodes, err := json.Unmarshal([]byte(proofsJSON))
 		if err != nil {
 			panic("invalid json proofs")
 		}
