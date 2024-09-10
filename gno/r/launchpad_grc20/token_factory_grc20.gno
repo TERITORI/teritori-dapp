@@ -19,6 +19,8 @@ type Token struct {
 
 var _ grc20.Token = (*Token)(nil)
 
+var lastTokensIDcreated = []string{}
+
 var (
 	tokens       *avl.Tree // symbol -> token
 	factoryAdmin *ownable.Ownable
@@ -67,6 +69,11 @@ func NewToken(name, symbol, image string, decimals uint, initialSupply, totalSup
 	}
 
 	tokens.Set(name, &inst)
+
+	if len(lastTokensIDcreated) == 5 {
+		lastTokensIDcreated = lastTokensIDcreated[:4]
+	}
+	lastTokensIDcreated = append([]string{name}, lastTokensIDcreated...)
 }
 
 func Mint(name string, to std.Address, amount uint64) {
