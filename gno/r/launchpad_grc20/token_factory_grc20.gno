@@ -6,6 +6,7 @@ import (
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/grc/grc20"
 	"gno.land/p/demo/ownable"
+	"gno.land/p/demo/seqid"
 )
 
 type Token struct {
@@ -15,8 +16,8 @@ type Token struct {
 	totalSupplyCap uint64
 	allowMint      bool
 	allowBurn      bool
-	AirdropsIDs    []uint64
-	SalesIDs       []uint64
+	AirdropsIDs    []seqid.ID
+	SalesIDs       []seqid.ID
 }
 
 var _ grc20.Token = (*Token)(nil)
@@ -68,8 +69,8 @@ func NewToken(name, symbol, image string, decimals uint, initialSupply, totalSup
 		totalSupplyCap: totalSupplyCap,
 		allowMint:      allowMint,
 		allowBurn:      allowBurn,
-		AirdropsIDs:    []uint64{},
-		SalesIDs:       []uint64{},
+		AirdropsIDs:    []seqid.ID{},
+		SalesIDs:       []seqid.ID{},
 	}
 
 	tokens.Set(name, &inst)

@@ -191,7 +191,6 @@ func TestClaimJSON(t *testing.T) {
 		}
 	}
 	proofsJSON += "]"
-	t.Log(proofsJSON)
 
 	tests := testClaimJSONTestTable{
 		"Success": {

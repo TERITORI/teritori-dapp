@@ -7,6 +7,7 @@ import (
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/json"
+	"gno.land/p/demo/seqid"
 	"gno.land/p/demo/ufmt"
 	"gno.land/p/teritori/jsonutil"
 )
@@ -28,7 +29,7 @@ type Sale struct {
 
 var (
 	sales      *avl.Tree // sale ID -> sale
-	nextSaleID uint64
+	nextSaleID seqid.ID
 )
 
 func init() {
@@ -88,13 +89,12 @@ func NewSale(tokenName, merkleRoot string, startTimestamp, endTimestamp int64, p
 		merkleRoot:     merkleRoot,
 	}
 
-	saleID := nextSaleID
+	saleID := nextSaleID.Next()
 	token.SalesIDs = append(token.SalesIDs, saleID)
-	nextSaleID++
 
-	sales.Set(ufmt.Sprintf("%d", saleID), &sale)
+	sales.Set(saleID.String(), &sale)
 
-	return saleID
+	return uint64(saleID)
 }
 
 func BuyJSON(saleID, amount uint64, proofsJSON string) {
@@ -160,7 +160,8 @@ func Finalize(saleID uint64) {
 }
 
 func mustGetSale(saleID uint64) *Sale {
-	sale, exists := sales.Get(ufmt.Sprintf("%d", saleID))
+	id := seqid.ID(saleID)
+	sale, exists := sales.Get(id.String())
 	if !exists {
 		panic("sale not found")
 	}

@@ -87,7 +87,7 @@ func renderTokenDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 
 	res.Write("## List of Airdrops\n")
 	for _, id := range token.AirdropsIDs {
-		airdrop := mustGetAirdrop(id)
+		airdrop := mustGetAirdrop(uint64(id))
 		res.Write(ufmt.Sprintf("### Airdrop #%d\n", id))
 		res.Write(ufmt.Sprintf("#### Merkle Root: %s\n", airdrop.merkleRoot))
 		if airdrop.startTimestamp > 0 {
@@ -103,7 +103,7 @@ func renderTokenDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 
 	res.Write("## List of Sales\n")
 	for _, id := range token.SalesIDs {
-		sale := mustGetSale(id)
+		sale := mustGetSale(uint64(id))
 		res.Write(ufmt.Sprintf("### Sale #%d\n", id))
 		res.Write(ufmt.Sprintf("#### Price per token: %d $GNOT\n", sale.pricePerToken))
 		res.Write(ufmt.Sprintf("#### Limit per address: %d $%s\n", sale.limitPerAddr, token.banker.GetSymbol()))

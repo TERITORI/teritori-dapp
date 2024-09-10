@@ -7,7 +7,7 @@ import (
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/json"
-	"gno.land/p/demo/ufmt"
+	"gno.land/p/demo/seqid"
 	"gno.land/p/teritori/jsonutil"
 )
 
@@ -22,12 +22,12 @@ type Airdrop struct {
 
 var (
 	airdrops      *avl.Tree // airdrop ID -> airdrop
-	nextAirdropID uint64
+	nextAirdropID seqid.ID
 )
 
 func init() {
 	airdrops = avl.NewTree()
-	nextAirdropID = 1
+	nextAirdropID = 0
 }
 
 func NewAirdrop(tokenName, merkleRoot string, amountPerAddr uint64, startTimestamp, endTimestamp int64) uint64 {
@@ -60,13 +60,12 @@ func NewAirdrop(tokenName, merkleRoot string, amountPerAddr uint64, startTimesta
 		alreadyClaimed: avl.NewTree(),
 	}
 
-	airdropID := nextAirdropID
+	airdropID := nextAirdropID.Next()
 	token.AirdropsIDs = append(token.AirdropsIDs, airdropID)
-	nextAirdropID++
 
-	airdrops.Set(ufmt.Sprintf("%d", airdropID), &airdrop)
+	airdrops.Set(airdropID.String(), &airdrop)
 
-	return airdropID
+	return uint64(airdropID)
 }
 
 func ClaimJSON(airdropID uint64, proofsJSON string) {
@@ -114,7 +113,8 @@ func Claim(airdropID uint64, proofs []Node) {
 }
 
 func mustGetAirdrop(airdropID uint64) *Airdrop {
-	airdropRaw, exists := airdrops.Get(ufmt.Sprintf("%d", airdropID))
+	id := seqid.ID(airdropID)
+	airdropRaw, exists := airdrops.Get(id.String())
 	if !exists {
 		panic("airdrop not found")
 	}
