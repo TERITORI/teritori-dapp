@@ -15,6 +15,8 @@ type Token struct {
 	totalSupplyCap uint64
 	allowMint      bool
 	allowBurn      bool
+	AirdropsIDs    []uint64
+	SalesIDs       []uint64
 }
 
 var _ grc20.Token = (*Token)(nil)
@@ -66,6 +68,8 @@ func NewToken(name, symbol, image string, decimals uint, initialSupply, totalSup
 		totalSupplyCap: totalSupplyCap,
 		allowMint:      allowMint,
 		allowBurn:      allowBurn,
+		AirdropsIDs:    []uint64{},
+		SalesIDs:       []uint64{},
 	}
 
 	tokens.Set(name, &inst)

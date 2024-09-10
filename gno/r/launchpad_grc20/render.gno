@@ -58,6 +58,7 @@ func renderTokenPage(res *mux.ResponseWriter, req *mux.Request) {
 		res.Write(ufmt.Sprintf("#### Admin: %s\n\n", token.admin.Owner().String()))
 		res.Write(ufmt.Sprintf("> Link: [:token/%s](launchpad_grc20:token/%s)\n\n", tokenIDs, tokenIDs))
 	}
+	renderFooter(res, "")
 }
 
 func renderTokenDetailPage(res *mux.ResponseWriter, req *mux.Request) {
@@ -83,6 +84,35 @@ func renderTokenDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 	} else {
 		res.Write("#### Burnable: false\n\n")
 	}
+
+	res.Write("## List of Airdrops\n")
+	for _, id := range token.AirdropsIDs {
+		airdrop := mustGetAirdrop(id)
+		res.Write(ufmt.Sprintf("### Airdrop #%d\n", id))
+		res.Write(ufmt.Sprintf("#### Merkle Root: %s\n", airdrop.merkleRoot))
+		if airdrop.startTimestamp > 0 {
+			res.Write(ufmt.Sprintf("#### Start Date: %s\n", time.Unix(airdrop.startTimestamp, 0).Format("2006-01-02 15:04:05")))
+		}
+		if airdrop.endTimestamp > 0 {
+			res.Write(ufmt.Sprintf("#### End Date: %s\n", time.Unix(airdrop.endTimestamp, 0).Format("2006-01-02 15:04:05")))
+		}
+		res.Write(ufmt.Sprintf("#### Amount to claim per address: %d\n", airdrop.amountPerAddr))
+		res.Write(ufmt.Sprintf("#### Total addresses claimed: %d\n\n", airdrop.alreadyClaimed.Size()))
+		res.Write(ufmt.Sprintf("> Link: [:airdrop/%d](launchpad_grc20:airdrop/%d)\n\n", token.AirdropsIDs, token.AirdropsIDs))
+	}
+
+	res.Write("## List of Sales\n")
+	for _, id := range token.SalesIDs {
+		sale := mustGetSale(id)
+		res.Write(ufmt.Sprintf("### Sale #%d\n", id))
+		res.Write(ufmt.Sprintf("#### Price per token: %d $GNOT\n", sale.pricePerToken))
+		res.Write(ufmt.Sprintf("#### Limit per address: %d $%s\n", sale.limitPerAddr, token.banker.GetSymbol()))
+		res.Write(ufmt.Sprintf("#### Min goal: %d $GNOT\n", sale.minGoal))
+		res.Write(ufmt.Sprintf("#### Max goal: %d $GNOT\n", sale.maxGoal))
+		res.Write(ufmt.Sprintf("#### Already sold: %d $GNOT\n\n", sale.alreadySold))
+		res.Write(ufmt.Sprintf("> Link: [:sale/%d](launchpad_grc20:sale/%d)\n\n", token.SalesIDs, token.SalesIDs))
+	}
+	renderFooter(res, "../")
 }
 
 func renderTokenBalancePage(res *mux.ResponseWriter, req *mux.Request) {
@@ -93,6 +123,7 @@ func renderTokenBalancePage(res *mux.ResponseWriter, req *mux.Request) {
 
 	res.Write("# 🪙 Token Balance 🪙\n")
 	res.Write(ufmt.Sprintf("### 📍 Address: %s\n ### 🏦 Balance: %d %s\n", address, balance, token.banker.GetSymbol()))
+	renderFooter(res, "../../")
 }
 
 func renderAirdropPage(res *mux.ResponseWriter, req *mux.Request) {
@@ -105,7 +136,7 @@ func renderAirdropPage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write("To participate in an airdrop, your addresses have to be included in the whitelist. Then you can claim your tokens.\n")
 	res.Write("For more detailed information about a specific airdrop, including eligibility criteria and distribution details, visit the page ``:airdrop/{id}``, replacing ``{id}`` with the airdrop's unique identifier.\n")
 	res.Write("## 5 last airdrops created\n")
-	for i := nextAirdropID - 1; i > nextAirdropID-6; i-- {
+	for i := int(nextAirdropID) - 1; i > int(nextAirdropID)-6; i-- {
 		if i < 1 {
 			break
 		}
@@ -127,6 +158,9 @@ func renderAirdropPage(res *mux.ResponseWriter, req *mux.Request) {
 		res.Write(ufmt.Sprintf("#### Total addresses claimed: %d\n\n", airdrop.alreadyClaimed.Size()))
 		res.Write(ufmt.Sprintf("> Link: [:airdrop/%d](launchpad_grc20:airdrop/%d)\n\n", i, i))
 	}
+
+	res.Write(ufmt.Sprintf("### A total of %d airdrops have been created\n", nextAirdropID-1))
+	renderFooter(res, "")
 }
 
 func renderAirdropDetailPage(res *mux.ResponseWriter, req *mux.Request) {
@@ -157,6 +191,7 @@ func renderAirdropDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write("## Claim Instructions\n")
 	res.Write("To try to claim your tokens, call the claim function with the airdrop ID and the proof of your address.\n")
 	res.Write("If you are eligible, you will receive the tokens in your wallet.\n")
+	renderFooter(res, "../")
 }
 
 func renderAirdropClaimCheckPage(res *mux.ResponseWriter, req *mux.Request) {
@@ -176,6 +211,7 @@ func renderAirdropClaimCheckPage(res *mux.ResponseWriter, req *mux.Request) {
 	} else {
 		res.Write("### Address not yet claimed or not eligible\n")
 	}
+	renderFooter(res, "../")
 }
 
 func renderSalePage(res *mux.ResponseWriter, req *mux.Request) {
@@ -189,7 +225,7 @@ func renderSalePage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write("For more detailed information about a specific sale, including the price per token, sale limits, and goals, visit the page ``:sale/{id}``, replacing ``{id}`` with the sale's unique identifier.\n")
 
 	res.Write("## 5 last sales created\n")
-	for i := nextSaleID - 1; i > nextSaleID-6; i-- {
+	for i := int(nextSaleID - 1); i > int(nextSaleID)-6; i-- {
 		if i < 1 {
 			break
 		}
@@ -219,6 +255,8 @@ func renderSalePage(res *mux.ResponseWriter, req *mux.Request) {
 		res.Write(ufmt.Sprintf("#### Already sold: %d $GNOT\n\n", sale.alreadySold))
 		res.Write(ufmt.Sprintf("> Link: [:sale/%d](launchpad_grc20:sale/%d)\n\n", i, i))
 	}
+	res.Write(ufmt.Sprintf("### A total of %d sales have been created\n", nextSaleID-1))
+	renderFooter(res, "")
 }
 
 func renderSaleDetailPage(res *mux.ResponseWriter, req *mux.Request) {
@@ -256,6 +294,7 @@ func renderSaleDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write("## Buy Instructions\n")
 	res.Write("To participate in the sale, call the buy function with the sale ID and the amount of tokens you want to buy.\n")
 	res.Write("If the sale is ongoing and you meet the criteria, you will receive the tokens in your wallet.\n")
+	renderFooter(res, "../")
 }
 
 func renderSaleBalancePage(res *mux.ResponseWriter, req *mux.Request) {
@@ -272,10 +311,25 @@ func renderSaleBalancePage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write(ufmt.Sprintf("### 📍 Address: %s\n ### 🏦 Balance (Tokens from this sale only): %d %s\n", address, balance, sale.token.banker.GetSymbol()))
 
 	res.Write("> ⚠️ *The tokens will be transfered or refunded after the sale ends depending if the sale reached the min goal or not* ⚠️\n")
+	renderFooter(res, "../../")
 }
 
 func renderHomePage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write("# Welcome to the GRC20 Launchpad\n This is a platform for launching GRC20 tokens and managing airdrops.\n You can create a new token, mint and burn tokens, and create airdrops and sales periods. \n\n## Available Actions\n- [:token](launchpad_grc20:token)\n- [:airdrop](launchpad_grc20:airdrop)\n- [:sale](launchpad_grc20:sale)\n\n\n*Note: An enhanced user interface is available on [Teritori](https://teritori.com/)*\n")
+}
+
+func renderFooter(res *mux.ResponseWriter, prefixPath string) {
+	res.Write("\n\n---\n\n")
+	res.Write("## Links\n")
+	res.Write(ufmt.Sprintf("- [Home](%slaunchpad_grc20)\n", prefixPath))
+	res.Write(ufmt.Sprintf("- [Tokens](%slaunchpad_grc20:token)\n", prefixPath))
+	res.Write(ufmt.Sprintf("- [Airdrops](%slaunchpad_grc20:airdrop)\n", prefixPath))
+	res.Write(ufmt.Sprintf("- [Sales](%slaunchpad_grc20:sale)\n", prefixPath))
+	res.Write(ufmt.Sprintf("\n\n---\n\n"))
+	res.Write("## About\n")
+	res.Write("This page was generated using the Gno Chain Launchpad GRC20 module.\n")
+	res.Write("For more information, visit the [Gno Chain documentation](https://gno.land/docs/).\n")
+	res.Write("You can experience the full power of the launchpad on [teritori.com](https://teritori.com/).\n")
 }
 
 func Render(path string) string {

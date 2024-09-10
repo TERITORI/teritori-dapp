@@ -61,6 +61,7 @@ func NewAirdrop(tokenName, merkleRoot string, amountPerAddr uint64, startTimesta
 	}
 
 	airdropID := nextAirdropID
+	token.AirdropsIDs = append(token.AirdropsIDs, airdropID)
 	nextAirdropID++
 
 	airdrops.Set(ufmt.Sprintf("%d", airdropID), &airdrop)

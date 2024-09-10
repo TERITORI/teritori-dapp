@@ -89,6 +89,7 @@ func NewSale(tokenName, merkleRoot string, startTimestamp, endTimestamp int64, p
 	}
 
 	saleID := nextSaleID
+	token.SalesIDs = append(token.SalesIDs, saleID)
 	nextSaleID++
 
 	sales.Set(ufmt.Sprintf("%d", saleID), &sale)
