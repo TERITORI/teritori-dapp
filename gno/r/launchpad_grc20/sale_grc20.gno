@@ -7,6 +7,7 @@ import (
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/json"
+	"gno.land/p/demo/merkle"
 	"gno.land/p/demo/seqid"
 	"gno.land/p/demo/ufmt"
 	"gno.land/p/teritori/jsonutil"
@@ -105,14 +106,14 @@ func BuyJSON(saleID, amount uint64, proofsJSON string) {
 		}
 
 		vals := nodes.MustArray()
-		proofs := make([]Node, 0, len(vals))
+		proofs := make([]merkle.Node, 0, len(vals))
 		for _, val := range vals {
 			obj := val.MustObject()
 			data, err := hex.DecodeString(obj["hash"].MustString())
 			if err != nil {
 				panic("invalid hex encoded hash")
 			}
-			node := Node{
+			node := merkle.Node{
 				hash:     data,
 				position: jsonutil.MustUint8(obj["pos"]),
 			}
@@ -124,7 +125,7 @@ func BuyJSON(saleID, amount uint64, proofsJSON string) {
 	Buy(saleID, amount, nil)
 }
 
-func Buy(saleID, amount uint64, proofs []Node) {
+func Buy(saleID, amount uint64, proofs []merkle.Node) {
 	buyer := std.GetOrigCaller()
 	sale := mustGetSale(saleID)
 	sale.buy(buyer, amount, proofs)
@@ -180,7 +181,7 @@ func (s *Sale) BalanceOf(addr std.Address) uint64 {
 	return balance.(uint64)
 }
 
-func (s *Sale) buy(buyer std.Address, amount uint64, proofs []Node) {
+func (s *Sale) buy(buyer std.Address, amount uint64, proofs []merkle.Node) {
 	sentCoins := std.GetOrigSend()
 
 	if s.merkleRoot != "" {
@@ -189,7 +190,7 @@ func (s *Sale) buy(buyer std.Address, amount uint64, proofs []Node) {
 		}
 
 		leaf := Leaf{[]byte(buyer.String())}
-		if !Verify(s.merkleRoot, leaf, proofs) {
+		if !merkle.Verify(s.merkleRoot, leaf, proofs) {
 			panic("This sale is private, invalid merkle proofs")
 		}
 	}

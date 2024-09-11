@@ -159,7 +159,7 @@ func renderAirdropPage(res *mux.ResponseWriter, req *mux.Request) {
 		res.Write(ufmt.Sprintf("> Link: [:airdrop/%d](launchpad_grc20:airdrop/%d)\n\n", i, i))
 	}
 
-	res.Write(ufmt.Sprintf("### A total of %d airdrops have been created\n", nextAirdropID-1))
+	res.Write(ufmt.Sprintf("### A total of %d airdrops have been created\n", uint64(nextSaleID)))
 	renderFooter(res, "")
 }
 
@@ -255,7 +255,7 @@ func renderSalePage(res *mux.ResponseWriter, req *mux.Request) {
 		res.Write(ufmt.Sprintf("#### Already sold: %d $GNOT\n\n", sale.alreadySold))
 		res.Write(ufmt.Sprintf("> Link: [:sale/%d](launchpad_grc20:sale/%d)\n\n", i, i))
 	}
-	res.Write(ufmt.Sprintf("### A total of %d sales have been created\n", nextSaleID-1))
+	res.Write(ufmt.Sprintf("### A total of %d sales have been created\n", uint64(nextSaleID)))
 	renderFooter(res, "")
 }
 

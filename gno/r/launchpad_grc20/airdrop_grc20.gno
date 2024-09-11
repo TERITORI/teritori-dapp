@@ -7,6 +7,7 @@ import (
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/json"
+	"gno.land/p/demo/merkle"
 	"gno.land/p/demo/seqid"
 	"gno.land/p/teritori/jsonutil"
 )
@@ -74,14 +75,14 @@ func ClaimJSON(airdropID uint64, proofsJSON string) {
 		panic("invalid json proofs")
 	}
 	vals := nodes.MustArray()
-	proofs := make([]Node, 0, len(vals))
+	proofs := make([]merkle.Node, 0, len(vals))
 	for _, val := range vals {
 		obj := val.MustObject()
 		data, err := hex.DecodeString(obj["hash"].MustString())
 		if err != nil {
 			panic("invalid hex encoded hash")
 		}
-		node := Node{
+		node := merkle.Node{
 			hash:     data,
 			position: jsonutil.MustUint8(obj["pos"]),
 		}
@@ -90,7 +91,7 @@ func ClaimJSON(airdropID uint64, proofsJSON string) {
 	Claim(airdropID, proofs)
 }
 
-func Claim(airdropID uint64, proofs []Node) {
+func Claim(airdropID uint64, proofs []merkle.Node) {
 	airdrop := mustGetAirdrop(airdropID)
 	caller := std.PrevRealm().Addr()
 
@@ -103,7 +104,7 @@ func Claim(airdropID uint64, proofs []Node) {
 	}
 
 	leaf := Leaf{[]byte(caller.String())}
-	if !Verify(airdrop.merkleRoot, leaf, proofs) {
+	if !merkle.Verify(airdrop.merkleRoot, leaf, proofs) {
 		panic("invalid proof")
 	}
 

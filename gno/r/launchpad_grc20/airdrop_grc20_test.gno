@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"testing"
 	"time"
+
+	"gno.land/p/demo/merkle"
 )
 
 func TestNewAirdrop(t *testing.T) {
@@ -164,16 +166,16 @@ func TestClaimJSON(t *testing.T) {
 
 	type testClaimJSONTestTable = map[string]testClaimJSON
 
-	leaves := []Hashable{
+	leaves := []merkle.Hashable{
 		Leaf{[]byte("g126gx6p6d3da4ymef35ury6874j6kys044r7zlg")},
 		Leaf{[]byte("g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv")},
 	}
 
-	tree := NewTree(leaves)
+	tree := merkle.NewTree(leaves)
 	root := tree.Root()
 	proofs, _ := tree.Proof(leaves[0])
 
-	erroneousProofs := []Node{
+	erroneousProofs := []merkle.Node{
 		{[]byte("badproof")},
 		{[]byte("badproof")},
 	}
@@ -182,10 +184,11 @@ func TestClaimJSON(t *testing.T) {
 	NewToken("TestClaimJSONAirDropToken", "TestClaimJSONAirDropToken", "noimage", 18, 21_000_000, 23_000_000, true, true)
 	airdropID := NewAirdrop("TestClaimJSONAirDropToken", root, 100, 0, 0)
 
-	// JSON proofs should be in format: "[{\"hash\":\"hash1\", "pos\":0}, {\"hash\":\"hash2\", "pos\":1}]"
+	// since we use gnoland/p/demo/merkle, we cannot use the unexported proof.position field, so i put 0 as a placeholder
+	// it means that this test only works for the first leaf in the tree
 	proofsJSON := "["
 	for i, proof := range proofs {
-		proofsJSON += fmt.Sprintf("{\"hash\":\"%s\", \"pos\":\"%s\"}", proof.Hash(), strconv.Itoa(int(proof.position)))
+		proofsJSON += fmt.Sprintf("{\"hash\":\"%s\", \"pos\":\"%s\"}", proof.Hash(), "0")
 		if i != len(proofs)-1 {
 			proofsJSON += ", "
 		}
@@ -233,7 +236,7 @@ func TestClaim(t *testing.T) {
 	type testClaimInput struct {
 		airdropID uint64
 		addr      std.Address
-		proofs    []Node
+		proofs    []merkle.Node
 	}
 
 	type testClaimExpected struct {
@@ -248,16 +251,16 @@ func TestClaim(t *testing.T) {
 
 	type testClaimTestTable = map[string]testClaim
 
-	leaves := []Hashable{
+	leaves := []merkle.Hashable{
 		Leaf{[]byte("g126gx6p6d3da4ymef35ury6874j6kys044r7zlg")},
 		Leaf{[]byte("g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv")},
 	}
 
-	tree := NewTree(leaves)
+	tree := merkle.NewTree(leaves)
 	root := tree.Root()
 	proofs, _ := tree.Proof(leaves[0])
 
-	erroneousProofs := []Node{
+	erroneousProofs := []merkle.Node{
 		{[]byte("badproof")},
 		{[]byte("badproof")},
 	}

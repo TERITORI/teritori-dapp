@@ -4,6 +4,8 @@ import (
 	"std"
 	"testing"
 	"time"
+
+	"gno.land/p/demo/merkle"
 )
 
 func TestNewSale(t *testing.T) {
@@ -287,7 +289,7 @@ func TestBuy(t *testing.T) {
 		amount uint64
 		coins  std.Coins
 		addr   std.Address
-		proofs []Node
+		proofs []merkle.Node
 	}
 
 	type testBuyExpected struct {
@@ -309,12 +311,12 @@ func TestBuy(t *testing.T) {
 	alice := std.Address("g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv")
 	carol := std.Address("g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth")
 
-	leaves := []Hashable{
+	leaves := []merkle.Hashable{
 		Leaf{[]byte("g126gx6p6d3da4ymef35ury6874j6kys044r7zlg")},
 		Leaf{[]byte("g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv")},
 	}
 
-	tree := NewTree(leaves)
+	tree := merkle.NewTree(leaves)
 	root := tree.Root()
 	proofs, _ := tree.Proof(leaves[0])
 
