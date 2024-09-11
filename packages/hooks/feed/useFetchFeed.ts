@@ -7,8 +7,8 @@ import useSelectedWallet from "../useSelectedWallet";
 import {
   AggregatedPost,
   Post,
-  PostsWithLocationRequest,
   PostsRequest,
+  PostsWithLocationRequest,
 } from "@/api/feed/v1/feed";
 import {
   GnoNetworkInfo,
@@ -35,14 +35,6 @@ export type PostsList = {
 
 export const combineFetchFeedPages = (pages: PostsList[]) =>
   pages.reduce((acc: Post[], page) => [...acc, ...(page?.list || [])], []);
-
-export const combineFetchFeedAggregationsPages = (
-  pages: PostsWithAggregations[],
-) =>
-  pages.reduce(
-    (acc: AggregatedPost[], page) => [...acc, ...(page?.aggregations || [])],
-    [],
-  );
 
 const fetchTeritoriFeed = async (
   selectedNetwork: NetworkInfo,
@@ -138,13 +130,11 @@ export const useFetchFeedLocation = (
   req: Partial<PostsWithLocationRequest>,
 ) => {
   return useQuery(
-    ["posts", req],
+    ["postsWithLocation", req],
     async () => {
-      const res = await fetchTeritoriFeedLocation(req);
-      return res;
+      return await fetchTeritoriFeedLocation(req);
     },
     {
-      // TODO? getNextPageParam: (lastPage, pages) => {},
       staleTime: Infinity,
       refetchOnWindowFocus: false,
     },

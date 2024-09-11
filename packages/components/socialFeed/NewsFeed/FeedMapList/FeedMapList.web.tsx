@@ -14,11 +14,7 @@ import { HeatmapLayer } from "react-leaflet-heatmap-layer-v3/lib";
 import { View } from "react-native";
 
 import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
-import {
-  combineFetchFeedAggregationsPages,
-  combineFetchFeedPages,
-  useFetchFeedLocation,
-} from "@/hooks/feed/useFetchFeed";
+import { useFetchFeedLocation } from "@/hooks/feed/useFetchFeed";
 import {
   getMapPostIconColorRgba,
   getMapPostIconSVGString,
@@ -61,22 +57,14 @@ const getIcon = (postCategory: PostCategory) => {
 
 const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
   const [bounds, setBounds] = useState<L.LatLngBounds | null>(null);
-  //TODO: Handle loading, limit, etc
   const { data } = useFetchFeedLocation({
     north: bounds?.getNorth(),
     south: bounds?.getSouth(),
     west: bounds?.getWest(),
     east: bounds?.getEast(),
-    limit: 100,
   });
-  const posts = useMemo(
-    () => (data ? combineFetchFeedPages(data.pages) : []),
-    [data],
-  );
-  const aggregatedPosts = useMemo(
-    () => (data ? combineFetchFeedAggregationsPages(data.pages) : []),
-    [data],
-  );
+  const posts = data?.list;
+  const aggregatedPosts = data?.aggregations;
 
   const markers: MarkerPopup[] = useMemo(() => {
     if (!posts) return [];
