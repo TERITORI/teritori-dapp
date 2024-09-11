@@ -48,15 +48,17 @@ func renderTokenPage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write("## Usage\n")
 	res.Write("You can create your own token by referring to the help section in the documentation and using the NewToken function.\nAfter creating your token, you can manage it easily through the provided interface.\nTo view details of any token created by this factory, simply visit the page ``:token/{name}``, replacing ``{name}`` with the token's name.\n")
 
-	res.Write("## 5 last tokens created\n")
+	if len(lastTokensIDcreated) > 0 {
+		res.Write("## Last tokens created\n")
 
-	for _, tokenIDs := range lastTokensIDcreated {
-		token := mustGetToken(tokenIDs)
-		res.Write(ufmt.Sprintf("### Name: %s - Symbol: %s\n", token.banker.GetName(), token.banker.GetSymbol()))
-		res.Write(ufmt.Sprintf("#### Total Supply: %d %s\n", token.banker.TotalSupply(), token.banker.GetSymbol()))
-		res.Write(ufmt.Sprintf("#### Decimals: %d\n", token.banker.GetDecimals()))
-		res.Write(ufmt.Sprintf("#### Admin: %s\n\n", token.admin.Owner().String()))
-		res.Write(ufmt.Sprintf("> Link: [:token/%s](launchpad_grc20:token/%s)\n\n", tokenIDs, tokenIDs))
+		for _, tokenIDs := range lastTokensIDcreated {
+			token := mustGetToken(tokenIDs)
+			res.Write(ufmt.Sprintf("### Name: %s - Symbol: %s\n", token.banker.GetName(), token.banker.GetSymbol()))
+			res.Write(ufmt.Sprintf("#### Total Supply: %d %s\n", token.banker.TotalSupply(), token.banker.GetSymbol()))
+			res.Write(ufmt.Sprintf("#### Decimals: %d\n", token.banker.GetDecimals()))
+			res.Write(ufmt.Sprintf("#### Admin: %s\n\n", token.admin.Owner().String()))
+			res.Write(ufmt.Sprintf("> Link: [:token/%s](launchpad_grc20:token/%s)\n\n", tokenIDs, tokenIDs))
+		}
 	}
 	renderFooter(res, "")
 }
@@ -135,31 +137,33 @@ func renderAirdropPage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write("You can create a new airdrop by referring to the help section in the documentation and using the NewAirdrop function.\n")
 	res.Write("To participate in an airdrop, your addresses have to be included in the whitelist. Then you can claim your tokens.\n")
 	res.Write("For more detailed information about a specific airdrop, including eligibility criteria and distribution details, visit the page ``:airdrop/{id}``, replacing ``{id}`` with the airdrop's unique identifier.\n")
-	res.Write("## 5 last airdrops created\n")
-	for i := int(nextAirdropID) - 1; i > int(nextAirdropID)-6; i-- {
-		if i < 1 {
-			break
+	if uint64(nextAirdropID) > 0 {
+		res.Write("## Last airdrops created\n")
+		for i := int(nextAirdropID); i > int(nextAirdropID)-5; i-- {
+			if i < 1 {
+				break
+			}
+			airdrop := mustGetAirdrop(uint64(i))
+			res.Write(ufmt.Sprintf("### Airdrop #%d\n", i))
+			res.Write(ufmt.Sprintf("#### Token: %s\n", airdrop.token.banker.GetName()))
+			if airdrop.isOnGoing() {
+				res.Write("#### Status: Ongoing\n")
+			} else {
+				res.Write("#### Status: Ended\n")
+			}
+			if airdrop.startTimestamp > 0 {
+				res.Write(ufmt.Sprintf("#### Start Date: %s\n", time.Unix(airdrop.startTimestamp, 0).Format("2006-01-02 15:04:05")))
+			}
+			if airdrop.endTimestamp > 0 {
+				res.Write(ufmt.Sprintf("#### End Date: %s\n", time.Unix(airdrop.endTimestamp, 0).Format("2006-01-02 15:04:05")))
+			}
+			res.Write(ufmt.Sprintf("#### Amount to claim per address: %d\n", airdrop.amountPerAddr))
+			res.Write(ufmt.Sprintf("#### Total addresses claimed: %d\n\n", airdrop.alreadyClaimed.Size()))
+			res.Write(ufmt.Sprintf("> Link: [:airdrop/%d](launchpad_grc20:airdrop/%d)\n\n", i, i))
 		}
-		airdrop := mustGetAirdrop(uint64(i))
-		res.Write(ufmt.Sprintf("### Airdrop #%d\n", i))
-		res.Write(ufmt.Sprintf("#### Token: %s\n", airdrop.token.banker.GetName()))
-		if airdrop.isOnGoing() {
-			res.Write("#### Status: Ongoing\n")
-		} else {
-			res.Write("#### Status: Ended\n")
-		}
-		if airdrop.startTimestamp > 0 {
-			res.Write(ufmt.Sprintf("#### Start Date: %s\n", time.Unix(airdrop.startTimestamp, 0).Format("2006-01-02 15:04:05")))
-		}
-		if airdrop.endTimestamp > 0 {
-			res.Write(ufmt.Sprintf("#### End Date: %s\n", time.Unix(airdrop.endTimestamp, 0).Format("2006-01-02 15:04:05")))
-		}
-		res.Write(ufmt.Sprintf("#### Amount to claim per address: %d\n", airdrop.amountPerAddr))
-		res.Write(ufmt.Sprintf("#### Total addresses claimed: %d\n\n", airdrop.alreadyClaimed.Size()))
-		res.Write(ufmt.Sprintf("> Link: [:airdrop/%d](launchpad_grc20:airdrop/%d)\n\n", i, i))
 	}
 
-	res.Write(ufmt.Sprintf("### A total of %d airdrops have been created\n", uint64(nextSaleID)))
+	res.Write(ufmt.Sprintf("### A total of %d airdrops have been created\n", uint64(nextAirdropID)))
 	renderFooter(res, "")
 }
 
@@ -224,36 +228,38 @@ func renderSalePage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write("To participate in a token sale, you can buy tokens at the specified price during the sale period. if the sale if private your addr have to be included in the whitelist\n")
 	res.Write("For more detailed information about a specific sale, including the price per token, sale limits, and goals, visit the page ``:sale/{id}``, replacing ``{id}`` with the sale's unique identifier.\n")
 
-	res.Write("## 5 last sales created\n")
-	for i := int(nextSaleID - 1); i > int(nextSaleID)-6; i-- {
-		if i < 1 {
-			break
+	if uint64(nextSaleID) > 0 {
+		res.Write("## Last sales created\n")
+		for i := int(nextSaleID); i > int(nextSaleID)-5; i-- {
+			if i < 1 {
+				break
+			}
+			sale := mustGetSale(uint64(i))
+			res.Write(ufmt.Sprintf("### Sale #%d\n", i))
+			res.Write(ufmt.Sprintf("#### Token: %s\n", sale.token.banker.GetName()))
+			if sale.isOnGoing() {
+				res.Write("#### Status: Ongoing\n")
+			} else {
+				res.Write("#### Status: Not Started or Ended\n")
+			}
+			if sale.startTimestamp > 0 {
+				res.Write(ufmt.Sprintf("#### Start Date: %s\n", time.Unix(sale.startTimestamp, 0).Format("2006-01-02 15:04:05")))
+			}
+			if sale.endTimestamp > 0 {
+				res.Write(ufmt.Sprintf("#### End Date: %s\n", time.Unix(sale.endTimestamp, 0).Format("2006-01-02 15:04:05")))
+			}
+			if sale.merkleRoot != "" {
+				res.Write("#### Sale is private\n")
+			} else {
+				res.Write("#### Sale is public\n")
+			}
+			res.Write(ufmt.Sprintf("#### Price per token: %d $GNOT\n", sale.pricePerToken))
+			res.Write(ufmt.Sprintf("#### Limit per address: %d $%s\n", sale.limitPerAddr, sale.token.banker.GetSymbol()))
+			res.Write(ufmt.Sprintf("#### Min goal: %d $GNOT\n", sale.minGoal))
+			res.Write(ufmt.Sprintf("#### Max goal: %d $GNOT\n", sale.maxGoal))
+			res.Write(ufmt.Sprintf("#### Already sold: %d $GNOT\n\n", sale.alreadySold))
+			res.Write(ufmt.Sprintf("> Link: [:sale/%d](launchpad_grc20:sale/%d)\n\n", i, i))
 		}
-		sale := mustGetSale(uint64(i))
-		res.Write(ufmt.Sprintf("### Sale #%d\n", i))
-		res.Write(ufmt.Sprintf("#### Token: %s\n", sale.token.banker.GetName()))
-		if sale.isOnGoing() {
-			res.Write("#### Status: Ongoing\n")
-		} else {
-			res.Write("#### Status: Not Started or Ended\n")
-		}
-		if sale.startTimestamp > 0 {
-			res.Write(ufmt.Sprintf("#### Start Date: %s\n", time.Unix(sale.startTimestamp, 0).Format("2006-01-02 15:04:05")))
-		}
-		if sale.endTimestamp > 0 {
-			res.Write(ufmt.Sprintf("#### End Date: %s\n", time.Unix(sale.endTimestamp, 0).Format("2006-01-02 15:04:05")))
-		}
-		if sale.merkleRoot != "" {
-			res.Write("#### Sale is private\n")
-		} else {
-			res.Write("#### Sale is public\n")
-		}
-		res.Write(ufmt.Sprintf("#### Price per token: %d $GNOT\n", sale.pricePerToken))
-		res.Write(ufmt.Sprintf("#### Limit per address: %d $%s\n", sale.limitPerAddr, sale.token.banker.GetSymbol()))
-		res.Write(ufmt.Sprintf("#### Min goal: %d $GNOT\n", sale.minGoal))
-		res.Write(ufmt.Sprintf("#### Max goal: %d $GNOT\n", sale.maxGoal))
-		res.Write(ufmt.Sprintf("#### Already sold: %d $GNOT\n\n", sale.alreadySold))
-		res.Write(ufmt.Sprintf("> Link: [:sale/%d](launchpad_grc20:sale/%d)\n\n", i, i))
 	}
 	res.Write(ufmt.Sprintf("### A total of %d sales have been created\n", uint64(nextSaleID)))
 	renderFooter(res, "")

@@ -173,6 +173,7 @@ func TestClaimJSON(t *testing.T) {
 
 	tree := merkle.NewTree(leaves)
 	root := tree.Root()
+	t.Logf("Root: %s", root)
 	proofs, _ := tree.Proof(leaves[0])
 
 	erroneousProofs := []merkle.Node{
@@ -192,6 +193,7 @@ func TestClaimJSON(t *testing.T) {
 		}
 	}
 	proofsJSON += "]"
+	t.Logf("Proofs JSON: %s", proofsJSON)
 
 	tests := testClaimJSONTestTable{
 		"Success": {

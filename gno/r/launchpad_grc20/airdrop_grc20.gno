@@ -28,7 +28,7 @@ var (
 
 func init() {
 	airdrops = avl.NewTree()
-	nextAirdropID = 0
+	nextAirdropID = seqid.ID(0)
 }
 
 func NewAirdrop(tokenName, merkleRoot string, amountPerAddr uint64, startTimestamp, endTimestamp int64) uint64 {

@@ -35,7 +35,6 @@ var (
 
 func init() {
 	sales = avl.NewTree()
-	nextSaleID = 1
 }
 
 func NewSale(tokenName, merkleRoot string, startTimestamp, endTimestamp int64, pricePerToken, limitPerAddr, minGoal, maxGoal uint64, mintToken bool) uint64 {
