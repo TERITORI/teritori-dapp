@@ -68,6 +68,7 @@ export interface PostsWithLocationRequest {
   east: number;
   hashtags: string[];
   limit: number;
+  networkId: string;
 }
 
 export interface AggregatedPost {
@@ -838,7 +839,7 @@ export const PostsRequest = {
 };
 
 function createBasePostsWithLocationRequest(): PostsWithLocationRequest {
-  return { north: 0, south: 0, west: 0, east: 0, hashtags: [], limit: 0 };
+  return { north: 0, south: 0, west: 0, east: 0, hashtags: [], limit: 0, networkId: "" };
 }
 
 export const PostsWithLocationRequest = {
@@ -860,6 +861,9 @@ export const PostsWithLocationRequest = {
     }
     if (message.limit !== 0) {
       writer.uint32(48).uint32(message.limit);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(58).string(message.networkId);
     }
     return writer;
   },
@@ -913,6 +917,13 @@ export const PostsWithLocationRequest = {
 
           message.limit = reader.uint32();
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -930,6 +941,7 @@ export const PostsWithLocationRequest = {
       east: isSet(object.east) ? globalThis.Number(object.east) : 0,
       hashtags: globalThis.Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => globalThis.String(e)) : [],
       limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
     };
   },
 
@@ -953,6 +965,9 @@ export const PostsWithLocationRequest = {
     if (message.limit !== 0) {
       obj.limit = Math.round(message.limit);
     }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
     return obj;
   },
 
@@ -967,6 +982,7 @@ export const PostsWithLocationRequest = {
     message.east = object.east ?? 0;
     message.hashtags = object.hashtags?.map((e) => e) || [];
     message.limit = object.limit ?? 0;
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };
