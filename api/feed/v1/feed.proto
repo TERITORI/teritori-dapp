@@ -63,6 +63,7 @@ message PostsWithLocationRequest {
     float east = 4;
     repeated string hashtags = 5;
     uint32 limit = 6;
+    string network_id = 7;
 }
 
 message AggregatedPost {

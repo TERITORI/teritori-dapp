@@ -62,7 +62,13 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
           />
         );
     }
-  }, [params?.tab, params?.locationToCenter, isMobile, developerMode, defaultFeedRequest]);
+  }, [
+    params?.tab,
+    params?.locationToCenter,
+    isMobile,
+    developerMode,
+    defaultFeedRequest,
+  ]);
 
   return (
     <ScreenContainer

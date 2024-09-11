@@ -28,11 +28,7 @@ import { MusicMapPost } from "@/components/socialFeed/Map/MapPosts/MusicMapPost"
 import { NormalMapPost } from "@/components/socialFeed/Map/MapPosts/NormalMapPost";
 import { PictureMapPost } from "@/components/socialFeed/Map/MapPosts/PictureMapPost";
 import { VideoMapPost } from "@/components/socialFeed/Map/MapPosts/VideoMapPost";
-import {
-  combineFetchFeedAggregationsPages,
-  combineFetchFeedPages,
-  useFetchFeedLocation,
-} from "@/hooks/feed/useFetchFeed";
+import { useFetchFeedLocation } from "@/hooks/feed/useFetchFeed";
 import {
   DEFAULT_MAP_POSITION,
   getMapPostIconColorRgba,
@@ -106,14 +102,9 @@ export const Map: FC<MapProps> = ({
     west: bounds?.getWest(),
     east: bounds?.getEast(),
   });
-  const posts = useMemo(
-    () => (data ? combineFetchFeedPages(data.pages) : []),
-    [data],
-  );
-  const aggregatedPosts = useMemo(
-    () => (data ? combineFetchFeedAggregationsPages(data.pages) : []),
-    [data],
-  );
+  const posts = data?.list;
+  const aggregatedPosts = data?.aggregations;
+
   const markers: MarkerPopup[] = useMemo(() => {
     if (!posts) return [];
     const results: MarkerPopup[] = [];
