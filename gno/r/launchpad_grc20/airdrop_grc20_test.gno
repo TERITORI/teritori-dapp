@@ -184,11 +184,9 @@ func TestClaimJSON(t *testing.T) {
 	NewToken("TestClaimJSONAirDropToken", "TestClaimJSONAirDropToken", "noimage", 18, 21_000_000, 23_000_000, true, true)
 	airdropID := NewAirdrop("TestClaimJSONAirDropToken", root, 100, 0, 0)
 
-	// since we use gnoland/p/demo/merkle, we cannot use the unexported proof.position field, so i put 0 as a placeholder
-	// it means that this test only works for the first leaf in the tree
 	proofsJSON := "["
 	for i, proof := range proofs {
-		proofsJSON += fmt.Sprintf("{\"hash\":\"%s\", \"pos\":\"%s\"}", proof.Hash(), "0")
+		proofsJSON += fmt.Sprintf("{\"hash\":\"%s\", \"pos\":\"%s\"}", proof.GetHexEncodedHash(), strconv.Itoa(int(proof.Position)))
 		if i != len(proofs)-1 {
 			proofsJSON += ", "
 		}

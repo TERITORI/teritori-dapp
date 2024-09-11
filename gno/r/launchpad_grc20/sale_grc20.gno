@@ -114,8 +114,8 @@ func BuyJSON(saleID, amount uint64, proofsJSON string) {
 				panic("invalid hex encoded hash")
 			}
 			node := merkle.Node{
-				hash:     data,
-				position: jsonutil.MustUint8(obj["pos"]),
+				Hash:     data,
+				Position: jsonutil.MustUint8(obj["pos"]),
 			}
 			proofs = append(proofs, node)
 		}
