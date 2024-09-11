@@ -651,7 +651,6 @@ export const NewsFeedInput = React.forwardRef<
                             !!formValues.files?.length ||
                             !!formValues.gifs?.length
                           }
-                          iconProps={{ color: neutralFF }}
                         />
                       )}
                     </FileUploader>
