@@ -116,9 +116,9 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 		Select(`
 			p1.*,
 			(
-				SELECT COUNT(p2.identifier) AS sub_post_length
+				SELECT COUNT(p2.local_identifier) AS sub_post_length
 				FROM posts p2
-				WHERE p2.parent_post_identifier = p1.identifier
+				WHERE p2.parent_post_identifier = p1.local_identifier AND p2.network_id = p1.network_id
 			)
 		`)
 
