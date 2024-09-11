@@ -16,6 +16,7 @@ import { NewsFeed } from "@/components/socialFeed/NewsFeed/NewsFeed";
 import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
 import { ScreenFC } from "@/utils/navigation";
 
@@ -23,6 +24,11 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
   useForceNetworkSelection(params?.network);
   const isMobile = useIsMobile();
   const [developerMode] = useDeveloperMode();
+  const selectedNetworkId = useSelectedNetworkId();
+
+  const defaultFeedRequest = useMemo(() => {
+    return getDefaultFeedRequest(selectedNetworkId);
+  }, [selectedNetworkId]);
 
   const feedContent = useMemo(() => {
     switch (params?.tab) {
@@ -54,7 +60,7 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
           />
         );
     }
-  }, [params?.tab, isMobile, developerMode]);
+  }, [params?.tab, isMobile, developerMode, defaultFeedRequest]);
 
   return (
     <ScreenContainer
@@ -71,8 +77,11 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
   );
 };
 
-const defaultFeedRequest: Partial<PostsRequest> = {
+const getDefaultFeedRequest: (networkId: string) => Partial<PostsRequest> = (
+  networkId,
+) => ({
   filter: {
+    networkId,
     categories: [],
     user: "",
     mentions: [],
@@ -82,4 +91,4 @@ const defaultFeedRequest: Partial<PostsRequest> = {
   },
   limit: 10,
   offset: 0,
-};
+});

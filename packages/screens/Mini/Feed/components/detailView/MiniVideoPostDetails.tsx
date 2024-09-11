@@ -81,6 +81,7 @@ export const MiniVideoPostDetails = ({ post, refetchPost }: Props) => {
 
   const userVideosFeedRequest: Partial<PostsRequest> = {
     filter: {
+      networkId: post.networkId,
       categories: [PostCategory.Video],
       user: localPost.authorId,
       mentions: [],
@@ -94,6 +95,7 @@ export const MiniVideoPostDetails = ({ post, refetchPost }: Props) => {
 
   const allVideosFeedRequest: Partial<PostsRequest> = {
     filter: {
+      networkId: post.networkId,
       categories: [PostCategory.Video],
       user: "",
       mentions: [],

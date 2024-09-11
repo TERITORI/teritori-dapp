@@ -9,20 +9,21 @@ import { ScreenContainer } from "@/components/ScreenContainer";
 import { NewsFeed } from "@/components/socialFeed/NewsFeed/NewsFeed";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
+import { DeepPartial } from "@/utils/typescript";
 import { UppTabKeys } from "@/utils/upp";
 
 export const MentionsPostsUPPScreen: FC<UppTabScreenProps> = ({
   userId,
   screenContainerOtherProps,
 }) => {
-  const [, userAddress] = parseUserId(userId);
+  const [userNetwork, userAddress] = parseUserId(userId);
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(userId);
 
-  const feedRequestMentionsPosts: Partial<PostsRequest> = useMemo(() => {
+  const feedRequestMentionsPosts: DeepPartial<PostsRequest> = useMemo(() => {
     return {
       filter: {
-        user: "",
+        networkId: userNetwork?.id,
         mentions: userInfo?.metadata.tokenId
           ? // The user can be mentioned by his NS name OR his address, so we use both in this filter
             [`@${userAddress}`, `@${userInfo?.metadata.tokenId}`]
@@ -36,7 +37,7 @@ export const MentionsPostsUPPScreen: FC<UppTabScreenProps> = ({
       limit: 10,
       offset: 0,
     };
-  }, [userInfo?.metadata.tokenId, userAddress]);
+  }, [userNetwork?.id, userInfo?.metadata.tokenId, userAddress]);
 
   const Header = useCallback(
     () => <UPPHeader userId={userId} selectedTab={UppTabKeys.mentionsPosts} />,

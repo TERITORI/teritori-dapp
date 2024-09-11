@@ -21,12 +21,13 @@ import { BrandText } from "../BrandText";
 import { GridList } from "../layout/GridList";
 
 import { Spinner } from "@/components/Spinner";
+import { DeepPartial } from "@/utils/typescript";
 
 const minCardWidth = 261;
 
 export const FeedVideosList: React.FC<{
   title: string;
-  req: Partial<PostsRequest>;
+  req: DeepPartial<PostsRequest>;
   allowUpload?: boolean;
   style?: StyleProp<ViewStyle>;
 }> = ({ title, req, allowUpload, style }) => {
