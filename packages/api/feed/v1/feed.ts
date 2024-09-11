@@ -52,7 +52,6 @@ export interface PostFilter {
   /** inclusive, -1 means infinity */
   premiumLevelMax: number;
   networkId: string;
-  hasLocation: boolean;
 }
 
 export interface PostsRequest {
@@ -570,7 +569,6 @@ function createBasePostFilter(): PostFilter {
     premiumLevelMin: 0,
     premiumLevelMax: 0,
     networkId: "",
-    hasLocation: false,
   };
 }
 
@@ -598,9 +596,6 @@ export const PostFilter = {
     }
     if (message.networkId !== "") {
       writer.uint32(58).string(message.networkId);
-    }
-    if (message.hasLocation === true) {
-      writer.uint32(56).bool(message.hasLocation);
     }
     return writer;
   },
@@ -671,13 +666,6 @@ export const PostFilter = {
 
           message.networkId = reader.string();
           continue;
-        case 8:
-          if (tag !== 56) {
-            break;
-          }
-
-          message.hasLocation = reader.bool();
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -698,7 +686,6 @@ export const PostFilter = {
       premiumLevelMin: isSet(object.premiumLevelMin) ? globalThis.Number(object.premiumLevelMin) : 0,
       premiumLevelMax: isSet(object.premiumLevelMax) ? globalThis.Number(object.premiumLevelMax) : 0,
       networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
-      hasLocation: isSet(object.hasLocation) ? globalThis.Boolean(object.hasLocation) : false,
     };
   },
 
@@ -725,9 +712,6 @@ export const PostFilter = {
     if (message.networkId !== "") {
       obj.networkId = message.networkId;
     }
-    if (message.hasLocation === true) {
-      obj.hasLocation = message.hasLocation;
-    }
     return obj;
   },
 
@@ -743,7 +727,6 @@ export const PostFilter = {
     message.premiumLevelMin = object.premiumLevelMin ?? 0;
     message.premiumLevelMax = object.premiumLevelMax ?? 0;
     message.networkId = object.networkId ?? "";
-    message.hasLocation = object.hasLocation ?? false;
     return message;
   },
 };
