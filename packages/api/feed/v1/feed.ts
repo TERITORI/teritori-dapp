@@ -51,6 +51,7 @@ export interface PostFilter {
   premiumLevelMin: number;
   /** inclusive, -1 means infinity */
   premiumLevelMax: number;
+  networkId: string;
 }
 
 export interface PostsRequest {
@@ -539,7 +540,15 @@ export const Post = {
 };
 
 function createBasePostFilter(): PostFilter {
-  return { user: "", mentions: [], categories: [], hashtags: [], premiumLevelMin: 0, premiumLevelMax: 0 };
+  return {
+    user: "",
+    mentions: [],
+    categories: [],
+    hashtags: [],
+    premiumLevelMin: 0,
+    premiumLevelMax: 0,
+    networkId: "",
+  };
 }
 
 export const PostFilter = {
@@ -563,6 +572,9 @@ export const PostFilter = {
     }
     if (message.premiumLevelMax !== 0) {
       writer.uint32(48).int32(message.premiumLevelMax);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(58).string(message.networkId);
     }
     return writer;
   },
@@ -626,6 +638,13 @@ export const PostFilter = {
 
           message.premiumLevelMax = reader.int32();
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -645,6 +664,7 @@ export const PostFilter = {
       hashtags: globalThis.Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => globalThis.String(e)) : [],
       premiumLevelMin: isSet(object.premiumLevelMin) ? globalThis.Number(object.premiumLevelMin) : 0,
       premiumLevelMax: isSet(object.premiumLevelMax) ? globalThis.Number(object.premiumLevelMax) : 0,
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
     };
   },
 
@@ -668,6 +688,9 @@ export const PostFilter = {
     if (message.premiumLevelMax !== 0) {
       obj.premiumLevelMax = Math.round(message.premiumLevelMax);
     }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
     return obj;
   },
 
@@ -682,6 +705,7 @@ export const PostFilter = {
     message.hashtags = object.hashtags?.map((e) => e) || [];
     message.premiumLevelMin = object.premiumLevelMin ?? 0;
     message.premiumLevelMax = object.premiumLevelMax ?? 0;
+    message.networkId = object.networkId ?? "";
     return message;
   },
 };

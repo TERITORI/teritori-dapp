@@ -67,7 +67,7 @@ func removeUserFromList(users []networks.UserID, user networks.UserID) []network
 	return res
 }
 
-func (h *Handler) handleExecuteDeletePost(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+func (h *Handler) handleExecuteDeletePost(_ *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	var execDeletePostMsg ExecDeletePostMsg
 	if err := json.Unmarshal(execMsg.Msg, &execDeletePostMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal execute delete post msg")
@@ -76,7 +76,7 @@ func (h *Handler) handleExecuteDeletePost(e *Message, execMsg *wasmtypes.MsgExec
 	deletePost := execDeletePostMsg.DeletePost
 
 	post := indexerdb.Post{}
-	if err := h.db.Where("identifier = ?", deletePost.Identifier).First(&post).Error; err != nil {
+	if err := h.db.Where("network_id = ? AND local_identifier = ?", h.config.Network.ID, deletePost.Identifier).First(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to get post to delete")
 	}
 
@@ -89,7 +89,7 @@ func (h *Handler) handleExecuteDeletePost(e *Message, execMsg *wasmtypes.MsgExec
 	return nil
 }
 
-func (h *Handler) handleExecuteReactPost(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+func (h *Handler) handleExecuteReactPost(_ *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	var execReactPostMsg ExecReactPostMsg
 	if err := json.Unmarshal(execMsg.Msg, &execReactPostMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal execute react post msg")
@@ -98,7 +98,7 @@ func (h *Handler) handleExecuteReactPost(e *Message, execMsg *wasmtypes.MsgExecu
 	reactPost := execReactPostMsg.ReactPost
 
 	post := indexerdb.Post{}
-	if err := h.db.Where("identifier = ?", reactPost.Identifier).First(&post).Error; err != nil {
+	if err := h.db.Where("network_id = ? AND local_identifier = ?", h.config.Network.ID, reactPost.Identifier).First(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to get post to react")
 	}
 
@@ -187,7 +187,8 @@ func (h *Handler) createPost(
 	}
 
 	post := indexerdb.Post{
-		Identifier:           createPostMsg.Identifier,
+		NetworkID:            h.config.Network.ID,
+		LocalIdentifier:      createPostMsg.Identifier,
 		ParentPostIdentifier: createPostMsg.ParentPostIdentifier,
 		Category:             createPostMsg.Category,
 		Metadata:             metadataJSON,
@@ -195,7 +196,6 @@ func (h *Handler) createPost(
 		AuthorId:             h.config.Network.UserID(execMsg.Sender),
 		CreatedAt:            createdAt.Unix(),
 		IsBot:                isBot,
-		NetworkID:            h.config.Network.ID,
 		PremiumLevel:         premium,
 	}
 
@@ -216,7 +216,8 @@ func (h *Handler) handleExecuteTipPost(e *Message, execMsg *wasmtypes.MsgExecute
 	}
 
 	post := indexerdb.Post{
-		Identifier: execTipPostMsg.TipPost.Identifier,
+		NetworkID:       h.config.Network.ID,
+		LocalIdentifier: execTipPostMsg.TipPost.Identifier,
 	}
 
 	if err := h.db.First(&post).Error; err != nil {
@@ -246,7 +247,7 @@ func (h *Handler) handleQuests(
 	execMsg *wasmtypes.MsgExecuteContract,
 	createPostMsg *CreatePostMsg,
 ) error {
-	questId := "unknown"
+	var questId string
 	switch createPostMsg.Category {
 	case 1:
 		questId = "social_feed_first_comment"
