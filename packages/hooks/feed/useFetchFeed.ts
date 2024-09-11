@@ -143,19 +143,16 @@ export const useFetchFeedLocation = (
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
     useInfiniteQuery(
       ["posts", selectedNetwork?.id, wallet?.address, { ...req }],
-      async () =>
-        // TODO? { pageParam = req.offset }
-        {
-          if (!selectedNetwork)
-            return Promise.resolve({
-              list: [],
-              totalCount: 0,
-              aggregations: [],
-            });
-          return fetchTeritoriFeedLocation(selectedNetwork, req);
-        },
+      async () => {
+        if (!selectedNetwork)
+          return Promise.resolve({
+            list: [],
+            totalCount: 0,
+            aggregations: [],
+          });
+        return fetchTeritoriFeedLocation(selectedNetwork, req);
+      },
       {
-        // TODO? getNextPageParam: (lastPage, pages) => {},
         staleTime: Infinity,
         refetchOnWindowFocus: false,
       },

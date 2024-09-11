@@ -105,7 +105,6 @@ export const Map: FC<MapProps> = ({
     south: bounds?.getSouth(),
     west: bounds?.getWest(),
     east: bounds?.getEast(),
-    limit: 100,
   });
   const posts = useMemo(
     () => (data ? combineFetchFeedPages(data.pages) : []),
