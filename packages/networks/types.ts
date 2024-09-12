@@ -119,6 +119,7 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   groupsPkgPath?: string;
   profilePkgPath?: string;
   faucetURL?: string;
+  txIndexerURL?: string;
 };
 
 export type NetworkInfo =

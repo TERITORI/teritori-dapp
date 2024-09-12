@@ -1,3 +1,5 @@
+import { LatLng } from "react-native-leaflet-view";
+
 import {
   nonSigningSocialFeedClient,
   signingSocialFeedClient,
@@ -119,6 +121,7 @@ export const getPostCategory = ({
 interface GeneratePostMetadataParams extends Omit<NewPostFormValues, "files"> {
   files: RemoteFileData[];
   premium: boolean;
+  location?: LatLng;
 }
 
 interface GenerateArticleMetadataParams
@@ -139,6 +142,7 @@ export const generatePostMetadata = ({
   mentions,
   gifs,
   premium,
+  location,
 }: GeneratePostMetadataParams): SocialFeedPostMetadata => {
   const m = ZodSocialFeedPostMetadata.parse({
     title,
@@ -146,6 +150,7 @@ export const generatePostMetadata = ({
     files,
     hashtags,
     mentions,
+    location,
     gifs: gifs || [],
     ...(premium ? { premium: 1 } : {}), // save blockchain space by not including premium if it's 0
   });

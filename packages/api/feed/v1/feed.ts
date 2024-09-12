@@ -61,8 +61,30 @@ export interface PostsRequest {
   queryUserId: string;
 }
 
+export interface PostsWithLocationRequest {
+  north: number;
+  south: number;
+  west: number;
+  east: number;
+  hashtags: string[];
+  limit: number;
+  networkId: string;
+}
+
+export interface AggregatedPost {
+  lat: number;
+  long: number;
+  totalPoints: number;
+}
+
 export interface PostsResponse {
   posts: Post[];
+}
+
+export interface PostsWithLocationResponse {
+  posts: Post[];
+  aggregatedPosts: AggregatedPost[];
+  isAggregated: boolean;
 }
 
 function createBaseIPFSKeyRequest(): IPFSKeyRequest {
@@ -816,6 +838,244 @@ export const PostsRequest = {
   },
 };
 
+function createBasePostsWithLocationRequest(): PostsWithLocationRequest {
+  return { north: 0, south: 0, west: 0, east: 0, hashtags: [], limit: 0, networkId: "" };
+}
+
+export const PostsWithLocationRequest = {
+  encode(message: PostsWithLocationRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.north !== 0) {
+      writer.uint32(13).float(message.north);
+    }
+    if (message.south !== 0) {
+      writer.uint32(21).float(message.south);
+    }
+    if (message.west !== 0) {
+      writer.uint32(29).float(message.west);
+    }
+    if (message.east !== 0) {
+      writer.uint32(37).float(message.east);
+    }
+    for (const v of message.hashtags) {
+      writer.uint32(42).string(v!);
+    }
+    if (message.limit !== 0) {
+      writer.uint32(48).uint32(message.limit);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(58).string(message.networkId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PostsWithLocationRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePostsWithLocationRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 13) {
+            break;
+          }
+
+          message.north = reader.float();
+          continue;
+        case 2:
+          if (tag !== 21) {
+            break;
+          }
+
+          message.south = reader.float();
+          continue;
+        case 3:
+          if (tag !== 29) {
+            break;
+          }
+
+          message.west = reader.float();
+          continue;
+        case 4:
+          if (tag !== 37) {
+            break;
+          }
+
+          message.east = reader.float();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.hashtags.push(reader.string());
+          continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.limit = reader.uint32();
+          continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PostsWithLocationRequest {
+    return {
+      north: isSet(object.north) ? globalThis.Number(object.north) : 0,
+      south: isSet(object.south) ? globalThis.Number(object.south) : 0,
+      west: isSet(object.west) ? globalThis.Number(object.west) : 0,
+      east: isSet(object.east) ? globalThis.Number(object.east) : 0,
+      hashtags: globalThis.Array.isArray(object?.hashtags) ? object.hashtags.map((e: any) => globalThis.String(e)) : [],
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+    };
+  },
+
+  toJSON(message: PostsWithLocationRequest): unknown {
+    const obj: any = {};
+    if (message.north !== 0) {
+      obj.north = message.north;
+    }
+    if (message.south !== 0) {
+      obj.south = message.south;
+    }
+    if (message.west !== 0) {
+      obj.west = message.west;
+    }
+    if (message.east !== 0) {
+      obj.east = message.east;
+    }
+    if (message.hashtags?.length) {
+      obj.hashtags = message.hashtags;
+    }
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PostsWithLocationRequest>, I>>(base?: I): PostsWithLocationRequest {
+    return PostsWithLocationRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<PostsWithLocationRequest>, I>>(object: I): PostsWithLocationRequest {
+    const message = createBasePostsWithLocationRequest();
+    message.north = object.north ?? 0;
+    message.south = object.south ?? 0;
+    message.west = object.west ?? 0;
+    message.east = object.east ?? 0;
+    message.hashtags = object.hashtags?.map((e) => e) || [];
+    message.limit = object.limit ?? 0;
+    message.networkId = object.networkId ?? "";
+    return message;
+  },
+};
+
+function createBaseAggregatedPost(): AggregatedPost {
+  return { lat: 0, long: 0, totalPoints: 0 };
+}
+
+export const AggregatedPost = {
+  encode(message: AggregatedPost, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.lat !== 0) {
+      writer.uint32(13).float(message.lat);
+    }
+    if (message.long !== 0) {
+      writer.uint32(21).float(message.long);
+    }
+    if (message.totalPoints !== 0) {
+      writer.uint32(24).int64(message.totalPoints);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): AggregatedPost {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAggregatedPost();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 13) {
+            break;
+          }
+
+          message.lat = reader.float();
+          continue;
+        case 2:
+          if (tag !== 21) {
+            break;
+          }
+
+          message.long = reader.float();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.totalPoints = longToNumber(reader.int64() as Long);
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AggregatedPost {
+    return {
+      lat: isSet(object.lat) ? globalThis.Number(object.lat) : 0,
+      long: isSet(object.long) ? globalThis.Number(object.long) : 0,
+      totalPoints: isSet(object.totalPoints) ? globalThis.Number(object.totalPoints) : 0,
+    };
+  },
+
+  toJSON(message: AggregatedPost): unknown {
+    const obj: any = {};
+    if (message.lat !== 0) {
+      obj.lat = message.lat;
+    }
+    if (message.long !== 0) {
+      obj.long = message.long;
+    }
+    if (message.totalPoints !== 0) {
+      obj.totalPoints = Math.round(message.totalPoints);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<AggregatedPost>, I>>(base?: I): AggregatedPost {
+    return AggregatedPost.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<AggregatedPost>, I>>(object: I): AggregatedPost {
+    const message = createBaseAggregatedPost();
+    message.lat = object.lat ?? 0;
+    message.long = object.long ?? 0;
+    message.totalPoints = object.totalPoints ?? 0;
+    return message;
+  },
+};
+
 function createBasePostsResponse(): PostsResponse {
   return { posts: [] };
 }
@@ -873,8 +1133,103 @@ export const PostsResponse = {
   },
 };
 
+function createBasePostsWithLocationResponse(): PostsWithLocationResponse {
+  return { posts: [], aggregatedPosts: [], isAggregated: false };
+}
+
+export const PostsWithLocationResponse = {
+  encode(message: PostsWithLocationResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.posts) {
+      Post.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    for (const v of message.aggregatedPosts) {
+      AggregatedPost.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    if (message.isAggregated === true) {
+      writer.uint32(24).bool(message.isAggregated);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PostsWithLocationResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePostsWithLocationResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.posts.push(Post.decode(reader, reader.uint32()));
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.aggregatedPosts.push(AggregatedPost.decode(reader, reader.uint32()));
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isAggregated = reader.bool();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PostsWithLocationResponse {
+    return {
+      posts: globalThis.Array.isArray(object?.posts) ? object.posts.map((e: any) => Post.fromJSON(e)) : [],
+      aggregatedPosts: globalThis.Array.isArray(object?.aggregatedPosts)
+        ? object.aggregatedPosts.map((e: any) => AggregatedPost.fromJSON(e))
+        : [],
+      isAggregated: isSet(object.isAggregated) ? globalThis.Boolean(object.isAggregated) : false,
+    };
+  },
+
+  toJSON(message: PostsWithLocationResponse): unknown {
+    const obj: any = {};
+    if (message.posts?.length) {
+      obj.posts = message.posts.map((e) => Post.toJSON(e));
+    }
+    if (message.aggregatedPosts?.length) {
+      obj.aggregatedPosts = message.aggregatedPosts.map((e) => AggregatedPost.toJSON(e));
+    }
+    if (message.isAggregated === true) {
+      obj.isAggregated = message.isAggregated;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<PostsWithLocationResponse>, I>>(base?: I): PostsWithLocationResponse {
+    return PostsWithLocationResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<PostsWithLocationResponse>, I>>(object: I): PostsWithLocationResponse {
+    const message = createBasePostsWithLocationResponse();
+    message.posts = object.posts?.map((e) => Post.fromPartial(e)) || [];
+    message.aggregatedPosts = object.aggregatedPosts?.map((e) => AggregatedPost.fromPartial(e)) || [];
+    message.isAggregated = object.isAggregated ?? false;
+    return message;
+  },
+};
+
 export interface FeedService {
   Posts(request: DeepPartial<PostsRequest>, metadata?: grpc.Metadata): Promise<PostsResponse>;
+  PostsWithLocation(
+    request: DeepPartial<PostsWithLocationRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<PostsWithLocationResponse>;
   IPFSKey(request: DeepPartial<IPFSKeyRequest>, metadata?: grpc.Metadata): Promise<IPFSKeyResponse>;
 }
 
@@ -884,11 +1239,19 @@ export class FeedServiceClientImpl implements FeedService {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Posts = this.Posts.bind(this);
+    this.PostsWithLocation = this.PostsWithLocation.bind(this);
     this.IPFSKey = this.IPFSKey.bind(this);
   }
 
   Posts(request: DeepPartial<PostsRequest>, metadata?: grpc.Metadata): Promise<PostsResponse> {
     return this.rpc.unary(FeedServicePostsDesc, PostsRequest.fromPartial(request), metadata);
+  }
+
+  PostsWithLocation(
+    request: DeepPartial<PostsWithLocationRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<PostsWithLocationResponse> {
+    return this.rpc.unary(FeedServicePostsWithLocationDesc, PostsWithLocationRequest.fromPartial(request), metadata);
   }
 
   IPFSKey(request: DeepPartial<IPFSKeyRequest>, metadata?: grpc.Metadata): Promise<IPFSKeyResponse> {
@@ -911,6 +1274,29 @@ export const FeedServicePostsDesc: UnaryMethodDefinitionish = {
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = PostsResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const FeedServicePostsWithLocationDesc: UnaryMethodDefinitionish = {
+  methodName: "PostsWithLocation",
+  service: FeedServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return PostsWithLocationRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = PostsWithLocationResponse.decode(data);
       return {
         ...value,
         toObject() {

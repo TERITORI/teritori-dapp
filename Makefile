@@ -25,8 +25,9 @@ CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
 DOCKER_REGISTRY=rg.nl-ams.scw.cloud/teritori
 INDEXER_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-indexer:$(shell git rev-parse --short HEAD)
-FLUSH_DATA_IMAGE=$(DOCKER_REGISTRY)/flush-data:$(shell git rev-parse --short HEAD)
 EVM_INDEXER_IMAGE=$(DOCKER_REGISTRY)/evm-indexer:$(shell git rev-parse --short HEAD)
+GNO_INDEXER_DOCKER_IMAGE=$(DOCKER_REGISTRY)/gno-indexer:$(shell git rev-parse --short HEAD)
+FLUSH_DATA_IMAGE=$(DOCKER_REGISTRY)/flush-data:$(shell git rev-parse --short HEAD)
 BACKEND_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
 PRICES_SERVICE_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-service:$(shell git rev-parse --short HEAD)
 PRICES_OHLC_REFRESH_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-ohlc-refresh:$(shell git rev-parse --short HEAD)
@@ -70,6 +71,7 @@ packages/api/weshnet: node_modules
 .PHONY: generate.graphql
 generate.graphql:
 	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/holagql/genqlient.yaml
+	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/gnoindexerql/genqlient.yaml
 
 .PHONY: generate.graphql-thegraph
 generate.graphql-thegraph:
@@ -91,6 +93,10 @@ lint.js: node_modules
 .PHONY: go/pkg/holagql/holaplex-schema.graphql
 go/pkg/holagql/holaplex-schema.graphql:
 	rover graph introspect https://graph.65.108.73.219.nip.io/v1 > $@
+
+.PHONY: go/pkg/gnoindexerql/indexer-schema.graphql
+go/pkg/gnoindexerql/indexer-schema.graphql:
+	rover graph introspect http://localhost:8546/graphql/query > $@
 
 .PHONY: docker.backend
 docker.backend:
@@ -275,6 +281,11 @@ publish.feed-clean-pinata-keys:
 publish.multisig-backend:
 	docker build -f go/cmd/multisig-backend/Dockerfile . --platform linux/amd64 -t $(MULTISIG_DOCKER_IMAGE)
 	docker push $(MULTISIG_DOCKER_IMAGE)
+
+.PHONY: publish.gno-indexer
+publish.gno-indexer:
+	docker build -f go/cmd/gno_social_feed_indexer/Dockerfile . --platform linux/amd64 -t $(GNO_INDEXER_DOCKER_IMAGE)
+	docker push $(GNO_INDEXER_DOCKER_IMAGE)
 
 .PHONY: validate-networks
 validate-networks: node_modules
