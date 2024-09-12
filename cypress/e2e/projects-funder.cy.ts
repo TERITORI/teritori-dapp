@@ -22,6 +22,7 @@ describe("Funder proposer full flow", () => {
     // first step: basic project info
     cy.contains("A funder looking for a developer").click();
     cy.get("input[placeholder='Your Grant name']").type(projectName);
+    cy.get("input[placeholder='Project GitHub']").type("https://github.com");
     cy.get("textarea[placeholder='Your Grant description']").type(
       "Bli blu Bli blu Bli blu Bli blu Bli blu",
     );
@@ -41,18 +42,15 @@ describe("Funder proposer full flow", () => {
     );
     cy.contains("Next").click();
 
-    // second step: team info
-    // TODO: remove the default values and type them here
-    cy.contains("Next").click();
-
     // third step: add milestones
     cy.contains("Add").click();
     cy.get("input[placeholder='⚡️ Type name here...']").type("Test Milestone");
     cy.get("textarea[placeholder='Type description here...']").type(
       "Bli blu bla bleh",
     );
-    cy.get("input[data-testid='milestone-budget']").clear().type("42");
-    cy.get("input[data-testid='milestone-duration']").clear().type("3600");
+    cy.get("input[data-testid='milestone-budget']").type("42");
+    cy.get("input[data-testid='milestone-duration']").type("10");
+    cy.get("input[data-testid='milestone-link']").type("https://github.com");
     cy.get("div[data-testid='milestone-confirm']").click();
     cy.contains("Next").click();
 

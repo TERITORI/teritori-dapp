@@ -6,13 +6,12 @@ import gnoSVG from "../../../../assets/icons/networks/gno.svg";
 import projectSuccessPaymentPNG from "../../../../assets/project-success-payment.png";
 import ModalBase from "../../../components/modals/ModalBase";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { Tag } from "../components/Milestone";
-import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 import {
   MilestoneRequest,
   ProjectShortDescData,
-  ProjectTeamAndLinkData,
-} from "../types";
+} from "../../../utils/projects/types";
+import { Tag } from "../components/Milestone";
+import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 
 import { BrandText } from "@/components/BrandText";
 import FlexRow from "@/components/FlexRow";
@@ -54,11 +53,7 @@ export const ConfirmAndSign: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const navigation = useAppNavigation();
-  const {
-    projectFormData,
-    milestones,
-    teamAndLinkData: teamAndLinkFormData,
-  } = useMakeRequestState();
+  const { projectFormData, milestones } = useMakeRequestState();
   const networkId = useSelectedNetworkId();
 
   const pmFeature = getNetworkFeature(
@@ -104,26 +99,18 @@ export const ConfirmAndSign: React.FC = () => {
       const coverImg = projectFormData.coverImg;
 
       // other party can't accept contract after duration expired
-      const expiryDuration = 24 * 60 * 60; // 1 day in seconds
+      const expiryDuration = 7 * 24 * 60 * 60; // 1 day in seconds
 
       const shortDescData: ProjectShortDescData = {
         name: projectFormData.name,
         desc: projectFormData.description,
         coverImg,
         tags: projectFormData.tags || "",
-      };
-
-      const teamAndLinkData: ProjectTeamAndLinkData = {
-        websiteLink: teamAndLinkFormData.websiteLink,
-        twitterProfile: teamAndLinkFormData.twitterProfile,
-        discordLink: teamAndLinkFormData.discordLink,
-        githubLink: teamAndLinkFormData.githubLink,
-        teamDesc: teamAndLinkFormData.teamDesc,
+        sourceLink: projectFormData.sourceLink,
       };
 
       const metadata = JSON.stringify({
         shortDescData,
-        teamAndLinkData,
       });
 
       const conflictHandler = projectFormData.arbitratorAddress;
@@ -154,7 +141,7 @@ export const ConfirmAndSign: React.FC = () => {
             const req: MilestoneRequest = {
               title: ms.title,
               desc: ms.desc,
-              duration: ms.duration.toString(),
+              duration: (ms.durationHours * 3600).toString(),
               amount: ms.amount.toString(),
               link: ms.link || "",
               priority: ms.priority,

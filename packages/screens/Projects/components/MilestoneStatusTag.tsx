@@ -1,8 +1,8 @@
 import React from "react";
 
 import { Tag } from "./Milestone";
+import { MilestoneStatus } from "../../../utils/projects/types";
 import { neutralFF } from "../../../utils/style/colors";
-import { MilestoneStatus } from "../types";
 
 export const MilestoneStatusTag: React.FC<{
   status: MilestoneStatus;

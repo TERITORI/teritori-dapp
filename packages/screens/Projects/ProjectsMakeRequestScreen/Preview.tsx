@@ -2,10 +2,10 @@ import React from "react";
 import { View } from "react-native";
 
 import { MakeRequestFooter } from "./Footer";
+import { Project, previewMilestoneForm } from "../../../utils/projects/types";
 import { ProjectInfo } from "../components/ProjectInfo";
 import { ProjectMilestones } from "../components/ProjectMilestones";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
-import { Project, previewMilestoneForm } from "../types";
 
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 
@@ -13,7 +13,6 @@ export const Preview: React.FC = () => {
   const {
     projectFormData,
     milestones,
-    teamAndLinkData,
     actions: { goNextStep },
   } = useMakeRequestState();
 
@@ -28,7 +27,6 @@ export const Preview: React.FC = () => {
         coverImg: projectFormData.coverImg,
         tags: projectFormData.tags || "",
       },
-      teamAndLinkData,
     },
     budget: "",
     funder: selectedWallet?.address || "",

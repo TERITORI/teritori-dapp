@@ -322,7 +322,31 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 		BossName:  `== $*=|'¤?")à-£_%`,
 		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.cf-ipfs.com/",
 		StartsAt:  "2024-07-15T00:00:00",
-		EndsAt:    "2025-01-01T00:00:00",
+		EndsAt:    "2024-08-27T00:00:00",
+		IsPre:     true,
+	},
+	// ------------------------------
+	// The R!ot EVM - Mainnet Season 1
+	{
+		ID:         "ETH Season 1",
+		GameID:     THE_RIOT_GAME_ID,
+		Denom:      "tori",
+		Decimals:   6,
+		TotalPrize: 2_316_000,
+		BossName:   "Alexander Aldrin",
+		BossImage:  "https://gateway.pinata.cloud/ipfs/Qmd98tXCe7bxULC2X8wAhSN7KgJ2M5UESqRzhFT9VrBTpn",
+		TopN:       500,
+		StartsAt:   "2024-08-27T00:00:00",
+		EndsAt:     "2024-10-06T00:00:00",
+	},
+	// After PepeTest2
+	{
+		ID:        "Season After ETH Season 1",
+		GameID:    THE_RIOT_GAME_ID,
+		BossName:  `== $*=|'¤?")à-£_%`,
+		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs.cf-ipfs.com/",
+		StartsAt:  "2024-10-06T00:00:00",
+		EndsAt:    "2030-01-01T00:00:00",
 		IsPre:     true,
 	},
 }

@@ -29,6 +29,16 @@ export const useAdena: () => UseAdenaResult = () => {
     if (!hasAdena) {
       return;
     }
+    if (selectedNetworkInfo?.kind !== NetworkKind.Gno) {
+      return;
+    }
+    (window as any).adena.SwitchNetwork(selectedNetworkInfo.chainId);
+  }, [hasAdena, selectedNetworkInfo]);
+
+  useEffect(() => {
+    if (!hasAdena) {
+      return;
+    }
     (window as any).adena.On("changedAccount", (address: string) => {
       setState((state) => ({ ...state, addresses: [address] }));
     });

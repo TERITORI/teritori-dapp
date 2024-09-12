@@ -5,7 +5,6 @@ import { ConfirmAndSign } from "./ConfirmAndSign";
 import { Milestones } from "./Milestones";
 import { Preview } from "./Preview";
 import { ShortPresentation } from "./ShortPresentation";
-import { TeamAndLinks } from "./TeamAndLinks";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { SpacerColumn } from "../../../components/spacer";
 import { NetworkKind } from "../../../networks";
@@ -16,10 +15,9 @@ import { useMakeRequestState } from "../hooks/useMakeRequestHook";
 
 const renderStep = (stepIndice: number) => {
   if (stepIndice === 1) return <ShortPresentation />;
-  if (stepIndice === 2) return <TeamAndLinks />;
-  if (stepIndice === 3) return <Milestones />;
-  if (stepIndice === 4) return <Preview />;
-  if (stepIndice === 5) return <ConfirmAndSign />;
+  if (stepIndice === 2) return <Milestones />;
+  if (stepIndice === 3) return <Preview />;
+  if (stepIndice === 4) return <ConfirmAndSign />;
 };
 
 export const ProjectsMakeRequestScreen: ScreenFC<

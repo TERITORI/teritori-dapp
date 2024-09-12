@@ -18,7 +18,7 @@ import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetworkObjectId } from "@/networks";
 import { Tag } from "@/screens/Projects/components/Milestone";
 import { useEscrowContract } from "@/screens/Projects/hooks/useEscrowContract";
-import { Project } from "@/screens/Projects/types";
+import { Project } from "@/utils/projects/types";
 import { neutral17, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold12,

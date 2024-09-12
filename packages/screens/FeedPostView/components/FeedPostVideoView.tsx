@@ -118,6 +118,7 @@ export const FeedPostVideoView: FC<{
 
   const allVideosFeedRequest: Partial<PostsRequest> = {
     filter: {
+      networkId: post.networkId,
       categories: [PostCategory.Video],
       user: "",
       mentions: [],
@@ -130,6 +131,7 @@ export const FeedPostVideoView: FC<{
   };
   const userVideosFeedRequest: Partial<PostsRequest> = {
     filter: {
+      networkId: post.networkId,
       categories: [PostCategory.Video],
       user: localPost.authorId,
       mentions: [],

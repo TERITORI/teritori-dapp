@@ -4660,7 +4660,15 @@
     "icon": "gno.svg",
     "features": [
       "SocialFeed",
-      "UPP"
+      "UPP",
+      "GnoProjectManager"
+    ],
+    "featureObjects": [
+      {
+        "type": "GnoProjectManager",
+        "projectsManagerPkgPath": "gno.land/r/teritori/projects_manager",
+        "paymentsDenom": "ugnot"
+      }
     ],
     "currencies": [
       {

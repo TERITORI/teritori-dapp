@@ -1,17 +1,4 @@
-import {
-  ProjectFormData,
-  ProjectTeamAndLinkFormData,
-} from "./hooks/useMakeRequestHook";
-
-/*
-const emptyTeamAndLink: ProjectTeamAndLinkFormData = {
-  websiteLink: "",
-  twitterProfile: "",
-  discordLink: "",
-  githubLink: "",
-  teamDesc: "",
-};
-*/
+import { ProjectFormData } from "./hooks/useMakeRequestHook";
 
 export const emptyProjectFormData: ProjectFormData = {
   creatorAddress: "",
@@ -21,12 +8,4 @@ export const emptyProjectFormData: ProjectFormData = {
   coverImg: "",
   creatorKind: "contractor",
   tags: "",
-};
-
-export const fakeTeamAndLink: ProjectTeamAndLinkFormData = {
-  websiteLink: "https://website.com",
-  twitterProfile: "https://twitter.com",
-  discordLink: "https://discord.com",
-  githubLink: "https://github.com",
-  teamDesc: "This is long team description",
 };

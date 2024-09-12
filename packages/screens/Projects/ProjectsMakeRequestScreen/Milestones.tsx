@@ -2,11 +2,11 @@ import React from "react";
 import { View } from "react-native";
 
 import { MakeRequestFooter } from "./Footer";
+import { previewMilestoneForm } from "../../../utils/projects/types";
 import { neutral17 } from "../../../utils/style/colors";
 import { layout } from "../../../utils/style/layout";
 import { MilestoneBoard } from "../components/MilestoneBoard";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
-import { previewMilestoneForm } from "../types";
 
 export const Milestones: React.FC = () => {
   const {

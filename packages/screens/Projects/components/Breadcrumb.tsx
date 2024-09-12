@@ -1,5 +1,4 @@
 import React, { Fragment } from "react";
-import { StyleProp, ViewStyle } from "react-native";
 
 import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
@@ -80,7 +79,6 @@ const Seperator = () => {
 
 const STEPS = [
   "Short presentation",
-  "Team and links",
   "Milestones",
   "Preview",
   "Confirm and Sign",
@@ -88,8 +86,7 @@ const STEPS = [
 
 export const Breadcrumb: React.FC<{
   stepIndice?: number;
-  containerStyle?: StyleProp<ViewStyle>;
-}> = ({ stepIndice = 1, containerStyle }) => {
+}> = ({ stepIndice = 1 }) => {
   const {
     stepIndice: currentStepIndice,
     actions: { gotoStep },
