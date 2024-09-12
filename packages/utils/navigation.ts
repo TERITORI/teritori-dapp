@@ -41,6 +41,8 @@ export type RootStackParamList = {
   LaunchpadApply: undefined;
   LaunchpadCreate: undefined;
 
+  LaunchpadERC20: undefined;
+
   MintCollection: { id: string };
   TNSHome: { modal: string; name?: string } | undefined;
 
@@ -51,11 +53,11 @@ export type RootStackParamList = {
   NFTDetail: { id: string; openBuy?: boolean };
   Feed?: { tab: keyof typeof feedsTabItems; network?: string };
   FeedNewArticle:
-    | (NewPostFormValues & {
-        additionalMention?: string;
-        additionalHashtag?: string;
-      })
-    | undefined;
+  | (NewPostFormValues & {
+    additionalMention?: string;
+    additionalHashtag?: string;
+  })
+  | undefined;
   FeedPostView: { id: string };
   HashtagFeed: { hashtag: string };
 
@@ -213,6 +215,9 @@ const navConfig: {
     Launchpad: "launchpad",
     LaunchpadApply: "launchpad/apply",
     LaunchpadCreate: "launchpad/create",
+
+    // ==== Launchpad ERC20
+    LaunchpadERC20: "launchpad-erc20",
 
     // Mint NFT collection
     MintCollection: "collection/:id/mint",

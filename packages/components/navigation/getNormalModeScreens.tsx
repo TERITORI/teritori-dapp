@@ -24,6 +24,7 @@ import { LaunchpadCreateScreen } from "@/screens/Launchpad/LaunchpadCreateScreen
 import { LaunchpadScreen } from "@/screens/Launchpad/LaunchpadScreen";
 import { MintCollectionScreen } from "@/screens/Launchpad/MintCollectionScreen";
 import { LaunchpadApplicationsScreen } from "@/screens/LaunchpadApplications/LaunchpadApplicationsScreen";
+import { LaunchpadERC20Screen } from "@/screens/LaunchpadERC20/LaunchpadERC20Screen";
 import { CollectionScreen } from "@/screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "@/screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "@/screens/Marketplace/MarketplaceScreen";
@@ -278,6 +279,16 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         name="MintCollection"
         component={MintCollectionScreen}
         options={{ header: () => null, title: screenTitle("Mint Collection") }}
+      />
+
+      { /* ==== Launchpad ERC20 */}
+      <Nav.Screen
+        name="LaunchpadERC20"
+        component={LaunchpadERC20Screen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad ERC20"),
+        }}
       />
 
       {/* ==== Multisig */}

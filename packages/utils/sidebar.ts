@@ -1,4 +1,3 @@
-import { SidebarRecordType } from "./types/sidebar";
 import daoSVG from "../../assets/icons/dao.svg";
 import dappStoreSVG from "../../assets/icons/dapp-store.svg";
 import feedSVG from "../../assets/icons/feed.svg";
@@ -6,6 +5,7 @@ import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
 import governanceSVG from "../../assets/icons/governance.svg";
 import gridSVG from "../../assets/icons/grid.svg";
 import launchpadApplySVG from "../../assets/icons/launchpad-apply.svg";
+import launchpadERC20SVG from "../../assets/icons/launchpad-erc20.svg";
 import launchpadLaunchpadSVG from "../../assets/icons/launchpad-launchpad.svg";
 import launchpadSVG from "../../assets/icons/launchpad.svg";
 import messagesSVG from "../../assets/icons/messages.svg";
@@ -19,6 +19,7 @@ import tnsServiceSVG from "../../assets/icons/tns-service.svg";
 import walletRegSVG from "../../assets/icons/wallet-regular.svg";
 import walletSVG from "../../assets/icons/wallet-sidebar.svg";
 import { NetworkKind } from "../networks";
+import { SidebarRecordType } from "./types/sidebar";
 
 export const SIDEBAR_LIST: SidebarRecordType = {
   feed: {
@@ -32,6 +33,12 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     id: "Messages",
     route: "Message",
     icon: messagesSVG,
+  },
+  launchpadERC20: {
+    title: "Launchpad ERC20",
+    id: "Launchpad ERC20",
+    route: "LaunchpadERC20",
+    icon: launchpadERC20SVG,
   },
   launchpad: {
     title: "Launchpad",
