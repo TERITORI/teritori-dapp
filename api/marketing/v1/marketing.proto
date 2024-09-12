@@ -7,6 +7,7 @@ service MarketingService {
   rpc News(NewsRequest) returns (NewsResponse);
   rpc LiveCollections(LiveCollectionsRequest) returns (LiveCollectionsResponse);
   rpc UpcomingCollections(UpcomingCollectionsRequest) returns (UpcomingCollectionsResponse);
+  rpc HighlightedCollections(HighlightedCollectionsRequest) returns (HighlightedCollectionsResponse);
 }
 
 message MarketingCollectionPreview {
@@ -65,5 +66,13 @@ message UpcomingCollectionsRequest {
 }
 
 message UpcomingCollectionsResponse {
+  repeated MarketingCollectionPreview collections = 1;
+}
+
+message HighlightedCollectionsRequest {
+  string network_id = 1;
+}
+
+message HighlightedCollectionsResponse {
   repeated MarketingCollectionPreview collections = 1;
 }
