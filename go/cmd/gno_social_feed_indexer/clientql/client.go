@@ -3,7 +3,6 @@ package clientql
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -13,6 +12,7 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/gnoindexerql"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -88,7 +88,7 @@ func (client *IndexerQL) getPostWithData(data *gnoindexerql.GetPostTransactionsT
 
 	postID, err := extractPostIdentifierFromData(transaction.Response.Data)
 	if err != nil {
-		return indexerdb.Post{}, errors.Join(errors.New("failed to extra post id"), err)
+		return indexerdb.Post{}, errors.Wrap(err, "failed to extract post id")
 	}
 
 	post := indexerdb.Post{
