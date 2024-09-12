@@ -30,17 +30,12 @@ func New(network networks.GnoNetwork, graphqlEndpoint string, db *gorm.DB, logge
 }
 
 func (client *IndexerQL) SyncPosts() error {
-	/*
-		    // FIXME: this is mixing height and timestamp, we need to redo this
-				lastPost := client.getLastPost()
-					var fromBlock int
-					if lastPost != nil {
-						fromBlock = int(lastPost.CreatedAt) + 1
-					}
-	*/
+	block := 0 // FIXME: use cursor instead, since we use our own indexers, we can hammer them in the meantime
 
-	block := 0                                    // FIXME: use cursor instead
-	pkgPath := "gno.land/r/teritori/social_feeds" // FIXME: get from network feature
+	if client.network.SocialFeedsPkgPath == nil {
+		return errors.New("this network does not support social feeds")
+	}
+	pkgPath := *client.network.SocialFeedsPkgPath
 
 	client.logger.Info("fetching", zap.Int("block", block), zap.String("pkg_path", pkgPath))
 
@@ -74,13 +69,6 @@ func (client *IndexerQL) SyncPosts() error {
 	client.logger.Info("saved posts", zap.Int("count", count))
 
 	return nil
-}
-
-func (client *IndexerQL) getLastPost() *indexerdb.Post {
-	post := &indexerdb.Post{}
-	client.db.Order("created_at desc").Find(post)
-
-	return post
 }
 
 func (client *IndexerQL) getPostWithData(data *gnoindexerql.GetPostTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgCall, transaction gnoindexerql.GetPostTransactionsTransactionsTransaction) (indexerdb.Post, error) {

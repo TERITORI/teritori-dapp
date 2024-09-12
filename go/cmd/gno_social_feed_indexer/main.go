@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/url"
 	"os"
 	"time"
 
@@ -77,10 +78,14 @@ func main() {
 
 	logger.Info("instantiating client", zap.String("indexer_url", *network.TxIndexerURL))
 
-	clientql := clientql.New(*network, *network.TxIndexerURL, db, logger)
+	gqlurl, err := url.JoinPath(*network.TxIndexerURL, "graphql", "query")
+	if err != nil {
+		panic(errors.Wrap(err, "failed to construct indexer query url"))
+	}
+	clientql := clientql.New(*network, gqlurl, db, logger)
 	schedule := gocron.NewScheduler(time.UTC)
 
-	schedule.Every(2).Minutes().Do(func() {
+	schedule.Every(20).Seconds().Do(func() {
 		logger.Info("indexing")
 		err = clientql.SyncPosts()
 		if err != nil {
