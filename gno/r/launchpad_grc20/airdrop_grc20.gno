@@ -82,10 +82,7 @@ func ClaimJSON(airdropID uint64, proofsJSON string) {
 		if err != nil {
 			panic("invalid hex encoded hash")
 		}
-		node := merkle.Node{
-			Hash:     data,
-			Position: jsonutil.MustUint8(obj["pos"]),
-		}
+		node := merkle.NewNode(data, jsonutil.MustUint8(obj["pos"]))
 		proofs = append(proofs, node)
 	}
 	Claim(airdropID, proofs)

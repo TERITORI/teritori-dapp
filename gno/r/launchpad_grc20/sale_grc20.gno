@@ -35,6 +35,7 @@ var (
 
 func init() {
 	sales = avl.NewTree()
+	nextSaleID = seqid.ID(0)
 }
 
 func NewSale(tokenName, merkleRoot string, startTimestamp, endTimestamp int64, pricePerToken, limitPerAddr, minGoal, maxGoal uint64, mintToken bool) uint64 {
@@ -112,10 +113,7 @@ func BuyJSON(saleID, amount uint64, proofsJSON string) {
 			if err != nil {
 				panic("invalid hex encoded hash")
 			}
-			node := merkle.Node{
-				Hash:     data,
-				Position: jsonutil.MustUint8(obj["pos"]),
-			}
+			node := merkle.NewNode(data, jsonutil.MustUint8(obj["pos"]))
 			proofs = append(proofs, node)
 		}
 		Buy(saleID, amount, proofs)

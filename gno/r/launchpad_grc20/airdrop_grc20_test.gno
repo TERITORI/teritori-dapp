@@ -187,7 +187,7 @@ func TestClaimJSON(t *testing.T) {
 
 	proofsJSON := "["
 	for i, proof := range proofs {
-		proofsJSON += fmt.Sprintf("{\"hash\":\"%s\", \"pos\":\"%s\"}", proof.GetHexEncodedHash(), strconv.Itoa(int(proof.Position)))
+		proofsJSON += fmt.Sprintf("{\"hash\":\"%s\", \"pos\":\"%s\"}", proof.Hash(), strconv.Itoa(int(proof.Position())))
 		if i != len(proofs)-1 {
 			proofsJSON += ", "
 		}

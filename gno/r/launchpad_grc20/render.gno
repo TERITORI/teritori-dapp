@@ -90,7 +90,7 @@ func renderTokenDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write("## List of Airdrops\n")
 	for _, id := range token.AirdropsIDs {
 		airdrop := mustGetAirdrop(uint64(id))
-		res.Write(ufmt.Sprintf("### Airdrop #%d\n", id))
+		res.Write(ufmt.Sprintf("### Airdrop #%d\n", uint64(id)))
 		res.Write(ufmt.Sprintf("#### Merkle Root: %s\n", airdrop.merkleRoot))
 		if airdrop.startTimestamp > 0 {
 			res.Write(ufmt.Sprintf("#### Start Date: %s\n", time.Unix(airdrop.startTimestamp, 0).Format("2006-01-02 15:04:05")))
@@ -100,19 +100,19 @@ func renderTokenDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 		}
 		res.Write(ufmt.Sprintf("#### Amount to claim per address: %d\n", airdrop.amountPerAddr))
 		res.Write(ufmt.Sprintf("#### Total addresses claimed: %d\n\n", airdrop.alreadyClaimed.Size()))
-		res.Write(ufmt.Sprintf("> Link: [:airdrop/%d](launchpad_grc20:airdrop/%d)\n\n", token.AirdropsIDs, token.AirdropsIDs))
+		res.Write(ufmt.Sprintf("> Link: [:airdrop/%d](../launchpad_grc20:airdrop/%d)\n\n", uint64(id), uint64(id)))
 	}
 
 	res.Write("## List of Sales\n")
 	for _, id := range token.SalesIDs {
 		sale := mustGetSale(uint64(id))
-		res.Write(ufmt.Sprintf("### Sale #%d\n", id))
+		res.Write(ufmt.Sprintf("### Sale #%d\n", uint64(id)))
 		res.Write(ufmt.Sprintf("#### Price per token: %d $GNOT\n", sale.pricePerToken))
 		res.Write(ufmt.Sprintf("#### Limit per address: %d $%s\n", sale.limitPerAddr, token.banker.GetSymbol()))
 		res.Write(ufmt.Sprintf("#### Min goal: %d $GNOT\n", sale.minGoal))
 		res.Write(ufmt.Sprintf("#### Max goal: %d $GNOT\n", sale.maxGoal))
 		res.Write(ufmt.Sprintf("#### Already sold: %d $GNOT\n\n", sale.alreadySold))
-		res.Write(ufmt.Sprintf("> Link: [:sale/%d](launchpad_grc20:sale/%d)\n\n", token.SalesIDs, token.SalesIDs))
+		res.Write(ufmt.Sprintf("> Link: [:sale/%d](../launchpad_grc20:sale/%d)\n\n", uint64(id), uint64(id)))
 	}
 	renderFooter(res, "../")
 }
@@ -125,7 +125,7 @@ func renderTokenBalancePage(res *mux.ResponseWriter, req *mux.Request) {
 
 	res.Write("# 🪙 Token Balance 🪙\n")
 	res.Write(ufmt.Sprintf("### 📍 Address: %s\n ### 🏦 Balance: %d %s\n", address, balance, token.banker.GetSymbol()))
-	renderFooter(res, "../../")
+	renderFooter(res, "../../../")
 }
 
 func renderAirdropPage(res *mux.ResponseWriter, req *mux.Request) {
@@ -211,11 +211,10 @@ func renderAirdropClaimCheckPage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write(ufmt.Sprintf("### Amount to claim: %d\n", airdrop.amountPerAddr))
 	if airdrop.hasAlreadyClaimed(std.Address(address)) {
 		res.Write("### Address already claimed\n")
-		return
 	} else {
 		res.Write("### Address not yet claimed or not eligible\n")
 	}
-	renderFooter(res, "../")
+	renderFooter(res, "../../../")
 }
 
 func renderSalePage(res *mux.ResponseWriter, req *mux.Request) {
@@ -317,7 +316,7 @@ func renderSaleBalancePage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write(ufmt.Sprintf("### 📍 Address: %s\n ### 🏦 Balance (Tokens from this sale only): %d %s\n", address, balance, sale.token.banker.GetSymbol()))
 
 	res.Write("> ⚠️ *The tokens will be transfered or refunded after the sale ends depending if the sale reached the min goal or not* ⚠️\n")
-	renderFooter(res, "../../")
+	renderFooter(res, "../../../")
 }
 
 func renderHomePage(res *mux.ResponseWriter, req *mux.Request) {

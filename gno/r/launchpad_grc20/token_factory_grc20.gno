@@ -25,7 +25,7 @@ var _ grc20.Token = (*Token)(nil)
 var lastTokensIDcreated = []string{}
 
 var (
-	tokens       *avl.Tree // symbol -> token
+	tokens       *avl.Tree // name -> token
 	factoryAdmin *ownable.Ownable
 	factoryVault std.Address
 )
