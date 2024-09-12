@@ -1,4 +1,4 @@
-import { DivIcon, PointExpression, point } from "leaflet";
+import { DivIcon, PointExpression, point, LatLngBounds } from "leaflet";
 import { FC, useMemo, useState } from "react";
 import "../../modals/MapModal/styles.css";
 import "leaflet/dist/leaflet.css";
@@ -15,6 +15,7 @@ import { View } from "react-native";
 
 import { FeedMapListProps } from "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.types";
 import { useFetchFeedLocation } from "@/hooks/feed/useFetchFeed";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   getMapPostIconColorRgba,
   getMapPostIconSVGString,
@@ -56,8 +57,10 @@ const getIcon = (postCategory: PostCategory) => {
 };
 
 const FeedMapList: FC<FeedMapListProps> = ({ style }) => {
-  const [bounds, setBounds] = useState<L.LatLngBounds | null>(null);
+  const [bounds, setBounds] = useState<LatLngBounds | null>(null);
+  const selectedNetworkId = useSelectedNetworkId();
   const { data } = useFetchFeedLocation({
+    networkId: selectedNetworkId,
     north: bounds?.getNorth(),
     south: bounds?.getSouth(),
     west: bounds?.getWest(),
