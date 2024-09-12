@@ -46,14 +46,14 @@ func renderUser(res *mux.ResponseWriter, req *mux.Request) {
 
 func resolveUserBasics(aon string) (std.Address, string, bool) {
 	user := rusers.GetUserByAddressOrName(users.AddressOrName(aon))
-	if user == nil {
-		addr := std.Address(aon)
-		if !addr.IsValid() {
-			return addr, "", false
-		}
-
-		return addr, "agnome", true
-	} else {
+	if user != nil {
 		return user.Address, "@" + user.Name, true
 	}
+
+	addr := std.Address(aon)
+	if !addr.IsValid() {
+		return addr, "", false
+	}
+
+	return addr, "agnome", true
 }
