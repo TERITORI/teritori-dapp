@@ -35,6 +35,9 @@ P2E_DOCKER_IMAGE=$(DOCKER_REGISTRY)/p2e-update-leaderboard:$(shell git rev-parse
 FEED_DOCKER_IMAGE=$(DOCKER_REGISTRY)/feed-clean-pinata-keys:$(shell git rev-parse --short HEAD)
 MULTISIG_DOCKER_IMAGE=$(DOCKER_REGISTRY)/cosmos-multisig-backend:$(shell git rev-parse --short HEAD)
 
+GNODEV=gnodev --add-account g193vp9tjhfpldvgg3gn433ayv8pn7rtfv8shyeq $$(find gno -name gno.mod -type f -exec dirname {} \;)
+GNODEV_E2E=$(GNODEV) --unsafe-api --server-mode
+
 
 ARCH := $(shell uname -m)
 
@@ -431,9 +434,13 @@ generate.internal-contracts-clients: node_modules
 install-gno: node_modules
 	yarn install-gno
 
+.PHONY: start.gnodev
+start.gnodev:
+	$(GNODEV)
+
 .PHONY: start.gnodev-e2e
 start.gnodev-e2e:
-	gnodev --unsafe-api --server-mode --add-account g193vp9tjhfpldvgg3gn433ayv8pn7rtfv8shyeq $$(find gno -name gno.mod -type f -exec dirname {} \;)
+	$(GNODEV_E2E)
 
 .PHONY: clone-gno
 clone-gno:
