@@ -31,7 +31,11 @@ func Render(reqPath string) string {
 func renderHome(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write("# Cockpit\n\n")
 	res.Write("See `:" + userSlug + "/{addressOrName}`\n\n")
-	res.Write("[Example](./" + pkgPath + ":" + userSlug + "/@gno)")
+	res.Write("Examples:\n")
+	elems := rusers.ListUsersByPrefix("", 20)
+	for _, elem := range elems {
+		res.Write("- [ " + elem + " ](./" + pkgPath + ":" + userSlug + "/@" + elem + ")\n")
+	}
 }
 
 func renderUser(res *mux.ResponseWriter, req *mux.Request) {
