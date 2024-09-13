@@ -51,16 +51,17 @@ export const LaunchpadERC20Screen: ScreenFC<"LaunchpadERC20"> = () => {
             </BrandText>
             <SpacerColumn size={4} />
             <View style={styles.buttonsContainer}>
-                <LargeBoxButton
-                    {...BUTTONS[0]}
-                    url="https://airtable.com/shr1kU7kXW0267gNV"
-                />
+                <OmniLink noHoverEffect to={{ screen: "LaunchpadERC20Tokens" }}>
+                    <LargeBoxButton {...BUTTONS[0]} />
+                </OmniLink>
                 <SpacerRow size={1.2} />
-                <OmniLink noHoverEffect to={{ screen: "LaunchpadCreate" }}>
+                <OmniLink noHoverEffect to={{ screen: "LaunchpadERC20Airdrops" }}>
                     <LargeBoxButton {...BUTTONS[1]} />
                 </OmniLink>
                 <SpacerRow size={1.2} />
-                <LargeBoxButton {...BUTTONS[2]} />
+                <OmniLink noHoverEffect to={{ screen: "LaunchpadERC20Sales" }}>
+                    <LargeBoxButton {...BUTTONS[2]} />
+                </OmniLink>
             </View>
         </ScreenContainer>
     );

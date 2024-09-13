@@ -42,6 +42,9 @@ export type RootStackParamList = {
   LaunchpadCreate: undefined;
 
   LaunchpadERC20: undefined;
+  LaunchpadERC20Tokens: undefined;
+  LaunchpadERC20Airdrops: undefined;
+  LaunchpadERC20Sales: undefined;
 
   MintCollection: { id: string };
   TNSHome: { modal: string; name?: string } | undefined;
@@ -218,6 +221,9 @@ const navConfig: {
 
     // ==== Launchpad ERC20
     LaunchpadERC20: "launchpad-erc20",
+    LaunchpadERC20Tokens: "launchpad-erc20/tokens",
+    LaunchpadERC20Airdrops: "launchpad-erc20/airdrops",
+    LaunchpadERC20Sales: "launchpad-erc20/sales",
 
     // Mint NFT collection
     MintCollection: "collection/:id/mint",
