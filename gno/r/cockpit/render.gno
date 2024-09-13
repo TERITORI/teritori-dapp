@@ -10,19 +10,26 @@ import (
 	"gno.land/r/gnoland/ghverify"
 )
 
+const (
+	chainId    = "test4"
+	pkgName    = "cockpit"
+	userSlug   = "u"
+	usersRealm = "r/demo/users"
+)
+
 func Render(reqPath string) string {
 	router := mux.NewRouter()
 
 	router.HandleFunc("", renderHome)
-	router.HandleFunc("u/{aon}", renderUser)
+	router.HandleFunc(userSlug+"/{aon}", renderUser)
 
 	return router.Render(reqPath)
 }
 
 func renderHome(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write("# Cockpit\n\n")
-	res.Write("See `:u/{addressOrName}`\n\n")
-	res.Write("[Example](./cockpit:u/@gno)")
+	res.Write("See `:" + userSlug + "/{addressOrName}`\n\n")
+	res.Write("[Example](./" + pkgName + ":" + userSlug + "/@gno)")
 }
 
 func renderUser(res *mux.ResponseWriter, req *mux.Request) {
@@ -32,30 +39,36 @@ func renderUser(res *mux.ResponseWriter, req *mux.Request) {
 		return
 	}
 
-	res.Write(profile.GetStringField(addr, profile.DisplayName, "") + "\n\n")
+	// FIXME: markdown injection, spam
+	res.Write("# " + profile.GetStringField(addr, profile.DisplayName, "Anon") + "\n")
 
-	res.Write(username + "\n\n")
+	if username != "" {
+		res.Write("- Username: [" + username + "](/" + usersRealm + ":" + username + ")\n")
+	} else {
+		res.Write("- Username: [Not registered](/" + usersRealm + ")\n\n")
+	}
 
-	res.Write(addr.String() + "\n\n")
+	res.Write("- Address: [" + addr.String() + "](https://gnoscan.io/accounts/" + addr.String() + "?chainId=" + chainId + ")\n")
 
 	handle := ghverify.GetHandleByAddress(addr.String())
 	if handle != "" {
-		res.Write("GitHub: [" + handle + "](https://github.com/" + handle + ")\n\n")
+		res.Write("- GitHub: [@" + handle + "](https://github.com/" + handle + ")\n\n")
 	}
 
-	res.Write(profile.GetStringField(addr, profile.Bio, "") + "\n\n")
+	// FIXME: markdown injection, spam
+	res.Write("```\n" + profile.GetStringField(addr, profile.Bio, "") + "\n```\n\n")
 }
 
 func resolveUserBasics(aon string) (std.Address, string, bool) {
 	user := rusers.GetUserByAddressOrName(users.AddressOrName(aon))
 	if user != nil {
-		return user.Address, "@" + user.Name, true
+		return user.Address, user.Name, true
 	}
 
 	addr := std.Address(aon)
 	if !addr.IsValid() {
-		return addr, "", false
+		return addr, "", true
 	}
 
-	return addr, "agnome", true
+	return addr, "", false
 }
