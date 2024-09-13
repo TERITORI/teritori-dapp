@@ -60,7 +60,7 @@ func renderUser(res *mux.ResponseWriter, req *mux.Request) {
 	}
 
 	// FIXME: markdown injection, spam
-	res.Write("```\n" + profile.GetStringField(addr, profile.Bio, "") + "\n```\n[Full profile / edit](" + ghProfileHint + addr.String() + ")\n")
+	res.Write("```\n" + profile.GetStringField(addr, profile.Bio, "No bio") + "\n```\n[Full profile / edit](" + ghProfileHint + addr.String() + ")\n")
 }
 
 func resolveUserBasics(aon string) (std.Address, string, bool) {
