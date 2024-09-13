@@ -42,6 +42,8 @@ func renderUser(res *mux.ResponseWriter, req *mux.Request) {
 	if handle != "" {
 		res.Write("GitHub: [" + handle + "](https://github.com/" + handle + ")\n\n")
 	}
+
+	res.Write(profile.GetStringField(addr, profile.Bio, "") + "\n\n")
 }
 
 func resolveUserBasics(aon string) (std.Address, string, bool) {
