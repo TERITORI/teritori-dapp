@@ -8,11 +8,13 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { SpacerColumn } from "@/components/spacer";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { useScreenSize } from "@/hooks/useScreenSize";
 import { fontSemibold16, fontSemibold28 } from "@/utils/style/fonts";
+import { ScreenSizeBreakpoints } from "@/utils/style/layout";
 
 export const LaunchpadBanner: React.FC = () => {
   const { width } = useMaxResolution();
-  const isSmallScreen = width < 500;
+  const isSmallScreen = useScreenSize() === ScreenSizeBreakpoints.SMALL;
   const logoSize = isSmallScreen ? 44 : 88;
   const font = isSmallScreen ? fontSemibold16 : fontSemibold28;
 

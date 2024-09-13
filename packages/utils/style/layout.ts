@@ -15,6 +15,12 @@ export const MOBILE_MAX_WIDTH = 1024;
 export const RESPONSIVE_BREAKPOINT_S = 512;
 export const SOCIAL_FEED_BREAKPOINT_M = 800;
 
+export enum ScreenSizeBreakpoints {
+  SMALL = "SMALL",
+  MEDIUM = "MEDIUM",
+  BIG = "BIG",
+}
+
 export const getResponsiveScreenContainerMarginHorizontal = (width: number) => {
   if (width >= 992) {
     return 140;

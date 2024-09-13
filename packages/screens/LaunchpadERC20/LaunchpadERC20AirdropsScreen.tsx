@@ -14,10 +14,13 @@ export const LaunchpadERC20SalesScreen: ScreenFC<
   return (
     <ScreenContainer>
       <LaunchpadERC20Banner />
+
       <SpacerColumn size={2} />
+
       <BrandText style={fontSemibold28}>
         Welcome on the ERC20 Launchpad sales page
       </BrandText>
+
       <SpacerColumn size={2} />
     </ScreenContainer>
   );

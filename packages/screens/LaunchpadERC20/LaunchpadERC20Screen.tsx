@@ -39,15 +39,21 @@ export const LaunchpadERC20Screen: ScreenFC<"LaunchpadERC20"> = () => {
   return (
     <ScreenContainer>
       <LaunchpadERC20Banner />
+
       <SpacerColumn size={2} />
+
       <BrandText style={fontSemibold28}>
         Welcome on the ERC20 Launchpad
       </BrandText>
+
       <SpacerColumn size={2} />
+
       <BrandText style={styles.descriptionText}>
         Looking to create your own ERC20 token? Look no further.
       </BrandText>
+
       <SpacerColumn size={2} />
+
       <BrandText style={styles.descriptionText}>
         Teritori provide a simple and efficient way to create your own ERC20
         token.
@@ -56,16 +62,22 @@ export const LaunchpadERC20Screen: ScreenFC<"LaunchpadERC20"> = () => {
         In few clicks, you can create your own tokens, airdrops and sales to
         engage with your community.
       </BrandText>
+
       <SpacerColumn size={4} />
+
       <View style={styles.buttonsContainer}>
         <OmniLink noHoverEffect to={{ screen: "LaunchpadERC20Tokens" }}>
           <LargeBoxButton {...BUTTONS[0]} />
         </OmniLink>
+
         <SpacerRow size={1.2} />
+
         <OmniLink noHoverEffect to={{ screen: "LaunchpadERC20Airdrops" }}>
           <LargeBoxButton {...BUTTONS[1]} />
         </OmniLink>
+
         <SpacerRow size={1.2} />
+
         <OmniLink noHoverEffect to={{ screen: "LaunchpadERC20Sales" }}>
           <LargeBoxButton {...BUTTONS[2]} />
         </OmniLink>
