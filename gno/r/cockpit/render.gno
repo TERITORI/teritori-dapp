@@ -11,10 +11,12 @@ import (
 )
 
 const (
-	chainId    = "test4"
-	pkgName    = "cockpit"
-	userSlug   = "u"
-	usersRealm = "r/demo/users"
+	chainId       = "test4"
+	pkgName       = "cockpit"
+	userSlug      = "u"
+	usersRealm    = "r/demo/users"
+	ghLinkHint    = "r/gnoland/ghverify?help&__func=RequestVerification"
+	ghProfileHint = "/r/demo/profile:u/"
 )
 
 func Render(reqPath string) string {
@@ -45,18 +47,20 @@ func renderUser(res *mux.ResponseWriter, req *mux.Request) {
 	if username != "" {
 		res.Write("- Username: [" + username + "](/" + usersRealm + ":" + username + ")\n")
 	} else {
-		res.Write("- Username: [Not registered](/" + usersRealm + ")\n\n")
+		res.Write("- Username: [Not registered](/" + usersRealm + "?help&__func=Register)\n\n")
 	}
 
 	res.Write("- Address: [" + addr.String() + "](https://gnoscan.io/accounts/" + addr.String() + "?chainId=" + chainId + ")\n")
 
 	handle := ghverify.GetHandleByAddress(addr.String())
 	if handle != "" {
-		res.Write("- GitHub: [@" + handle + "](https://github.com/" + handle + ")\n\n")
+		res.Write("- GitHub: [" + handle + "](https://github.com/" + handle + ")\n\n")
+	} else {
+		res.Write("- GitHub: [Not linked](/" + ghLinkHint + ")\n\n")
 	}
 
 	// FIXME: markdown injection, spam
-	res.Write("```\n" + profile.GetStringField(addr, profile.Bio, "") + "\n```\n\n")
+	res.Write("```\n" + profile.GetStringField(addr, profile.Bio, "") + "\n```\n[Full profile / edit](" + ghProfileHint + addr.String() + ")\n")
 }
 
 func resolveUserBasics(aon string) (std.Address, string, bool) {
@@ -66,7 +70,7 @@ func resolveUserBasics(aon string) (std.Address, string, bool) {
 	}
 
 	addr := std.Address(aon)
-	if !addr.IsValid() {
+	if addr.IsValid() {
 		return addr, "", true
 	}
 
