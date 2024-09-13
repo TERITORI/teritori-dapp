@@ -118,6 +118,7 @@ type GnoNetwork struct {
 	NameServiceContractAddress string  `json:"nameServiceContractAddress"`
 	GnowebURL                  string  `json:"gnowebURL"`
 	TxIndexerURL               *string `json:"txIndexerURL"`
+	SocialFeedsPkgPath         *string `json:"socialFeedsPkgPath"`
 }
 
 var _ Network = &GnoNetwork{}

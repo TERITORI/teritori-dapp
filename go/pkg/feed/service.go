@@ -223,7 +223,7 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 
 func (s *FeedService) PostsWithLocation(ctx context.Context, data *feedpb.PostsWithLocationRequest) (*feedpb.PostsWithLocationResponse, error) {
 	locationFilter := locationFilter(data)
-	totalPosts, err := s.getPostsCountWithLocationFilter(locationFilter)
+	totalPosts, err := s.getPostsCountWithLocationFilter(data.NetworkId, locationFilter)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get posts with location filter")
 	}
@@ -235,14 +235,14 @@ func (s *FeedService) PostsWithLocation(ctx context.Context, data *feedpb.PostsW
 
 	return s.loadDetailedPosts(data, locationFilter)
 }
-func (s *FeedService) getPostsWithLocationFilter(locationFilter *locationQueryData) ([]indexerdb.Post, error) {
+func (s *FeedService) getPostsWithLocationFilter(networkID string, locationFilter *locationQueryData) ([]indexerdb.Post, error) {
 	posts := make([]indexerdb.Post, 0)
 	cachekey := locationFilter.cacheKey()
 	data, ok := s.cache.Get(cachekey)
 	if ok {
 		return data.([]indexerdb.Post), nil
 	}
-	err := s.conf.IndexerDB.Model(&indexerdb.Post{}).Where("lat_int < ? AND lat_int > ? AND lng_int < ? AND lng_int > ? AND  lat_int <> 0 AND lng_int <> 0 ", locationFilter.N, locationFilter.S, locationFilter.E, locationFilter.W).Find(&posts).Error
+	err := s.conf.IndexerDB.Model(&indexerdb.Post{}).Where("network_id = ? AND lat_int < ? AND lat_int > ? AND lng_int < ? AND lng_int > ? AND  lat_int <> 0 AND lng_int <> 0 ", networkID, locationFilter.N, locationFilter.S, locationFilter.E, locationFilter.W).Find(&posts).Error
 	if err != nil {
 		return nil, err
 	}
@@ -252,7 +252,7 @@ func (s *FeedService) getPostsWithLocationFilter(locationFilter *locationQueryDa
 	return posts, nil
 }
 
-func (s *FeedService) getPostsCountWithLocationFilter(locationFilter *locationQueryData) (int64, error) {
+func (s *FeedService) getPostsCountWithLocationFilter(networkID string, locationFilter *locationQueryData) (int64, error) {
 	cachekey := locationFilter.countCacheKey()
 	data, ok := s.cache.Get(cachekey)
 	if ok {
@@ -260,7 +260,7 @@ func (s *FeedService) getPostsCountWithLocationFilter(locationFilter *locationQu
 	}
 	var totalPost int64
 
-	err := s.conf.IndexerDB.Model(&indexerdb.Post{}).Where("lat_int < ? AND lat_int > ? AND lng_int < ? AND lng_int > ?", locationFilter.N, locationFilter.S, locationFilter.E, locationFilter.W).Count(&totalPost).Error
+	err := s.conf.IndexerDB.Model(&indexerdb.Post{}).Where("network_id = ? AND lat_int < ? AND lat_int > ? AND lng_int < ? AND lng_int > ?", networkID, locationFilter.N, locationFilter.S, locationFilter.E, locationFilter.W).Count(&totalPost).Error
 	if err != nil {
 		return 0, err
 	}
@@ -311,7 +311,7 @@ func (s *FeedService) loadHeatMap(data *feedpb.PostsWithLocationRequest) (*feedp
 }
 
 func (s *FeedService) loadDetailedPosts(data *feedpb.PostsWithLocationRequest, locationFilter *locationQueryData) (*feedpb.PostsWithLocationResponse, error) {
-	posts, err := s.getPostsWithLocationFilter(locationFilter)
+	posts, err := s.getPostsWithLocationFilter(data.NetworkId, locationFilter)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get posts with location filter")
 	}
@@ -330,11 +330,11 @@ func (s *FeedService) loadDetailedPosts(data *feedpb.PostsWithLocationRequest, l
 		}
 
 		res.Posts = append(res.Posts, &feedpb.Post{
-			Id:                   string(n.GetBase().PostID(post.Identifier)),
+			Id:                   string(n.GetBase().PostID(post.LocalIdentifier)),
 			Category:             post.Category,
 			IsDeleted:            post.IsDeleted,
-			Identifier:           post.Identifier,
-			LocalIdentifier:      post.Identifier,
+			Identifier:           post.LocalIdentifier,
+			LocalIdentifier:      post.LocalIdentifier,
 			NetworkId:            post.NetworkID,
 			Metadata:             string(post.Metadata),
 			ParentPostIdentifier: post.ParentPostIdentifier,

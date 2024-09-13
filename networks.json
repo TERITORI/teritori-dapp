@@ -4652,7 +4652,8 @@
     "vaultContractAddress": "",
     "nameServiceContractAddress": "gno.land/r/demo/users",
     "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
-    "gnowebURL": "https://test3.gno.land"
+    "gnowebURL": "https://test3.gno.land",
+    "txIndexerURL": "https://indexer.test3.gno.testnet.teritori.com"
   },
   {
     "id": "gno-test4",
@@ -4700,7 +4701,7 @@
     "socialFeedsDAOPkgPath": "gno.land/r/teritori/social_feeds_dao",
     "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
     "profilePkgPath": "gno.land/r/teritori/profile",
-    "txIndexerURL": "https://indexer.test4.gno.land"
+    "txIndexerURL": "https://indexer.test4.gno.testnet.teritori.com"
   },
   {
     "id": "cosmos-registry:gravitybridge",

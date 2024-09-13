@@ -1,32 +1,37 @@
-query GetPostTransactions(
-  $StartBlock: Int!
-) {
-    transactions(
-        filter: {
-            message: { vm_param: { exec: { func: "CreatePost" } } }
-            from_block_height: $StartBlock
-        }
-    ) {
-        index
-        hash
-        success
-        block_height
-        gas_wanted
-        gas_used
-        content_raw
-        memo
-        messages {
-            typeUrl
-            route
-            value {
-                ... on MsgCall {
-                    caller
-                    send
-                    pkg_path
-                    func
-                    args
-                }
-            }
-        }
+query GetPostTransactions($StartBlock: Int!, $PkgPath: String!) {
+  transactions(
+    filter: {
+      success: true
+      messages: {
+        vm_param: { exec: { func: "CreatePost", pkg_path: $PkgPath } }
+      }
+      from_block_height: $StartBlock
     }
+  ) {
+    index
+    hash
+    success
+    block_height
+    gas_wanted
+    gas_used
+    memo
+    messages {
+      typeUrl
+      route
+      value {
+        ... on MsgCall {
+          caller
+          send
+          pkg_path
+          func
+          args
+        }
+      }
+    }
+    response {
+      data
+      info
+      log
+    }
+  }
 }
