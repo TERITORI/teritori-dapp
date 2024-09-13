@@ -56,11 +56,11 @@ export type RootStackParamList = {
   NFTDetail: { id: string; openBuy?: boolean };
   Feed?: { tab: keyof typeof feedsTabItems; network?: string };
   FeedNewArticle:
-  | (NewPostFormValues & {
-    additionalMention?: string;
-    additionalHashtag?: string;
-  })
-  | undefined;
+    | (NewPostFormValues & {
+        additionalMention?: string;
+        additionalHashtag?: string;
+      })
+    | undefined;
   FeedPostView: { id: string };
   HashtagFeed: { hashtag: string };
 

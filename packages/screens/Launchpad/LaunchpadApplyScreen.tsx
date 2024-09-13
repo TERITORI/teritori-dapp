@@ -1,15 +1,15 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import {
-  LargeBoxButton,
-  LargeBoxButtonProps,
-} from "@/components/buttons/LargeBoxButton";
 import { LaunchpadBanner } from "./components/LaunchpadBanner";
 
 import { BrandText } from "@/components/BrandText";
 import { OmniLink } from "@/components/OmniLink";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import {
+  LargeBoxButton,
+  LargeBoxButtonProps,
+} from "@/components/buttons/LargeBoxButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral77 } from "@/utils/style/colors";

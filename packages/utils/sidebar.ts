@@ -1,3 +1,4 @@
+import { SidebarRecordType } from "./types/sidebar";
 import daoSVG from "../../assets/icons/dao.svg";
 import dappStoreSVG from "../../assets/icons/dapp-store.svg";
 import feedSVG from "../../assets/icons/feed.svg";
@@ -19,7 +20,6 @@ import tnsServiceSVG from "../../assets/icons/tns-service.svg";
 import walletRegSVG from "../../assets/icons/wallet-regular.svg";
 import walletSVG from "../../assets/icons/wallet-sidebar.svg";
 import { NetworkKind } from "../networks";
-import { SidebarRecordType } from "./types/sidebar";
 
 export const SIDEBAR_LIST: SidebarRecordType = {
   feed: {

@@ -284,7 +284,7 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         options={{ header: () => null, title: screenTitle("Mint Collection") }}
       />
 
-      { /* ==== Launchpad ERC20 */}
+      {/* ==== Launchpad ERC20 */}
       <Nav.Screen
         name="LaunchpadERC20"
         component={LaunchpadERC20Screen}
