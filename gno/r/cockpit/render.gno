@@ -47,17 +47,17 @@ func renderUser(res *mux.ResponseWriter, req *mux.Request) {
 	if username != "" {
 		res.Write("- Username: [" + username + "](/" + usersRealm + ":" + username + ")\n")
 	} else {
-		res.Write("- Username: [Not registered](/" + usersRealm + "?help&__func=Register)\n\n")
+		res.Write("- Username: [Not registered](/" + usersRealm + "?help&__func=Register)\n")
 	}
-
-	res.Write("- Address: [" + addr.String() + "](https://gnoscan.io/accounts/" + addr.String() + "?chainId=" + chainId + ")\n")
 
 	handle := ghverify.GetHandleByAddress(addr.String())
 	if handle != "" {
-		res.Write("- GitHub: [" + handle + "](https://github.com/" + handle + ")\n\n")
+		res.Write("- GitHub: [" + handle + "](https://github.com/" + handle + ")\n")
 	} else {
-		res.Write("- GitHub: [Not linked](/" + ghLinkHint + ")\n\n")
+		res.Write("- GitHub: [Not linked](/" + ghLinkHint + ")\n")
 	}
+
+	res.Write("- Address: [" + addr.String() + "](https://gnoscan.io/accounts/" + addr.String() + "?chainId=" + chainId + ")\n\n")
 
 	// FIXME: markdown injection, spam
 	res.Write("```\n" + profile.GetStringField(addr, profile.Bio, "No bio") + "\n```\n[Full profile / edit](" + ghProfileHint + addr.String() + ")\n")
