@@ -32,7 +32,7 @@ func renderUser(res *mux.ResponseWriter, req *mux.Request) {
 		return
 	}
 
-	res.Write(profile.GetStringField(addr, "DisplayName", "") + "\n\n")
+	res.Write(profile.GetStringField(addr, profile.DisplayName, "") + "\n\n")
 
 	res.Write(username + "\n\n")
 
