@@ -12,7 +12,7 @@ import (
 
 const (
 	chainId       = "test4"
-	pkgName       = "cockpit"
+	pkgPath       = "r/teritori/cockpit"
 	userSlug      = "u"
 	usersRealm    = "r/demo/users"
 	ghLinkHint    = "r/gnoland/ghverify?help&__func=RequestVerification"
@@ -31,7 +31,7 @@ func Render(reqPath string) string {
 func renderHome(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write("# Cockpit\n\n")
 	res.Write("See `:" + userSlug + "/{addressOrName}`\n\n")
-	res.Write("[Example](./" + pkgName + ":" + userSlug + "/@gno)")
+	res.Write("[Example](./" + pkgPath + ":" + userSlug + "/@gno)")
 }
 
 func renderUser(res *mux.ResponseWriter, req *mux.Request) {
