@@ -6,8 +6,8 @@ import Long from "long";
 import React, { useMemo, useState } from "react";
 import { Platform, ScrollView, useWindowDimensions, View } from "react-native";
 
-import { TNSModalCommonProps } from "./TNSHomeScreen";
 import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
+import { TNSModalCommonProps } from "./types";
 import longCardSVG from "../../../assets/cards/long-card.svg";
 import coinSVG from "../../../assets/icons/coin.svg";
 import ModalBase from "../../components/modals/ModalBase";

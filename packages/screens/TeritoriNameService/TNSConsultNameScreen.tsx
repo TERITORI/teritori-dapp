@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import React, { useMemo, useState } from "react";
 import { Platform, View, useWindowDimensions } from "react-native";
 
-import { TNSModalCommonProps } from "./TNSHomeScreen";
+import { TNSModalCommonProps } from "./types";
 import ModalBase from "../../components/modals/ModalBase";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 

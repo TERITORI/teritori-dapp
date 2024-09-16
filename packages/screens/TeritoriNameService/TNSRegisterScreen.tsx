@@ -1,7 +1,7 @@
 import React from "react";
 import { Platform, useWindowDimensions } from "react-native";
 
-import { TNSCloseHandler } from "./TNSHomeScreen";
+import { TNSCloseHandler } from "./types";
 import GradientModalBase from "../../components/modals/GradientModalBase";
 
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";

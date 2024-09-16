@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { View } from "react-native";
 
-import { TNSModalCommonProps } from "./TNSHomeScreen";
+import { TNSModalCommonProps } from "./types";
 import burnSVG from "../../../assets/icons/burn.svg";
 import ModalBase from "../../components/modals/ModalBase";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
