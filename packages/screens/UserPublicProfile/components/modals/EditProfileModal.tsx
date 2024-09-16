@@ -8,7 +8,7 @@ import { EditProfileForm } from "../forms/EditProfileForm";
 import ModalBase from "@/components/modals/ModalBase";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useTNS } from "@/context/TNSProvider";
-import { nsNameInfoQueryKey } from "@/hooks/useNSNameInfo";
+import { GNO_CONTRACT_FIELD, nsNameInfoQueryKey } from "@/hooks/useNSNameInfo";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetwork, mustGetGnoNetwork, NetworkKind } from "@/networks";
@@ -86,16 +86,16 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
         let field = key;
         switch (field) {
           case "displayName":
-            field = "DisplayName";
+            field = GNO_CONTRACT_FIELD.DISPLAY_NAME;
             break;
           case "bio":
-            field = "Bio";
+            field = GNO_CONTRACT_FIELD.BIO;
             break;
           case "avatarURL":
-            field = "Avatar";
+            field = GNO_CONTRACT_FIELD.AVATAR;
             break;
           case "bannerURL":
-            field = "Ext_Banner";
+            field = GNO_CONTRACT_FIELD.BANNER;
             break;
           default:
             throw Error(`undefined field  ${field}`);

@@ -150,7 +150,7 @@ export const EditProfileForm: React.FC<{
       <PrimaryButton
         size="M"
         text={btnLabel}
-        disabled={disabled}
+        disabled={disabled || !isValid}
         onPress={handleSubmit(onSubmit)}
         boxStyle={{ marginTop: layout.spacing_x1 }}
         loader

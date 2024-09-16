@@ -12,6 +12,16 @@ import { getCosmosNameServiceQueryClient } from "@/utils/contracts";
 import { extractGnoJSONString, extractGnoString } from "@/utils/gno";
 import { ProfileData } from "@/utils/upp";
 
+export const GNO_CONTRACT_FIELD = {
+  // Standard fields
+  DISPLAY_NAME: "DisplayName",
+  BIO: "Bio",
+  AVATAR: "Avatar",
+
+  // Extra fields
+  BANNER: "Ext_Banner",
+};
+
 export const nsNameInfoQueryKey = (
   networkId: string | undefined,
   tokenId: string | null | undefined,
@@ -115,7 +125,12 @@ const gnoGetUserProfile = async (network: GnoNetworkInfo, address: string) => {
     throw Error("profilePkgPath is not given");
   }
 
-  const profileFields = ["DisplayName", "Bio", "Avatar", "Ext_Banner"];
+  const profileFields = [
+    GNO_CONTRACT_FIELD.DISPLAY_NAME,
+    GNO_CONTRACT_FIELD.BIO,
+    GNO_CONTRACT_FIELD.AVATAR,
+    GNO_CONTRACT_FIELD.BANNER,
+  ];
   const promises = profileFields.map((field) =>
     provider.evaluateExpression(
       profilePkgPath,
