@@ -6,7 +6,6 @@ import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
 import governanceSVG from "../../assets/icons/governance.svg";
 import gridSVG from "../../assets/icons/grid.svg";
 import launchpadApplySVG from "../../assets/icons/launchpad-apply.svg";
-import launchpadERC20SVG from "../../assets/icons/launchpad-erc20.svg";
 import launchpadLaunchpadSVG from "../../assets/icons/launchpad-launchpad.svg";
 import launchpadSVG from "../../assets/icons/launchpad.svg";
 import messagesSVG from "../../assets/icons/messages.svg";
@@ -38,7 +37,7 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     title: "Launchpad ERC20",
     id: "Launchpad ERC20",
     route: "LaunchpadERC20",
-    icon: launchpadERC20SVG,
+    icon: launchpadSVG,
   },
   launchpad: {
     title: "Launchpad",

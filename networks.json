@@ -4467,7 +4467,8 @@
       "Organizations",
       "SocialFeed",
       "UPP",
-      "GnoProjectManager"
+      "GnoProjectManager",
+      "LaunchpadERC20"
     ],
     "featureObjects": [
       {

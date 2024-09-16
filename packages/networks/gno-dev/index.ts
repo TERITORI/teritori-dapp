@@ -11,6 +11,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
     NetworkFeature.SocialFeed,
     NetworkFeature.UPP,
     NetworkFeature.GnoProjectManager,
+    NetworkFeature.LaunchpadERC20,
   ],
   featureObjects: [
     {
