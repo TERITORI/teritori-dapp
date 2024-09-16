@@ -11,6 +11,7 @@ import {
   LargeBoxButtonProps,
 } from "@/components/buttons/LargeBoxButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { NetworkFeature, NetworkKind } from "@/networks";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral77 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
@@ -37,7 +38,11 @@ const BUTTONS: LargeBoxButtonProps[] = [
 
 export const LaunchpadERC20Screen: ScreenFC<"LaunchpadERC20"> = () => {
   return (
-    <ScreenContainer>
+    <ScreenContainer
+      headerChildren={<BrandText>Name Service</BrandText>}
+      forceNetworkFeatures={[NetworkFeature.LaunchpadERC20]}
+      forceNetworkKind={NetworkKind.Gno}
+    >
       <LaunchpadERC20Banner />
 
       <SpacerColumn size={2} />
