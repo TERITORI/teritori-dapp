@@ -10,17 +10,12 @@ import {
 import { GnoNetworkInfo, NetworkKind, getNetwork } from "@/networks";
 import { getCosmosNameServiceQueryClient } from "@/utils/contracts";
 import { extractGnoJSONString, extractGnoString } from "@/utils/gno";
+import { ProfileData } from "@/utils/upp";
 
 export const nsNameInfoQueryKey = (
   networkId: string | undefined,
   tokenId: string | null | undefined,
 ) => ["nsNameInfo", networkId, tokenId];
-
-type UserProfile = {
-  displayName: string;
-  bio: string;
-  avatar: string;
-};
 
 export const useNSNameInfo = (
   networkId: string | undefined,
@@ -75,7 +70,8 @@ export const useNSNameInfo = (
               extension: {
                 public_bio: profile.bio,
                 public_name: profile.displayName,
-                image: profile.avatar,
+                image: profile.avatarURL,
+                public_profile_header: profile.bannerURL,
               },
             };
             return res;
@@ -119,7 +115,7 @@ const gnoGetUserProfile = async (network: GnoNetworkInfo, address: string) => {
     throw Error("profilePkgPath is not given");
   }
 
-  const profileFields = ["DisplayName", "Bio", "Avatar"];
+  const profileFields = ["DisplayName", "Bio", "Avatar", "Ext_Banner"];
   const promises = profileFields.map((field) =>
     provider.evaluateExpression(
       profilePkgPath,
@@ -130,12 +126,12 @@ const gnoGetUserProfile = async (network: GnoNetworkInfo, address: string) => {
   const dataRaw = await Promise.all(promises);
   const extractedData = dataRaw.map(extractGnoString);
 
-  const profile: UserProfile = {
+  const profile: ProfileData = {
     displayName: extractedData[0],
     bio: extractedData[1],
-    avatar: extractedData[2],
+    avatarURL: extractedData[2],
+    bannerURL: extractedData[3],
   };
-
   return profile;
 };
 

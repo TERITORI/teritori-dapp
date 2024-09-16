@@ -8,6 +8,7 @@ import { TNSManageScreen } from "./TNSManageScreen";
 import { TNSMintNameScreen } from "./TNSMintNameScreen";
 import { TNSRegisterScreen } from "./TNSRegisterScreen";
 import { TNSUpdateNameScreen } from "./TNSUpdateNameScreen";
+import { TNSCloseHandler, TNSItems, TNSModals } from "./types";
 import TNSBannerPNG from "../../../assets/banners/tns.png";
 import exploreSVG from "../../../assets/icons/explore-neutral77.svg";
 import penSVG from "../../../assets/icons/pen-neutral77.svg";
@@ -32,16 +33,6 @@ import {
 } from "@/networks";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 
-type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
-type TNSModals =
-  | "TNSManage"
-  | "TNSRegister"
-  | "TNSExplore"
-  | "TNSConsultName"
-  | "TNSMintName"
-  | "TNSUpdateName"
-  | "TNSBurnName";
-
 const TNSPathMap = {
   TNSManage: "manage",
   TNSRegister: "register",
@@ -51,17 +42,6 @@ const TNSPathMap = {
   TNSUpdateName: "update-name",
   TNSBurnName: "burn-name",
 };
-
-export type TNSCloseHandler = (
-  modalName?: TNSModals,
-  navigateTo?: TNSModals,
-  name?: string,
-) => void;
-
-export interface TNSModalCommonProps {
-  onClose: TNSCloseHandler;
-  navigateBackTo?: TNSModals;
-}
 
 const LG_BREAKPOINT = 1600;
 const MD_BREAKPOINT = 820;

@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { TNSModalCommonProps } from "./TNSHomeScreen";
+import { TNSModalCommonProps } from "./types";
 import logoSVG from "../../../assets/logos/logo.svg";
 import ModalBase from "../../components/modals/ModalBase";
 import useSelectedWallet from "../../hooks/useSelectedWallet";

@@ -4,7 +4,7 @@ import { Buffer } from "buffer";
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { TNSModalCommonProps } from "./TNSHomeScreen";
+import { TNSModalCommonProps } from "./types";
 import ModalBase from "../../components/modals/ModalBase";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 

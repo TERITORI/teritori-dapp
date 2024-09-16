@@ -261,8 +261,8 @@ export const TextInputCustom = <T extends FieldValues>({
         style={style}
         mainContainerStyle={[
           styles.mainContainer,
-          boxMainContainerStyle,
           noBrokenCorners && styles.noCropBorderBg,
+          boxMainContainerStyle,
           hovered && { borderColor: secondaryColor },
           height !== undefined &&
             height <= styles.mainContainer.minHeight && { minHeight: height },
