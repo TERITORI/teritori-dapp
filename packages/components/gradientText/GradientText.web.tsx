@@ -18,6 +18,12 @@ import {
 } from "../../utils/style/colors";
 import { exoFontFamilyFromFontWeight } from "../../utils/style/fonts";
 
+import {
+  getMapPostTextGradientString,
+  getMapPostTextGradientType,
+} from "@/utils/feed/map";
+import { PostCategory } from "@/utils/types/feed";
+
 const gradient = (type: GradientType) => {
   switch (type) {
     case "blue":
@@ -34,6 +40,16 @@ const gradient = (type: GradientType) => {
       return `90deg, ${gradientColorGray} 0%, ${gradientColorLightGray} 100%`;
     case "grayLight":
       return `90deg, ${gradientColorLighterGray} 0%, ${gradientColorLightLavender} 100%`;
+    case getMapPostTextGradientType(PostCategory.Normal):
+      return getMapPostTextGradientString(PostCategory.Normal);
+    case getMapPostTextGradientType(PostCategory.Article):
+      return getMapPostTextGradientString(PostCategory.Article);
+    case getMapPostTextGradientType(PostCategory.Video):
+      return getMapPostTextGradientString(PostCategory.Video);
+    case getMapPostTextGradientType(PostCategory.Picture):
+      return getMapPostTextGradientString(PostCategory.Picture);
+    case getMapPostTextGradientType(PostCategory.MusicAudio):
+      return getMapPostTextGradientString(PostCategory.MusicAudio);
   }
 };
 
