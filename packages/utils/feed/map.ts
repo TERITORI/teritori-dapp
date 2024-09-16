@@ -171,11 +171,11 @@ export const getMapPostIconSVG = (
   postCategory: PostCategory,
 ): FunctionComponent => {
   switch (postCategory) {
-    case PostCategory.MusicAudio:
+    case PostCategory.Audio || PostCategory.MusicAudio:
       return musicPostSvg;
     case PostCategory.Picture:
       return picturePostSvg;
-    case PostCategory.Video:
+    case PostCategory.Video || PostCategory.VideoNote:
       return videoPostSvg;
     case PostCategory.Article:
       return articlePostSvg;
@@ -188,11 +188,11 @@ export const getMapPostIconSVG = (
 
 export const getMapPostIconSVGString = (postCategory: PostCategory) => {
   switch (postCategory) {
-    case PostCategory.MusicAudio:
+    case PostCategory.Audio || PostCategory.MusicAudio:
       return musicPostSvgString;
     case PostCategory.Picture:
       return picturePostSvgString;
-    case PostCategory.Video:
+    case PostCategory.Video || PostCategory.VideoNote:
       return videoPostSvgString;
     case PostCategory.Article:
       return articlePostSvgString;
@@ -205,11 +205,11 @@ export const getMapPostIconSVGString = (postCategory: PostCategory) => {
 
 export const getMapPostIconColorRgba = (postCategory: PostCategory) => {
   switch (postCategory) {
-    case PostCategory.MusicAudio:
+    case PostCategory.Audio || PostCategory.MusicAudio:
       return "255,147,147,.40";
     case PostCategory.Picture:
       return "136,147,255,.40";
-    case PostCategory.Video:
+    case PostCategory.Video || PostCategory.VideoNote:
       return "198,171,255,.40";
     case PostCategory.Article:
       return "255,252,207,.40";
@@ -222,11 +222,11 @@ export const getMapPostIconColorRgba = (postCategory: PostCategory) => {
 
 export const getMapPostTextGradientType = (postCategory: PostCategory) => {
   switch (postCategory) {
-    case PostCategory.MusicAudio:
+    case PostCategory.Audio || PostCategory.MusicAudio:
       return "feed-map-music-post";
     case PostCategory.Picture:
       return "feed-map-picture-post";
-    case PostCategory.Video:
+    case PostCategory.Video || PostCategory.VideoNote:
       return "feed-map-video-post";
     case PostCategory.Article:
       return "feed-map-article-post";
@@ -244,13 +244,13 @@ export const getMapPostTextGradient = (postCategory: PostCategory) => {
     end: { x: 0, y: 0 },
   };
   switch (postCategory) {
-    case PostCategory.MusicAudio:
+    case PostCategory.Audio || PostCategory.MusicAudio:
       gradientProps.colors = ["#FF9393", "#FF5C5C"];
       break;
     case PostCategory.Picture:
       gradientProps.colors = ["#88DCFF", "#16BBFF"];
       break;
-    case PostCategory.Video:
+    case PostCategory.Video || PostCategory.VideoNote:
       gradientProps.colors = ["#C6ABFF", "#A57AFF"];
       break;
     case PostCategory.Article:
@@ -268,11 +268,11 @@ export const getMapPostTextGradient = (postCategory: PostCategory) => {
 
 export const getMapPostTextGradientString = (postCategory: PostCategory) => {
   switch (postCategory) {
-    case PostCategory.MusicAudio:
+    case PostCategory.Audio || PostCategory.MusicAudio:
       return `180deg, #FF9393 100%, #FF5C5C 100%`;
     case PostCategory.Picture:
       return `180deg, #88DCFF 100%, #16BBFF 100%`;
-    case PostCategory.Video:
+    case PostCategory.Video || PostCategory.VideoNote:
       return `180deg, #C6ABFF 100%, #A57AFF 100%`;
     case PostCategory.Article:
       return `180deg, #FFFC6B 100%, #E5E13B 100%`;

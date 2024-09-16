@@ -29,6 +29,7 @@ import { NormalMapPost } from "@/components/socialFeed/Map/MapPosts/NormalMapPos
 import { PictureMapPost } from "@/components/socialFeed/Map/MapPosts/PictureMapPost";
 import { VideoMapPost } from "@/components/socialFeed/Map/MapPosts/VideoMapPost";
 import { useFetchFeedLocation } from "@/hooks/feed/useFetchFeed";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   DEFAULT_MAP_POSITION,
   getMapPostIconColorRgba,
@@ -73,6 +74,7 @@ export const Map: FC<MapProps> = ({
   style,
   postCategory = -1,
 }) => {
+  const selectedNetworkId = useSelectedNetworkId();
   const [bounds, setBounds] = useState<LatLngBounds | null>(null);
 
   // Prevent infinite rendering after locationSelected update
@@ -101,6 +103,7 @@ export const Map: FC<MapProps> = ({
     south: bounds?.getSouth(),
     west: bounds?.getWest(),
     east: bounds?.getEast(),
+    networkId: selectedNetworkId,
   });
   const posts = data?.list;
   const aggregatedPosts = data?.aggregations;
@@ -227,11 +230,13 @@ export const Map: FC<MapProps> = ({
                 <Popup closeButton={false} className="marker-popup">
                   <NormalMapPost post={marker.post} />
                 </Popup>
-              ) : marker.post.category === PostCategory.MusicAudio ? (
+              ) : marker.post.category === PostCategory.MusicAudio ||
+                marker.post.category === PostCategory.Audio ? (
                 <Popup closeButton={false} className="marker-popup">
                   <MusicMapPost post={marker.post} />
                 </Popup>
-              ) : marker.post.category === PostCategory.Video ? (
+              ) : marker.post.category === PostCategory.VideoNote ||
+                marker.post.category === PostCategory.Video ? (
                 <Popup closeButton={false} className="marker-popup">
                   <VideoMapPost post={marker.post} />
                 </Popup>
