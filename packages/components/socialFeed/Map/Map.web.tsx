@@ -33,7 +33,7 @@ import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   DEFAULT_MAP_POSITION,
   getMapPostIconColorRgba,
-  getMapPostIconSVGString,
+  getMapPostIconSVGString, MAP_LAYER_URL
 } from "@/utils/feed/map";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import { PostCategory, ZodSocialFeedPostMetadata } from "@/utils/types/feed";
@@ -182,7 +182,7 @@ export const Map: FC<MapProps> = ({
         <TileLayer
           noWrap
           attribution=""
-          url="https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=QkwJFLzzxPan25YCgnDExGpMFPxA3x4lnyKiUf8zmaqXLP5XyOR8n3yEM8jlKV3W"
+          url={MAP_LAYER_URL}
         />
 
         {/*---- When the user creates a post and want to add a location to it*/}

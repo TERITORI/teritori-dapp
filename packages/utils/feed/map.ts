@@ -10,6 +10,8 @@ import { PostCategory } from "@/utils/types/feed";
 
 //TODO: Get <svg/> as string from svg files (These svg strings are used in FeedMapList.web.tsx)
 
+export const MAP_LAYER_URL = `https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=${process.env.EXPO_PUBLIC_LEAFLET_MAP_TOKEN}`;
+
 // Paris baguette
 export const DEFAULT_MAP_POSITION = [48.8566, 2.3522];
 

@@ -2,7 +2,7 @@ import { FC } from "react";
 import { LeafletView } from "react-native-leaflet-view";
 
 import { MapProps } from "@/components/socialFeed/Map/Map.types";
-import { DEFAULT_MAP_POSITION } from "@/utils/feed/map";
+import { DEFAULT_MAP_POSITION, MAP_LAYER_URL } from "@/utils/feed/map";
 
 export const Map: FC<MapProps> = ({
   locationSelected,
@@ -15,7 +15,7 @@ export const Map: FC<MapProps> = ({
       mapCenterPosition={locationSelected || locationToCenter}
       mapLayers={[
         {
-          url: `https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=${process.env.EXPO_PUBLIC_LEAFLET_MAP_TOKEN}`,
+          url: MAP_LAYER_URL,
         },
       ]}
       mapMarkers={[
