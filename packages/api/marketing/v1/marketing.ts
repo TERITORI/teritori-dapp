@@ -64,6 +64,14 @@ export interface UpcomingCollectionsResponse {
   collections: MarketingCollectionPreview[];
 }
 
+export interface HighlightedCollectionsRequest {
+  networkId: string;
+}
+
+export interface HighlightedCollectionsResponse {
+  collections: MarketingCollectionPreview[];
+}
+
 function createBaseMarketingCollectionPreview(): MarketingCollectionPreview {
   return { id: "", imageUri: "", collectionName: "", creatorName: "", twitterUrl: "", secondaryDuringMint: false };
 }
@@ -931,6 +939,128 @@ export const UpcomingCollectionsResponse = {
   },
 };
 
+function createBaseHighlightedCollectionsRequest(): HighlightedCollectionsRequest {
+  return { networkId: "" };
+}
+
+export const HighlightedCollectionsRequest = {
+  encode(message: HighlightedCollectionsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.networkId !== "") {
+      writer.uint32(10).string(message.networkId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): HighlightedCollectionsRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseHighlightedCollectionsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): HighlightedCollectionsRequest {
+    return { networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "" };
+  },
+
+  toJSON(message: HighlightedCollectionsRequest): unknown {
+    const obj: any = {};
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<HighlightedCollectionsRequest>, I>>(base?: I): HighlightedCollectionsRequest {
+    return HighlightedCollectionsRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<HighlightedCollectionsRequest>, I>>(
+    object: I,
+  ): HighlightedCollectionsRequest {
+    const message = createBaseHighlightedCollectionsRequest();
+    message.networkId = object.networkId ?? "";
+    return message;
+  },
+};
+
+function createBaseHighlightedCollectionsResponse(): HighlightedCollectionsResponse {
+  return { collections: [] };
+}
+
+export const HighlightedCollectionsResponse = {
+  encode(message: HighlightedCollectionsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.collections) {
+      MarketingCollectionPreview.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): HighlightedCollectionsResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseHighlightedCollectionsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.collections.push(MarketingCollectionPreview.decode(reader, reader.uint32()));
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): HighlightedCollectionsResponse {
+    return {
+      collections: globalThis.Array.isArray(object?.collections)
+        ? object.collections.map((e: any) => MarketingCollectionPreview.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: HighlightedCollectionsResponse): unknown {
+    const obj: any = {};
+    if (message.collections?.length) {
+      obj.collections = message.collections.map((e) => MarketingCollectionPreview.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<HighlightedCollectionsResponse>, I>>(base?: I): HighlightedCollectionsResponse {
+    return HighlightedCollectionsResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<HighlightedCollectionsResponse>, I>>(
+    object: I,
+  ): HighlightedCollectionsResponse {
+    const message = createBaseHighlightedCollectionsResponse();
+    message.collections = object.collections?.map((e) => MarketingCollectionPreview.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 export interface MarketingService {
   News(request: DeepPartial<NewsRequest>, metadata?: grpc.Metadata): Promise<NewsResponse>;
   LiveCollections(
@@ -941,6 +1071,10 @@ export interface MarketingService {
     request: DeepPartial<UpcomingCollectionsRequest>,
     metadata?: grpc.Metadata,
   ): Promise<UpcomingCollectionsResponse>;
+  HighlightedCollections(
+    request: DeepPartial<HighlightedCollectionsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<HighlightedCollectionsResponse>;
 }
 
 export class MarketingServiceClientImpl implements MarketingService {
@@ -951,6 +1085,7 @@ export class MarketingServiceClientImpl implements MarketingService {
     this.News = this.News.bind(this);
     this.LiveCollections = this.LiveCollections.bind(this);
     this.UpcomingCollections = this.UpcomingCollections.bind(this);
+    this.HighlightedCollections = this.HighlightedCollections.bind(this);
   }
 
   News(request: DeepPartial<NewsRequest>, metadata?: grpc.Metadata): Promise<NewsResponse> {
@@ -971,6 +1106,17 @@ export class MarketingServiceClientImpl implements MarketingService {
     return this.rpc.unary(
       MarketingServiceUpcomingCollectionsDesc,
       UpcomingCollectionsRequest.fromPartial(request),
+      metadata,
+    );
+  }
+
+  HighlightedCollections(
+    request: DeepPartial<HighlightedCollectionsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<HighlightedCollectionsResponse> {
+    return this.rpc.unary(
+      MarketingServiceHighlightedCollectionsDesc,
+      HighlightedCollectionsRequest.fromPartial(request),
       metadata,
     );
   }
@@ -1037,6 +1183,29 @@ export const MarketingServiceUpcomingCollectionsDesc: UnaryMethodDefinitionish =
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = UpcomingCollectionsResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const MarketingServiceHighlightedCollectionsDesc: UnaryMethodDefinitionish = {
+  methodName: "HighlightedCollections",
+  service: MarketingServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return HighlightedCollectionsRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = HighlightedCollectionsResponse.decode(data);
       return {
         ...value,
         toObject() {

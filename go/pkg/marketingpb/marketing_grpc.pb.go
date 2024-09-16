@@ -25,6 +25,7 @@ type MarketingServiceClient interface {
 	News(ctx context.Context, in *NewsRequest, opts ...grpc.CallOption) (*NewsResponse, error)
 	LiveCollections(ctx context.Context, in *LiveCollectionsRequest, opts ...grpc.CallOption) (*LiveCollectionsResponse, error)
 	UpcomingCollections(ctx context.Context, in *UpcomingCollectionsRequest, opts ...grpc.CallOption) (*UpcomingCollectionsResponse, error)
+	HighlightedCollections(ctx context.Context, in *HighlightedCollectionsRequest, opts ...grpc.CallOption) (*HighlightedCollectionsResponse, error)
 }
 
 type marketingServiceClient struct {
@@ -62,6 +63,15 @@ func (c *marketingServiceClient) UpcomingCollections(ctx context.Context, in *Up
 	return out, nil
 }
 
+func (c *marketingServiceClient) HighlightedCollections(ctx context.Context, in *HighlightedCollectionsRequest, opts ...grpc.CallOption) (*HighlightedCollectionsResponse, error) {
+	out := new(HighlightedCollectionsResponse)
+	err := c.cc.Invoke(ctx, "/marketing.v1.MarketingService/HighlightedCollections", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MarketingServiceServer is the server API for MarketingService service.
 // All implementations must embed UnimplementedMarketingServiceServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type MarketingServiceServer interface {
 	News(context.Context, *NewsRequest) (*NewsResponse, error)
 	LiveCollections(context.Context, *LiveCollectionsRequest) (*LiveCollectionsResponse, error)
 	UpcomingCollections(context.Context, *UpcomingCollectionsRequest) (*UpcomingCollectionsResponse, error)
+	HighlightedCollections(context.Context, *HighlightedCollectionsRequest) (*HighlightedCollectionsResponse, error)
 	mustEmbedUnimplementedMarketingServiceServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedMarketingServiceServer) LiveCollections(context.Context, *Liv
 }
 func (UnimplementedMarketingServiceServer) UpcomingCollections(context.Context, *UpcomingCollectionsRequest) (*UpcomingCollectionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpcomingCollections not implemented")
+}
+func (UnimplementedMarketingServiceServer) HighlightedCollections(context.Context, *HighlightedCollectionsRequest) (*HighlightedCollectionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HighlightedCollections not implemented")
 }
 func (UnimplementedMarketingServiceServer) mustEmbedUnimplementedMarketingServiceServer() {}
 
@@ -152,6 +166,24 @@ func _MarketingService_UpcomingCollections_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MarketingService_HighlightedCollections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HighlightedCollectionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketingServiceServer).HighlightedCollections(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/marketing.v1.MarketingService/HighlightedCollections",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketingServiceServer).HighlightedCollections(ctx, req.(*HighlightedCollectionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MarketingService_ServiceDesc is the grpc.ServiceDesc for MarketingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var MarketingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpcomingCollections",
 			Handler:    _MarketingService_UpcomingCollections_Handler,
+		},
+		{
+			MethodName: "HighlightedCollections",
+			Handler:    _MarketingService_HighlightedCollections_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
