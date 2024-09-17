@@ -221,7 +221,7 @@ export const TextInputCustom = <T extends FieldValues>({
     return (
       <TextInput
         ref={inputRef}
-        editable={!disabled}
+        readOnly={disabled}
         placeholder={placeHolder}
         onChangeText={handleChangeText}
         onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
@@ -293,7 +293,7 @@ export const TextInputCustom = <T extends FieldValues>({
               ))}
             <TextInput
               ref={inputRef}
-              editable={!disabled}
+              readOnly={disabled}
               placeholder={placeHolder}
               onChangeText={handleChangeText}
               onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}

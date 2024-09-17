@@ -1,10 +1,10 @@
 import React, { memo, useState } from "react";
 
 import { UPPIntro } from "./UPPIntro";
-import { EditProfileModal } from "./modals/EditProfileModal";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 
 import { Tabs } from "@/components/tabs/Tabs";
+import { EditProfileModal } from "@/components/user/modals/EditProfileModal";
 import { useTNS } from "@/context/TNSProvider";
 import { useIsDAO } from "@/hooks/cosmwasm/useCosmWasmContractInfo";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";

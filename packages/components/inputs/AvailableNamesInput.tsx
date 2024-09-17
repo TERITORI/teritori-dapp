@@ -10,6 +10,7 @@ import { useNSAvailability } from "@/hooks/useNSAvailability";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { NetworkInfo, NetworkKind, getNetwork } from "@/networks";
 import {
+  neutral17,
   neutral33,
   neutral77,
   primaryColor,
@@ -30,6 +31,7 @@ interface TextInputCustomProps<T extends FieldValues>
   style?: ViewStyle;
   variant?: "regular" | "labelOutside" | "noStyle";
   error?: string;
+  readOnly?: boolean;
 }
 
 type AvailabilityInfoProps = {
@@ -122,7 +124,7 @@ const getNameByNetwork = (
   }
 
   if (network?.kind === NetworkKind.Gno) {
-    return `: ${name}.gno`;
+    return " : " + (name.includes(".gno") ? name : `${name}.gno`);
   }
 
   throw Error(`unsupported network kind: ${network?.kind}`);
@@ -140,10 +142,13 @@ export const AvailableNamesInput = <T extends FieldValues>({
   style,
   variant = "labelOutside",
   error,
+  readOnly,
 }: TextInputCustomProps<T>) => {
   const selectedNetwork = useSelectedNetworkInfo();
   const network = getNetwork(selectedNetwork?.id);
+
   const nameAvailability = useNSAvailability(selectedNetwork?.id, nameValue);
+
   const price =
     nameAvailability.availability === "mint"
       ? nameAvailability.prettyPrice
@@ -166,6 +171,10 @@ export const AvailableNamesInput = <T extends FieldValues>({
       rules={{ required: true }}
       regexp={new RegExp(/^[a-zA-Z]+$/)}
       style={style}
+      readOnly={readOnly}
+      boxMainContainerStyle={{
+        backgroundColor: readOnly ? neutral17 : undefined,
+      }}
       control={
         control
           ? (control as unknown as Control<NameFinderFormType>)

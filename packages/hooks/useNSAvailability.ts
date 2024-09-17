@@ -1,6 +1,7 @@
 import { Decimal } from "@cosmjs/math";
 
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
+import { useDebounce } from "./useDebounce";
 import { useNSMintAvailability } from "./useNSMintAvailability";
 import { useNSMintPrice } from "./useNSMintPrice";
 import { useVaultNFTInfo } from "./useVaultNFTInfo";
@@ -39,7 +40,8 @@ export const useNSAvailability = (
   name: string,
 ): NSAvailability => {
   const network = getNetwork(networkId);
-  const tokenId = getNameOrTokenIdByNetwork(network, name);
+  const _tokenId = getNameOrTokenIdByNetwork(network, name);
+  const tokenId = useDebounce(_tokenId, 500);
 
   const { nsMintPrice, isLoading: isLoadingNSMintPrice } = useNSMintPrice(
     networkId,

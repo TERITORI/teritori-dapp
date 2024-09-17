@@ -14,7 +14,7 @@ import { extractGnoNumber } from "@/utils/gno";
 
 // TODO: move all ns hooks to a hooks/ns directory
 
-const getGnoMintPrice = async (network: GnoNetworkInfo, tokenId: string) => {
+const gnoGetMintPrice = async (network: GnoNetworkInfo, tokenId: string) => {
   const provider = new GnoJSONRPCProvider(network.endpoint);
   const rawResp = await provider.evaluateExpression(
     network.nameServiceContractAddress,
@@ -30,7 +30,7 @@ const getGnoMintPrice = async (network: GnoNetworkInfo, tokenId: string) => {
   };
 };
 
-const getTeritoriMintPrice = async (
+const cosmosGetMintPrice = async (
   network: CosmosNetworkInfo,
   tokenId: string,
 ) => {
@@ -60,33 +60,38 @@ const getTeritoriMintPrice = async (
   }
 };
 
+export const getNSMintPrice = async (
+  networkId: string | undefined,
+  tokenId: string,
+) => {
+  if (!tokenId || tokenId !== tokenId.toLowerCase()) {
+    return {
+      denom: "unknown",
+      amount: "0",
+      invalid: true,
+    };
+  }
+
+  const network = getNetwork(networkId);
+  if (!network) return null;
+
+  switch (network.kind) {
+    case NetworkKind.Cosmos:
+      return cosmosGetMintPrice(network, tokenId);
+    case NetworkKind.Gno:
+      return gnoGetMintPrice(network, tokenId);
+    default:
+      return null;
+  }
+};
+
 export const useNSMintPrice = (
   networkId: string | undefined,
   tokenId: string,
 ) => {
   const { data, ...other } = useQuery(
     ["nsMintPrice", networkId, tokenId],
-    async () => {
-      if (!tokenId || tokenId !== tokenId.toLowerCase()) {
-        return {
-          denom: "unknown",
-          amount: "0",
-          invalid: true,
-        };
-      }
-
-      const network = getNetwork(networkId);
-      if (!network) return null;
-
-      switch (network.kind) {
-        case NetworkKind.Cosmos:
-          return getTeritoriMintPrice(network, tokenId);
-        case NetworkKind.Gno:
-          return getGnoMintPrice(network, tokenId);
-        default:
-          return null;
-      }
-    },
+    () => getNSMintPrice(networkId, tokenId),
     { staleTime: Infinity },
   );
 

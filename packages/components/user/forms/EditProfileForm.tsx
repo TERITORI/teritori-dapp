@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller, Control } from "react-hook-form";
 import { View } from "react-native";
 import { z, ZodType } from "zod";
@@ -8,19 +8,22 @@ import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { AvailableNamesInput } from "@/components/inputs/AvailableNamesInput";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { MediaPreview } from "@/components/teritoriNameService/MediaPreview";
+import { useTNS } from "@/context/TNSProvider";
 import { neutral17 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
 import { ProfileData } from "@/utils/upp";
 
-type ProfileDataFormWithTmp = ProfileData & {
-  username: string;
+type ProfileDataWithTmp = ProfileData & {
   _tmp: string;
 };
 
-const optionalUrl = z.union([z.string().url(), z.literal("")]);
-const optionalStr = z.union([z.string(), z.literal("")]);
+const optionalUrl = z.union([z.string().url().nullish(), z.literal("")]);
+const optionalStr = z.union([z.string().nullish(), z.literal("")]);
 const optionalAlphanumeric = z.union([
-  z.string().regex(/^[\w\s]+$/, "should contain only a-zA-Z0-9 and spaces"),
+  z
+    .string()
+    .regex(/^[\w\s]+$/, "should contain only a-zA-Z0-9 and spaces")
+    .nullish(),
   z.literal(""),
 ]);
 
@@ -86,22 +89,20 @@ const InputWithController: React.FC<InputWithControllerProps> = ({
 
 export const EditProfileForm: React.FC<{
   btnLabel: string;
-  onPressBtn: (values: ProfileData) => Promise<void>;
+  onPressBtn: (profileData: ProfileData, username: string) => Promise<void>;
   initialData: ProfileData;
   disabled?: boolean;
 }> = ({ btnLabel, onPressBtn, initialData, disabled }) => {
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    getValues,
-    formState: { isValid },
-  } = useForm<ProfileDataFormWithTmp>({
-    resolver: zodResolver(ProfileSchema),
-    defaultValues: { ...initialData },
-  });
-  const onSubmit = async (data: ProfileData) => {
-    await onPressBtn(data);
+  const { name } = useTNS();
+  const [username, setUsername] = useState(name);
+
+  const { control, handleSubmit, setValue, getValues } =
+    useForm<ProfileDataWithTmp>({
+      resolver: zodResolver(ProfileSchema),
+      defaultValues: { ...initialData },
+    });
+  const onSubmit = async (profileData: ProfileData) => {
+    await onPressBtn(profileData, username);
 
     // if success then reset _tmp
     setValue("_tmp", "");
@@ -110,15 +111,14 @@ export const EditProfileForm: React.FC<{
   return (
     <View>
       <AvailableNamesInput
-        control={control}
+        readOnly
         variant="regular"
-        nameValue={getValues("username")}
+        nameValue={username}
         label="Username"
-        name="username"
+        name={username}
         placeHolder="Type username here"
-        value={getValues("username")}
-        onPressEnter={() => console.log("entered")}
-        onChangeText={(value: string) => setValue("username", value)}
+        value={username}
+        onChangeText={setUsername}
         style={{
           marginBottom: layout.spacing_x2,
         }}
@@ -166,7 +166,7 @@ export const EditProfileForm: React.FC<{
         <PrimaryButton
           size="M"
           text={btnLabel}
-          disabled={disabled || !isValid}
+          disabled={disabled}
           onPress={handleSubmit(onSubmit)}
           boxStyle={{ marginTop: layout.spacing_x1 }}
           loader
