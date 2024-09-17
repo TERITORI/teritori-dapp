@@ -39,7 +39,7 @@ const BUTTONS: LargeBoxButtonProps[] = [
 export const LaunchpadERC20Screen: ScreenFC<"LaunchpadERC20"> = () => {
   return (
     <ScreenContainer
-      headerChildren={<BrandText>Name Service</BrandText>}
+      headerChildren={<BrandText>Launchpad ERC 20</BrandText>}
       forceNetworkFeatures={[NetworkFeature.LaunchpadERC20]}
       forceNetworkKind={NetworkKind.Gno}
     >
