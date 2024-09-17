@@ -3,6 +3,7 @@ import React, { FC, useMemo } from "react";
 import { Post } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
 import { OptimizedImage } from "@/components/OptimizedImage";
+import { SmallCarouselAlt } from "@/components/carousels/SmallCarousel/SmallCarouselAlt";
 import { MapPostWrapper } from "@/components/socialFeed/Map/MapPosts/MapPostWrapper";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import { errorColor } from "@/utils/style/colors";
@@ -27,23 +28,38 @@ export const PictureMapPost: FC<{
 
   return (
     <MapPostWrapper post={post}>
-      <></>
-      {!imageFiles || !imageFiles[0].url ? (
+      {!imageFiles ? (
         <BrandText style={[fontSemibold10, { color: errorColor }]}>
-          Image not found
+          No image found
         </BrandText>
       ) : (
-        <OptimizedImage
-          sourceURI={imageFiles[0].url}
+        <SmallCarouselAlt
+          enabled={false}
+          style={{ width: 147 }}
           width={147}
+          data={imageFiles}
           height={147}
-          resizeMode="cover"
-          style={{
-            height: 147,
-            width: 147,
-            borderRadius: 4,
-            alignSelf: "center",
-          }}
+          loop={false}
+          renderItem={({ item }) =>
+            !item.url ? (
+              <BrandText style={[fontSemibold10, { color: errorColor }]}>
+                Image not found
+              </BrandText>
+            ) : (
+              <OptimizedImage
+                sourceURI={item.url}
+                width={147}
+                height={147}
+                resizeMode="cover"
+                style={{
+                  height: 147,
+                  width: 147,
+                  borderRadius: 4,
+                  alignSelf: "center",
+                }}
+              />
+            )
+          }
         />
       )}
     </MapPostWrapper>
