@@ -16,13 +16,11 @@ export const MediaPlayerBarRefined: FC<{
 }> = ({ mediaToPlay }) => {
   const { handlePlayPause, media, loadAndPlaySoundsQueue, playbackStatus } =
     useMediaPlayer();
+  const isInMediaPlayer = media?.postId === mediaToPlay.postId;
 
   const onPressPlayPause = async () => {
-    if (!media && mediaToPlay) {
-      await loadAndPlaySoundsQueue([mediaToPlay]);
-    } else {
-      await handlePlayPause();
-    }
+    if (isInMediaPlayer) await handlePlayPause();
+    else await loadAndPlaySoundsQueue([mediaToPlay]);
   };
 
   return (
@@ -36,7 +34,9 @@ export const MediaPlayerBarRefined: FC<{
       <CustomPressable onPress={onPressPlayPause}>
         <SVG
           source={
-            playbackStatus?.isPlaying && !playbackStatus?.didJustFinish
+            isInMediaPlayer &&
+            playbackStatus?.isPlaying &&
+            !playbackStatus?.didJustFinish
               ? pauseSVG
               : playSVG
           }
@@ -48,7 +48,12 @@ export const MediaPlayerBarRefined: FC<{
       <SpacerRow size={0.5} />
 
       <TimerSliderAlt
-        duration={mediaToPlay.duration || playbackStatus?.durationMillis || 0}
+        duration={
+          (isInMediaPlayer
+            ? playbackStatus?.durationMillis
+            : mediaToPlay.duration) || 0
+        }
+        playbackStatus={isInMediaPlayer ? playbackStatus : undefined}
       />
     </View>
   );

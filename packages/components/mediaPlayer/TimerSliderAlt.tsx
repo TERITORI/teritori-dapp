@@ -1,4 +1,5 @@
 import Slider from "@react-native-community/slider";
+import { AVPlaybackStatusSuccess } from "expo-av";
 import React, { FC, useState } from "react";
 import { View } from "react-native";
 
@@ -20,8 +21,9 @@ import FlexRow from "@/components/FlexRow";
 // Same as TimerSlider but with duration above the Slider
 export const TimerSliderAlt: FC<{
   duration: number;
-}> = ({ duration }) => {
-  const { media, onChangeTimerPosition, playbackStatus } = useMediaPlayer();
+  playbackStatus?: AVPlaybackStatusSuccess;
+}> = ({ duration, playbackStatus }) => {
+  const { media, onChangeTimerPosition } = useMediaPlayer();
   const [isHovered, setIsHovered] = useState(false);
   const [isSliding, setIsSliding] = useState(false);
 
