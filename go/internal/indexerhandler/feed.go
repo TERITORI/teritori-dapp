@@ -9,6 +9,7 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+	"gorm.io/datatypes"
 )
 
 type Reaction struct {
@@ -102,7 +103,8 @@ func (h *Handler) handleExecuteReactPost(_ *Message, execMsg *wasmtypes.MsgExecu
 		return errors.Wrap(err, "failed to get post to react")
 	}
 
-	userReactions := post.UserReactions
+	userReactions := make(map[string]interface{})
+	post.UserReactions.Scan(&userReactions)
 	var users []networks.UserID
 	reactedUsers, found := userReactions[reactPost.Icon]
 	if found {
@@ -128,7 +130,12 @@ func (h *Handler) handleExecuteReactPost(_ *Message, execMsg *wasmtypes.MsgExecu
 		userReactions[reactPost.Icon] = users
 	}
 
-	post.UserReactions = userReactions
+	data, err := json.Marshal(userReactions)
+	if err != nil {
+		return errors.Wrap(err, "failed to marshal user reactions")
+	}
+
+	post.UserReactions = data
 
 	if err := h.db.Save(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to update reactions")
@@ -181,6 +188,11 @@ func (h *Handler) createPost(
 		}
 	}
 
+	data, err := json.Marshal(metadataJSON)
+	if err != nil {
+		return err
+	}
+
 	createdAt, err := e.GetBlockTime()
 	if err != nil {
 		return errors.Wrap(err, "failed to get block time")
@@ -191,8 +203,8 @@ func (h *Handler) createPost(
 		LocalIdentifier:      createPostMsg.Identifier,
 		ParentPostIdentifier: createPostMsg.ParentPostIdentifier,
 		Category:             createPostMsg.Category,
-		Metadata:             metadataJSON,
-		UserReactions:        map[string]interface{}{},
+		Metadata:             data,
+		UserReactions:        datatypes.JSON([]byte("{}")),
 		AuthorId:             h.config.Network.UserID(execMsg.Sender),
 		CreatedAt:            createdAt.Unix(),
 		IsBot:                isBot,

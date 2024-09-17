@@ -1,10 +1,15 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 import { useSelectedNetworkInfo } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
 
-import { Post, PostsRequest } from "@/api/feed/v1/feed";
+import {
+  AggregatedPost,
+  Post,
+  PostsRequest,
+  PostsWithLocationRequest,
+} from "@/api/feed/v1/feed";
 import {
   GnoNetworkInfo,
   NetworkInfo,
@@ -16,6 +21,12 @@ import { TERITORI_FEED_ID } from "@/utils/feed/constants";
 import { decodeGnoPost } from "@/utils/feed/gno";
 import { extractGnoJSONString } from "@/utils/gno";
 import { DeepPartial } from "@/utils/typescript";
+
+interface PostsWithAggregations {
+  list: Post[];
+  totalCount: number;
+  aggregations: AggregatedPost[];
+}
 
 export type PostsList = {
   list: Post[];
@@ -113,4 +124,32 @@ export const useFetchFeed = (req: DeepPartial<PostsRequest>) => {
       },
     );
   return { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading };
+};
+
+export const useFetchFeedLocation = (
+  req: Partial<PostsWithLocationRequest>,
+) => {
+  return useQuery(
+    ["postsWithLocation", req],
+    async () => {
+      return await fetchTeritoriFeedLocation(req);
+    },
+    {
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
+
+const fetchTeritoriFeedLocation = async (
+  req: Partial<PostsWithLocationRequest>,
+): Promise<PostsWithAggregations> => {
+  const feedClient = mustGetFeedClient(req.networkId);
+  const response = await feedClient.PostsWithLocation(req);
+  const list = response.posts.sort((a, b) => b.createdAt - a.createdAt);
+  return {
+    list,
+    totalCount: list.length,
+    aggregations: response.aggregatedPosts,
+  };
 };

@@ -16,3 +16,15 @@
   font-size: 1.2rem;
   box-shadow: 0 0 0px 5px #fff;
 }
+
+.marker-popup .leaflet-popup-content-wrapper {
+  padding: 0;
+  background-color: rgba(135,135, 135, .2);
+  border: 1px solid rgba(255,255,255, .24);
+  border-radius: 8px;
+}
+
+.marker-popup .leaflet-popup-content {
+  margin: 0;
+  min-width: 200px;
+}
