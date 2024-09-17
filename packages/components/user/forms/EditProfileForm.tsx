@@ -4,28 +4,29 @@ import { useForm, Controller, Control } from "react-hook-form";
 import { View } from "react-native";
 import { z, ZodType } from "zod";
 
-import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
-import { TextInputCustom } from "../../../../components/inputs/TextInputCustom";
-import { MediaPreview } from "../../../../components/teritoriNameService/MediaPreview";
-import { neutral17 } from "../../../../utils/style/colors";
-import { layout } from "../../../../utils/style/layout";
-
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { AvailableNamesInput } from "@/components/inputs/AvailableNamesInput";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { MediaPreview } from "@/components/teritoriNameService/MediaPreview";
+import { neutral17 } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 import { ProfileData } from "@/utils/upp";
 
-type ProfileDataWithTmp = ProfileData & {
-  _tmp: "";
+type ProfileDataFormWithTmp = ProfileData & {
+  username: string;
+  _tmp: string;
 };
 
 const optionalUrl = z.union([z.string().url(), z.literal("")]);
 const optionalStr = z.union([z.string(), z.literal("")]);
+const optionalAlphanumeric = z.union([
+  z.string().regex(/^[\w\s]+$/, "should contain only a-zA-Z0-9 and spaces"),
+  z.literal(""),
+]);
 
 const ProfileSchema: ZodType<ProfileData> = z.object({
-  displayName: z
-    .string()
-    .regex(
-      /^[\w\s]+$/,
-      "display name should contain only a-zA-Z0-9 and spaces",
-    ),
+  username: optionalAlphanumeric,
+  displayName: optionalAlphanumeric,
   avatarURL: optionalStr,
   bannerURL: optionalUrl,
   bio: optionalStr,
@@ -38,6 +39,7 @@ type InputWithControllerProps = {
   placeHolder: string;
   required?: boolean;
   disabled?: boolean;
+  multiline?: boolean;
 };
 
 const InputWithController: React.FC<InputWithControllerProps> = ({
@@ -47,6 +49,7 @@ const InputWithController: React.FC<InputWithControllerProps> = ({
   placeHolder,
   required,
   disabled,
+  multiline,
 }) => {
   return (
     <Controller
@@ -58,6 +61,8 @@ const InputWithController: React.FC<InputWithControllerProps> = ({
       }) => {
         return (
           <TextInputCustom
+            multiline={multiline}
+            numberOfLines={multiline ? 3 : 1}
             disabled={disabled}
             rules={{ required }}
             error={error?.message}
@@ -91,12 +96,11 @@ export const EditProfileForm: React.FC<{
     setValue,
     getValues,
     formState: { isValid },
-  } = useForm<ProfileDataWithTmp>({
+  } = useForm<ProfileDataFormWithTmp>({
     resolver: zodResolver(ProfileSchema),
     defaultValues: { ...initialData },
   });
   const onSubmit = async (data: ProfileData) => {
-    console.log(data);
     await onPressBtn(data);
 
     // if success then reset _tmp
@@ -104,17 +108,27 @@ export const EditProfileForm: React.FC<{
   };
 
   return (
-    <View
-      style={{
-        width: "100%",
-        alignItems: "center",
-      }}
-    >
+    <View>
+      <AvailableNamesInput
+        control={control}
+        variant="regular"
+        nameValue={getValues("username")}
+        label="Username"
+        name="username"
+        placeHolder="Type username here"
+        value={getValues("username")}
+        onPressEnter={() => console.log("entered")}
+        onChangeText={(value: string) => setValue("username", value)}
+        style={{
+          marginBottom: layout.spacing_x2,
+        }}
+      />
+
       <InputWithController
         control={control}
         name="displayName"
         label="Display name"
-        placeHolder="Type name here"
+        placeHolder="Type display name here"
         required
       />
 
@@ -123,6 +137,7 @@ export const EditProfileForm: React.FC<{
         name="bio"
         label="Bio"
         placeHolder="Type bio here"
+        multiline
       />
 
       <Controller
@@ -147,14 +162,16 @@ export const EditProfileForm: React.FC<{
         )}
       />
 
-      <PrimaryButton
-        size="M"
-        text={btnLabel}
-        disabled={disabled || !isValid}
-        onPress={handleSubmit(onSubmit)}
-        boxStyle={{ marginTop: layout.spacing_x1 }}
-        loader
-      />
+      <View style={{ alignItems: "center" }}>
+        <PrimaryButton
+          size="M"
+          text={btnLabel}
+          disabled={disabled || !isValid}
+          onPress={handleSubmit(onSubmit)}
+          boxStyle={{ marginTop: layout.spacing_x1 }}
+          loader
+        />
+      </View>
     </View>
   );
 };

@@ -7,7 +7,6 @@ import React, { useMemo, useState } from "react";
 import { Platform, ScrollView, useWindowDimensions, View } from "react-native";
 
 import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
-import { TNSModalCommonProps } from "./types";
 import longCardSVG from "../../../assets/cards/long-card.svg";
 import coinSVG from "../../../assets/icons/coin.svg";
 import ModalBase from "../../components/modals/ModalBase";
@@ -22,6 +21,7 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { NameDataForm } from "@/components/teritoriNameService/NameDataForm";
 import { NameNFT } from "@/components/teritoriNameService/NameNFT";
+import { TNSModalCommonProps } from "@/components/user/types";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useTNS } from "@/context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";

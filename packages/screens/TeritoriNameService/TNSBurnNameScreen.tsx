@@ -2,7 +2,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { View } from "react-native";
 
-import { TNSModalCommonProps } from "./types";
 import burnSVG from "../../../assets/icons/burn.svg";
 import ModalBase from "../../components/modals/ModalBase";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -11,6 +10,7 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { SecondaryButton } from "@/components/buttons/SecondaryButton";
 import { NameNFT } from "@/components/teritoriNameService/NameNFT";
+import { TNSModalCommonProps } from "@/components/user/types";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useTNS } from "@/context/TNSProvider";
 import { TeritoriNameServiceClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";

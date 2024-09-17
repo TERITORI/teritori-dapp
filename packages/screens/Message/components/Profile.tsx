@@ -111,7 +111,7 @@ export const Profile = ({ onClose }: ProfileProps) => {
             >
               <SecondaryButton
                 onPress={() => setIsEditProfile(true)}
-                text="Edit Profile"
+                text="Edit profile"
                 size="SM"
               />
               {isMobile ? <SpacerColumn size={1} /> : <SpacerRow size={1} />}

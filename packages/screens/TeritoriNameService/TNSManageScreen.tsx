@@ -8,7 +8,6 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { TNSModalCommonProps } from "./types";
 import logoSVG from "../../../assets/logos/logo.svg";
 import ModalBase from "../../components/modals/ModalBase";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
@@ -17,6 +16,7 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { PrimaryBadge } from "@/components/badges/PrimaryBadge";
 import { DAOSelector } from "@/components/dao/DAOSelector";
+import { TNSModalCommonProps } from "@/components/user/types";
 import { useTNS } from "@/context/TNSProvider";
 import { useNSPrimaryAlias } from "@/hooks/useNSPrimaryAlias";
 import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";

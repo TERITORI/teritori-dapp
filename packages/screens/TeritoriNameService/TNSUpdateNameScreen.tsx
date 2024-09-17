@@ -4,11 +4,11 @@ import { Buffer } from "buffer";
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { TNSModalCommonProps } from "./types";
 import ModalBase from "../../components/modals/ModalBase";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 
 import { NameDataForm } from "@/components/teritoriNameService/NameDataForm";
+import { TNSModalCommonProps } from "@/components/user/types";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useTNS } from "@/context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";

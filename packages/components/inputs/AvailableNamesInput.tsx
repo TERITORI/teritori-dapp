@@ -8,14 +8,14 @@ import { BrandText } from "../BrandText";
 
 import { useNSAvailability } from "@/hooks/useNSAvailability";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
-import { NetworkKind, getCosmosNetwork } from "@/networks";
+import { NetworkInfo, NetworkKind, getNetwork } from "@/networks";
 import {
   neutral33,
   neutral77,
   primaryColor,
   redDefault,
 } from "@/utils/style/colors";
-import { NameFinderFormType } from "@/utils/types/tns";
+import { NameFinderFormType, NSAvailability } from "@/utils/types/tns";
 
 interface TextInputCustomProps<T extends FieldValues>
   extends Omit<TextInputProps, "accessibilityRole" | "defaultValue"> {
@@ -28,39 +28,35 @@ interface TextInputCustomProps<T extends FieldValues>
   onPressEnter?: () => void;
   control?: Control<T>;
   style?: ViewStyle;
+  variant?: "regular" | "labelOutside" | "noStyle";
+  error?: string;
 }
 
-export const AvailableNamesInput = <T extends FieldValues>({
+type AvailabilityInfoProps = {
+  nameValue: string;
+  network: NetworkInfo | undefined;
+  price: string;
+  usdPrice: number | undefined;
+  nameAvailability: NSAvailability;
+};
+const AvailabilityInfo: React.FC<AvailabilityInfoProps> = ({
   nameValue,
-  label,
-  name,
-  placeHolder,
-  value,
-  onChangeText = () => {},
-  onPressEnter = () => {},
-  control,
-  style,
-}: TextInputCustomProps<T>) => {
-  const selectedNetwork = useSelectedNetworkInfo();
-  const cosmosNetwork = getCosmosNetwork(selectedNetwork?.id);
-  const nameAvailability = useNSAvailability(selectedNetwork?.id, nameValue);
-  const price =
-    nameAvailability.availability === "mint"
-      ? nameAvailability.prettyPrice
-      : "";
-  const usdPrice =
-    nameAvailability.availability === "mint" ? nameAvailability?.usdPrice : 0;
-
-  let availabilityInfo = <></>;
-  if (nameValue && selectedNetwork?.kind === NetworkKind.Cosmos) {
+  network,
+  price,
+  usdPrice,
+  nameAvailability,
+}) => {
+  if (nameValue && network?.kind === NetworkKind.Cosmos) {
     if (nameAvailability.availability === "invalid") {
-      availabilityInfo = (
+      return (
         <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
           Invalid
         </BrandText>
       );
-    } else if (nameAvailability.availability === "mint") {
-      availabilityInfo = (
+    }
+
+    if (nameAvailability.availability === "mint") {
+      return (
         <View style={{ flexDirection: "row" }}>
           {!!usdPrice && (
             <>
@@ -77,11 +73,13 @@ export const AvailableNamesInput = <T extends FieldValues>({
           </BrandText>
         </View>
       );
-    } else if (
+    }
+
+    if (
       nameAvailability.availability === "market" ||
       nameAvailability.availability === "none"
     ) {
-      availabilityInfo = (
+      return (
         <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
           Taken
         </BrandText>
@@ -89,20 +87,77 @@ export const AvailableNamesInput = <T extends FieldValues>({
     }
   }
 
+  if (network?.kind === NetworkKind.Gno) {
+    return (
+      <View style={{ flexDirection: "row" }}>
+        {!!usdPrice && (
+          <>
+            <BrandText style={{ color: neutral77, ...fontSemibold14 }}>
+              ${usdPrice?.toFixed(2)}
+            </BrandText>
+            <BrandText style={{ color: neutral33, ...fontSemibold14 }}>
+              {" - "}
+            </BrandText>
+          </>
+        )}
+        <BrandText style={{ color: primaryColor, ...fontSemibold14 }}>
+          {price}
+        </BrandText>
+      </View>
+    );
+  }
+
+  return null;
+};
+
+const getNameByNetwork = (
+  network: NetworkInfo | undefined,
+  name: string,
+  nameValue: string,
+) => {
+  if (!nameValue) return "";
+
+  if (network?.kind === NetworkKind.Cosmos) {
+    return `: ${nameValue}${network?.nameServiceTLD}`;
+  }
+
+  if (network?.kind === NetworkKind.Gno) {
+    return `: ${name}.gno`;
+  }
+
+  throw Error(`unsupported network kind: ${network?.kind}`);
+};
+
+export const AvailableNamesInput = <T extends FieldValues>({
+  nameValue,
+  label,
+  name,
+  placeHolder,
+  value,
+  onChangeText = () => {},
+  onPressEnter = () => {},
+  control,
+  style,
+  variant = "labelOutside",
+  error,
+}: TextInputCustomProps<T>) => {
+  const selectedNetwork = useSelectedNetworkInfo();
+  const network = getNetwork(selectedNetwork?.id);
+  const nameAvailability = useNSAvailability(selectedNetwork?.id, nameValue);
+  const price =
+    nameAvailability.availability === "mint"
+      ? nameAvailability.prettyPrice
+      : "";
+  const usdPrice =
+    nameAvailability.availability === "mint" ? nameAvailability?.usdPrice : 0;
+
   return (
     <TextInputCustom<NameFinderFormType>
+      error={error}
       noBrokenCorners
       isLoading={nameAvailability.availability === "loading"}
-      variant="labelOutside"
-      label={`${label}${
-        nameValue
-          ? `: ${
-              selectedNetwork?.kind === NetworkKind.Gno
-                ? "gno.land/r/demo/" + name
-                : nameValue + cosmosNetwork?.nameServiceTLD
-            }`
-          : ""
-      }`}
+      variant={variant}
+      label={`${label}${getNameByNetwork(network, name, nameValue)}`}
       placeHolder={placeHolder}
       name={name as "name" | "associatedHandle"}
       onChangeText={(val: string) => onChangeText(val)}
@@ -117,7 +172,13 @@ export const AvailableNamesInput = <T extends FieldValues>({
           : undefined
       }
     >
-      {availabilityInfo}
+      <AvailabilityInfo
+        price={price}
+        usdPrice={usdPrice}
+        network={network}
+        nameValue={nameValue}
+        nameAvailability={nameAvailability}
+      />
     </TextInputCustom>
   );
 };

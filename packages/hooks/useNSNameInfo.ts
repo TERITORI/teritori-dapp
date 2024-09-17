@@ -7,19 +7,91 @@ import {
   Metadata,
   NftInfoResponse,
 } from "@/contracts-clients/teritori-name-service/TeritoriNameService.types";
-import { GnoNetworkInfo, NetworkKind, getNetwork } from "@/networks";
+import {
+  CosmosNetworkInfo,
+  GnoNetworkInfo,
+  NetworkKind,
+  getNetwork,
+} from "@/networks";
 import { getCosmosNameServiceQueryClient } from "@/utils/contracts";
 import { extractGnoJSONString, extractGnoString } from "@/utils/gno";
 import { ProfileData } from "@/utils/upp";
 
 export const GNO_CONTRACT_FIELD = {
-  // Standard fields
   DISPLAY_NAME: "DisplayName",
   BIO: "Bio",
   AVATAR: "Avatar",
+  // NOTE: These fields below are extra for now but can become standard fields later
+  BANNER: "Banner",
+};
 
-  // Extra fields
-  BANNER: "Ext_Banner",
+const gnoGetNSNameInfo = async (network: GnoNetworkInfo, tokenId: string) => {
+  if (!tokenId.startsWith("gno.land/") && tokenId.endsWith(".gno")) {
+    const address = await gnoGetAddressByUsername(
+      network,
+      tokenId.slice(0, -".gno".length),
+    );
+    if (!address) {
+      return null;
+    }
+    const profile = await gnoGetUserProfile(network, address);
+
+    const res: NftInfoResponse = {
+      extension: {
+        public_bio: profile.bio,
+        public_name: profile.displayName,
+        image: profile.avatarURL,
+        public_profile_header: profile.bannerURL,
+      },
+    };
+    return res;
+  }
+
+  if (!tokenId.startsWith("gno.land/")) {
+    return null;
+  }
+  if (!network.daoRegistryPkgPath) {
+    return null;
+  }
+  const provider = new GnoJSONRPCProvider(network.endpoint);
+  const query = `GetJSON(${JSON.stringify(tokenId)})`;
+  const res: GnoDAORegistration = extractGnoJSONString(
+    await provider.evaluateExpression(network.daoRegistryPkgPath, query),
+  );
+  const data: Metadata = {
+    public_name: res.name,
+    public_bio: res.description,
+    image: res.imageURI,
+  };
+  const user: NftInfoResponse = {
+    extension: data,
+  };
+  return user;
+};
+
+const cosmosGetNSNameInfo = async (
+  network: CosmosNetworkInfo,
+  tokenId: string,
+) => {
+  const nsClient = await getCosmosNameServiceQueryClient(network.id);
+  if (!nsClient) {
+    return null;
+  }
+
+  let nftInfo;
+
+  try {
+    nftInfo = await nsClient.nftInfo({
+      tokenId,
+    });
+  } catch (err) {
+    if (err instanceof Error && err.message.includes("not found")) {
+      return null;
+    }
+    throw err;
+  }
+
+  return nftInfo;
 };
 
 export const nsNameInfoQueryKey = (
@@ -35,82 +107,18 @@ export const useNSNameInfo = (
   const { data: nsInfo, ...other } = useQuery(
     nsNameInfoQueryKey(networkId, tokenId),
     async () => {
-      if (!tokenId) {
-        return null;
-      }
+      if (!tokenId) return null;
 
       const network = getNetwork(networkId);
-      if (!network) {
-        return null;
-      }
+      if (!network) return null;
+
       switch (network?.kind) {
-        case NetworkKind.Cosmos: {
-          const nsClient = await getCosmosNameServiceQueryClient(networkId);
-          if (!nsClient) {
-            return null;
-          }
-
-          let nftInfo;
-
-          try {
-            nftInfo = await nsClient.nftInfo({
-              tokenId,
-            });
-          } catch (err) {
-            if (err instanceof Error && err.message.includes("not found")) {
-              return null;
-            }
-            throw err;
-          }
-
-          return nftInfo;
-        }
-        case NetworkKind.Gno: {
-          if (!tokenId.startsWith("gno.land/") && tokenId.endsWith(".gno")) {
-            const address = await gnoGetAddressByUsername(
-              network,
-              tokenId.slice(0, -".gno".length),
-            );
-            if (!address) {
-              return null;
-            }
-            const profile = await gnoGetUserProfile(network, address);
-
-            const res: NftInfoResponse = {
-              extension: {
-                public_bio: profile.bio,
-                public_name: profile.displayName,
-                image: profile.avatarURL,
-                public_profile_header: profile.bannerURL,
-              },
-            };
-            return res;
-          }
-
-          if (!tokenId.startsWith("gno.land/")) {
-            return null;
-          }
-          if (!network.daoRegistryPkgPath) {
-            return null;
-          }
-          const provider = new GnoJSONRPCProvider(network.endpoint);
-          const query = `GetJSON(${JSON.stringify(tokenId)})`;
-          const res: GnoDAORegistration = extractGnoJSONString(
-            await provider.evaluateExpression(
-              network.daoRegistryPkgPath,
-              query,
-            ),
-          );
-          const data: Metadata = {
-            public_name: res.name,
-            public_bio: res.description,
-            image: res.imageURI,
-          };
-          const user: NftInfoResponse = {
-            extension: data,
-          };
-          return user;
-        }
+        case NetworkKind.Cosmos:
+          return cosmosGetNSNameInfo(network, tokenId);
+        case NetworkKind.Gno:
+          return gnoGetNSNameInfo(network, tokenId);
+        default:
+          throw Error(`unsupported network kind: ${network.kind}`);
       }
     },
     { staleTime: Infinity, enabled },

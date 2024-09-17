@@ -4,7 +4,9 @@ import React, { useMemo } from "react";
 import { View } from "react-native";
 
 import { EditProfileForm } from "../forms/EditProfileForm";
+import { TNSModalCommonProps } from "../types";
 
+import { BrandText } from "@/components/BrandText";
 import ModalBase from "@/components/modals/ModalBase";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useTNS } from "@/context/TNSProvider";
@@ -12,9 +14,9 @@ import { GNO_CONTRACT_FIELD, nsNameInfoQueryKey } from "@/hooks/useNSNameInfo";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetwork, mustGetGnoNetwork, NetworkKind } from "@/networks";
-import { TNSModalCommonProps } from "@/screens/TeritoriNameService/types";
 import { adenaDoContract, AdenaDoContractMessage } from "@/utils/gno";
-import { neutral17 } from "@/utils/style/colors";
+import { neutral17, neutral77 } from "@/utils/style/colors";
+import { fontMedium16 } from "@/utils/style/fonts";
 import { EMPTY_PROFILE, ProfileData } from "@/utils/upp";
 
 interface EditProfileModalProps extends TNSModalCommonProps {}
@@ -149,7 +151,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
     <ModalBase
       hideMainSeparator
       onClose={() => onClose()}
-      label={`Edit profile ${name}`}
+      label="Edit profile"
       scrollable
       width={457}
       boxStyle={{
@@ -161,7 +163,13 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
           marginBottom: 20,
         }}
       >
-        {!isLoadingMetadata && (
+        {isLoadingMetadata ? (
+          <BrandText
+            style={[fontMedium16, { color: neutral77, fontStyle: "italic" }]}
+          >
+            Loading...
+          </BrandText>
+        ) : (
           <EditProfileForm
             btnLabel="Update profile"
             onPressBtn={submitData}
