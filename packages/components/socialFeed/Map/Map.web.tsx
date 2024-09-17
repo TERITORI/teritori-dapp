@@ -73,7 +73,7 @@ export const Map: FC<MapProps> = ({
 }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const [bounds, setBounds] = useState<LatLngBounds | null>(null);
-
+  const [isMapLoaded, setMapLoaded] = useState(false);
   // Prevent infinite rendering after locationSelected update
   const [localLocationSelected, setLocalLocationSelected] = useState<
     CustomLatLngExpression | undefined
@@ -122,6 +122,17 @@ export const Map: FC<MapProps> = ({
       })
     : [];
 
+  // ---- Updates map bounds once
+  const UpdateBoundsOnMapLoad = () => {
+    const map = useMap();
+    useEffect(() => {
+      if (!isMapLoaded) {
+        setBounds(map.getBounds());
+        setMapLoaded(true);
+      }
+    }, [map]);
+    return null;
+  };
   // ---- Updates map bounds on map manipulation
   const UpdateBoundsOnMapEvents = () => {
     const map = useMapEvents({
@@ -135,7 +146,6 @@ export const Map: FC<MapProps> = ({
     });
     return null;
   };
-
   // ---- Center to locationSelected when it's updated (Once)
   const UpdateToLocationSelected = () => {
     const map = useMap();
@@ -235,6 +245,7 @@ export const Map: FC<MapProps> = ({
         </MarkerClusterGroup>
 
         {/*---- Map state updates*/}
+        <UpdateBoundsOnMapLoad />
         <UpdateBoundsOnMapEvents />
         <UpdateToLocationSelected />
       </MapContainer>
