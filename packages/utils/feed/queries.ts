@@ -96,9 +96,12 @@ export const getPostCategory = ({
   title,
   files,
   message,
+  gifs,
 }: NewPostFormValues): PostCategory => {
   let category: PostCategory;
-  if (files?.length) {
+  if (gifs?.length) {
+    category = PostCategory.Picture;
+  } else if (files?.length) {
     if (files[0].fileType === "image") {
       category = PostCategory.Picture;
     } else if (files[0].fileType === "audio") {
