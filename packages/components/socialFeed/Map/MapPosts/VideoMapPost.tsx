@@ -1,16 +1,22 @@
-import { ResizeMode } from "expo-av";
-import React, { FC, useRef } from "react";
+import {
+  AVPlaybackStatus,
+  AVPlaybackStatusSuccess,
+  ResizeMode,
+  Video,
+} from "expo-av";
+import React, { FC, useRef, useState } from "react";
 import { View } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
 import { Post } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
 import { MediaPlayerBarRefined } from "@/components/mediaPlayer/MediaPlayerBarRefined";
-import { MediaPlayerVideo } from "@/components/mediaPlayer/MediaPlayerVideo";
 import { Separator } from "@/components/separators/Separator";
 import { MapPostWrapper } from "@/components/socialFeed/Map/MapPosts/MapPostWrapper";
 import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useMediaPlayer } from "@/context/MediaPlayerProvider";
+import { web3ToWeb2URI } from "@/utils/ipfs";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import { errorColor, neutralFF, withAlpha } from "@/utils/style/colors";
 import { fontSemibold10 } from "@/utils/style/fonts";
@@ -25,8 +31,22 @@ import { Media } from "@/utils/types/mediaPlayer";
 export const VideoMapPost: FC<{
   post: Post;
 }> = ({ post }) => {
-  const { media } = useMediaPlayer();
   const { current: id } = useRef(uuidv4());
+  const videoRef = useRef<Video>(null);
+  const {
+    onVideoStatusUpdate,
+    onLayoutPlayerVideo,
+    handlePlayPause,
+    playbackStatus,
+    firstPlayVideo,
+    media,
+  } = useMediaPlayer();
+  const { setToast } = useFeedbacks();
+  const [localStatus, setLocalStatus] = useState<AVPlaybackStatusSuccess>();
+  const isInMediaPlayer =
+    !!media && (post.id === media.postId || media.id === id);
+  const statusToUse = isInMediaPlayer ? playbackStatus : localStatus;
+
   const videoPostMetadata = zodTryParseJSON(
     ZodSocialFeedVideoMetadata,
     post.metadata,
@@ -48,6 +68,7 @@ export const VideoMapPost: FC<{
         fileUrl: videoPostMetadata.videoFile.url,
         duration: videoPostMetadata.videoFile.videoMetadata?.duration, // FIXME: Known issue: Always 0. So, for videos, duration is set by playbackStatus, so it's 0 on the timer since the video is not started once
         postId: post.id,
+        isVideo: true,
       }
     : videoNotePostMetadata?.files
       ? {
@@ -55,6 +76,7 @@ export const VideoMapPost: FC<{
           fileUrl: videoNotePostMetadata.files[0].url,
           duration: videoNotePostMetadata.files[0].videoMetadata?.duration,
           postId: post.id,
+          isVideo: true,
         }
       : undefined;
   const videoMetadata: SocialFeedVideoMetadata | undefined = videoPostMetadata
@@ -69,6 +91,29 @@ export const VideoMapPost: FC<{
         }
       : undefined;
 
+  const onLocalPlaybackStatusUpdate = async (status: AVPlaybackStatus) => {
+    if ("uri" in status && status.isLoaded) {
+      setLocalStatus(status);
+      if (isInMediaPlayer && status.positionMillis > 0) {
+        onVideoStatusUpdate(status);
+      }
+    }
+    if ("error" in status) {
+      console.error("Error while playbackStatus update: ", status.error);
+      setToast({
+        mode: "normal",
+        type: "error",
+        title: `Error while playbackStatus update : ${status.error}`,
+      });
+    }
+  };
+
+  const onPressPlayPause = async () => {
+    if (isInMediaPlayer) await handlePlayPause();
+    else if (mediaToPlay && videoRef.current)
+      firstPlayVideo(videoRef.current, mediaToPlay);
+  };
+
   return (
     <MapPostWrapper post={post} style={{ width: 185 }}>
       <View>
@@ -79,23 +124,37 @@ export const VideoMapPost: FC<{
         <SpacerColumn size={0.5} />
 
         {mediaToPlay && videoMetadata ? (
-          <>
-            <MediaPlayerBarRefined mediaToPlay={mediaToPlay} />
+          <View
+            onLayout={() => {
+              if (isInMediaPlayer && videoRef.current) {
+                onLayoutPlayerVideo(videoRef.current);
+              }
+            }}
+          >
+            <MediaPlayerBarRefined
+              playbackStatus={statusToUse}
+              onPressPlayPause={onPressPlayPause}
+              isInMediaPlayer={isInMediaPlayer}
+            />
             <SpacerColumn size={0.5} />
-            <MediaPlayerVideo
-              videoMetadata={videoMetadata}
-              style={{
+
+            <Video
+              ref={videoRef}
+              status={statusToUse}
+              onPlaybackStatusUpdate={onLocalPlaybackStatusUpdate}
+              source={{
+                uri: web3ToWeb2URI(videoMetadata.videoFile.url),
+              }}
+              style={{ width: "100%", height: 100 }}
+              posterStyle={{ width: "100%", height: 100 }}
+              videoStyle={{
+                width: "100%",
                 height: 100,
                 borderRadius: 4,
               }}
               resizeMode={ResizeMode.CONTAIN}
-              postId={post.id}
-              hideControls
-              isThumbnailShown={
-                !media && !!videoMetadata.videoFile.thumbnailFileData?.url
-              }
             />
-          </>
+          </View>
         ) : (
           <BrandText style={[fontSemibold10, { color: errorColor }]}>
             No media to play

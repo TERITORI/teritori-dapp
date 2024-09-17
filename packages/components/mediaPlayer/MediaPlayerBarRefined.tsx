@@ -1,3 +1,4 @@
+import { AVPlaybackStatusSuccess } from "expo-av";
 import React, { FC } from "react";
 import { View } from "react-native";
 
@@ -8,21 +9,12 @@ import { SpacerRow } from "../spacer";
 import pauseSVG from "@/assets/icons/pause.svg";
 import playSVG from "@/assets/icons/play.svg";
 import { TimerSliderAlt } from "@/components/mediaPlayer/TimerSliderAlt";
-import { useMediaPlayer } from "@/context/MediaPlayerProvider";
 import { secondaryColor } from "@/utils/style/colors";
-import { Media } from "@/utils/types/mediaPlayer";
 export const MediaPlayerBarRefined: FC<{
-  mediaToPlay: Media;
-}> = ({ mediaToPlay }) => {
-  const { handlePlayPause, media, loadAndPlaySoundsQueue, playbackStatus } =
-    useMediaPlayer();
-  const isInMediaPlayer = media?.postId === mediaToPlay.postId;
-
-  const onPressPlayPause = async () => {
-    if (isInMediaPlayer) await handlePlayPause();
-    else await loadAndPlaySoundsQueue([mediaToPlay]);
-  };
-
+  playbackStatus?: AVPlaybackStatusSuccess;
+  onPressPlayPause: () => void;
+  isInMediaPlayer: boolean;
+}> = ({ playbackStatus, onPressPlayPause }) => {
   return (
     <View
       style={{
@@ -34,9 +26,7 @@ export const MediaPlayerBarRefined: FC<{
       <CustomPressable onPress={onPressPlayPause}>
         <SVG
           source={
-            isInMediaPlayer &&
-            playbackStatus?.isPlaying &&
-            !playbackStatus?.didJustFinish
+            playbackStatus?.isPlaying && !playbackStatus?.didJustFinish
               ? pauseSVG
               : playSVG
           }
@@ -48,12 +38,8 @@ export const MediaPlayerBarRefined: FC<{
       <SpacerRow size={0.5} />
 
       <TimerSliderAlt
-        duration={
-          (isInMediaPlayer
-            ? playbackStatus?.durationMillis
-            : mediaToPlay.duration) || 0
-        }
-        playbackStatus={isInMediaPlayer ? playbackStatus : undefined}
+        duration={playbackStatus?.durationMillis || 0}
+        playbackStatus={playbackStatus}
       />
     </View>
   );

@@ -460,7 +460,6 @@ export const RichText: React.FC<RichTextProps> = ({
           <View key={index}>
             <SpacerColumn size={2} />
             <AudioView
-              authorId={authorId}
               postId={postId}
               duration={file.audioMetadata?.duration || 0}
               fileUrl={file.url}

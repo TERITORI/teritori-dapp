@@ -10,7 +10,6 @@ import React, {
   FC,
   RefObject,
   SetStateAction,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -56,7 +55,6 @@ interface MediaPlayerVideoProps {
   resizeMode?: ResizeMode;
   style?: StyleProp<ViewStyle>;
   hideControls?: boolean;
-  isThumbnailShown?: boolean;
 }
 
 const CONTROLS_HEIGHT = 68;
@@ -69,11 +67,14 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   resizeMode,
   style,
   hideControls,
-  isThumbnailShown,
 }) => {
   const { media, onLayoutPlayerVideo } = useMediaPlayer();
   const { current: id } = useRef(uuidv4());
-  const isInMediaPlayer = useMemo(() => media?.id === id, [id, media?.id]);
+  // TODO: Really need useMemo here ?
+  const isInMediaPlayer = useMemo(
+    () => !!media && (postId === media?.postId || media?.id === id),
+    [media, postId, id],
+  );
 
   const containerRef = useRef<View>(null);
   const videoRef = useRef<Video>(null);
@@ -107,7 +108,6 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
         id={id}
         borderRadius={borderRadius}
         setControlsShown={setControlsShown}
-        isThumbnailShown={isThumbnailShown}
       />
     </View>
   );
@@ -126,7 +126,6 @@ type ExpoAvVideoType = {
   resizeMode?: ResizeMode;
   id: string;
   setControlsShown: Dispatch<SetStateAction<boolean>>;
-  isThumbnailShown?: boolean;
 };
 
 function ExpoAvVideo({
@@ -142,7 +141,6 @@ function ExpoAvVideo({
   id,
   containerRef,
   setControlsShown,
-  isThumbnailShown,
 }: ExpoAvVideoType) {
   const {
     onVideoStatusUpdate,
@@ -156,11 +154,7 @@ function ExpoAvVideo({
   const [localStatus, setLocalStatus] = useState<AVPlaybackStatusSuccess>();
   const [extraPressCount, setExtraPressCount] = useState(0);
   const [pressTimer, setPressTimer] = useState<NodeJS.Timeout>();
-  const [localIsThumbnailShown, setLocalThumbnailShown] = useState(false);
-
-  useEffect(() => {
-    setLocalThumbnailShown(!!isThumbnailShown);
-  }, [isThumbnailShown]);
+  const [isThumbnailShown, setThumbnailShown] = useState(false);
 
   // Handle show/hide controls by hovering the video area with mouse
   const mousePosition = useMousePosition();
@@ -185,13 +179,13 @@ function ExpoAvVideo({
     id,
     fileUrl: videoMetadata.videoFile.url,
     duration: videoMetadata.videoFile.videoMetadata?.duration,
-    // postId is used to difference videos from Social Feed (News feed or Article consultation)
+    // postId is used to difference videos from Social Feed
     postId,
     isVideo: true,
   };
 
   const onPressPlayPause = async () => {
-    setLocalThumbnailShown(false);
+    setThumbnailShown(false);
     if (isInMediaPlayer || !videoRef.current) {
       await handlePlayPause();
     } else {
@@ -201,7 +195,7 @@ function ExpoAvVideo({
 
   // Handle play/pause and trigger fullscreen on double press
   const onPressVideoWrapper = () => {
-    setLocalThumbnailShown(false);
+    setThumbnailShown(false);
     setExtraPressCount((backCount) => backCount + 1);
     if (extraPressCount === 1) {
       if (isInMediaPlayer) {
@@ -257,7 +251,7 @@ function ExpoAvVideo({
           height: "100%",
         }}
       >
-        {localIsThumbnailShown && (
+        {isThumbnailShown && (
           <OptimizedImage
             sourceURI={thumbnailURI}
             fallbackURI={defaultThumbnailImage}

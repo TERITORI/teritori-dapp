@@ -8,6 +8,7 @@ import { MediaPlayerBarRefined } from "@/components/mediaPlayer/MediaPlayerBarRe
 import { Separator } from "@/components/separators/Separator";
 import { MapPostWrapper } from "@/components/socialFeed/Map/MapPosts/MapPostWrapper";
 import { SpacerColumn } from "@/components/spacer";
+import { useMediaPlayer } from "@/context/MediaPlayerProvider";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import { errorColor, neutralFF, withAlpha } from "@/utils/style/colors";
 import { fontSemibold10 } from "@/utils/style/fonts";
@@ -22,6 +23,10 @@ export const MusicMapPost: FC<{
   post: Post;
 }> = ({ post }) => {
   const { current: id } = useRef(uuidv4());
+  const { handlePlayPause, playbackStatus, loadAndPlaySoundsQueue, media } =
+    useMediaPlayer();
+  const isInMediaPlayer =
+    !!media && (post.id === media.postId || media.id === id);
   const musicAudioNotePostMetadata = zodTryParseJSON(
     ZodSocialFeedTrackMetadata,
     post.metadata,
@@ -53,6 +58,11 @@ export const MusicMapPost: FC<{
         }
       : undefined;
 
+  const onPressPlayPause = async () => {
+    if (isInMediaPlayer) await handlePlayPause();
+    else if (mediaToPlay) await loadAndPlaySoundsQueue([mediaToPlay]);
+  };
+
   return (
     <MapPostWrapper post={post} style={{ width: 185 }}>
       <View style={{ width: "100%" }}>
@@ -63,7 +73,11 @@ export const MusicMapPost: FC<{
         <SpacerColumn size={0.5} />
 
         {mediaToPlay ? (
-          <MediaPlayerBarRefined mediaToPlay={mediaToPlay} />
+          <MediaPlayerBarRefined
+            playbackStatus={isInMediaPlayer ? playbackStatus : undefined}
+            onPressPlayPause={onPressPlayPause}
+            isInMediaPlayer={isInMediaPlayer}
+          />
         ) : (
           <BrandText style={[fontSemibold10, { color: errorColor }]}>
             No media to play
