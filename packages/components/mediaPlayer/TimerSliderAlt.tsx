@@ -51,6 +51,7 @@ export const TimerSliderAlt: FC<{
         <Slider
           onSlidingStart={() => setIsSliding(true)}
           onSlidingComplete={(value: number) => {
+            // FIXME: onChangeTimerPosition doesn't work here
             onChangeTimerPosition(value);
             setIsSliding(false);
           }}

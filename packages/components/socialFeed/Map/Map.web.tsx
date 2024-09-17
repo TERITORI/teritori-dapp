@@ -1,12 +1,6 @@
 import "./styles.css";
 import "leaflet/dist/leaflet.css";
-import {
-  DivIcon,
-  LatLngBounds,
-  LatLngExpression,
-  point,
-  PointExpression,
-} from "leaflet";
+import { DivIcon, LatLngBounds, point, PointExpression } from "leaflet";
 import { FC, useEffect, useMemo, useState } from "react";
 import {
   MapContainer,
@@ -19,7 +13,6 @@ import {
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { HeatmapLayer } from "react-leaflet-heatmap-layer-v3/lib";
 import { View } from "react-native";
-import { LatLng } from "react-native-leaflet-view";
 
 import { Post } from "@/api/feed/v1/feed";
 import { MapProps } from "@/components/socialFeed/Map/Map.types";
@@ -33,19 +26,24 @@ import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   DEFAULT_MAP_POSITION,
   getMapPostIconColorRgba,
-  getMapPostIconSVGString, MAP_LAYER_URL
+  getMapPostIconSVGString,
+  MAP_LAYER_URL,
 } from "@/utils/feed/map";
 import { zodTryParseJSON } from "@/utils/sanitize";
-import { PostCategory, ZodSocialFeedPostMetadata } from "@/utils/types/feed";
+import {
+  CustomLatLngExpression,
+  PostCategory,
+  ZodSocialFeedPostMetadata,
+} from "@/utils/types/feed";
 
 interface MarkerPopup {
-  position: LatLngExpression;
+  position: CustomLatLngExpression;
   post: Post;
   fileURL?: string;
 }
 
 // Custom map post icon
-const getIcon = (postCategory: PostCategory) => {
+const postIcon = (postCategory: PostCategory) => {
   const size = 32;
   const borderWidth = 1;
   const sizeWithBorders = 32 + borderWidth * 2;
@@ -58,8 +56,8 @@ const getIcon = (postCategory: PostCategory) => {
   });
 };
 
-// Custom cluster icon TODO: Make better style respecting the Figma
-const createClusterCustomIcon = function (cluster: any): DivIcon {
+// Custom cluster icon
+const clusterIcon = function (cluster: any) {
   return new DivIcon({
     html: `<div class="cluster-icon-wrapper"><span class="cluster-icon">${cluster.getChildCount()}</span></div>`,
     className: "custom-marker-cluster",
@@ -68,33 +66,21 @@ const createClusterCustomIcon = function (cluster: any): DivIcon {
 };
 
 export const Map: FC<MapProps> = ({
-  // FIXME: locationSelected not updated when selecting an address from AddressSearch
-  locationSelected,
   locationToCenter = DEFAULT_MAP_POSITION,
   style,
-  postCategory = -1,
+  creatingPostLocation,
+  creatingPostCategory = -1,
 }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const [bounds, setBounds] = useState<LatLngBounds | null>(null);
 
   // Prevent infinite rendering after locationSelected update
-  const [localLocationSelected, setLocalLocationSelected] =
-    useState<LatLng>(locationSelected);
+  const [localLocationSelected, setLocalLocationSelected] = useState<
+    CustomLatLngExpression | undefined
+  >(creatingPostLocation);
   useEffect(() => {
-    setLocalLocationSelected(locationSelected);
-  }, [locationSelected]);
-
-  const customIcon = useMemo(
-    () =>
-      new DivIcon({
-        html: `<div style="border-radius: 99px;
-    height: 32px; width: 32px; border: 1px solid #A3A3A3;
-     background-color: rgba(${getMapPostIconColorRgba(postCategory)}); display: flex; align-items: center; justify-content: center;">${getMapPostIconSVGString(postCategory)}</div>`,
-        className: "",
-        iconSize: [34, 34],
-      }),
-    [postCategory],
-  );
+    setLocalLocationSelected(creatingPostLocation);
+  }, [creatingPostLocation]);
 
   // ---- Fetch existing posts that have a location and display them as markers
   const { data } = useFetchFeedLocation({
@@ -174,21 +160,12 @@ export const Map: FC<MapProps> = ({
       ]}
     >
       <MapContainer
-        center={locationSelected || locationToCenter}
+        center={creatingPostLocation || locationToCenter}
         zoom={12}
         attributionControl={false}
       >
         {/*----Loads and displays tiles on the map*/}
-        <TileLayer
-          noWrap
-          attribution=""
-          url={MAP_LAYER_URL}
-        />
-
-        {/*---- When the user creates a post and want to add a location to it*/}
-        {locationSelected && (
-          <Marker position={locationSelected} icon={customIcon} />
-        )}
+        <TileLayer noWrap attribution="" url={MAP_LAYER_URL} />
 
         {/*---- Heatmap displayed when dezoom*/}
         <HeatmapLayer
@@ -215,15 +192,19 @@ export const Map: FC<MapProps> = ({
         />
 
         {/*---- Existing posts that have a location*/}
-        <MarkerClusterGroup
-          chunkedLoading
-          iconCreateFunction={createClusterCustomIcon}
-        >
-          {/* Mapping through the markers */}
+        <MarkerClusterGroup chunkedLoading iconCreateFunction={clusterIcon}>
+          {/*  When the user is creating a post*/}
+          {creatingPostLocation && (
+            <Marker
+              position={creatingPostLocation}
+              icon={postIcon(creatingPostCategory)}
+            />
+          )}
+          {/* Mapping through the markers (Fetched posts) */}
           {markers?.map((marker, index) => (
             <Marker
               position={marker.position}
-              icon={getIcon(marker.post.category)}
+              icon={postIcon(marker.post.category)}
               key={index}
             >
               {marker.post.category === PostCategory.Normal ? (

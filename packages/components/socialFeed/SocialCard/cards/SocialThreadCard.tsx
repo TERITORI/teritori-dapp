@@ -1,6 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
 import { StyleProp, ViewStyle } from "react-native";
-import { LatLng } from "react-native-leaflet-view";
 
 import FlexRow from "../../../FlexRow";
 import { CustomPressable } from "../../../buttons/CustomPressable";
@@ -58,10 +57,10 @@ export const SocialThreadCard: React.FC<{
     const [, authorAddress] = parseUserId(localPost.authorId);
     const navigation = useAppNavigation();
     const replyTo = authorNSInfo?.metadata?.tokenId || authorAddress;
-    const postLocation: LatLng = zodTryParseJSON(
+    const postMetadata = zodTryParseJSON(
       ZodSocialFeedPostMetadata,
       post.metadata,
-    )?.location;
+    );
 
     const handleReply = () =>
       onPressReply?.({
@@ -104,7 +103,7 @@ export const SocialThreadCard: React.FC<{
           <SocialCardHeader
             authorId={localPost.authorId}
             createdAt={post.createdAt}
-            postLocation={postLocation}
+            postLocation={postMetadata?.location}
           />
 
           <SpacerColumn size={1.5} />

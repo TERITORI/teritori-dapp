@@ -18,6 +18,7 @@ import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
+import { stringToLocation } from "@/utils/feed/map";
 import { ScreenFC } from "@/utils/navigation";
 
 export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
@@ -36,7 +37,11 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
         return <MusicFeed />;
       case "map":
         return developerMode ? (
-          <MapFeed locationToCenter={params?.locationToCenter} />
+          <MapFeed
+            locationToCenter={
+              params?.center ? stringToLocation(params.center) : undefined
+            }
+          />
         ) : null;
       case "pics":
         return <PicsFeed />;
@@ -64,7 +69,7 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
     }
   }, [
     params?.tab,
-    params?.locationToCenter,
+    params?.center,
     isMobile,
     developerMode,
     defaultFeedRequest,

@@ -1,6 +1,5 @@
 import React, { Suspense, useState, Dispatch, SetStateAction } from "react";
 import { View } from "react-native";
-import { LatLng } from "react-native-leaflet-view";
 
 import { PrimaryButton } from "../../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../../buttons/SecondaryButtonOutline";
@@ -16,16 +15,16 @@ import {
   transparentColor,
 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
-import { PostCategory } from "@/utils/types/feed";
+import { CustomLatLngExpression, PostCategory } from "@/utils/types/feed";
 
 interface TMapModalProps {
   visible: boolean;
   onClose: () => void;
-  setLocation: Dispatch<SetStateAction<LatLng>>;
+  setLocation: Dispatch<SetStateAction<CustomLatLngExpression | undefined>>;
   // TODO: Description ?
   // description: string;
   // setDescription: (newDescription: string) => void;
-  location?: LatLng;
+  location?: CustomLatLngExpression;
   postCategory?: PostCategory;
 }
 
@@ -38,9 +37,9 @@ export const MapModal: React.FC<TMapModalProps> = ({
 }) => {
   const [addressPlaceHolder, setAddressPlaceHolder] = useState("Address");
   const [address, setAddress] = useState("");
-  const [locationSelected, setLocationSelected] = useState<LatLng | undefined>(
-    location,
-  );
+  const [creatingPostLocation, setCreatingPostLocation] = useState<
+    CustomLatLngExpression | undefined
+  >(location);
 
   return (
     <ModalWithoutHeader
@@ -75,7 +74,7 @@ export const MapModal: React.FC<TMapModalProps> = ({
           setAddressPlaceHolder={setAddressPlaceHolder}
           address={address}
           setAddress={setAddress}
-          setLocationSelected={setLocationSelected}
+          setLocationSelected={setCreatingPostLocation}
         />
 
         <SpacerColumn size={2} />
@@ -88,8 +87,8 @@ export const MapModal: React.FC<TMapModalProps> = ({
         >
           <Suspense fallback={<></>}>
             <Map
-              locationSelected={locationSelected}
-              postCategory={postCategory}
+              creatingPostLocation={creatingPostLocation}
+              creatingPostCategory={postCategory}
             />
           </Suspense>
         </View>
@@ -118,7 +117,7 @@ export const MapModal: React.FC<TMapModalProps> = ({
                 borderColor={transparentColor}
                 text="Remove Location"
                 onPress={() => {
-                  setLocationSelected(undefined);
+                  setCreatingPostLocation(undefined);
                   setLocation(undefined);
                   onClose();
                 }}
@@ -134,7 +133,7 @@ export const MapModal: React.FC<TMapModalProps> = ({
             size="M"
             text={location ? "Update Location" : "Add Location"}
             onPress={() => {
-              setLocation(locationSelected);
+              setLocation(creatingPostLocation);
               onClose();
             }}
           />

@@ -15,7 +15,9 @@ import { zodTryParseJSON } from "@/utils/sanitize";
 import { errorColor, neutralFF, withAlpha } from "@/utils/style/colors";
 import { fontSemibold10 } from "@/utils/style/fonts";
 import {
+  SocialFeedVideoMetadata,
   zodSocialFeedCommonMetadata,
+  ZodSocialFeedPostMetadata,
   ZodSocialFeedVideoMetadata,
 } from "@/utils/types/feed";
 import { Media } from "@/utils/types/mediaPlayer";
@@ -25,19 +27,47 @@ export const VideoMapPost: FC<{
 }> = ({ post }) => {
   const { media } = useMediaPlayer();
   const { current: id } = useRef(uuidv4());
-  const video = zodTryParseJSON(ZodSocialFeedVideoMetadata, post.metadata);
+  const videoPostMetadata = zodTryParseJSON(
+    ZodSocialFeedVideoMetadata,
+    post.metadata,
+  );
+  const videoNotePostMetadata = zodTryParseJSON(
+    ZodSocialFeedPostMetadata,
+    post.metadata,
+  );
   const baseMetadata = zodTryParseJSON(
     zodSocialFeedCommonMetadata,
     post.metadata,
   );
   const title = baseMetadata?.title || "Music from Social Feed";
 
-  const mediaToPlay: Media | undefined = video && {
-    id,
-    fileUrl: video.videoFile.url,
-    duration: video.videoFile.videoMetadata?.duration, // FIXME: Known issue: Always 0. So, for videos, duration is set by playbackStatus, so it's 0 on the timer since the video is not started once
-    postId: post.id,
-  };
+  // Video and VideoNote have different metadata but have the same render on the map, so we handle these 2 cases
+  const mediaToPlay: Media | undefined = videoPostMetadata
+    ? {
+        id,
+        fileUrl: videoPostMetadata.videoFile.url,
+        duration: videoPostMetadata.videoFile.videoMetadata?.duration, // FIXME: Known issue: Always 0. So, for videos, duration is set by playbackStatus, so it's 0 on the timer since the video is not started once
+        postId: post.id,
+      }
+    : videoNotePostMetadata?.files
+      ? {
+          id,
+          fileUrl: videoNotePostMetadata.files[0].url,
+          duration: videoNotePostMetadata.files[0].videoMetadata?.duration,
+          postId: post.id,
+        }
+      : undefined;
+  const videoMetadata: SocialFeedVideoMetadata | undefined = videoPostMetadata
+    ? {
+        title: "Video from Social Feed",
+        videoFile: videoPostMetadata.videoFile,
+      }
+    : videoNotePostMetadata?.files
+      ? {
+          title: "Video from Social Feed",
+          videoFile: videoNotePostMetadata.files[0],
+        }
+      : undefined;
 
   return (
     <MapPostWrapper post={post} style={{ width: 185 }}>
@@ -48,33 +78,28 @@ export const VideoMapPost: FC<{
         <Separator color={withAlpha(neutralFF, 0.24)} />
         <SpacerColumn size={0.5} />
 
-        {mediaToPlay ? (
-          <MediaPlayerBarRefined mediaToPlay={mediaToPlay} />
+        {mediaToPlay && videoMetadata ? (
+          <>
+            <MediaPlayerBarRefined mediaToPlay={mediaToPlay} />
+            <SpacerColumn size={0.5} />
+            <MediaPlayerVideo
+              videoMetadata={videoMetadata}
+              style={{
+                height: 100,
+                borderRadius: 4,
+              }}
+              resizeMode={ResizeMode.CONTAIN}
+              postId={post.id}
+              hideControls
+              isThumbnailShown={
+                !media && !!videoMetadata.videoFile.thumbnailFileData?.url
+              }
+            />
+          </>
         ) : (
           <BrandText style={[fontSemibold10, { color: errorColor }]}>
             No media to play
           </BrandText>
-        )}
-        <SpacerColumn size={0.5} />
-
-        {!video?.videoFile ? (
-          <BrandText style={[fontSemibold10, { color: errorColor }]}>
-            Video not found
-          </BrandText>
-        ) : (
-          <MediaPlayerVideo
-            videoMetadata={video}
-            style={{
-              height: 100,
-              borderRadius: 4,
-            }}
-            resizeMode={ResizeMode.CONTAIN}
-            postId={post.id}
-            hideControls
-            isThumbnailShown={
-              !media && !!video.videoFile.thumbnailFileData?.url
-            }
-          />
         )}
       </View>
     </MapPostWrapper>

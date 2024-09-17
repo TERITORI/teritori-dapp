@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { Dispatch, FC, SetStateAction, useMemo } from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -7,7 +7,6 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { LatLng } from "react-native-leaflet-view";
 import { z } from "zod";
 
 import { BrandText } from "../../../BrandText";
@@ -20,6 +19,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { neutral77, neutralFF, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { CustomLatLngExpression } from "@/utils/types/feed";
 
 const zodAddressSearchResult = z.array(
   z.object({
@@ -33,11 +33,13 @@ interface AddressSearchProps {
   addressPlaceHolder: string;
   address: string;
   setAddress: Dispatch<SetStateAction<string>>;
-  setLocationSelected: Dispatch<SetStateAction<LatLng>>;
+  setLocationSelected: Dispatch<
+    SetStateAction<CustomLatLngExpression | undefined>
+  >;
   setAddressPlaceHolder: Dispatch<SetStateAction<string>>;
 }
 
-export const AddressSearch: React.FC<AddressSearchProps> = ({
+export const AddressSearch: FC<AddressSearchProps> = ({
   addressPlaceHolder,
   address,
   setAddress,

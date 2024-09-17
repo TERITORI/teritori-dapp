@@ -9,7 +9,6 @@ import {
   ViewStyle,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
-import { LatLng } from "react-native-leaflet-view";
 import { useSelector } from "react-redux";
 
 import Img from "../../../assets/icons/img.svg";
@@ -33,7 +32,11 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { PostCategory, SocialFeedVideoMetadata } from "../../utils/types/feed";
+import {
+  CustomLatLngExpression,
+  PostCategory,
+  SocialFeedVideoMetadata,
+} from "../../utils/types/feed";
 import { LocalFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
 import { DeleteButton } from "../FilePreview/DeleteButton";
@@ -64,9 +67,11 @@ export const UploadVideoModal: FC<{
 }> = ({ onClose, isVisible }) => {
   const [developerMode] = useDeveloperMode();
   const [isMapShown, setIsMapShown] = useState(false);
-  const [location, setLocation] = useState<LatLng | undefined>();
+  const [location, setLocation] = useState<
+    CustomLatLngExpression | undefined
+  >();
 
-  const { setToastError } = useFeedbacks();
+  const { setToast } = useFeedbacks();
   const selectedNetwork = useSelectedNetworkInfo();
   const selectedWallet = useSelectedWallet();
   const userId = selectedWallet?.userId || "";
@@ -119,9 +124,11 @@ export const UploadVideoModal: FC<{
       console.error("post submit err", err);
       setIsUploadLoading(false);
       setIsProgressBarShown(false);
-      setToastError({
+      setToast({
         title: "Post creation failed",
         message: err instanceof Error ? err.message : `${err}`,
+        mode: "normal",
+        type: "success",
       });
     }
   };
@@ -156,9 +163,11 @@ export const UploadVideoModal: FC<{
       userIPFSKey || (await generateIpfsKey(selectedNetwork?.id || "", userId));
     if (!pinataJWTKey) {
       console.error("upload file err : No Pinata JWT");
-      setToastError({
+      setToast({
         title: "File upload failed",
         message: "No Pinata JWT",
+        mode: "normal",
+        type: "success",
       });
       setIsUploadLoading(false);
       return;
@@ -177,9 +186,11 @@ export const UploadVideoModal: FC<{
     });
     if (!uploadedFiles.find((file) => file.url)) {
       console.error("upload file err : Fail to pin to IPFS");
-      setToastError({
+      setToast({
         title: "File upload failed",
         message: "Fail to pin to IPFS, please try to Publish again",
+        mode: "normal",
+        type: "success",
       });
       setIsUploadLoading(false);
       return;

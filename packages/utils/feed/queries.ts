@@ -1,5 +1,3 @@
-import { LatLng } from "react-native-leaflet-view";
-
 import {
   nonSigningSocialFeedClient,
   signingSocialFeedClient,
@@ -12,6 +10,7 @@ import {
   parseUserId,
 } from "../../networks";
 import {
+  CustomLatLngExpression,
   NewArticleFormValues,
   NewPostFormValues,
   PostCategory,
@@ -121,7 +120,7 @@ export const getPostCategory = ({
 interface GeneratePostMetadataParams extends Omit<NewPostFormValues, "files"> {
   files: RemoteFileData[];
   premium: boolean;
-  location?: LatLng;
+  location?: CustomLatLngExpression;
 }
 
 interface GenerateArticleMetadataParams

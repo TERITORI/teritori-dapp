@@ -7,7 +7,6 @@ import {
   ViewStyle,
   useWindowDimensions,
 } from "react-native";
-import { LatLng } from "react-native-leaflet-view";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
@@ -80,7 +79,11 @@ import {
 } from "@/utils/style/fonts";
 import { RESPONSIVE_BREAKPOINT_S, layout } from "@/utils/style/layout";
 import { replaceBetweenString } from "@/utils/text";
-import { NewPostFormValues, ReplyToType } from "@/utils/types/feed";
+import {
+  CustomLatLngExpression,
+  NewPostFormValues,
+  ReplyToType,
+} from "@/utils/types/feed";
 import { LocalFileData, RemoteFileData } from "@/utils/types/files";
 
 interface NewsFeedInputProps {
@@ -146,7 +149,9 @@ export const NewsFeedInput = React.forwardRef<
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
     const [premium, setPremium] = useState(false);
     const [isMapShown, setIsMapShown] = useState(false);
-    const [location, setLocation] = useState<LatLng | undefined>();
+    const [location, setLocation] = useState<
+      CustomLatLngExpression | undefined
+    >();
     const [developerMode] = useDeveloperMode();
 
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(

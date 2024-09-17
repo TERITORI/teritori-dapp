@@ -6,14 +6,19 @@ import musicPostSvg from "@/assets/icons/social-feed-map/music-post.svg";
 import normalPostSvg from "@/assets/icons/social-feed-map/normal-post.svg";
 import picturePostSvg from "@/assets/icons/social-feed-map/picture-post.svg";
 import videoPostSvg from "@/assets/icons/social-feed-map/video-post.svg";
-import { PostCategory } from "@/utils/types/feed";
+import {
+  CustomLatLngExpression,
+  PostCategory,
+  ZodLatLngLiteral,
+  ZodLatLngTuple,
+} from "@/utils/types/feed";
 
 //TODO: Get <svg/> as string from svg files (These svg strings are used in FeedMapList.web.tsx)
 
 export const MAP_LAYER_URL = `https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=${process.env.EXPO_PUBLIC_LEAFLET_MAP_TOKEN}`;
 
 // Paris baguette
-export const DEFAULT_MAP_POSITION = [48.8566, 2.3522];
+export const DEFAULT_MAP_POSITION: CustomLatLngExpression = [48.8566, 2.3522];
 
 const musicPostSvgString = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <g filter="url(#filter0_di_22136_173395)">
@@ -173,11 +178,13 @@ export const getMapPostIconSVG = (
   postCategory: PostCategory,
 ): FunctionComponent => {
   switch (postCategory) {
-    case PostCategory.Audio || PostCategory.MusicAudio:
+    case PostCategory.Audio:
+    case PostCategory.MusicAudio:
       return musicPostSvg;
     case PostCategory.Picture:
       return picturePostSvg;
-    case PostCategory.Video || PostCategory.VideoNote:
+    case PostCategory.Video:
+    case PostCategory.VideoNote:
       return videoPostSvg;
     case PostCategory.Article:
       return articlePostSvg;
@@ -190,11 +197,13 @@ export const getMapPostIconSVG = (
 
 export const getMapPostIconSVGString = (postCategory: PostCategory) => {
   switch (postCategory) {
-    case PostCategory.Audio || PostCategory.MusicAudio:
+    case PostCategory.Audio:
+    case PostCategory.MusicAudio:
       return musicPostSvgString;
     case PostCategory.Picture:
       return picturePostSvgString;
-    case PostCategory.Video || PostCategory.VideoNote:
+    case PostCategory.Video:
+    case PostCategory.VideoNote:
       return videoPostSvgString;
     case PostCategory.Article:
       return articlePostSvgString;
@@ -207,11 +216,13 @@ export const getMapPostIconSVGString = (postCategory: PostCategory) => {
 
 export const getMapPostIconColorRgba = (postCategory: PostCategory) => {
   switch (postCategory) {
-    case PostCategory.Audio || PostCategory.MusicAudio:
+    case PostCategory.Audio:
+    case PostCategory.MusicAudio:
       return "255,147,147,.40";
     case PostCategory.Picture:
       return "136,147,255,.40";
-    case PostCategory.Video || PostCategory.VideoNote:
+    case PostCategory.Video:
+    case PostCategory.VideoNote:
       return "198,171,255,.40";
     case PostCategory.Article:
       return "255,252,207,.40";
@@ -224,11 +235,13 @@ export const getMapPostIconColorRgba = (postCategory: PostCategory) => {
 
 export const getMapPostTextGradientType = (postCategory: PostCategory) => {
   switch (postCategory) {
-    case PostCategory.Audio || PostCategory.MusicAudio:
+    case PostCategory.Audio:
+    case PostCategory.MusicAudio:
       return "feed-map-music-post";
     case PostCategory.Picture:
       return "feed-map-picture-post";
-    case PostCategory.Video || PostCategory.VideoNote:
+    case PostCategory.Video:
+    case PostCategory.VideoNote:
       return "feed-map-video-post";
     case PostCategory.Article:
       return "feed-map-article-post";
@@ -246,13 +259,15 @@ export const getMapPostTextGradient = (postCategory: PostCategory) => {
     end: { x: 0, y: 0 },
   };
   switch (postCategory) {
-    case PostCategory.Audio || PostCategory.MusicAudio:
+    case PostCategory.Audio:
+    case PostCategory.MusicAudio:
       gradientProps.colors = ["#FF9393", "#FF5C5C"];
       break;
     case PostCategory.Picture:
       gradientProps.colors = ["#88DCFF", "#16BBFF"];
       break;
-    case PostCategory.Video || PostCategory.VideoNote:
+    case PostCategory.Video:
+    case PostCategory.VideoNote:
       gradientProps.colors = ["#C6ABFF", "#A57AFF"];
       break;
     case PostCategory.Article:
@@ -270,11 +285,13 @@ export const getMapPostTextGradient = (postCategory: PostCategory) => {
 
 export const getMapPostTextGradientString = (postCategory: PostCategory) => {
   switch (postCategory) {
-    case PostCategory.Audio || PostCategory.MusicAudio:
+    case PostCategory.Audio:
+    case PostCategory.MusicAudio:
       return `180deg, #FF9393 100%, #FF5C5C 100%`;
     case PostCategory.Picture:
       return `180deg, #88DCFF 100%, #16BBFF 100%`;
-    case PostCategory.Video || PostCategory.VideoNote:
+    case PostCategory.Video:
+    case PostCategory.VideoNote:
       return `180deg, #C6ABFF 100%, #A57AFF 100%`;
     case PostCategory.Article:
       return `180deg, #FFFC6B 100%, #E5E13B 100%`;
@@ -282,5 +299,28 @@ export const getMapPostTextGradientString = (postCategory: PostCategory) => {
       return `180deg, #FFB26B 100%, #E58C3B 100%`;
     default:
       return `180deg, #FFFFFF 100%, #AAAAAA 100%`;
+  }
+};
+
+const STRING_LOCATION_SEPARATOR = "-";
+export const locationToString: (
+  location: CustomLatLngExpression,
+) => string | undefined = (location: CustomLatLngExpression) => {
+  const zodLatLngLiteralParseResult = ZodLatLngLiteral.safeParse(location);
+  const zodLatLngTupleParseResult = ZodLatLngTuple.safeParse(location);
+
+  if (zodLatLngLiteralParseResult.success) {
+    return `${zodLatLngLiteralParseResult.data.lat}${STRING_LOCATION_SEPARATOR}${zodLatLngLiteralParseResult.data.lng}`;
+  }
+  if (zodLatLngTupleParseResult.success) {
+    return `${zodLatLngTupleParseResult.data[0]}${STRING_LOCATION_SEPARATOR}${zodLatLngTupleParseResult.data[1]}`;
+  }
+};
+export const stringToLocation: (
+  locationStr: string,
+) => CustomLatLngExpression | undefined = (locationStr: string) => {
+  const parts = locationStr.split(STRING_LOCATION_SEPARATOR).map(Number);
+  if ((parts.length === 2 || parts.length === 3) && !parts.some(isNaN)) {
+    return [parts[0], parts[1]];
   }
 };

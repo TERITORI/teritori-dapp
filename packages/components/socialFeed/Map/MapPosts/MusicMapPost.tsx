@@ -13,6 +13,7 @@ import { errorColor, neutralFF, withAlpha } from "@/utils/style/colors";
 import { fontSemibold10 } from "@/utils/style/fonts";
 import {
   zodSocialFeedCommonMetadata,
+  ZodSocialFeedPostMetadata,
   ZodSocialFeedTrackMetadata,
 } from "@/utils/types/feed";
 import { Media } from "@/utils/types/mediaPlayer";
@@ -21,20 +22,36 @@ export const MusicMapPost: FC<{
   post: Post;
 }> = ({ post }) => {
   const { current: id } = useRef(uuidv4());
-  const track = zodTryParseJSON(ZodSocialFeedTrackMetadata, post.metadata);
-
+  const musicAudioNotePostMetadata = zodTryParseJSON(
+    ZodSocialFeedTrackMetadata,
+    post.metadata,
+  );
+  const musicPostMetadata = zodTryParseJSON(
+    ZodSocialFeedPostMetadata,
+    post.metadata,
+  );
   const baseMetadata = zodTryParseJSON(
     zodSocialFeedCommonMetadata,
     post.metadata,
   );
   const title = baseMetadata?.title || "Music from Social Feed";
 
-  const mediaToPlay: Media | undefined = track && {
-    id,
-    fileUrl: track.audioFile.url,
-    duration: track.audioFile.audioMetadata?.duration,
-    postId: post.id,
-  };
+  // MusicAudio and Music have different metadata but have the same render on the map, so we handle these 2 cases
+  const mediaToPlay: Media | undefined = musicAudioNotePostMetadata
+    ? {
+        id,
+        fileUrl: musicAudioNotePostMetadata.audioFile.url,
+        duration: musicAudioNotePostMetadata.audioFile.audioMetadata?.duration,
+        postId: post.id,
+      }
+    : musicPostMetadata?.files
+      ? {
+          id,
+          fileUrl: musicPostMetadata.files[0].url,
+          duration: musicPostMetadata.files[0].audioMetadata?.duration,
+          postId: post.id,
+        }
+      : undefined;
 
   return (
     <MapPostWrapper post={post} style={{ width: 185 }}>

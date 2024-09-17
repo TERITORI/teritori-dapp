@@ -1,6 +1,5 @@
 import React, { FC, Suspense } from "react";
 import { ScrollView, useWindowDimensions } from "react-native";
-import { LatLng } from "react-native-leaflet-view";
 
 import { FeedHeader } from "./FeedHeader";
 
@@ -13,9 +12,10 @@ import {
   RESPONSIVE_BREAKPOINT_S,
   screenContentMaxWidth,
 } from "@/utils/style/layout";
+import { CustomLatLngExpression } from "@/utils/types/feed";
 
 export const MapFeed: FC<{
-  locationToCenter?: LatLng;
+  locationToCenter?: CustomLatLngExpression;
 }> = ({ locationToCenter }) => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const { width, height } = useMaxResolution();

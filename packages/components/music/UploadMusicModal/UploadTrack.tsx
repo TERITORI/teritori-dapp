@@ -6,7 +6,6 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { LatLng } from "react-native-leaflet-view";
 import { useSelector } from "react-redux";
 
 import AudioSVG from "../../../../assets/icons/audio.svg";
@@ -30,6 +29,7 @@ import {
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import {
+  CustomLatLngExpression,
   PostCategory,
   SocialFeedTrackMetadata,
 } from "../../../utils/types/feed";
@@ -58,9 +58,11 @@ const UPLOAD_ALBUM_MODAL_WIDTH = 564;
 export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
   const [developerMode] = useDeveloperMode();
   const [isMapShown, setIsMapShown] = useState(false);
-  const [location, setLocation] = useState<LatLng | undefined>();
+  const [location, setLocation] = useState<
+    CustomLatLngExpression | undefined
+  >();
 
-  const { setToastError } = useFeedbacks();
+  const { setToast } = useFeedbacks();
   const selectedNetwork = useSelectedNetworkInfo();
   const selectedWallet = useSelectedWallet();
   const userId = selectedWallet?.userId;
@@ -108,9 +110,11 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       console.error("post submit err", err);
       setIsUploadLoading(false);
       setIsProgressBarShown(false);
-      setToastError({
+      setToast({
         title: "Post creation failed",
         message: err instanceof Error ? err.message : `${err}`,
+        type: "error",
+        mode: "normal",
       });
     }
   };
@@ -145,9 +149,11 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       userIPFSKey || (await generateIpfsKey(selectedNetwork?.id || "", userId));
     if (!pinataJWTKey) {
       console.error("upload file err : No Pinata JWT");
-      setToastError({
+      setToast({
         title: "File upload failed",
         message: "No Pinata JWT",
+        type: "error",
+        mode: "normal",
       });
       setIsUploadLoading(false);
       return;
@@ -160,9 +166,11 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
     });
     if (!uploadedFiles.find((file) => file.url)) {
       console.error("upload file err : Fail to pin to IPFS");
-      setToastError({
+      setToast({
         title: "File upload failed",
         message: "Fail to pin to IPFS, please try to Publish again",
+        type: "error",
+        mode: "normal",
       });
       setIsUploadLoading(false);
       return;

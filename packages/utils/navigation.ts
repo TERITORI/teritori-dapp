@@ -1,7 +1,6 @@
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
-import { LatLng } from "react-native-leaflet-view";
 
 import { feedsTabItems } from "./social-feed";
 import { AppMode } from "./types/app-mode";
@@ -52,7 +51,7 @@ export type RootStackParamList = {
   Feed?: {
     tab: keyof typeof feedsTabItems;
     network?: string;
-    locationToCenter?: LatLng;
+    center?: string;
   };
   FeedNewArticle:
     | (NewPostFormValues & {

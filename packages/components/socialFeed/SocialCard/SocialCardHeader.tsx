@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import { useWindowDimensions, View } from "react-native";
-import { LatLng } from "react-native-leaflet-view";
 
 import { DateTime } from "./DateTime";
 import { OmniLink } from "../../OmniLink";
@@ -12,17 +11,19 @@ import { SpacerRow } from "../../spacer";
 import { LocationButton } from "@/components/socialFeed/NewsFeed/LocationButton";
 import { UserDisplayName } from "@/components/user/UserDisplayName";
 import { Username } from "@/components/user/Username";
+import { locationToString } from "@/utils/feed/map";
 import { useAppNavigation } from "@/utils/navigation";
 import { neutral77, neutralFF } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
+import { CustomLatLngExpression } from "@/utils/types/feed";
 
 // ====== Handle author image and username, date
 export const SocialCardHeader: FC<{
   authorId: string;
   createdAt?: number;
   isWrapped?: boolean;
-  postLocation?: LatLng;
+  postLocation?: CustomLatLngExpression;
 }> = ({ authorId, createdAt, isWrapped, postLocation }) => {
   const { width } = useWindowDimensions();
   const navigation = useAppNavigation();
@@ -106,7 +107,7 @@ export const SocialCardHeader: FC<{
               onPress={() =>
                 navigation.navigate("Feed", {
                   tab: "map",
-                  locationToCenter: postLocation,
+                  center: locationToString(postLocation),
                 })
               }
               stroke={neutralFF}
