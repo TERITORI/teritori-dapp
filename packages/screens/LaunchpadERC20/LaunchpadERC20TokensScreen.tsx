@@ -10,20 +10,25 @@ import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { FlowCard } from "@/components/cards/FlowCard";
 import { SpacerColumn } from "@/components/spacer";
+import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature, NetworkKind } from "@/networks";
 import { ScreenFC } from "@/utils/navigation";
 
 const LG_BREAKPOINT = 1600;
 const MD_BREAKPOINT = 820;
 
-export const LaunchpadERC20TokensScreen: ScreenFC<
-  "LaunchpadERC20Tokens"
-> = () => {
+export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
+  route: { params },
+}) => {
+  const network = params?.network;
+  useForceNetworkSelection(network);
+  const networkId = useSelectedNetworkId();
   const { width } = useWindowDimensions();
 
   return (
     <ScreenContainer
-      headerChildren={<BrandText>Name Service</BrandText>}
+      headerChildren={<BrandText>Launchpad ERC 20</BrandText>}
       forceNetworkFeatures={[NetworkFeature.LaunchpadERC20]}
       forceNetworkKind={NetworkKind.Gno}
       isLarge
@@ -51,16 +56,18 @@ export const LaunchpadERC20TokensScreen: ScreenFC<
             marginHorizontal: width >= MD_BREAKPOINT ? 12 : 0,
             marginVertical: width >= MD_BREAKPOINT ? 0 : 12,
           }}
+          disabled
         />
         <FlowCard
           label="Explore"
           description="Lookup tokens and explore their details"
           iconSVG={exploreSVG}
           onPress={() => {}}
+          disabled
         />
       </View>
       <SpacerColumn size={2} />
-      <TokensTable />
+      <TokensTable networkId={networkId} />
     </ScreenContainer>
   );
 };

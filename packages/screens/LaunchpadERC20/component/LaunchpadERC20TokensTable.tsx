@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { FlatList, View } from "react-native";
 
+import { useLastTokens } from "../hooks/useLastTokens";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn } from "@/components/spacer";
 import { TableHeader } from "@/components/table/TableHeader";
 import { TableRow } from "@/components/table/TableRow";
 import { TableTextCell } from "@/components/table/TableTextCell";
 import { TableWrapper } from "@/components/table/TableWrapper";
 import { TableColumns } from "@/components/table/utils";
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { Token } from "@/utils/launchpadERC20/types";
 import { screenContentMaxWidthLarge } from "@/utils/style/layout";
 
 const columns: TableColumns = {
@@ -44,29 +48,12 @@ const columns: TableColumns = {
 
 const breakpointM = 800;
 
-export const TokensTable: React.FC<object> = () => {
-  const [pageIndex, setPageIndex] = useState(0);
-  // replace by useTokens hook
-  const tokens = [
-    {
-      id: "1",
-      symbol: "ETH",
-      name: "Ethereum",
-      decimals: 18,
-      totalSupply: "120000000",
-      mintable: true,
-      burnable: true,
-    },
-    {
-      id: "2",
-      symbol: "BTC",
-      name: "Bitcoin",
-      decimals: 8,
-      totalSupply: "21000000",
-      mintable: false,
-      burnable: false,
-    },
-  ];
+interface TokensTableProps {
+  networkId: string;
+}
+
+export const TokensTable: React.FC<TokensTableProps> = ({ networkId }) => {
+  const { data: tokens } = useLastTokens(networkId);
 
   return (
     <View
@@ -75,9 +62,11 @@ export const TokensTable: React.FC<object> = () => {
         maxWidth: screenContentMaxWidthLarge,
       }}
     >
+      <BrandText>Latest ERC20 Tokens Created</BrandText>
+      <SpacerColumn size={2} />
       <TableWrapper
         paginationProps={{
-          currentPage: pageIndex,
+          currentPage: 0,
           maxPage: 1,
           itemsPerPage: 10,
           nbItemsOptions: [],
@@ -87,31 +76,21 @@ export const TokensTable: React.FC<object> = () => {
         horizontalScrollBreakpoint={breakpointM}
       >
         <TableHeader columns={columns} />
-        <FlatList
-          data={tokens}
-          renderItem={({ item }) => <TokenTableRow token={item} />}
-          keyExtractor={(item) => item.id}
-        />
+        {tokens && (
+          <FlatList
+            data={tokens}
+            renderItem={({ item }) => <TokenTableRow token={item} />}
+            keyExtractor={(item) => item.name}
+          />
+        )}
       </TableWrapper>
     </View>
   );
 };
 
-export interface Token {
-  id: string;
-  symbol: string;
-  name: string;
-  decimals: number;
-  totalSupply: string;
-  mintable: boolean;
-  burnable: boolean;
-}
-
 const TokenTableRow: React.FC<{
   token: Token;
 }> = ({ token }) => {
-  const isMobile = useIsMobile();
-
   return (
     <TableRow>
       <TableTextCell
@@ -164,7 +143,7 @@ const TokenTableRow: React.FC<{
           },
         ]}
       >
-        {token.mintable ? "Yes" : "No"}
+        {token.allowMint ? "Yes" : "No"}
       </TableTextCell>
       <TableTextCell
         style={[
@@ -174,7 +153,7 @@ const TokenTableRow: React.FC<{
           },
         ]}
       >
-        {token.burnable ? "Yes" : "No"}
+        {token.allowBurn ? "Yes" : "No"}
       </TableTextCell>
     </TableRow>
   );

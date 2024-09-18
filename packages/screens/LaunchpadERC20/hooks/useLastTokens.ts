@@ -1,20 +1,21 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
+import { z } from "zod";
 
 import {
   NetworkFeature,
   getGnoNetwork,
   getNetworkFeature,
 } from "../../../networks";
-import { zodProject } from "../../../utils/projects/types";
 
 import { extractGnoJSONString } from "@/utils/gno";
+import { zodToken } from "@/utils/launchpadERC20/types";
 
 export const useLastTokens = (networkId: string) => {
   return useQuery(["lastTokens"], async () => {
     const gnoNetwork = getGnoNetwork(networkId);
     if (!gnoNetwork) {
-      return { projects: [], nextOffset: 0 };
+      return null;
     }
 
     const pmFeature = getNetworkFeature(
@@ -28,11 +29,13 @@ export const useLastTokens = (networkId: string) => {
 
     const client = new GnoJSONRPCProvider(gnoNetwork.endpoint);
     const pkgPath = pmFeature.launchpadERC20PkgPath;
+    console.log(pkgPath);
     const query = `GetLastTokensJSON()`;
     const contractData = await client.evaluateExpression(pkgPath, query);
 
     const res = extractGnoJSONString(contractData);
 
-    return zodProject.parse(res);
+    const tokens = z.array(zodToken).parse(res);
+    return tokens;
   });
 };

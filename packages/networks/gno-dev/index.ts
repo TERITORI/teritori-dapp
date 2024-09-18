@@ -1,5 +1,5 @@
-import { gnoCurrencies } from "./currencies";
 import { GnoNetworkInfo, NetworkFeature, NetworkKind } from "../types";
+import { gnoCurrencies } from "./currencies";
 
 export const gnoDevNetwork: GnoNetworkInfo = {
   id: "gno-dev",
@@ -21,7 +21,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
     },
     {
       type: NetworkFeature.LaunchpadERC20,
-      launchpadERC20PkgPath: "gno.land/r/teritori/launchpad_erc20",
+      launchpadERC20PkgPath: "gno.land/r/teritori/launchpad_grc20",
       paymentsDenom: "ugnot",
     },
   ],
