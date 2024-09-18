@@ -111,7 +111,7 @@ export const EditProfileForm: React.FC<{
   return (
     <View>
       <AvailableNamesInput
-        readOnly
+        readOnly={!!name}
         variant="regular"
         nameValue={username}
         label="Username"

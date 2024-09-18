@@ -20,7 +20,6 @@ const gnoGetMintPrice = async (network: GnoNetworkInfo, tokenId: string) => {
     network.nameServiceContractAddress,
     `minFee`,
   );
-  console.log({ rawResp });
 
   const price = extractGnoNumber(rawResp);
   return {
