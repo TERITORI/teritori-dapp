@@ -98,27 +98,22 @@ export const getPostCategory = ({
   message,
   gifs,
 }: NewPostFormValues): PostCategory => {
-  let category: PostCategory;
-  if (gifs?.length) {
-    category = PostCategory.Picture;
-  } else if (files?.length) {
-    if (files[0].fileType === "image") {
-      category = PostCategory.Picture;
-    } else if (files[0].fileType === "audio") {
-      category = PostCategory.Audio;
-    } else {
-      category = PostCategory.VideoNote;
+  if (gifs?.length) return PostCategory.Picture;
+  if (files?.length) {
+    switch (files[0].fileType) {
+      case "image":
+        return PostCategory.Picture;
+      case "audio":
+        return PostCategory.Audio;
+      default:
+        return PostCategory.VideoNote;
     }
-  } else if (title) {
-    category = PostCategory.Article;
-  } else if (message.startsWith("/question")) {
-    category = PostCategory.Question;
-  } else if (message.startsWith("/generate")) {
-    category = PostCategory.BriefForStableDiffusion;
-  } else {
-    category = PostCategory.Normal;
   }
-  return category;
+  if (title) return PostCategory.Article;
+  if (message.startsWith("/question")) return PostCategory.Question;
+  if (message.startsWith("/generate"))
+    return PostCategory.BriefForStableDiffusion;
+  return PostCategory.Normal;
 };
 
 interface GeneratePostMetadataParams extends Omit<NewPostFormValues, "files"> {
