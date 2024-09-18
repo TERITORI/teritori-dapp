@@ -1,6 +1,7 @@
 import React from "react";
 import { useWindowDimensions, View } from "react-native";
 
+import { TokensTable } from "./component/LaunchpadERC20TokensTable";
 import exploreSVG from "../../../assets/icons/explore-neutral77.svg";
 import penSVG from "../../../assets/icons/pen-neutral77.svg";
 import registerSVG from "../../../assets/icons/register-neutral77.svg";
@@ -11,7 +12,6 @@ import { FlowCard } from "@/components/cards/FlowCard";
 import { SpacerColumn } from "@/components/spacer";
 import { NetworkFeature, NetworkKind } from "@/networks";
 import { ScreenFC } from "@/utils/navigation";
-import { TokensTable } from "./component/LaunchpadERC20TokensTable";
 
 const LG_BREAKPOINT = 1600;
 const MD_BREAKPOINT = 820;
@@ -40,13 +40,13 @@ export const LaunchpadERC20TokensScreen: ScreenFC<
           label="Create"
           description="Create your own ERC20 token with custom parameters"
           iconSVG={registerSVG}
-          onPress={() => { }}
+          onPress={() => {}}
         />
         <FlowCard
           label="Manage"
           description="Mint, burn, or transfer the tokens you own"
           iconSVG={penSVG}
-          onPress={() => { }}
+          onPress={() => {}}
           style={{
             marginHorizontal: width >= MD_BREAKPOINT ? 12 : 0,
             marginVertical: width >= MD_BREAKPOINT ? 0 : 12,
@@ -56,7 +56,7 @@ export const LaunchpadERC20TokensScreen: ScreenFC<
           label="Explore"
           description="Lookup tokens and explore their details"
           iconSVG={exploreSVG}
-          onPress={() => { }}
+          onPress={() => {}}
         />
       </View>
       <SpacerColumn size={2} />

@@ -19,6 +19,11 @@ export const gnoDevNetwork: GnoNetworkInfo = {
       projectsManagerPkgPath: "gno.land/r/teritori/projects_manager",
       paymentsDenom: "ugnot",
     },
+    {
+      type: NetworkFeature.LaunchpadERC20,
+      launchpadERC20PkgPath: "gno.land/r/teritori/launchpad_erc20",
+      paymentsDenom: "ugnot",
+    },
   ],
   currencies: gnoCurrencies,
   stakeCurrency: "ugnot",
