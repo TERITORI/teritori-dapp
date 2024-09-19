@@ -43,17 +43,17 @@ export const useSmallCarousel = (
     }
   };
 
-  const isPrevButtonDisplayed = useMemo(
+  const isPrevButtonEnabled = useMemo(
     () =>
-      // The button always displayed if loop carousel
+      // The button always enabled if loop carousel
       (isLoop ||
-        // If not loop, the button is hidden if the carousel is at start
+        // If not loop, the button is disabled if the carousel is at start
         (!isLoop && currentIndex > 0)) &&
-      // The button is always hidden if all items are visible (without doing next/prev)
+      // The button is always disabled if all items are visible (without doing next/prev)
       data.length > step,
     [isLoop, currentIndex, data.length, step],
   );
-  const isNextButtonDisplayed = useMemo(
+  const isNextButtonEnabled = useMemo(
     () =>
       (isLoop || (!isLoop && currentIndex < data.length - 1)) &&
       data.length > step,
@@ -72,7 +72,7 @@ export const useSmallCarousel = (
     onScrollEnd,
     onPressPrev,
     onPressNext,
-    isPrevButtonDisplayed,
-    isNextButtonDisplayed,
+    isPrevButtonEnabled,
+    isNextButtonEnabled,
   };
 };

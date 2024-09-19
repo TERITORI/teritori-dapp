@@ -67,13 +67,13 @@ export const SmallCarousel: FC<TCarouselProps & { height: number }> = (
     onScrollEnd,
     onPressPrev,
     onPressNext,
-    isPrevButtonDisplayed,
-    isNextButtonDisplayed,
+    isPrevButtonEnabled,
+    isNextButtonEnabled,
   } = useSmallCarousel(props);
 
   return (
     <FlexRow>
-      {isPrevButtonDisplayed && (
+      {isPrevButtonEnabled && (
         <PrevButton
           shadowHeight={height}
           onPress={!isScrolling ? onPressPrev : undefined}
@@ -90,7 +90,7 @@ export const SmallCarousel: FC<TCarouselProps & { height: number }> = (
         onConfigurePanGesture={(g) => g.enableTrackpadTwoFingerGesture(true)}
         {...carouselProps}
       />
-      {isNextButtonDisplayed && (
+      {isNextButtonEnabled && (
         <NextButton
           shadowHeight={height}
           onPress={!isScrolling ? onPressNext : undefined}

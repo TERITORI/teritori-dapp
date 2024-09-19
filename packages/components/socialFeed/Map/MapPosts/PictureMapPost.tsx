@@ -1,10 +1,11 @@
-import React, { FC, useMemo } from "react";
+import React, { FC } from "react";
 
 import { Post } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { SmallCarouselAlt } from "@/components/carousels/SmallCarousel/SmallCarouselAlt";
 import { MapPostWrapper } from "@/components/socialFeed/Map/MapPosts/MapPostWrapper";
+import { GIF_URL_REGEX } from "@/utils/regex";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import { errorColor } from "@/utils/style/colors";
 import { fontSemibold10 } from "@/utils/style/fonts";
@@ -17,18 +18,13 @@ export const PictureMapPost: FC<{
     ZodSocialFeedPostMetadata,
     post.metadata,
   );
-
-  const imageFiles = useMemo(
-    () =>
-      postMetadata?.files?.filter(
-        (file) => file.fileType === "image" || file.fileType === "base64",
-      ),
-    [postMetadata?.files],
+  const imagesFiles = postMetadata?.files?.filter(
+    (file) => file.fileType === "image" || file.fileType === "base64",
   );
 
   return (
     <MapPostWrapper post={post}>
-      {!imageFiles ? (
+      {!imagesFiles?.length && !postMetadata?.gifs?.length ? (
         <BrandText style={[fontSemibold10, { color: errorColor }]}>
           No image found
         </BrandText>
@@ -37,17 +33,17 @@ export const PictureMapPost: FC<{
           enabled={false}
           style={{ width: 147 }}
           width={147}
-          data={imageFiles}
+          data={[...(imagesFiles || []), ...(postMetadata?.gifs || [])]}
           height={147}
-          loop={false}
+          // We render images and gifs
           renderItem={({ item }) =>
-            !item.url ? (
+            !item.url && !GIF_URL_REGEX.test(item) ? (
               <BrandText style={[fontSemibold10, { color: errorColor }]}>
                 Image not found
               </BrandText>
             ) : (
               <OptimizedImage
-                sourceURI={item.url}
+                sourceURI={GIF_URL_REGEX.test(item) ? item : item.url}
                 width={147}
                 height={147}
                 resizeMode="cover"

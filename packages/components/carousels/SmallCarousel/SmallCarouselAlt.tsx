@@ -64,8 +64,8 @@ export const SmallCarouselAlt: React.FC<TCarouselProps & { height: number }> = (
     onScrollEnd,
     onPressPrev,
     onPressNext,
-    isPrevButtonDisplayed,
-    isNextButtonDisplayed,
+    isPrevButtonEnabled,
+    isNextButtonEnabled,
   } = useSmallCarousel(props);
 
   return (
@@ -93,12 +93,12 @@ export const SmallCarouselAlt: React.FC<TCarouselProps & { height: number }> = (
         >
           <PrevButton
             onPress={!isScrolling ? onPressPrev : undefined}
-            disabled={!isPrevButtonDisplayed}
+            disabled={!isPrevButtonEnabled}
           />
           <SpacerRow size={1} />
           <NextButton
             onPress={!isScrolling ? onPressNext : undefined}
-            disabled={!isNextButtonDisplayed}
+            disabled={!isNextButtonEnabled}
           />
         </View>
       )}
