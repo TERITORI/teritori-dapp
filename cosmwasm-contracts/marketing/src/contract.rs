@@ -1,4 +1,3 @@
-
 use cosmwasm_std::{attr,Addr,
   Response, StdResult
 };
@@ -10,33 +9,33 @@ use sylvia::{types::{ExecCtx, InstantiateCtx, QueryCtx},contract, entry_points};
 
 #[cw_serde]
 pub struct Banner {
-    image: String,
-    url: String,
+  pub image: String,
+  pub url: String,
 }
 
 #[cw_serde]
 pub struct Action {
-    label: String,
-    url: String,
+  pub label: String,
+  pub url: String,
 }
 
 #[cw_serde]
 pub struct News {
-    title: String,
-    subtitle: String,
-    text: String,
-    image: String,
-    actions: Option<Action>,
+  pub title: String,
+  pub subtitle: String,
+  pub text: String,
+  pub image: String,
+  pub actions: Option<Vec<Action>>,
 }
 
 #[cw_serde]
 pub struct MarketingCollectionPreview {
-    address: String,
-    image_uri: String,
-    collection_name: String,
-    creator_name: String,
-    twitter_url: String,
-    secondary_during_mint: bool,
+  pub address: String,
+  pub image_uri: String,
+  pub collection_name: String,
+  pub creator_name: String,
+  pub twitter_url: String,
+  pub secondary_during_mint: bool,
 }
 
 #[cw_serde]
@@ -70,29 +69,10 @@ impl MarketingContract {
 
   #[msg(instantiate)]
   pub fn instantiate(&self, ctx: InstantiateCtx
-                     , config: Config
-                     , banners: Vec<Banner>
-                     , news: Vec<News>
-                     , upcoming_collections: Vec<MarketingCollectionPreview>
-                     , live_collections: Vec<MarketingCollectionPreview>
-                     , highlighted_collections: Vec<MarketingCollectionPreview>
+    , admin_addr: String
   ) -> StdResult<Response> {
-    self.config.save(ctx.deps.storage, &config)?;
-    for (index, banner) in banners.into_iter().enumerate() {
-      self.banners.save(ctx.deps.storage, index as u64, &banner)?;
-    }
-    for (index, news_item) in news.into_iter().enumerate() {
-      self.news.save(ctx.deps.storage, index as u64, &news_item)?;
-    }
-    for (index, upcoming_collection) in upcoming_collections.into_iter().enumerate() {
-      self.upcoming_collections.save(ctx.deps.storage, index as u64, &upcoming_collection)?;
-    }
-    for (index, live_collection) in live_collections.into_iter().enumerate() {
-      self.live_collections.save(ctx.deps.storage, index as u64, &live_collection)?;
-    }
-    for (index, highlighted_collection) in highlighted_collections.into_iter().enumerate() {
-      self.highlighted_collections.save(ctx.deps.storage, index as u64, &highlighted_collection)?;
-    }
+    let admin_addr = ctx.deps.api.addr_validate(admin_addr.as_str())?;
+    self.config.save(ctx.deps.storage, &Config {admin_addr})?;
     Ok(Response::default())
   }
 
@@ -101,7 +81,7 @@ impl MarketingContract {
   pub fn update_config(
     &self,
     ctx: ExecCtx,
-    admin_addr: Option<Addr>,
+    admin_addr: String,
   ) -> Result<Response, ContractError> {
     let attributes = vec![attr("action", "update_config")];
     self.config.update(ctx.deps.storage, |mut config| {
@@ -110,9 +90,7 @@ impl MarketingContract {
         return Err(ContractError::Unauthorized);
       }
       // Validate and save the new admin_addr in config
-      if let Some(admin_addr) = admin_addr {
         config.admin_addr = ctx.deps.api.addr_validate(admin_addr.as_str())?;
-      }
 
       Ok(config)
         })?;
@@ -120,7 +98,7 @@ impl MarketingContract {
         Ok(Response::new().add_attributes(attributes))
       }
 
-  #[msg(exec)]
+      #[msg(exec)]
   // Only the admin can execute it
   pub fn update_banners(
     &self,

@@ -17,3 +17,6 @@ serde = "1.0.180"
 sylvia = "0.7.0"
 thiserror = "1.0.44"
 base64 = "0.21.7"
+
+[dev-dependencies]
+sylvia = { version = "0.7.0", features = ["mt"] }
