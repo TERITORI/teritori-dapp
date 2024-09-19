@@ -3,6 +3,7 @@ import { View } from "react-native";
 
 import { CreateTokenBasics } from "./LaunchpadERC20CreateTokenBasics";
 import { CreateTokenDetails } from "./LaunchpadERC20CreateTokenDetails";
+import { LaunchpadERC20CreateTokenSign } from "./LaunchpadERC20CreateTokenSign";
 import { LaunchpadERC20CreateTokenHeader } from "../component/LaunchpadERC20CreateTokenHeader";
 import { useCreateTokenState } from "../hooks/useCreateToken";
 
@@ -15,9 +16,10 @@ import { ScreenFC } from "@/utils/navigation";
 const renderStep = (stepIndice: number) => {
   if (stepIndice === 1) return <CreateTokenBasics />;
   if (stepIndice === 2) return <CreateTokenDetails />;
+  if (stepIndice === 3) return <LaunchpadERC20CreateTokenSign />;
 };
 
-const STEPS = ["Basics Informations", "Details Informations"];
+const STEPS = ["Basics Informations", "Details Informations", "Sign & Deploy"];
 
 export const LaunchpadERC20CreateTokenScreen: ScreenFC<
   "LaunchpadERC20CreateToken"

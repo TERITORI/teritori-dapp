@@ -47,7 +47,7 @@ type CreateTokenState = {
   };
 };
 
-const TOTAL_STEPS = 2;
+const TOTAL_STEPS = 3;
 
 const useCreateTokenStore = create<CreateTokenState>((set) => ({
   stepIndice: 1,

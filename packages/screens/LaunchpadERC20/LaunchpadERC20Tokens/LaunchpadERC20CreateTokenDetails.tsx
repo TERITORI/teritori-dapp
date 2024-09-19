@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import { LaunchpadERC20CreateTokenFooter } from "./LaunchpadERC20CreateTokenFooter";
 import {
@@ -17,14 +17,13 @@ import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
 
 export const CreateTokenDetails: React.FC = () => {
   const {
-    actions: { setDetails },
+    actions: { setDetails, goNextStep },
     createTokenFormDetails: detailsData,
   } = useCreateTokenState();
-  const { handleSubmit, formState, watch } = useForm({
+  const { handleSubmit, watch, setValue } = useForm({
     resolver: zodResolver(zodCreateTokenFormDetails),
     defaultValues: detailsData,
   });
-  const { errors } = formState;
   const values = watch();
 
   return (
@@ -43,24 +42,32 @@ export const CreateTokenDetails: React.FC = () => {
         Can Mint
       </BrandText>
 
-      <ToggleButton value={values.allowMint} />
+      <TouchableOpacity
+        onPress={() => setValue("allowMint", !values.allowMint)}
+      >
+        <ToggleButton value={values.allowMint} isActive />
+      </TouchableOpacity>
 
       <SpacerColumn size={2.5} />
 
       <BrandText style={[fontSemibold14, { color: neutral77 }]}>
         Can Burn
       </BrandText>
-
-      <ToggleButton value={values.allowBurn} />
+      <TouchableOpacity
+        onPress={() => setValue("allowBurn", !values.allowBurn)}
+      >
+        <ToggleButton value={values.allowBurn} isActive />
+      </TouchableOpacity>
 
       <SpacerColumn size={2.5} />
 
       <LaunchpadERC20CreateTokenFooter
-        disableNext={Object.keys(errors).length !== 0}
+        disableNext={false}
         onSubmit={handleSubmit((submitValues) => {
           setDetails(submitValues);
+          goNextStep();
         })}
-        nextText="Create Token"
+        nextText="Create this Token"
       />
     </View>
   );

@@ -120,12 +120,7 @@ export const CreateTokenBasics: React.FC = () => {
       <SpacerColumn size={2.5} />
 
       <LaunchpadERC20CreateTokenFooter
-        disableNext={
-          !values.name ||
-          !values.symbol ||
-          !values.decimals ||
-          !values.totalSupply
-        }
+        disableNext={!values.name || !values.symbol || !values.totalSupply}
         onSubmit={handleSubmit((submitValues) => {
           setBasics(submitValues);
           goNextStep();
