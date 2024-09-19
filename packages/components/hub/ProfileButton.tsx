@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind, getNetwork, NetworkFeature } from "../../networks";
+import { getNetwork, NetworkFeature } from "../../networks";
 import { neutral00 } from "../../utils/style/colors";
-import { OmniLink } from "../OmniLink";
 import { SecondaryButtonOutline } from "../buttons/SecondaryButtonOutline";
 import { EditProfileModal } from "../user/modals/EditProfileModal";
 
-import { useTNS } from "@/context/TNSProvider";
 import { ButtonsSize } from "@/utils/style/buttons";
 
 export const ProfileButton: React.FC<{
@@ -17,12 +14,7 @@ export const ProfileButton: React.FC<{
   style?: StyleProp<ViewStyle>;
   isEdit?: boolean;
   setIsEditProfileModal?: (val: boolean) => void;
-}> = ({
-  style,
-  isEdit,
-  buttonSize = "XL",
-  setIsEditProfileModal = (val: boolean) => {},
-}) => {
+}> = ({ style, buttonSize = "XL" }) => {
   const selectedWallet = useSelectedWallet();
 
   const network = getNetwork(selectedWallet?.networkId);
