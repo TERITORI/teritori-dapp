@@ -4,7 +4,7 @@ import { useNSPrimaryAlias } from "./useNSPrimaryAlias";
 import { parseUserId } from "@/networks";
 
 export const useNSUserInfo = (userId: string | undefined) => {
-  const [network] = parseUserId(userId);
+  const [network, address] = parseUserId(userId);
   const {
     primaryAlias,
     isSuccess,
@@ -15,7 +15,7 @@ export const useNSUserInfo = (userId: string | undefined) => {
     nsInfo,
     isLoading: isLoadingNameInfo,
     isError,
-  } = useNSNameInfo(network?.id, primaryAlias, isSuccess);
+  } = useNSNameInfo(network?.id, primaryAlias, isSuccess && !!address, address);
 
   return {
     loading: isLoadingPrimaryAlias || (isSuccess ? isLoadingNameInfo : false),

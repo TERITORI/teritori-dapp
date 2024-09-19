@@ -173,7 +173,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
     const msgs: AdenaDoContractMessage[] = [];
 
-    if (username !== currentUsername) {
+    if (username && username !== currentUsername) {
       const mintPrice = await getNSMintPrice(network.id, username);
       if (!mintPrice) {
         throw Error("unable to get price for given username");

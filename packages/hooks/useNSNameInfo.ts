@@ -25,15 +25,27 @@ export const GNO_CONTRACT_FIELD = {
   BANNER: "Banner",
 };
 
-const gnoGetNSNameInfo = async (network: GnoNetworkInfo, tokenId: string) => {
-  if (!tokenId.startsWith("gno.land/") && tokenId.endsWith(".gno")) {
-    const address = await gnoGetAddressByUsername(
-      network,
-      tokenId.slice(0, -".gno".length),
-    );
+const gnoGetNSNameInfo = async (
+  network: GnoNetworkInfo,
+  tokenId?: string | null,
+  gnoAddress?: string,
+) => {
+  if (
+    gnoAddress ||
+    (!tokenId?.startsWith("gno.land/") && tokenId?.endsWith(".gno"))
+  ) {
+    let address = gnoAddress || null;
     if (!address) {
-      return null;
+      if (!tokenId) return null;
+
+      address = await gnoGetAddressByUsername(
+        network,
+        tokenId.slice(0, -".gno".length),
+      );
     }
+
+    if (!address) return null;
+
     const profile = await gnoGetUserProfile(network, address);
 
     const res: NftInfoResponse = {
@@ -47,7 +59,7 @@ const gnoGetNSNameInfo = async (network: GnoNetworkInfo, tokenId: string) => {
     return res;
   }
 
-  if (!tokenId.startsWith("gno.land/")) {
+  if (!tokenId?.startsWith("gno.land/")) {
     return null;
   }
   if (!network.daoRegistryPkgPath) {
@@ -71,8 +83,10 @@ const gnoGetNSNameInfo = async (network: GnoNetworkInfo, tokenId: string) => {
 
 const cosmosGetNSNameInfo = async (
   network: CosmosNetworkInfo,
-  tokenId: string,
+  tokenId?: string | null,
 ) => {
+  if (!tokenId) return null;
+
   const nsClient = await getCosmosNameServiceQueryClient(network.id);
   if (!nsClient) {
     return null;
@@ -103,11 +117,13 @@ export const useNSNameInfo = (
   networkId: string | undefined,
   tokenId: string | null | undefined,
   enabled?: boolean,
+  // We can provide address for case where gno user has no tokenId/username but has profile info
+  gnoAddress?: string,
 ) => {
   const { data: nsInfo, ...other } = useQuery(
     nsNameInfoQueryKey(networkId, tokenId),
     async () => {
-      if (!tokenId) return null;
+      if (!tokenId && !gnoAddress) return null;
 
       const network = getNetwork(networkId);
       if (!network) return null;
@@ -116,7 +132,7 @@ export const useNSNameInfo = (
         case NetworkKind.Cosmos:
           return cosmosGetNSNameInfo(network, tokenId);
         case NetworkKind.Gno:
-          return gnoGetNSNameInfo(network, tokenId);
+          return gnoGetNSNameInfo(network, tokenId, gnoAddress);
         default:
           throw Error(`unsupported network kind: ${network.kind}`);
       }
