@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
 import { TextInputProps, View, ViewStyle } from "react-native";
 
@@ -32,23 +32,33 @@ interface TextInputCustomProps<T extends FieldValues>
   variant?: "regular" | "labelOutside" | "noStyle";
   error?: string;
   readOnly?: boolean;
+  onError?: (errorMsg: string) => void;
 }
 
 type AvailabilityInfoProps = {
   nameValue: string;
-  network: NetworkInfo | undefined;
-  price: string;
-  usdPrice: number | undefined;
   nameAvailability: NSAvailability;
+  onError?: (errorMsg: string) => void;
 };
 const AvailabilityInfo: React.FC<AvailabilityInfoProps> = ({
   nameValue,
-  network,
-  price,
-  usdPrice,
+  onError,
   nameAvailability,
 }) => {
-  if (nameValue && network?.kind === NetworkKind.Cosmos) {
+  const price =
+    nameAvailability.availability === "mint"
+      ? nameAvailability.prettyPrice
+      : "";
+  const usdPrice =
+    nameAvailability.availability === "mint" ? nameAvailability?.usdPrice : 0;
+
+  useEffect(() => {
+    if (nameAvailability.availability === "none") {
+      onError?.("not available");
+    }
+  }, [onError, nameAvailability.availability]);
+
+  if (nameValue) {
     if (nameAvailability.availability === "invalid") {
       return (
         <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
@@ -89,45 +99,26 @@ const AvailabilityInfo: React.FC<AvailabilityInfoProps> = ({
     }
   }
 
-  if (network?.kind === NetworkKind.Gno) {
-    return (
-      <View style={{ flexDirection: "row" }}>
-        {!!usdPrice && (
-          <>
-            <BrandText style={{ color: neutral77, ...fontSemibold14 }}>
-              ${usdPrice?.toFixed(2)}
-            </BrandText>
-            <BrandText style={{ color: neutral33, ...fontSemibold14 }}>
-              {" - "}
-            </BrandText>
-          </>
-        )}
-        <BrandText style={{ color: primaryColor, ...fontSemibold14 }}>
-          {price}
-        </BrandText>
-      </View>
-    );
-  }
-
   return null;
 };
 
 const getNameByNetwork = (
   network: NetworkInfo | undefined,
-  name: string,
   nameValue: string,
 ) => {
   if (!nameValue) return "";
 
-  if (network?.kind === NetworkKind.Cosmos) {
-    return `: ${nameValue}${network?.nameServiceTLD}`;
+  let res = nameValue;
+  switch (network?.kind) {
+    case NetworkKind.Gno:
+      res = nameValue + ".gno";
+      break;
+    case NetworkKind.Cosmos:
+      res = nameValue + network?.nameServiceTLD;
+      break;
   }
 
-  if (network?.kind === NetworkKind.Gno) {
-    return " : " + (name.includes(".gno") ? name : `${name}.gno`);
-  }
-
-  throw Error(`unsupported network kind: ${network?.kind}`);
+  return ": " + res;
 };
 
 export const AvailableNamesInput = <T extends FieldValues>({
@@ -143,18 +134,12 @@ export const AvailableNamesInput = <T extends FieldValues>({
   variant = "labelOutside",
   error,
   readOnly,
+  onError,
 }: TextInputCustomProps<T>) => {
   const selectedNetwork = useSelectedNetworkInfo();
   const network = getNetwork(selectedNetwork?.id);
 
   const nameAvailability = useNSAvailability(selectedNetwork?.id, nameValue);
-
-  const price =
-    nameAvailability.availability === "mint"
-      ? nameAvailability.prettyPrice
-      : "";
-  const usdPrice =
-    nameAvailability.availability === "mint" ? nameAvailability?.usdPrice : 0;
 
   return (
     <TextInputCustom<NameFinderFormType>
@@ -162,7 +147,7 @@ export const AvailableNamesInput = <T extends FieldValues>({
       noBrokenCorners
       isLoading={nameAvailability.availability === "loading"}
       variant={variant}
-      label={`${label}${getNameByNetwork(network, name, nameValue)}`}
+      label={`${label}: ${getNameByNetwork(network, nameValue)}`}
       placeHolder={placeHolder}
       name={name as "name" | "associatedHandle"}
       onChangeText={(val: string) => onChangeText(val)}
@@ -181,13 +166,13 @@ export const AvailableNamesInput = <T extends FieldValues>({
           : undefined
       }
     >
-      <AvailabilityInfo
-        price={price}
-        usdPrice={usdPrice}
-        network={network}
-        nameValue={nameValue}
-        nameAvailability={nameAvailability}
-      />
+      {!readOnly && (
+        <AvailabilityInfo
+          nameValue={nameValue}
+          onError={onError}
+          nameAvailability={nameAvailability}
+        />
+      )}
     </TextInputCustom>
   );
 };

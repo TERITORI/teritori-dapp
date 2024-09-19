@@ -24,55 +24,57 @@ export const ProfileButton: React.FC<{
   setIsEditProfileModal = (val: boolean) => {},
 }) => {
   const selectedWallet = useSelectedWallet();
-  const { setName } = useTNS();
 
   const network = getNetwork(selectedWallet?.networkId);
-  const { metadata } = useNSUserInfo(selectedWallet?.userId);
 
   if (!network?.features.includes(NetworkFeature.NameService)) {
     return null;
   }
-  if (!selectedWallet || !metadata?.tokenId) {
-    return (
-      <RegisterButton networkId={network?.id} style={style} size={buttonSize} />
-    );
-  }
-
-  if (isEdit) {
-    return (
-      <SecondaryButtonOutline
-        size={buttonSize}
-        disabled={!network?.features.includes(NetworkFeature.UPP)}
-        text="Edit profile"
-        backgroundColor={neutral00}
-        onPress={() => {
-          const tokenName = metadata?.tokenId?.replace(".tori", "");
-          setIsEditProfileModal(true);
-          setName(tokenName || "");
-        }}
-      />
-    );
-  }
 
   return (
-    <OmniLink
-      style={style}
-      disabled={network?.kind !== NetworkKind.Cosmos}
-      to={{
-        screen: "UserPublicProfile",
-        params: {
-          id: selectedWallet.userId,
-        },
-      }}
-    >
-      <SecondaryButtonOutline
-        size={buttonSize}
-        disabled={network?.kind !== NetworkKind.Cosmos}
-        text="My profile"
-        backgroundColor={neutral00}
-      />
-    </OmniLink>
+    <RegisterButton networkId={network?.id} style={style} size={buttonSize} />
   );
+
+  // NOTE: keep this legacy code for reference
+  // if (isEdit) {
+  //   return (
+  //     <SecondaryButtonOutline
+  //       size={buttonSize}
+  //       disabled={!network?.features.includes(NetworkFeature.UPP)}
+  //       text="Edit profile"
+  //       backgroundColor={neutral00}
+  //       onPress={() => {
+  //         const tokenName = metadata?.tokenId?.replace(".tori", "");
+  //         setIsEditProfileModal(true);
+  //         setName(tokenName || "");
+  //       }}
+  //     />
+  //   );
+  // }
+
+  // const disabled = ![NetworkKind.Cosmos, NetworkKind.Gno].includes(
+  //   network.kind,
+  // );
+
+  // return (
+  //   <OmniLink
+  //     style={style}
+  //     disabled={disabled}
+  //     to={{
+  //       screen: "UserPublicProfile",
+  //       params: {
+  //         id: selectedWallet.userId,
+  //       },
+  //     }}
+  //   >
+  //     <SecondaryButtonOutline
+  //       size={buttonSize}
+  //       disabled={disabled}
+  //       text="My profile"
+  //       backgroundColor={neutral00}
+  //     />
+  //   </OmniLink>
+  // );
 };
 
 const RegisterButton: React.FC<{
@@ -80,47 +82,22 @@ const RegisterButton: React.FC<{
   networkId: string | undefined;
   size: ButtonsSize;
 }> = ({ networkId, style, size }) => {
-  const network = getNetwork(networkId);
-  const [gnoModalVisible, setGnoModalVisible] = useState(false);
+  const [profileModalVisible, setProfileModalVisible] = useState(false);
 
-  if (network?.kind === NetworkKind.Cosmos) {
-    return (
-      <OmniLink
-        to={{
-          screen: "TNSHome",
-          params: {
-            modal: "register",
-          },
-        }}
-        style={style}
-      >
-        <SecondaryButtonOutline
-          size={size}
-          text="Edit profile"
-          backgroundColor={neutral00}
-        />
-      </OmniLink>
-    );
-  }
+  return (
+    <View style={style}>
+      <SecondaryButtonOutline
+        size={size}
+        text="Edit profile"
+        backgroundColor={neutral00}
+        onPress={() => setProfileModalVisible(true)}
+      />
 
-  if (network?.kind === NetworkKind.Gno) {
-    return (
-      <View style={style}>
-        <SecondaryButtonOutline
-          size={size}
-          text="Edit profile"
-          backgroundColor={neutral00}
-          onPress={() => setGnoModalVisible(true)}
-        />
-
-        {gnoModalVisible && (
-          <EditProfileModal onClose={() => setGnoModalVisible(false)} />
-        )}
-      </View>
-    );
-  }
-
-  return null; // MAYBE TODO: fallback?
+      {profileModalVisible && (
+        <EditProfileModal onClose={() => setProfileModalVisible(false)} />
+      )}
+    </View>
+  );
 };
 
 // NOTE: Legacy code, when we could create username/TNS Nft separately

@@ -46,6 +46,7 @@ const cosmosGetMintPrice = async (
 
   try {
     const amount = await tnsClient.mintPrice({ tokenId });
+
     return {
       denom: info.native_denom,
       amount: amount?.toString() || "0",

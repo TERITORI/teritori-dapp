@@ -21,9 +21,14 @@ const getNameOrTokenIdByNetwork = (
   network: NetworkInfo | undefined,
   name: string,
 ) => {
-  return network?.kind === NetworkKind.Cosmos
-    ? name + network?.nameServiceTLD
-    : name;
+  switch (network?.kind) {
+    case NetworkKind.Cosmos:
+      return name + network?.nameServiceTLD;
+    case NetworkKind.Gno:
+      return name + ".gno";
+    default:
+      return name;
+  }
 };
 
 const getNftIdByNetwork = (

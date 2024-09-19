@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm, Controller, Control } from "react-hook-form";
 import { View } from "react-native";
 import { z, ZodType } from "zod";
@@ -8,7 +8,8 @@ import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { AvailableNamesInput } from "@/components/inputs/AvailableNamesInput";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { MediaPreview } from "@/components/teritoriNameService/MediaPreview";
-import { useTNS } from "@/context/TNSProvider";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { NetworkKind } from "@/networks";
 import { neutral17 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
 import { ProfileData } from "@/utils/upp";
@@ -19,7 +20,7 @@ type ProfileDataWithTmp = ProfileData & {
 
 const optionalUrl = z.union([z.string().url().nullish(), z.literal("")]);
 const optionalStr = z.union([z.string().nullish(), z.literal("")]);
-const optionalAlphanumeric = z.union([
+const optionalAlphanumericAndSpaces = z.union([
   z
     .string()
     .regex(/^[\w\s]+$/, "should contain only a-zA-Z0-9 and spaces")
@@ -27,9 +28,16 @@ const optionalAlphanumeric = z.union([
   z.literal(""),
 ]);
 
+const optionalAlphanumeric = z.union([
+  z
+    .string()
+    .regex(/^\w+$/, "should contain only a-zA-Z0-9 and spaces")
+    .nullish(),
+  z.literal(""),
+]);
+
 const ProfileSchema: ZodType<ProfileData> = z.object({
-  username: optionalAlphanumeric,
-  displayName: optionalAlphanumeric,
+  displayName: optionalAlphanumericAndSpaces,
   avatarURL: optionalStr,
   bannerURL: optionalUrl,
   bio: optionalStr,
@@ -92,15 +100,34 @@ export const EditProfileForm: React.FC<{
   onPressBtn: (profileData: ProfileData, username: string) => Promise<void>;
   initialData: ProfileData;
   disabled?: boolean;
-}> = ({ btnLabel, onPressBtn, initialData, disabled }) => {
-  const { name } = useTNS();
-  const [username, setUsername] = useState(name);
+  tokenId?: string;
+}> = ({ btnLabel, onPressBtn, initialData, disabled, tokenId }) => {
+  const [usernameValue, setUsernameValue] = useState(tokenId || "");
+  const [usernameError, setUsernameError] = useState("");
+  const network = useSelectedNetworkInfo();
+
+  const username = useMemo(() => {
+    if (!usernameValue) return "";
+
+    let res = usernameValue;
+    switch (network?.kind) {
+      case NetworkKind.Gno:
+        res = usernameValue + ".gno";
+        break;
+      case NetworkKind.Cosmos:
+        res = usernameValue + network?.nameServiceTLD;
+        break;
+    }
+
+    return res;
+  }, [usernameValue, network]);
 
   const { control, handleSubmit, setValue, getValues } =
     useForm<ProfileDataWithTmp>({
       resolver: zodResolver(ProfileSchema),
       defaultValues: { ...initialData },
     });
+
   const onSubmit = async (profileData: ProfileData) => {
     await onPressBtn(profileData, username);
 
@@ -111,16 +138,32 @@ export const EditProfileForm: React.FC<{
   return (
     <View>
       <AvailableNamesInput
-        readOnly={!!name}
+        error={usernameError}
+        readOnly={!!tokenId}
         variant="regular"
-        nameValue={username}
+        nameValue={usernameValue}
         label="Username"
         name={username}
         placeHolder="Type username here"
-        value={username}
-        onChangeText={setUsername}
+        value={usernameValue}
+        onError={setUsernameError}
+        onChangeText={(value) => {
+          setUsernameValue(value);
+
+          try {
+            optionalAlphanumeric.parse(value);
+            setUsernameError("");
+          } catch (e) {
+            console.warn(e);
+            let msg = `invalid username`;
+            if (e instanceof z.ZodError) {
+              msg = e.issues[0].message;
+            }
+            setUsernameError(msg);
+          }
+        }}
         style={{
-          marginBottom: layout.spacing_x2,
+          marginBottom: usernameError ? 0 : layout.spacing_x2,
         }}
       />
 
@@ -166,7 +209,7 @@ export const EditProfileForm: React.FC<{
         <PrimaryButton
           size="M"
           text={btnLabel}
-          disabled={disabled}
+          disabled={disabled || !!usernameError}
           onPress={handleSubmit(onSubmit)}
           boxStyle={{ marginTop: layout.spacing_x1 }}
           loader
