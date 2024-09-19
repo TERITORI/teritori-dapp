@@ -43,6 +43,7 @@ export type RootStackParamList = {
 
   LaunchpadERC20: undefined;
   LaunchpadERC20Tokens?: { network?: string };
+  LaunchpadERC20CreateToken: { step?: number };
   LaunchpadERC20Airdrops: undefined;
   LaunchpadERC20Sales: undefined;
 
@@ -56,11 +57,11 @@ export type RootStackParamList = {
   NFTDetail: { id: string; openBuy?: boolean };
   Feed?: { tab: keyof typeof feedsTabItems; network?: string };
   FeedNewArticle:
-  | (NewPostFormValues & {
-    additionalMention?: string;
-    additionalHashtag?: string;
-  })
-  | undefined;
+    | (NewPostFormValues & {
+        additionalMention?: string;
+        additionalHashtag?: string;
+      })
+    | undefined;
   FeedPostView: { id: string };
   HashtagFeed: { hashtag: string };
 
@@ -222,6 +223,7 @@ const navConfig: {
     // ==== Launchpad ERC20
     LaunchpadERC20: "launchpad-erc20",
     LaunchpadERC20Tokens: "launchpad-erc20/tokens",
+    LaunchpadERC20CreateToken: "launchpad-erc20/token-create",
     LaunchpadERC20Airdrops: "launchpad-erc20/airdrops",
     LaunchpadERC20Sales: "launchpad-erc20/sales",
 

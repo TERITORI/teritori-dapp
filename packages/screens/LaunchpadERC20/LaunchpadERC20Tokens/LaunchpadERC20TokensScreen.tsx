@@ -1,10 +1,10 @@
 import React from "react";
 import { useWindowDimensions, View } from "react-native";
 
-import { TokensTable } from "./component/LaunchpadERC20TokensTable";
-import exploreSVG from "../../../assets/icons/explore-neutral77.svg";
-import penSVG from "../../../assets/icons/pen-neutral77.svg";
-import registerSVG from "../../../assets/icons/register-neutral77.svg";
+import exploreSVG from "../../../../assets/icons/explore-neutral77.svg";
+import penSVG from "../../../../assets/icons/pen-neutral77.svg";
+import registerSVG from "../../../../assets/icons/register-neutral77.svg";
+import { TokensTable } from "../component/LaunchpadERC20TokensTable";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";

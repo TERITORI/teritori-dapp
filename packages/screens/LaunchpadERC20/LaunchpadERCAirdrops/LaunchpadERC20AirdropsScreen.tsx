@@ -1,6 +1,6 @@
 import React from "react";
 
-import { LaunchpadERC20Banner } from "./component/LaunchpadERC20Banner";
+import { LaunchpadERC20Banner } from "./../component/LaunchpadERC20Banner";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
@@ -18,7 +18,7 @@ export const LaunchpadERC20AirdropsScreen: ScreenFC<
       <SpacerColumn size={2} />
 
       <BrandText style={fontSemibold28}>
-        Welcome on the ERC20 Launchpad airdrops page
+        Welcome on the ERC20 Launchpad Airdrops page
       </BrandText>
 
       <SpacerColumn size={2} />
