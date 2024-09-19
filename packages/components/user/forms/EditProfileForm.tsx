@@ -100,11 +100,31 @@ export const EditProfileForm: React.FC<{
   onPressBtn: (profileData: ProfileData, username: string) => Promise<void>;
   initialData: ProfileData;
   disabled?: boolean;
-  tokenId?: string;
-}> = ({ btnLabel, onPressBtn, initialData, disabled, tokenId }) => {
-  const [usernameValue, setUsernameValue] = useState(tokenId || "");
-  const [usernameError, setUsernameError] = useState("");
+  initialUsername?: string;
+}> = ({ btnLabel, onPressBtn, initialData, disabled, initialUsername }) => {
   const network = useSelectedNetworkInfo();
+
+  const initialUsernameValue = useMemo(() => {
+    if (!initialUsername) return "";
+
+    let suffix = "";
+
+    switch (network?.kind) {
+      case NetworkKind.Cosmos:
+        suffix = network.nameServiceTLD || ".tori";
+        break;
+      case NetworkKind.Gno:
+        suffix = ".gno";
+        break;
+      default:
+        throw Error(`unsupported network kind ${network?.kind}`);
+    }
+
+    return initialUsername.substring(0, initialUsername.lastIndexOf(suffix));
+  }, [initialUsername, network]);
+
+  const [usernameValue, setUsernameValue] = useState(initialUsernameValue);
+  const [usernameError, setUsernameError] = useState("");
 
   const username = useMemo(() => {
     if (!usernameValue) return "";
@@ -139,7 +159,7 @@ export const EditProfileForm: React.FC<{
     <View>
       <AvailableNamesInput
         error={usernameError}
-        readOnly={!!tokenId}
+        readOnly={!!initialUsernameValue}
         variant="regular"
         nameValue={usernameValue}
         label="Username"

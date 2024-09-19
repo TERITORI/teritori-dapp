@@ -41,7 +41,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
   const { metadata: currentMetadata, loading: isLoadingMetadata } =
     useNSUserInfo(selectedWallet?.userId);
 
-  const currentNameTokenId = currentMetadata.tokenId || undefined;
+  const currentUsername = currentMetadata.tokenId || undefined;
 
   const initialData = useMemo(() => {
     if (isLoadingMetadata || !currentMetadata) return EMPTY_PROFILE;
@@ -95,7 +95,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       public_profile_header: profileData.bannerURL || "",
     };
 
-    if (!currentNameTokenId && nameTokenId) {
+    if (!currentUsername && nameTokenId) {
       payload = {
         mint: {
           owner: walletAddress,
@@ -106,7 +106,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
     }
 
     // Case of update
-    if (currentNameTokenId) {
+    if (currentUsername) {
       payload = {
         update_metadata: {
           token_id: nameTokenId,
@@ -173,7 +173,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
     const msgs: AdenaDoContractMessage[] = [];
 
-    if (username !== currentNameTokenId) {
+    if (username !== currentUsername) {
       const mintPrice = await getNSMintPrice(network.id, username);
       if (!mintPrice) {
         throw Error("unable to get price for given username");
@@ -267,7 +267,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
     onClose();
 
     queryClient.invalidateQueries(
-      nsNameInfoQueryKey(network.id, currentNameTokenId),
+      nsNameInfoQueryKey(network.id, currentUsername),
     );
 
     queryClient.invalidateQueries(
@@ -331,7 +331,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
             btnLabel="Update profile"
             onPressBtn={updateProfile}
             initialData={initialData}
-            tokenId={currentNameTokenId}
+            initialUsername={currentUsername}
           />
         )}
       </View>
