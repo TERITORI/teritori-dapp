@@ -1,6 +1,5 @@
 import { MsgExecuteContractEncodeObject } from "@cosmjs/cosmwasm-stargate";
 import { toUtf8 } from "@cosmjs/encoding";
-import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQueryClient } from "@tanstack/react-query";
 import Long from "long";
 import React, { useMemo } from "react";
@@ -169,8 +168,6 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       throw Error("profilePkgPath is not provided");
     }
 
-    const provider = new GnoJSONRPCProvider(network.endpoint);
-
     const msgs: AdenaDoContractMessage[] = [];
 
     if (username && username !== currentUsername) {
@@ -257,12 +254,9 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       });
     }
 
-    const height = await provider.getBlockNumber();
-    const txHash = await adenaDoContract(network.id, msgs, {
+    await adenaDoContract(network.id, msgs, {
       gasWanted: 2_000_000,
     });
-    // Wait for tx done
-    await provider.waitForTransaction(txHash, height, 30 * 1000);
 
     onClose();
 
