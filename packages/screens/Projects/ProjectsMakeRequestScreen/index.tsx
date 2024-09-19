@@ -9,9 +9,10 @@ import { ScreenContainer } from "../../../components/ScreenContainer";
 import { SpacerColumn } from "../../../components/spacer";
 import { NetworkKind } from "../../../networks";
 import { ScreenFC } from "../../../utils/navigation";
-import { Breadcrumb } from "../components/Breadcrumb";
 import { HeaderBackButton } from "../components/HeaderBackButton";
 import { useMakeRequestState } from "../hooks/useMakeRequestHook";
+
+import { Breadcrumb } from "@/components/Breadcrumb";
 
 const renderStep = (stepIndice: number) => {
   if (stepIndice === 1) return <ShortPresentation />;
@@ -20,10 +21,20 @@ const renderStep = (stepIndice: number) => {
   if (stepIndice === 4) return <ConfirmAndSign />;
 };
 
+const STEPS = [
+  "Short presentation",
+  "Milestones",
+  "Preview",
+  "Confirm and Sign",
+];
+
 export const ProjectsMakeRequestScreen: ScreenFC<
   "ProjectsMakeRequest"
 > = () => {
-  const { stepIndice } = useMakeRequestState();
+  const {
+    stepIndice,
+    actions: { gotoStep },
+  } = useMakeRequestState();
 
   return (
     <ScreenContainer
@@ -32,7 +43,11 @@ export const ProjectsMakeRequestScreen: ScreenFC<
       responsive
       headerChildren={<HeaderBackButton />}
     >
-      <Breadcrumb stepIndice={stepIndice} />
+      <Breadcrumb
+        currentStepIndice={stepIndice}
+        gotoStep={gotoStep}
+        steps={STEPS}
+      />
 
       <SpacerColumn size={4} />
 

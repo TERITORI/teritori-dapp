@@ -27,6 +27,7 @@ export const CreateTokenBasics: React.FC = () => {
     resolver: zodResolver(zodCreateTokenFormBasics),
     defaultValues: basicsData,
   });
+
   const { errors } = formState;
   const values = watch();
   useEffect(() => {
@@ -73,8 +74,8 @@ export const CreateTokenBasics: React.FC = () => {
         placeholder="Type the token symbol here..."
         variant="labelOutside"
         onChangeText={(val) => setValue("symbol", val)}
-        value={values.name}
-        error={errors.name?.message}
+        value={values.symbol}
+        error={errors.symbol?.message}
       />
 
       <SpacerColumn size={2.5} />
@@ -97,30 +98,34 @@ export const CreateTokenBasics: React.FC = () => {
         name="totalSupply"
         fullWidth
         placeholder="Type the total supply here..."
-        textInputStyle={{ height: 80 }}
         variant="labelOutside"
-        onChangeText={(val) => setValue("totalSupply", val)}
-        value={values.totalSupply}
+        onChangeText={(val) => setValue("totalSupply", Number(val))}
+        value={values.totalSupply.toString()}
         error={errors.totalSupply?.message}
       />
 
       <SpacerColumn size={2.5} />
 
       <TextInputCustom
-        label="Total Supply Cap *"
+        label="Total Supply Cap"
         name="totalSupplyCap"
         fullWidth
         placeholder="Type the total supply cap here..."
         variant="labelOutside"
-        onChangeText={(val) => setValue("totalSupplyCap", val)}
-        value={values.totalSupplyCap}
+        onChangeText={(val) => setValue("totalSupplyCap", Number(val))}
+        value={values.totalSupplyCap?.toString()}
         error={errors.totalSupplyCap?.message}
       />
 
       <SpacerColumn size={2.5} />
 
       <LaunchpadERC20CreateTokenFooter
-        disableNext={Object.keys(errors).length !== 0}
+        disableNext={
+          !values.name ||
+          !values.symbol ||
+          !values.decimals ||
+          !values.totalSupply
+        }
         onSubmit={handleSubmit((submitValues) => {
           setBasics(submitValues);
           goNextStep();

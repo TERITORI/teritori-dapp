@@ -10,8 +10,8 @@ export const zodCreateTokenFormBasics = z.object({
   name: z.string().min(3),
   symbol: z.string().min(3),
   decimals: z.number().int().min(0).max(18),
-  totalSupply: z.string().min(1),
-  totalSupplyCap: z.string().min(1),
+  totalSupply: z.number().int().min(1),
+  totalSupplyCap: z.number().int().min(1).optional(),
 });
 
 export type CreateTokenFormBasics = z.infer<typeof zodCreateTokenFormBasics>;
@@ -28,8 +28,8 @@ export const emptyCreateTokenFormBasics: CreateTokenFormBasics = {
   name: "",
   symbol: "",
   decimals: 0,
-  totalSupply: "",
-  totalSupplyCap: "",
+  totalSupply: 21_000_000,
+  totalSupplyCap: undefined,
 };
 
 export const emptyCreateTokenFormDetails: CreateTokenFormDetails = {

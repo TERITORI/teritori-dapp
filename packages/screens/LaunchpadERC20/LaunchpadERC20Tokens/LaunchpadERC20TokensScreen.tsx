@@ -13,7 +13,7 @@ import { SpacerColumn } from "@/components/spacer";
 import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature, NetworkKind } from "@/networks";
-import { ScreenFC } from "@/utils/navigation";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 
 const LG_BREAKPOINT = 1600;
 const MD_BREAKPOINT = 820;
@@ -25,6 +25,7 @@ export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
   useForceNetworkSelection(network);
   const networkId = useSelectedNetworkId();
   const { width } = useWindowDimensions();
+  const navigation = useAppNavigation();
 
   return (
     <ScreenContainer
@@ -45,7 +46,7 @@ export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
           label="Create"
           description="Create your own ERC20 token with custom parameters"
           iconSVG={registerSVG}
-          onPress={() => {}}
+          onPress={() => navigation.navigate("LaunchpadERC20CreateToken", {})}
         />
         <FlowCard
           label="Manage"
