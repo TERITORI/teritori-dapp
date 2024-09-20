@@ -15,7 +15,11 @@ export const useNSUserInfo = (userId: string | undefined) => {
     nsInfo,
     isLoading: isLoadingNameInfo,
     isError,
-  } = useNSNameInfo(network?.id, primaryAlias, isSuccess && !!address, address);
+  } = useNSNameInfo(
+    network?.id,
+    primaryAlias || address,
+    isSuccess && !!address,
+  );
 
   return {
     loading: isLoadingPrimaryAlias || (isSuccess ? isLoadingNameInfo : false),

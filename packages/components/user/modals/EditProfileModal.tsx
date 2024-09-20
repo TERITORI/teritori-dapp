@@ -39,7 +39,6 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
   const { metadata: currentMetadata, loading: isLoadingMetadata } =
     useNSUserInfo(selectedWallet?.userId);
-
   const currentUsername = currentMetadata.tokenId || undefined;
 
   const initialData = useMemo(() => {
@@ -145,17 +144,18 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
     setToast({
       type: "success",
       mode: "mini",
-      message: "profile updated successfully",
+      message: "teritori profile updated successfully",
     });
 
     queryClient.invalidateQueries(nsNameInfoQueryKey(network.id, nameTokenId));
-
     queryClient.invalidateQueries(
       nsPrimaryAliasQueryKey(selectedWallet?.userId),
     );
   };
 
   const gnoSubmitData = async (profileData: ProfileData, username: string) => {
+    const usernameValue = username.substring(0, username.lastIndexOf(".gno"));
+
     if (!walletAddress) {
       throw Error("No wallet address");
     }
@@ -171,7 +171,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
     const msgs: AdenaDoContractMessage[] = [];
 
     if (username && username !== currentUsername) {
-      const mintPrice = await getNSMintPrice(network.id, username);
+      const mintPrice = await getNSMintPrice(network.id, usernameValue);
       if (!mintPrice) {
         throw Error("unable to get price for given username");
       }
@@ -181,7 +181,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
         send: `${mintPrice.amount}${mintPrice.denom}`,
         pkg_path: network.nameServiceContractAddress,
         func: "Register",
-        args: ["", username, ""],
+        args: ["", usernameValue, ""],
       };
       msgs.push({ type: "/vm.m_call", value: vmCall });
     }
@@ -260,19 +260,19 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
     onClose();
 
+    setToast({
+      mode: "mini",
+      type: "success",
+      message: "gno profile updated successfully",
+    });
+
     queryClient.invalidateQueries(
-      nsNameInfoQueryKey(network.id, currentUsername),
+      nsNameInfoQueryKey(network.id, currentUsername || walletAddress),
     );
 
     queryClient.invalidateQueries(
       nsPrimaryAliasQueryKey(selectedWallet?.userId),
     );
-
-    setToast({
-      mode: "mini",
-      type: "success",
-      message: "profile updated successfully",
-    });
   };
 
   const updateProfile = async (profileData: ProfileData, username: string) => {

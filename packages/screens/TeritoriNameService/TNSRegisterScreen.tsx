@@ -29,7 +29,6 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
     networkId,
     tokenId,
   );
-
   const width = windowWidth < 457 ? windowWidth : 457;
 
   return (

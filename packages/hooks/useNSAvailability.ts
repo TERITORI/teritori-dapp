@@ -21,6 +21,8 @@ const getNameOrTokenIdByNetwork = (
   network: NetworkInfo | undefined,
   name: string,
 ) => {
+  if (!name) return "";
+
   switch (network?.kind) {
     case NetworkKind.Cosmos:
       return name + network?.nameServiceTLD;

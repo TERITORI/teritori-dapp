@@ -27,63 +27,59 @@ export const GNO_CONTRACT_FIELD = {
 
 const gnoGetNSNameInfo = async (
   network: GnoNetworkInfo,
-  tokenId?: string | null,
-  gnoAddress?: string,
+  addressOrName: string,
 ) => {
-  if (
-    gnoAddress ||
-    (!tokenId?.startsWith("gno.land/") && tokenId?.endsWith(".gno"))
-  ) {
-    let address = gnoAddress || null;
-    if (!address) {
-      if (!tokenId) return null;
+  if (!addressOrName) return null;
 
-      address = await gnoGetAddressByUsername(
-        network,
-        tokenId.slice(0, -".gno".length),
-      );
+  // DAO User
+  if (addressOrName?.startsWith("gno.land/")) {
+    if (!network.daoRegistryPkgPath) {
+      return null;
     }
-
-    if (!address) return null;
-
-    const profile = await gnoGetUserProfile(network, address);
-
-    const res: NftInfoResponse = {
-      extension: {
-        public_bio: profile.bio,
-        public_name: profile.displayName,
-        image: profile.avatarURL,
-        public_profile_header: profile.bannerURL,
-      },
+    const provider = new GnoJSONRPCProvider(network.endpoint);
+    const query = `GetJSON(${JSON.stringify(addressOrName)})`;
+    const res: GnoDAORegistration = extractGnoJSONString(
+      await provider.evaluateExpression(network.daoRegistryPkgPath, query),
+    );
+    const data: Metadata = {
+      public_name: res.name,
+      public_bio: res.description,
+      image: res.imageURI,
     };
-    return res;
+    const user: NftInfoResponse = {
+      extension: data,
+    };
+    return user;
   }
 
-  if (!tokenId?.startsWith("gno.land/")) {
-    return null;
+  // Single User
+  let address: string | null = addressOrName;
+  // If aon is username then get the address
+  if (addressOrName.endsWith(".gno")) {
+    address = await gnoGetAddressByUsername(
+      network,
+      addressOrName.slice(0, -".gno".length),
+    );
+
+    if (!address) return;
   }
-  if (!network.daoRegistryPkgPath) {
-    return null;
-  }
-  const provider = new GnoJSONRPCProvider(network.endpoint);
-  const query = `GetJSON(${JSON.stringify(tokenId)})`;
-  const res: GnoDAORegistration = extractGnoJSONString(
-    await provider.evaluateExpression(network.daoRegistryPkgPath, query),
-  );
-  const data: Metadata = {
-    public_name: res.name,
-    public_bio: res.description,
-    image: res.imageURI,
+
+  const profile = await gnoGetUserProfile(network, address);
+
+  const res: NftInfoResponse = {
+    extension: {
+      public_bio: profile.bio,
+      public_name: profile.displayName,
+      image: profile.avatarURL,
+      public_profile_header: profile.bannerURL,
+    },
   };
-  const user: NftInfoResponse = {
-    extension: data,
-  };
-  return user;
+  return res;
 };
 
 const cosmosGetNSNameInfo = async (
   network: CosmosNetworkInfo,
-  tokenId?: string | null,
+  tokenId: string,
 ) => {
   if (!tokenId) return null;
 
@@ -117,13 +113,11 @@ export const useNSNameInfo = (
   networkId: string | undefined,
   tokenId: string | null | undefined,
   enabled?: boolean,
-  // We can provide address for case where gno user has no tokenId/username but has profile info
-  gnoAddress?: string,
 ) => {
   const { data: nsInfo, ...other } = useQuery(
     nsNameInfoQueryKey(networkId, tokenId),
     async () => {
-      if (!tokenId && !gnoAddress) return null;
+      if (!tokenId) return null;
 
       const network = getNetwork(networkId);
       if (!network) return null;
@@ -132,14 +126,14 @@ export const useNSNameInfo = (
         case NetworkKind.Cosmos:
           return cosmosGetNSNameInfo(network, tokenId);
         case NetworkKind.Gno:
-          return gnoGetNSNameInfo(network, tokenId, gnoAddress);
+          return gnoGetNSNameInfo(network, tokenId);
         default:
           throw Error(`unsupported network kind: ${network.kind}`);
       }
     },
     { staleTime: Infinity, enabled },
   );
-  return { nsInfo, notFound: nsInfo === null, ...other };
+  return { nsInfo, notFound: !nsInfo, ...other };
 };
 
 const gnoGetUserProfile = async (network: GnoNetworkInfo, address: string) => {
@@ -155,13 +149,13 @@ const gnoGetUserProfile = async (network: GnoNetworkInfo, address: string) => {
     GNO_CONTRACT_FIELD.AVATAR,
     GNO_CONTRACT_FIELD.BANNER,
   ];
+
   const promises = profileFields.map((field) =>
     provider.evaluateExpression(
       profilePkgPath,
       `GetStringField("${address}","${field}","")`,
     ),
   );
-
   const dataRaw = await Promise.all(promises);
   const extractedData = dataRaw.map(extractGnoString);
 

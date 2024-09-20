@@ -58,8 +58,8 @@ const gnoGetUsernameByAddress = async (
       network.nameServiceContractAddress,
       `GetUserByAddress("${userAddress}").Name`,
     );
-    const gnoUsename = extractGnoString(username);
-    return `${gnoUsename}.gno`;
+    const gnoUsername = extractGnoString(username);
+    return gnoUsername ? `${gnoUsername}.gno` : null;
   } catch (e) {
     console.warn(e);
     return null;

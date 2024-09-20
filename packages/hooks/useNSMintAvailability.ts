@@ -5,7 +5,6 @@ export const useNSMintAvailability = (
   tokenId: string | undefined,
 ) => {
   const { notFound, isLoading, error } = useNSNameInfo(networkId, tokenId);
-
   return {
     nameAvailable: notFound,
     nameError: !!error,
