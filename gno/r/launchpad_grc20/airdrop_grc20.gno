@@ -10,11 +10,13 @@ import (
 	"gno.land/p/demo/json"
 	"gno.land/p/demo/merkle"
 	"gno.land/p/demo/seqid"
+	"gno.land/p/demo/ufmt"
 	"gno.land/p/teritori/jsonutil"
 )
 
 type Airdrop struct {
 	token          *Token
+	id             seqid.ID
 	merkleRoot     string
 	startTimestamp int64
 	endTimestamp   int64
@@ -53,8 +55,11 @@ func NewAirdrop(tokenName, merkleRoot string, amountPerAddr uint64, startTimesta
 		panic("invalid timestamps, start must be before end")
 	}
 
+	airdropID := nextAirdropID.Next()
+
 	airdrop := Airdrop{
 		token:          token,
+		id:             airdropID,
 		merkleRoot:     merkleRoot,
 		startTimestamp: startTimestamp,
 		endTimestamp:   endTimestamp,
@@ -62,7 +67,6 @@ func NewAirdrop(tokenName, merkleRoot string, amountPerAddr uint64, startTimesta
 		alreadyClaimed: avl.NewTree(),
 	}
 
-	airdropID := nextAirdropID.Next()
 	token.AirdropsIDs = append(token.AirdropsIDs, airdropID)
 
 	airdrops.Set(airdropID.String(), &airdrop)
@@ -123,6 +127,7 @@ func (a *Airdrop) isOnGoing() bool {
 
 func (a *Airdrop) ToJSON() *json.Node {
 	return json.ObjectNode("", map[string]*json.Node{
+		"id":             json.StringNode("", ufmt.Sprintf("%d", uint64(a.id))),
 		"tokenName":      json.StringNode("", a.token.banker.GetName()),
 		"tokenSymbol":    json.StringNode("", a.token.banker.GetSymbol()),
 		"amountPerAddr":  json.StringNode("", strconv.FormatUint(a.amountPerAddr, 10)),
@@ -150,7 +155,7 @@ func GetLastAirdropsJSON() string {
 		}
 
 		airdrop := airdropRaw.(*Airdrop)
-		nodes = append([]*json.Node{airdrop.ToJSON()}, nodes...)
+		nodes = append(nodes, airdrop.ToJSON())
 	}
 	return json.ArrayNode("", nodes).String()
 }

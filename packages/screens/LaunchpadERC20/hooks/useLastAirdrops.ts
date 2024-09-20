@@ -9,10 +9,10 @@ import {
 } from "../../../networks";
 
 import { extractGnoJSONString } from "@/utils/gno";
-import { zodToken } from "@/utils/launchpadERC20/types";
+import { zodAidrop } from "@/utils/launchpadERC20/types";
 
-export const useLastTokens = (networkId: string) => {
-  return useQuery(["lastTokens"], async () => {
+export const useLastAirdrops = (networkId: string) => {
+  return useQuery(["lastAirdrops"], async () => {
     const gnoNetwork = getGnoNetwork(networkId);
     if (!gnoNetwork) {
       return null;
@@ -29,12 +29,13 @@ export const useLastTokens = (networkId: string) => {
 
     const client = new GnoJSONRPCProvider(gnoNetwork.endpoint);
     const pkgPath = pmFeature.launchpadERC20PkgPath;
-    const query = `GetLastTokensJSON()`;
+    const query = `GetLastAirdropsJSON()`;
     const contractData = await client.evaluateExpression(pkgPath, query);
 
     const res = extractGnoJSONString(contractData);
 
-    const tokens = z.array(zodToken).parse(res);
-    return tokens;
+    const airdrops = z.array(zodAidrop).parse(res);
+    console.log(airdrops);
+    return airdrops;
   });
 };

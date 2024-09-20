@@ -1,11 +1,11 @@
 import React from "react";
 import { FlatList, View } from "react-native";
 
-import { useLastTokens } from "../hooks/useLastTokens";
+import { useLastAirdrops } from "../hooks/useLastAirdrops";
 import {
+  PrettyTimestamp,
   PrettyTokenName,
   PrettyTokenSymbol,
-  PrettyTotalSupplyToken,
 } from "../utils/prettyText";
 
 import { BrandText } from "@/components/BrandText";
@@ -15,50 +15,50 @@ import { TableRow } from "@/components/table/TableRow";
 import { TableTextCell } from "@/components/table/TableTextCell";
 import { TableWrapper } from "@/components/table/TableWrapper";
 import { TableColumns } from "@/components/table/utils";
-import { Token } from "@/utils/launchpadERC20/types";
+import { Airdrop } from "@/utils/launchpadERC20/types";
 import { screenContentMaxWidthLarge } from "@/utils/style/layout";
 
 const columns: TableColumns = {
-  symbol: {
-    label: "Symbol",
+  id: {
+    label: "ID",
     flex: 0.65,
-    minWidth: 110,
+    minWidth: 70,
   },
-  name: {
-    label: "Name",
-    flex: 0.65,
+  tokenName: {
+    label: "Token Name",
+    flex: 0.8,
     minWidth: 140,
   },
-  decimals: {
-    label: "Decimals",
-    flex: 0.65,
+  tokenSymbol: {
+    label: "Token Symbol",
+    flex: 0.8,
+    minWidth: 110,
+  },
+  amountPerAddr: {
+    label: "Amount Per User",
+    flex: 0.8,
     minWidth: 100,
   },
-  totalSupply: {
-    label: "Total Supply",
-    flex: 1.5,
-    minWidth: 180,
+  startTimestamp: {
+    label: "Start Date",
+    flex: 1,
+    minWidth: 140,
   },
-  mintable: {
-    label: "Mintable",
-    flex: 1.25,
-    minWidth: 70,
-  },
-  burnable: {
-    label: "Burnable",
-    flex: 1.25,
-    minWidth: 70,
+  endTimestamp: {
+    label: "End Date",
+    flex: 1,
+    minWidth: 140,
   },
 };
 
 const breakpointM = 800;
 
-interface TokensTableProps {
+interface AirdropsTableProps {
   networkId: string;
 }
 
-export const TokensTable: React.FC<TokensTableProps> = ({ networkId }) => {
-  const { data: tokens } = useLastTokens(networkId);
+export const AirdropsTable: React.FC<AirdropsTableProps> = ({ networkId }) => {
+  const { data: airdrops } = useLastAirdrops(networkId);
 
   return (
     <View
@@ -67,7 +67,7 @@ export const TokensTable: React.FC<TokensTableProps> = ({ networkId }) => {
         maxWidth: screenContentMaxWidthLarge,
       }}
     >
-      <BrandText>Latest ERC20 Tokens Created</BrandText>
+      <BrandText>Latest ERC20 Airdrops Created</BrandText>
       <SpacerColumn size={2} />
       <TableWrapper
         paginationProps={{
@@ -81,11 +81,11 @@ export const TokensTable: React.FC<TokensTableProps> = ({ networkId }) => {
         horizontalScrollBreakpoint={breakpointM}
       >
         <TableHeader columns={columns} />
-        {tokens && (
+        {airdrops && (
           <FlatList
-            data={tokens}
-            renderItem={({ item }) => <TokenTableRow token={item} />}
-            keyExtractor={(item) => item.name}
+            data={airdrops}
+            renderItem={({ item }) => <AidropTableRow airdrop={item} />}
+            keyExtractor={(item) => item.id}
           />
         )}
       </TableWrapper>
@@ -93,72 +93,72 @@ export const TokensTable: React.FC<TokensTableProps> = ({ networkId }) => {
   );
 };
 
-const TokenTableRow: React.FC<{
-  token: Token;
-}> = ({ token }) => {
+const AidropTableRow: React.FC<{
+  airdrop: Airdrop;
+}> = ({ airdrop }) => {
   return (
     <TableRow>
       <TableTextCell
         style={[
           {
-            minWidth: columns.symbol.minWidth,
-            flex: columns.symbol.flex,
+            minWidth: columns.id.minWidth,
+            flex: columns.id.flex,
           },
         ]}
       >
-        {PrettyTokenSymbol(token.symbol)}
+        {airdrop.id}
       </TableTextCell>
 
       <TableTextCell
         style={[
           {
-            minWidth: columns.name.minWidth,
-            flex: columns.name.flex,
+            minWidth: columns.tokenName.minWidth,
+            flex: columns.tokenName.flex,
           },
         ]}
       >
-        {PrettyTokenName(token.name)}
+        {PrettyTokenName(airdrop.tokenName)}
       </TableTextCell>
       <TableTextCell
         style={[
           {
-            minWidth: columns.decimals.minWidth,
-            flex: columns.decimals.flex,
+            minWidth: columns.tokenSymbol.minWidth,
+            flex: columns.tokenSymbol.flex,
           },
         ]}
       >
-        {token.decimals.toString()}
+        {PrettyTokenSymbol(airdrop.tokenSymbol)}
       </TableTextCell>
 
       <TableTextCell
         style={[
           {
-            minWidth: columns.totalSupply.minWidth,
-            flex: columns.totalSupply.flex,
+            minWidth: columns.amountPerAddr.minWidth,
+            flex: columns.amountPerAddr.flex,
           },
         ]}
       >
-        {PrettyTotalSupplyToken(token.totalSupply, token.symbol)}
+        {airdrop.amountPerAddr + " " + airdrop.tokenSymbol}
       </TableTextCell>
       <TableTextCell
         style={[
           {
-            minWidth: columns.mintable.minWidth,
-            flex: columns.mintable.flex,
+            minWidth: columns.startTimestamp.minWidth,
+            flex: columns.startTimestamp.flex,
           },
         ]}
       >
-        {token.allowMint ? "Yes" : "No"}
+        {PrettyTimestamp(airdrop.startTimestamp)}
       </TableTextCell>
       <TableTextCell
         style={[
           {
-            minWidth: columns.burnable.minWidth,
-            flex: columns.burnable.flex,
+            minWidth: columns.endTimestamp.minWidth,
+            flex: columns.endTimestamp.flex,
           },
         ]}
       >
-        {token.allowBurn ? "Yes" : "No"}
+        {PrettyTimestamp(airdrop.endTimestamp)}
       </TableTextCell>
     </TableRow>
   );

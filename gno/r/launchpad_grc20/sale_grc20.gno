@@ -3,6 +3,7 @@ package launchpad_grc20
 import (
 	"encoding/hex"
 	"std"
+	"strconv"
 	"time"
 
 	"gno.land/p/demo/avl"
@@ -15,6 +16,7 @@ import (
 
 type Sale struct {
 	token          *Token
+	id             seqid.ID
 	startTimestamp int64
 	endTimestamp   int64
 	pricePerToken  uint64
@@ -76,8 +78,11 @@ func NewSale(tokenName, merkleRoot string, startTimestamp, endTimestamp int64, p
 		}
 	}
 
+	saleID := nextSaleID.Next()
+
 	sale := Sale{
 		token:          token,
+		id:             saleID,
 		startTimestamp: startTimestamp,
 		endTimestamp:   endTimestamp,
 		pricePerToken:  pricePerToken,
@@ -90,7 +95,6 @@ func NewSale(tokenName, merkleRoot string, startTimestamp, endTimestamp int64, p
 		merkleRoot:     merkleRoot,
 	}
 
-	saleID := nextSaleID.Next()
 	token.SalesIDs = append(token.SalesIDs, saleID)
 
 	sales.Set(saleID.String(), &sale)
@@ -261,13 +265,14 @@ func (s *Sale) payAllBuyers() {
 
 func (s *Sale) ToJSON() *json.Node {
 	return json.ObjectNode("", map[string]*json.Node{
+		"id":             json.StringNode("", ufmt.Sprintf("%d", uint64(s.id))),
 		"tokenName":      json.StringNode("", s.token.banker.GetName()),
-		"startTimestamp": json.StringNode("", ufmt.Sprintf("%d", s.startTimestamp)),
-		"endTimestamp":   json.StringNode("", ufmt.Sprintf("%d", s.endTimestamp)),
-		"pricePerToken":  json.StringNode("", ufmt.Sprintf("%d", s.pricePerToken)),
-		"limitPerAddr":   json.StringNode("", ufmt.Sprintf("%d", s.limitPerAddr)),
-		"minGoal":        json.StringNode("", ufmt.Sprintf("%d", s.minGoal)),
-		"maxGoal":        json.StringNode("", ufmt.Sprintf("%d", s.maxGoal)),
+		"pricePerToken":  json.StringNode("", strconv.FormatUint(s.pricePerToken, 10)),
+		"limitPerAddr":   json.StringNode("", strconv.FormatUint(s.limitPerAddr, 10)),
+		"minGoal":        json.StringNode("", strconv.FormatUint(s.minGoal, 10)),
+		"maxGoal":        json.StringNode("", strconv.FormatUint(s.maxGoal, 10)),
+		"startTimestamp": json.StringNode("", strconv.FormatInt(s.startTimestamp, 10)),
+		"endTimestamp":   json.StringNode("", strconv.FormatInt(s.endTimestamp, 10)),
 	})
 }
 
@@ -289,7 +294,7 @@ func GetLastSalesJSON() string {
 		}
 
 		sale := saleRaw.(*Sale)
-		nodes = append([]*json.Node{sale.ToJSON()}, nodes...)
+		nodes = append(nodes, sale.ToJSON())
 	}
 	return json.ArrayNode("", nodes).String()
 }

@@ -44,8 +44,10 @@ export type RootStackParamList = {
   LaunchpadERC20: undefined;
   LaunchpadERC20Tokens?: { network?: string };
   LaunchpadERC20CreateToken: { step?: number };
-  LaunchpadERC20Airdrops: undefined;
-  LaunchpadERC20Sales: undefined;
+  LaunchpadERC20Airdrops?: { network?: string };
+  LaunchpadERC20CreateAirdrop: { step?: number };
+  LaunchpadERC20Sales?: { network?: string };
+  LaunchpadERC20CreateSale: { step?: number };
 
   MintCollection: { id: string };
   TNSHome: { modal: string; name?: string } | undefined;
@@ -225,7 +227,9 @@ const navConfig: {
     LaunchpadERC20Tokens: "launchpad-erc20/tokens",
     LaunchpadERC20CreateToken: "launchpad-erc20/token-create",
     LaunchpadERC20Airdrops: "launchpad-erc20/airdrops",
+    LaunchpadERC20CreateAirdrop: "launchpad-erc20/airdrop-create",
     LaunchpadERC20Sales: "launchpad-erc20/sales",
+    LaunchpadERC20CreateSale: "launchpad-erc20/sale-create",
 
     // Mint NFT collection
     MintCollection: "collection/:id/mint",
