@@ -35,7 +35,6 @@ export const useLastAirdrops = (networkId: string) => {
     const res = extractGnoJSONString(contractData);
 
     const airdrops = z.array(zodAidrop).parse(res);
-    console.log(airdrops);
     return airdrops;
   });
 };

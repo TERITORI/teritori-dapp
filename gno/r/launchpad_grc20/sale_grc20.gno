@@ -68,6 +68,10 @@ func NewSale(tokenName, merkleRoot string, startTimestamp, endTimestamp int64, p
 		panic("price per token must be greater than 0")
 	}
 
+	if limitPerAddr == 0 {
+		panic("limit per address must be greater than 0")
+	}
+
 	realmAddr := std.CurrentRealm().Addr()
 	if mintToken {
 		token.banker.Mint(realmAddr, maxGoal)

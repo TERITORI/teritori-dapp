@@ -1,11 +1,10 @@
 import React from "react";
 import { View } from "react-native";
 
-import { CreateTokenBasics } from "./LaunchpadERC20CreateTokenBasics";
-import { CreateTokenDetails } from "./LaunchpadERC20CreateTokenDetails";
-import { CreateTokenSign } from "./LaunchpadERC20CreateTokenSign";
-import { LaunchpadERC20CreateTokenHeader } from "../component/LaunchpadERC20CreateTokenHeader";
-import { useCreateTokenState } from "../hooks/useCreateToken";
+import { CreateAirdropForm } from "./LaunchpadERC20CreateAirdropForm";
+import { CreateAirdropSign } from "./LaunchpadERC20CreateAirdropSign";
+import { LaunchpadERC20CreateAirdropHeader } from "../component/LaunchpadERC20CreateAirdropHeader";
+import { useCreateAirdropState } from "../hooks/useCreateAirdrop";
 
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ScreenContainer } from "@/components/ScreenContainer";
@@ -14,27 +13,26 @@ import { NetworkKind } from "@/networks";
 import { ScreenFC } from "@/utils/navigation";
 
 const renderStep = (stepIndice: number) => {
-  if (stepIndice === 1) return <CreateTokenBasics />;
-  if (stepIndice === 2) return <CreateTokenDetails />;
-  if (stepIndice === 3) return <CreateTokenSign />;
+  if (stepIndice === 1) return <CreateAirdropForm />;
+  if (stepIndice === 2) return <CreateAirdropSign />;
 };
 
-const STEPS = ["Basics Informations", "Details Informations", "Sign & Deploy"];
+const STEPS = ["Informations", "Sign & Deploy"];
 
-export const LaunchpadERC20CreateTokenScreen: ScreenFC<
-  "LaunchpadERC20CreateToken"
+export const LaunchpadERC20CreateAirdropScreen: ScreenFC<
+  "LaunchpadERC20CreateAirdrop"
 > = () => {
   const {
     stepIndice,
     actions: { gotoStep },
-  } = useCreateTokenState();
+  } = useCreateAirdropState();
 
   return (
     <ScreenContainer
       forceNetworkKind={NetworkKind.Gno}
       isLarge
       responsive
-      headerChildren={<LaunchpadERC20CreateTokenHeader />}
+      headerChildren={<LaunchpadERC20CreateAirdropHeader />}
     >
       <Breadcrumb
         currentStepIndice={stepIndice}

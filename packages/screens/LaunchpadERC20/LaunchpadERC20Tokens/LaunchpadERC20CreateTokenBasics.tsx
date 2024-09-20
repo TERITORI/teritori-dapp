@@ -39,7 +39,7 @@ export const CreateTokenBasics: React.FC = () => {
   }, [setValue, caller]);
 
   if (!caller) {
-    return null;
+    return <BrandText>Connect a wallet to create a token</BrandText>;
   }
 
   return (

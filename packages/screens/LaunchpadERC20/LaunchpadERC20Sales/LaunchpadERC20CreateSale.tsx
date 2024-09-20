@@ -1,11 +1,10 @@
 import React from "react";
 import { View } from "react-native";
 
-import { CreateTokenBasics } from "./LaunchpadERC20CreateTokenBasics";
-import { CreateTokenDetails } from "./LaunchpadERC20CreateTokenDetails";
-import { CreateTokenSign } from "./LaunchpadERC20CreateTokenSign";
-import { LaunchpadERC20CreateTokenHeader } from "../component/LaunchpadERC20CreateTokenHeader";
-import { useCreateTokenState } from "../hooks/useCreateToken";
+import { CreateSaleForm } from "./LaunchpadERC20CreateSaleForm";
+import { CreateSaleSign } from "./LaunchpadERC20CreateSaleSign";
+import { LaunchpadERC20CreateSaleHeader } from "../component/LaunchpadERC20CreateSaleHeader";
+import { useCreateSaleState } from "../hooks/useCreateSale";
 
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ScreenContainer } from "@/components/ScreenContainer";
@@ -14,27 +13,26 @@ import { NetworkKind } from "@/networks";
 import { ScreenFC } from "@/utils/navigation";
 
 const renderStep = (stepIndice: number) => {
-  if (stepIndice === 1) return <CreateTokenBasics />;
-  if (stepIndice === 2) return <CreateTokenDetails />;
-  if (stepIndice === 3) return <CreateTokenSign />;
+  if (stepIndice === 1) return <CreateSaleForm />;
+  if (stepIndice === 2) return <CreateSaleSign />;
 };
 
-const STEPS = ["Basics Informations", "Details Informations", "Sign & Deploy"];
+const STEPS = ["Informations", "Sign & Deploy"];
 
-export const LaunchpadERC20CreateTokenScreen: ScreenFC<
-  "LaunchpadERC20CreateToken"
+export const LaunchpadERC20CreateSaleScreen: ScreenFC<
+  "LaunchpadERC20CreateSale"
 > = () => {
   const {
     stepIndice,
     actions: { gotoStep },
-  } = useCreateTokenState();
+  } = useCreateSaleState();
 
   return (
     <ScreenContainer
       forceNetworkKind={NetworkKind.Gno}
       isLarge
       responsive
-      headerChildren={<LaunchpadERC20CreateTokenHeader />}
+      headerChildren={<LaunchpadERC20CreateSaleHeader />}
     >
       <Breadcrumb
         currentStepIndice={stepIndice}

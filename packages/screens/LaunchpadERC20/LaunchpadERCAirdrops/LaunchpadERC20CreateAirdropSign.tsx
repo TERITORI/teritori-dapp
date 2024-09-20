@@ -7,7 +7,7 @@ import projectSuccessPaymentPNG from "../../../../assets/project-success-payment
 import ModalBase from "../../../components/modals/ModalBase";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { Tag } from "../../Projects/components/Milestone";
-import { useCreateTokenState } from "../hooks/useCreateToken";
+import { useCreateAirdropState } from "../hooks/useCreateAirdrop";
 
 import { BrandText } from "@/components/BrandText";
 import FlexRow from "@/components/FlexRow";
@@ -43,14 +43,13 @@ import {
 import { layout } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
 
-export const CreateTokenSign: React.FC = () => {
+export const CreateAirdropSign: React.FC = () => {
   const [isShowModal, setIsShowModal] = useState(false);
   const [isShowConfirmModal, setIsShowConfirmModal] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const navigation = useAppNavigation();
-  const { createTokenFormBasics, createTokenFormDetails } =
-    useCreateTokenState();
+  const { createAirdropForm } = useCreateAirdropState();
   const networkId = useSelectedNetworkId();
 
   const pmFeature = getNetworkFeature(networkId, NetworkFeature.LaunchpadERC20);
@@ -69,26 +68,26 @@ export const CreateTokenSign: React.FC = () => {
 
   const cancel = async () => {
     setIsShowConfirmModal(false);
-    navigation.replace("LaunchpadERC20Tokens", { network: networkId });
+    navigation.replace("LaunchpadERC20Airdrops", { network: networkId });
   };
 
-  const createTokenSign = async () => {
+  const createAirdropSign = async () => {
     try {
       setIsProcessing(true);
 
-      if (!createTokenFormBasics.name) {
+      if (!createAirdropForm.tokenName) {
         setIsShowConfirmModal(false);
-        throw Error("Name is required");
+        throw Error("Token Name is required");
       }
 
-      if (!createTokenFormBasics.symbol) {
+      if (!createAirdropForm.merkleRoot) {
         setIsShowConfirmModal(false);
-        throw Error("Symbol is required");
+        throw Error("Merkle Root is required");
       }
 
-      if (!createTokenFormBasics.totalSupply) {
+      if (!createAirdropForm.amountPerAddr) {
         setIsShowConfirmModal(false);
-        throw Error("Total supply is required");
+        throw Error("Amount of token per user is required");
       }
 
       if (!pmFeature) {
@@ -98,25 +97,22 @@ export const CreateTokenSign: React.FC = () => {
       await adenaVMCall(
         networkId,
         {
-          caller: createTokenFormBasics.caller,
+          caller: createAirdropForm.caller,
           send: "",
           pkg_path: pmFeature?.launchpadERC20PkgPath,
-          func: "NewToken",
+          func: "NewAirdrop",
           args: [
-            createTokenFormBasics.name,
-            createTokenFormBasics.symbol,
-            "noimage", // TODO: Add user to upload an image
-            createTokenFormBasics.decimals.toString(),
-            createTokenFormBasics.totalSupply.toString(),
-            createTokenFormBasics.totalSupplyCap?.toString() || "0",
-            createTokenFormDetails.allowMint.toString(),
-            createTokenFormDetails.allowBurn.toString(),
+            createAirdropForm.tokenName,
+            createAirdropForm.merkleRoot,
+            createAirdropForm.amountPerAddr.toString(),
+            createAirdropForm.startTimestamp?.toString() || "0",
+            createAirdropForm.endTimestamp?.toString() || "0",
           ],
         },
         { gasWanted: 10_000_000 },
       );
 
-      await queryClient.invalidateQueries(["lastTokens"]);
+      await queryClient.invalidateQueries(["lastAirdrops"]);
 
       setIsShowConfirmModal(false);
       setIsShowModal(true);
@@ -201,8 +197,8 @@ export const CreateTokenSign: React.FC = () => {
           disabled={isProcessing}
           fullWidth
           text="Sign & Create"
-          testID="sign-create-token"
-          onPress={createTokenSign}
+          testID="sign-create-airdrop"
+          onPress={createAirdropSign}
         />
 
         <SpacerColumn size={2} />
@@ -235,7 +231,7 @@ export const CreateTokenSign: React.FC = () => {
           />
 
           <BrandText style={[fontSemibold16, { color: neutral77 }]}>
-            You have successfully created Token: {createTokenFormBasics?.name}
+            You have successfully created the Airdrop
           </BrandText>
 
           <View
@@ -251,11 +247,11 @@ export const CreateTokenSign: React.FC = () => {
           >
             <SecondaryButtonOutline
               size="SM"
-              text="Back to Token Page"
+              text="Back to Airdrop Page"
               backgroundColor={neutral00}
               onPress={() => {
                 setIsShowModal(false);
-                navigation.navigate("LaunchpadERC20Tokens", {
+                navigation.navigate("LaunchpadERC20Airdrops", {
                   network: networkId,
                 });
               }}

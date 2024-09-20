@@ -7,7 +7,7 @@ import projectSuccessPaymentPNG from "../../../../assets/project-success-payment
 import ModalBase from "../../../components/modals/ModalBase";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { Tag } from "../../Projects/components/Milestone";
-import { useCreateTokenState } from "../hooks/useCreateToken";
+import { useCreateSaleState } from "../hooks/useCreateSale";
 
 import { BrandText } from "@/components/BrandText";
 import FlexRow from "@/components/FlexRow";
@@ -43,14 +43,13 @@ import {
 import { layout } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
 
-export const CreateTokenSign: React.FC = () => {
+export const CreateSaleSign: React.FC = () => {
   const [isShowModal, setIsShowModal] = useState(false);
   const [isShowConfirmModal, setIsShowConfirmModal] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const navigation = useAppNavigation();
-  const { createTokenFormBasics, createTokenFormDetails } =
-    useCreateTokenState();
+  const { createSaleForm } = useCreateSaleState();
   const networkId = useSelectedNetworkId();
 
   const pmFeature = getNetworkFeature(networkId, NetworkFeature.LaunchpadERC20);
@@ -69,26 +68,55 @@ export const CreateTokenSign: React.FC = () => {
 
   const cancel = async () => {
     setIsShowConfirmModal(false);
-    navigation.replace("LaunchpadERC20Tokens", { network: networkId });
+    navigation.replace("LaunchpadERC20Sales", { network: networkId });
   };
 
-  const createTokenSign = async () => {
+  const createSaleSign = async () => {
     try {
       setIsProcessing(true);
 
-      if (!createTokenFormBasics.name) {
+      if (!createSaleForm.tokenName) {
         setIsShowConfirmModal(false);
-        throw Error("Name is required");
+        throw Error("Token Name is required");
       }
 
-      if (!createTokenFormBasics.symbol) {
+      if (
+        !createSaleForm.startTimestamp ||
+        Number(createSaleForm.startTimestamp) * 1000 <= Date.now()
+      ) {
         setIsShowConfirmModal(false);
-        throw Error("Symbol is required");
+        throw Error("Start timestamp is required and have to be in future");
       }
 
-      if (!createTokenFormBasics.totalSupply) {
+      if (
+        !createSaleForm.endTimestamp ||
+        Number(createSaleForm.endTimestamp) <=
+          Number(createSaleForm.startTimestamp)
+      ) {
         setIsShowConfirmModal(false);
-        throw Error("Total supply is required");
+        throw Error(
+          "End timestamp is required and have to be after start timestamp",
+        );
+      }
+
+      if (!createSaleForm.pricePerToken) {
+        setIsShowConfirmModal(false);
+        throw Error("Price per token is required");
+      }
+
+      if (!createSaleForm.limitPerAddr) {
+        setIsShowConfirmModal(false);
+        throw Error("Limit per address is required");
+      }
+
+      if (!createSaleForm.minGoal) {
+        setIsShowConfirmModal(false);
+        throw Error("Min goal is required");
+      }
+
+      if (!createSaleForm.maxGoal) {
+        setIsShowConfirmModal(false);
+        throw Error("Max goal is required");
       }
 
       if (!pmFeature) {
@@ -98,25 +126,26 @@ export const CreateTokenSign: React.FC = () => {
       await adenaVMCall(
         networkId,
         {
-          caller: createTokenFormBasics.caller,
+          caller: createSaleForm.caller,
           send: "",
           pkg_path: pmFeature?.launchpadERC20PkgPath,
-          func: "NewToken",
+          func: "NewSale",
           args: [
-            createTokenFormBasics.name,
-            createTokenFormBasics.symbol,
-            "noimage", // TODO: Add user to upload an image
-            createTokenFormBasics.decimals.toString(),
-            createTokenFormBasics.totalSupply.toString(),
-            createTokenFormBasics.totalSupplyCap?.toString() || "0",
-            createTokenFormDetails.allowMint.toString(),
-            createTokenFormDetails.allowBurn.toString(),
+            createSaleForm.tokenName,
+            createSaleForm.merkleRoot || "",
+            createSaleForm.startTimestamp.toString(),
+            createSaleForm.endTimestamp.toString(),
+            createSaleForm.pricePerToken.toString(),
+            createSaleForm.limitPerAddr.toString(),
+            createSaleForm.minGoal.toString(),
+            createSaleForm.maxGoal.toString(),
+            createSaleForm.minted.toString(),
           ],
         },
         { gasWanted: 10_000_000 },
       );
 
-      await queryClient.invalidateQueries(["lastTokens"]);
+      await queryClient.invalidateQueries(["lastSales"]);
 
       setIsShowConfirmModal(false);
       setIsShowModal(true);
@@ -201,8 +230,8 @@ export const CreateTokenSign: React.FC = () => {
           disabled={isProcessing}
           fullWidth
           text="Sign & Create"
-          testID="sign-create-token"
-          onPress={createTokenSign}
+          testID="sign-create-sale"
+          onPress={createSaleSign}
         />
 
         <SpacerColumn size={2} />
@@ -235,7 +264,7 @@ export const CreateTokenSign: React.FC = () => {
           />
 
           <BrandText style={[fontSemibold16, { color: neutral77 }]}>
-            You have successfully created Token: {createTokenFormBasics?.name}
+            You have successfully created the Sale
           </BrandText>
 
           <View
@@ -251,11 +280,11 @@ export const CreateTokenSign: React.FC = () => {
           >
             <SecondaryButtonOutline
               size="SM"
-              text="Back to Token Page"
+              text="Back to Sale Page"
               backgroundColor={neutral00}
               onPress={() => {
                 setIsShowModal(false);
-                navigation.navigate("LaunchpadERC20Tokens", {
+                navigation.navigate("LaunchpadERC20Sales", {
                   network: networkId,
                 });
               }}

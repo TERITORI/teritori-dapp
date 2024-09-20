@@ -24,11 +24,13 @@ import { LaunchpadCreateScreen } from "@/screens/Launchpad/LaunchpadCreateScreen
 import { LaunchpadScreen } from "@/screens/Launchpad/LaunchpadScreen";
 import { MintCollectionScreen } from "@/screens/Launchpad/MintCollectionScreen";
 import { LaunchpadApplicationsScreen } from "@/screens/LaunchpadApplications/LaunchpadApplicationsScreen";
+import { LaunchpadERC20CreateSaleScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Sales/LaunchpadERC20CreateSale";
 import { LaunchpadERC20SalesScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Sales/LaunchpadERC20SalesScreen";
 import { LaunchpadERC20Screen } from "@/screens/LaunchpadERC20/LaunchpadERC20Screen";
 import { LaunchpadERC20CreateTokenScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Tokens/LaunchpadERC20CreateToken";
 import { LaunchpadERC20TokensScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Tokens/LaunchpadERC20TokensScreen";
 import { LaunchpadERC20AirdropsScreen } from "@/screens/LaunchpadERC20/LaunchpadERCAirdrops/LaunchpadERC20AirdropsScreen";
+import { LaunchpadERC20CreateAirdropScreen } from "@/screens/LaunchpadERC20/LaunchpadERCAirdrops/LaunchpadERC20CreateAirdrop";
 import { CollectionScreen } from "@/screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "@/screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "@/screens/Marketplace/MarketplaceScreen";
@@ -323,11 +325,29 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
       />
 
       <Nav.Screen
+        name="LaunchpadERC20CreateAirdrop"
+        component={LaunchpadERC20CreateAirdropScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad ERC20 Create Airdrop"),
+        }}
+      />
+
+      <Nav.Screen
         name="LaunchpadERC20Sales"
         component={LaunchpadERC20SalesScreen}
         options={{
           header: () => null,
           title: screenTitle("Launchpad ERC20 Sales"),
+        }}
+      />
+
+      <Nav.Screen
+        name="LaunchpadERC20CreateSale"
+        component={LaunchpadERC20CreateSaleScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad ERC20 Create Sale"),
         }}
       />
 
