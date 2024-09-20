@@ -395,6 +395,7 @@ bump-app-build-number:
 
 .PHONY: test.rust
 test.rust:
+	set -e ; \
 	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
 		echo "> Testing $${file}" ; \
 		cd $${file} ; \
@@ -404,6 +405,7 @@ test.rust:
 
 .PHONY: build.rust
 build.rust:
+	set -e ; \
 	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
 		echo "> Building $${file}" ; \
 		cd $${file} ; \
@@ -413,6 +415,7 @@ build.rust:
 
 .PHONY: lint.rust
 lint.rust:
+	set -e ; \
 	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
 		echo "> Linting $${file}" ; \
 		cd $${file} ; \
@@ -422,6 +425,7 @@ lint.rust:
 
 .PHONY: lint-fix.rust
 lint-fix.rust:
+	set -e ; \
 	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
 		echo "> Linting $${file}" ; \
 		cd $${file} ; \
