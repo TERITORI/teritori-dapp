@@ -4,7 +4,7 @@ NODE_FLAG=--node https://rpc.testnet.teritori.com:443
 TX_FLAGS=--from $(ADMIN) --chain-id teritori-test-7 $(NODE_FLAG) --gas auto --gas-adjustment 1.3 -y -b sync --output json --keyring-backend test -o json
 QUERY_FLAGS=$(NODE_FLAG) -o json
 CODE_ID=47
-CONFIG=$(shell cat config.json | jq --rawfile desc desc.txt -r '.admin_addr="$(ADMIN_ADDR)" | .description=$$desc | tojson | @sh')
+CONFIG=$(shell cat config.json | jq -r '.owner="$(ADMIN_ADDR)" | tojson | @sh')
 
 # only informative
 # CONTRACT_ADDRESS=tori1rs244rjrhap2v4setxlugkh8ungxlrsh8asvh0trsgvqvplvkd5q7752l6
@@ -18,7 +18,7 @@ artifacts/nft_launchpad.wasm:
 		cosmwasm/optimizer:0.16.0
 
 .PHONY: deploy.testnet
-deploy.testnet: artifacts/cw721_membership.wasm
+deploy.testnet: artifacts/nft_launchpad.wasm
 	set -o pipefail; \
 	TXHASH=$$(teritorid tx wasm store artifacts/nft_launchpad.wasm $(TX_FLAGS) | jq -r .txhash); \
 	while ! teritorid query tx $$TXHASH $(QUERY_FLAGS) 2>/dev/null | jq -r '.logs[0].events[] | select(.type=="store_code").attributes[] | select(.key=="code_id").value'; do sleep 1; done
