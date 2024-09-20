@@ -395,41 +395,37 @@ bump-app-build-number:
 
 .PHONY: test.rust
 test.rust:
-	set -e ; \
 	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
 		echo "> Testing $${file}" ; \
 		cd $${file} ; \
-		cargo test ; \
+		cargo test || exit 1 ; \
 		cd - ; \
 	done
 
 .PHONY: build.rust
 build.rust:
-	set -e ; \
 	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
 		echo "> Building $${file}" ; \
 		cd $${file} ; \
-		cargo wasm ; \
+		cargo wasm || exit 1 ; \
 		cd - ; \
 	done
 
 .PHONY: lint.rust
 lint.rust:
-	set -e ; \
 	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
 		echo "> Linting $${file}" ; \
 		cd $${file} ; \
-		cargo clippy ; \
+		cargo clippy || exit 1 ; \
 		cd - ; \
 	done
 
 .PHONY: lint-fix.rust
 lint-fix.rust:
-	set -e ; \
 	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
 		echo "> Linting $${file}" ; \
 		cd $${file} ; \
-		cargo clippy --fix --allow-dirty ; \
+		cargo clippy --fix --allow-dirty || exit 1 ; \
 		cd - ; \
 	done
 
