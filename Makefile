@@ -425,7 +425,7 @@ lint-fix.rust:
 	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
 		echo "> Linting $${file}" ; \
 		cd $${file} ; \
-		cargo clippy --fix --allow-dirty || exit 1 ; \
+		cargo clippy --fix --allow-dirty --broken-code || exit 1 ; \
 		cd - ; \
 	done
 
