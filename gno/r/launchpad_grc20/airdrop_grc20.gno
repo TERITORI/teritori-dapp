@@ -3,6 +3,7 @@ package launchpad_grc20
 import (
 	"encoding/hex"
 	"std"
+	"strconv"
 	"time"
 
 	"gno.land/p/demo/avl"
@@ -110,6 +111,26 @@ func Claim(airdropID uint64, proofs []merkle.Node) {
 	airdrop.alreadyClaimed.Set(caller.String(), true)
 }
 
+func (a *Airdrop) hasAlreadyClaimed(caller std.Address) bool {
+	return a.alreadyClaimed.Has(caller.String())
+}
+
+func (a *Airdrop) isOnGoing() bool {
+	now := time.Now().Unix()
+	return (a.startTimestamp == 0 || a.startTimestamp <= now) &&
+		(a.endTimestamp == 0 || now < a.endTimestamp)
+}
+
+func (a *Airdrop) ToJSON() *json.Node {
+	return json.ObjectNode("", map[string]*json.Node{
+		"tokenName":      json.StringNode("", a.token.banker.GetName()),
+		"tokenSymbol":    json.StringNode("", a.token.banker.GetSymbol()),
+		"amountPerAddr":  json.StringNode("", strconv.FormatUint(a.amountPerAddr, 10)),
+		"startTimestamp": json.StringNode("", strconv.FormatInt(a.startTimestamp, 10)),
+		"endTimestamp":   json.StringNode("", strconv.FormatInt(a.endTimestamp, 10)),
+	})
+}
+
 func mustGetAirdrop(airdropID uint64) *Airdrop {
 	id := seqid.ID(airdropID)
 	airdropRaw, exists := airdrops.Get(id.String())
@@ -120,12 +141,16 @@ func mustGetAirdrop(airdropID uint64) *Airdrop {
 	return airdropRaw.(*Airdrop)
 }
 
-func (a *Airdrop) hasAlreadyClaimed(caller std.Address) bool {
-	return a.alreadyClaimed.Has(caller.String())
-}
+func GetLastAirdropsJSON() string {
+	nodes := make([]*json.Node, 0, 10)
+	for i := int(nextAirdropID); i > int(nextAirdropID)-10; i-- {
+		airdropRaw, exists := airdrops.Get(seqid.ID(i).String())
+		if !exists {
+			continue
+		}
 
-func (a *Airdrop) isOnGoing() bool {
-	now := time.Now().Unix()
-	return (a.startTimestamp == 0 || a.startTimestamp <= now) &&
-		(a.endTimestamp == 0 || now < a.endTimestamp)
+		airdrop := airdropRaw.(*Airdrop)
+		nodes = append([]*json.Node{airdrop.ToJSON()}, nodes...)
+	}
+	return json.ArrayNode("", nodes).String()
 }

@@ -157,15 +157,6 @@ func Finalize(saleID uint64) {
 	sale.finalized = true
 }
 
-func mustGetSale(saleID uint64) *Sale {
-	id := seqid.ID(saleID)
-	sale, exists := sales.Get(id.String())
-	if !exists {
-		panic("sale not found")
-	}
-	return sale.(*Sale)
-}
-
 func (s *Sale) isOnGoing() bool {
 	return s.startTimestamp <= time.Now().Unix() && (s.endTimestamp == 0 || time.Now().Unix() < s.endTimestamp)
 }
@@ -266,4 +257,39 @@ func (s *Sale) payAllBuyers() {
 		}
 		return false
 	})
+}
+
+func (s *Sale) ToJSON() *json.Node {
+	return json.ObjectNode("", map[string]*json.Node{
+		"tokenName":      json.StringNode("", s.token.banker.GetName()),
+		"startTimestamp": json.StringNode("", ufmt.Sprintf("%d", s.startTimestamp)),
+		"endTimestamp":   json.StringNode("", ufmt.Sprintf("%d", s.endTimestamp)),
+		"pricePerToken":  json.StringNode("", ufmt.Sprintf("%d", s.pricePerToken)),
+		"limitPerAddr":   json.StringNode("", ufmt.Sprintf("%d", s.limitPerAddr)),
+		"minGoal":        json.StringNode("", ufmt.Sprintf("%d", s.minGoal)),
+		"maxGoal":        json.StringNode("", ufmt.Sprintf("%d", s.maxGoal)),
+	})
+}
+
+func mustGetSale(saleID uint64) *Sale {
+	id := seqid.ID(saleID)
+	sale, exists := sales.Get(id.String())
+	if !exists {
+		panic("sale not found")
+	}
+	return sale.(*Sale)
+}
+
+func GetLastSalesJSON() string {
+	nodes := make([]*json.Node, 0, 10)
+	for i := int(nextSaleID); i > int(nextSaleID)-10; i-- {
+		saleRaw, exists := sales.Get(seqid.ID(i).String())
+		if !exists {
+			continue
+		}
+
+		sale := saleRaw.(*Sale)
+		nodes = append([]*json.Node{sale.ToJSON()}, nodes...)
+	}
+	return json.ArrayNode("", nodes).String()
 }
