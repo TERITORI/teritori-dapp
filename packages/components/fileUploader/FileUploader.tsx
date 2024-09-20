@@ -2,32 +2,33 @@ import React, { useState } from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 
 import { FileUploaderProps } from "./FileUploader.type";
-import uploadSVG from "../../../assets/icons/upload.svg";
-import {
-  gradientColorBlue,
-  gradientColorDarkerBlue,
-  gradientColorTurquoise,
-  neutral17,
-  neutral77,
-  withAlpha,
-} from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { BrandText } from "../BrandText";
-import { DeleteButton } from "../FilePreview/DeleteButton";
-import { SVG } from "../SVG";
-import { LegacyPrimaryBox } from "../boxes/LegacyPrimaryBox";
-import { GradientText } from "../gradientText";
-import { Label } from "../inputs/TextInputCustom";
 
-//FIXME: Doesn't work for now =>  Only the .web version is used
+import uploadSVG from "@/assets/icons/upload.svg";
+import { BrandText } from "@/components/BrandText";
+import { DeleteButton } from "@/components/FilePreview/DeleteButton";
+import { SVG } from "@/components/SVG";
+import { PrimaryBox } from "@/components/boxes/PrimaryBox";
+import { GradientText } from "@/components/gradientText";
+import { Label } from "@/components/inputs/TextInputCustom";
+import { neutral17, neutral77 } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
-export const FileUploader: React.FC<FileUploaderProps> = ({ label, style }) => {
+//FIXME: Doesn't work for now =>  Consider only the .web version
+export const FileUploader: React.FC<FileUploaderProps> = ({
+  label,
+  style,
+  required,
+}) => {
   const [files, setFiles] = useState<File[] | FileList>([]);
 
   return (
     <View style={style}>
-      {!!label && <Label style={{ marginBottom: 12 }}>{label}</Label>}
+      {!!label && (
+        <Label isRequired={required} style={{ marginBottom: 12 }}>
+          {label}
+        </Label>
+      )}
       <TouchableOpacity>
         <View
           style={{
@@ -58,16 +59,9 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ label, style }) => {
               />
             </>
           ) : (
-            <LegacyPrimaryBox
-              noBrokenCorners
-              fullWidth
-              colors={[
-                withAlpha(gradientColorDarkerBlue, 0.5),
-                withAlpha(gradientColorBlue, 0.5),
-                withAlpha(gradientColorTurquoise, 0.5),
-              ]}
-              style={{ flex: 1 }}
-              mainContainerStyle={{
+            <PrimaryBox
+              style={{
+                flex: 1,
                 height: 80,
                 alignItems: "center",
                 padding: layout.spacing_x2_5,
@@ -104,7 +98,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({ label, style }) => {
                   </BrandText>
                 </View>
               </View>
-            </LegacyPrimaryBox>
+            </PrimaryBox>
           )}
         </View>
       </TouchableOpacity>
