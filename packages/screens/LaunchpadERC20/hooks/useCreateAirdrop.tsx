@@ -14,9 +14,9 @@ export const zodCreateAirdropForm = z.object({
   endTimestamp: z.number().int().min(0).optional(), // replace by date parsing w/ a date picker component
 });
 
-export type CreateAirdropForm = z.infer<typeof zodCreateAirdropForm>;
+type CreateAirdropForm = z.infer<typeof zodCreateAirdropForm>;
 
-export const emptyCreateAirdropForm: CreateAirdropForm = {
+const emptyCreateAirdropForm: CreateAirdropForm = {
   caller: "",
   tokenName: "",
   merkleRoot: "",

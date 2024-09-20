@@ -18,9 +18,9 @@ export const zodCreateSaleForm = z.object({
   minted: z.boolean(),
 });
 
-export type CreateSaleForm = z.infer<typeof zodCreateSaleForm>;
+type CreateSaleForm = z.infer<typeof zodCreateSaleForm>;
 
-export const emptyCreateSaleForm: CreateSaleForm = {
+const emptyCreateSaleForm: CreateSaleForm = {
   caller: "",
   tokenName: "",
   merkleRoot: "",

@@ -14,16 +14,16 @@ export const zodCreateTokenFormBasics = z.object({
   totalSupplyCap: z.number().int().min(1).optional(),
 });
 
-export type CreateTokenFormBasics = z.infer<typeof zodCreateTokenFormBasics>;
+type CreateTokenFormBasics = z.infer<typeof zodCreateTokenFormBasics>;
 
 export const zodCreateTokenFormDetails = z.object({
   allowMint: z.boolean(),
   allowBurn: z.boolean(),
 });
 
-export type CreateTokenFormDetails = z.infer<typeof zodCreateTokenFormDetails>;
+type CreateTokenFormDetails = z.infer<typeof zodCreateTokenFormDetails>;
 
-export const emptyCreateTokenFormBasics: CreateTokenFormBasics = {
+const emptyCreateTokenFormBasics: CreateTokenFormBasics = {
   caller: "",
   name: "",
   symbol: "",
@@ -32,7 +32,7 @@ export const emptyCreateTokenFormBasics: CreateTokenFormBasics = {
   totalSupplyCap: undefined,
 };
 
-export const emptyCreateTokenFormDetails: CreateTokenFormDetails = {
+const emptyCreateTokenFormDetails: CreateTokenFormDetails = {
   allowMint: false,
   allowBurn: false,
 };
