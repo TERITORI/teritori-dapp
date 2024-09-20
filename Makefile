@@ -411,6 +411,24 @@ build.rust:
 		cd - ; \
 	done
 
+.PHONY: lint.rust
+lint.rust:
+	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
+		echo "> Linting $${file}" ; \
+		cd $${file} ; \
+		cargo clippy ; \
+		cd - ; \
+	done
+
+.PHONY: lint-fix.rust
+lint-fix.rust:
+	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
+		echo "> Linting $${file}" ; \
+		cd $${file} ; \
+		cargo clippy --fix --allow-dirty ; \
+		cd - ; \
+	done
+
 .PHONY: generate.internal-contracts-clients
 generate.internal-contracts-clients: node_modules
 	for indir in $(INTERNAL_COSMWASM_CONTRACTS) ; do \
