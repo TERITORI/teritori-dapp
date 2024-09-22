@@ -254,8 +254,9 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       });
     }
 
+    // FIXME: how to estimate gasWanted ?
     await adenaDoContract(network.id, msgs, {
-      gasWanted: 2_000_000,
+      gasWanted: 3_000_000,
     });
 
     onClose();
@@ -326,6 +327,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
             onPressBtn={updateProfile}
             initialData={initialData}
             initialUsername={currentUsername}
+            testID="upp-form-btn-update-profile"
           />
         )}
       </View>

@@ -101,7 +101,15 @@ export const EditProfileForm: React.FC<{
   initialData: ProfileData;
   disabled?: boolean;
   initialUsername?: string;
-}> = ({ btnLabel, onPressBtn, initialData, disabled, initialUsername }) => {
+  testID?: string;
+}> = ({
+  btnLabel,
+  onPressBtn,
+  initialData,
+  disabled,
+  initialUsername,
+  testID,
+}) => {
   const network = useSelectedNetworkInfo();
 
   const initialUsernameValue = useMemo(() => {
@@ -233,6 +241,7 @@ export const EditProfileForm: React.FC<{
           onPress={handleSubmit(onSubmit)}
           boxStyle={{ marginTop: layout.spacing_x1 }}
           loader
+          testID={testID}
         />
       </View>
     </View>

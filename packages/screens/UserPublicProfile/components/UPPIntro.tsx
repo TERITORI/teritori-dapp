@@ -275,11 +275,12 @@ export const UPPIntro: React.FC<{
       >
         <View>
           <>
-            <BrandText style={[fontBold16]}>
+            <BrandText style={[fontBold16]} testID="upp-display-name">
               {metadata?.public_name || DEFAULT_NAME}
             </BrandText>
             <BrandText
               style={[fontMedium14, { color: neutral55, marginTop: 2 }]}
+              testID="upp-username"
             >
               @{metadata.tokenId || userAddress}
             </BrandText>
@@ -290,6 +291,7 @@ export const UPPIntro: React.FC<{
               fontMedium14,
               { maxWidth: 735, marginTop: layout.spacing_x1 },
             ]}
+            testID="upp-bio"
           >
             {metadata?.public_bio}
           </BrandText>
