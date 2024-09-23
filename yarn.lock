@@ -6689,16 +6689,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/leaflet.markercluster@npm:^1.5.4":
-  version: 1.5.4
-  resolution: "@types/leaflet.markercluster@npm:1.5.4"
-  dependencies:
-    "@types/leaflet": "*"
-  checksum: 23fbd15d436bad908589edc5c6027aa36ca00ebc203a10520cfc7a64424525f3d97cbe11d3e498be5a537f1abae9da523ba1f54e9b30557697c55ad412a28dc1
-  languageName: node
-  linkType: hard
-
-"@types/leaflet@npm:*, @types/leaflet@npm:^1.9.12":
+"@types/leaflet@npm:^1.9.12":
   version: 1.9.12
   resolution: "@types/leaflet@npm:1.9.12"
   dependencies:
@@ -20030,7 +20021,6 @@ __metadata:
     "@types/draft-js": ^0.11.9
     "@types/html-to-draftjs": ^1.4.0
     "@types/leaflet": ^1.9.12
-    "@types/leaflet.markercluster": ^1.5.4
     "@types/markdown-it": ^13.0.7
     "@types/node": ^20.9.1
     "@types/react": ~18.2.45
