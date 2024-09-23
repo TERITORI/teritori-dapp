@@ -14,7 +14,7 @@ import { layout } from "@/utils/style/layout";
 
 // SmallCarousel but with rounded buttons instead of shadowed sides buttons
 
-const chevronSize = 16;
+const CHEVRON_SIZE = 16;
 
 type ButtonProps = {
   onPress?: () => void;
@@ -30,7 +30,7 @@ const PrevButton: FC<ButtonProps> = ({ onPress, disabled }) => {
     >
       <SVG
         source={chevronLeftSVG}
-        style={{ width: chevronSize, height: chevronSize }}
+        style={{ width: CHEVRON_SIZE, height: CHEVRON_SIZE }}
       />
     </CustomPressable>
   );
@@ -44,7 +44,7 @@ const NextButton: FC<ButtonProps> = ({ onPress, disabled }) => (
   >
     <SVG
       source={chevronRightSVG}
-      style={{ width: chevronSize, height: chevronSize }}
+      style={{ width: CHEVRON_SIZE, height: CHEVRON_SIZE }}
     />
   </CustomPressable>
 );

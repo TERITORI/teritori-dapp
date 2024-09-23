@@ -10,7 +10,7 @@ import chevronLeftSVG from "@/assets/icons/chevron-left.svg";
 import chevronRightSVG from "@/assets/icons/chevron-right.svg";
 import { useSmallCarousel } from "@/components/carousels/SmallCarousel/useSmallCarousel";
 
-const chevronSize = 16;
+const CHEVRON_SIZE = 16;
 
 type ButtonProps = {
   shadowHeight: number;
@@ -30,7 +30,11 @@ const PrevButton: FC<ButtonProps> = ({ onPress, shadowHeight, style }) => {
         height={shadowHeight}
         style={buttonShadowCStyle}
       >
-        <SVG width={chevronSize} height={chevronSize} source={chevronLeftSVG} />
+        <SVG
+          width={CHEVRON_SIZE}
+          height={CHEVRON_SIZE}
+          source={chevronLeftSVG}
+        />
       </InnerSideBlackShadow>
     </TouchableOpacity>
   );
@@ -47,7 +51,11 @@ const NextButton: FC<ButtonProps> = ({ onPress, shadowHeight, style }) => (
       height={shadowHeight}
       style={buttonShadowCStyle}
     >
-      <SVG width={chevronSize} height={chevronSize} source={chevronRightSVG} />
+      <SVG
+        width={CHEVRON_SIZE}
+        height={CHEVRON_SIZE}
+        source={chevronRightSVG}
+      />
     </InnerSideBlackShadow>
   </TouchableOpacity>
 );

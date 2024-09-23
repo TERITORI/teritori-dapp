@@ -8,15 +8,19 @@ import {
 export const useSmallCarousel = (
   props: TCarouselProps & { height: number },
 ) => {
-  const { width = 0, height = 0, style, data, ...carouselProps } = props;
-  // loop is true by default in Carousel, so we need to override SmallCarousel props.loop like this
-  const isLoop = props.loop === undefined || props.loop;
+  const {
+    width = 0,
+    height = 0,
+    style,
+    data,
+    loop: isLoop = true,
+    ...carouselProps
+  } = props;
 
   const carouselRef = useRef<ICarouselInstance | null>(null);
   const viewWidth = StyleSheet.flatten(style)?.width;
-  const step = Math.floor(
-    (typeof viewWidth === "number" ? viewWidth : 0) / (width || 0),
-  );
+  const step =
+    width && typeof viewWidth === "number" ? Math.floor(viewWidth / width) : 0;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isScrolling, setScrolling] = useState(false);
 
@@ -48,15 +52,13 @@ export const useSmallCarousel = (
       // The button always enabled if loop carousel
       (isLoop ||
         // If not loop, the button is disabled if the carousel is at start
-        (!isLoop && currentIndex > 0)) &&
+        currentIndex > 0) &&
       // The button is always disabled if all items are visible (without doing next/prev)
       data.length > step,
     [isLoop, currentIndex, data.length, step],
   );
   const isNextButtonEnabled = useMemo(
-    () =>
-      (isLoop || (!isLoop && currentIndex < data.length - 1)) &&
-      data.length > step,
+    () => (isLoop || currentIndex < data.length - 1) && data.length > step,
     [isLoop, currentIndex, data.length, step],
   );
 

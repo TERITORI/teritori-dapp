@@ -6689,12 +6689,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/leaflet@npm:^1.9.8":
-  version: 1.9.8
-  resolution: "@types/leaflet@npm:1.9.8"
+"@types/leaflet.markercluster@npm:^1.5.4":
+  version: 1.5.4
+  resolution: "@types/leaflet.markercluster@npm:1.5.4"
+  dependencies:
+    "@types/leaflet": "*"
+  checksum: 23fbd15d436bad908589edc5c6027aa36ca00ebc203a10520cfc7a64424525f3d97cbe11d3e498be5a537f1abae9da523ba1f54e9b30557697c55ad412a28dc1
+  languageName: node
+  linkType: hard
+
+"@types/leaflet@npm:*, @types/leaflet@npm:^1.9.12":
+  version: 1.9.12
+  resolution: "@types/leaflet@npm:1.9.12"
   dependencies:
     "@types/geojson": "*"
-  checksum: d6a33d5db0bdf608957cd52701b17ee89e936034a8f0ab619b8e7ef70312a0da177837dd125756e83af036276a8b299cc724c9ffb3caa7d22893fea2791e1e13
+  checksum: 45e69572048d6da96840505ab13e1e672f75d1e058c8dd87894e7d4be51c62b650303406e45c9df720722a111d348c27626ed22eb7ac0ac102249964e958a635
   languageName: node
   linkType: hard
 
@@ -20020,7 +20029,8 @@ __metadata:
     "@types/draft-convert": ^2.1.4
     "@types/draft-js": ^0.11.9
     "@types/html-to-draftjs": ^1.4.0
-    "@types/leaflet": ^1.9.8
+    "@types/leaflet": ^1.9.12
+    "@types/leaflet.markercluster": ^1.5.4
     "@types/markdown-it": ^13.0.7
     "@types/node": ^20.9.1
     "@types/react": ~18.2.45
@@ -20074,6 +20084,7 @@ __metadata:
     immutable: ^4.0.0
     kubernetes-models: ^4.3.1
     leaflet: ^1.9.4
+    leaflet.markercluster: ^1.5.3
     listr2: ^8.0.1
     lodash: ^4.17.21
     long: ^5.2.1
