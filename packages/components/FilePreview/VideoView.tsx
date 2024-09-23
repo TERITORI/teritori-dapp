@@ -11,23 +11,20 @@ import { LocalFileData, RemoteFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
 import { MediaPlayerVideo } from "../mediaPlayer/MediaPlayerVideo";
 
-interface VideoPreviewProps {
+interface Props {
   file: LocalFileData | RemoteFileData;
   onDelete?: (file: LocalFileData | RemoteFileData) => void;
   isEditable?: boolean;
   postId?: string;
-  authorId: string;
   showSmallPreview?: boolean;
-  height?: number;
 }
 
-export const VideoView: React.FC<VideoPreviewProps> = ({
+export const VideoView: React.FC<Props> = ({
   file,
   onDelete,
   postId,
   isEditable = false,
   showSmallPreview = false,
-  height,
 }) => {
   const videoMetadata: SocialFeedVideoMetadata = {
     title: "Video from Social Feed",
@@ -56,14 +53,14 @@ export const VideoView: React.FC<VideoPreviewProps> = ({
           source={{ uri: web3ToWeb2URI(videoMetadata.videoFile.url) }}
           resizeMode={ResizeMode.CONTAIN}
           style={{
-            height: height || showSmallPreview ? 120 : 400,
+            height: showSmallPreview ? 120 : 400,
           }}
         />
       ) : (
         <MediaPlayerVideo
           videoMetadata={videoMetadata}
           style={{
-            height: height || showSmallPreview ? 120 : 400,
+            height: showSmallPreview ? 120 : 400,
           }}
           resizeMode={ResizeMode.CONTAIN}
           postId={postId}
