@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
@@ -6,17 +6,15 @@ import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadR
 import { NewWhitelistDetailsFormValues } from "../CreateCollection.type";
 
 import { BrandText } from "@/components/BrandText";
-import { FileUploaderSmall } from "@/components/inputs/FileUploaderSmall";
+import { CsvTextInput } from "@/components/inputs/CsvTextInput";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
-import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold20,
 } from "@/utils/style/fonts";
-import { layout } from "@/utils/style/layout";
 
 export const NewWhitelist: React.FC = () => {
   const { control } = useForm<NewWhitelistDetailsFormValues>({
@@ -29,6 +27,7 @@ export const NewWhitelist: React.FC = () => {
     },
     mode: "onBlur",
   });
+  const [whitelistedAddresses, setWhitelistedAddresses] = useState<string[]>();
 
   return (
     <View style={{ maxWidth: 416 }}>
@@ -118,19 +117,9 @@ export const NewWhitelist: React.FC = () => {
       </BrandText>
       <SpacerColumn size={2} />
 
-      <FileUploaderSmall
-        label="Select file"
-        boxStyle={{
-          minHeight: 48,
-        }}
-        style={{
-          marginBottom: layout.spacing_x2,
-          width: 416,
-        }}
-        onUpload={() => {}}
-        filesCount={0}
-        mimeTypes={IMAGE_MIME_TYPES}
-        required
+      <CsvTextInput
+        rows={whitelistedAddresses}
+        onUpload={(rows) => setWhitelistedAddresses(rows)}
       />
     </View>
   );

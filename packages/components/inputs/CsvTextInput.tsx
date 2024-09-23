@@ -14,12 +14,12 @@ import { LocalFileData } from "@/utils/types/files";
 
 // Allows to select a TXT and CSV file and display each rows
 export const CsvTextInput: FC<{
-  onUpload: (file: LocalFileData, rows: string[]) => void;
+  onUpload: (rows: string[]) => void;
   rows?: string[];
-  file?: LocalFileData;
-}> = ({ onUpload, rows, file }) => {
+  // file?: LocalFileData;
+}> = ({ onUpload, rows }) => {
   const [localRows, setLocalRows] = useState<string[] | undefined>(rows);
-  const [localFile, setLocalFile] = useState<LocalFileData | undefined>(file);
+  const [localFile, setLocalFile] = useState<LocalFileData | undefined>();
 
   const onUploadFiles = useCallback(
     (files: LocalFileData[]) => {
@@ -29,17 +29,14 @@ export const CsvTextInput: FC<{
       parse<string[]>(files[0].file, {
         complete: (parseResults) => {
           setLocalRows(parseResults.data.map((rowData) => rowData[0]));
-          onUpload(
-            files[0],
-            parseResults.data.map((rowData) => rowData[0]),
-          );
+          onUpload(parseResults.data.map((rowData) => rowData[0]));
         },
       });
     },
     [onUpload],
   );
 
-  if (localRows) {
+  if (localRows?.length) {
     return (
       <View
         style={{
@@ -73,7 +70,7 @@ export const CsvTextInput: FC<{
   }
   return (
     <FileUploaderSmall
-      boxStyle={{ height: 48 }}
+      boxStyle={{ minHeight: 48 }}
       onUpload={onUploadFiles}
       mimeTypes={TXT_CSV_MIME_TYPES}
       filesCount={localFile ? 1 : 0}
