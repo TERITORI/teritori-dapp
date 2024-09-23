@@ -116,7 +116,7 @@ export const LaunchpadAdditional: React.FC = () => {
             />
           )}
         />
-        <SpacerColumn size={2}/>
+        <SpacerColumn size={2} />
 
         <SelectionDropdown
           dropdownOptions={dropdownOptions}
