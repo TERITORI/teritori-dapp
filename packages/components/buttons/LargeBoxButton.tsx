@@ -2,10 +2,10 @@ import React from "react";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
 
 import ChevronRightSvg from "../../../assets/icons/chevron-right.svg";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
-import { Box } from "@/components/boxes/Box";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import {
   neutral17,
@@ -35,7 +35,7 @@ export const LargeBoxButton: React.FC<LargeBoxButtonProps> = ({
       onPress={url ? () => Linking.openURL(url) : undefined}
       style={styles.fill}
     >
-      <Box style={styles.box} notched>
+      <TertiaryBox style={styles.box}>
         <View style={styles.detailContainer}>
           <BrandText>{title}</BrandText>
           <SpacerColumn size={3} />
@@ -48,7 +48,7 @@ export const LargeBoxButton: React.FC<LargeBoxButtonProps> = ({
             <SVG source={ChevronRightSvg} />
           </View>
         </View>
-      </Box>
+      </TertiaryBox>
     </Pressable>
   );
 };

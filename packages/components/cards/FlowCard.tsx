@@ -13,7 +13,7 @@ import {
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
-import { Box } from "../boxes/Box";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 export const FlowCard: React.FC<{
   label: string;
@@ -29,8 +29,7 @@ export const FlowCard: React.FC<{
       disabled={disabled}
       style={[{ flex: 1 }, style]}
     >
-      <Box
-        notched
+      <TertiaryBox
         style={{
           width: "100%",
           height: 224,
@@ -39,7 +38,6 @@ export const FlowCard: React.FC<{
           alignItems: "flex-start",
           justifyContent: "space-between",
           backgroundColor: disabled ? neutral22 : neutral00,
-          borderWidth: 1,
           borderColor: disabled ? neutral44 : neutral33,
         }}
       >
@@ -73,7 +71,7 @@ export const FlowCard: React.FC<{
         >
           <SVG source={chevronRightSVG} width={16} />
         </View>
-      </Box>
+      </TertiaryBox>
     </TouchableOpacity>
   );
 };
