@@ -1,7 +1,7 @@
 import React, { FC, SyntheticEvent, useRef, useState } from "react";
 import { View } from "react-native";
 
-import { FileUploaderSmallProps } from "./FileUplaoderSmall.type";
+import { FileUploaderSmallProps } from "./FileUploaderSmall.type";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
