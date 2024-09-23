@@ -229,7 +229,7 @@ const navConfig: {
     LaunchpadERC20Airdrops: "launchpad-erc20/airdrops",
     LaunchpadERC20CreateAirdrop: "launchpad-erc20/create-airdrop",
     LaunchpadERC20Sales: "launchpad-erc20/sales",
-    LaunchpadERC20CreateSale: "launchpad-erc20/sale-create",
+    LaunchpadERC20CreateSale: "launchpad-erc20/create-sale",
 
     // Mint NFT collection
     MintCollection: "collection/:id/mint",
