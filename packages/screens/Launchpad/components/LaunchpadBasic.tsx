@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
@@ -7,13 +7,13 @@ import { NewCollectionBasicFormValues } from "../CreateCollection.type";
 
 import { BrandText } from "@/components/BrandText";
 import { CustomNetworkSelector } from "@/components/NetworkSelector/CustomNetworkSelector";
-import { SelectFileUploader } from "@/components/selectFileUploader";
+import { FileUploaderSmall } from "@/components/inputs/FileUploaderSmall";
 import { SpacerColumn } from "@/components/spacer";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
-import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "@/utils/social-feed";
 import { neutral77, primaryColor } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { LocalFileData } from "@/utils/types/files";
 
 export const LaunchpadBasic: React.FC = () => {
   const { control } = useForm<NewCollectionBasicFormValues>({
@@ -25,6 +25,7 @@ export const LaunchpadBasic: React.FC = () => {
     },
     mode: "onBlur",
   });
+  const [coverImage, setCoverImage] = useState<LocalFileData>();
 
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -79,17 +80,21 @@ export const LaunchpadBasic: React.FC = () => {
           control={control}
         />
 
-        <SelectFileUploader
+        <FileUploaderSmall
           label="Cover Image"
-          fileHeight={ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT}
-          isImageCover
+          boxStyle={{
+            minHeight: 48,
+          }}
           style={{
             marginBottom: layout.spacing_x2,
             width: 416,
           }}
-          containerHeight={48}
-          onUpload={(files) => {}}
+          onUpload={(files) => setCoverImage(files[0])}
+          filesCount={0}
           mimeTypes={IMAGE_MIME_TYPES}
+          required
+          imageToShow={coverImage}
+          onPressDelete={() => setCoverImage(undefined)}
         />
 
         <TextInputLaunchpadRequired<NewCollectionBasicFormValues>

@@ -6,11 +6,10 @@ import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadR
 import { NewWhitelistDetailsFormValues } from "../CreateCollection.type";
 
 import { BrandText } from "@/components/BrandText";
-import { SelectFileUploader } from "@/components/selectFileUploader";
+import { FileUploaderSmall } from "@/components/inputs/FileUploaderSmall";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
-import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "@/utils/social-feed";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -118,17 +117,20 @@ export const NewWhitelist: React.FC = () => {
         TXT file that contains the whitelisted addresses
       </BrandText>
       <SpacerColumn size={2} />
-      <SelectFileUploader
+
+      <FileUploaderSmall
         label="Select file"
-        fileHeight={ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT}
-        isImageCover
+        boxStyle={{
+          minHeight: 48,
+        }}
         style={{
           marginBottom: layout.spacing_x2,
           width: 416,
         }}
-        containerHeight={48}
-        onUpload={(files) => {}}
+        onUpload={() => {}}
+        filesCount={0}
         mimeTypes={IMAGE_MIME_TYPES}
+        required
       />
     </View>
   );
