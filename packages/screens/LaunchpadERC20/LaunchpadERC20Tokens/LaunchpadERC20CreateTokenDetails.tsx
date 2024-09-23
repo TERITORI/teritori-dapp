@@ -5,7 +5,10 @@ import { TouchableOpacity, View } from "react-native";
 
 import { LaunchpadERC20CreateTokenFooter } from "./LaunchpadERC20CreateTokenFooter";
 import { useCreateTokenState } from "../hooks/useCreateToken";
-import { zodCreateTokenFormDetails } from "../utils/forms";
+import {
+  TCreateTokenFormDetails,
+  zodCreateTokenFormDetails,
+} from "../utils/forms";
 
 import { BrandText } from "@/components/BrandText";
 import ToggleButton from "@/components/buttons/ToggleButton";
@@ -18,7 +21,7 @@ export const CreateTokenDetails: React.FC = () => {
     actions: { setDetails, goNextStep },
     createTokenFormDetails: detailsData,
   } = useCreateTokenState();
-  const { handleSubmit, watch, setValue } = useForm({
+  const { handleSubmit, watch, setValue } = useForm<TCreateTokenFormDetails>({
     resolver: zodResolver(zodCreateTokenFormDetails),
     defaultValues: detailsData,
   });

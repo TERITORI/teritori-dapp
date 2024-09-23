@@ -5,7 +5,7 @@ import { TouchableOpacity, View } from "react-native";
 
 import { LaunchpadERC20CreateSaleFooter } from "./LaunchpadERC20CreateSaleFooter";
 import { useCreateSaleState } from "../hooks/useCreateSale";
-import { zodCreateSaleForm } from "../utils/forms";
+import { TCreateSaleForm, zodCreateSaleForm } from "../utils/forms";
 
 import { BrandText } from "@/components/BrandText";
 import ToggleButton from "@/components/buttons/ToggleButton";
@@ -24,12 +24,12 @@ export const CreateSaleForm: React.FC = () => {
   } = useCreateSaleState();
   const selectedWallet = useSelectedWallet();
   const caller = selectedWallet?.address;
-  const { handleSubmit, formState, setValue, watch } = useForm({
+  const { handleSubmit, setValue, watch, control } = useForm<TCreateSaleForm>({
     resolver: zodResolver(zodCreateSaleForm),
     defaultValues: formData,
+    mode: "all",
   });
 
-  const { errors } = formState;
   useEffect(() => {
     if (!caller) {
       // TODO: would be better to not allow this corner case, aka do something smarter when no wallet is connected
@@ -55,105 +55,96 @@ export const CreateSaleForm: React.FC = () => {
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom
-        label="Token Name * (The token have to be owned by the caller)"
-        name="name"
+      <TextInputCustom<TCreateSaleForm>
+        label="Token Name (The token have to be owned by the caller)"
+        name="tokenName"
         fullWidth
         placeholder="Type the token name here..."
         variant="labelOutside"
-        onChangeText={(text) => setValue("tokenName", text)}
-        value={values.tokenName}
-        error={errors.tokenName?.message}
+        control={control}
+        rules={{ required: true }}
       />
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom
-        label="Price per unit of token * ($GNOT)"
+      <TextInputCustom<TCreateSaleForm>
+        label="Price per unit of token ($GNOT)"
         name="pricePerToken"
         fullWidth
         placeholder="Type the price per token here..."
         variant="labelOutside"
-        onChangeText={(val) => setValue("pricePerToken", Number(val))}
-        value={values.pricePerToken.toString()}
-        error={errors.pricePerToken?.message}
+        control={control}
+        rules={{ required: true }}
       />
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom
-        label="Limit of tokens a user can buy*"
-        name="amountPerAddr"
+      <TextInputCustom<TCreateSaleForm>
+        label="Limit of tokens a user can buy"
+        name="limitPerAddr"
         fullWidth
         placeholder="Type the limit of tokens a user can buy here..."
         variant="labelOutside"
-        onChangeText={(val) => setValue("limitPerAddr", Number(val))}
-        value={values.limitPerAddr.toString()}
-        error={errors.limitPerAddr?.message}
+        control={control}
+        rules={{ required: true }}
       />
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom
-        label="Minimum Goal * (The sale will refund buyers if this goal is reach)"
-        name="startTimestamp"
+      <TextInputCustom<TCreateSaleForm>
+        label="Minimum Goal (The sale will refund buyers if this goal is reach)"
+        name="minGoal"
         fullWidth
         placeholder="Type the minimum goal here..."
         variant="labelOutside"
-        onChangeText={(val) => setValue("minGoal", Number(val))}
-        value={values.minGoal?.toString()}
-        error={errors.minGoal?.message}
+        control={control}
+        rules={{ required: true }}
       />
 
       <SpacerColumn size={2.5} />
 
       <TextInputCustom
-        label="Maximum Goal * (The sale will stop if this goal is reach)"
-        name="endTimestamp"
+        label="Maximum Goal (The sale will stop if this goal is reach)"
+        name="maxGoal"
         fullWidth
         placeholder="Type the maximum goal here..."
         variant="labelOutside"
-        onChangeText={(val) => setValue("maxGoal", Number(val))}
-        value={values.maxGoal?.toString()}
-        error={errors.maxGoal?.message}
+        control={control}
+        rules={{ required: true }}
       />
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom
-        label="Unix Start Timestamp * (have to be in the future)"
+      <TextInputCustom<TCreateSaleForm>
+        label="Unix Start Timestamp (have to be in the future)"
         name="startTimestamp"
         fullWidth
         placeholder="Type the unix start timestamp here..."
         variant="labelOutside"
-        onChangeText={(val) => setValue("startTimestamp", Number(val))}
-        value={values.startTimestamp?.toString()}
-        error={errors.startTimestamp?.message}
+        control={control}
+        rules={{ required: true }}
       />
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom
-        label="Unix End Timestamp * (have to be greater than start)"
+      <TextInputCustom<TCreateSaleForm>
+        label="Unix End Timestamp (have to be greater than start)"
         name="endTimestamp"
         fullWidth
         placeholder="Type the unix end timestamp here..."
         variant="labelOutside"
-        onChangeText={(val) => setValue("endTimestamp", Number(val))}
-        value={values.endTimestamp?.toString()}
-        error={errors.endTimestamp?.message}
+        control={control}
+        rules={{ required: true }}
       />
 
       <SpacerColumn size={2.5} />
-      <TextInputCustom
+      <TextInputCustom<TCreateSaleForm>
         label="Merkle Root (Optional, if you want to whitelist addresses)"
         name="merkleRoot"
         fullWidth
         placeholder="Type the merkle root here..."
         variant="labelOutside"
-        onChangeText={(val) => setValue("merkleRoot", val)}
-        value={values.merkleRoot}
-        error={errors.merkleRoot?.message}
+        control={control}
       />
 
       <SpacerColumn size={2.5} />

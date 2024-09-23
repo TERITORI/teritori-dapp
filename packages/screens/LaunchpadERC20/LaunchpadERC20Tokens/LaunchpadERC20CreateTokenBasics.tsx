@@ -5,7 +5,10 @@ import { View } from "react-native";
 
 import { LaunchpadERC20CreateTokenFooter } from "./LaunchpadERC20CreateTokenFooter";
 import { useCreateTokenState } from "../hooks/useCreateToken";
-import { zodCreateTokenFormBasics } from "../utils/forms";
+import {
+  TCreateTokenFormBasics,
+  zodCreateTokenFormBasics,
+} from "../utils/forms";
 
 import { BrandText } from "@/components/BrandText";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
@@ -21,12 +24,13 @@ export const CreateTokenBasics: React.FC = () => {
   } = useCreateTokenState();
   const selectedWallet = useSelectedWallet();
   const caller = selectedWallet?.address;
-  const { handleSubmit, formState, setValue, watch } = useForm({
-    resolver: zodResolver(zodCreateTokenFormBasics),
-    defaultValues: basicsData,
-  });
+  const { handleSubmit, setValue, watch, control } =
+    useForm<TCreateTokenFormBasics>({
+      resolver: zodResolver(zodCreateTokenFormBasics),
+      defaultValues: basicsData,
+      mode: "all",
+    });
 
-  const { errors } = formState;
   const values = watch();
   useEffect(() => {
     if (!caller) {
@@ -52,67 +56,61 @@ export const CreateTokenBasics: React.FC = () => {
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom
-        label="Token Name *"
+      <TextInputCustom<TCreateTokenFormBasics>
+        label="Token Name"
         name="name"
         fullWidth
         placeholder="Type the token name here..."
         variant="labelOutside"
-        onChangeText={(text) => setValue("name", text)}
-        value={values.name}
-        error={errors.name?.message}
+        control={control}
+        rules={{ required: true }}
       />
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom
-        label="Token Symbol *"
+      <TextInputCustom<TCreateTokenFormBasics>
+        label="Token Symbol"
         name="symbol"
         fullWidth
         placeholder="Type the token symbol here..."
         variant="labelOutside"
-        onChangeText={(val) => setValue("symbol", val)}
-        value={values.symbol}
-        error={errors.symbol?.message}
+        control={control}
+        rules={{ required: true }}
       />
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom
-        label="Token Decimals *"
+      <TextInputCustom<TCreateTokenFormBasics>
+        label="Token Decimals"
         name="decimals"
         fullWidth
         placeholder="Type the token decimals here... (0-18)"
         variant="labelOutside"
-        onChangeText={(val) => setValue("decimals", Number(val))}
-        value={values.decimals.toString()}
-        error={errors.decimals?.message}
+        control={control}
+        rules={{ required: true }}
       />
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom
-        label="Total Supply *"
+      <TextInputCustom<TCreateTokenFormBasics>
+        label="Total Supply"
         name="totalSupply"
         fullWidth
         placeholder="Type the total supply here..."
         variant="labelOutside"
-        onChangeText={(val) => setValue("totalSupply", Number(val))}
-        value={values.totalSupply.toString()}
-        error={errors.totalSupply?.message}
+        control={control}
+        rules={{ required: true }}
       />
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom
+      <TextInputCustom<TCreateTokenFormBasics>
         label="Total Supply Cap"
         name="totalSupplyCap"
         fullWidth
         placeholder="Type the total supply cap here..."
         variant="labelOutside"
-        onChangeText={(val) => setValue("totalSupplyCap", Number(val))}
-        value={values.totalSupplyCap?.toString()}
-        error={errors.totalSupplyCap?.message}
+        control={control}
       />
 
       <SpacerColumn size={2.5} />

@@ -5,7 +5,7 @@ import { View } from "react-native";
 
 import { LaunchpadERC20CreateAirdropFooter } from "./LaunchpadERC20CreateAirdropFooter";
 import { useCreateAirdropState } from "../hooks/useCreateAirdrop";
-import { zodCreateAirdropForm } from "../utils/forms";
+import { TCreateAirdropForm, zodCreateAirdropForm } from "../utils/forms";
 
 import { BrandText } from "@/components/BrandText";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
@@ -23,12 +23,13 @@ export const CreateAirdropForm: React.FC = () => {
   } = useCreateAirdropState();
   const selectedWallet = useSelectedWallet();
   const caller = selectedWallet?.address;
-  const { handleSubmit, formState, setValue, watch } = useForm({
-    resolver: zodResolver(zodCreateAirdropForm),
-    defaultValues: formData,
-  });
+  const { handleSubmit, setValue, watch, control } =
+    useForm<TCreateAirdropForm>({
+      resolver: zodResolver(zodCreateAirdropForm),
+      defaultValues: formData,
+      mode: "all",
+    });
 
-  const { errors } = formState;
   useEffect(() => {
     if (!caller) {
       // TODO: would be better to not allow this corner case, aka do something smarter when no wallet is connected
@@ -54,41 +55,38 @@ export const CreateAirdropForm: React.FC = () => {
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom
-        label="Token Name * (The token have to be mintable and owned by the caller)"
-        name="name"
+      <TextInputCustom<TCreateAirdropForm>
+        label="Token Name (The token have to be mintable and owned by the caller)"
+        name="tokenName"
         fullWidth
         placeholder="Type the token name here..."
         variant="labelOutside"
-        onChangeText={(text) => setValue("tokenName", text)}
-        value={values.tokenName}
-        error={errors.tokenName?.message}
+        control={control}
+        rules={{ required: true }}
       />
 
       <SpacerColumn size={2.5} />
 
       <TextInputCustom
-        label="Merkle Root *"
+        label="Merkle Root"
         name="merkleRoot"
         fullWidth
         placeholder="Type the merkle root here..."
         variant="labelOutside"
-        onChangeText={(val) => setValue("merkleRoot", val)}
-        value={values.merkleRoot}
-        error={errors.merkleRoot?.message}
+        control={control}
+        rules={{ required: true }}
       />
 
       <SpacerColumn size={2.5} />
 
       <TextInputCustom
-        label="Amount of tokens to give per user *"
+        label="Amount of tokens to give per user"
         name="amountPerAddr"
         fullWidth
         placeholder="Type the amount of tokens to give per user here..."
         variant="labelOutside"
-        onChangeText={(val) => setValue("amountPerAddr", Number(val))}
-        value={values.amountPerAddr.toString()}
-        error={errors.amountPerAddr?.message}
+        control={control}
+        rules={{ required: true }}
       />
 
       <SpacerColumn size={2.5} />
@@ -99,9 +97,7 @@ export const CreateAirdropForm: React.FC = () => {
         fullWidth
         placeholder="Type the unix start timestamp here..."
         variant="labelOutside"
-        onChangeText={(val) => setValue("startTimestamp", Number(val))}
-        value={values.startTimestamp?.toString()}
-        error={errors.startTimestamp?.message}
+        control={control}
       />
 
       <SpacerColumn size={2.5} />
@@ -112,9 +108,7 @@ export const CreateAirdropForm: React.FC = () => {
         fullWidth
         placeholder="Type the unix end timestamp here..."
         variant="labelOutside"
-        onChangeText={(val) => setValue("endTimestamp", Number(val))}
-        value={values.endTimestamp?.toString()}
-        error={errors.endTimestamp?.message}
+        control={control}
       />
 
       <SpacerColumn size={2.5} />

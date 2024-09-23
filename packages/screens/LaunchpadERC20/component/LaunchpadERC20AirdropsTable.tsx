@@ -2,6 +2,11 @@ import React from "react";
 import { FlatList, View } from "react-native";
 
 import { useLastAirdrops } from "../hooks/useLastAirdrops";
+import {
+  prettyTimestamp,
+  prettyTokenName,
+  prettyTokenSymbol,
+} from "../utils/prettyText";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
@@ -112,7 +117,7 @@ const AidropTableRow: React.FC<{
           },
         ]}
       >
-        {PrettyTokenName(airdrop.tokenName)}
+        {prettyTokenName(airdrop.tokenName)}
       </TableTextCell>
       <TableTextCell
         style={[
@@ -122,7 +127,7 @@ const AidropTableRow: React.FC<{
           },
         ]}
       >
-        {PrettyTokenSymbol(airdrop.tokenSymbol)}
+        {prettyTokenSymbol(airdrop.tokenSymbol)}
       </TableTextCell>
 
       <TableTextCell
@@ -143,7 +148,7 @@ const AidropTableRow: React.FC<{
           },
         ]}
       >
-        {PrettyTimestamp(airdrop.startTimestamp)}
+        {prettyTimestamp(airdrop.startTimestamp)}
       </TableTextCell>
       <TableTextCell
         style={[
@@ -153,7 +158,7 @@ const AidropTableRow: React.FC<{
           },
         ]}
       >
-        {PrettyTimestamp(airdrop.endTimestamp)}
+        {prettyTimestamp(airdrop.endTimestamp)}
       </TableTextCell>
     </TableRow>
   );
