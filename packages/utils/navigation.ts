@@ -227,7 +227,7 @@ const navConfig: {
     LaunchpadERC20Tokens: "launchpad-erc20/tokens",
     LaunchpadERC20CreateToken: "launchpad-erc20/create-token",
     LaunchpadERC20Airdrops: "launchpad-erc20/airdrops",
-    LaunchpadERC20CreateAirdrop: "launchpad-erc20/airdrop-create",
+    LaunchpadERC20CreateAirdrop: "launchpad-erc20/create-airdrop",
     LaunchpadERC20Sales: "launchpad-erc20/sales",
     LaunchpadERC20CreateSale: "launchpad-erc20/sale-create",
 
