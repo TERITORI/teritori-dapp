@@ -3,9 +3,9 @@ import { FlatList, View } from "react-native";
 
 import { useLastTokens } from "../hooks/useLastTokens";
 import {
-  PrettyTokenName,
-  PrettyTokenSymbol,
-  PrettyTotalSupplyToken,
+  prettyTokenName,
+  prettyTokenSymbol,
+  prettyTotalSupplyToken,
 } from "../utils/prettyText";
 
 import { BrandText } from "@/components/BrandText";
@@ -106,7 +106,7 @@ const TokenTableRow: React.FC<{
           },
         ]}
       >
-        {PrettyTokenSymbol(token.symbol)}
+        {prettyTokenSymbol(token.symbol)}
       </TableTextCell>
 
       <TableTextCell
@@ -117,7 +117,7 @@ const TokenTableRow: React.FC<{
           },
         ]}
       >
-        {PrettyTokenName(token.name)}
+        {prettyTokenName(token.name)}
       </TableTextCell>
       <TableTextCell
         style={[
@@ -138,7 +138,7 @@ const TokenTableRow: React.FC<{
           },
         ]}
       >
-        {PrettyTotalSupplyToken(token.totalSupply, token.symbol)}
+        {prettyTotalSupplyToken(token.totalSupply, token.symbol)}
       </TableTextCell>
       <TableTextCell
         style={[

@@ -2,11 +2,6 @@ import React from "react";
 import { FlatList, View } from "react-native";
 
 import { useLastAirdrops } from "../hooks/useLastAirdrops";
-import {
-  PrettyTimestamp,
-  PrettyTokenName,
-  PrettyTokenSymbol,
-} from "../utils/prettyText";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";

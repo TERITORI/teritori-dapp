@@ -2,7 +2,7 @@ import React from "react";
 import { FlatList, View } from "react-native";
 
 import { useLastSales } from "../hooks/useLastSales";
-import { PrettyTimestamp, PrettyTokenName } from "../utils/prettyText";
+import { prettyTimestamp, prettyTokenName } from "../utils/prettyText";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
@@ -123,7 +123,7 @@ const SaleTableRow: React.FC<{
           },
         ]}
       >
-        {PrettyTokenName(sale.tokenName)}
+        {prettyTokenName(sale.tokenName)}
       </TableTextCell>
       <TableTextCell
         style={[
@@ -175,7 +175,7 @@ const SaleTableRow: React.FC<{
           },
         ]}
       >
-        {PrettyTimestamp(sale.startTimestamp)}
+        {prettyTimestamp(sale.startTimestamp)}
       </TableTextCell>
       <TableTextCell
         style={[
@@ -185,7 +185,7 @@ const SaleTableRow: React.FC<{
           },
         ]}
       >
-        {PrettyTimestamp(sale.endTimestamp)}
+        {prettyTimestamp(sale.endTimestamp)}
       </TableTextCell>
     </TableRow>
   );

@@ -40,7 +40,6 @@ export const LaunchpadERC20CreateSaleFooter: React.FC<{
           onPress={props.onSubmit}
           text={props.nextText || "Next"}
           size="SM"
-          width={props?.width || DEFAULT_WIDTH}
           disabled={props.disableNext}
         />
       </FlexRow>
