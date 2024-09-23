@@ -3,14 +3,15 @@ import { View } from "react-native";
 
 import { CreateSaleForm } from "./LaunchpadERC20CreateSaleForm";
 import { CreateSaleSign } from "./LaunchpadERC20CreateSaleSign";
-import { LaunchpadERC20CreateSaleHeader } from "../component/LaunchpadERC20CreateSaleHeader";
 import { useCreateSaleState } from "../hooks/useCreateSale";
 
+import { BrandText } from "@/components/BrandText";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
 import { NetworkKind } from "@/networks";
-import { ScreenFC } from "@/utils/navigation";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { fontSemibold20 } from "@/utils/style/fonts";
 
 const renderStep = (stepIndice: number) => {
   if (stepIndice === 1) return <CreateSaleForm />;
@@ -26,13 +27,19 @@ export const LaunchpadERC20CreateSaleScreen: ScreenFC<
     stepIndice,
     actions: { gotoStep },
   } = useCreateSaleState();
+  const navigation = useAppNavigation();
 
   return (
     <ScreenContainer
       forceNetworkKind={NetworkKind.Gno}
       isLarge
       responsive
-      headerChildren={<LaunchpadERC20CreateSaleHeader />}
+      headerChildren={
+        <BrandText style={fontSemibold20}>
+          Launchpad ERC20 Sale Creation
+        </BrandText>
+      }
+      onBackPress={() => navigation.navigate("LaunchpadERC20Sales")}
     >
       <Breadcrumb
         currentStepIndice={stepIndice}

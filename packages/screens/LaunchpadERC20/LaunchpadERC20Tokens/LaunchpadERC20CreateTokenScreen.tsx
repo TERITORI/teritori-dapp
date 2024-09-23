@@ -4,14 +4,15 @@ import { View } from "react-native";
 import { CreateTokenBasics } from "./LaunchpadERC20CreateTokenBasics";
 import { CreateTokenDetails } from "./LaunchpadERC20CreateTokenDetails";
 import { CreateTokenSign } from "./LaunchpadERC20CreateTokenSign";
-import { LaunchpadERC20CreateTokenHeader } from "../component/LaunchpadERC20CreateTokenHeader";
 import { useCreateTokenState } from "../hooks/useCreateToken";
 
+import { BrandText } from "@/components/BrandText";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
 import { NetworkKind } from "@/networks";
-import { ScreenFC } from "@/utils/navigation";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { fontSemibold20 } from "@/utils/style/fonts";
 
 const renderStep = (stepIndice: number) => {
   if (stepIndice === 1) return <CreateTokenBasics />;
@@ -28,13 +29,19 @@ export const LaunchpadERC20CreateTokenScreen: ScreenFC<
     stepIndice,
     actions: { gotoStep },
   } = useCreateTokenState();
+  const navigation = useAppNavigation();
 
   return (
     <ScreenContainer
       forceNetworkKind={NetworkKind.Gno}
       isLarge
       responsive
-      headerChildren={<LaunchpadERC20CreateTokenHeader />}
+      headerChildren={
+        <BrandText style={fontSemibold20}>
+          Launchpad ERC20 Token Creation
+        </BrandText>
+      }
+      onBackPress={() => navigation.navigate("LaunchpadERC20Tokens")}
     >
       <Breadcrumb
         currentStepIndice={stepIndice}
