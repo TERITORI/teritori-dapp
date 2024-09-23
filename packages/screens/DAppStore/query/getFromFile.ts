@@ -87,29 +87,29 @@ export function getAvailableApps(): dAppGroup {
         },
         ...(Platform.OS !== "web"
           ? {
-              toriwallet: {
-                id: "toriwallet",
-                title: "Teritori OS Wallet",
-                description: "Wallet",
-                icon: wallet,
-                route: "NativeWallet",
-                groupKey: "teritori-core-apps",
-                selectedByDefault: true,
-                alwaysOn: false,
-              },
-            }
+            toriwallet: {
+              id: "toriwallet",
+              title: "Teritori OS Wallet",
+              description: "Wallet",
+              icon: wallet,
+              route: "NativeWallet",
+              groupKey: "teritori-core-apps",
+              selectedByDefault: true,
+              alwaysOn: false,
+            },
+          }
           : {
-              wallet: {
-                id: "wallet",
-                title: "My Wallet",
-                description: "Wallet",
-                icon: wallet,
-                route: "WalletManager",
-                groupKey: "teritori-core-apps",
-                selectedByDefault: true,
-                alwaysOn: true,
-              },
-            }),
+            wallet: {
+              id: "wallet",
+              title: "My Wallet",
+              description: "Wallet",
+              icon: wallet,
+              route: "WalletManager",
+              groupKey: "teritori-core-apps",
+              selectedByDefault: true,
+              alwaysOn: true,
+            },
+          }),
         governance: {
           id: "governance",
           title: "Governance",
@@ -142,17 +142,17 @@ export function getAvailableApps(): dAppGroup {
         },
         ...(isElectron() || ["android", "ios"].includes(Platform.OS)
           ? {
-              messages: {
-                id: "messages",
-                title: "Messages",
-                description: "Messages",
-                icon: messages,
-                route: "Message",
-                groupKey: "teritori-core-apps",
-                selectedByDefault: true,
-                alwaysOn: false,
-              },
-            }
+            messages: {
+              id: "messages",
+              title: "Messages",
+              description: "Messages",
+              icon: messages,
+              route: "Message",
+              groupKey: "teritori-core-apps",
+              selectedByDefault: true,
+              alwaysOn: false,
+            },
+          }
           : {}),
       },
     },
@@ -164,17 +164,17 @@ export function getAvailableApps(): dAppGroup {
       options: {
         ...(Platform.OS !== "web"
           ? {
-              osmosis: {
-                id: "osmosis",
-                title: "Osmosis Dex",
-                description: "Advanced automated market maker (AMM)",
-                icon: osmosisSVG,
-                route: "Swap",
-                groupKey: "top-apps",
-                selectedByDefault: true,
-                alwaysOn: false,
-              },
-            }
+            osmosis: {
+              id: "osmosis",
+              title: "Osmosis Dex",
+              description: "Advanced automated market maker (AMM)",
+              icon: osmosisSVG,
+              route: "Swap",
+              groupKey: "top-apps",
+              selectedByDefault: true,
+              alwaysOn: false,
+            },
+          }
           : {}),
         "social-feed": {
           id: "social-feed",
@@ -216,6 +216,7 @@ export function getAvailableApps(): dAppGroup {
           groupKey: "top-apps",
           selectedByDefault: false,
           alwaysOn: false,
+          devOnly: true,
         },
         toripunks: {
           id: "toripunks",
@@ -532,17 +533,17 @@ export function getAvailableApps(): dAppGroup {
         },
         ...(isElectron()
           ? {
-              messages: {
-                id: "messages",
-                title: "Messages",
-                description: "Messages",
-                icon: messages,
-                route: "Message",
-                groupKey: "coming-soon",
-                selectedByDefault: false,
-                alwaysOn: false,
-              },
-            }
+            messages: {
+              id: "messages",
+              title: "Messages",
+              description: "Messages",
+              icon: messages,
+              route: "Message",
+              groupKey: "coming-soon",
+              selectedByDefault: false,
+              alwaysOn: false,
+            },
+          }
           : {}),
       },
     },
