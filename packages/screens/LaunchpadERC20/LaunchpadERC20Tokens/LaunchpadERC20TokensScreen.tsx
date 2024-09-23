@@ -32,6 +32,7 @@ export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
       forceNetworkKind={NetworkKind.Gno}
       isLarge
       responsive
+      onBackPress={() => navigation.navigate("LaunchpadERC20")}
     >
       <View
         style={{
