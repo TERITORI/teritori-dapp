@@ -4,10 +4,8 @@ import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { LaunchpadERC20CreateAirdropFooter } from "./LaunchpadERC20CreateAirdropFooter";
-import {
-  useCreateAirdropState,
-  zodCreateAirdropForm,
-} from "../hooks/useCreateAirdrop";
+import { useCreateAirdropState } from "../hooks/useCreateAirdrop";
+import { zodCreateAirdropForm } from "../utils/forms";
 
 import { BrandText } from "@/components/BrandText";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";

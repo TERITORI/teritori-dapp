@@ -1,51 +1,14 @@
 import { useRoute } from "@react-navigation/native";
 import { useMemo } from "react";
-import { z } from "zod";
 import { create } from "zustand";
 
+import {
+  CreateTokenState,
+  emptyCreateTokenFormBasics,
+  emptyCreateTokenFormDetails,
+} from "../utils/forms";
+
 import { useAppNavigation } from "@/utils/navigation";
-
-export const zodCreateTokenFormBasics = z.object({
-  caller: z.string().min(3),
-  name: z.string().min(3),
-  symbol: z.string().min(3),
-  decimals: z.number().int().min(0).max(18),
-  totalSupply: z.number().int().min(1),
-  totalSupplyCap: z.number().int().min(1).optional(),
-});
-
-type CreateTokenFormBasics = z.infer<typeof zodCreateTokenFormBasics>;
-
-export const zodCreateTokenFormDetails = z.object({
-  allowMint: z.boolean(),
-  allowBurn: z.boolean(),
-});
-
-type CreateTokenFormDetails = z.infer<typeof zodCreateTokenFormDetails>;
-
-const emptyCreateTokenFormBasics: CreateTokenFormBasics = {
-  caller: "",
-  name: "",
-  symbol: "",
-  decimals: 0,
-  totalSupply: 21_000_000,
-  totalSupplyCap: undefined,
-};
-
-const emptyCreateTokenFormDetails: CreateTokenFormDetails = {
-  allowMint: false,
-  allowBurn: false,
-};
-
-type CreateTokenState = {
-  stepIndice: number;
-  createTokenFormBasics: CreateTokenFormBasics;
-  createTokenFormDetails: CreateTokenFormDetails;
-  actions: {
-    setBasics: (basics: CreateTokenFormBasics) => void;
-    setDetails: (details: CreateTokenFormDetails) => void;
-  };
-};
 
 const TOTAL_STEPS = 3;
 

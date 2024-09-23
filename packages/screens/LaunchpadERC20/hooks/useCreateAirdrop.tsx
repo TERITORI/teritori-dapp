@@ -1,37 +1,10 @@
 import { useRoute } from "@react-navigation/native";
 import { useMemo } from "react";
-import { z } from "zod";
 import { create } from "zustand";
 
+import { CreateAirdropState, emptyCreateAirdropForm } from "../utils/forms";
+
 import { useAppNavigation } from "@/utils/navigation";
-
-export const zodCreateAirdropForm = z.object({
-  caller: z.string().min(3),
-  tokenName: z.string().min(3),
-  merkleRoot: z.string().min(1),
-  amountPerAddr: z.number().int().min(1),
-  startTimestamp: z.number().int().min(0).optional(), // replace by date parsing w/ a date picker component
-  endTimestamp: z.number().int().min(0).optional(), // replace by date parsing w/ a date picker component
-});
-
-type CreateAirdropForm = z.infer<typeof zodCreateAirdropForm>;
-
-const emptyCreateAirdropForm: CreateAirdropForm = {
-  caller: "",
-  tokenName: "",
-  merkleRoot: "",
-  amountPerAddr: 0,
-  startTimestamp: undefined,
-  endTimestamp: undefined,
-};
-
-type CreateAirdropState = {
-  stepIndice: number;
-  createAirdropForm: CreateAirdropForm;
-  actions: {
-    setAirdrop: (airdrop: CreateAirdropForm) => void;
-  };
-};
 
 const TOTAL_STEPS = 2;
 

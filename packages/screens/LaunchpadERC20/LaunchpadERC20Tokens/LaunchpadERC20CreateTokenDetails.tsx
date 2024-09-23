@@ -4,10 +4,8 @@ import { useForm } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
 
 import { LaunchpadERC20CreateTokenFooter } from "./LaunchpadERC20CreateTokenFooter";
-import {
-  useCreateTokenState,
-  zodCreateTokenFormDetails,
-} from "../hooks/useCreateToken";
+import { useCreateTokenState } from "../hooks/useCreateToken";
+import { zodCreateTokenFormDetails } from "../utils/forms";
 
 import { BrandText } from "@/components/BrandText";
 import ToggleButton from "@/components/buttons/ToggleButton";

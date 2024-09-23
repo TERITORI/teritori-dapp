@@ -4,7 +4,8 @@ import { useForm } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
 
 import { LaunchpadERC20CreateSaleFooter } from "./LaunchpadERC20CreateSaleFooter";
-import { useCreateSaleState, zodCreateSaleForm } from "../hooks/useCreateSale";
+import { useCreateSaleState } from "../hooks/useCreateSale";
+import { zodCreateSaleForm } from "../utils/forms";
 
 import { BrandText } from "@/components/BrandText";
 import ToggleButton from "@/components/buttons/ToggleButton";

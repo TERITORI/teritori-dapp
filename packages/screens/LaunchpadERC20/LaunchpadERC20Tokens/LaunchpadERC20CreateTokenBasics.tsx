@@ -4,10 +4,8 @@ import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { LaunchpadERC20CreateTokenFooter } from "./LaunchpadERC20CreateTokenFooter";
-import {
-  useCreateTokenState,
-  zodCreateTokenFormBasics,
-} from "../hooks/useCreateToken";
+import { useCreateTokenState } from "../hooks/useCreateToken";
+import { zodCreateTokenFormBasics } from "../utils/forms";
 
 import { BrandText } from "@/components/BrandText";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";

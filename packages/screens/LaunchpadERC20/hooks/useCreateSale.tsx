@@ -1,45 +1,10 @@
 import { useRoute } from "@react-navigation/native";
 import { useMemo } from "react";
-import { z } from "zod";
 import { create } from "zustand";
 
+import { CreateSaleState, emptyCreateSaleForm } from "../utils/forms";
+
 import { useAppNavigation } from "@/utils/navigation";
-
-export const zodCreateSaleForm = z.object({
-  caller: z.string().min(3),
-  tokenName: z.string().min(3),
-  merkleRoot: z.string().optional(), // depends on private or public sale
-  startTimestamp: z.number().int().min(1), // replace by date parsing w/ a date picker component
-  endTimestamp: z.number().int().min(1), // replace by date parsing w/ a date picker component
-  pricePerToken: z.number().int().min(1),
-  limitPerAddr: z.number().int().min(1),
-  minGoal: z.number().int().min(1),
-  maxGoal: z.number().int().min(1),
-  minted: z.boolean(),
-});
-
-type CreateSaleForm = z.infer<typeof zodCreateSaleForm>;
-
-const emptyCreateSaleForm: CreateSaleForm = {
-  caller: "",
-  tokenName: "",
-  merkleRoot: "",
-  startTimestamp: 0,
-  endTimestamp: 0,
-  pricePerToken: 0,
-  limitPerAddr: 0,
-  minGoal: 0,
-  maxGoal: 0,
-  minted: false,
-};
-
-type CreateSaleState = {
-  stepIndice: number;
-  createSaleForm: CreateSaleForm;
-  actions: {
-    setSale: (sale: CreateSaleForm) => void;
-  };
-};
 
 const TOTAL_STEPS = 2;
 
