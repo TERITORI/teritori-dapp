@@ -15,12 +15,12 @@ import { LocalFileData } from "@/utils/types/files";
 
 // Allows to select a TXT and CSV file and display each rows
 export const CsvTextRowsInput: FC<{
-  onUpload: (rows: string[]) => void;
+  onUpload: (file: LocalFileData, rows: string[]) => void;
   rows?: string[];
-  // file?: LocalFileData;
-}> = ({ onUpload, rows }) => {
+  file?: LocalFileData;
+}> = ({ onUpload, rows, file }) => {
   const [localRows, setLocalRows] = useState<string[] | undefined>(rows);
-  const [localFile, setLocalFile] = useState<LocalFileData | undefined>();
+  const [localFile, setLocalFile] = useState<LocalFileData | undefined>(file);
 
   const onUploadFiles = useCallback(
     (files: LocalFileData[]) => {
@@ -30,7 +30,10 @@ export const CsvTextRowsInput: FC<{
       parse<string[]>(files[0].file, {
         complete: (parseResults) => {
           setLocalRows(parseResults.data.map((rowData) => rowData[0]));
-          onUpload(parseResults.data.map((rowData) => rowData[0]));
+          onUpload(
+            files[0],
+            parseResults.data.map((rowData) => rowData[0]),
+          );
         },
       });
     },

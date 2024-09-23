@@ -119,7 +119,7 @@ export const NewWhitelist: React.FC = () => {
 
       <CsvTextRowsInput
         rows={whitelistedAddresses}
-        onUpload={(rows) => setWhitelistedAddresses(rows)}
+        onUpload={(_, rows) => setWhitelistedAddresses(rows)}
       />
     </View>
   );
