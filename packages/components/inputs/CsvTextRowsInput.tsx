@@ -14,6 +14,7 @@ import { layout } from "@/utils/style/layout";
 import { LocalFileData } from "@/utils/types/files";
 
 // Allows to select a TXT and CSV file and display each rows
+// Can take a file and return a file in onUpload for I/O needs
 export const CsvTextRowsInput: FC<{
   onUpload: (file: LocalFileData, rows: string[]) => void;
   rows?: string[];
