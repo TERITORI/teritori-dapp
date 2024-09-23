@@ -7,7 +7,7 @@ import {
   PointExpression,
   MarkerCluster,
 } from "leaflet";
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -48,6 +48,29 @@ interface MarkerPopup {
   fileURL?: string;
 }
 
+// Custom map post icon
+const postIcon = (postCategory: PostCategory) => {
+  const size = 32;
+  const borderWidth = 1;
+  const sizeWithBorders = 32 + borderWidth * 2;
+  return new DivIcon({
+    html: `<div style="border-radius: 99px;
+    height: ${size}px; width: ${size}px; border: 1px solid #A3A3A3;
+     background-color: rgba(${getMapPostIconColorRgba(postCategory)}); display: flex; align-items: center; justify-content: center;">${getMapPostIconSVGString(postCategory)}</div>`,
+    className: "",
+    iconSize: [sizeWithBorders, sizeWithBorders],
+  });
+};
+
+// Custom cluster icon
+const clusterIcon = function (cluster: MarkerCluster) {
+  return new DivIcon({
+    html: `<div class="cluster-icon-wrapper"><span class="cluster-icon">${cluster.getChildCount()}</span></div>`,
+    className: "custom-marker-cluster",
+    iconSize: point(33, 33, true) as PointExpression,
+  });
+};
+
 export const Map: FC<MapProps> = ({
   locationToCenter = DEFAULT_MAP_POSITION,
   style,
@@ -76,35 +99,6 @@ export const Map: FC<MapProps> = ({
   });
   const posts = data?.list;
   const aggregatedPosts = data?.aggregations;
-
-  const ICON_SIZE = 34;
-
-  // Custom map post icon
-  const postIcon = useCallback(
-    (postCategory: PostCategory) => {
-      const sizeWithoutBorders = ICON_SIZE - 2;
-      return new DivIcon({
-        html: `<div style="border-radius: 99px;
-    height: ${sizeWithoutBorders}px; width: ${sizeWithoutBorders}px; border: 1px solid #A3A3A3;
-     background-color: rgba(${getMapPostIconColorRgba(postCategory)}); display: flex; align-items: center; justify-content: center;">${getMapPostIconSVGString(postCategory)}</div>`,
-        className: "",
-        iconSize: [ICON_SIZE, ICON_SIZE],
-      });
-    },
-    [ICON_SIZE],
-  );
-
-  // Custom cluster icon
-  const clusterIcon = useCallback(
-    (cluster: MarkerCluster) => {
-      return new DivIcon({
-        html: `<div class="cluster-icon-wrapper"><span class="cluster-icon">${cluster.getChildCount()}</span></div>`,
-        className: "custom-marker-cluster",
-        iconSize: point(ICON_SIZE, ICON_SIZE, true) as PointExpression,
-      });
-    },
-    [ICON_SIZE],
-  );
 
   const markers: MarkerPopup[] = useMemo(() => {
     if (!posts) return [];
