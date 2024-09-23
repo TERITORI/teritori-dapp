@@ -1,11 +1,6 @@
 import "./styles.css";
 import "leaflet/dist/leaflet.css";
-import {
-  DivIcon,
-  LatLngBounds,
-  point,
-  PointExpression,
-} from "leaflet";
+import { DivIcon, LatLngBounds, point, PointExpression } from "leaflet";
 import { FC, useEffect, useMemo, useState } from "react";
 import {
   MapContainer,
