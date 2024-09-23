@@ -5,7 +5,6 @@ import {
   LatLngBounds,
   point,
   PointExpression,
-  MarkerCluster,
 } from "leaflet";
 import { FC, useEffect, useMemo, useState } from "react";
 import {
@@ -63,7 +62,7 @@ const postIcon = (postCategory: PostCategory) => {
 };
 
 // Custom cluster icon
-const clusterIcon = function (cluster: MarkerCluster) {
+const clusterIcon = function (cluster: any) {
   return new DivIcon({
     html: `<div class="cluster-icon-wrapper"><span class="cluster-icon">${cluster.getChildCount()}</span></div>`,
     className: "custom-marker-cluster",
