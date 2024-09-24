@@ -135,7 +135,7 @@ pub fn execute_deposit(
 ) -> StdResult<Response> {
     let key = query_nft_info_key(nft_contract_addr.to_string(), nft_token_id.to_string());
 
-    if None != NFT_LIST.may_load(deps.storage, key.to_string())? {
+    if (NFT_LIST.may_load(deps.storage, key.to_string())?).is_some() {
         return Err(StdError::generic_err("NFT already listed!"));
     }
 
@@ -151,7 +151,7 @@ pub fn execute_deposit(
 
     Ok(
         Response::new()
-            .add_attributes(vec![("action", "deposit"), ("sender", &sender.to_string())]),
+            .add_attributes(vec![("action", "deposit"), ("sender", sender.as_ref())]),
     )
 }
 
@@ -200,7 +200,7 @@ pub fn execute_update_price(
 ) -> StdResult<Response> {
     let key = query_nft_info_key(nft_contract_addr, nft_token_id);
     if let Some(nft_info) = NFT_LIST.may_load(deps.storage, key.to_string())? {
-        if nft_info.owner != info.sender.to_string() {
+        if nft_info.owner != info.sender {
             return Err(StdError::generic_err("This NFT is not owned to the user!"));
         }
 
@@ -330,10 +330,10 @@ pub fn query_nft_info(
     nft_contract_addr: String,
     nft_token_id: String,
 ) -> StdResult<Option<NFTInfo>> {
-    Ok(NFT_LIST.may_load(
+    NFT_LIST.may_load(
         deps.storage,
         query_nft_info_key(nft_contract_addr, nft_token_id),
-    )?)
+    )
 }
 
 pub fn query_nft_info_key(nft_contract_addr: String, nft_token_id: String) -> String {
@@ -404,7 +404,7 @@ mod tests {
     };
 
     fn mock_instantiate_msg(fee_bp: Uint128) -> InstantiateMsg {
-        InstantiateMsg { fee_bp: fee_bp }
+        InstantiateMsg { fee_bp }
     }
 
     #[test]
@@ -818,7 +818,7 @@ mod tests {
                 &[{
                     Coin {
                         denom: denom.to_string(),
-                        amount: amount,
+                        amount,
                     }
                 }],
             ),
@@ -909,7 +909,7 @@ mod tests {
                 &[{
                     Coin {
                         denom: denom.to_string(),
-                        amount: amount,
+                        amount,
                     }
                 }],
             ),

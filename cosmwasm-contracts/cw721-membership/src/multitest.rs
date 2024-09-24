@@ -106,7 +106,7 @@ fn basic_full_flow() {
     let channel_owner = "channel_owner";
     let channel_vault = "channel_vault";
 
-    let res = contract
+    let _res = contract
         .create_channel(
             memberships_config.clone(),
             initial_trade_royalties,

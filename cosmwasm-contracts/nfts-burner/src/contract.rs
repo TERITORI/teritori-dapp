@@ -68,7 +68,7 @@ impl NftsBurnerContract {
         ctx: ExecCtx,
         sender: String,
         token_id: String,
-        msg: Binary,
+        _msg: Binary,
     ) -> Result<Response, ContractError> {
         let collection_addr = ctx.info.sender;
         let user_addr = ctx.deps.api.addr_validate(sender.as_str())?;
@@ -294,12 +294,11 @@ impl NftsBurnerContract {
 fn get_events_values(ev: &Vec<Event>, ty: &str, key: &str) -> Vec<String> {
     ev.iter()
         .filter(|v| v.ty == ty)
-        .map(|v| {
+        .filter_map(|v| {
             v.attributes
                 .iter()
                 .find(|vv| vv.key == key)
                 .map(|vv| vv.value.clone())
         })
-        .filter_map(|v| v)
         .collect()
 }

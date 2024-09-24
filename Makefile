@@ -398,7 +398,7 @@ test.rust:
 	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
 		echo "> Testing $${file}" ; \
 		cd $${file} ; \
-		cargo test ; \
+		cargo test || exit 1 ; \
 		cd - ; \
 	done
 
@@ -407,7 +407,25 @@ build.rust:
 	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
 		echo "> Building $${file}" ; \
 		cd $${file} ; \
-		cargo wasm ; \
+		cargo wasm || exit 1 ; \
+		cd - ; \
+	done
+
+.PHONY: lint.rust
+lint.rust:
+	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
+		echo "> Linting $${file}" ; \
+		cd $${file} ; \
+		cargo clippy || exit 1 ; \
+		cd - ; \
+	done
+
+.PHONY: lint-fix.rust
+lint-fix.rust:
+	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
+		echo "> Linting $${file}" ; \
+		cd $${file} ; \
+		cargo clippy --fix --allow-dirty --broken-code || exit 1 ; \
 		cd - ; \
 	done
 
