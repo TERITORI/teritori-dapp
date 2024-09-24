@@ -66,7 +66,6 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
       delete res["moderationDAO"];
     }
 
-    delete res["map"];
     delete res["videoNotes"];
     delete res["sounds"];
     return res;
