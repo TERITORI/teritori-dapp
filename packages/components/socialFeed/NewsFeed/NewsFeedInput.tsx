@@ -37,7 +37,6 @@ import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
 import { useAppMode } from "@/hooks/useAppMode";
-import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { useIpfs } from "@/hooks/useIpfs";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
@@ -152,8 +151,6 @@ export const NewsFeedInput = React.forwardRef<
     const [location, setLocation] = useState<
       CustomLatLngExpression | undefined
     >();
-    const [developerMode] = useDeveloperMode();
-
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
         defaultValues: {
@@ -574,7 +571,7 @@ export const NewsFeedInput = React.forwardRef<
                   </>
                 )}
 
-                {type === "post" && developerMode && (
+                {type === "post" && (
                   <>
                     <LocationButton
                       onPress={() => setIsMapShown(true)}

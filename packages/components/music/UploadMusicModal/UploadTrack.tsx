@@ -46,7 +46,6 @@ import { SpacerColumn, SpacerRow } from "../../spacer";
 
 import { SelectAudioVideo } from "@/components/mini/SelectAudioVideo";
 import { MapModal } from "@/components/socialFeed/modals/MapModal/MapModal";
-import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
 
 interface Props {
@@ -56,7 +55,6 @@ interface Props {
 const UPLOAD_ALBUM_MODAL_WIDTH = 564;
 
 export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
-  const [developerMode] = useDeveloperMode();
   const [isMapShown, setIsMapShown] = useState(false);
   const [location, setLocation] = useState<
     CustomLatLngExpression | undefined
@@ -268,26 +266,22 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
         </View>
       )}
 
-      {developerMode && (
-        <>
-          <SpacerColumn size={2.5} />
-          <TouchableOpacity
-            style={[buttonContainerStyle, isLoading && { opacity: 0.5 }]}
-            onPress={() => setIsMapShown(true)}
-            disabled={isLoading}
-          >
-            <SVG
-              source={LocationRefinedSvg}
-              width={20}
-              height={20}
-              stroke={!location ? primaryColor : undefined}
-              color={location ? primaryColor : undefined}
-            />
-            <SpacerRow size={1} />
-            <BrandText style={buttonTextStyle}>Handle location</BrandText>
-          </TouchableOpacity>
-        </>
-      )}
+      <SpacerColumn size={2.5} />
+      <TouchableOpacity
+        style={[buttonContainerStyle, isLoading && { opacity: 0.5 }]}
+        onPress={() => setIsMapShown(true)}
+        disabled={isLoading}
+      >
+        <SVG
+          source={LocationRefinedSvg}
+          width={20}
+          height={20}
+          stroke={!location ? primaryColor : undefined}
+          color={location ? primaryColor : undefined}
+        />
+        <SpacerRow size={1} />
+        <BrandText style={buttonTextStyle}>Handle location</BrandText>
+      </TouchableOpacity>
 
       <SpacerColumn size={3} />
       <BrandText

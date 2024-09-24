@@ -89,7 +89,6 @@ import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";
 
 import { LocationButton } from "@/components/socialFeed/NewsFeed/LocationButton";
-import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 
 const VIDEOTYPE = "draft-js-video-plugin-video"; // See @draft-js-plugins/video/lib/video/constants
 const MAX_IMAGES = 8;
@@ -192,8 +191,6 @@ export const RichText: React.FC<RichTextProps> = ({
     () => uploadedVideos.length >= MAX_VIDEOS,
     [uploadedVideos.length],
   );
-  const [developerMode] = useDeveloperMode();
-
   // Truncate using initialValue, only if isPreview
   const isTruncateNeeded = useMemo(
     () => isArticleHTMLNeedsTruncate(initialValue, isPreview),
@@ -319,25 +316,21 @@ export const RichText: React.FC<RichTextProps> = ({
   /////////////// TOOLBAR BUTTONS ////////////////
   const Buttons: React.FC<{ externalProps: any }> = ({ externalProps }) => (
     <View style={toolbarButtonsWrapperCStyle}>
-      {developerMode && (
-        <>
-          <SpacerRow size={1} />
-          <LocationButton
-            onPress={() => setIsMapShown?.(true)}
-            stroke={!hasLocation ? neutralFF : undefined}
-            color={!hasLocation ? undefined : neutralFF}
-          />
-          <View
-            style={{
-              height: layout.spacing_x2,
-              width: 1,
-              backgroundColor: "#515151",
-              marginLeft: layout.spacing_x1_25,
-              marginRight: layout.spacing_x0_75,
-            }}
-          />
-        </>
-      )}
+      <SpacerRow size={1} />
+      <LocationButton
+        onPress={() => setIsMapShown?.(true)}
+        stroke={!hasLocation ? neutralFF : undefined}
+        color={!hasLocation ? undefined : neutralFF}
+      />
+      <View
+        style={{
+          height: layout.spacing_x2,
+          width: 1,
+          backgroundColor: "#515151",
+          marginLeft: layout.spacing_x1_25,
+          marginRight: layout.spacing_x0_75,
+        }}
+      />
 
       <EmojiSelector
         onEmojiSelected={(emoji) => addEmoji(emoji)}

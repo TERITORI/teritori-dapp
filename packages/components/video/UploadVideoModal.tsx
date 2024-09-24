@@ -55,7 +55,6 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 
 import LocationRefinedSvg from "@/assets/icons/location-refined.svg";
 import { MapModal } from "@/components/socialFeed/modals/MapModal/MapModal";
-import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
 
 const UPLOAD_VIDEO_MODAL_WIDTH = 590;
@@ -65,7 +64,6 @@ export const UploadVideoModal: FC<{
   onClose: () => void;
   isVisible: boolean;
 }> = ({ onClose, isVisible }) => {
-  const [developerMode] = useDeveloperMode();
   const [isMapShown, setIsMapShown] = useState(false);
   const [location, setLocation] = useState<
     CustomLatLngExpression | undefined
@@ -418,26 +416,22 @@ export const UploadVideoModal: FC<{
           </View>
         )}
 
-        {developerMode && (
-          <>
-            <SpacerColumn size={2.5} />
-            <TouchableOpacity
-              style={[buttonContainerStyle, isLoading && { opacity: 0.5 }]}
-              onPress={() => setIsMapShown(true)}
-              disabled={isLoading}
-            >
-              <SVG
-                source={LocationRefinedSvg}
-                width={20}
-                height={20}
-                stroke={!location ? primaryColor : undefined}
-                color={location ? primaryColor : undefined}
-              />
-              <SpacerRow size={1} />
-              <BrandText style={buttonTextStyle}>Handle location</BrandText>
-            </TouchableOpacity>
-          </>
-        )}
+        <SpacerColumn size={2.5} />
+        <TouchableOpacity
+          style={[buttonContainerStyle, isLoading && { opacity: 0.5 }]}
+          onPress={() => setIsMapShown(true)}
+          disabled={isLoading}
+        >
+          <SVG
+            source={LocationRefinedSvg}
+            width={20}
+            height={20}
+            stroke={!location ? primaryColor : undefined}
+            color={location ? primaryColor : undefined}
+          />
+          <SpacerRow size={1} />
+          <BrandText style={buttonTextStyle}>Handle location</BrandText>
+        </TouchableOpacity>
 
         <SpacerColumn size={3} />
         <BrandText
