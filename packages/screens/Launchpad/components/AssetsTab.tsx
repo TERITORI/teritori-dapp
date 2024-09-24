@@ -7,7 +7,7 @@ import { MetadataUpdateModal } from "./modals/MetadataUpdateModal";
 import { NewCollectionAssetsFormValues } from "../CreateCollection.type";
 
 import { SelectedFilesPreview } from "@/components/FilePreview/SelectedFilesPreview/SelectedFilesPreview";
-import { SelectFileUploader } from "@/components/selectFileUploader";
+import { FileUploaderSmall } from "@/components/inputs/FileUploaderSmall";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { neutral33 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
@@ -66,31 +66,29 @@ export const AssetsTab: React.FC = () => {
                 control={control}
               />
 
-              <SelectFileUploader
+              <FileUploaderSmall
                 label="Asset selection"
                 style={{
                   marginVertical: layout.spacing_x3,
                   width: 416,
                 }}
-                containerHeight={100}
-                multiple
+                filesCount={files.length}
                 onUpload={(files) => {
                   setFiles(files);
                 }}
                 mimeTypes={IMAGE_MIME_TYPES}
-                isRequired={false}
               />
-              <SelectFileUploader
+
+              <FileUploaderSmall
                 label="Metadata selection"
                 style={{
                   marginVertical: layout.spacing_x3,
                   width: 416,
                 }}
-                containerHeight={100}
-                multiple
-                onUpload={(files) => {}}
+                filesCount={0}
+                onUpload={() => {}}
                 mimeTypes={IMAGE_MIME_TYPES}
-                isRequired={false}
+                multiple
               />
             </View>
           </View>
