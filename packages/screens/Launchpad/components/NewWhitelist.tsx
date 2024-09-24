@@ -6,7 +6,7 @@ import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadR
 import { NewWhitelistDetailsFormValues } from "../CreateCollection.type";
 
 import { BrandText } from "@/components/BrandText";
-import { CsvTextInput } from "@/components/inputs/CsvTextInput";
+import { CsvTextRowsInput } from "@/components/inputs/CsvTextRowsInput";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { neutral55, neutral77 } from "@/utils/style/colors";
@@ -117,7 +117,7 @@ export const NewWhitelist: React.FC = () => {
       </BrandText>
       <SpacerColumn size={2} />
 
-      <CsvTextInput
+      <CsvTextRowsInput
         rows={whitelistedAddresses}
         onUpload={(rows) => setWhitelistedAddresses(rows)}
       />

@@ -1,6 +1,7 @@
 import { parse } from "papaparse";
 import React, { FC, useCallback, useState } from "react";
 import { View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 import { FileUploaderSmall } from "./FileUploaderSmall";
 
@@ -13,7 +14,7 @@ import { layout } from "@/utils/style/layout";
 import { LocalFileData } from "@/utils/types/files";
 
 // Allows to select a TXT and CSV file and display each rows
-export const CsvTextInput: FC<{
+export const CsvTextRowsInput: FC<{
   onUpload: (rows: string[]) => void;
   rows?: string[];
   // file?: LocalFileData;
@@ -38,15 +39,7 @@ export const CsvTextInput: FC<{
 
   if (localRows?.length) {
     return (
-      <View
-        style={{
-          width: "100%",
-          borderRadius: 8,
-          borderColor: neutral33,
-          borderWidth: 1,
-          padding: layout.spacing_x1_5,
-        }}
-      >
+      <View>
         <DeleteButton
           onPress={() => {
             setLocalFile(undefined);
@@ -54,17 +47,28 @@ export const CsvTextInput: FC<{
             onUploadFiles([]);
           }}
         />
-        {localRows.map((row, index) => (
-          <BrandText
-            key={index}
-            style={[
-              fontSemibold14,
-              index > 0 && { marginTop: layout.spacing_x1 },
-            ]}
-          >
-            {row}
-          </BrandText>
-        ))}
+        <ScrollView
+          style={{
+            width: "100%",
+            borderRadius: 8,
+            borderColor: neutral33,
+            borderWidth: 1,
+            padding: layout.spacing_x1_5,
+            maxHeight: 200,
+          }}
+        >
+          {localRows.map((row, index) => (
+            <BrandText
+              key={index}
+              style={[
+                fontSemibold14,
+                index > 0 && { marginTop: layout.spacing_x1 },
+              ]}
+            >
+              {row}
+            </BrandText>
+          ))}
+        </ScrollView>
       </View>
     );
   }
