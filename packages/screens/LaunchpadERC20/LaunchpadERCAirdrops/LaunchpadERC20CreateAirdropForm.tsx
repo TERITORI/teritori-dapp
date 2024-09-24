@@ -106,8 +106,9 @@ export const CreateAirdropForm: React.FC = () => {
         render={({ field: { onChange } }) => (
           <DateTimeInput
             label="Start date"
+            required={false}
             onChange={onChange}
-            timestamp={(startTimestamp ?? 0) / 1000}
+            timestamp={startTimestamp || 0}
             isDirty={getFieldState("startTimestamp").isDirty}
           />
         )}
@@ -121,8 +122,9 @@ export const CreateAirdropForm: React.FC = () => {
         render={({ field: { onChange } }) => (
           <DateTimeInput
             label="End date"
+            required={false}
             onChange={onChange}
-            timestamp={(endTimestamp ?? 0) / 1000}
+            timestamp={endTimestamp || 0}
             isDirty={getFieldState("endTimestamp").isDirty}
           />
         )}

@@ -47,8 +47,8 @@ export const zodCreateAirdropForm = z.object({
   tokenName: z.string().min(3),
   merkleRoot: z.string().min(1),
   amountPerAddr: z.coerce.number().int().min(1),
-  startTimestamp: z.coerce.number().int().min(0).optional(), // replace by date parsing w/ a date picker component
-  endTimestamp: z.coerce.number().int().min(0).optional(), // replace by date parsing w/ a date picker component
+  startTimestamp: z.coerce.number().int().min(0).or(z.nan()),
+  endTimestamp: z.coerce.number().int().min(0).or(z.nan()),
 });
 
 export type TCreateAirdropForm = z.infer<typeof zodCreateAirdropForm>;
@@ -58,8 +58,8 @@ export const emptyCreateAirdropForm: TCreateAirdropForm = {
   tokenName: "",
   merkleRoot: "",
   amountPerAddr: 0,
-  startTimestamp: undefined,
-  endTimestamp: undefined,
+  startTimestamp: 0,
+  endTimestamp: 0,
 };
 
 export type CreateAirdropState = {
@@ -74,8 +74,8 @@ export const zodCreateSaleForm = z.object({
   caller: z.string().min(3),
   tokenName: z.string().min(3),
   merkleRoot: z.string().optional(), // depends on private or public sale
-  startTimestamp: z.coerce.number().int().min(1), // replace by date parsing w/ a date picker component
-  endTimestamp: z.coerce.number().int().min(1), // replace by date parsing w/ a date picker component
+  startTimestamp: z.coerce.number().int().min(1),
+  endTimestamp: z.coerce.number().int().min(1),
   pricePerToken: z.coerce.number().int().min(1),
   limitPerAddr: z.coerce.number().int().min(1),
   minGoal: z.coerce.number().int().min(1),

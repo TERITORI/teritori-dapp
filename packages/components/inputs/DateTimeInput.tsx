@@ -76,7 +76,8 @@ export const DateTimeInput: FC<{
   const error = useMemo(() => {
     if (!isDirty) return;
     if (!day && !month && !year && !hours && !minutes) {
-      return DEFAULT_FORM_ERRORS.required;
+      if (required) return DEFAULT_FORM_ERRORS.required;
+      return;
     }
     if (
       date.toString() === "Invalid Date" ||
@@ -91,10 +92,9 @@ export const DateTimeInput: FC<{
     ) {
       return DEFAULT_FORM_ERRORS.datetime;
     }
-  }, [year, month, day, hours, minutes, date, isDirty]);
+  }, [year, month, day, hours, minutes, date, isDirty, required]);
 
   const valueModifier = (text: string) => {
-    console.log("text", text);
     if (!text || reg.test(text)) {
       return text;
     }

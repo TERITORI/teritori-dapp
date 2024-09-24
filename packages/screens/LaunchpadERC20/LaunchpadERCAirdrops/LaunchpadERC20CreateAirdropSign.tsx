@@ -105,8 +105,16 @@ export const CreateAirdropSign: React.FC = () => {
             createAirdropForm.tokenName,
             createAirdropForm.merkleRoot,
             createAirdropForm.amountPerAddr.toString(),
-            createAirdropForm.startTimestamp?.toString() || "0",
-            createAirdropForm.endTimestamp?.toString() || "0",
+            (
+              (isNaN(createAirdropForm.startTimestamp)
+                ? 0
+                : createAirdropForm.startTimestamp) / 1000
+            ).toString(),
+            (
+              (isNaN(createAirdropForm.endTimestamp)
+                ? 0
+                : createAirdropForm.endTimestamp) / 1000
+            ).toString(),
           ],
         },
         { gasWanted: 10_000_000 },

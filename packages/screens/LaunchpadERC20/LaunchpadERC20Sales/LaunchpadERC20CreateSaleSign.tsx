@@ -133,8 +133,8 @@ export const CreateSaleSign: React.FC = () => {
           args: [
             createSaleForm.tokenName,
             createSaleForm.merkleRoot || "",
-            createSaleForm.startTimestamp.toString(),
-            createSaleForm.endTimestamp.toString(),
+            (createSaleForm.startTimestamp / 1000).toString(),
+            (createSaleForm.endTimestamp / 1000).toString(),
             createSaleForm.pricePerToken.toString(),
             createSaleForm.limitPerAddr.toString(),
             createSaleForm.minGoal.toString(),
