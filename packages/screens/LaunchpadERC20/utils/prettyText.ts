@@ -11,7 +11,7 @@ export const prettyTokenName = (name: string) => {
 };
 
 export const prettyTimestamp = (timestamp: string) => {
-  const date = new Date(parseInt(timestamp) * 1000);
+  const date = new Date(parseInt(timestamp));
   if (date.getTime() === 0) {
     return "Anytime";
   } else {

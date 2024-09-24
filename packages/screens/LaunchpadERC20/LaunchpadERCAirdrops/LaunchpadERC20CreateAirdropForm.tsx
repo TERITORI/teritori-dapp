@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { LaunchpadERC20CreateAirdropFooter } from "./LaunchpadERC20CreateAirdropFooter";
@@ -8,6 +8,7 @@ import { useCreateAirdropState } from "../hooks/useCreateAirdrop";
 import { TCreateAirdropForm, zodCreateAirdropForm } from "../utils/forms";
 
 import { BrandText } from "@/components/BrandText";
+import { DateTimeInput } from "@/components/inputs/DateTimeInput";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { SpacerColumn } from "@/components/spacer";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
@@ -15,7 +16,6 @@ import { neutral77 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
 
 // TODO: ADD A WAY TO JUST DROP A CSV FILE OR ENTER A LIST OF ADDR AND IT WILL COMPUTE THE MERKLE ROOT FOR YOU
-// TODO: ADD A DATE PICKER FOR THE START TIMESTAMP AND END TIMESTAMP
 export const CreateAirdropForm: React.FC = () => {
   const {
     actions: { goNextStep, setAirdrop },
@@ -23,7 +23,7 @@ export const CreateAirdropForm: React.FC = () => {
   } = useCreateAirdropState();
   const selectedWallet = useSelectedWallet();
   const caller = selectedWallet?.address;
-  const { handleSubmit, setValue, watch, control } =
+  const { handleSubmit, setValue, watch, control, getFieldState } =
     useForm<TCreateAirdropForm>({
       resolver: zodResolver(zodCreateAirdropForm),
       defaultValues: formData,
@@ -43,6 +43,8 @@ export const CreateAirdropForm: React.FC = () => {
   }
 
   const values = watch();
+  const startTimestamp = watch("startTimestamp");
+  const endTimestamp = watch("endTimestamp");
   return (
     <View style={{ width: "100%", maxWidth: 480, margin: "auto" }}>
       <BrandText style={fontSemibold20}>Airdrop Informations</BrandText>
@@ -91,24 +93,32 @@ export const CreateAirdropForm: React.FC = () => {
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom
-        label="Unix Start Timestamp"
+      <Controller<TCreateAirdropForm>
         name="startTimestamp"
-        fullWidth
-        placeholder="Type the unix start timestamp here..."
-        variant="labelOutside"
         control={control}
+        render={({ field: { onChange } }) => (
+          <DateTimeInput
+            label="Start date"
+            onChange={onChange}
+            timestamp={startTimestamp}
+            isDirty={getFieldState("startTimestamp").isDirty}
+          />
+        )}
       />
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom
-        label="Unix End Timestamp"
+      <Controller<TCreateAirdropForm>
         name="endTimestamp"
-        fullWidth
-        placeholder="Type the unix end timestamp here..."
-        variant="labelOutside"
         control={control}
+        render={({ field: { onChange } }) => (
+          <DateTimeInput
+            label="End date"
+            onChange={onChange}
+            timestamp={endTimestamp}
+            isDirty={getFieldState("endTimestamp").isDirty}
+          />
+        )}
       />
 
       <SpacerColumn size={2.5} />

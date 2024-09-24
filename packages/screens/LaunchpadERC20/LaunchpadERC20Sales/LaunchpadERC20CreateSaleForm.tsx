@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
 
 import { LaunchpadERC20CreateSaleFooter } from "./LaunchpadERC20CreateSaleFooter";
@@ -9,6 +9,7 @@ import { TCreateSaleForm, zodCreateSaleForm } from "../utils/forms";
 
 import { BrandText } from "@/components/BrandText";
 import ToggleButton from "@/components/buttons/ToggleButton";
+import { DateTimeInput } from "@/components/inputs/DateTimeInput";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { SpacerColumn } from "@/components/spacer";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
@@ -24,11 +25,12 @@ export const CreateSaleForm: React.FC = () => {
   } = useCreateSaleState();
   const selectedWallet = useSelectedWallet();
   const caller = selectedWallet?.address;
-  const { handleSubmit, setValue, watch, control } = useForm<TCreateSaleForm>({
-    resolver: zodResolver(zodCreateSaleForm),
-    defaultValues: formData,
-    mode: "all",
-  });
+  const { handleSubmit, setValue, watch, control, getFieldState } =
+    useForm<TCreateSaleForm>({
+      resolver: zodResolver(zodCreateSaleForm),
+      defaultValues: formData,
+      mode: "all",
+    });
 
   useEffect(() => {
     if (!caller) {
@@ -43,6 +45,8 @@ export const CreateSaleForm: React.FC = () => {
   }
 
   const values = watch();
+  const startTimestamp = watch("startTimestamp");
+  const endTimestamp = watch("endTimestamp");
   return (
     <View style={{ width: "100%", maxWidth: 480, margin: "auto" }}>
       <BrandText style={fontSemibold20}>Sale Informations</BrandText>
@@ -115,26 +119,32 @@ export const CreateSaleForm: React.FC = () => {
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom<TCreateSaleForm>
-        label="Unix Start Timestamp (have to be in the future)"
+      <Controller<TCreateSaleForm>
         name="startTimestamp"
-        fullWidth
-        placeholder="Type the unix start timestamp here..."
-        variant="labelOutside"
         control={control}
-        rules={{ required: true }}
+        render={({ field: { onChange } }) => (
+          <DateTimeInput
+            label="Start date"
+            onChange={onChange}
+            timestamp={startTimestamp}
+            isDirty={getFieldState("startTimestamp").isDirty}
+          />
+        )}
       />
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom<TCreateSaleForm>
-        label="Unix End Timestamp (have to be greater than start)"
+      <Controller<TCreateSaleForm>
         name="endTimestamp"
-        fullWidth
-        placeholder="Type the unix end timestamp here..."
-        variant="labelOutside"
         control={control}
-        rules={{ required: true }}
+        render={({ field: { onChange } }) => (
+          <DateTimeInput
+            label="End date"
+            onChange={onChange}
+            timestamp={endTimestamp}
+            isDirty={getFieldState("endTimestamp").isDirty}
+          />
+        )}
       />
 
       <SpacerColumn size={2.5} />
