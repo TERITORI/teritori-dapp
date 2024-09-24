@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 
@@ -8,15 +8,18 @@ import { useCreateAirdropState } from "../hooks/useCreateAirdrop";
 import { TCreateAirdropForm, zodCreateAirdropForm } from "../utils/forms";
 
 import { BrandText } from "@/components/BrandText";
+import { CsvTextRowsInput } from "@/components/inputs/CsvTextRowsInput";
 import { DateTimeInput } from "@/components/inputs/DateTimeInput";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { SpacerColumn } from "@/components/spacer";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { computeMerkleRoot } from "@/utils/merkle";
 import { neutral77 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
 
 // TODO: ADD A WAY TO JUST DROP A CSV FILE OR ENTER A LIST OF ADDR AND IT WILL COMPUTE THE MERKLE ROOT FOR YOU
 export const CreateAirdropForm: React.FC = () => {
+  const [whitelistedAddresses, setWhitelistedAddresses] = useState<string[]>();
   const {
     actions: { goNextStep, setAirdrop },
     createAirdropForm: formData,
@@ -69,14 +72,18 @@ export const CreateAirdropForm: React.FC = () => {
 
       <SpacerColumn size={2.5} />
 
-      <TextInputCustom
-        label="Merkle Root"
-        name="merkleRoot"
-        fullWidth
-        placeholder="Type the merkle root here..."
-        variant="labelOutside"
-        control={control}
-        rules={{ required: true }}
+      <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+        Whitelisted addresses *
+      </BrandText>
+
+      <SpacerColumn size={1.5} />
+
+      <CsvTextRowsInput
+        rows={whitelistedAddresses}
+        onUpload={(_, rows) => {
+          setWhitelistedAddresses(rows);
+          setValue("merkleRoot", computeMerkleRoot(rows));
+        }}
       />
 
       <SpacerColumn size={2.5} />
@@ -100,7 +107,7 @@ export const CreateAirdropForm: React.FC = () => {
           <DateTimeInput
             label="Start date"
             onChange={onChange}
-            timestamp={startTimestamp}
+            timestamp={(startTimestamp ?? 0) / 1000}
             isDirty={getFieldState("startTimestamp").isDirty}
           />
         )}
@@ -115,7 +122,7 @@ export const CreateAirdropForm: React.FC = () => {
           <DateTimeInput
             label="End date"
             onChange={onChange}
-            timestamp={endTimestamp}
+            timestamp={(endTimestamp ?? 0) / 1000}
             isDirty={getFieldState("endTimestamp").isDirty}
           />
         )}

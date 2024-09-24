@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
 
@@ -9,16 +9,19 @@ import { TCreateSaleForm, zodCreateSaleForm } from "../utils/forms";
 
 import { BrandText } from "@/components/BrandText";
 import ToggleButton from "@/components/buttons/ToggleButton";
+import { CsvTextRowsInput } from "@/components/inputs/CsvTextRowsInput";
 import { DateTimeInput } from "@/components/inputs/DateTimeInput";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { SpacerColumn } from "@/components/spacer";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { computeMerkleRoot } from "@/utils/merkle";
 import { neutral77 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
 
 // TODO: ADD A WAY TO JUST DROP A CSV FILE OR ENTER A LIST OF ADDR AND IT WILL COMPUTE THE MERKLE ROOT FOR YOU
 // TODO: ADD A DATE PICKER FOR THE START TIMESTAMP AND END TIMESTAMP
 export const CreateSaleForm: React.FC = () => {
+  const [whitelistedAddresses, setWhitelistedAddresses] = useState<string[]>();
   const {
     actions: { goNextStep, setSale },
     createSaleForm: formData,
@@ -146,15 +149,20 @@ export const CreateSaleForm: React.FC = () => {
           />
         )}
       />
-
       <SpacerColumn size={2.5} />
-      <TextInputCustom<TCreateSaleForm>
-        label="Merkle Root (Optional, if you want to whitelist addresses)"
-        name="merkleRoot"
-        fullWidth
-        placeholder="Type the merkle root here..."
-        variant="labelOutside"
-        control={control}
+
+      <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+        Whitelisted addresses (Optional)
+      </BrandText>
+
+      <SpacerColumn size={1.5} />
+
+      <CsvTextRowsInput
+        rows={whitelistedAddresses}
+        onUpload={(_, rows) => {
+          setWhitelistedAddresses(rows);
+          setValue("merkleRoot", computeMerkleRoot(rows));
+        }}
       />
 
       <SpacerColumn size={2.5} />
