@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
@@ -6,18 +6,15 @@ import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadR
 import { NewWhitelistDetailsFormValues } from "../CreateCollection.type";
 
 import { BrandText } from "@/components/BrandText";
-import { SelectFileUploader } from "@/components/selectFileUploader";
+import { CsvTextRowsInput } from "@/components/inputs/CsvTextRowsInput";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
-import { IMAGE_MIME_TYPES } from "@/utils/mime";
-import { ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT } from "@/utils/social-feed";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold20,
 } from "@/utils/style/fonts";
-import { layout } from "@/utils/style/layout";
 
 export const NewWhitelist: React.FC = () => {
   const { control } = useForm<NewWhitelistDetailsFormValues>({
@@ -30,6 +27,7 @@ export const NewWhitelist: React.FC = () => {
     },
     mode: "onBlur",
   });
+  const [whitelistedAddresses, setWhitelistedAddresses] = useState<string[]>();
 
   return (
     <View style={{ maxWidth: 416 }}>
@@ -118,17 +116,10 @@ export const NewWhitelist: React.FC = () => {
         TXT file that contains the whitelisted addresses
       </BrandText>
       <SpacerColumn size={2} />
-      <SelectFileUploader
-        label="Select file"
-        fileHeight={ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT}
-        isImageCover
-        style={{
-          marginBottom: layout.spacing_x2,
-          width: 416,
-        }}
-        containerHeight={48}
-        onUpload={(files) => {}}
-        mimeTypes={IMAGE_MIME_TYPES}
+
+      <CsvTextRowsInput
+        rows={whitelistedAddresses}
+        onUpload={(_, rows) => setWhitelistedAddresses(rows)}
       />
     </View>
   );
