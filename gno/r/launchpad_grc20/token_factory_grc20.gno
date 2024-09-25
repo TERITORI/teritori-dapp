@@ -2,12 +2,16 @@ package launchpad_grc20
 
 import (
 	"std"
+	"strconv"
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/grc/grc20"
+	"gno.land/p/demo/json"
 	"gno.land/p/demo/ownable"
 	"gno.land/p/demo/seqid"
 )
+
+const LENGTH_LAST_TOKENS_CACHE = 10
 
 type Token struct {
 	banker         *grc20.Banker
@@ -22,12 +26,11 @@ type Token struct {
 
 var _ grc20.Token = (*Token)(nil)
 
-var lastTokensIDcreated = []string{}
-
 var (
-	tokens       *avl.Tree // name -> token
-	factoryAdmin *ownable.Ownable
-	factoryVault std.Address
+	tokens            *avl.Tree // name -> token
+	factoryAdmin      *ownable.Ownable
+	factoryVault      std.Address
+	lastTokensCreated = []*Token{}
 )
 
 // Initialize tori address as admin & vault for fees
@@ -75,10 +78,10 @@ func NewToken(name, symbol, image string, decimals uint, initialSupply, totalSup
 
 	tokens.Set(name, &inst)
 
-	if len(lastTokensIDcreated) == 5 {
-		lastTokensIDcreated = lastTokensIDcreated[:4]
+	if len(lastTokensCreated) == LENGTH_LAST_TOKENS_CACHE {
+		lastTokensCreated = lastTokensCreated[:(LENGTH_LAST_TOKENS_CACHE - 1)]
 	}
-	lastTokensIDcreated = append([]string{name}, lastTokensIDcreated...)
+	lastTokensCreated = append([]*Token{&inst}, lastTokensCreated...)
 }
 
 func Mint(name string, to std.Address, amount uint64) {
@@ -160,9 +163,31 @@ func (token Token) TransferFrom(from, to std.Address, amount uint64) error {
 	return token.Token().TransferFrom(from, to, amount)
 }
 
+func (token Token) ToJSON() *json.Node {
+	return json.ObjectNode("", map[string]*json.Node{
+		"name":           json.StringNode("", token.banker.GetName()),
+		"symbol":         json.StringNode("", token.banker.GetSymbol()),
+		"decimals":       json.StringNode("", strconv.FormatUint(uint64(token.banker.GetDecimals()), 10)),
+		"admin":          json.StringNode("", token.admin.Owner().String()),
+		"image":          json.StringNode("", token.image),
+		"totalSupply":    json.StringNode("", strconv.FormatInt(int64(token.TotalSupply()), 10)),
+		"totalSupplyCap": json.StringNode("", strconv.FormatInt(int64(token.totalSupplyCap), 10)),
+		"allowMint":      json.BoolNode("", token.allowMint),
+		"allowBurn":      json.BoolNode("", token.allowBurn),
+	})
+}
+
 func SetFactoryVault(vault std.Address) {
 	factoryAdmin.AssertCallerIsOwner()
 	factoryVault = vault
+}
+
+func GetLastTokensJSON() string {
+	nodes := make([]*json.Node, len(lastTokensCreated))
+	for i, token := range lastTokensCreated {
+		nodes[i] = token.ToJSON()
+	}
+	return json.ArrayNode("", nodes).String()
 }
 
 func mustGetToken(name string) *Token {

@@ -6,7 +6,10 @@ import socialFeed from "@/assets/icons/feed.svg";
 import freelance from "@/assets/icons/freelanceservice.svg";
 import governance from "@/assets/icons/governance.svg";
 import checklogo from "@/assets/icons/greenCheck.svg";
-import launchpad from "@/assets/icons/launchpad.svg";
+import {
+  default as launchpad,
+  default as launchpadSVG,
+} from "@/assets/icons/launchpad.svg";
 import leap from "@/assets/icons/leap-cosmos-logo.svg";
 import marketplace from "@/assets/icons/marketplace.svg";
 import messages from "@/assets/icons/messages.svg";
@@ -199,6 +202,17 @@ export function getAvailableApps(): dAppGroup {
           icon: projectsProgramSVG,
           description: "Projects Program",
           route: "Projects",
+          groupKey: "top-apps",
+          selectedByDefault: false,
+          alwaysOn: false,
+          devOnly: true,
+        },
+        launchpaderc20: {
+          id: "launchpad-erc20",
+          title: "Launchpad ERC20",
+          icon: launchpadSVG,
+          description: "Create your own ERC20 token",
+          route: "LaunchpadERC20",
           groupKey: "top-apps",
           selectedByDefault: false,
           alwaysOn: false,
