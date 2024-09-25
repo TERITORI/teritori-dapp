@@ -1,15 +1,16 @@
 import { changeTestUser } from "./lib";
 
-const connectWallet = (userAddress: string, name: string) => {
-  cy.visit(`http://localhost:8081/user/gnodev-${userAddress}?network=gno-dev`, {
-    timeout: 300000,
-  });
+// NOTE: keep this for now
+// const connectWallet = (userAddress: string, name: string) => {
+//   cy.visit(`http://localhost:8081/user/gnodev-${userAddress}?network=gno-dev`, {
+//     timeout: 300000,
+//   });
 
-  cy.contains("Connect wallet").click({ force: true });
-  cy.get("div[data-testid=connect-gnotest-wallet]").click({ force: true });
-  cy.contains("Connect wallet").should("not.exist");
-  changeTestUser(name);
-};
+//   cy.contains("Connect wallet").click({ force: true });
+//   cy.get("div[data-testid=connect-gnotest-wallet]").click({ force: true });
+//   cy.contains("Connect wallet").should("not.exist");
+//   changeTestUser(name);
+// };
 
 const showUppForm = () => {
   cy.contains("Edit profile").click();
@@ -35,7 +36,17 @@ describe("Edit UPP", () => {
     const username = "yo1110";
     const displayName = "My Name";
 
-    connectWallet(userAddress, "empty");
+    cy.visit(
+      `http://localhost:8081/user/gnodev-${userAddress}?network=gno-dev`,
+      {
+        timeout: 300000,
+      },
+    );
+
+    cy.contains("Connect wallet").click({ force: true });
+    cy.get("div[data-testid=connect-gnotest-wallet]").click({ force: true });
+    cy.contains("Connect wallet").should("not.exist");
+    changeTestUser("empty");
 
     // Register username --------------------------------------------------------------
     showUppForm();
