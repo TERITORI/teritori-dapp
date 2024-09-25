@@ -11,13 +11,13 @@ import trashSVG from "@/assets/icons/trash.svg";
 import { BrandText } from "@/components/BrandText";
 import { ErrorText } from "@/components/ErrorText";
 import { SVG } from "@/components/SVG";
-import { CsvTextFileUploader } from "@/components/inputs/CsvTextFileUploader";
+import { CsvTextRowsInput } from "@/components/inputs/CsvTextRowsInput";
+import { DateTimeInput } from "@/components/inputs/DateTimeInput";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { getCurrency } from "@/networks";
 import { CurrencyInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/CurrencyInputLaunchpad/CurrencyInputLaunchpad";
-import { DateTimeInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/DateTimeInputLaunchpad";
 import { TextInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/TextInputLaunchpad";
 import { errorColor, neutral55, neutral77 } from "@/utils/style/colors";
 import {
@@ -121,7 +121,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
         name={startTimePath}
         control={collectionForm.control}
         render={({ field: { onChange } }) => (
-          <DateTimeInputLaunchpad
+          <DateTimeInput
             label="Start Time"
             onChange={onChange}
             timestamp={startTime}
@@ -135,7 +135,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
         name={endTimePath}
         control={collectionForm.control}
         render={({ field: { onChange } }) => (
-          <DateTimeInputLaunchpad
+          <DateTimeInput
             label="End Time"
             onChange={onChange}
             timestamp={endTime}
@@ -155,7 +155,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
       </BrandText>
 
       <SpacerColumn size={2} />
-      <CsvTextFileUploader
+      <CsvTextRowsInput
         rows={elem.whitelistAddresses}
         file={elem.whitelistAddressesFile}
         onUpload={(file, rows) =>

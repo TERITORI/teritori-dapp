@@ -5,10 +5,10 @@ import { View } from "react-native";
 import { ConfigureRoyaltyDetails } from "./ConfigureRoyaltyDetails";
 
 import { BrandText } from "@/components/BrandText";
+import { DateTimeInput } from "@/components/inputs/DateTimeInput";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { LaunchpadMintPeriods } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadMinting/LaunchpadMintPeriods";
-import { DateTimeInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/DateTimeInputLaunchpad";
 import { TextInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/TextInputLaunchpad";
 import { neutral77 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
@@ -45,7 +45,7 @@ export const LaunchpadMinting: FC = () => {
           name="revealTime"
           control={collectionForm.control}
           render={({ field: { onChange } }) => (
-            <DateTimeInputLaunchpad
+            <DateTimeInput
               label="Reveal Time"
               onChange={onChange}
               timestamp={revealTime}

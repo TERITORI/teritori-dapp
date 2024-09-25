@@ -6,8 +6,8 @@ import { SelectInputLaunchpad } from "../../../components/inputs/selectInputs/Se
 
 import { BrandText } from "@/components/BrandText";
 import { ErrorText } from "@/components/ErrorText";
+import { DateTimeInput } from "@/components/inputs/DateTimeInput";
 import { SpacerColumn } from "@/components/spacer";
-import { DateTimeInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/DateTimeInputLaunchpad";
 import { TextInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/TextInputLaunchpad";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
@@ -108,7 +108,7 @@ export const LaunchpadAdditional: FC = () => {
           name="expectedMintDate"
           control={collectionForm.control}
           render={({ field: { onChange } }) => (
-            <DateTimeInputLaunchpad
+            <DateTimeInput
               label="What is your expected mint date?"
               onChange={onChange}
               timestamp={expectedMintDate}
