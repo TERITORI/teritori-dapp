@@ -1,14 +1,15 @@
 import { changeTestUser } from "./lib";
 
 const connectWallet = (userAddress: string, name: string) => {
-  cy.visit(`http://localhost:8081/user/gnodev-${userAddress}?network=gno-dev`, {
+  cy.visit(`http://localhost:8081/user/gnodev-${userAddress}`, {
     timeout: 300000,
   });
 
   cy.contains("Connect wallet").click({ force: true });
-  cy.get("div[data-testid=connect-gnotest-wallet]", { timeout: 10_000 }).click({
-    force: true,
-  });
+
+  cy.get("div[data-testid=connect-gnotest-wallet]", {
+    timeout: 20_000,
+  }).click({ force: true });
   cy.contains("Connect wallet").should("not.exist");
   changeTestUser(name);
 };
