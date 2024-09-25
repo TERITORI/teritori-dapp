@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { View } from "react-native";
 
@@ -32,14 +32,6 @@ export const CreateTokenBasics: React.FC = () => {
     });
 
   const values = watch();
-  useEffect(() => {
-    if (!caller) {
-      // TODO: would be better to not allow this corner case, aka do something smarter when no wallet is connected
-      return;
-    }
-    setValue("caller", caller);
-  }, [setValue, caller]);
-
   if (!caller) {
     return <BrandText>Connect a wallet to create a token</BrandText>;
   }
@@ -117,10 +109,13 @@ export const CreateTokenBasics: React.FC = () => {
 
       <LaunchpadERC20CreateTokenFooter
         disableNext={!values.name || !values.symbol || !values.totalSupply}
-        onSubmit={handleSubmit((submitValues) => {
-          setBasics(submitValues);
-          goNextStep();
-        })}
+        onSubmit={() => {
+          setValue("caller", caller);
+          handleSubmit((submitValues) => {
+            setBasics(submitValues);
+            goNextStep();
+          })();
+        }}
       />
     </View>
   );

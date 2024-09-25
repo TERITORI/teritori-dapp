@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 
@@ -10,7 +10,7 @@ import { TCreateAirdropForm, zodCreateAirdropForm } from "../utils/forms";
 import { BrandText } from "@/components/BrandText";
 import { CsvTextRowsInput } from "@/components/inputs/CsvTextRowsInput";
 import { DateTimeInput } from "@/components/inputs/DateTimeInput";
-import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { Label, TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { SpacerColumn } from "@/components/spacer";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { computeMerkleRoot } from "@/utils/merkle";
@@ -32,14 +32,6 @@ export const CreateAirdropForm: React.FC = () => {
       defaultValues: formData,
       mode: "all",
     });
-
-  useEffect(() => {
-    if (!caller) {
-      // TODO: would be better to not allow this corner case, aka do something smarter when no wallet is connected
-      return;
-    }
-    setValue("caller", caller);
-  }, [setValue, caller]);
 
   if (!caller) {
     return <BrandText>Connect a wallet to create an airdrop</BrandText>;
@@ -72,8 +64,11 @@ export const CreateAirdropForm: React.FC = () => {
 
       <SpacerColumn size={2.5} />
 
+      <Label isRequired>Whitelisted addresses</Label>
+      <SpacerColumn size={1} />
       <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-        Whitelisted addresses *
+        Select a TXT or CSV file that contains the whitelisted addresses (One
+        address per line)
       </BrandText>
 
       <SpacerColumn size={1.5} />
@@ -136,10 +131,13 @@ export const CreateAirdropForm: React.FC = () => {
         disableNext={
           !values.tokenName || !values.merkleRoot || !values.amountPerAddr
         }
-        onSubmit={handleSubmit((submitValues) => {
-          setAirdrop(submitValues);
-          goNextStep();
-        })}
+        onSubmit={() => {
+          setValue("caller", caller);
+          handleSubmit((submitValues) => {
+            setAirdrop(submitValues);
+            goNextStep();
+          })();
+        }}
         nextText="Create this Airdrop"
       />
     </View>

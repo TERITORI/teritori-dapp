@@ -12,6 +12,7 @@ import {
 
 import { BrandText } from "@/components/BrandText";
 import ToggleButton from "@/components/buttons/ToggleButton";
+import { Label } from "@/components/inputs/TextInputCustom";
 import { SpacerColumn } from "@/components/spacer";
 import { neutral77 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
@@ -39,9 +40,13 @@ export const CreateTokenDetails: React.FC = () => {
 
       <SpacerColumn size={2.5} />
 
+      <Label>Can Mint</Label>
+      <SpacerColumn size={1} />
       <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-        Can Mint
+        Allow the minting of tokens
       </BrandText>
+
+      <SpacerColumn size={1.5} />
 
       <TouchableOpacity
         onPress={() => setValue("allowMint", !values.allowMint)}
@@ -51,9 +56,13 @@ export const CreateTokenDetails: React.FC = () => {
 
       <SpacerColumn size={2.5} />
 
+      <Label>Can Burn</Label>
+      <SpacerColumn size={1} />
       <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-        Can Burn
+        Allow the burning of tokens
       </BrandText>
+
+      <SpacerColumn size={1.5} />
       <TouchableOpacity
         onPress={() => setValue("allowBurn", !values.allowBurn)}
       >

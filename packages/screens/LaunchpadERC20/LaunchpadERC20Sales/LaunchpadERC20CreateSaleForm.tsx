@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
 
@@ -11,7 +11,7 @@ import { BrandText } from "@/components/BrandText";
 import ToggleButton from "@/components/buttons/ToggleButton";
 import { CsvTextRowsInput } from "@/components/inputs/CsvTextRowsInput";
 import { DateTimeInput } from "@/components/inputs/DateTimeInput";
-import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { Label, TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { SpacerColumn } from "@/components/spacer";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { computeMerkleRoot } from "@/utils/merkle";
@@ -34,14 +34,6 @@ export const CreateSaleForm: React.FC = () => {
       defaultValues: formData,
       mode: "all",
     });
-
-  useEffect(() => {
-    if (!caller) {
-      // TODO: would be better to not allow this corner case, aka do something smarter when no wallet is connected
-      return;
-    }
-    setValue("caller", caller);
-  }, [setValue, caller]);
 
   if (!caller) {
     return <BrandText>Connect a wallet to create a sale</BrandText>;
@@ -151,8 +143,11 @@ export const CreateSaleForm: React.FC = () => {
       />
       <SpacerColumn size={2.5} />
 
+      <Label>Whitelisted addresses</Label>
+      <SpacerColumn size={1} />
       <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-        Whitelisted addresses (Optional)
+        Select a TXT or CSV file that contains the whitelisted addresses (One
+        address per line)
       </BrandText>
 
       <SpacerColumn size={1.5} />
@@ -167,11 +162,13 @@ export const CreateSaleForm: React.FC = () => {
 
       <SpacerColumn size={2.5} />
 
+      <Label>Mint Tokens</Label>
+      <SpacerColumn size={1} />
       <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-        Mint Tokens (Token have to be mintable to allow this feature)
+        Option to mint the tokens instead of using the one you own
       </BrandText>
 
-      <SpacerColumn size={1} />
+      <SpacerColumn size={1.5} />
 
       <TouchableOpacity onPress={() => setValue("minted", !values.minted)}>
         <ToggleButton value={values.minted} isActive />
@@ -189,10 +186,13 @@ export const CreateSaleForm: React.FC = () => {
           !values.minGoal ||
           !values.maxGoal
         }
-        onSubmit={handleSubmit((submitValues) => {
-          setSale(submitValues);
-          goNextStep();
-        })}
+        onSubmit={() => {
+          setValue("caller", caller);
+          handleSubmit((submitValues) => {
+            setSale(submitValues);
+            goNextStep();
+          })();
+        }}
         nextText="Create this Sale"
       />
     </View>
