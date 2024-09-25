@@ -3,15 +3,13 @@ import { Controller, useForm } from "react-hook-form";
 import { ScrollView, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import priceSVG from "../../../assets/icons/price.svg";
-import { FileUploader } from "../../components/inputs/FileUploader";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-
+import priceSVG from "@/assets/icons/price.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { WalletStatusBox } from "@/components/WalletStatusBox";
 import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { FileUploader } from "@/components/inputs/FileUploader";
 import { Label, TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgressBar";
 import { RichText } from "@/components/socialFeed/RichText";
@@ -23,6 +21,7 @@ import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
 import { useIpfs } from "@/hooks/useIpfs";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
