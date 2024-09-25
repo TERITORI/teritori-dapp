@@ -17,7 +17,6 @@ import { computeMerkleRoot } from "@/utils/merkle";
 import { neutral77 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
 
-// TODO: ADD A WAY TO JUST DROP A CSV FILE OR ENTER A LIST OF ADDR AND IT WILL COMPUTE THE MERKLE ROOT FOR YOU
 export const CreateAirdropForm: React.FC = () => {
   const [whitelistedAddresses, setWhitelistedAddresses] = useState<string[]>();
   const {
