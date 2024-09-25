@@ -9,8 +9,8 @@ import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVGorImageIcon } from "../../SVG/SVGorImageIcon";
 import { PrimaryBox } from "../../boxes/PrimaryBox";
-import { formatFile } from "../FileUploader/formatFile";
 import { Label } from "../TextInputCustom";
+import { formatFile } from "../fileUploader/formatFile";
 
 import addSVG from "@/assets/icons/add-circle.svg";
 import filesSVG from "@/assets/icons/files.svg";
