@@ -18,17 +18,17 @@ import { BrandText } from "@/components/BrandText";
 import { IntroLogoText } from "@/components/IntroLogoText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { ActivityTable } from "@/components/activity/ActivityTable";
+import { FlowCard } from "@/components/cards/FlowCard";
 import { TNSNameFinderModal } from "@/components/modals/teritoriNameService/TNSNameFinderModal";
-import { FlowCard } from "@/components/teritoriNameService/FlowCard";
 import { useTNS } from "@/context/TNSProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
-  NetworkKind,
   getCollectionId,
   getCosmosNetwork,
   NetworkFeature,
+  NetworkKind,
 } from "@/networks";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 

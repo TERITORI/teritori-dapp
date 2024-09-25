@@ -26,6 +26,13 @@ import { LaunchpadCreateScreen } from "@/screens/Launchpad/LaunchpadApply/Launch
 import { LaunchpadMyCollectionsScreen } from "@/screens/Launchpad/LaunchpadApply/LaunchpadMyCollections/LaunchpadMyCollectionsScreen";
 import { LaunchpadScreen } from "@/screens/Launchpad/LaunchpadHome/LaunchpadScreen";
 import { MintCollectionScreen } from "@/screens/Launchpad/LaunchpadHome/MintCollectionScreen";
+import { LaunchpadERC20CreateSaleScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Sales/LaunchpadERC20CreateSaleScreen";
+import { LaunchpadERC20SalesScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Sales/LaunchpadERC20SalesScreen";
+import { LaunchpadERC20Screen } from "@/screens/LaunchpadERC20/LaunchpadERC20Screen";
+import { LaunchpadERC20CreateTokenScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Tokens/LaunchpadERC20CreateTokenScreen";
+import { LaunchpadERC20TokensScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Tokens/LaunchpadERC20TokensScreen";
+import { LaunchpadERC20AirdropsScreen } from "@/screens/LaunchpadERC20/LaunchpadERCAirdrops/LaunchpadERC20AirdropsScreen";
+import { LaunchpadERC20CreateAirdropScreen } from "@/screens/LaunchpadERC20/LaunchpadERCAirdrops/LaunchpadERC20CreateAirdropScreen";
 import { CollectionScreen } from "@/screens/Marketplace/CollectionScreen";
 import { CollectionToolsScreen } from "@/screens/Marketplace/CollectionToolsScreen";
 import { MarketplaceScreen } from "@/screens/Marketplace/MarketplaceScreen";
@@ -246,6 +253,70 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         name="MintCollection"
         component={MintCollectionScreen}
         options={{ header: () => null, title: screenTitle("Mint Collection") }}
+      />
+
+      {/* ==== Launchpad ERC20 */}
+      <Nav.Screen
+        name="LaunchpadERC20"
+        component={LaunchpadERC20Screen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad ERC20"),
+        }}
+      />
+
+      <Nav.Screen
+        name="LaunchpadERC20Tokens"
+        component={LaunchpadERC20TokensScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad ERC20 Tokens"),
+        }}
+      />
+
+      <Nav.Screen
+        name="LaunchpadERC20CreateToken"
+        component={LaunchpadERC20CreateTokenScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad ERC20 Create Token"),
+        }}
+      />
+
+      <Nav.Screen
+        name="LaunchpadERC20Airdrops"
+        component={LaunchpadERC20AirdropsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad ERC20 Airdrops"),
+        }}
+      />
+
+      <Nav.Screen
+        name="LaunchpadERC20CreateAirdrop"
+        component={LaunchpadERC20CreateAirdropScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad ERC20 Create Airdrop"),
+        }}
+      />
+
+      <Nav.Screen
+        name="LaunchpadERC20Sales"
+        component={LaunchpadERC20SalesScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad ERC20 Sales"),
+        }}
+      />
+
+      <Nav.Screen
+        name="LaunchpadERC20CreateSale"
+        component={LaunchpadERC20CreateSaleScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad ERC20 Create Sale"),
+        }}
       />
       <Nav.Screen
         name="LaunchpadAdministrationOverview"

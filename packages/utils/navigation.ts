@@ -42,6 +42,14 @@ export type RootStackParamList = {
   LaunchpadApplicationReview: { id: string };
   LaunchpadReadyApplications: undefined;
 
+  LaunchpadERC20: undefined;
+  LaunchpadERC20Tokens?: { network?: string };
+  LaunchpadERC20CreateToken: { step?: number };
+  LaunchpadERC20Airdrops?: { network?: string };
+  LaunchpadERC20CreateAirdrop: { step?: number };
+  LaunchpadERC20Sales?: { network?: string };
+  LaunchpadERC20CreateSale: { step?: number };
+
   MintCollection: { id: string };
   TNSHome: { modal: string; name?: string } | undefined;
 
@@ -215,6 +223,15 @@ const navConfig: {
     LaunchpadApplications: "launchpad/admin/applications",
     LaunchpadApplicationReview: "launchpad/admin/review/:id",
     LaunchpadReadyApplications: "launchpad/admin/ready-applications",
+
+    // ==== Launchpad ERC20
+    LaunchpadERC20: "launchpad-erc20",
+    LaunchpadERC20Tokens: "launchpad-erc20/tokens",
+    LaunchpadERC20CreateToken: "launchpad-erc20/create-token",
+    LaunchpadERC20Airdrops: "launchpad-erc20/airdrops",
+    LaunchpadERC20CreateAirdrop: "launchpad-erc20/create-airdrop",
+    LaunchpadERC20Sales: "launchpad-erc20/sales",
+    LaunchpadERC20CreateSale: "launchpad-erc20/create-sale",
 
     // Mint NFT collection
     MintCollection: "collection/:id/mint",

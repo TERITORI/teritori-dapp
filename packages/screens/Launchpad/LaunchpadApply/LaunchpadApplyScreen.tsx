@@ -3,9 +3,9 @@ import { Linking, TextStyle, View } from "react-native";
 
 import { LaunchpadBanner } from "./LaunchpadCreate/components/LaunchpadBanner";
 import {
-  LaunchpadButton,
-  LaunchpadButtonProps,
-} from "./LaunchpadCreate/components/LaunchpadButton";
+  LargeBoxButton,
+  LargeBoxButtonProps,
+} from "../../../components/buttons/LargeBoxButton";
 
 import { BrandText } from "@/components/BrandText";
 import { OmniLink } from "@/components/OmniLink";
@@ -25,7 +25,7 @@ import { layout } from "@/utils/style/layout";
 
 const MD_BREAKPOINT = 720;
 
-const BUTTONS: LaunchpadButtonProps[] = [
+const BUTTONS: LargeBoxButtonProps[] = [
   {
     title: "Candidate",
     description: "Pitch your project to launchpad managers & community.",
@@ -79,7 +79,7 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
           }
           style={{ flex: 1 }}
         >
-          <LaunchpadButton {...BUTTONS[0]} />
+          <LargeBoxButton {...BUTTONS[0]} />
         </CustomPressable>
 
         <OmniLink
@@ -91,7 +91,7 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
             marginVertical: width >= MD_BREAKPOINT ? 0 : layout.spacing_x1_5,
           }}
         >
-          <LaunchpadButton {...BUTTONS[1]} />
+          <LargeBoxButton {...BUTTONS[1]} />
         </OmniLink>
 
         <OmniLink
@@ -99,7 +99,7 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
           to={{ screen: "LaunchpadMyCollections" }}
           style={{ flex: 1 }}
         >
-          <LaunchpadButton {...BUTTONS[2]} />
+          <LargeBoxButton {...BUTTONS[2]} />
         </OmniLink>
       </View>
     </ScreenContainer>

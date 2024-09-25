@@ -11,11 +11,17 @@ export const gnoDevNetwork: GnoNetworkInfo = {
     NetworkFeature.SocialFeed,
     NetworkFeature.UPP,
     NetworkFeature.GnoProjectManager,
+    NetworkFeature.LaunchpadERC20,
   ],
   featureObjects: [
     {
       type: NetworkFeature.GnoProjectManager,
       projectsManagerPkgPath: "gno.land/r/teritori/projects_manager",
+      paymentsDenom: "ugnot",
+    },
+    {
+      type: NetworkFeature.LaunchpadERC20,
+      launchpadERC20PkgPath: "gno.land/r/teritori/launchpad_grc20",
       paymentsDenom: "ugnot",
     },
   ],
