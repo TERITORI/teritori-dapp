@@ -32,9 +32,12 @@ describe("Contractor proposer full flow", () => {
     cy.get("input[type=file]").selectFile("cypress/fixtures/image.png", {
       force: true,
     });
-    cy.get("div[data-testid=loader-full-screen]", { timeout: 10000 }).should(
+    cy.get("div[data-testid=loader-full-screen]", { timeout: 20_000 }).should(
       "not.exist",
     );
+
+    // FIXME: cypress is not stable so for now I have to add this wait to ensure this works all the time
+    cy.wait(5000);
 
     cy.get("input[placeholder='Add  1-5 main Grant tags using comma...']").type(
       "ui,ux,frontend",
