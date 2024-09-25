@@ -3877,7 +3877,12 @@
     "kind": "Ethereum",
     "displayName": "Ethereum",
     "icon": "ethereum.svg",
-    "features": ["NFTMarketplace", "RiotP2E", "NFTLaunchpad", "NFTBridge"],
+    "features": [
+      "NFTMarketplace",
+      "RiotP2E",
+      "NFTLaunchpad",
+      "NFTBridge"
+    ],
     "currencies": [
       {
         "denom": "0x0000000000000000000000000000000000000000",
@@ -3902,7 +3907,9 @@
     "vaultContractAddress": "0x6251B3384c8eD53e2Cc38d34c1f26ffE8d461B94",
     "riotContractAddressGen0": "0x8f8304ea566affeb96ad0ffb593bbebd8876d124",
     "riotContractAddressGen1": "0x00---",
-    "excludeFromLaunchpadList": ["0x00---"],
+    "excludeFromLaunchpadList": [
+      "0x00---"
+    ],
     "riotSquadStakingContractAddress": "0x00---",
     "firehoseEndpoint": "mainnet.eth.streamingfast.io:443",
     "indexStartBlock": "16341067",
@@ -3916,7 +3923,12 @@
     "kind": "Ethereum",
     "displayName": "Ethereum Goerli",
     "icon": "ethereum.svg",
-    "features": ["NFTMarketplace", "RiotP2E", "NFTLaunchpad", "NFTBridge"],
+    "features": [
+      "NFTMarketplace",
+      "RiotP2E",
+      "NFTLaunchpad",
+      "NFTBridge"
+    ],
     "currencies": [
       {
         "denom": "0x0000000000000000000000000000000000000000",
@@ -3941,7 +3953,9 @@
     "vaultContractAddress": "0xab30d7379ebfd146b77b0b4d6f3eb09bd725e4ef",
     "riotContractAddressGen0": "0x43cc70bf324d716782628bed38af97e4afe92f69",
     "riotContractAddressGen1": "0xdfff431d4c2275201dEd83dAd613A3DbDA1D11A7",
-    "excludeFromLaunchpadList": ["0xdfff431d4c2275201dEd83dAd613A3DbDA1D11A7"],
+    "excludeFromLaunchpadList": [
+      "0xdfff431d4c2275201dEd83dAd613A3DbDA1D11A7"
+    ],
     "riotSquadStakingContractAddress": "0xdfa5cbcd0db5d966e68dd143c6441ec47e2777be",
     "firehoseEndpoint": "goerli.eth.streamingfast.io:443",
     "indexStartBlock": "8218450",
@@ -4461,6 +4475,11 @@
         "type": "GnoProjectManager",
         "projectsManagerPkgPath": "gno.land/r/teritori/projects_manager",
         "paymentsDenom": "ugnot"
+      },
+      {
+        "type": "LaunchpadERC20",
+        "launchpadERC20PkgPath": "gno.land/r/teritori/launchpad_grc20",
+        "paymentsDenom": "ugnot"
       }
     ],
     "currencies": [
@@ -4515,7 +4534,11 @@
     "kind": "Gno",
     "displayName": "Gno Portal Loop",
     "icon": "gno.svg",
-    "features": ["Organizations", "SocialFeed", "UPP"],
+    "features": [
+      "Organizations",
+      "SocialFeed",
+      "UPP"
+    ],
     "currencies": [
       {
         "denom": "ugnot",
@@ -4556,7 +4579,12 @@
     "kind": "Gno",
     "displayName": "Gno Teritori",
     "icon": "gno.svg",
-    "features": ["Organizations", "SocialFeed", "UPP", "GnoProjectManager"],
+    "features": [
+      "Organizations",
+      "SocialFeed",
+      "UPP",
+      "GnoProjectManager"
+    ],
     "featureObjects": [
       {
         "type": "GnoProjectManager",
@@ -4638,7 +4666,11 @@
     "kind": "Gno",
     "displayName": "Gno Test4",
     "icon": "gno.svg",
-    "features": ["SocialFeed", "UPP", "GnoProjectManager"],
+    "features": [
+      "SocialFeed",
+      "UPP",
+      "GnoProjectManager"
+    ],
     "featureObjects": [
       {
         "type": "GnoProjectManager",
@@ -8671,7 +8703,9 @@
     "chainId": "osmosis-1",
     "displayName": "Osmosis",
     "icon": "osmosis.svg",
-    "features": ["Swap"],
+    "features": [
+      "Swap"
+    ],
     "overrides": "cosmos-registry:osmosis",
     "currencies": [
       {
@@ -8747,7 +8781,9 @@
     "overrides": "cosmos-registry:osmosistestnet",
     "displayName": "Osmosis Latest Testnet",
     "icon": "osmosis.svg",
-    "features": ["Swap"],
+    "features": [
+      "Swap"
+    ],
     "currencies": [
       {
         "denom": "uosmo",
@@ -9188,7 +9224,9 @@
     "kind": "Ethereum",
     "displayName": "Polygon",
     "icon": "polygon.svg",
-    "features": ["RiotP2E"],
+    "features": [
+      "RiotP2E"
+    ],
     "currencies": [
       {
         "denom": "0x0000000000000000000000000000000000000000",
@@ -9228,7 +9266,10 @@
     "kind": "Ethereum",
     "displayName": "Polygon Mumbai",
     "icon": "polygon.svg",
-    "features": ["RiotP2E", "NFTMarketplace"],
+    "features": [
+      "RiotP2E",
+      "NFTMarketplace"
+    ],
     "currencies": [
       {
         "denom": "0x0000000000000000000000000000000000000000",
@@ -11577,8 +11618,13 @@
     "riotSquadStakingContractAddressV2": "",
     "distributorContractAddress": "",
     "riotersFooterContractAddress": "",
-    "secondaryDuringMintList": ["", ""],
-    "excludeFromLaunchpadList": [""],
+    "secondaryDuringMintList": [
+      "",
+      ""
+    ],
+    "excludeFromLaunchpadList": [
+      ""
+    ],
     "socialFeedContractAddress": "",
     "daoCoreCodeId": -1,
     "daoPreProposeSingleCodeId": -1,
@@ -11679,7 +11725,9 @@
       "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0",
       ""
     ],
-    "excludeFromLaunchpadList": [""],
+    "excludeFromLaunchpadList": [
+      ""
+    ],
     "socialFeedContractAddress": "tori1mf6ptkssddfmxvhdx0ech0k03ktp6kf9yk59renau2gvht3nq2gqg87tkw",
     "daoCoreCodeId": 30,
     "daoPreProposeSingleCodeId": 32,
