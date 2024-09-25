@@ -104,3 +104,6 @@ temp/
 # rust
 /target/
 artifacts
+
+# cypress
+cypress/screenshots
