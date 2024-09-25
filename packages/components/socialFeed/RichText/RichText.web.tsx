@@ -83,7 +83,7 @@ import { AudioView } from "../../FilePreview/AudioView";
 import { EditableAudioPreview } from "../../FilePreview/EditableAudioPreview";
 import { IconBox } from "../../IconBox";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
-import { FileUploader } from "../../inputs/FileUploader";
+import { FileUploader } from "../../inputs/fileUploader";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { EmojiSelector } from "../EmojiSelector";
 import { GIFSelector } from "../GIFSelector";

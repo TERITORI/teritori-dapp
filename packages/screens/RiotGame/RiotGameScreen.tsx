@@ -8,7 +8,7 @@ import { RiotGameHeader } from "./component/RiotGameHeader";
 
 import { Metadata } from "@/api/launchpad/v1/launchpad";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
-import { FileUploader } from "@/components/inputs/FileUploader";
+import { FileUploader } from "@/components/inputs/fileUploader";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";

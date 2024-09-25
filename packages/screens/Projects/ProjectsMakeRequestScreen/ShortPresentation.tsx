@@ -22,7 +22,7 @@ import {
   zodProjectFormData,
 } from "../hooks/useMakeRequestHook";
 
-import { FileUploader } from "@/components/inputs/FileUploader";
+import { FileUploader } from "@/components/inputs/fileUploader";
 import { LoaderFullScreen } from "@/components/loaders/LoaderFullScreen";
 import { useIpfs } from "@/hooks/useIpfs";
 import { ButtonsGroup } from "@/screens/Projects/components/ButtonsGroup";
