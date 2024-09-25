@@ -1,1 +1,0 @@
-export * from "./FileUploaderSmall.web";

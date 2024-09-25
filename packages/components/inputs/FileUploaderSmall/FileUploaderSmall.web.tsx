@@ -1,6 +1,7 @@
 import React, { FC, SyntheticEvent, useRef, useState } from "react";
 import { View } from "react-native";
 
+import { FileUploaderSmallProps } from "./FileUploaderSmall.type";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
@@ -8,6 +9,7 @@ import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVGorImageIcon } from "../../SVG/SVGorImageIcon";
 import { PrimaryBox } from "../../boxes/PrimaryBox";
+import { formatFile } from "../FileUploader/formatFile";
 import { Label } from "../TextInputCustom";
 
 import addSVG from "@/assets/icons/add-circle.svg";
@@ -18,8 +20,6 @@ import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerRow } from "@/components/spacer";
 import { pluralOrNot } from "@/utils/text";
 import { LocalFileData } from "@/utils/types/files";
-import { formatFile } from "../FileUploader/formatFile";
-import { FileUploaderSmallProps } from "./FileUploaderSmall.type";
 
 export const FileUploaderSmall: FC<FileUploaderSmallProps> = ({
   label,
