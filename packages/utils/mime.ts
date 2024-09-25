@@ -8,3 +8,4 @@ export const IMAGE_MIME_TYPES = [
   "image/png",
   "image/jpg",
 ];
+export const TXT_CSV_MIME_TYPES = ["text/plain", "text/csv"];

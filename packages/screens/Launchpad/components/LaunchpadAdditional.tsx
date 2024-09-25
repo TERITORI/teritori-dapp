@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { SelectionDropdown } from "./dropdowns/SelectionDropdown";
@@ -8,6 +8,7 @@ import { TextInputLaunchpadRequiredSublabel } from "./inputs/TextInputLaunchpadR
 import { NewCollectionAdditionalFormValues } from "../CreateCollection.type";
 
 import { BrandText } from "@/components/BrandText";
+import { DateTimeInput } from "@/components/inputs/DateTimeInput";
 import { SpacerColumn } from "@/components/spacer";
 import { neutral55, neutral77 } from "@/utils/style/colors";
 import {
@@ -23,16 +24,18 @@ export const LaunchpadAdditional: React.FC = () => {
   const [isEscrowMintProceeds, setIsEscrowMintProceeds] = useState("");
   const [isDox, setIsDox] = useState("");
 
-  const { control } = useForm<NewCollectionAdditionalFormValues>({
-    defaultValues: {
-      artwork: "",
-      collectionSupply: "",
-      mintPrice: "",
-      mintDate: "",
-      whitelistSpotPercentage: "",
-    },
-    mode: "onBlur",
-  });
+  const { control, getFieldState, watch } =
+    useForm<NewCollectionAdditionalFormValues>({
+      defaultValues: {
+        artwork: "",
+        collectionSupply: "",
+        mintPrice: "",
+        mintDate: "",
+        whitelistSpotPercentage: "",
+      },
+      mode: "onBlur",
+    });
+  const mintDate = watch("mintDate");
 
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -100,6 +103,20 @@ export const LaunchpadAdditional: React.FC = () => {
           name="mintDate"
           control={control}
         />
+
+        <Controller<NewCollectionAdditionalFormValues>
+          name="mintDate"
+          control={control}
+          render={({ field: { onChange } }) => (
+            <DateTimeInput
+              label="What is your expected mint date?"
+              onChange={onChange}
+              timestamp={mintDate ? parseInt(mintDate, 10) : undefined}
+              isDirty={getFieldState("mintDate").isDirty}
+            />
+          )}
+        />
+        <SpacerColumn size={2} />
 
         <SelectionDropdown
           dropdownOptions={dropdownOptions}
