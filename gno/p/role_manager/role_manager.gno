@@ -104,6 +104,38 @@ func (rm *RoleManager) NewRole(roleName string, permissions []string, lowerRoleN
 	rm.roles.Set(roleName, role)
 }
 
+func (rm *RoleManager) RemoveRole(roleName string) {
+	caller := std.PrevRealm().Addr()
+	isOwner := rm.owner.Owner().String() == caller.String()
+
+	if !isOwner {
+		panic("only the owner can remove a role")
+	}
+
+	role := rm.mustGetRole(roleName)
+	if roleName == ROLE_USER {
+		panic("cannot remove the user role")
+	}
+
+	// remove the role from the linked list
+	role.prev.next = role.next
+	if role.next != nil {
+		role.next.prev = role.prev
+	}
+
+	// remove the role from the roles tree
+	rm.roles.Remove(roleName)
+
+	// remove the role from all users && update the highest role of the users
+	role.users = []std.Address{}
+	rm.users.Iterate("", "", func(key string, value interface{}) bool {
+		user := value.(*User)
+		user.roles.Remove(roleName)
+		user.refreshHighestRole()
+		return false
+	})
+}
+
 func (rm *RoleManager) AddRoleToUser(roleName string, user std.Address) {
 	caller := std.PrevRealm().Addr()
 	isOwner := rm.owner.Owner().String() == caller.String()
@@ -126,6 +158,9 @@ func (rm *RoleManager) AddRoleToUser(roleName string, user std.Address) {
 			roles:       avl.NewTree(),
 			highestRole: role,
 		}
+		if roleName != ROLE_USER {
+			target.roles.Set(ROLE_USER, role) // add the user role to the user by default
+		}
 		target.roles.Set(roleName, role)
 		rm.users.Set(user.String(), target)
 	} else {
@@ -134,7 +169,7 @@ func (rm *RoleManager) AddRoleToUser(roleName string, user std.Address) {
 			panic("user already has the role")
 		}
 		target.roles.Set(roleName, role)
-		target.updateHighestRole(role)
+		target.setHighestRole(role)
 	}
 	role.users = append(role.users, user)
 }
@@ -181,7 +216,7 @@ func (u User) hasRole(roleName string) bool {
 	return exists
 }
 
-func (u User) updateHighestRole(role *Role) {
+func (u User) setHighestRole(role *Role) {
 	tmp := u.highestRole
 	if tmp == nil {
 		u.highestRole = role
@@ -193,6 +228,24 @@ func (u User) updateHighestRole(role *Role) {
 			return
 		}
 	}
+}
+
+func (u User) refreshHighestRole() {
+	var highestRole *Role
+	u.roles.Iterate("", "", func(key string, value interface{}) bool {
+		role, ok := value.(*Role)
+		if !ok {
+			return false
+		}
+		if highestRole == nil || highestRole.isHigherThan(role.name) {
+			highestRole = role
+		}
+		return false
+	})
+	if highestRole == nil {
+		panic("no role found for the user, this should not happen") // since the user has at least the user role by default
+	}
+	u.highestRole = highestRole
 }
 
 func (u User) hasPermission(permission string) bool {
