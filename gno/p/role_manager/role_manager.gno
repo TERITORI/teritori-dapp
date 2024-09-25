@@ -37,18 +37,16 @@ type User struct {
 }
 
 type RoleManager struct {
-	owner       *ownable.Ownable
-	users       *avl.Tree // std.address -> *User (role name -> role)
-	roles       *avl.Tree // role name -> *Role
-	permissions *avl.Tree // permission name -> struct{} (empty struct to save memory)
+	owner *ownable.Ownable
+	users *avl.Tree // std.address -> *User (role name -> role)
+	roles *avl.Tree // role name -> *Role
 }
 
 func NewWithAddress(addr std.Address) *RoleManager {
 	roleManager := &RoleManager{
-		owner:       ownable.NewWithAddress(addr),
-		users:       avl.NewTree(),
-		roles:       avl.NewTree(),
-		permissions: avl.NewTree(),
+		owner: ownable.NewWithAddress(addr),
+		users: avl.NewTree(),
+		roles: avl.NewTree(),
 	}
 
 	userRole := &Role{
@@ -68,10 +66,6 @@ func NewWithAddress(addr std.Address) *RoleManager {
 		PERM_REMOVE_PERMISSION,
 		PERM_ADD_USER,
 		PERM_REMOVE_USER,
-	}
-
-	for _, permission := range permissions {
-		roleManager.permissions.Set(permission, struct{}{})
 	}
 
 	return roleManager
@@ -110,7 +104,7 @@ func (rm *RoleManager) NewRole(roleName string, permissions []string, lowerRoleN
 	rm.roles.Set(roleName, role)
 }
 
-func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string) {
+func (rm *RoleManager) AddRoleToUser(roleName string, user std.Address) {
 	caller := std.PrevRealm().Addr()
 	isOwner := rm.owner.Owner().String() == caller.String()
 
@@ -120,7 +114,7 @@ func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string) {
 		}
 
 		caller := rm.mustGetUser(caller)
-		if !caller.highestRole.IsHigherThan(roleName) {
+		if !caller.highestRole.isHigherThan(roleName) {
 			panic("caller cannot add a role with a higher level in the hierarchy than its own highest role")
 		}
 	}
@@ -142,6 +136,17 @@ func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string) {
 		target.roles.Set(roleName, role)
 		target.updateHighestRole(role)
 	}
+	role.users = append(role.users, user)
+}
+
+func (rm RoleManager) HasRole(user std.Address, roleName string) bool {
+	u := rm.mustGetUser(user)
+	return u.hasRole(roleName)
+}
+
+func (rm RoleManager) HasPermission(user std.Address, permission string) bool {
+	u := rm.mustGetUser(user)
+	return u.hasPermission(permission)
 }
 
 func (rm RoleManager) mustGetRole(roleName string) *Role {
@@ -152,22 +157,6 @@ func (rm RoleManager) mustGetRole(roleName string) *Role {
 	return roleRaw.(*Role)
 }
 
-func (rm RoleManager) HasPermission(user std.Address, permission string) bool {
-	if !rm.IsPermissionExists(permission) {
-		return false
-	}
-	u := rm.mustGetUser(user)
-	return u.hasPermission(permission)
-}
-
-func (rm RoleManager) IsPermissionExists(permission string) bool {
-	_, exists := rm.permissions.Get(permission)
-	if !exists {
-		return false
-	}
-	return true
-}
-
 func (rm RoleManager) mustGetUser(address std.Address) *User {
 	userRaw, exists := rm.users.Get(address.String())
 	if !exists {
@@ -176,7 +165,7 @@ func (rm RoleManager) mustGetUser(address std.Address) *User {
 	return userRaw.(*User)
 }
 
-func (r *Role) IsHigherThan(roleName string) bool {
+func (r *Role) isHigherThan(roleName string) bool {
 	tmp := r
 	for tmp.next != nil {
 		if tmp.next.name == roleName {

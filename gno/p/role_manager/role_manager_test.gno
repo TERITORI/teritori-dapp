@@ -38,3 +38,27 @@ func TestNewRole(t *testing.T) {
 		t.Errorf("role.permissions[1] = %v, want %v", role.permissions[1], "perm2")
 	}
 }
+
+func TestAddRoleToUser(t *testing.T) {
+	rm := NewWithAddress(bob)
+	std.TestSetOrigCaller(bob)
+	rm.NewRole("role1", []string{"perm1", "perm2"}, ROLE_USER)
+	rm.AddRoleToUser("role1", alice)
+	role := rm.mustGetRole("role1")
+	if len(role.users) != 1 {
+		t.Errorf("len(role.users) = %v, want %v", len(role.users), 1)
+	}
+	if role.users[0] != alice {
+		t.Errorf("role.users[0] = %v, want %v", role.users[0], alice)
+	}
+	if !rm.HasRole(alice, "role1") {
+		t.Errorf("HasRole(alice, role1) = %v, want %v", rm.HasRole(alice, "role1"), true)
+	}
+
+	if !rm.HasPermission(alice, "perm1") {
+		t.Errorf("HasPermission(alice, perm1) = %v, want %v", rm.HasPermission(alice, "perm1"), true)
+	}
+	if !role.isHigherThan(ROLE_USER) {
+		t.Errorf("role.isHigherThan(ROLE_USER) = %v, want %v", role.isHigherThan(ROLE_USER), true)
+	}
+}
