@@ -9,19 +9,18 @@ import (
 
 // well known roles
 const (
-	OWNER = "owner"
-	USER  = "user"
+	ROLE_USER = "user"
 )
 
 // well known permissions
 const (
-	ALL               = "all"
-	ADD_ROLE          = "add-role"
-	REMOVE_ROLE       = "remove-role"
-	ADD_PERMISSION    = "add-permission"
-	REMOVE_PERMISSION = "remove-permission"
-	ADD_USER          = "add-user"
-	REMOVE_USER       = "remove-user"
+	PERM_ALL               = "all"
+	PERM_ADD_ROLE          = "add-role"
+	PERM_REMOVE_ROLE       = "remove-role"
+	PERM_ADD_PERMISSION    = "add-permission"
+	PERM_REMOVE_PERMISSION = "remove-permission"
+	PERM_ADD_USER          = "add-user"
+	PERM_REMOVE_USER       = "remove-user"
 )
 
 type Role struct {
@@ -53,22 +52,22 @@ func NewWithAddress(addr std.Address) *RoleManager {
 	}
 
 	userRole := &Role{
-		name:        USER,
+		name:        ROLE_USER,
 		permissions: []string{},
 		users:       []std.Address{},
 		next:        nil,
 		prev:        nil,
 	}
-	roleManager.roles.Set(USER, userRole)
+	roleManager.roles.Set(ROLE_USER, userRole)
 
 	permissions := []string{
-		ALL,
-		ADD_ROLE,
-		REMOVE_ROLE,
-		ADD_PERMISSION,
-		REMOVE_PERMISSION,
-		ADD_USER,
-		REMOVE_USER,
+		PERM_ALL,
+		PERM_ADD_ROLE,
+		PERM_REMOVE_ROLE,
+		PERM_ADD_PERMISSION,
+		PERM_REMOVE_PERMISSION,
+		PERM_ADD_USER,
+		PERM_REMOVE_USER,
 	}
 
 	for _, permission := range permissions {
@@ -78,7 +77,7 @@ func NewWithAddress(addr std.Address) *RoleManager {
 	return roleManager
 }
 
-func (rm *RoleManager) CreateNewRole(roleName string, permissions []string, lowerRoleName string) {
+func (rm *RoleManager) NewRole(roleName string, permissions []string, lowerRoleName string) {
 	caller := std.PrevRealm().Addr()
 	isOwner := rm.owner.Owner().String() == caller.String()
 
@@ -116,7 +115,7 @@ func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string) {
 	isOwner := rm.owner.Owner().String() == caller.String()
 
 	if !isOwner {
-		if !rm.HasPermission(caller, ADD_ROLE) {
+		if !rm.HasPermission(caller, PERM_ADD_ROLE) {
 			panic("caller doesn't have the permission to add role")
 		}
 
@@ -220,7 +219,7 @@ func (u User) hasPermission(permission string) bool {
 				found = true
 				return true
 			}
-			if p == ALL {
+			if p == PERM_ALL {
 				found = true
 				return true
 			}
