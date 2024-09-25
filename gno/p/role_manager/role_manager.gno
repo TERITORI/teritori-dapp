@@ -78,6 +78,39 @@ func NewWithAddress(addr std.Address) *RoleManager {
 	return roleManager
 }
 
+func (rm *RoleManager) CreateNewRole(roleName string, permissions []string, lowerRoleName string) {
+	caller := std.PrevRealm().Addr()
+	isOwner := rm.owner.Owner().String() == caller.String()
+
+	if !isOwner {
+		panic("only the owner can create a new role")
+	}
+
+	if rm.roles.Has(roleName) {
+		panic("role already exists")
+	}
+
+	if lowerRoleName == "" {
+		panic("lower role name cannot be empty, the lowest role is the user role")
+	}
+
+	lowerRole := rm.mustGetRole(lowerRoleName)
+	role := &Role{
+		name:        roleName,
+		permissions: permissions,
+		users:       []std.Address{},
+		next:        lowerRole.next,
+		prev:        lowerRole,
+	}
+
+	// add the new role to the linked list between the lower role and the next role
+	if lowerRole.next != nil {
+		lowerRole.next.prev = role
+	}
+	lowerRole.next = role
+	rm.roles.Set(roleName, role)
+}
+
 func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string) {
 	caller := std.PrevRealm().Addr()
 	isOwner := rm.owner.Owner().String() == caller.String()
@@ -148,11 +181,11 @@ func (r *Role) IsHigherThan(roleName string) bool {
 	tmp := r
 	for tmp.next != nil {
 		if tmp.next.name == roleName {
-			return true
+			return false
 		}
 		tmp = tmp.next
 	}
-	return false
+	return true
 }
 
 func (u User) hasRole(roleName string) bool {
