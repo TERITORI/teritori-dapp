@@ -25,6 +25,7 @@ func TestNewRole(t *testing.T) {
 	std.TestSetOrigCaller(bob)
 	rm.NewRole("role1", []string{"perm1", "perm2"}, ROLE_USER)
 	role := rm.mustGetRole("role1")
+	userRole := rm.mustGetRole(ROLE_USER)
 	if role.name != "role1" {
 		t.Errorf("role.name = %v, want %v", role.name, "role1")
 	}
@@ -36,6 +37,21 @@ func TestNewRole(t *testing.T) {
 	}
 	if role.permissions[1] != "perm2" {
 		t.Errorf("role.permissions[1] = %v, want %v", role.permissions[1], "perm2")
+	}
+	if !role.isHigherThan(ROLE_USER) {
+		t.Errorf("role.isHigherThan(ROLE_USER) = %v, want %v", role.isHigherThan(ROLE_USER), true)
+	}
+	if role.next != nil {
+		t.Errorf("role.next = %v, want %v", role.next, nil)
+	}
+	if role.prev != userRole {
+		t.Errorf("role.prev = %v, want %v", role.prev, userRole)
+	}
+	if userRole.isHigherThan("role1") {
+		t.Errorf("userRole.isHigherThan(role1) = %v, want %v", userRole.isHigherThan("role1"), false)
+	}
+	if userRole.next != role {
+		t.Errorf("userRole.next = %v, want %v", userRole.next, role)
 	}
 }
 
