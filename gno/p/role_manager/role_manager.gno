@@ -28,8 +28,8 @@ type Role struct {
 	name        string
 	permissions []string
 	users       []std.Address // is it pertinent ? the use case is to list all users with a role without having to iterate over all users
-	Next        *Role         // The next role in the hierarchy -> Usage of linked list to allow to know the role hierarchy
-	Prev        *Role         // The previous role in the hierarchy -> Usage of linked list to allow to know the role hierarchy
+	next        *Role         // The next role in the hierarchy -> Usage of linked list to allow to know the role hierarchy
+	prev        *Role         // The previous role in the hierarchy -> Usage of linked list to allow to know the role hierarchy
 }
 
 type User struct {
@@ -54,14 +54,14 @@ func NewWithAddress(addr std.Address) *RoleManager {
 
 	userRole := &Role{
 		name:        USER,
-		permissions: []Permission{},
+		permissions: []string{},
 		users:       []std.Address{},
-		Next:        nil,
-		Prev:        nil,
+		next:        nil,
+		prev:        nil,
 	}
 	roleManager.roles.Set(USER, userRole)
 
-	persmissions := []string{
+	permissions := []string{
 		ALL,
 		ADD_ROLE,
 		REMOVE_ROLE,
@@ -72,12 +72,14 @@ func NewWithAddress(addr std.Address) *RoleManager {
 	}
 
 	for _, permission := range permissions {
-		permissions.Set(permission, struct{}{})
+		roleManager.permissions.Set(permission, struct{}{})
 	}
+
+	return roleManager
 }
 
 func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string) {
-	caller := std.PrevRealm().Addrr()
+	caller := std.PrevRealm().Addr()
 	isOwner := rm.owner.Owner().String() == caller.String()
 
 	if !isOwner {
@@ -92,20 +94,22 @@ func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string) {
 	}
 
 	role := rm.mustGetRole(roleName)
-	target, exists := rm.users.Get(user)
+	targetRaw, exists := rm.users.Get(user.String())
 	if !exists {
-		target = &User{
+		target := &User{
 			roles:       avl.NewTree(),
-			highestRole: nil,
+			highestRole: role,
 		}
-		rm.users.Set(user, target)
+		target.roles.Set(roleName, role)
+		rm.users.Set(user.String(), target)
 	} else {
+		target := targetRaw.(*User)
 		if target.hasRole(roleName) {
 			panic("user already has the role")
 		}
+		target.roles.Set(roleName, role)
+		target.updateHighestRole(role)
 	}
-	target.roles.Set(roleName, role)
-	target.updateHighestRole(role)
 }
 
 func (rm RoleManager) mustGetRole(roleName string) *Role {
@@ -120,8 +124,8 @@ func (rm RoleManager) HasPermission(user std.Address, permission string) bool {
 	if !rm.IsPermissionExists(permission) {
 		return false
 	}
-	user := rm.mustGetUser(user)
-	return user.hasPermission()
+	u := rm.mustGetUser(user)
+	return u.hasPermission(permission)
 }
 
 func (rm RoleManager) IsPermissionExists(permission string) bool {
@@ -133,7 +137,7 @@ func (rm RoleManager) IsPermissionExists(permission string) bool {
 }
 
 func (rm RoleManager) mustGetUser(address std.Address) *User {
-	userRaw, exists := users.Get(address)
+	userRaw, exists := rm.users.Get(address.String())
 	if !exists {
 		panic("user doesn't exists")
 	}
@@ -142,11 +146,11 @@ func (rm RoleManager) mustGetUser(address std.Address) *User {
 
 func (r *Role) IsHigherThan(roleName string) bool {
 	tmp := r
-	for tmp.Next != nil {
-		if tmp.Next.name == roleName {
+	for tmp.next != nil {
+		if tmp.next.name == roleName {
 			return true
 		}
-		tmp = tmp.Next
+		tmp = tmp.next
 	}
 	return false
 }
@@ -162,8 +166,8 @@ func (u User) updateHighestRole(role *Role) {
 		u.highestRole = role
 		return
 	}
-	for tmp.Next != nil {
-		if tmp.Next.name == role.name {
+	for tmp.next != nil {
+		if tmp.next.name == role.name {
 			u.highestRole = role
 			return
 		}
@@ -173,17 +177,17 @@ func (u User) updateHighestRole(role *Role) {
 func (u User) hasPermission(permission string) bool {
 	found := false
 	u.roles.Iterate("", "", func(key string, value interface{}) bool {
-		role, ok := role.(*Role)
+		role, ok := value.(*Role)
 		if !ok {
 			return false
 		}
 
-		for _, value := range role.permissions {
-			if value == permission {
+		for _, p := range role.permissions {
+			if p == permission {
 				found = true
 				return true
 			}
-			if value == ALL {
+			if p == ALL {
 				found = true
 				return true
 			}
