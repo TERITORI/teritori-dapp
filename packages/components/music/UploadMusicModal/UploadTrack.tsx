@@ -37,7 +37,7 @@ import { EditableAudioPreview } from "../../FilePreview/EditableAudioPreview";
 import { SVG } from "../../SVG";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
-import { FileUploader } from "../../inputs/fileUploader";
+import { FileUploader } from "../../inputs/FileUploader";
 import { FeedPostingProgressBar } from "../../loaders/FeedPostingProgressBar";
 import { FeedFeeText } from "../../socialFeed/FeedFeeText";
 import { SpacerColumn, SpacerRow } from "../../spacer";

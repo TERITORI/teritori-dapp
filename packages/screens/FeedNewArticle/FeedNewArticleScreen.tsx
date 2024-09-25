@@ -4,7 +4,7 @@ import { ScrollView, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import priceSVG from "../../../assets/icons/price.svg";
-import { FileUploader } from "../../components/inputs/fileUploader";
+import { FileUploader } from "../../components/inputs/FileUploader";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 
 import { BrandText } from "@/components/BrandText";

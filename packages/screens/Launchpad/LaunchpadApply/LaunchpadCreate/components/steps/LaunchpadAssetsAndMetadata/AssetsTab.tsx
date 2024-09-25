@@ -12,7 +12,7 @@ import { BrandText } from "@/components/BrandText";
 import { SelectedFilesPreview } from "@/components/FilePreview/SelectedFilesPreview/SelectedFilesPreview";
 import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
-import { FileUploaderSmall } from "@/components/inputs/fileUploaderSmall";
+import { FileUploaderSmall } from "@/components/inputs/FileUploaderSmall";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";

@@ -4,7 +4,7 @@ import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
 import { DeleteButton } from "@/components/FilePreview/DeleteButton";
-import { FileUploaderSmall } from "@/components/inputs/fileUploaderSmall";
+import { FileUploaderSmall } from "@/components/inputs/FileUploaderSmall";
 import { TXT_CSV_MIME_TYPES } from "@/utils/mime";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";

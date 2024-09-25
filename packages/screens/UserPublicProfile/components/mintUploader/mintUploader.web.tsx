@@ -9,8 +9,6 @@ import { DeleteButton } from "@/components/FilePreview/DeleteButton";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { SVG } from "@/components/SVG";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
-import { FileUploaderProps } from "@/components/inputs/fileUploader/FileUploader.type";
-import { formatFile } from "@/components/inputs/fileUploader/formatFile";
 import { AnimatedLoader } from "@/components/loaders/AnimatedLoader";
 import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
@@ -23,6 +21,8 @@ import {
 } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { FileUploaderProps } from "@/components/inputs/fileUploader/FileUploader.type";
+import { formatFile } from "@/components/inputs/FileUploader/formatFile";
 
 type MintUploaderProps = Omit<FileUploaderProps, "fileImageStyle"> & {
   fileImageStyle?: StyleProp<ImageStyle>;
@@ -290,3 +290,4 @@ export const MintUploader: FC<MintUploaderProps> = ({
     </>
   );
 };
+

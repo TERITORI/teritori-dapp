@@ -5,7 +5,7 @@ import { View } from "react-native";
 import { BrandText } from "@/components/BrandText";
 import { ErrorText } from "@/components/ErrorText";
 import { NetworkSelectorWithLabel } from "@/components/NetworkSelector/NetworkSelectorWithLabel";
-import { FileUploaderSmall } from "@/components/inputs/fileUploaderSmall";
+import { FileUploaderSmall } from "@/components/inputs/FileUploaderSmall";
 import { SpacerColumn } from "@/components/spacer";
 import { NetworkFeature } from "@/networks";
 import { TextInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/TextInputLaunchpad";

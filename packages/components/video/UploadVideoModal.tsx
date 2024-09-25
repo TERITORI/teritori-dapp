@@ -41,7 +41,7 @@ import { SVG } from "../SVG";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
-import { FileUploader } from "../inputs/fileUploader";
+import { FileUploader } from "../inputs/FileUploader";
 import { FeedPostingProgressBar } from "../loaders/FeedPostingProgressBar";
 import { SelectAudioVideo } from "../mini/SelectAudioVideo";
 import { SelectPicture } from "../mini/SelectPicture";

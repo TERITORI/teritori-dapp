@@ -15,11 +15,11 @@ import filesSVG from "@/assets/icons/files.svg";
 import { DeleteButton } from "@/components/FilePreview/DeleteButton";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
-import { formatFile } from "@/components/inputs/fileUploader/formatFile";
-import { FileUploaderSmallProps } from "@/components/inputs/fileUploaderSmall/FileUploaderSmall.type";
 import { SpacerRow } from "@/components/spacer";
 import { pluralOrNot } from "@/utils/text";
 import { LocalFileData } from "@/utils/types/files";
+import { formatFile } from "../FileUploader/formatFile";
+import { FileUploaderSmallProps } from "./FileUploaderSmall.type";
 
 export const FileUploaderSmall: FC<FileUploaderSmallProps> = ({
   label,
