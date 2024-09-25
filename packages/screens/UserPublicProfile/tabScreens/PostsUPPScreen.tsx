@@ -11,6 +11,7 @@ import { useIsDAO } from "@/hooks/cosmwasm/useCosmWasmContractInfo";
 import { useIsDAOMember } from "@/hooks/dao/useDAOMember";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
+import { DeepPartial } from "@/utils/typescript";
 import { UppTabKeys } from "@/utils/upp";
 
 export const PostsUPPScreen: FC<UppTabScreenProps> = ({
@@ -23,18 +24,13 @@ export const PostsUPPScreen: FC<UppTabScreenProps> = ({
   const { isDAO } = useIsDAO(userId);
   const { isDAOMember } = useIsDAOMember(userId, selectedWallet?.userId, isDAO);
 
-  const feedRequestUserPosts: Partial<PostsRequest> = useMemo(() => {
+  const feedRequestUserPosts: DeepPartial<PostsRequest> = useMemo(() => {
     return {
       filter: {
         user: userId,
-        mentions: [],
-        categories: [],
-        hashtags: [],
-        premiumLevelMin: 0,
         premiumLevelMax: -1,
       },
       limit: 10,
-      offset: 0,
     };
   }, [userId]);
 

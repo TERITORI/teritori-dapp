@@ -36,11 +36,13 @@ import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
 import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
 import { SocialVideoCard } from "../SocialCard/cards/SocialVideoCard";
 
+import { DeepPartial } from "@/utils/typescript";
+
 const OFFSET_Y_LIMIT_FLOATING = 224;
 
 interface NewsFeedProps {
   Header: React.ComponentType;
-  req: Partial<PostsRequest>;
+  req: DeepPartial<PostsRequest>;
   // Receive this if the post is created from HashFeedScreen
   additionalHashtag?: string;
   // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 
 import { ArticlesFeedScreen } from "./ArticlesFeedScreen";
@@ -11,6 +11,7 @@ import { PostsRequest } from "@/api/feed/v1/feed";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
 import { RoundedTabs } from "@/components/tabs/RoundedTabs";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { ScreenFC } from "@/utils/navigation";
 import { layout } from "@/utils/style/layout";
 
@@ -38,8 +39,12 @@ export const MiniFeedScreen: ScreenFC<"MiniFeeds"> = ({
 }) => {
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof feedScreenTabItems>("jungle");
-
+  const selectedNetworkId = useSelectedNetworkId();
   const { width } = useWindowDimensions();
+  const defaultFeedRequest = useMemo(() => {
+    return getDefaultFeedRequest(selectedNetworkId);
+  }, [selectedNetworkId]);
+
   return (
     <ScreenContainer
       headerChildren={<></>}
@@ -81,15 +86,19 @@ export const MiniFeedScreen: ScreenFC<"MiniFeeds"> = ({
   );
 };
 
-const defaultFeedRequest: Partial<PostsRequest> = {
-  filter: {
-    categories: [],
-    user: "",
-    mentions: [],
-    hashtags: [],
-    premiumLevelMin: 0,
-    premiumLevelMax: -1,
-  },
-  limit: 20,
-  offset: 0,
+const getDefaultFeedRequest = (networkId: string) => {
+  const req: Partial<PostsRequest> = {
+    filter: {
+      networkId,
+      categories: [],
+      user: "",
+      mentions: [],
+      hashtags: [],
+      premiumLevelMin: 0,
+      premiumLevelMax: -1,
+    },
+    limit: 20,
+    offset: 0,
+  };
+  return req;
 };

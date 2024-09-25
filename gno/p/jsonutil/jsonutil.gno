@@ -94,6 +94,14 @@ func MustUint64(value *json.Node) uint64 {
 	return uint64(MustInt(value)) // FIXME: full uint64 range support (currently limited to [-2^63, 2^63-1])
 }
 
+func Uint8Node(value uint8) *json.Node {
+	return json.StringNode("", strconv.FormatUint(uint64(value), 10))
+}
+
+func MustUint8(value *json.Node) uint8 {
+	return uint8(MustInt(value))
+}
+
 func AVLTreeNode(root *avl.Tree, transform func(elem interface{}) *json.Node) *json.Node {
 	if root == nil {
 		return EmptyObjectNode()

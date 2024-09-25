@@ -109,7 +109,7 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 
 	err := s.conf.IndexerDB.Order("rank ASC").Limit(int(limit)).Offset(int(offset)).Find(
 		&leaderboard,
-		"season_id = ?", seasonId,
+		"season_id = ? AND in_progress_score != 0", seasonId,
 	).Error
 
 	if err != nil {
@@ -212,7 +212,7 @@ func (s *P2eService) MerkleData(ctx context.Context, req *p2epb.MerkleDataReques
 		NetworkID: networkID,
 	}
 
-	if err := s.conf.IndexerDB.First(&currentReward).Error; err != nil {
+	if err := s.conf.IndexerDB.Order("day_id desc").First(&currentReward).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to get current daily reward")
 	}
 

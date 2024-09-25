@@ -110,7 +110,7 @@ func (s *LeaderboardService) execReportRewards(network networks.Network, rpcEndp
 		}
 
 		if err := tx.
-			Where("season_id = ?", season.ID).
+			Where("season_id = ? AND in_progress_score != 0", season.ID).
 			Order("snapshot_rank asc").
 			Limit(int(season.TopN)).
 			Find(&leaderboard).
