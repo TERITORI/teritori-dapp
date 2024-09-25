@@ -9,7 +9,7 @@ const dirsToExclude = [
   ".git",
   "cache",
   "target",
-  "cosmwasm-contracts",
+  "rust/cw-contracts",
 ];
 const excludePatterns = ["*.env", "Dockerfile", "docker-compose.yml", "*.md"];
 

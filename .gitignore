@@ -104,7 +104,7 @@ temp/
 # rust
 /target/
 artifacts
-cosmwasm-contracts/*/target
+rust/cw-contracts/*/target
 
 # secret files
 rust/scripts/mnemonic.ts
