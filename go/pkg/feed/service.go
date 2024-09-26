@@ -237,12 +237,16 @@ func (s *FeedService) PostsWithLocation(ctx context.Context, data *feedpb.PostsW
 }
 func (s *FeedService) getPostsWithLocationFilter(networkID string, locationFilter *locationQueryData) ([]indexerdb.Post, error) {
 	posts := make([]indexerdb.Post, 0)
-	cachekey := locationFilter.cacheKey()
+	cachekey := fmt.Sprintf("%s/%s", networkID, locationFilter.cacheKey())
 	data, ok := s.cache.Get(cachekey)
 	if ok {
 		return data.([]indexerdb.Post), nil
 	}
-	err := s.conf.IndexerDB.Model(&indexerdb.Post{}).Where("network_id = ? AND lat_int < ? AND lat_int > ? AND lng_int < ? AND lng_int > ? AND  lat_int <> 0 AND lng_int <> 0 ", networkID, locationFilter.N, locationFilter.S, locationFilter.E, locationFilter.W).Find(&posts).Error
+	query := s.conf.IndexerDB.Model(&indexerdb.Post{})
+	if networkID != "" {
+		query = query.Where("network_id = ?", networkID)
+	}
+	err := query.Where("lat_int < ? AND lat_int > ? AND lng_int < ? AND lng_int > ? AND  lat_int <> 0 AND lng_int <> 0 ", locationFilter.N, locationFilter.S, locationFilter.E, locationFilter.W).Find(&posts).Error
 	if err != nil {
 		return nil, err
 	}
@@ -253,14 +257,18 @@ func (s *FeedService) getPostsWithLocationFilter(networkID string, locationFilte
 }
 
 func (s *FeedService) getPostsCountWithLocationFilter(networkID string, locationFilter *locationQueryData) (int64, error) {
-	cachekey := locationFilter.countCacheKey()
+	cachekey := fmt.Sprintf("%s/%s", networkID, locationFilter.cacheKey())
 	data, ok := s.cache.Get(cachekey)
 	if ok {
 		return data.(int64), nil
 	}
 	var totalPost int64
 
-	err := s.conf.IndexerDB.Model(&indexerdb.Post{}).Where("network_id = ? AND lat_int < ? AND lat_int > ? AND lng_int < ? AND lng_int > ?", networkID, locationFilter.N, locationFilter.S, locationFilter.E, locationFilter.W).Count(&totalPost).Error
+	query := s.conf.IndexerDB.Model(&indexerdb.Post{})
+	if networkID != "" {
+		query = query.Where("network_id = ?", networkID)
+	}
+	err := query.Where("lat_int < ? AND lat_int > ? AND lng_int < ? AND lng_int > ?", locationFilter.N, locationFilter.S, locationFilter.E, locationFilter.W).Count(&totalPost).Error
 	if err != nil {
 		return 0, err
 	}
@@ -273,7 +281,7 @@ func (s *FeedService) getPostsCountWithLocationFilter(networkID string, location
 const agregatedPostQuery = `
 with post_with_cluster as (
 	select *,(p.lat/$5)::int lat_cluster,(p.lng/$6)::int long_cluster from posts p 
-	where p.lat_int >= $2 and p.lat_int <=$1 and p.lng_int <=$3 and p.lng_int >=$4
+	where network_id = $7 p.lat_int >= $2 and p.lat_int <=$1 and p.lng_int <=$3 and p.lng_int >=$4
 )
 select avg(post_with_cluster.lat) lat ,avg(post_with_cluster.lng) long,count(*) total_points, 
 post_with_cluster.lat_cluster, post_with_cluster.long_cluster
@@ -298,7 +306,7 @@ func (s *FeedService) loadHeatMap(data *feedpb.PostsWithLocationRequest) (*feedp
 	xSquare := 360.0 / longitudeClusterNumber
 	ySquare := 180.0 / latitudeClusterNumber
 
-	err := s.conf.IndexerDB.Raw(agregatedPostQuery, data.North, data.South, data.East, data.West, ySquare, xSquare).Scan(&aggregatedPosts).Error
+	err := s.conf.IndexerDB.Raw(agregatedPostQuery, data.North, data.South, data.East, data.West, ySquare, xSquare, data.NetworkId).Scan(&aggregatedPosts).Error
 	if err != nil {
 		fmt.Printf("error: %s\n", err.Error())
 		return nil, err
