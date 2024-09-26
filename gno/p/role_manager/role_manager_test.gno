@@ -23,6 +23,10 @@ func TestNewWithAddress(t *testing.T) {
 func TestNewRole(t *testing.T) {
 	rm := NewWithAddress(bob)
 	std.TestSetOrigCaller(bob)
+	perms := []string{"perm1", "perm2"}
+	for _, perm := range perms {
+		rm.NewPermission(perm)
+	}
 	rm.NewRole("role1", []string{"perm1", "perm2"}, ROLE_USER)
 	role := rm.mustGetRole("role1")
 	userRole := rm.mustGetRole(ROLE_USER)
@@ -58,6 +62,10 @@ func TestNewRole(t *testing.T) {
 func TestAddRoleToUser(t *testing.T) {
 	rm := NewWithAddress(bob)
 	std.TestSetOrigCaller(bob)
+	perms := []string{"perm1", "perm2"}
+	for _, perm := range perms {
+		rm.NewPermission(perm)
+	}
 	rm.NewRole("role1", []string{"perm1", "perm2"}, ROLE_USER)
 	rm.AddRoleToUser("role1", alice)
 	role := rm.mustGetRole("role1")
@@ -86,6 +94,10 @@ func TestAddRoleToUser(t *testing.T) {
 func TestDeleteRole(t *testing.T) {
 	rm := NewWithAddress(bob)
 	std.TestSetOrigCaller(bob)
+	perms := []string{"perm1", "perm2"}
+	for _, perm := range perms {
+		rm.NewPermission(perm)
+	}
 	rm.NewRole("role1", []string{"perm1", "perm2"}, ROLE_USER)
 	rm.AddRoleToUser("role1", alice)
 	rm.DeleteRole("role1")
@@ -105,6 +117,10 @@ func TestDeleteRole(t *testing.T) {
 func TestRemoveRoleToUser(t *testing.T) {
 	rm := NewWithAddress(bob)
 	std.TestSetOrigCaller(bob)
+	perms := []string{"perm1", "perm2", "perm3"}
+	for _, perm := range perms {
+		rm.NewPermission(perm)
+	}
 	rm.NewRole("role1", []string{"perm1", "perm2"}, ROLE_USER)
 	rm.NewRole("role2", []string{"perm2", "perm3"}, ROLE_USER)
 	rm.AddRoleToUser("role1", alice)
@@ -138,11 +154,15 @@ func TestRemoveRoleToUser(t *testing.T) {
 	}
 }
 
-func TestNewPermission(t *testing.T) {
+func TestAddPermissionToRole(t *testing.T) {
 	rm := NewWithAddress(bob)
 	std.TestSetOrigCaller(bob)
 
-	rm.NewPermission(ROLE_USER, "perm1")
+	perms := []string{"perm1", "perm2"}
+	for _, perm := range perms {
+		rm.NewPermission(perm)
+	}
+	rm.AddPermissionToRole(ROLE_USER, "perm1")
 	rm.AddRoleToUser(ROLE_USER, alice)
 	if !rm.HasPermission(alice, "perm1") {
 		t.Errorf("permissions[0] = %v, want %v", rm.HasPermission(alice, "perm1"), true)
@@ -152,5 +172,25 @@ func TestNewPermission(t *testing.T) {
 	}
 	if rm.HasPermission(alice, "perm2") {
 		t.Errorf("HasPermission(alice, perm2) = %v, want %v", rm.HasPermission(alice, "perm2"), false)
+	}
+}
+
+func TestRemovePermissionFromRole(t *testing.T) {
+	rm := NewWithAddress(bob)
+	std.TestSetOrigCaller(bob)
+
+	perms := []string{"perm1", "perm2"}
+	for _, perm := range perms {
+		rm.NewPermission(perm)
+	}
+	rm.AddPermissionToRole(ROLE_USER, "perm1")
+	rm.AddPermissionToRole(ROLE_USER, "perm2")
+	rm.AddRoleToUser(ROLE_USER, alice)
+	rm.RemovePermissionFromRole(ROLE_USER, "perm1")
+	if rm.HasPermission(alice, "perm1") {
+		t.Errorf("HasPermission(alice, perm1) = %v, want %v", rm.HasPermission(alice, "perm1"), false)
+	}
+	if !rm.HasPermission(alice, "perm2") {
+		t.Errorf("HasPermission(alice, perm2) = %v, want %v", rm.HasPermission(alice, "perm2"), true)
 	}
 }

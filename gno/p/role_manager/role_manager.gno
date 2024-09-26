@@ -1,5 +1,7 @@
 package role_manager
 
+// TODO: RENAME FUNCTIONS (HAS PERMISSIONS -> UserHasPermission, HAS ROLE -> UserHasRole, etc)
+// TODO: CREATE HAS PERMISSION and HAS ROLE functions that just look if role or permission exists not if user has it
 import (
 	"std"
 
@@ -33,16 +35,18 @@ type User struct {
 }
 
 type RoleManager struct {
-	owner *ownable.Ownable
-	users *avl.Tree // std.address -> *User (role name -> role)
-	roles *avl.Tree // role name -> *Role
+	owner       *ownable.Ownable
+	users       *avl.Tree // std.address -> *User (role name -> role)
+	roles       *avl.Tree // role name -> *Role
+	permissions *avl.Tree // permission name -> struct{} -> could link to the roles that have this permission to make it easier to remove a permission (like role have list of user)
 }
 
 func NewWithAddress(addr std.Address) *RoleManager {
 	roleManager := &RoleManager{
-		owner: ownable.NewWithAddress(addr),
-		users: avl.NewTree(),
-		roles: avl.NewTree(),
+		owner:       ownable.NewWithAddress(addr),
+		users:       avl.NewTree(),
+		roles:       avl.NewTree(),
+		permissions: avl.NewTree(),
 	}
 
 	userRole := &Role{
@@ -71,6 +75,12 @@ func (rm *RoleManager) NewRole(roleName string, permissions []string, lowerRoleN
 
 	if lowerRoleName == "" {
 		panic("lower role name cannot be empty, the lowest role is the user role")
+	}
+
+	for _, permission := range permissions {
+		if !rm.permissions.Has(permission) {
+			panic("permission doesn't exists, create the permission first")
+		}
 	}
 
 	lowerRole := rm.mustGetRole(lowerRoleName)
@@ -200,12 +210,43 @@ func (rm RoleManager) HasRole(user std.Address, roleName string) bool {
 	return u.hasRole(roleName)
 }
 
-func (rm RoleManager) NewPermission(roleName, permission string) {
+func (rm *RoleManager) NewPermission(permission string) {
 	caller := std.PrevRealm().Addr()
 	isOwner := rm.owner.Owner().String() == caller.String()
-
 	if !isOwner {
 		panic("only the owner can create a new permission")
+	}
+
+	if rm.permissions.Has(permission) {
+		panic("permission already exists")
+	}
+
+	rm.permissions.Set(permission, struct{}{})
+}
+
+func (rm *RoleManager) DeletePermission(permission string) {
+	caller := std.PrevRealm().Addr()
+	isOwner := rm.owner.Owner().String() == caller.String()
+	if !isOwner {
+		panic("only the owner can remove a permission")
+	}
+
+	if !rm.permissions.Has(permission) {
+		panic("permission doesn't exists")
+	}
+
+	rm.permissions.Remove(permission)
+}
+
+func (rm *RoleManager) AddPermissionToRole(roleName, permission string) {
+	caller := std.PrevRealm().Addr()
+	isOwner := rm.owner.Owner().String() == caller.String()
+	if !isOwner {
+		panic("only the owner can add/remove a permission to a role")
+	}
+
+	if !rm.permissions.Has(permission) {
+		panic("permission doesn't exists")
 	}
 
 	if !rm.roles.Has(roleName) {
@@ -219,6 +260,30 @@ func (rm RoleManager) NewPermission(roleName, permission string) {
 	}
 
 	role.permissions.Set(permission, struct{}{})
+}
+
+func (rm *RoleManager) RemovePermissionFromRole(roleName, permission string) {
+	caller := std.PrevRealm().Addr()
+	isOwner := rm.owner.Owner().String() == caller.String()
+	if !isOwner {
+		panic("only the owner can add/remove a permission to a role")
+	}
+
+	if !rm.permissions.Has(permission) {
+		panic("permission doesn't exists")
+	}
+
+	if !rm.roles.Has(roleName) {
+		panic("role doesn't exists")
+	}
+
+	role := rm.mustGetRole(roleName)
+
+	if !role.permissions.Has(permission) {
+		panic("this role doesn't have this permission")
+	}
+
+	role.permissions.Remove(permission)
 }
 
 func (rm RoleManager) HasPermission(user std.Address, permission string) bool {
