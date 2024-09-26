@@ -41,7 +41,6 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 
 import { LocationButton } from "@/components/socialFeed/NewsFeed/LocationButton";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
-import { locationToString } from "@/utils/feed/map";
 
 const IMAGE_HEIGHT = 173;
 const VIDEO_CARD_WIDTH = 261;
@@ -130,7 +129,7 @@ export const VideoCard: React.FC<{
                   video?.location &&
                   navigation.navigate("Feed", {
                     tab: "map",
-                    center: locationToString(video.location),
+                    post: post.id,
                   })
                 }
                 stroke={neutralFF}

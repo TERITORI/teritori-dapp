@@ -23,7 +23,6 @@ import NormalPlay from "@/assets/icons/music/normal-play.svg";
 import { LocationButton } from "@/components/socialFeed/NewsFeed/LocationButton";
 import { useMediaPlayer } from "@/context/MediaPlayerProvider";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
-import { locationToString } from "@/utils/feed/map";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {
   neutral17,
@@ -117,7 +116,7 @@ export const TrackCard: React.FC<{
                   track.location &&
                   navigation.navigate("Feed", {
                     tab: "map",
-                    center: locationToString(track.location),
+                    post: post.id,
                   })
                 }
                 stroke={neutralFF}

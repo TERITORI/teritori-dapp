@@ -8,13 +8,13 @@ import { DEFAULT_MAP_POSITION, MAP_LAYER_URL } from "@/utils/feed/map";
 
 export const Map: FC<MapProps> = ({
   creatingPostLocation,
-  locationToCenter = DEFAULT_MAP_POSITION,
+  // consultedPostId, TODO:
 }) => {
   return (
     <LeafletView
       renderLoading={() => <></>}
       zoom={12}
-      mapCenterPosition={creatingPostLocation || locationToCenter}
+      mapCenterPosition={DEFAULT_MAP_POSITION}
       mapLayers={[
         {
           url: MAP_LAYER_URL,
@@ -22,7 +22,7 @@ export const Map: FC<MapProps> = ({
       ]}
       mapMarkers={[
         {
-          position: creatingPostLocation || locationToCenter,
+          position: DEFAULT_MAP_POSITION,
           icon: "",
           size: [32, 32],
         },

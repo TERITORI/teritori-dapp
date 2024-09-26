@@ -12,11 +12,10 @@ import {
   RESPONSIVE_BREAKPOINT_S,
   screenContentMaxWidth,
 } from "@/utils/style/layout";
-import { CustomLatLngExpression } from "@/utils/types/feed";
 
 export const MapFeed: FC<{
-  locationToCenter?: CustomLatLngExpression;
-}> = ({ locationToCenter }) => {
+  consultedPostId?: string;
+}> = ({ consultedPostId }) => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const { width, height } = useMaxResolution();
   const isMobile = useIsMobile();
@@ -32,7 +31,7 @@ export const MapFeed: FC<{
             width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
             maxWidth: screenContentMaxWidth,
           }}
-          locationToCenter={locationToCenter}
+          consultedPostId={consultedPostId}
         />
       </Suspense>
     </ScrollView>

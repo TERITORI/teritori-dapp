@@ -6,12 +6,7 @@ import musicPostSvg from "@/assets/icons/social-feed-map/music-post.svg";
 import normalPostSvg from "@/assets/icons/social-feed-map/normal-post.svg";
 import picturePostSvg from "@/assets/icons/social-feed-map/picture-post.svg";
 import videoPostSvg from "@/assets/icons/social-feed-map/video-post.svg";
-import {
-  CustomLatLngExpression,
-  PostCategory,
-  ZodLatLngLiteral,
-  ZodLatLngTuple,
-} from "@/utils/types/feed";
+import { CustomLatLngExpression, PostCategory } from "@/utils/types/feed";
 
 //TODO: Get <svg/> as string from svg files (These svg strings are used in FeedMapList.web.tsx)
 
@@ -299,28 +294,5 @@ export const getMapPostTextGradientString = (postCategory: PostCategory) => {
       return `180deg, #FFB26B 100%, #E58C3B 100%`;
     default:
       return `180deg, #FFFFFF 100%, #AAAAAA 100%`;
-  }
-};
-
-const STRING_LOCATION_SEPARATOR = "-";
-export const locationToString: (
-  location: CustomLatLngExpression,
-) => string | undefined = (location: CustomLatLngExpression) => {
-  const zodLatLngLiteralParseResult = ZodLatLngLiteral.safeParse(location);
-  const zodLatLngTupleParseResult = ZodLatLngTuple.safeParse(location);
-
-  if (zodLatLngLiteralParseResult.success) {
-    return `${zodLatLngLiteralParseResult.data.lat}${STRING_LOCATION_SEPARATOR}${zodLatLngLiteralParseResult.data.lng}`;
-  }
-  if (zodLatLngTupleParseResult.success) {
-    return `${zodLatLngTupleParseResult.data[0]}${STRING_LOCATION_SEPARATOR}${zodLatLngTupleParseResult.data[1]}`;
-  }
-};
-export const stringToLocation: (
-  locationStr: string,
-) => CustomLatLngExpression | undefined = (locationStr: string) => {
-  const parts = locationStr.split(STRING_LOCATION_SEPARATOR).map(Number);
-  if ((parts.length === 2 || parts.length === 3) && !parts.some(isNaN)) {
-    return [parts[0], parts[1]];
   }
 };

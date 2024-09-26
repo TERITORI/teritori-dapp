@@ -22,6 +22,7 @@ import { NormalMapPost } from "@/components/socialFeed/Map/MapPosts/NormalMapPos
 import { PictureMapPost } from "@/components/socialFeed/Map/MapPosts/PictureMapPost";
 import { VideoMapPost } from "@/components/socialFeed/Map/MapPosts/VideoMapPost";
 import { useFetchFeedLocation } from "@/hooks/feed/useFetchFeed";
+import { usePost } from "@/hooks/feed/usePost";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   DEFAULT_MAP_POSITION,
@@ -33,6 +34,7 @@ import { zodTryParseJSON } from "@/utils/sanitize";
 import {
   CustomLatLngExpression,
   PostCategory,
+  zodSocialFeedCommonMetadata,
   ZodSocialFeedPostMetadata,
 } from "@/utils/types/feed";
 
@@ -66,7 +68,7 @@ const clusterIcon = function (cluster: any) {
 };
 
 export const Map: FC<MapProps> = ({
-  locationToCenter = DEFAULT_MAP_POSITION,
+  consultedPostId,
   style,
   creatingPostLocation,
   creatingPostCategory = -1,
@@ -93,6 +95,14 @@ export const Map: FC<MapProps> = ({
   });
   const posts = data?.list;
   const aggregatedPosts = data?.aggregations;
+
+  const { post: consultedPost } = usePost(consultedPostId);
+  const consultedPostBaseMetadata =
+    consultedPost &&
+    zodTryParseJSON(zodSocialFeedCommonMetadata, consultedPost.metadata);
+  // TODO: if (consultedPostId && consultedPostBaseMetadata?.location) {
+  //   center to this location and open post popup
+  // }
 
   const markers: MarkerPopup[] = useMemo(() => {
     if (!posts) return [];
@@ -170,7 +180,11 @@ export const Map: FC<MapProps> = ({
       ]}
     >
       <MapContainer
-        center={creatingPostLocation || locationToCenter}
+        center={
+          creatingPostLocation ||
+          consultedPostBaseMetadata?.location ||
+          DEFAULT_MAP_POSITION
+        }
         zoom={12}
         attributionControl={false}
       >

@@ -103,7 +103,7 @@ export const SocialThreadCard: React.FC<{
           <SocialCardHeader
             authorId={localPost.authorId}
             createdAt={post.createdAt}
-            postLocation={postMetadata?.location}
+            postWithLocationId={postMetadata?.location && localPost.id}
           />
 
           <SpacerColumn size={1.5} />

@@ -11,20 +11,18 @@ import { SpacerRow } from "../../spacer";
 import { LocationButton } from "@/components/socialFeed/NewsFeed/LocationButton";
 import { UserDisplayName } from "@/components/user/UserDisplayName";
 import { Username } from "@/components/user/Username";
-import { locationToString } from "@/utils/feed/map";
 import { useAppNavigation } from "@/utils/navigation";
 import { neutral77, neutralFF } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
-import { CustomLatLngExpression } from "@/utils/types/feed";
 
 // ====== Handle author image and username, date
 export const SocialCardHeader: FC<{
   authorId: string;
   createdAt?: number;
   isWrapped?: boolean;
-  postLocation?: CustomLatLngExpression;
-}> = ({ authorId, createdAt, isWrapped, postLocation }) => {
+  postWithLocationId?: string;
+}> = ({ authorId, createdAt, isWrapped, postWithLocationId }) => {
   const { width } = useWindowDimensions();
   const navigation = useAppNavigation();
 
@@ -100,14 +98,14 @@ export const SocialCardHeader: FC<{
           </View>
         </View>
 
-        {postLocation && (
+        {postWithLocationId && (
           <>
             <SpacerRow size={2} />
             <LocationButton
               onPress={() =>
                 navigation.navigate("Feed", {
                   tab: "map",
-                  center: locationToString(postLocation),
+                  post: postWithLocationId,
                 })
               }
               stroke={neutralFF}

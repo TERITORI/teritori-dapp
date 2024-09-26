@@ -59,7 +59,7 @@ export type RootStackParamList = {
   Feed?: {
     tab: keyof typeof feedsTabItems;
     network?: string;
-    center?: string;
+    post?: string;
   };
   FeedNewArticle:
     | (NewPostFormValues & {
