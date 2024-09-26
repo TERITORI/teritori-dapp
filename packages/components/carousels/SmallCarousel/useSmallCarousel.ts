@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { StyleSheet } from "react-native";
 import {
   ICarouselInstance,
@@ -47,20 +47,16 @@ export const useSmallCarousel = (
     }
   };
 
-  const isPrevButtonEnabled = useMemo(
-    () =>
-      // The button always enabled if loop carousel
-      (isLoop ||
-        // If not loop, the button is disabled if the carousel is at start
-        currentIndex > 0) &&
-      // The button is always disabled if all items are visible (without doing next/prev)
-      data.length > step,
-    [isLoop, currentIndex, data.length, step],
-  );
-  const isNextButtonEnabled = useMemo(
-    () => (isLoop || currentIndex < data.length - 1) && data.length > step,
-    [isLoop, currentIndex, data.length, step],
-  );
+  const isPrevButtonEnabled =
+    // The button always enabled if loop carousel
+    (isLoop ||
+      // If not loop, the button is disabled if the carousel is at start
+      currentIndex > 0) &&
+    // The button is always disabled if all items are visible (without doing next/prev)
+    data.length > step;
+
+  const isNextButtonEnabled =
+    (isLoop || currentIndex < data.length - 1) && data.length > step;
 
   return {
     carouselRef,
