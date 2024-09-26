@@ -14,11 +14,9 @@ const (
 
 // well known permissions
 const (
-	PERM_ALL               = "all"
-	PERM_ADD_ROLE          = "add:role"
-	PERM_REMOVE_ROLE       = "remove:role"
-	PERM_ADD_PERMISSION    = "add:permission"
-	PERM_REMOVE_PERMISSION = "remove:permission"
+	PERM_ALL         = "all"
+	PERM_ADD_ROLE    = "add:role"
+	PERM_REMOVE_ROLE = "remove:role"
 )
 
 type Role struct {
@@ -200,6 +198,27 @@ func (rm *RoleManager) RemoveRoleToUser(roleName string, user std.Address) {
 func (rm RoleManager) HasRole(user std.Address, roleName string) bool {
 	u := rm.mustGetUser(user)
 	return u.hasRole(roleName)
+}
+
+func (rm RoleManager) NewPermission(roleName, permission string) {
+	caller := std.PrevRealm().Addr()
+	isOwner := rm.owner.Owner().String() == caller.String()
+
+	if !isOwner {
+		panic("only the owner can create a new permission")
+	}
+
+	if !rm.roles.Has(roleName) {
+		panic("role doesn't exists")
+	}
+
+	role := rm.mustGetRole(roleName)
+
+	if role.permissions.Has(permission) {
+		panic("permission already exists")
+	}
+
+	role.permissions.Set(permission, struct{}{})
 }
 
 func (rm RoleManager) HasPermission(user std.Address, permission string) bool {

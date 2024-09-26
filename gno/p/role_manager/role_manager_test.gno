@@ -137,3 +137,20 @@ func TestRemoveRoleToUser(t *testing.T) {
 		t.Errorf("HasRole(alice, ROLE_USER) = %v, want %v", rm.HasRole(alice, ROLE_USER), true)
 	}
 }
+
+func TestNewPermission(t *testing.T) {
+	rm := NewWithAddress(bob)
+	std.TestSetOrigCaller(bob)
+
+	rm.NewPermission(ROLE_USER, "perm1")
+	rm.AddRoleToUser(ROLE_USER, alice)
+	if !rm.HasPermission(alice, "perm1") {
+		t.Errorf("permissions[0] = %v, want %v", rm.HasPermission(alice, "perm1"), true)
+	}
+	if !rm.HasPermission(alice, "perm1") {
+		t.Errorf("HasPermission(alice, perm1) = %v, want %v", rm.HasPermission(alice, "perm1"), true)
+	}
+	if rm.HasPermission(alice, "perm2") {
+		t.Errorf("HasPermission(alice, perm2) = %v, want %v", rm.HasPermission(alice, "perm2"), false)
+	}
+}
