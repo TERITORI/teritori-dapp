@@ -171,31 +171,31 @@ func (rm *RoleManager) AddRoleToUser(roleName string, user std.Address) {
 	role.users.Set(user.String(), target)
 }
 
-// func (rm *RoleManager) RemoveRoleToUser(roleName string, user std.Address) {
-// 	// check if the caller is the owner or has the permission to remove a role
-// 	caller := std.PrevRealm().Addr()
-// 	isOwner := rm.owner.Owner().String() == caller.String()
+func (rm *RoleManager) RemoveRoleToUser(roleName string, user std.Address) {
+	caller := std.PrevRealm().Addr()
+	isOwner := rm.owner.Owner().String() == caller.String()
 
-// 	if !isOwner {
-// 		if !rm.HasPermission(caller, PERM_REMOVE_ROLE) {
-// 			panic("caller doesn't have the permission to remove role")
-// 		}
+	if !isOwner {
+		if !rm.HasPermission(caller, PERM_REMOVE_ROLE) {
+			panic("caller doesn't have the permission to remove role")
+		}
 
-// 		caller := rm.mustGetUser(caller)
-// 		if !caller.highestRole.isHigherThan(roleName) {
-// 			panic("caller cannot remove a role with a higher/same level in the hierarchy than its own highest role")
-// 		}
-// 	}
+		caller := rm.mustGetUser(caller)
+		if !caller.highestRole.isHigherThan(roleName) {
+			panic("caller cannot remove a role with a higher/same level in the hierarchy than its own highest role")
+		}
+	}
 
-// 	target := rm.mustGetUser(user)
-// 	role := rm.mustGetRole(roleName)
-// 	if !target.hasRole(roleName) {
-// 		panic("user doesn't have the role")
-// 	}
+	target := rm.mustGetUser(user)
+	role := rm.mustGetRole(roleName)
+	if !target.hasRole(roleName) {
+		panic("user doesn't have the role")
+	}
 
-// 	target.roles.Remove(roleName)
-
-// }
+	target.roles.Remove(roleName)
+	role.users.Remove(user.String())
+	target.refreshHighestRole()
+}
 
 func (rm RoleManager) HasRole(user std.Address, roleName string) bool {
 	u := rm.mustGetUser(user)
@@ -260,7 +260,7 @@ func (u *User) refreshHighestRole() {
 		if !ok {
 			return false
 		}
-		if highestRole == nil || highestRole.isHigherThan(role.name) {
+		if highestRole == nil || role.isHigherThan(highestRole.name) {
 			highestRole = role
 		}
 		return false
