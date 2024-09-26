@@ -148,9 +148,7 @@ export const NewsFeedInput = React.forwardRef<
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
     const [premium, setPremium] = useState(false);
     const [isMapShown, setIsMapShown] = useState(false);
-    const [location, setLocation] = useState<
-      CustomLatLngExpression | undefined
-    >();
+    const [location, setLocation] = useState<CustomLatLngExpression>();
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
         defaultValues: {

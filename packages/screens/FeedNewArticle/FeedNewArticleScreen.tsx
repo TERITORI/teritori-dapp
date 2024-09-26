@@ -96,9 +96,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const { setToast } = useFeedbacks();
   const navigation = useAppNavigation();
   const scrollViewRef = useRef<ScrollView>(null);
-  const [location, setLocation] = useState<
-    CustomLatLngExpression | undefined
-  >();
+  const [location, setLocation] = useState<CustomLatLngExpression>();
   const [isMapShown, setIsMapShown] = useState(false);
   const {
     control,

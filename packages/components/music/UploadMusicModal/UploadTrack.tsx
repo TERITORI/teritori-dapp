@@ -56,9 +56,7 @@ const UPLOAD_ALBUM_MODAL_WIDTH = 564;
 
 export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
   const [isMapShown, setIsMapShown] = useState(false);
-  const [location, setLocation] = useState<
-    CustomLatLngExpression | undefined
-  >();
+  const [location, setLocation] = useState<CustomLatLngExpression>();
 
   const { setToast } = useFeedbacks();
   const selectedNetwork = useSelectedNetworkInfo();
