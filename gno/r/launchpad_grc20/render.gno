@@ -48,16 +48,15 @@ func renderTokenPage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write("## Usage\n")
 	res.Write("You can create your own token by referring to the help section in the documentation and using the NewToken function.\nAfter creating your token, you can manage it easily through the provided interface.\nTo view details of any token created by this factory, simply visit the page ``:token/{name}``, replacing ``{name}`` with the token's name.\n")
 
-	if len(lastTokensIDcreated) > 0 {
+	if len(lastTokensCreated) > 0 {
 		res.Write("## Last tokens created\n")
 
-		for _, tokenIDs := range lastTokensIDcreated {
-			token := mustGetToken(tokenIDs)
+		for _, token := range lastTokensCreated {
 			res.Write(ufmt.Sprintf("### Name: %s - Symbol: %s\n", token.banker.GetName(), token.banker.GetSymbol()))
 			res.Write(ufmt.Sprintf("#### Total Supply: %d %s\n", token.banker.TotalSupply(), token.banker.GetSymbol()))
 			res.Write(ufmt.Sprintf("#### Decimals: %d\n", token.banker.GetDecimals()))
 			res.Write(ufmt.Sprintf("#### Admin: %s\n\n", token.admin.Owner().String()))
-			res.Write(ufmt.Sprintf("> Link: [:token/%s](launchpad_grc20:token/%s)\n\n", tokenIDs, tokenIDs))
+			res.Write(ufmt.Sprintf("> Link: [:token/%s](launchpad_grc20:token/%s)\n\n", token.banker.GetName(), token.banker.GetName()))
 		}
 	}
 	renderFooter(res, "")

@@ -3,6 +3,7 @@ package launchpad_grc20
 import (
 	"encoding/hex"
 	"std"
+	"strconv"
 	"time"
 
 	"gno.land/p/demo/avl"
@@ -15,6 +16,7 @@ import (
 
 type Sale struct {
 	token          *Token
+	id             seqid.ID
 	startTimestamp int64
 	endTimestamp   int64
 	pricePerToken  uint64
@@ -66,6 +68,10 @@ func NewSale(tokenName, merkleRoot string, startTimestamp, endTimestamp int64, p
 		panic("price per token must be greater than 0")
 	}
 
+	if limitPerAddr == 0 {
+		panic("limit per address must be greater than 0")
+	}
+
 	realmAddr := std.CurrentRealm().Addr()
 	if mintToken {
 		token.banker.Mint(realmAddr, maxGoal)
@@ -76,8 +82,11 @@ func NewSale(tokenName, merkleRoot string, startTimestamp, endTimestamp int64, p
 		}
 	}
 
+	saleID := nextSaleID.Next()
+
 	sale := Sale{
 		token:          token,
+		id:             saleID,
 		startTimestamp: startTimestamp,
 		endTimestamp:   endTimestamp,
 		pricePerToken:  pricePerToken,
@@ -90,7 +99,6 @@ func NewSale(tokenName, merkleRoot string, startTimestamp, endTimestamp int64, p
 		merkleRoot:     merkleRoot,
 	}
 
-	saleID := nextSaleID.Next()
 	token.SalesIDs = append(token.SalesIDs, saleID)
 
 	sales.Set(saleID.String(), &sale)
@@ -155,15 +163,6 @@ func Finalize(saleID uint64) {
 	}
 
 	sale.finalized = true
-}
-
-func mustGetSale(saleID uint64) *Sale {
-	id := seqid.ID(saleID)
-	sale, exists := sales.Get(id.String())
-	if !exists {
-		panic("sale not found")
-	}
-	return sale.(*Sale)
 }
 
 func (s *Sale) isOnGoing() bool {
@@ -266,4 +265,40 @@ func (s *Sale) payAllBuyers() {
 		}
 		return false
 	})
+}
+
+func (s *Sale) ToJSON() *json.Node {
+	return json.ObjectNode("", map[string]*json.Node{
+		"id":             json.StringNode("", ufmt.Sprintf("%d", uint64(s.id))),
+		"tokenName":      json.StringNode("", s.token.banker.GetName()),
+		"pricePerToken":  json.StringNode("", strconv.FormatUint(s.pricePerToken, 10)),
+		"limitPerAddr":   json.StringNode("", strconv.FormatUint(s.limitPerAddr, 10)),
+		"minGoal":        json.StringNode("", strconv.FormatUint(s.minGoal, 10)),
+		"maxGoal":        json.StringNode("", strconv.FormatUint(s.maxGoal, 10)),
+		"startTimestamp": json.StringNode("", strconv.FormatInt(s.startTimestamp, 10)),
+		"endTimestamp":   json.StringNode("", strconv.FormatInt(s.endTimestamp, 10)),
+	})
+}
+
+func mustGetSale(saleID uint64) *Sale {
+	id := seqid.ID(saleID)
+	sale, exists := sales.Get(id.String())
+	if !exists {
+		panic("sale not found")
+	}
+	return sale.(*Sale)
+}
+
+func GetLastSalesJSON() string {
+	nodes := make([]*json.Node, 0, 10)
+	for i := int(nextSaleID); i > int(nextSaleID)-10; i-- {
+		saleRaw, exists := sales.Get(seqid.ID(i).String())
+		if !exists {
+			continue
+		}
+
+		sale := saleRaw.(*Sale)
+		nodes = append(nodes, sale.ToJSON())
+	}
+	return json.ArrayNode("", nodes).String()
 }

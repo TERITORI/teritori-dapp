@@ -1,29 +1,30 @@
 import React from "react";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
 
-import ChevronRightSvg from "../../../../assets/icons/chevron-right.svg";
+import ChevronRightSvg from "../../../assets/icons/chevron-right.svg";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
-import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import {
   neutral17,
   neutral22,
+  neutral33,
   neutral77,
   primaryColor,
 } from "@/utils/style/colors";
 import { fontSemibold12, fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-export interface LaunchpadButtonProps {
+export interface LargeBoxButtonProps {
   url?: string;
   buttonTitle: string;
   title: string;
   description: string;
 }
 
-export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
+export const LargeBoxButton: React.FC<LargeBoxButtonProps> = ({
   title,
   description,
   buttonTitle,
@@ -34,11 +35,7 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
       onPress={url ? () => Linking.openURL(url) : undefined}
       style={styles.fill}
     >
-      <LegacyTertiaryBox
-        style={styles.fill}
-        fullWidth
-        mainContainerStyle={styles.container}
-      >
+      <TertiaryBox style={styles.box}>
         <View style={styles.detailContainer}>
           <BrandText>{title}</BrandText>
           <SpacerColumn size={3} />
@@ -51,7 +48,7 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
             <SVG source={ChevronRightSvg} />
           </View>
         </View>
-      </LegacyTertiaryBox>
+      </TertiaryBox>
     </Pressable>
   );
 };
@@ -61,6 +58,16 @@ export const LaunchpadButton: React.FC<LaunchpadButtonProps> = ({
 const styles = StyleSheet.create({
   fill: {
     flex: 1,
+  },
+  box: {
+    width: "100%",
+    minHeight: 156,
+    flexDirection: "row",
+    padding: layout.spacing_x2,
+    alignItems: "flex-start",
+    backgroundColor: neutral17,
+    borderWidth: 1,
+    borderColor: neutral33,
   },
   container: {
     width: "100%",

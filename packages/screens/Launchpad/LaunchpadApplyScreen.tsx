@@ -2,20 +2,20 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import { LaunchpadBanner } from "./components/LaunchpadBanner";
-import {
-  LaunchpadButton,
-  LaunchpadButtonProps,
-} from "./components/LaunchpadButton";
 
 import { BrandText } from "@/components/BrandText";
 import { OmniLink } from "@/components/OmniLink";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import {
+  LargeBoxButton,
+  LargeBoxButtonProps,
+} from "@/components/buttons/LargeBoxButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral77 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 
-const BUTTONS: LaunchpadButtonProps[] = [
+const BUTTONS: LargeBoxButtonProps[] = [
   {
     title: "Candidate",
     description: "Pitch your project to launchpad managers & community.",
@@ -52,16 +52,16 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
       </BrandText>
       <SpacerColumn size={4} />
       <View style={styles.buttonsContainer}>
-        <LaunchpadButton
+        <LargeBoxButton
           {...BUTTONS[0]}
           url="https://airtable.com/shr1kU7kXW0267gNV"
         />
         <SpacerRow size={1.2} />
         <OmniLink noHoverEffect to={{ screen: "LaunchpadCreate" }}>
-          <LaunchpadButton {...BUTTONS[1]} />
+          <LargeBoxButton {...BUTTONS[1]} />
         </OmniLink>
         <SpacerRow size={1.2} />
-        <LaunchpadButton {...BUTTONS[2]} />
+        <LargeBoxButton {...BUTTONS[2]} />
       </View>
     </ScreenContainer>
   );
