@@ -56,6 +56,12 @@ func NewWithAddress(addr std.Address) *RoleManager {
 		next:        nil,
 		prev:        nil,
 	}
+
+	wellknownPerms := []string{PERM_ALL, PERM_ADD_ROLE, PERM_REMOVE_ROLE}
+	for _, wellknownPerm := range wellknownPerms {
+		roleManager.permissions.Set(wellknownPerm, struct{}{})
+	}
+
 	roleManager.roles.Set(ROLE_USER, userRole)
 
 	return roleManager
@@ -143,7 +149,7 @@ func (rm *RoleManager) AddRoleToUser(roleName string, user std.Address) {
 	isOwner := rm.owner.Owner().String() == caller.String()
 
 	if !isOwner {
-		if !rm.HasPermission(caller, PERM_ADD_ROLE) {
+		if !rm.UserHasPermission(caller, PERM_ADD_ROLE) {
 			panic("caller doesn't have the permission to add role")
 		}
 
@@ -184,7 +190,7 @@ func (rm *RoleManager) RemoveRoleToUser(roleName string, user std.Address) {
 	isOwner := rm.owner.Owner().String() == caller.String()
 
 	if !isOwner {
-		if !rm.HasPermission(caller, PERM_REMOVE_ROLE) {
+		if !rm.UserHasPermission(caller, PERM_REMOVE_ROLE) {
 			panic("caller doesn't have the permission to remove role")
 		}
 
@@ -205,7 +211,11 @@ func (rm *RoleManager) RemoveRoleToUser(roleName string, user std.Address) {
 	target.refreshHighestRole()
 }
 
-func (rm RoleManager) HasRole(user std.Address, roleName string) bool {
+func (rm RoleManager) HasRole(roleName string) bool {
+	return rm.roles.Has(roleName)
+}
+
+func (rm RoleManager) UserHasRole(user std.Address, roleName string) bool {
 	u := rm.mustGetUser(user)
 	return u.hasRole(roleName)
 }
@@ -233,6 +243,13 @@ func (rm *RoleManager) DeletePermission(permission string) {
 
 	if !rm.permissions.Has(permission) {
 		panic("permission doesn't exists")
+	}
+
+	wellknownPerms := []string{PERM_ALL, PERM_ADD_ROLE, PERM_REMOVE_ROLE}
+	for _, wellknownPerm := range wellknownPerms {
+		if permission == wellknownPerm {
+			panic("cannot remove a well-known permission")
+		}
 	}
 
 	// remove the permission from all roles
@@ -297,7 +314,11 @@ func (rm *RoleManager) RemovePermissionFromRole(roleName, permission string) {
 	role.permissions.Remove(permission)
 }
 
-func (rm RoleManager) HasPermission(user std.Address, permission string) bool {
+func (rm RoleManager) HasPermission(permission string) bool {
+	return rm.permissions.Has(permission)
+}
+
+func (rm RoleManager) UserHasPermission(user std.Address, permission string) bool {
 	u := rm.mustGetUser(user)
 	return u.hasPermission(permission)
 }
