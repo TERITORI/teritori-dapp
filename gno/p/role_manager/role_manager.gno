@@ -104,7 +104,7 @@ func (rm *RoleManager) NewRole(roleName string, permissions []string, lowerRoleN
 	rm.roles.Set(roleName, role)
 }
 
-func (rm *RoleManager) RemoveRole(roleName string) {
+func (rm *RoleManager) DeleteRole(roleName string) {
 	caller := std.PrevRealm().Addr()
 	isOwner := rm.owner.Owner().String() == caller.String()
 
@@ -127,13 +127,12 @@ func (rm *RoleManager) RemoveRole(roleName string) {
 	rm.roles.Remove(roleName)
 
 	// remove the role from all users && update the highest role of the users
+	for _, user := range role.users {
+		u := rm.mustGetUser(user)
+		u.roles.Remove(roleName)
+		u.refreshHighestRole()
+	}
 	role.users = []std.Address{}
-	rm.users.Iterate("", "", func(key string, value interface{}) bool {
-		user := value.(*User)
-		user.roles.Remove(roleName)
-		user.refreshHighestRole()
-		return false
-	})
 }
 
 func (rm *RoleManager) AddRoleToUser(roleName string, user std.Address) {

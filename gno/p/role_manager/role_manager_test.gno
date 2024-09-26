@@ -71,10 +71,36 @@ func TestAddRoleToUser(t *testing.T) {
 		t.Errorf("HasRole(alice, role1) = %v, want %v", rm.HasRole(alice, "role1"), true)
 	}
 
+	if !rm.HasRole(alice, ROLE_USER) {
+		t.Errorf("HasRole(alice, ROLE_USER) = %v, want %v", rm.HasRole(alice, ROLE_USER), true)
+	}
+
 	if !rm.HasPermission(alice, "perm1") {
 		t.Errorf("HasPermission(alice, perm1) = %v, want %v", rm.HasPermission(alice, "perm1"), true)
 	}
 	if !role.isHigherThan(ROLE_USER) {
 		t.Errorf("role.isHigherThan(ROLE_USER) = %v, want %v", role.isHigherThan(ROLE_USER), true)
+	}
+}
+
+func TestDeleteRole(t *testing.T) {
+	rm := NewWithAddress(bob)
+	std.TestSetOrigCaller(bob)
+	rm.NewRole("role1", []string{"perm1", "perm2"}, ROLE_USER)
+	rm.AddRoleToUser("role1", alice)
+	rm.DeleteRole("role1")
+	userRole := rm.mustGetRole(ROLE_USER)
+	aliceUser := rm.mustGetUser(alice)
+	if rm.HasRole(alice, "role1") {
+		t.Errorf("HasRole(alice, role1) = %v, want %v", rm.HasRole(alice, "role1"), false)
+	}
+	if rm.HasPermission(alice, "perm1") {
+		t.Errorf("HasPermission(alice, perm1) = %v, want %v", rm.HasPermission(alice, "perm1"), false)
+	}
+	if aliceUser.highestRole != userRole {
+		t.Errorf("alice.highestRole = %v, want %v", aliceUser.highestRole, userRole)
+	}
+	if userRole.next != nil {
+		t.Errorf("userRole.next = %v, want %v", userRole.next, nil)
 	}
 }
