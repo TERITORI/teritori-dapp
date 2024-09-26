@@ -158,7 +158,9 @@ func (rm *RoleManager) AddRoleToUser(roleName string, user std.Address) {
 			highestRole: role,
 		}
 		if roleName != ROLE_USER {
-			target.roles.Set(ROLE_USER, role) // add the user role to the user by default
+			userRole := rm.mustGetRole(ROLE_USER)
+			target.roles.Set(ROLE_USER, userRole) // add the user role to the user by default
+			userRole.users = append(userRole.users, user)
 		}
 		target.roles.Set(roleName, role)
 		rm.users.Set(user.String(), target)
@@ -229,7 +231,7 @@ func (u User) setHighestRole(role *Role) {
 	}
 }
 
-func (u User) refreshHighestRole() {
+func (u *User) refreshHighestRole() {
 	var highestRole *Role
 	u.roles.Iterate("", "", func(key string, value interface{}) bool {
 		role, ok := value.(*Role)

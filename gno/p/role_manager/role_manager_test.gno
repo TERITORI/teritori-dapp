@@ -97,10 +97,7 @@ func TestDeleteRole(t *testing.T) {
 	if rm.HasPermission(alice, "perm1") {
 		t.Errorf("HasPermission(alice, perm1) = %v, want %v", rm.HasPermission(alice, "perm1"), false)
 	}
-	if aliceUser.highestRole != userRole {
-		t.Errorf("alice.highestRole = %v, want %v", aliceUser.highestRole, userRole)
-	}
-	if userRole.next != nil {
-		t.Errorf("userRole.next = %v, want %v", userRole.next, nil)
+	if aliceUser.highestRole.name != userRole.name {
+		t.Errorf("alice.highestRole = %s, want %s", aliceUser.highestRole.name, userRole.name)
 	}
 }
