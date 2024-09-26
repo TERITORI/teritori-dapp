@@ -15,20 +15,18 @@ const (
 // well known permissions
 const (
 	PERM_ALL               = "all"
-	PERM_ADD_ROLE          = "add-role"
-	PERM_REMOVE_ROLE       = "remove-role"
-	PERM_ADD_PERMISSION    = "add-permission"
-	PERM_REMOVE_PERMISSION = "remove-permission"
-	PERM_ADD_USER          = "add-user"
-	PERM_REMOVE_USER       = "remove-user"
+	PERM_ADD_ROLE          = "add:role"
+	PERM_REMOVE_ROLE       = "remove:role"
+	PERM_ADD_PERMISSION    = "add:permission"
+	PERM_REMOVE_PERMISSION = "remove:permission"
 )
 
 type Role struct {
 	name        string
-	permissions []string
-	users       []std.Address // is it pertinent ? the use case is to list all users with a role without having to iterate over all users
-	next        *Role         // The next role in the hierarchy -> Usage of linked list to allow to know the role hierarchy
-	prev        *Role         // The previous role in the hierarchy -> Usage of linked list to allow to know the role hierarchy
+	permissions *avl.Tree // permission name -> struct{}
+	users       *avl.Tree // std.address -> *User
+	next        *Role     // The next role in the hierarchy -> Usage of linked list to allow to know the role hierarchy
+	prev        *Role     // The previous role in the hierarchy -> Usage of linked list to allow to know the role hierarchy
 }
 
 type User struct {
@@ -51,22 +49,12 @@ func NewWithAddress(addr std.Address) *RoleManager {
 
 	userRole := &Role{
 		name:        ROLE_USER,
-		permissions: []string{},
-		users:       []std.Address{},
+		permissions: avl.NewTree(),
+		users:       avl.NewTree(),
 		next:        nil,
 		prev:        nil,
 	}
 	roleManager.roles.Set(ROLE_USER, userRole)
-
-	permissions := []string{
-		PERM_ALL,
-		PERM_ADD_ROLE,
-		PERM_REMOVE_ROLE,
-		PERM_ADD_PERMISSION,
-		PERM_REMOVE_PERMISSION,
-		PERM_ADD_USER,
-		PERM_REMOVE_USER,
-	}
 
 	return roleManager
 }
@@ -90,10 +78,14 @@ func (rm *RoleManager) NewRole(roleName string, permissions []string, lowerRoleN
 	lowerRole := rm.mustGetRole(lowerRoleName)
 	role := &Role{
 		name:        roleName,
-		permissions: permissions,
-		users:       []std.Address{},
+		permissions: avl.NewTree(),
+		users:       avl.NewTree(),
 		next:        lowerRole.next,
 		prev:        lowerRole,
+	}
+
+	for _, permission := range permissions {
+		role.permissions.Set(permission, struct{}{})
 	}
 
 	// add the new role to the linked list between the lower role and the next role
@@ -127,12 +119,15 @@ func (rm *RoleManager) DeleteRole(roleName string) {
 	rm.roles.Remove(roleName)
 
 	// remove the role from all users && update the highest role of the users
-	for _, user := range role.users {
-		u := rm.mustGetUser(user)
-		u.roles.Remove(roleName)
-		u.refreshHighestRole()
-	}
-	role.users = []std.Address{}
+	role.users.Iterate("", "", func(key string, value interface{}) bool {
+		user, ok := value.(*User)
+		if !ok {
+			return false
+		}
+		user.roles.Remove(roleName)
+		user.refreshHighestRole()
+		return false
+	})
 }
 
 func (rm *RoleManager) AddRoleToUser(roleName string, user std.Address) {
@@ -146,34 +141,61 @@ func (rm *RoleManager) AddRoleToUser(roleName string, user std.Address) {
 
 		caller := rm.mustGetUser(caller)
 		if !caller.highestRole.isHigherThan(roleName) {
-			panic("caller cannot add a role with a higher level in the hierarchy than its own highest role")
+			panic("caller cannot add a role with a higher/same level in the hierarchy than its own highest role")
 		}
 	}
 
 	role := rm.mustGetRole(roleName)
 	targetRaw, exists := rm.users.Get(user.String())
+	var target *User
 	if !exists {
-		target := &User{
+		target = &User{
 			roles:       avl.NewTree(),
 			highestRole: role,
 		}
 		if roleName != ROLE_USER {
 			userRole := rm.mustGetRole(ROLE_USER)
 			target.roles.Set(ROLE_USER, userRole) // add the user role to the user by default
-			userRole.users = append(userRole.users, user)
+			userRole.users.Set(user.String(), target)
 		}
 		target.roles.Set(roleName, role)
 		rm.users.Set(user.String(), target)
 	} else {
-		target := targetRaw.(*User)
+		target = targetRaw.(*User)
 		if target.hasRole(roleName) {
 			panic("user already has the role")
 		}
 		target.roles.Set(roleName, role)
 		target.setHighestRole(role)
 	}
-	role.users = append(role.users, user)
+	role.users.Set(user.String(), target)
 }
+
+// func (rm *RoleManager) RemoveRoleToUser(roleName string, user std.Address) {
+// 	// check if the caller is the owner or has the permission to remove a role
+// 	caller := std.PrevRealm().Addr()
+// 	isOwner := rm.owner.Owner().String() == caller.String()
+
+// 	if !isOwner {
+// 		if !rm.HasPermission(caller, PERM_REMOVE_ROLE) {
+// 			panic("caller doesn't have the permission to remove role")
+// 		}
+
+// 		caller := rm.mustGetUser(caller)
+// 		if !caller.highestRole.isHigherThan(roleName) {
+// 			panic("caller cannot remove a role with a higher/same level in the hierarchy than its own highest role")
+// 		}
+// 	}
+
+// 	target := rm.mustGetUser(user)
+// 	role := rm.mustGetRole(roleName)
+// 	if !target.hasRole(roleName) {
+// 		panic("user doesn't have the role")
+// 	}
+
+// 	target.roles.Remove(roleName)
+
+// }
 
 func (rm RoleManager) HasRole(user std.Address, roleName string) bool {
 	u := rm.mustGetUser(user)
@@ -257,15 +279,9 @@ func (u User) hasPermission(permission string) bool {
 			return false
 		}
 
-		for _, p := range role.permissions {
-			if p == permission {
-				found = true
-				return true
-			}
-			if p == PERM_ALL {
-				found = true
-				return true
-			}
+		if role.permissions.Has(permission) {
+			found = true
+			return true
 		}
 
 		return false
