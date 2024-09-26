@@ -235,6 +235,17 @@ func (rm *RoleManager) DeletePermission(permission string) {
 		panic("permission doesn't exists")
 	}
 
+	// remove the permission from all roles
+	rm.roles.Iterate("", "", func(key string, value interface{}) bool {
+		role, ok := value.(*Role)
+		if !ok {
+			return false
+		}
+		if role.permissions.Has(permission) {
+			role.permissions.Remove(permission)
+		}
+	})
+
 	rm.permissions.Remove(permission)
 }
 
