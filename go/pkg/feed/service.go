@@ -257,7 +257,7 @@ func (s *FeedService) getPostsWithLocationFilter(networkID string, locationFilte
 }
 
 func (s *FeedService) getPostsCountWithLocationFilter(networkID string, locationFilter *locationQueryData) (int64, error) {
-	cachekey := fmt.Sprintf("%s/%s", networkID, locationFilter.cacheKey())
+	cachekey := fmt.Sprintf("%s/%s", networkID, locationFilter.countCacheKey())
 	data, ok := s.cache.Get(cachekey)
 	if ok {
 		return data.(int64), nil
