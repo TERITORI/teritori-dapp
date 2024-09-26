@@ -10,6 +10,7 @@ export const gnoTest4Network: GnoNetworkInfo = {
     NetworkFeature.SocialFeed,
     NetworkFeature.UPP,
     NetworkFeature.GnoProjectManager,
+    NetworkFeature.NameService,
   ],
   featureObjects: [
     {

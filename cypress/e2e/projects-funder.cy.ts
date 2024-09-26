@@ -1,4 +1,8 @@
-import { changeSelectedMilestoneStatus, changeTestUser } from "./lib";
+import {
+  changeSelectedMilestoneStatus,
+  changeTestUser,
+  connectWallet,
+} from "./lib";
 
 describe("Funder proposer full flow", () => {
   it("works", () => {
@@ -14,9 +18,7 @@ describe("Funder proposer full flow", () => {
 
     cy.contains("Create a Project").click();
 
-    cy.contains("Connect wallet").click({ force: true });
-    cy.get("div[data-testid=connect-gnotest-wallet]").click({ force: true });
-    cy.contains("Connect wallet").should("not.exist");
+    connectWallet();
     changeTestUser("alice");
 
     // first step: basic project info
