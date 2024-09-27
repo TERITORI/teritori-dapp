@@ -35,7 +35,6 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   contractExplorer: "https://gnoscan.io/realms/details?path=$address",
   testnet: true,
   backendEndpoint: "http://localhost:9090",
-  // backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   vaultContractAddress: "",
   daoRegistryPkgPath: "gno.land/r/teritori/dao_registry",
   socialFeedsPkgPath: "gno.land/r/teritori/social_feeds",
