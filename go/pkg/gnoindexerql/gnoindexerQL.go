@@ -444,7 +444,7 @@ func GetPostTransactions(
 		OpName: "GetPostTransactions",
 		Query: `
 query GetPostTransactions ($StartBlock: Int!, $PkgPath: String!) {
-	transactions(filter: {success:true,messages:{vm_param:{exec:{func:"CreatePost",pkg_path:$PkgPath}}},from_block_height:$StartBlock}) {
+	transactions(filter: {success:true,message:{vm_param:{exec:{func:"CreatePost",pkg_path:$PkgPath}}},from_block_height:$StartBlock}) {
 		index
 		hash
 		success

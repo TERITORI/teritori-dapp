@@ -2,7 +2,7 @@ query GetPostTransactions($StartBlock: Int!, $PkgPath: String!) {
   transactions(
     filter: {
       success: true
-      messages: {
+      message: {
         vm_param: { exec: { func: "CreatePost", pkg_path: $PkgPath } }
       }
       from_block_height: $StartBlock
