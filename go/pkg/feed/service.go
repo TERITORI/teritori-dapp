@@ -281,7 +281,7 @@ func (s *FeedService) getPostsCountWithLocationFilter(networkID string, location
 const agregatedPostQuery = `
 with post_with_cluster as (
 	select *,(p.lat/$5)::int lat_cluster,(p.lng/$6)::int long_cluster from posts p 
-	where network_id = $7 p.lat_int >= $2 and p.lat_int <=$1 and p.lng_int <=$3 and p.lng_int >=$4
+	where (network_id = '' or network_id = $7) and p.lat_int >= $2 and p.lat_int <=$1 and p.lng_int <=$3 and p.lng_int >=$4
 )
 select avg(post_with_cluster.lat) lat ,avg(post_with_cluster.lng) long,count(*) total_points, 
 post_with_cluster.lat_cluster, post_with_cluster.long_cluster
