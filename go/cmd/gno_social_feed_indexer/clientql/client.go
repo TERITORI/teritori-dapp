@@ -78,7 +78,8 @@ func (client *IndexerQL) getPostWithData(data *gnoindexerql.GetPostTransactionsT
 	var metadata metadata
 	metadataBytes := []byte(data.Args[3])
 	if err := json.Unmarshal(metadataBytes, &metadata); err != nil {
-		client.logger.Warn("failed to unmarshal metadata", zap.Error(err))
+		// we ignore malformed metadata since users can put anything in this field
+		client.logger.Warn("failed to unmarshal post metadata", zap.Error(err))
 		metadataBytes = []byte("{}")
 	}
 
@@ -103,8 +104,6 @@ func (client *IndexerQL) getPostWithData(data *gnoindexerql.GetPostTransactionsT
 		post.Lng = location[1]
 		post.LatInt = int(location[0])
 		post.LngInt = int(location[1])
-	} else {
-		client.logger.Warn("failed to get post location")
 	}
 
 	return post, nil
