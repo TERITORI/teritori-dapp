@@ -188,6 +188,14 @@ func (h *Handler) createPost(
 		}
 	}
 
+	var lat, lng float64
+	iloc, ok := metadataJSON["location"]
+	if ok {
+		if loc, ok := iloc.([]float64); ok && len(loc) >= 2 {
+			lat, lng = loc[0], loc[1]
+		}
+	}
+
 	data, err := json.Marshal(metadataJSON)
 	if err != nil {
 		return err
@@ -209,6 +217,10 @@ func (h *Handler) createPost(
 		CreatedAt:            createdAt.Unix(),
 		IsBot:                isBot,
 		PremiumLevel:         premium,
+		Lat:                  lat,
+		Lng:                  lng,
+		LatInt:               int(lat),
+		LngInt:               int(lng),
 	}
 
 	if err := h.db.Create(&post).Error; err != nil {
