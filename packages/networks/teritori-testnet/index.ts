@@ -25,9 +25,9 @@ const nftsBurnerFeature: CosmWasmNFTsBurner = {
 const cosmwasmLaunchpadFeature: CosmWasmLaunchpad = {
   type: NetworkFeature.NFTLaunchpad,
   launchpadContractAddress:
-    "tori1mas00kamdty6f7halxwm95y8uvzf46yfpmg8mwfyf9ftf7tj7upq0ex6n9",
-  launchpadEndpoint: "",
-  codeId: 0,
+    "tori1gjww784k65v7yjv992uv025dy0yfekrkqnch0ukj5dmg0ku90y8q2etwq8",
+  launchpadEndpoint: "https://dapp-backend.testnet.teritori.com",
+  codeId: 56,
   defaultMintDenom: "utori",
 };
 
