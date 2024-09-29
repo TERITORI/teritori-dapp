@@ -72,6 +72,8 @@ pub struct PostFilter {
     /// inclusive, -1 means infinity
     #[prost(int32, tag="6")]
     pub premium_level_max: i32,
+    #[prost(string, tag="7")]
+    pub network_id: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -87,8 +89,46 @@ pub struct PostsRequest {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct PostsWithLocationRequest {
+    #[prost(float, tag="1")]
+    pub north: f32,
+    #[prost(float, tag="2")]
+    pub south: f32,
+    #[prost(float, tag="3")]
+    pub west: f32,
+    #[prost(float, tag="4")]
+    pub east: f32,
+    #[prost(string, repeated, tag="5")]
+    pub hashtags: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(uint32, tag="6")]
+    pub limit: u32,
+    #[prost(string, tag="7")]
+    pub network_id: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct AggregatedPost {
+    #[prost(float, tag="1")]
+    pub lat: f32,
+    #[prost(float, tag="2")]
+    pub long: f32,
+    #[prost(int64, tag="3")]
+    pub total_points: i64,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PostsResponse {
     #[prost(message, repeated, tag="1")]
     pub posts: ::prost::alloc::vec::Vec<Post>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct PostsWithLocationResponse {
+    #[prost(message, repeated, tag="1")]
+    pub posts: ::prost::alloc::vec::Vec<Post>,
+    #[prost(message, repeated, tag="2")]
+    pub aggregated_posts: ::prost::alloc::vec::Vec<AggregatedPost>,
+    #[prost(bool, tag="3")]
+    pub is_aggregated: bool,
 }
 // @@protoc_insertion_point(module)
