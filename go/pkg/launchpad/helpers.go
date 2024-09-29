@@ -21,7 +21,7 @@ func (s *Launchpad) buildCollectionMerkleTree(metadatas []*launchpadpb.Metadata)
 	}
 
 	// NOTE: Don't sort leaves to keep the same order of uploaded file
-	tree, err := merkletree.New(leaves, false)
+	tree, err := merkletree.New(leaves)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to created merkle tree")
 	}
@@ -40,7 +40,7 @@ func (s *Launchpad) buildWhitelistMerkleTree(addresses []string) (*merkletree.Me
 	}
 
 	// NOTE: Don't sort leaves to keep the same order of uploaded file
-	tree, err := merkletree.New(leaves, false)
+	tree, err := merkletree.New(leaves,)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to created merkle tree")
 	}
