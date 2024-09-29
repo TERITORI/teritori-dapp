@@ -19,7 +19,7 @@ export const generateIpfsKey = async (
   }
 };
 
-const gatewayBase = "cf-ipfs.com";
+const gatewayBase = "w3s.link";
 
 const ipfsPathToWeb2URL = (path: string) => {
   const separatorIndex = path.indexOf("/");
