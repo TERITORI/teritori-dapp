@@ -175,7 +175,7 @@ export const useCreateCollection = () => {
 
           target_network: selectedNetworkId,
           deployed_address: "None",
-          whitepaper_link: "None",
+          // whitepaper_link: "None",
           base_token_uri: "None",
         };
         const collectionId = collectionFormValues.symbol;
