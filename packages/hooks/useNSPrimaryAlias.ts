@@ -51,14 +51,19 @@ const gnoGetUsernameByAddress = async (
     return userAddress;
   }
 
-  const provider = new GnoJSONRPCProvider(network.endpoint);
+  try {
+    const provider = new GnoJSONRPCProvider(network.endpoint);
 
-  const username = await provider.evaluateExpression(
-    network.nameServiceContractAddress,
-    `GetUserByAddress("${userAddress}").Name`,
-  );
-  const gnoUsename = extractGnoString(username);
-  return `${gnoUsename}.gno`;
+    const username = await provider.evaluateExpression(
+      network.nameServiceContractAddress,
+      `GetUserByAddress("${userAddress}").Name`,
+    );
+    const gnoUsername = extractGnoString(username);
+    return gnoUsername ? `${gnoUsername}.gno` : null;
+  } catch (e) {
+    console.warn(e);
+    return null;
+  }
 };
 
 export const useNSPrimaryAlias = (userId: string | undefined) => {
