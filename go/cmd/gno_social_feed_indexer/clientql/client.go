@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/Khan/genqlient/graphql"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
@@ -77,13 +76,11 @@ func (client *IndexerQL) getPostWithData(data *gnoindexerql.GetPostTransactionsT
 	}
 	categoryID, _ := strconv.Atoi(data.Args[2])
 	var metadata metadata
-	err := json.Unmarshal([]byte(data.Args[3]), &metadata)
-	if err != nil {
-		return indexerdb.Post{}, err
-	}
-	metadataJSON, err := json.Marshal(metadata)
-	if err != nil {
-		return indexerdb.Post{}, err
+	metadataBytes := []byte(data.Args[3])
+	if err := json.Unmarshal(metadataBytes, &metadata); err != nil {
+		// we ignore malformed metadata since users can put anything in this field
+		client.logger.Warn("failed to unmarshal post metadata", zap.Error(err))
+		metadataBytes = []byte("{}")
 	}
 
 	postID, err := extractPostIdentifierFromData(transaction.Response.Data)
@@ -96,16 +93,17 @@ func (client *IndexerQL) getPostWithData(data *gnoindexerql.GetPostTransactionsT
 		LocalIdentifier:      postID,
 		ParentPostIdentifier: data.Args[1],
 		Category:             uint32(categoryID),
-		Metadata:             metadataJSON,
-		CreatedAt:            int64(transaction.Block_height),
+		Metadata:             metadataBytes,
+		CreatedAt:            int64(transaction.Block_height), // FIXME
 		AuthorId:             client.network.UserID(data.Caller),
 	}
 
-	if len(metadata.Location) == 2 {
-		post.Lat = metadata.Location[0]
-		post.Lng = metadata.Location[1]
-		post.LatInt = int(metadata.Location[0])
-		post.LngInt = int(metadata.Location[1])
+	location := metadata.Location
+	if len(location) >= 2 {
+		post.Lat = location[0]
+		post.Lng = location[1]
+		post.LatInt = int(location[0])
+		post.LngInt = int(location[1])
 	}
 
 	return post, nil
@@ -133,10 +131,9 @@ type metadata struct {
 		Size     int    `json:"size"`
 		FileType string `json:"fileType"`
 	} `json:"files"`
-	Gifs      []any     `json:"gifs"`
-	Hashtags  []any     `json:"hashtags"`
-	Mentions  []any     `json:"mentions"`
-	Location  []float64 `json:"location"`
-	Title     string    `json:"title"`
-	CreatedAt time.Time `json:"createdAt"`
+	Gifs     []any     `json:"gifs"`
+	Hashtags []any     `json:"hashtags"`
+	Mentions []any     `json:"mentions"`
+	Location []float64 `json:"location"`
+	Title    string    `json:"title"`
 }

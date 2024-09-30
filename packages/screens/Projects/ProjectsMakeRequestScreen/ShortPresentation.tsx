@@ -233,7 +233,12 @@ export const ShortPresentation: React.FC = () => {
 
       <View style={{ alignItems: "center" }}>
         {!!values.coverImg && (
-          <RoundedGradientImage size="M" square sourceURI={values.coverImg} />
+          <RoundedGradientImage
+            size="M"
+            square
+            sourceURI={values.coverImg}
+            testID="project-cover-image"
+          />
         )}
       </View>
 

@@ -2,7 +2,7 @@ import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 
 import { mustGetGnoNetwork } from "../networks";
 
-interface AdenaDoContractMessage {
+export interface AdenaDoContractMessage {
   type: string;
   value: { [key in string]: any };
 }

@@ -70,3 +70,17 @@ export const uppTabItems: { [key: string]: TabDefinition } = {
     userKinds: [UserKind.Organization],
   },
 };
+
+export type ProfileData = {
+  displayName?: string | null;
+  avatarURL?: string | null;
+  bannerURL?: string | null;
+  bio?: string | null;
+};
+
+export const EMPTY_PROFILE: ProfileData = {
+  displayName: "",
+  avatarURL: "",
+  bannerURL: "",
+  bio: "",
+};

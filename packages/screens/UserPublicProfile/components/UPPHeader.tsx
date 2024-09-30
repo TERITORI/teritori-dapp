@@ -4,11 +4,12 @@ import { UPPIntro } from "./UPPIntro";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 
 import { Tabs } from "@/components/tabs/Tabs";
+import { EditProfileModal } from "@/components/user/modals/EditProfileModal";
 import { useTNS } from "@/context/TNSProvider";
 import { useIsDAO } from "@/hooks/cosmwasm/useCosmWasmContractInfo";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
-import { parseUserId, UserKind } from "@/networks";
+import { NetworkKind, parseUserId, UserKind } from "@/networks";
 import { TNSUpdateNameScreen } from "@/screens/TeritoriNameService/TNSUpdateNameScreen";
 import { primaryColor } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
@@ -85,9 +86,12 @@ export const UPPHeader = memo(
           borderColorTabSelected={primaryColor}
         />
 
-        {isEditProfileModal ? (
-          <TNSUpdateNameScreen onClose={() => onCloseModalHandler()} />
-        ) : null}
+        {isEditProfileModal &&
+          (network?.kind === NetworkKind.Cosmos ? (
+            <TNSUpdateNameScreen onClose={() => onCloseModalHandler()} />
+          ) : (
+            <EditProfileModal onClose={() => onCloseModalHandler()} />
+          ))}
       </>
     );
   },

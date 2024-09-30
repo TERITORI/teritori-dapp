@@ -85,7 +85,7 @@ export const TextInputCustomBorder: React.FC<{
           >
             <SVG source={searchSVG} width={16} height={16} />
             <TextInput
-              editable={!disabled}
+              readOnly={disabled}
               placeholder={placeHolder}
               value={value}
               onChangeText={handleChangeText}

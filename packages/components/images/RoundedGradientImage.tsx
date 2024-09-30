@@ -41,9 +41,18 @@ export const RoundedGradientImage: React.FC<{
   size?: RoundedGradientImageSize;
   style?: StyleProp<ViewStyle>;
   square?: boolean;
-}> = ({ sourceURI, fallbackURI, size = "M", style, square = false }) => {
+  testID?: string;
+}> = ({
+  sourceURI,
+  fallbackURI,
+  size = "M",
+  style,
+  square = false,
+  testID,
+}) => {
   return (
     <View
+      testID={testID}
       style={[
         {
           width: dimension(size),
