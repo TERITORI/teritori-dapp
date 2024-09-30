@@ -35,3 +35,37 @@ query GetPostTransactions($StartBlock: Int!, $PkgPath: String!) {
     }
   }
 }
+
+query GetAddPackageTxs() {
+  transactions(
+    filter: {
+      message: { type_url: add_package }
+    }
+  ) {
+		index
+		hash
+		success
+		block_height
+		gas_wanted
+		gas_used
+		memo
+		messages {
+			typeUrl
+			route
+			value {
+        ... on MsgAddPackage {
+					creator
+          package {
+            path
+          }
+          deposit
+				}
+			}
+		}
+		response {
+			data
+			info
+			log
+    }
+	}
+}
