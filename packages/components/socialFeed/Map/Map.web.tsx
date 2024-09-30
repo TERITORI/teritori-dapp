@@ -42,30 +42,8 @@ interface MarkerPopup {
   position: CustomLatLngExpression;
   post: Post;
   fileURL?: string;
+  isHighlighted?: boolean;
 }
-
-// Custom map post icon
-const postIcon = (postCategory: PostCategory) => {
-  const size = 32;
-  const borderWidth = 1;
-  const sizeWithBorders = 32 + borderWidth * 2;
-  return new DivIcon({
-    html: `<div style="border-radius: 99px;
-    height: ${size}px; width: ${size}px; border: 1px solid #A3A3A3;
-     background-color: rgba(${getMapPostIconColorRgba(postCategory)}); display: flex; align-items: center; justify-content: center;">${getMapPostIconSVGString(postCategory)}</div>`,
-    className: "",
-    iconSize: [sizeWithBorders, sizeWithBorders],
-  });
-};
-
-// Custom cluster icon
-const clusterIcon = function (cluster: any) {
-  return new DivIcon({
-    html: `<div class="cluster-icon-wrapper"><span class="cluster-icon">${cluster.getChildCount()}</span></div>`,
-    className: "custom-marker-cluster",
-    iconSize: point(33, 33, true) as PointExpression,
-  });
-};
 
 export const Map: FC<MapProps> = ({
   consultedPostId,
@@ -116,10 +94,11 @@ export const Map: FC<MapProps> = ({
       results.push({
         position: metadata.location,
         post,
+        isHighlighted: post.id === consultedPostId,
       });
     });
     return results;
-  }, [posts]);
+  }, [posts, consultedPostId]);
 
   // ---- Heatmap
   const heatPoints = aggregatedPosts
@@ -131,6 +110,36 @@ export const Map: FC<MapProps> = ({
         ];
       })
     : [];
+
+  const borderClass = "icon-border";
+  const borderHighlightedClassFlag = "--highlighted";
+  // ---- Custom map post icon
+  const postIcon = (postCategory: PostCategory, isHighlighted?: boolean) => {
+    const size = 32;
+    const borderWidth = 1;
+    const sizeWithBorders = 32 + borderWidth * 2;
+    return new DivIcon({
+      html: `<div class="${borderClass}${isHighlighted ? borderHighlightedClassFlag : ""}" style="border-radius: 99px;
+      height: ${size}px; width: ${size}px;
+      background-color: rgba(${getMapPostIconColorRgba(postCategory)}); display: flex; align-items: center; justify-content: center;">${getMapPostIconSVGString(postCategory)}</div>`,
+      className: "",
+      iconSize: [sizeWithBorders, sizeWithBorders],
+    });
+  };
+
+  // ---- Custom cluster icon
+  const clusterIcon = (cluster: any) => {
+    const isHighlighted = cluster
+      .getAllChildMarkers()
+      .some((child: any) =>
+        child.options.icon.options.html.includes("icon-border--highlighted"),
+      );
+    return new DivIcon({
+      html: `<div class="cluster-icon-wrapper ${borderClass}${isHighlighted ? borderHighlightedClassFlag : ""}"><span class="cluster-icon">${cluster.getChildCount()}</span></div>`,
+      className: "custom-marker-cluster",
+      iconSize: point(33, 33, true) as PointExpression,
+    });
+  };
 
   // ---- Updates map bounds once
   const UpdateBoundsOnMapLoad = () => {
@@ -221,14 +230,14 @@ export const Map: FC<MapProps> = ({
           {creatingPostLocation && (
             <Marker
               position={creatingPostLocation}
-              icon={postIcon(creatingPostCategory)}
+              icon={postIcon(creatingPostCategory, true)}
             />
           )}
           {/* Mapping through the markers (Fetched posts) */}
           {markers?.map((marker, index) => (
             <Marker
               position={marker.position}
-              icon={postIcon(marker.post.category)}
+              icon={postIcon(marker.post.category, marker.isHighlighted)}
               key={index}
             >
               {marker.post.category === PostCategory.Normal ? (

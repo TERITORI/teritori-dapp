@@ -6,13 +6,18 @@
 
 .cluster-icon-wrapper {
   background-color: rgba(135, 135, 135, .4);
-  border: 1px solid rgba(255, 255, 255, .24);
   height: 42px;
   width: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+}
+.icon-border {
+  border: 1px solid #A3A3A3;
+}
+.icon-border--highlighted {
+  border: 2px solid #16BBFF;
 }
 .cluster-icon {
   background: linear-gradient(180deg, #FFFFFF 32%, #A7A7A7 100% );
