@@ -33,6 +33,12 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     route: "Message",
     icon: messagesSVG,
   },
+  launchpadERC20: {
+    title: "Launchpad ERC20",
+    id: "Launchpad ERC20",
+    route: "LaunchpadERC20",
+    icon: launchpadSVG,
+  },
   launchpad: {
     title: "Launchpad",
     id: "Launchpad",

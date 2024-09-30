@@ -4467,12 +4467,19 @@
       "Organizations",
       "SocialFeed",
       "UPP",
-      "GnoProjectManager"
+      "GnoProjectManager",
+      "NameService",
+      "LaunchpadERC20"
     ],
     "featureObjects": [
       {
         "type": "GnoProjectManager",
         "projectsManagerPkgPath": "gno.land/r/teritori/projects_manager",
+        "paymentsDenom": "ugnot"
+      },
+      {
+        "type": "LaunchpadERC20",
+        "launchpadERC20PkgPath": "gno.land/r/teritori/launchpad_grc20",
         "paymentsDenom": "ugnot"
       }
     ],
@@ -4531,7 +4538,8 @@
     "features": [
       "Organizations",
       "SocialFeed",
-      "UPP"
+      "UPP",
+      "NameService"
     ],
     "currencies": [
       {
@@ -4577,7 +4585,8 @@
       "Organizations",
       "SocialFeed",
       "UPP",
-      "GnoProjectManager"
+      "GnoProjectManager",
+      "NameService"
     ],
     "featureObjects": [
       {
@@ -4663,7 +4672,8 @@
     "features": [
       "SocialFeed",
       "UPP",
-      "GnoProjectManager"
+      "GnoProjectManager",
+      "NameService"
     ],
     "featureObjects": [
       {

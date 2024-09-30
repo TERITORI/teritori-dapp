@@ -178,13 +178,14 @@ export const ShortPresentation: React.FC = () => {
       <SpacerColumn size={2.5} />
 
       <TextInputCustom
-        label="Arbitrator address"
+        label="Arbitrator address *"
         name="arbitrator"
         fullWidth
         placeholder="Address of the authority that will resolve conflicts"
         variant="labelOutside"
         onChangeText={(val) => setValue("arbitratorAddress", val)}
         value={values.arbitratorAddress}
+        error={errors.arbitratorAddress?.message}
       />
 
       <SpacerColumn size={2.5} />
@@ -232,7 +233,12 @@ export const ShortPresentation: React.FC = () => {
 
       <View style={{ alignItems: "center" }}>
         {!!values.coverImg && (
-          <RoundedGradientImage size="M" square sourceURI={values.coverImg} />
+          <RoundedGradientImage
+            size="M"
+            square
+            sourceURI={values.coverImg}
+            testID="project-cover-image"
+          />
         )}
       </View>
 
@@ -250,7 +256,13 @@ export const ShortPresentation: React.FC = () => {
       />
 
       <MakeRequestFooter
-        disableNext={Object.keys(errors).length !== 0 || !values.coverImg}
+        disableNext={
+          !values.coverImg ||
+          !values.name ||
+          !values.description ||
+          !values.tags ||
+          !values.arbitratorAddress
+        }
         onSubmit={handleSubmit((submitValues) => {
           setShortDesc(submitValues);
           goNextStep();

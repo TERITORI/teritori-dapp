@@ -6,7 +6,6 @@ import Long from "long";
 import React, { useMemo, useState } from "react";
 import { Platform, ScrollView, useWindowDimensions, View } from "react-native";
 
-import { TNSModalCommonProps } from "./TNSHomeScreen";
 import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
 import longCardSVG from "../../../assets/cards/long-card.svg";
 import coinSVG from "../../../assets/icons/coin.svg";
@@ -22,6 +21,7 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { NameDataForm } from "@/components/teritoriNameService/NameDataForm";
 import { NameNFT } from "@/components/teritoriNameService/NameNFT";
+import { TNSModalCommonProps } from "@/components/user/types";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useTNS } from "@/context/TNSProvider";
 import { TeritoriNameServiceQueryClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";

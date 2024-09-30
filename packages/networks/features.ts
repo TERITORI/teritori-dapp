@@ -14,6 +14,7 @@ export enum NetworkFeature {
   NFTBridge = "NFTBridge",
   CosmWasmPremiumFeed = "CosmWasmPremiumFeed",
   GnoProjectManager = "GnoProjectManager",
+  LaunchpadERC20 = "LaunchpadERC20",
   NFTMarketplaceLeaderboard = "NFTMarketplaceLeaderboard",
   CosmWasmNFTsBurner = "CosmWasmNFTsBurner",
 }
@@ -54,16 +55,28 @@ const zodGnoProjectManager = z.object({
 
 type GnoProjectManager = z.infer<typeof zodGnoProjectManager>;
 
+// Launchpad ERC20
+
+const zodLaunchpadERC20 = z.object({
+  type: z.literal(NetworkFeature.LaunchpadERC20),
+  launchpadERC20PkgPath: z.string(),
+  paymentsDenom: z.string(),
+});
+
+type LaunchpadERC20 = z.infer<typeof zodLaunchpadERC20>;
+
 // Registry
 
 export const allFeatureObjects = [
   zodCosmWasmPremiumFeed,
   zodCosmWasmNFTsBurner,
   zodGnoProjectManager,
+  zodLaunchpadERC20,
 ];
 
 export type NetworkFeatureObject =
   | CosmWasmPremiumFeed
   | CosmWasmSocialFeed
   | CosmWasmNFTsBurner
-  | GnoProjectManager;
+  | GnoProjectManager
+  | LaunchpadERC20;
