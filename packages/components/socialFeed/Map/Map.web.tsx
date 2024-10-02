@@ -1,16 +1,19 @@
 import "./styles.css";
 import "leaflet/dist/leaflet.css";
-import { DivIcon, LatLngBounds, point, PointExpression } from "leaflet";
-import { Dispatch, FC, MutableRefObject, RefObject, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
+import L, { DivIcon, LatLngBounds, point, PointExpression } from "leaflet";
 import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMapEvents,
-  useMap,
-} from "react-leaflet";
+  Dispatch,
+  FC,
+  MutableRefObject,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
+import "leaflet.markercluster";
 import { HeatmapLayer } from "react-leaflet-heatmap-layer-v3/lib";
 import { View } from "react-native";
 
@@ -42,16 +45,15 @@ interface MarkerPopup {
   position: CustomLatLngExpression;
   post: Post;
   fileURL?: string;
-  isHighlighted?: boolean;
 }
-
 interface MapManagerProps {
-  setBounds: Dispatch<SetStateAction<LatLngBounds | null>>,
-    creatingPostLocation?: CustomLatLngExpression,
-  consultedPostLocation?: CustomLatLngExpression,
-  consultedPostId?: string,
-  markers: MarkerPopup[],
-  markerRefs:  MutableRefObject<(L.Marker<any> | null)[]>,
+  setBounds: Dispatch<SetStateAction<LatLngBounds | null>>;
+  creatingPostLocation?: CustomLatLngExpression;
+  consultedPostLocation?: CustomLatLngExpression;
+  consultedPostId?: string;
+  markers: MarkerPopup[];
+  markerRefs: MutableRefObject<(L.Marker<any> | null)[]>;
+  clusterGroupRef: MutableRefObject<L.MarkerClusterGroup | null>;
 }
 const MapManager = ({
   setBounds,
@@ -60,6 +62,7 @@ const MapManager = ({
   consultedPostId,
   markers,
   markerRefs,
+  clusterGroupRef,
 }: MapManagerProps) => {
   const map = useMap();
   const [isMapReady, setMapReady] = useState(false);
@@ -75,32 +78,138 @@ const MapManager = ({
       if (!isMapReady) {
         updateBounds();
         setMapReady(true);
-      }      
+      }
     });
 
-     // Updates map bounds on map manipulation
+    // Updates map bounds on map manipulation
     map.on("moveend", updateBounds);
     map.on("zoomend", updateBounds);
 
-  // Center to creatingPostLocation if exists
-  if (creatingPostLocation) {
+    // Center to creatingPostLocation if exists
+    if (creatingPostLocation) {
       map.setView(creatingPostLocation);
     }
 
-  // Center to consultedPostLocation if exists and open the marker (Once)
-  if (consultedPostLocation && !isConsultedPostOpened) {
-    map.setView(consultedPostLocation);
+    // Center to consultedPostLocation if exists and open the marker (Once)
+    if (consultedPostLocation && !isConsultedPostOpened) {
+      map.setView(consultedPostLocation);
 
-    if (consultedPostId && markers.length) {
-      const index = markers.findIndex(
-        (marker) => marker.post.id === consultedPostId
-      );
-      if (index !== -1 && markerRefs.current[index]) {
-        markerRefs.current[index]?.openPopup();
+      if (consultedPostId && markers.length) {
+        const index = markers.findIndex(
+          (marker) => marker.post.id === consultedPostId,
+        );
+        if (index !== -1 && markerRefs.current[index]) {
+          markerRefs.current[index]?.openPopup();
+        }
+        setConsultedPostOpened(true);
       }
-      setConsultedPostOpened(true);
     }
-  }
+
+    // TODO: Center to consultedPostLocation if exists, open the cluster and the marker (Once)
+    // if (
+    //   consultedPostLocation &&
+    //   !isConsultedPostOpened &&
+    //   consultedPostId &&
+    //   markers.length &&
+    //   markerRefs.current
+    // ) {
+    //   const index = markers.findIndex(
+    //     (marker) => marker.post.id === consultedPostId,
+    //   );
+    //   const marker = markerRefs.current[index];
+
+    //   if (clusterGroupRef.current && marker) {
+    //     clusterGroupRef.current.eachLayer((layer) => {
+    //       if (layer._leaflet_id === marker._leaflet_id) {  // How to compare markers and layers ?
+    //         // FIXME: zoomToShowLayer gives the error: TypeError: Cannot use 'in' operator to search for '_leaflet_id' in undefined
+    //         clusterGroupRef.current?.zoomToShowLayer(layer, () => {
+    //           layer.openPopup();
+    //         });
+    //       }
+    //     });
+    //   }
+    //   setConsultedPostOpened(true);
+    // }
+
+    //   if ( markerRefs.current && consultedPostId) {
+    //     const index = markers.findIndex(
+    //       (marker) => marker.post.id === consultedPostId,
+    //     );
+    //     const marker = markerRefs.current[index];
+    //     marker?.openPopup()
+    //   }
+
+    //   setConsultedPostOpened(true);
+
+    // if (clusterGroupRef.current && consultedPostId) {
+    // const marker = clusterGroupRef.current.getLayers().find(layer => {
+    //   // Vérifie si le layer a des options et compare avec consultedPostId
+    //   return layer.options.postId === consultedPostId;
+    // });
+
+    //   // Si un marqueur correspondant a été trouvé, zoom sur ce marqueur
+    //   if (marker) {
+    //     clusterGroupRef.current.zoomToShowLayer(marker);
+    //   }
+    // }
+
+    // if (consultedPostId && markers.length) {
+    // const index = markers.findIndex(
+    //   (marker) => marker.post.id === consultedPostId,
+    // );
+
+    //   const consultedMarker = markerRefs.current[index];
+
+    // clusterGroupRef.current.eachLayer((marker) => {
+    //   if(consultedMarker && consultedMarker._leaflet_id === marker._leaflet_id) {
+    //     marker?.openPopup();
+    //   }
+
+    //   // marker?.__parent.spiderfy();
+    //   // marker?.openPopup();
+    // });
+
+    // TODO: if parent open parent etc
+
+    // if (clusterGroupRef.current && markerRefs.current && consultedPostId) {
+    // const marker = markerRefs.current[index];
+
+    // TODO: if parent open parent etc
+
+    //   console.log('clusterGroupRef.current', clusterGroupRef.current)
+    //   console.log('markerRefs.current', markerRefs.current)
+
+    //   // Si un marqueur correspondant a été trouvé, zoom sur ce marqueur
+    //   if (marker) {
+    //     console.log('markermarker', marker)
+    //     clusterGroupRef.current.zoomToShowLayer(marker);
+    //   }
+    // }
+
+    // console.log('clusterGroupRef.current.getLayers()', clusterGroupRef.current.getLayers())
+    // console.log('markersmarkersmarkers',markers)
+    // const marker = clusterGroupRef.current.getLayers().find(layer => layer.options.postId === consultedPostId);
+
+    // console.log('markermarker', marker)
+
+    // // if (index !== -1 && markerRefs.current[index]) {
+    // if (marker) {
+    // // const cMarker = clusterGroupRef.current.getLayers().find(layer => layer.options.postId === consultedPostId);
+
+    // console.log('clusterGroupRef.current', clusterGroupRef.current)
+    // console.log('marker', marker)
+
+    //   // const marker = markerRefs.current[index];
+    //   // Open the marker and zoom to show it inside a cluster
+    //   if (clusterGroupRef.current) {
+    // clusterGroupRef.current.zoomToShowLayer(marker, () => {
+    //   marker?.__parent.spiderfy();
+    //   marker?.openPopup();
+    // });
+    //   }
+    // }
+    // }
+    // }
 
     // Clean listeners
     return () => {
@@ -110,6 +219,9 @@ const MapManager = ({
   }, [
     map,
     isMapReady,
+    markerRefs,
+    clusterGroupRef,
+    setBounds,
     creatingPostLocation,
     consultedPostLocation,
     isConsultedPostOpened,
@@ -128,27 +240,18 @@ export const Map: FC<MapProps> = ({
 }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const [bounds, setBounds] = useState<LatLngBounds | null>(null);
-  // const [isMapReady, setMapReady] = useState(false);
-  // const [isConsultedPostOpened, setConsultedPostOpened] = useState(false);
-
-      // Prevent infinite rendering after creatingPostLocation update
-      const [localCreatingPostLocation, setLocalCreatingPostLocation] = useState<
-      CustomLatLngExpression | undefined
-    >(creatingPostLocation);
-    useEffect(() => {
-      setLocalCreatingPostLocation(creatingPostLocation);
-    }, [creatingPostLocation]);
+  const markerRefs = useRef<(L.Marker | null)[]>([]);
+  const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
 
   // Fetch the consulted post
   const { post: consultedPost } = usePost(consultedPostId);
   const consultedPostBaseMetadata =
     consultedPost &&
     zodTryParseJSON(zodSocialFeedCommonMetadata, consultedPost.metadata);
-  const consultedPostLocation = consultedPostBaseMetadata?.location
+  const consultedPostLocation = consultedPostBaseMetadata?.location;
 
   // Fetch existing posts that have a location and display them as markers
   const { data } = useFetchFeedLocation({
-    // Ensure proper hook call
     north: bounds?.getNorth(),
     south: bounds?.getSouth(),
     west: bounds?.getWest(),
@@ -159,7 +262,6 @@ export const Map: FC<MapProps> = ({
   const aggregatedPosts = data?.aggregations;
 
   // Markers
-  const markerRefs = useRef<(L.Marker | null)[]>([]);
   const markers: MarkerPopup[] = useMemo(() => {
     if (!posts) return [];
     const results: MarkerPopup[] = [];
@@ -172,11 +274,10 @@ export const Map: FC<MapProps> = ({
       results.push({
         position: metadata.location,
         post,
-        isHighlighted: post.id === consultedPostId,
       });
     });
     return results;
-  }, [posts, consultedPostId]);
+  }, [posts]);
 
   // Heatmap
   const heatPoints = aggregatedPosts
@@ -189,15 +290,13 @@ export const Map: FC<MapProps> = ({
       })
     : [];
 
-  const borderClass = "icon-border";
-  const borderHighlightedClassFlag = "--highlighted";
   // Custom map post icon
-  const postIcon = (postCategory: PostCategory, isHighlighted?: boolean) => {
+  const postIcon = (postCategory: PostCategory) => {
     const size = 32;
     const borderWidth = 1;
     const sizeWithBorders = 32 + borderWidth * 2;
     return new DivIcon({
-      html: `<div class="${borderClass}${isHighlighted ? borderHighlightedClassFlag : ""}" style="border-radius: 99px;
+      html: `<div class="post-icon-wrapper" style="border-radius: 99px;
       height: ${size}px; width: ${size}px;
       background-color: rgba(${getMapPostIconColorRgba(postCategory)}); display: flex; align-items: center; justify-content: center;">${getMapPostIconSVGString(postCategory)}</div>`,
       className: "",
@@ -207,17 +306,12 @@ export const Map: FC<MapProps> = ({
 
   // Custom cluster icon
   const clusterIcon = (cluster: any) => {
-    const isHighlighted = cluster
-      .getAllChildMarkers()
-      .some((child: any) =>
-        child.options.icon.options.html.includes("icon-border--highlighted"),
-      );
     return new DivIcon({
-      html: `<div class="cluster-icon-wrapper ${borderClass}${isHighlighted ? borderHighlightedClassFlag : ""}"><span class="cluster-icon">${cluster.getChildCount()}</span></div>`,
+      html: `<div class="cluster-icon-wrapper"><span class="cluster-icon">${cluster.getChildCount()}</span></div>`,
       className: "custom-marker-cluster",
       iconSize: point(33, 33, true) as PointExpression,
     });
-  };    
+  };
 
   return (
     <View
@@ -231,17 +325,12 @@ export const Map: FC<MapProps> = ({
       ]}
     >
       <MapContainer
-        center={
-          localCreatingPostLocation ||
-          consultedPostLocation ||
-          DEFAULT_MAP_POSITION
-        }
+        center={DEFAULT_MAP_POSITION}
         zoom={12}
         attributionControl={false}
       >
         {/*----Loads and displays tiles on the map*/}
         <TileLayer noWrap attribution="" url={MAP_LAYER_URL} />
-
         {/*---- Heatmap displayed when dezoom*/}
         <HeatmapLayer
           points={heatPoints}
@@ -265,21 +354,24 @@ export const Map: FC<MapProps> = ({
             Array.isArray(point) && typeof point[0] === "number" ? point[0] : 0
           }
         />
-
         {/*---- Existing posts that have a location*/}
-        <MarkerClusterGroup chunkedLoading iconCreateFunction={clusterIcon}>
+        <MarkerClusterGroup
+          chunkedLoading
+          iconCreateFunction={clusterIcon}
+          ref={clusterGroupRef}
+        >
           {/*  When the user is creating a post*/}
           {creatingPostLocation && (
             <Marker
               position={creatingPostLocation}
-              icon={postIcon(creatingPostCategory, true)}
+              icon={postIcon(creatingPostCategory)}
             />
           )}
           {/* Mapping through the markers (Fetched posts) */}
           {markers?.map((marker, index) => (
             <Marker
               position={marker.position}
-              icon={postIcon(marker.post.category, marker.isHighlighted)}
+              icon={postIcon(marker.post.category)}
               key={index}
               ref={(element) => (markerRefs.current[index] = element)}
             >
@@ -309,26 +401,16 @@ export const Map: FC<MapProps> = ({
             </Marker>
           ))}
         </MarkerClusterGroup>
-
-        {/*---- Map state updates*/}
-        {/* <UpdateBoundsOnMapLoad />
-        <UpdateBoundsOnMapEvents />
-        <CenterToCreatingPost />
-        <CenterAndOpenConsultedPost /> */}
         <MapManager
-    setBounds={setBounds}
-    // isMapReady={isMapReady}
-    // setMapReady={setMapReady}
-    // localCreatingPostLocation={localCreatingPostLocation}
-    // setLocalCreatingPostLocation={setLocalCreatingPostLocation}
-    consultedPostLocation={consultedPostLocation}
-    creatingPostLocation={creatingPostLocation}
-    // isConsultedPostOpened={isConsultedPostOpened}
-    // setConsultedPostOpened={setConsultedPostOpened}
-    consultedPostId={consultedPostId}
-    markers={markers}
-    markerRefs={markerRefs}
-  />      </MapContainer>
+          setBounds={setBounds}
+          consultedPostLocation={consultedPostLocation}
+          creatingPostLocation={creatingPostLocation}
+          consultedPostId={consultedPostId}
+          markers={markers}
+          markerRefs={markerRefs}
+          clusterGroupRef={clusterGroupRef}
+        />{" "}
+      </MapContainer>
     </View>
   );
 };
