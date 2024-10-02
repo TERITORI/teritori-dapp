@@ -117,7 +117,7 @@ const MapManager = ({
     //     (marker) => marker.post.id === consultedPostId,
     //   );
     //   const marker = markerRefs.current[index];
-
+    //
     //   if (clusterGroupRef.current && marker) {
     //     clusterGroupRef.current.eachLayer((layer) => {
     //       if (layer._leaflet_id === marker._leaflet_id) {  // How to compare markers and layers ?
@@ -129,86 +129,6 @@ const MapManager = ({
     //     });
     //   }
     //   setConsultedPostOpened(true);
-    // }
-
-    //   if ( markerRefs.current && consultedPostId) {
-    //     const index = markers.findIndex(
-    //       (marker) => marker.post.id === consultedPostId,
-    //     );
-    //     const marker = markerRefs.current[index];
-    //     marker?.openPopup()
-    //   }
-
-    //   setConsultedPostOpened(true);
-
-    // if (clusterGroupRef.current && consultedPostId) {
-    // const marker = clusterGroupRef.current.getLayers().find(layer => {
-    //   // Vérifie si le layer a des options et compare avec consultedPostId
-    //   return layer.options.postId === consultedPostId;
-    // });
-
-    //   // Si un marqueur correspondant a été trouvé, zoom sur ce marqueur
-    //   if (marker) {
-    //     clusterGroupRef.current.zoomToShowLayer(marker);
-    //   }
-    // }
-
-    // if (consultedPostId && markers.length) {
-    // const index = markers.findIndex(
-    //   (marker) => marker.post.id === consultedPostId,
-    // );
-
-    //   const consultedMarker = markerRefs.current[index];
-
-    // clusterGroupRef.current.eachLayer((marker) => {
-    //   if(consultedMarker && consultedMarker._leaflet_id === marker._leaflet_id) {
-    //     marker?.openPopup();
-    //   }
-
-    //   // marker?.__parent.spiderfy();
-    //   // marker?.openPopup();
-    // });
-
-    // TODO: if parent open parent etc
-
-    // if (clusterGroupRef.current && markerRefs.current && consultedPostId) {
-    // const marker = markerRefs.current[index];
-
-    // TODO: if parent open parent etc
-
-    //   console.log('clusterGroupRef.current', clusterGroupRef.current)
-    //   console.log('markerRefs.current', markerRefs.current)
-
-    //   // Si un marqueur correspondant a été trouvé, zoom sur ce marqueur
-    //   if (marker) {
-    //     console.log('markermarker', marker)
-    //     clusterGroupRef.current.zoomToShowLayer(marker);
-    //   }
-    // }
-
-    // console.log('clusterGroupRef.current.getLayers()', clusterGroupRef.current.getLayers())
-    // console.log('markersmarkersmarkers',markers)
-    // const marker = clusterGroupRef.current.getLayers().find(layer => layer.options.postId === consultedPostId);
-
-    // console.log('markermarker', marker)
-
-    // // if (index !== -1 && markerRefs.current[index]) {
-    // if (marker) {
-    // // const cMarker = clusterGroupRef.current.getLayers().find(layer => layer.options.postId === consultedPostId);
-
-    // console.log('clusterGroupRef.current', clusterGroupRef.current)
-    // console.log('marker', marker)
-
-    //   // const marker = markerRefs.current[index];
-    //   // Open the marker and zoom to show it inside a cluster
-    //   if (clusterGroupRef.current) {
-    // clusterGroupRef.current.zoomToShowLayer(marker, () => {
-    //   marker?.__parent.spiderfy();
-    //   marker?.openPopup();
-    // });
-    //   }
-    // }
-    // }
     // }
 
     // Clean listeners
