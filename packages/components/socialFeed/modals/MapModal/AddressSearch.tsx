@@ -15,7 +15,6 @@ import { TextInputCustom } from "../../../inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../../inputs/TextInputOutsideLabel";
 
 import locationRefinedSVG from "@/assets/icons/location-refined.svg";
-import { useDebounce } from "@/hooks/useDebounce";
 import { neutral77, neutralFF, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -46,23 +45,18 @@ export const AddressSearch: FC<AddressSearchProps> = ({
   setLocationSelected,
   setAddressPlaceHolder,
 }) => {
-  const debouncedAddress = useDebounce(address, 1500);
-
-  const { data, isLoading } = useQuery(
-    ["searchAddress", debouncedAddress],
-    async () => {
-      if (debouncedAddress.trim() === "") {
-        return [];
-      }
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${debouncedAddress}&format=json`,
-      );
-      if (!response.ok) {
-        throw new Error("Invalid HTTP status: " + response.status);
-      }
-      return zodAddressSearchResult.parse(await response.json());
-    },
-  );
+  const { data, isLoading } = useQuery(["searchAddress", address], async () => {
+    if (address.trim() === "") {
+      return [];
+    }
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${address}&format=json`,
+    );
+    if (!response.ok) {
+      throw new Error("Invalid HTTP status: " + response.status);
+    }
+    return zodAddressSearchResult.parse(await response.json());
+  });
 
   const results = useMemo(() => {
     if (!data) {
