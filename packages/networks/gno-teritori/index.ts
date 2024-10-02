@@ -11,6 +11,7 @@ export const gnoTeritoriNetwork: GnoNetworkInfo = {
     NetworkFeature.SocialFeed,
     NetworkFeature.UPP,
     NetworkFeature.GnoProjectManager,
+    NetworkFeature.NameService,
   ],
   featureObjects: [
     {

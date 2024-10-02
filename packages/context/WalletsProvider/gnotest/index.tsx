@@ -53,6 +53,18 @@ const faucetMnemo =
   "chimney entire define lesson scale embark copy bird rough govern surprise soda sand evidence decline crisp clinic merry slice balance typical creek lumber hollow";
 
 const testUsers: TestUser[] = [
+  // Empty user
+  {
+    name: "empty",
+    nsName: "",
+    mnemonic:
+      "taste seed tuition love multiply member deposit cause stock access float sport guard air clog horn half equip file cool ghost cupboard kidney inflict",
+    extra: {
+      imageURI: "",
+      displayName: "",
+      bio: "",
+    },
+  },
   {
     name: "alice",
     nsName: "alicetests",
