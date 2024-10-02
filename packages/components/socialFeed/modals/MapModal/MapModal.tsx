@@ -1,4 +1,4 @@
-import React, { Suspense, useState, Dispatch, SetStateAction } from "react";
+import React, { useState, Dispatch, SetStateAction } from "react";
 import { View } from "react-native";
 
 import { PrimaryButton } from "../../../buttons/PrimaryButton";
@@ -85,12 +85,10 @@ export const MapModal: React.FC<TMapModalProps> = ({
             height: "100%",
           }}
         >
-          <Suspense fallback={<></>}>
-            <Map
-              creatingPostLocation={creatingPostLocation}
-              creatingPostCategory={postCategory}
-            />
-          </Suspense>
+          <Map
+            creatingPostLocation={creatingPostLocation}
+            creatingPostCategory={postCategory}
+          />
         </View>
 
         {/*TODO: Description ?*/}
