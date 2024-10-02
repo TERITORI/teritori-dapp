@@ -1,7 +1,7 @@
 import "./styles.css";
 import "leaflet/dist/leaflet.css";
 import { DivIcon, LatLngBounds, point, PointExpression } from "leaflet";
-import { FC, useEffect, useMemo, useState } from "react";
+import { Dispatch, FC, MutableRefObject, RefObject, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -45,6 +45,81 @@ interface MarkerPopup {
   isHighlighted?: boolean;
 }
 
+interface MapManagerProps {
+  setBounds: Dispatch<SetStateAction<LatLngBounds | null>>,
+    creatingPostLocation?: CustomLatLngExpression,
+  consultedPostLocation?: CustomLatLngExpression,
+  consultedPostId?: string,
+  markers: MarkerPopup[],
+  markerRefs:  MutableRefObject<(L.Marker<any> | null)[]>,
+}
+const MapManager = ({
+  setBounds,
+  consultedPostLocation,
+  creatingPostLocation,
+  consultedPostId,
+  markers,
+  markerRefs,
+}: MapManagerProps) => {
+  const map = useMap();
+  const [isMapReady, setMapReady] = useState(false);
+  const [isConsultedPostOpened, setConsultedPostOpened] = useState(false);
+
+  useEffect(() => {
+    const updateBounds = () => {
+      setBounds(map.getBounds());
+    };
+
+    // Updates map bounds when ready (Once)
+    map.whenReady(() => {
+      if (!isMapReady) {
+        updateBounds();
+        setMapReady(true);
+      }      
+    });
+
+     // Updates map bounds on map manipulation
+    map.on("moveend", updateBounds);
+    map.on("zoomend", updateBounds);
+
+  // Center to creatingPostLocation if exists
+  if (creatingPostLocation) {
+      map.setView(creatingPostLocation);
+    }
+
+  // Center to consultedPostLocation if exists and open the marker (Once)
+  if (consultedPostLocation && !isConsultedPostOpened) {
+    map.setView(consultedPostLocation);
+
+    if (consultedPostId && markers.length) {
+      const index = markers.findIndex(
+        (marker) => marker.post.id === consultedPostId
+      );
+      if (index !== -1 && markerRefs.current[index]) {
+        markerRefs.current[index]?.openPopup();
+      }
+      setConsultedPostOpened(true);
+    }
+  }
+
+    // Clean listeners
+    return () => {
+      map.off("moveend", updateBounds);
+      map.off("zoomend", updateBounds);
+    };
+  }, [
+    map,
+    isMapReady,
+    creatingPostLocation,
+    consultedPostLocation,
+    isConsultedPostOpened,
+    consultedPostId,
+    markers,
+  ]);
+
+  return null;
+};
+
 export const Map: FC<MapProps> = ({
   consultedPostId,
   style,
@@ -53,16 +128,25 @@ export const Map: FC<MapProps> = ({
 }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const [bounds, setBounds] = useState<LatLngBounds | null>(null);
-  const [isMapLoaded, setMapLoaded] = useState(false);
-  // Prevent infinite rendering after locationSelected update
-  const [localLocationSelected, setLocalLocationSelected] = useState<
-    CustomLatLngExpression | undefined
-  >(creatingPostLocation);
-  useEffect(() => {
-    setLocalLocationSelected(creatingPostLocation);
-  }, [creatingPostLocation]);
+  // const [isMapReady, setMapReady] = useState(false);
+  // const [isConsultedPostOpened, setConsultedPostOpened] = useState(false);
 
-  // ---- Fetch existing posts that have a location and display them as markers
+      // Prevent infinite rendering after creatingPostLocation update
+      const [localCreatingPostLocation, setLocalCreatingPostLocation] = useState<
+      CustomLatLngExpression | undefined
+    >(creatingPostLocation);
+    useEffect(() => {
+      setLocalCreatingPostLocation(creatingPostLocation);
+    }, [creatingPostLocation]);
+
+  // Fetch the consulted post
+  const { post: consultedPost } = usePost(consultedPostId);
+  const consultedPostBaseMetadata =
+    consultedPost &&
+    zodTryParseJSON(zodSocialFeedCommonMetadata, consultedPost.metadata);
+  const consultedPostLocation = consultedPostBaseMetadata?.location
+
+  // Fetch existing posts that have a location and display them as markers
   const { data } = useFetchFeedLocation({
     // Ensure proper hook call
     north: bounds?.getNorth(),
@@ -74,14 +158,8 @@ export const Map: FC<MapProps> = ({
   const posts = data?.list;
   const aggregatedPosts = data?.aggregations;
 
-  const { post: consultedPost } = usePost(consultedPostId);
-  const consultedPostBaseMetadata =
-    consultedPost &&
-    zodTryParseJSON(zodSocialFeedCommonMetadata, consultedPost.metadata);
-  // TODO: if (consultedPostId && consultedPostBaseMetadata?.location) {
-  //   center to this location and open post popup
-  // }
-
+  // Markers
+  const markerRefs = useRef<(L.Marker | null)[]>([]);
   const markers: MarkerPopup[] = useMemo(() => {
     if (!posts) return [];
     const results: MarkerPopup[] = [];
@@ -100,7 +178,7 @@ export const Map: FC<MapProps> = ({
     return results;
   }, [posts, consultedPostId]);
 
-  // ---- Heatmap
+  // Heatmap
   const heatPoints = aggregatedPosts
     ? aggregatedPosts.map((aggregatedPost) => {
         return [
@@ -113,7 +191,7 @@ export const Map: FC<MapProps> = ({
 
   const borderClass = "icon-border";
   const borderHighlightedClassFlag = "--highlighted";
-  // ---- Custom map post icon
+  // Custom map post icon
   const postIcon = (postCategory: PostCategory, isHighlighted?: boolean) => {
     const size = 32;
     const borderWidth = 1;
@@ -127,7 +205,7 @@ export const Map: FC<MapProps> = ({
     });
   };
 
-  // ---- Custom cluster icon
+  // Custom cluster icon
   const clusterIcon = (cluster: any) => {
     const isHighlighted = cluster
       .getAllChildMarkers()
@@ -139,43 +217,7 @@ export const Map: FC<MapProps> = ({
       className: "custom-marker-cluster",
       iconSize: point(33, 33, true) as PointExpression,
     });
-  };
-
-  // ---- Updates map bounds once
-  const UpdateBoundsOnMapLoad = () => {
-    const map = useMap();
-    useEffect(() => {
-      if (!isMapLoaded) {
-        setBounds(map.getBounds());
-        setMapLoaded(true);
-      }
-    }, [map]);
-    return null;
-  };
-  // ---- Updates map bounds on map manipulation
-  const UpdateBoundsOnMapEvents = () => {
-    const map = useMapEvents({
-      // Map events
-      moveend: () => {
-        setBounds(map.getBounds());
-      },
-      zoomend: () => {
-        setBounds(map.getBounds());
-      },
-    });
-    return null;
-  };
-  // ---- Center to locationSelected when it's updated (Once)
-  const UpdateToLocationSelected = () => {
-    const map = useMap();
-    useEffect(() => {
-      if (localLocationSelected) {
-        map.setView(localLocationSelected);
-        setLocalLocationSelected(undefined);
-      }
-    }, [map]);
-    return null;
-  };
+  };    
 
   return (
     <View
@@ -190,8 +232,8 @@ export const Map: FC<MapProps> = ({
     >
       <MapContainer
         center={
-          creatingPostLocation ||
-          consultedPostBaseMetadata?.location ||
+          localCreatingPostLocation ||
+          consultedPostLocation ||
           DEFAULT_MAP_POSITION
         }
         zoom={12}
@@ -239,6 +281,7 @@ export const Map: FC<MapProps> = ({
               position={marker.position}
               icon={postIcon(marker.post.category, marker.isHighlighted)}
               key={index}
+              ref={(element) => (markerRefs.current[index] = element)}
             >
               {marker.post.category === PostCategory.Normal ? (
                 <Popup closeButton={false} className="marker-popup">
@@ -268,10 +311,24 @@ export const Map: FC<MapProps> = ({
         </MarkerClusterGroup>
 
         {/*---- Map state updates*/}
-        <UpdateBoundsOnMapLoad />
+        {/* <UpdateBoundsOnMapLoad />
         <UpdateBoundsOnMapEvents />
-        <UpdateToLocationSelected />
-      </MapContainer>
+        <CenterToCreatingPost />
+        <CenterAndOpenConsultedPost /> */}
+        <MapManager
+    setBounds={setBounds}
+    // isMapReady={isMapReady}
+    // setMapReady={setMapReady}
+    // localCreatingPostLocation={localCreatingPostLocation}
+    // setLocalCreatingPostLocation={setLocalCreatingPostLocation}
+    consultedPostLocation={consultedPostLocation}
+    creatingPostLocation={creatingPostLocation}
+    // isConsultedPostOpened={isConsultedPostOpened}
+    // setConsultedPostOpened={setConsultedPostOpened}
+    consultedPostId={consultedPostId}
+    markers={markers}
+    markerRefs={markerRefs}
+  />      </MapContainer>
     </View>
   );
 };
