@@ -2,7 +2,7 @@
 /.yarn/releases/* binary
 /.yarn/plugins/**/* binary
 /.pnp.* binary linguist-generated
-/cosmwasm-contracts/*/schema/**/* linguist-generated
+/rust/cw-contracts/*/schema/**/* linguist-generated
 /packages/contracts-clients/**/* linguist-generated
 /packages/api/**/* linguist-generated
 /go/pkg/*pb/**/* linguist-generated

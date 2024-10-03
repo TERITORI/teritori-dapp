@@ -9,7 +9,7 @@ const main = async () => {
   program.parse();
   const [pkgname] = program.args as [string];
 
-  const dir = path.join("cosmwasm-contracts", pkgname);
+  const dir = path.join("rust/cw-contracts", pkgname);
 
   const buildCmd = `docker run --platform linux/amd64 --rm -v ./:/code \
   --mount type=volume,source=${sqh(`teritori-dapp_cw_${pkgname}_cache`)},target=/target \
