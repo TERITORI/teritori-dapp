@@ -27,6 +27,10 @@ func (addr *WhitelistAddress) toBytes() []byte {
 	return []byte(addr.toStr())
 }
 
+func (addr *WhitelistAddress) GetID() string {
+	return addr.value
+}
+
 func (addr *WhitelistAddress) CalculateHash() ([]byte, error) {
 	res := crypto.Keccak256(addr.toBytes())
 	return res, nil
@@ -72,7 +76,28 @@ func (m *Metadata) proto_encode() ([]byte, error) {
 	return bytes, nil
 }
 
-// CalculateHash hashes the values of a TestContent
+// Converts the Metadata data into one string
+func (m *Metadata) GetID() string {
+	id := ""
+	for _, attribute := range m.Attributes {
+		id += *attribute.DisplayType
+		id += attribute.TraitType
+		id += attribute.Value
+	}
+	id += *m.Image
+	id += *m.ImageData
+	id += *m.ExternalUrl
+	id += *m.Description
+	id += *m.Name
+	id += *m.BackgroundColor
+	id += *m.AnimationUrl
+	id += *m.YoutubeUrl
+	id += fmt.Sprintf(":%d", *m.RoyaltyPercentage)
+	id += *m.RoyaltyPaymentAddress
+	return id
+}
+
+// CalculateHash hashes the values of a Metadata
 func (m *Metadata) CalculateHash() ([]byte, error) {
 	bytes, err := m.proto_encode()
 	if err != nil {
@@ -83,7 +108,7 @@ func (m *Metadata) CalculateHash() ([]byte, error) {
 	return res, nil
 }
 
-// Equals tests for equality of two Contents
+// Equals tests for equality of two Metadata
 func (m *Metadata) Equals(other merkletree.Content) (bool, error) {
 	thisBytes, err := m.proto_encode()
 	if err != nil {
