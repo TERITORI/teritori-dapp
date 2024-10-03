@@ -1,14 +1,12 @@
 import "./styles.css";
 import "leaflet/dist/leaflet.css";
-import L, { DivIcon, LatLngBounds, point, PointExpression } from "leaflet";
+import { DivIcon, LatLngBounds, point, PointExpression } from "leaflet";
 import {
   Dispatch,
   FC,
-  MutableRefObject,
   SetStateAction,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
@@ -45,28 +43,21 @@ interface MarkerPopup {
   position: CustomLatLngExpression;
   post: Post;
   fileURL?: string;
+  isHighlighted?: boolean;
 }
 interface MapManagerProps {
   setBounds: Dispatch<SetStateAction<LatLngBounds | null>>;
   creatingPostLocation?: CustomLatLngExpression;
   consultedPostLocation?: CustomLatLngExpression;
-  consultedPostId?: string;
-  markers: MarkerPopup[];
-  markerRefs: MutableRefObject<(L.Marker<any> | null)[]>;
-  clusterGroupRef: MutableRefObject<L.MarkerClusterGroup | null>;
 }
 const MapManager = ({
   setBounds,
-  consultedPostLocation,
   creatingPostLocation,
-  consultedPostId,
-  markers,
-  markerRefs,
-  clusterGroupRef,
+  consultedPostLocation,
 }: MapManagerProps) => {
   const map = useMap();
   const [isMapReady, setMapReady] = useState(false);
-  const [isConsultedPostOpened, setConsultedPostOpened] = useState(false);
+  const [isConsultedPostConsulted, setConsultedPostConsulted] = useState(false);
 
   useEffect(() => {
     const updateBounds = () => {
@@ -85,51 +76,15 @@ const MapManager = ({
     map.on("moveend", updateBounds);
     map.on("zoomend", updateBounds);
 
-    // Center to creatingPostLocation if exists
+    // Center to creatingPostLocation when it's updated
     if (creatingPostLocation) {
       map.setView(creatingPostLocation);
     }
-
-    // Center to consultedPostLocation if exists and open the marker (Once)
-    if (consultedPostLocation && !isConsultedPostOpened) {
+    // Center to consultedPostLocation when it's updated (Once)
+    if (consultedPostLocation && !isConsultedPostConsulted) {
       map.setView(consultedPostLocation);
-
-      if (consultedPostId && markers.length) {
-        const index = markers.findIndex(
-          (marker) => marker.post.id === consultedPostId,
-        );
-        if (index !== -1 && markerRefs.current[index]) {
-          markerRefs.current[index]?.openPopup();
-        }
-        setConsultedPostOpened(true);
-      }
+      setConsultedPostConsulted(true);
     }
-
-    // TODO: Center to consultedPostLocation if exists, open the cluster and the marker (Once)
-    // if (
-    //   consultedPostLocation &&
-    //   !isConsultedPostOpened &&
-    //   consultedPostId &&
-    //   markers.length &&
-    //   markerRefs.current
-    // ) {
-    //   const index = markers.findIndex(
-    //     (marker) => marker.post.id === consultedPostId,
-    //   );
-    //   const marker = markerRefs.current[index];
-    //
-    //   if (clusterGroupRef.current && marker) {
-    //     clusterGroupRef.current.eachLayer((layer) => {
-    //       if (layer._leaflet_id === marker._leaflet_id) {  // How to compare markers and layers ?
-    //         // FIXME: zoomToShowLayer gives the error: TypeError: Cannot use 'in' operator to search for '_leaflet_id' in undefined
-    //         clusterGroupRef.current?.zoomToShowLayer(layer, () => {
-    //           layer.openPopup();
-    //         });
-    //       }
-    //     });
-    //   }
-    //   setConsultedPostOpened(true);
-    // }
 
     // Clean listeners
     return () => {
@@ -139,14 +94,10 @@ const MapManager = ({
   }, [
     map,
     isMapReady,
-    markerRefs,
-    clusterGroupRef,
     setBounds,
     creatingPostLocation,
     consultedPostLocation,
-    isConsultedPostOpened,
-    consultedPostId,
-    markers,
+    isConsultedPostConsulted,
   ]);
 
   return null;
@@ -160,8 +111,6 @@ export const Map: FC<MapProps> = ({
 }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const [bounds, setBounds] = useState<LatLngBounds | null>(null);
-  const markerRefs = useRef<(L.Marker | null)[]>([]);
-  const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
 
   // Fetch the consulted post
   const { post: consultedPost } = usePost(consultedPostId);
@@ -194,10 +143,11 @@ export const Map: FC<MapProps> = ({
       results.push({
         position: metadata.location,
         post,
+        isHighlighted: post.id === consultedPostId,
       });
     });
     return results;
-  }, [posts]);
+  }, [posts, consultedPostId]);
 
   // Heatmap
   const heatPoints = aggregatedPosts
@@ -210,13 +160,15 @@ export const Map: FC<MapProps> = ({
       })
     : [];
 
+  const borderClass = "icon-border";
+  const borderHighlightedClassFlag = "--highlighted";
   // Custom map post icon
-  const postIcon = (postCategory: PostCategory) => {
+  const postIcon = (postCategory: PostCategory, isHighlighted?: boolean) => {
     const size = 32;
     const borderWidth = 1;
     const sizeWithBorders = 32 + borderWidth * 2;
     return new DivIcon({
-      html: `<div class="post-icon-wrapper" style="border-radius: 99px;
+      html: `<div class="${borderClass}${isHighlighted ? borderHighlightedClassFlag : ""}" style="border-radius: 99px;
       height: ${size}px; width: ${size}px;
       background-color: rgba(${getMapPostIconColorRgba(postCategory)}); display: flex; align-items: center; justify-content: center;">${getMapPostIconSVGString(postCategory)}</div>`,
       className: "",
@@ -226,8 +178,13 @@ export const Map: FC<MapProps> = ({
 
   // Custom cluster icon
   const clusterIcon = (cluster: any) => {
+    const isHighlighted = cluster
+      .getAllChildMarkers()
+      .some((child: any) =>
+        child.options.icon.options.html.includes("icon-border--highlighted"),
+      );
     return new DivIcon({
-      html: `<div class="cluster-icon-wrapper"><span class="cluster-icon">${cluster.getChildCount()}</span></div>`,
+      html: `<div class="cluster-icon-wrapper ${borderClass}${isHighlighted ? borderHighlightedClassFlag : ""}"><span class="cluster-icon">${cluster.getChildCount()}</span></div>`,
       className: "custom-marker-cluster",
       iconSize: point(33, 33, true) as PointExpression,
     });
@@ -245,7 +202,9 @@ export const Map: FC<MapProps> = ({
       ]}
     >
       <MapContainer
-        center={DEFAULT_MAP_POSITION}
+        center={
+          consultedPostLocation || creatingPostLocation || DEFAULT_MAP_POSITION
+        }
         zoom={12}
         attributionControl={false}
       >
@@ -275,25 +234,20 @@ export const Map: FC<MapProps> = ({
           }
         />
         {/*---- Existing posts that have a location*/}
-        <MarkerClusterGroup
-          chunkedLoading
-          iconCreateFunction={clusterIcon}
-          ref={clusterGroupRef}
-        >
+        <MarkerClusterGroup chunkedLoading iconCreateFunction={clusterIcon}>
           {/*  When the user is creating a post*/}
           {creatingPostLocation && (
             <Marker
               position={creatingPostLocation}
-              icon={postIcon(creatingPostCategory)}
+              icon={postIcon(creatingPostCategory, true)}
             />
           )}
           {/* Mapping through the markers (Fetched posts) */}
           {markers?.map((marker, index) => (
             <Marker
               position={marker.position}
-              icon={postIcon(marker.post.category)}
+              icon={postIcon(marker.post.category, marker.isHighlighted)}
               key={index}
-              ref={(element) => (markerRefs.current[index] = element)}
             >
               {marker.post.category === PostCategory.Normal ? (
                 <Popup closeButton={false} className="marker-popup">
@@ -323,13 +277,9 @@ export const Map: FC<MapProps> = ({
         </MarkerClusterGroup>
         <MapManager
           setBounds={setBounds}
-          consultedPostLocation={consultedPostLocation}
           creatingPostLocation={creatingPostLocation}
-          consultedPostId={consultedPostId}
-          markers={markers}
-          markerRefs={markerRefs}
-          clusterGroupRef={clusterGroupRef}
-        />{" "}
+          consultedPostLocation={consultedPostLocation}
+        />
       </MapContainer>
     </View>
   );
