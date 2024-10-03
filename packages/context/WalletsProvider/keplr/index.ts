@@ -143,7 +143,6 @@ export const useKeplr: () => UseKeplrResult = () => {
         connected: true,
         id: `keplr-${address}`,
       };
-      console.log("keplr", index, wallet);
       return wallet;
     });
 

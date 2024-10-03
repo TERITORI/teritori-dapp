@@ -4468,6 +4468,7 @@
       "SocialFeed",
       "UPP",
       "GnoProjectManager",
+      "NameService",
       "LaunchpadERC20"
     ],
     "featureObjects": [
@@ -4537,7 +4538,8 @@
     "features": [
       "Organizations",
       "SocialFeed",
-      "UPP"
+      "UPP",
+      "NameService"
     ],
     "currencies": [
       {
@@ -4583,7 +4585,8 @@
       "Organizations",
       "SocialFeed",
       "UPP",
-      "GnoProjectManager"
+      "GnoProjectManager",
+      "NameService"
     ],
     "featureObjects": [
       {
@@ -4669,7 +4672,8 @@
     "features": [
       "SocialFeed",
       "UPP",
-      "GnoProjectManager"
+      "GnoProjectManager",
+      "NameService"
     ],
     "featureObjects": [
       {

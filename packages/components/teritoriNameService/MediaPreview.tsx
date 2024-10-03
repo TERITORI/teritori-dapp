@@ -31,12 +31,16 @@ export const MediaPreview: React.FC<{
   setAvatarImageUrl: Dispatch<SetStateAction<string>>;
   bannerImageUrl: string;
   setBannerImageUrl: Dispatch<SetStateAction<string>>;
+  variant?: "regular" | "labelOutside" | "noStyle";
+  hasPadding?: boolean;
 }> = ({
   style,
   avatarImageUrl,
   setAvatarImageUrl,
   bannerImageUrl,
   setBannerImageUrl,
+  variant = "labelOutside",
+  hasPadding = true,
 }) => {
   const selectedNetwork = useSelectedNetworkInfo();
   const selectedWallet = useSelectedWallet();
@@ -92,21 +96,22 @@ export const MediaPreview: React.FC<{
 
   return (
     <View
-      style={{
-        borderRadius: layout.borderRadius,
-        borderWidth: 1,
-        marginBottom: layout.spacing_x1,
-        padding: layout.spacing_x1_5,
-        backgroundColor: neutral17,
-        width: "100%",
-      }}
+      style={[
+        { width: "100%", backgroundColor: neutral17 },
+        hasPadding && {
+          borderRadius: layout.borderRadius,
+          borderWidth: 1,
+          marginBottom: layout.spacing_x1,
+          padding: layout.spacing_x1_5,
+        },
+      ]}
     >
       <TextInputCustom<Metadata>
         name="image"
         style={style}
         label="Avatar URL"
         noBrokenCorners
-        variant="labelOutside"
+        variant={variant}
         placeHolder="https://website.com/avatar.jpg"
         onPressChildren={onPressUploadAvatar}
         value={avatarImageUrl}
@@ -126,7 +131,7 @@ export const MediaPreview: React.FC<{
         label="Cover Image URL"
         noBrokenCorners
         onPressChildren={onPressUploadBanner}
-        variant="labelOutside"
+        variant={variant}
         placeHolder="https://website.com/coverimage.jpg"
         value={bannerImageUrl}
         onChangeText={setBannerImageUrl}

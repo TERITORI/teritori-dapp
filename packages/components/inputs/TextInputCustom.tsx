@@ -226,7 +226,7 @@ export const TextInputCustom = <T extends FieldValues>({
     return (
       <TextInput
         ref={inputRef}
-        editable={!disabled}
+        readOnly={disabled}
         placeholder={placeHolder}
         onChangeText={handleChangeText}
         onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
@@ -266,8 +266,8 @@ export const TextInputCustom = <T extends FieldValues>({
         style={style}
         mainContainerStyle={[
           styles.mainContainer,
-          boxMainContainerStyle,
           noBrokenCorners && styles.noCropBorderBg,
+          boxMainContainerStyle,
           hovered && { borderColor: secondaryColor },
           height !== undefined &&
             height <= styles.mainContainer.minHeight && { minHeight: height },
@@ -298,7 +298,7 @@ export const TextInputCustom = <T extends FieldValues>({
               ))}
             <TextInput
               ref={inputRef}
-              editable={!disabled}
+              readOnly={disabled}
               placeholder={placeHolder}
               onChangeText={handleChangeText}
               onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}

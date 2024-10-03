@@ -1,11 +1,11 @@
 import React from "react";
 import { Platform, useWindowDimensions } from "react-native";
 
-import { TNSCloseHandler } from "./TNSHomeScreen";
 import GradientModalBase from "../../components/modals/GradientModalBase";
 
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { FindAName } from "@/components/teritoriNameService/FindAName";
+import { TNSCloseHandler } from "@/components/user/types";
 import { useTNS } from "@/context/TNSProvider";
 import { useNSMintAvailability } from "@/hooks/useNSMintAvailability";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
@@ -29,7 +29,6 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
     networkId,
     tokenId,
   );
-
   const width = windowWidth < 457 ? windowWidth : 457;
 
   return (
