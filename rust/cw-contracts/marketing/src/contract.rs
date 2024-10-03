@@ -14,7 +14,7 @@ pub struct Banner {
 }
 
 #[cw_serde]
-pub struct Action {
+pub struct NewsAction {
   pub label: String,
   pub url: String,
 }
@@ -25,17 +25,7 @@ pub struct News {
   pub subtitle: String,
   pub text: String,
   pub image: String,
-  pub actions: Option<Vec<Action>>,
-}
-
-#[cw_serde]
-pub struct MarketingCollectionPreview {
-  pub address: String,
-  pub image_uri: String,
-  pub collection_name: String,
-  pub creator_name: String,
-  pub twitter_url: String,
-  pub secondary_during_mint: bool,
+  pub actions: Option<Vec<NewsAction>>,
 }
 
 #[cw_serde]
@@ -47,9 +37,6 @@ pub struct MarketingContract {
     pub(crate) config: Item<'static, Config>,
     pub(crate) banners: Map<'static, u64, Banner>,
     pub(crate) news: Map<'static, u64, News>,
-    pub(crate) upcoming_collections: Map<'static, u64, MarketingCollectionPreview>,
-    pub(crate) live_collections: Map<'static, u64, MarketingCollectionPreview>,
-    pub(crate) highlighted_collections: Map<'static, u64, MarketingCollectionPreview>,
 }
 
 #[entry_points]
@@ -61,9 +48,6 @@ impl MarketingContract {
       config: Item::new("config"),
       banners: Map::new("banners"),
       news: Map::new("news"),
-      upcoming_collections: Map::new("upcoming_collections"),
-      live_collections: Map::new("live_collections"),
-      highlighted_collections: Map::new("highlighted_collections"),
     }
   }
 
@@ -142,72 +126,6 @@ impl MarketingContract {
     Ok(Response::new().add_attributes(attributes))
   }
 
-  #[msg(exec)]
-  // Only the admin can execute it
-  pub fn update_live_collections(
-    &self,
-    ctx: ExecCtx,
-    live_collections: Vec<MarketingCollectionPreview>,
-  ) -> Result<Response, ContractError> {
-    let attributes = vec![attr("action", "update_live_collections")];
-    let config = self.config.load(ctx.deps.storage)?;
-    // Permission check
-    if ctx.info.sender != config.admin_addr {
-      return Err(ContractError::Unauthorized);
-    }
-    // Replace all live_collections with the new ones
-    self.live_collections.clear(ctx.deps.storage);
-    for (index, live_collection) in live_collections.into_iter().enumerate() {
-        self.live_collections.save(ctx.deps.storage, index as u64, &live_collection)?;
-    }
-
-    Ok(Response::new().add_attributes(attributes))
-  }
-
-  #[msg(exec)]
-  // Only the admin can execute it
-  pub fn update_upcoming_collections(
-    &self,
-    ctx: ExecCtx,
-    upcoming_collections: Vec<MarketingCollectionPreview>,
-  ) -> Result<Response, ContractError> {
-    let attributes = vec![attr("action", "update_upcoming_collections")];
-    let config = self.config.load(ctx.deps.storage)?;
-    // Permission check
-    if ctx.info.sender != config.admin_addr {
-      return Err(ContractError::Unauthorized);
-    }
-    // Replace all upcoming_collections with the new ones
-    self.upcoming_collections.clear(ctx.deps.storage);
-    for (index, upcoming_collection) in upcoming_collections.into_iter().enumerate() {
-        self.upcoming_collections.save(ctx.deps.storage, index as u64, &upcoming_collection)?;
-    }
-
-    Ok(Response::new().add_attributes(attributes))
-  }
-
-  #[msg(exec)]
-  // Only the admin can execute it
-  pub fn update_highlighted_collections(
-    &self,
-    ctx: ExecCtx,
-    highlighted_collections: Vec<MarketingCollectionPreview>,
-  ) -> Result<Response, ContractError> {
-    let attributes = vec![attr("action", "update_highlighted_collections")];
-    let config = self.config.load(ctx.deps.storage)?;
-    // Permission check
-    if ctx.info.sender != config.admin_addr {
-      return Err(ContractError::Unauthorized);
-    }
-    // Replace all highlighted_collections with the new ones
-    self.highlighted_collections.clear(ctx.deps.storage);
-    for (index, highlighted_collection) in highlighted_collections.into_iter().enumerate() {
-        self.highlighted_collections.save(ctx.deps.storage, index as u64, &highlighted_collection)?;
-    }
-
-    Ok(Response::new().add_attributes(attributes))
-  }
-
   #[msg(query)]
   pub fn get_config(&self, ctx: QueryCtx) -> StdResult<Config> {
     let config = self.config.load(ctx.deps.storage)?;
@@ -234,39 +152,6 @@ impl MarketingContract {
     .collect::<StdResult<Vec<News>>>()?; 
 
     Ok(news)
-  }
-
-  #[msg(query)]
-  pub fn get_live_collections(&self, ctx: QueryCtx) -> StdResult<Vec<MarketingCollectionPreview>> {
-    let live_collections: Vec<MarketingCollectionPreview> = self
-    .live_collections
-    .range(ctx.deps.storage, None, None, cosmwasm_std::Order::Ascending)
-    .map(|item| item.map(|(_, live_collection)| live_collection))
-    .collect::<StdResult<Vec<MarketingCollectionPreview>>>()?; 
-      
-    Ok(live_collections)
-  }
-
-  #[msg(query)]
-  pub fn get_upcoming_collections(&self, ctx: QueryCtx) -> StdResult<Vec<MarketingCollectionPreview>> {
-    let upcoming_collections: Vec<MarketingCollectionPreview> = self
-    .upcoming_collections
-    .range(ctx.deps.storage, None, None, cosmwasm_std::Order::Ascending)
-    .map(|item| item.map(|(_, upcoming_collection)| upcoming_collection))
-    .collect::<StdResult<Vec<MarketingCollectionPreview>>>()?;     
-  
-    Ok(upcoming_collections)
-  }
-
-  #[msg(query)]
-  pub fn get_highlighted_collections(&self, ctx: QueryCtx) -> StdResult<Vec<MarketingCollectionPreview>> {
-    let highlighted_collections: Vec<MarketingCollectionPreview> = self
-    .highlighted_collections
-    .range(ctx.deps.storage, None, None, cosmwasm_std::Order::Ascending)
-    .map(|item| item.map(|(_, highlighted_collection)| highlighted_collection))
-    .collect::<StdResult<Vec<MarketingCollectionPreview>>>()?; 
-    
-    Ok(highlighted_collections)
   }
 }
 

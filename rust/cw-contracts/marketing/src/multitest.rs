@@ -1,6 +1,6 @@
 use sylvia::multitest::App;
 
-use crate::contract::{multitest_utils::CodeId, Action, News};
+use crate::contract::{multitest_utils::CodeId, NewsAction, News};
 use crate::error::ContractError;
 
 #[test]
@@ -13,7 +13,7 @@ fn basic_full_flow() {
     let contract_creator = "creator";
     let unauthorized_sender = "unauthorized_sender";
     
-    let action = Action {
+    let action = NewsAction {
         label: "".to_string(),
         url: "".to_string()
     };
