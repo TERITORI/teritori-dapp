@@ -255,9 +255,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
     }
 
     // FIXME: how to estimate gasWanted ?
-    await adenaDoContract(network.id, msgs, {
-      gasWanted: 3_000_000,
-    });
+    await adenaDoContract(network.id, msgs);
 
     onClose();
 
