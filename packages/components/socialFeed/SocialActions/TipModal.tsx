@@ -137,7 +137,7 @@ export const TipModal: React.FC<{
   return (
     <ModalBase
       visible={isVisible}
-      onClose={onClose}
+      onClose={() => onClose()}
       width={400}
       label={`Your wallet has ${prettyPrice(
         selectedNetworkInfo?.id,
