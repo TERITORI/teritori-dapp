@@ -332,7 +332,7 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 		GameID:     THE_RIOT_GAME_ID,
 		Denom:      "tori",
 		Decimals:   6,
-		TotalPrize: 1_200_000,
+		TotalPrize: 2_316_000,
 		BossName:   "Alexander Aldrin",
 		BossImage:  "https://gateway.pinata.cloud/ipfs/Qmd98tXCe7bxULC2X8wAhSN7KgJ2M5UESqRzhFT9VrBTpn",
 		TopN:       500,

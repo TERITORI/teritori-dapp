@@ -36,6 +36,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
 
   const req: Partial<PostsRequest> = {
     filter: {
+      networkId: selectedNetworkInfo?.id || "",
       categories: [PostCategory.Flagged],
       user: "",
       mentions: [],

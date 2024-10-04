@@ -1,16 +1,17 @@
-import React from "react";
+import React, { FC } from "react";
 import { View } from "react-native";
 
 import { JungleFeedScreen } from "./JungleFeedScreen";
 
 import { PostsRequest } from "@/api/feed/v1/feed";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { PostCategory } from "@/utils/types/feed";
 
-type Props = object;
-
-export const PictureFeedScreen = (props: Props) => {
+export const PictureFeedScreen: FC = () => {
+  const selectedNetworkId = useSelectedNetworkId();
   const feedRequest: Partial<PostsRequest> = {
     filter: {
+      networkId: selectedNetworkId,
       categories: [PostCategory.Picture],
       user: "",
       mentions: [],

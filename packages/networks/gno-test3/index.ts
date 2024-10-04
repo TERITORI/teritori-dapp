@@ -22,4 +22,5 @@ export const gnoTest3Network: GnoNetworkInfo = {
   nameServiceDefaultImage:
     "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
   gnowebURL: "https://test3.gno.land",
+  txIndexerURL: "https://indexer.test3.gno.testnet.teritori.com",
 };

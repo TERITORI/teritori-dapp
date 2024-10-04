@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Platform, View, useWindowDimensions } from "react-native";
 
-import { TNSModalCommonProps } from "./TNSHomeScreen";
 import GradientModalBase from "../../components/modals/GradientModalBase";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 
@@ -9,6 +8,7 @@ import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
 import { TNSSendFundsModal } from "@/components/modals/teritoriNameService/TNSSendFundsModal";
 import { FindAName } from "@/components/teritoriNameService/FindAName";
+import { TNSModalCommonProps } from "@/components/user/types";
 import { useTNS } from "@/context/TNSProvider";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useNSMintAvailability } from "@/hooks/useNSMintAvailability";

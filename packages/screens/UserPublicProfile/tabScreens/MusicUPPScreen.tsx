@@ -16,7 +16,7 @@ export const MusicUPPScreen: FC<UppTabScreenProps> = ({
   screenContainerOtherProps,
 }) => {
   const selectedWallet = useSelectedWallet();
-  const [, userAddress] = parseUserId(userId);
+  const [network, userAddress] = parseUserId(userId);
   const userInfo = useNSUserInfo(userId);
   const userName =
     userInfo?.metadata.public_name || userInfo?.metadata.tokenId || userAddress;
@@ -31,6 +31,7 @@ export const MusicUPPScreen: FC<UppTabScreenProps> = ({
         <UPPHeader userId={userId} selectedTab={UppTabKeys.music} />
         <FeedMusicList
           title={isCurrentUser ? "Your music" : "Music by " + userName}
+          networkId={network?.id}
           authorId={userId}
           allowUpload={isCurrentUser}
         />

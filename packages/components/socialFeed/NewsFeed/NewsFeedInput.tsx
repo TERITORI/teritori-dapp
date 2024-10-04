@@ -155,22 +155,6 @@ export const NewsFeedInput = React.forwardRef<
     const [description, setDescription] = useState("");
     const [developerMode] = useDeveloperMode();
 
-    // useEffect(() => {
-    //   if (Platform.OS === "web") {
-    //     navigator.geolocation.getCurrentPosition(
-    //       (position) => {
-    //         setLocationSelected([
-    //           position.coords.latitude,
-    //           position.coords.longitude,
-    //         ]);
-    //       },
-    //       (error) => {
-    //         console.error("Error getting geolocation:", error);
-    //       },
-    //     );
-    //   }
-    // }, []);
-
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
         defaultValues: {
@@ -303,6 +287,7 @@ export const NewsFeedInput = React.forwardRef<
           mentions,
           gifs: formValues?.gifs || [],
           premium,
+          location: locationSelected,
         });
 
         await makePost(

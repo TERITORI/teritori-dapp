@@ -1,4 +1,8 @@
-import { changeSelectedMilestoneStatus, changeTestUser } from "./lib";
+import {
+  changeSelectedMilestoneStatus,
+  changeTestUser,
+  connectWallet,
+} from "./lib";
 
 describe("Funder proposer full flow", () => {
   it("works", () => {
@@ -14,9 +18,7 @@ describe("Funder proposer full flow", () => {
 
     cy.contains("Create a Project").click();
 
-    cy.contains("Connect wallet").click({ force: true });
-    cy.get("div[data-testid=connect-gnotest-wallet]").click({ force: true });
-    cy.contains("Connect wallet").should("not.exist");
+    connectWallet();
     changeTestUser("alice");
 
     // first step: basic project info
@@ -33,8 +35,12 @@ describe("Funder proposer full flow", () => {
     cy.get("input[type=file]").selectFile("cypress/fixtures/image.png", {
       force: true,
     });
-    cy.get("div[data-testid=loader-full-screen]", { timeout: 10000 }).should(
+    cy.get("div[data-testid=loader-full-screen]", { timeout: 10_000 }).should(
       "not.exist",
+    );
+
+    cy.get(`div[data-testid=project-cover-image]`, { timeout: 10_000 }).should(
+      "exist",
     );
 
     cy.get("input[placeholder='Add  1-5 main Grant tags using comma...']").type(

@@ -9,10 +9,11 @@ import { SVG } from "@/components/SVG";
 import { SpacerColumn } from "@/components/spacer";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { fontSemibold16, fontSemibold28 } from "@/utils/style/fonts";
+import { RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 
 export const LaunchpadBanner: React.FC = () => {
   const { width } = useMaxResolution();
-  const isSmallScreen = width < 500;
+  const isSmallScreen = width < RESPONSIVE_BREAKPOINT_S;
   const logoSize = isSmallScreen ? 44 : 88;
   const font = isSmallScreen ? fontSemibold16 : fontSemibold28;
 

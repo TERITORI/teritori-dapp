@@ -3,7 +3,7 @@ BUNKER_MINTER_PACKAGE=teritori-bunker-minter
 GO?=go
 GOFMT?=$(shell $(GO) env GOROOT)/bin/gofmt
 
-COSMWASM_CONTRACTS_DIR=cosmwasm-contracts
+COSMWASM_CONTRACTS_DIR=rust/cw-contracts
 INTERNAL_COSMWASM_CONTRACTS=$(wildcard $(COSMWASM_CONTRACTS_DIR)/*)
 
 TOKEN_REPO=teritori-nfts
@@ -25,14 +25,18 @@ CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
 DOCKER_REGISTRY=rg.nl-ams.scw.cloud/teritori
 INDEXER_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-indexer:$(shell git rev-parse --short HEAD)
-FLUSH_DATA_IMAGE=$(DOCKER_REGISTRY)/flush-data:$(shell git rev-parse --short HEAD)
 EVM_INDEXER_IMAGE=$(DOCKER_REGISTRY)/evm-indexer:$(shell git rev-parse --short HEAD)
+GNO_INDEXER_DOCKER_IMAGE=$(DOCKER_REGISTRY)/gno-indexer:$(shell git rev-parse --short HEAD)
+FLUSH_DATA_IMAGE=$(DOCKER_REGISTRY)/flush-data:$(shell git rev-parse --short HEAD)
 BACKEND_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
 PRICES_SERVICE_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-service:$(shell git rev-parse --short HEAD)
 PRICES_OHLC_REFRESH_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-ohlc-refresh:$(shell git rev-parse --short HEAD)
 P2E_DOCKER_IMAGE=$(DOCKER_REGISTRY)/p2e-update-leaderboard:$(shell git rev-parse --short HEAD)
 FEED_DOCKER_IMAGE=$(DOCKER_REGISTRY)/feed-clean-pinata-keys:$(shell git rev-parse --short HEAD)
 MULTISIG_DOCKER_IMAGE=$(DOCKER_REGISTRY)/cosmos-multisig-backend:$(shell git rev-parse --short HEAD)
+
+GNODEV=gnodev --add-account g193vp9tjhfpldvgg3gn433ayv8pn7rtfv8shyeq $$(find gno -name gno.mod -type f -exec dirname {} \;)
+GNODEV_E2E=$(GNODEV) --unsafe-api --server-mode
 
 
 ARCH := $(shell uname -m)
@@ -70,6 +74,7 @@ packages/api/weshnet: node_modules
 .PHONY: generate.graphql
 generate.graphql:
 	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/holagql/genqlient.yaml
+	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/gnoindexerql/genqlient.yaml
 
 .PHONY: generate.graphql-thegraph
 generate.graphql-thegraph:
@@ -91,6 +96,10 @@ lint.js: node_modules
 .PHONY: go/pkg/holagql/holaplex-schema.graphql
 go/pkg/holagql/holaplex-schema.graphql:
 	rover graph introspect https://graph.65.108.73.219.nip.io/v1 > $@
+
+.PHONY: go/pkg/gnoindexerql/indexer-schema.graphql
+go/pkg/gnoindexerql/indexer-schema.graphql:
+	rover graph introspect http://localhost:8546/graphql/query > $@
 
 .PHONY: docker.backend
 docker.backend:
@@ -276,6 +285,11 @@ publish.multisig-backend:
 	docker build -f go/cmd/multisig-backend/Dockerfile . --platform linux/amd64 -t $(MULTISIG_DOCKER_IMAGE)
 	docker push $(MULTISIG_DOCKER_IMAGE)
 
+.PHONY: publish.gno-indexer
+publish.gno-indexer:
+	docker build -f go/cmd/gno_social_feed_indexer/Dockerfile . --platform linux/amd64 -t $(GNO_INDEXER_DOCKER_IMAGE)
+	docker push $(GNO_INDEXER_DOCKER_IMAGE)
+
 .PHONY: validate-networks
 validate-networks: node_modules
 	yarn validate-networks
@@ -420,14 +434,18 @@ generate.internal-contracts-clients: node_modules
 install-gno: node_modules
 	yarn install-gno
 
+.PHONY: start.gnodev
+start.gnodev:
+	$(GNODEV)
+
 .PHONY: start.gnodev-e2e
 start.gnodev-e2e:
-	gnodev --unsafe-api --server-mode --add-account g193vp9tjhfpldvgg3gn433ayv8pn7rtfv8shyeq $$(find gno -name gno.mod -type f -exec dirname {} \;)
+	$(GNODEV_E2E)
 
 .PHONY: clone-gno
 clone-gno:
 	mkdir -p gnobuild
-	cd gnobuild && git clone https://github.com/gnolang/gno.git && cd gno && git checkout 9b114172063feaf2da4ae7ebb8263cada3ba699b
+	cd gnobuild && git clone https://github.com/gnolang/gno.git && cd gno && git checkout 8f800ece85a765113dfa4924da1c06f56865460c
 	cp -r ./gno/p ./gnobuild/gno/examples/gno.land/p/teritori
 
 .PHONY: build-gno

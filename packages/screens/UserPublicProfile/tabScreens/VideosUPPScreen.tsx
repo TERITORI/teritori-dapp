@@ -11,6 +11,7 @@ import { FeedVideosList } from "@/components/video/FeedVideosList";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
 import { PostCategory } from "@/utils/types/feed";
+import { DeepPartial } from "@/utils/typescript";
 import { UppTabKeys } from "@/utils/upp";
 
 export const VideosUPPScreen: FC<UppTabScreenProps> = ({
@@ -24,17 +25,13 @@ export const VideosUPPScreen: FC<UppTabScreenProps> = ({
     userInfo?.metadata.public_name || userInfo?.metadata.tokenId || userAddress;
   const isCurrentUser = userId === selectedWallet?.userId;
 
-  const feedRequestUserVideos: Partial<PostsRequest> = {
+  const feedRequestUserVideos: DeepPartial<PostsRequest> = {
     filter: {
       categories: [PostCategory.Video],
       user: userId,
-      mentions: [],
-      hashtags: [],
-      premiumLevelMin: 0,
       premiumLevelMax: -1,
     },
     limit: 10,
-    offset: 0,
     queryUserId: selectedWallet?.userId,
   };
 

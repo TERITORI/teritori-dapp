@@ -4467,12 +4467,19 @@
       "Organizations",
       "SocialFeed",
       "UPP",
-      "GnoProjectManager"
+      "GnoProjectManager",
+      "NameService",
+      "LaunchpadERC20"
     ],
     "featureObjects": [
       {
         "type": "GnoProjectManager",
         "projectsManagerPkgPath": "gno.land/r/teritori/projects_manager",
+        "paymentsDenom": "ugnot"
+      },
+      {
+        "type": "LaunchpadERC20",
+        "launchpadERC20PkgPath": "gno.land/r/teritori/launchpad_grc20",
         "paymentsDenom": "ugnot"
       }
     ],
@@ -4520,7 +4527,8 @@
     "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
     "daoCorePkgPath": "gno.land/p/teritori/dao_core",
     "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
-    "gnowebURL": "http://127.0.0.1:8888"
+    "gnowebURL": "http://127.0.0.1:8888",
+    "txIndexerURL": "http://127.0.0.1:8546"
   },
   {
     "id": "gno-portal",
@@ -4530,7 +4538,8 @@
     "features": [
       "Organizations",
       "SocialFeed",
-      "UPP"
+      "UPP",
+      "NameService"
     ],
     "currencies": [
       {
@@ -4576,7 +4585,8 @@
       "Organizations",
       "SocialFeed",
       "UPP",
-      "GnoProjectManager"
+      "GnoProjectManager",
+      "NameService"
     ],
     "featureObjects": [
       {
@@ -4651,7 +4661,8 @@
     "vaultContractAddress": "",
     "nameServiceContractAddress": "gno.land/r/demo/users",
     "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
-    "gnowebURL": "https://test3.gno.land"
+    "gnowebURL": "https://test3.gno.land",
+    "txIndexerURL": "https://indexer.test3.gno.testnet.teritori.com"
   },
   {
     "id": "gno-test4",
@@ -4661,7 +4672,8 @@
     "features": [
       "SocialFeed",
       "UPP",
-      "GnoProjectManager"
+      "GnoProjectManager",
+      "NameService"
     ],
     "featureObjects": [
       {
@@ -4698,7 +4710,8 @@
     "socialFeedsPkgPath": "gno.land/r/teritori/social_feeds",
     "socialFeedsDAOPkgPath": "gno.land/r/teritori/social_feeds_dao",
     "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
-    "profilePkgPath": "gno.land/r/teritori/profile"
+    "profilePkgPath": "gno.land/r/teritori/profile",
+    "txIndexerURL": "https://indexer.test4.gno.testnet.teritori.com"
   },
   {
     "id": "cosmos-registry:gravitybridge",

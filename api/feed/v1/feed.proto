@@ -5,6 +5,7 @@ option go_package = "./feedpb";
 
 service FeedService {
   rpc Posts(PostsRequest) returns (PostsResponse);
+  rpc PostsWithLocation(PostsWithLocationRequest) returns (PostsWithLocationResponse);
   rpc IPFSKey(IPFSKeyRequest) returns (IPFSKeyResponse);
 }
 
@@ -45,6 +46,7 @@ message PostFilter {
   repeated string hashtags = 4;
   int32 premium_level_min = 5; // inclusive
   int32 premium_level_max = 6; // inclusive, -1 means infinity
+  string network_id = 7;
 }
 
 message PostsRequest {
@@ -54,7 +56,28 @@ message PostsRequest {
     string query_user_id = 4;
 }
 
+message PostsWithLocationRequest {
+    float north = 1;
+    float south = 2;
+    float west = 3;
+    float east = 4;
+    repeated string hashtags = 5;
+    uint32 limit = 6;
+    string network_id = 7;
+}
+
+message AggregatedPost {
+  float lat = 1;
+  float long = 2;
+  int64 total_points = 3;
+}
 
 message PostsResponse {
     repeated Post posts = 1;
+}
+
+message PostsWithLocationResponse {
+    repeated Post posts = 1;
+    repeated AggregatedPost aggregated_posts = 2;
+    bool is_aggregated = 3;
 }

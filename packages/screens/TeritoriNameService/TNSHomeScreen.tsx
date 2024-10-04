@@ -18,29 +18,20 @@ import { BrandText } from "@/components/BrandText";
 import { IntroLogoText } from "@/components/IntroLogoText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { ActivityTable } from "@/components/activity/ActivityTable";
+import { FlowCard } from "@/components/cards/FlowCard";
 import { TNSNameFinderModal } from "@/components/modals/teritoriNameService/TNSNameFinderModal";
-import { FlowCard } from "@/components/teritoriNameService/FlowCard";
+import { TNSCloseHandler, TNSItems, TNSModals } from "@/components/user/types";
 import { useTNS } from "@/context/TNSProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
-  NetworkKind,
   getCollectionId,
   getCosmosNetwork,
   NetworkFeature,
+  NetworkKind,
 } from "@/networks";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
-
-type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
-type TNSModals =
-  | "TNSManage"
-  | "TNSRegister"
-  | "TNSExplore"
-  | "TNSConsultName"
-  | "TNSMintName"
-  | "TNSUpdateName"
-  | "TNSBurnName";
 
 const TNSPathMap = {
   TNSManage: "manage",
@@ -51,17 +42,6 @@ const TNSPathMap = {
   TNSUpdateName: "update-name",
   TNSBurnName: "burn-name",
 };
-
-export type TNSCloseHandler = (
-  modalName?: TNSModals,
-  navigateTo?: TNSModals,
-  name?: string,
-) => void;
-
-export interface TNSModalCommonProps {
-  onClose: TNSCloseHandler;
-  navigateBackTo?: TNSModals;
-}
 
 const LG_BREAKPOINT = 1600;
 const MD_BREAKPOINT = 820;

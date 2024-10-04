@@ -30,10 +30,11 @@ const gap = layout.spacing_x2;
 
 export const FeedMusicList: React.FC<{
   title?: string;
+  networkId?: string;
   authorId?: string;
   allowUpload?: boolean;
   style?: StyleProp<ViewStyle>;
-}> = ({ title, authorId, allowUpload, style }) => {
+}> = ({ title, networkId, authorId, allowUpload, style }) => {
   const [appMode] = useAppMode();
   const selectedWallet = useSelectedWallet();
   const { showConnectWalletModal } = useWalletControl();
@@ -41,6 +42,7 @@ export const FeedMusicList: React.FC<{
 
   const musicFeedRequest: Partial<PostsRequest> = {
     filter: {
+      networkId: networkId || "",
       categories: [PostCategory.MusicAudio],
       user: authorId || "",
       mentions: [],

@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
 
-import { BrandText } from "../../../components/BrandText";
-import FlexRow from "../../../components/FlexRow";
-import { TertiaryBox } from "../../../components/boxes/TertiaryBox";
+import { BrandText } from "./BrandText";
+import FlexRow from "./FlexRow";
+import { TertiaryBox } from "./boxes/TertiaryBox";
 import {
   neutral00,
   neutral17,
@@ -10,10 +10,9 @@ import {
   neutral77,
   neutralFF,
   primaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { useMakeRequestState } from "../hooks/useMakeRequestHook";
+} from "../utils/style/colors";
+import { fontSemibold14, fontSemibold16 } from "../utils/style/fonts";
+import { layout } from "../utils/style/layout";
 
 const Step: React.FC<{
   indice: number;
@@ -77,21 +76,11 @@ const Seperator = () => {
   );
 };
 
-const STEPS = [
-  "Short presentation",
-  "Milestones",
-  "Preview",
-  "Confirm and Sign",
-];
-
 export const Breadcrumb: React.FC<{
-  stepIndice?: number;
-}> = ({ stepIndice = 1 }) => {
-  const {
-    stepIndice: currentStepIndice,
-    actions: { gotoStep },
-  } = useMakeRequestState();
-
+  currentStepIndice?: number;
+  gotoStep: (stepIndex: number) => void;
+  steps: string[];
+}> = ({ currentStepIndice = 1, gotoStep, steps }) => {
   // We can only goto passed steps
   const gotoValidStep = (targetStepIndice: number) => {
     if (targetStepIndice <= currentStepIndice) {
@@ -109,17 +98,17 @@ export const Breadcrumb: React.FC<{
       }}
     >
       <FlexRow style={{ width: "auto" }}>
-        {STEPS.map((step, idx) => {
+        {steps.map((step, idx) => {
           return (
             <Fragment key={idx}>
               <Step
                 onPress={gotoValidStep}
                 indice={idx + 1}
                 text={step}
-                active={stepIndice === idx + 1}
-                disabled={stepIndice < idx + 1}
+                active={currentStepIndice === idx + 1}
+                disabled={currentStepIndice < idx + 1}
               />
-              {idx + 1 < STEPS.length && <Seperator />}
+              {idx + 1 < steps.length && <Seperator />}
             </Fragment>
           );
         })}

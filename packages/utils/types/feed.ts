@@ -59,9 +59,25 @@ const MaybeFiles = z
     ),
   );
 
+export const ZodLatLngLiteral = z.object({
+  lat: z.number(),
+  lng: z.number(),
+  // alt: z.number().optional()
+});
+export const ZodLatLngTuple = z.tuple([
+  z.number(),
+  z.number(),
+  // I got the error "too_small" with z.number().optional(). I don't know why because it's optional. Whatever, we don't need altitude
+  // z.number().optional()
+]);
+
+export const ZodLatLngExpression = z.union([ZodLatLngLiteral, ZodLatLngTuple]);
+export type LatLngExpression = z.infer<typeof ZodLatLngExpression>;
+
 export const zodSocialFeedCommonMetadata = z.object({
   title: z.string(),
   premium: z.number().int().gte(0).optional(),
+  location: ZodLatLngExpression.optional(),
 });
 
 export type SocialFeedCommonMetadata = z.infer<
