@@ -77,8 +77,9 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
       stepKey === 1 &&
       (!!collectionForm.getFieldState("name").error ||
         !!collectionForm.getFieldState("description").error ||
-        !!collectionForm.getFieldState("symbol").error)
-      // !!collectionForm.getFieldState("coverImage").error ||
+        !!collectionForm.getFieldState("symbol").error) ||
+      !!collectionForm.getFieldState("coverImage").error ||
+      !!collectionForm.getFieldState("nftApiKey").error
       // !!collectionForm.getFieldState("externalLink").error
     ) {
       return true;

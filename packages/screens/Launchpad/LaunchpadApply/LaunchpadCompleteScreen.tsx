@@ -24,12 +24,15 @@ import {
   CollectionFormValues,
   ZodCollectionAssetsMetadatasFormValues,
 } from "@/utils/types/launchpad";
+import { useSelector } from "react-redux";
+import { selectNFTStorageAPI } from "@/store/slices/settings";
 
 export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
   route,
 }) => {
   const isMobile = useIsMobile();
   const { setToast } = useFeedbacks();
+  const userIPFSKey = useSelector(selectNFTStorageAPI);
   const { id: collectionId } = route.params;
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();

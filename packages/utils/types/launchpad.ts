@@ -160,6 +160,7 @@ export const ZodCollectionFormValues = z.object({
     ),
   expectedMintDate: z.number().min(1, DEFAULT_FORM_ERRORS.required),
   coverImage: ZodLocalFileData,
+  nftApiKey: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   isPreviouslyApplied: z.boolean(),
   isDerivativeProject: z.boolean(),
   isReadyForMint: z.boolean(),

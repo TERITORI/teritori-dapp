@@ -10,8 +10,8 @@ import { SpacerColumn } from "@/components/spacer";
 import { NetworkFeature } from "@/networks";
 import { TextInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/TextInputLaunchpad";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
-import { neutral77, primaryColor } from "@/utils/style/colors";
-import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
+import { neutral55, neutral77, primaryColor } from "@/utils/style/colors";
+import { fontSemibold13, fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { CollectionFormValues } from "@/utils/types/launchpad";
 
@@ -96,6 +96,18 @@ export const LaunchpadBasic: FC = () => {
           )}
         />
         <SpacerColumn size={2} />
+
+        <TextInputLaunchpad<CollectionFormValues>
+        label="NFT.Storage JWT"
+        sublabel={
+        <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+        Used to upload the cover image and the assets to your NFT Storage
+        </BrandText>
+        }
+        placeHolder="My Awesome Collection"
+        name="nftApiKey"
+        form={collectionForm}
+        />
 
         {/*<TextInputLaunchpad<CollectionFormValues>*/}
         {/*  label="External Link"*/}

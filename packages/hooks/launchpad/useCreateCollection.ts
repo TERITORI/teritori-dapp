@@ -53,8 +53,7 @@ export const useCreateCollection = () => {
         walletAddress,
         cosmwasmLaunchpadFeature.launchpadContractAddress,
       );
-      const pinataJWTKey =
-        userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
+      const pinataJWTKey = collectionFormValues.nftApiKey || (await generateIpfsKey(selectedNetworkId, userId));
       if (!pinataJWTKey) {
         console.error("upload file err : No Pinata JWT");
         setToast({
@@ -186,20 +185,31 @@ export const useCreateCollection = () => {
             collection,
           });
 
-        // Collection status: SUBMITTED
-
         // ========== Handle assets metadata
         const assetsMetadataFormsValues:
           | CollectionAssetsMetadatasFormValues
           | undefined = collectionFormValues.assetsMetadatas;
-        if (assetsMetadataFormsValues?.assetsMetadatas) {
+
+        if (!assetsMetadataFormsValues?.assetsMetadatas?.length) {
+          setToast({
+            mode: "normal",
+            type: "success",
+            title: "Project submitted (Incomplete)",
+            message: "You will need to add Assets & Metadata",
+          });
+        } 
+        else {
           await completeCollection(
             collectionId,
             assetsMetadataFormsValues.assetsMetadatas,
           );
+          
+          setToast({
+            mode: "normal",
+            type: "success",
+            title: "Project submitted",
+          });
         }
-
-        // Collection status: READY TO DEPLOY
 
         return { submitCollectionResult };
       } catch (e: any) {

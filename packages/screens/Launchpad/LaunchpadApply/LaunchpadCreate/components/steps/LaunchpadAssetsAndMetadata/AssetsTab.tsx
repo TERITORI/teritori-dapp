@@ -1,5 +1,5 @@
 import { parse, ParseResult } from "papaparse";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { SafeAreaView, TouchableOpacity, View } from "react-native";
 
@@ -22,6 +22,7 @@ import {
   errorColor,
   neutral17,
   neutral33,
+  neutral55,
   neutral77,
   warningColor,
 } from "@/utils/style/colors";
@@ -32,7 +33,9 @@ import { LocalFileData } from "@/utils/types/files";
 import {
   CollectionAssetsMetadataFormValues,
   CollectionAssetsMetadatasFormValues,
+  CollectionFormValues,
 } from "@/utils/types/launchpad";
+import { TextInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/TextInputLaunchpad";
 
 const fileNameColIndex = 0;
 const nameColIndex = 1;
@@ -300,15 +303,6 @@ export const AssetsTab: React.FC = () => {
                 width: "100%",
               }}
             >
-              {/*TODO: Useless since the user can already provide a key in Settings ?*/}
-              {/*<TextInputLaunchpad<CollectionFormValues>*/}
-              {/*  label="NFT.Storage API Key"*/}
-              {/*  placeHolder="My Awesome Collection"*/}
-              {/*  name="nftApiKey"*/}
-              {/*  control={control}*/}
-              {/*  rules={{required: false}}*/}
-              {/*/>*/}
-
               <FileUploaderSmall
                 label="Assets data mapping file"
                 filesCount={mappingFileParseResults ? 1 : 0}

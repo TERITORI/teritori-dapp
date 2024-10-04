@@ -29,11 +29,14 @@ import {
   CollectionFormValues,
   ZodCollectionFormValues,
 } from "@/utils/types/launchpad";
+import { selectNFTStorageAPI } from "@/store/slices/settings";
+import { useSelector } from "react-redux";
 
 export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const navigation = useAppNavigation();
   const selectedNetwork = useSelectedNetworkInfo();
   const { setToast } = useFeedbacks();
+  const userIPFSKey = useSelector(selectNFTStorageAPI);
   const collectionForm = useForm<CollectionFormValues>({
     mode: "all",
     defaultValues: {
@@ -45,6 +48,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
           isOpen: true,
         },
       ],
+      nftApiKey: userIPFSKey
     },
     resolver: zodResolver(ZodCollectionFormValues),
   });
