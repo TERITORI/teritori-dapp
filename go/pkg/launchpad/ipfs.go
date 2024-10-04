@@ -45,14 +45,9 @@ func NewPinningService(provider Provider, bearerToken string) (*PinningService, 
 
 func (ps *PinningService) VerifyPinned(cidStrs ...string) (bool, error) {
 	ctx := context.Background()
-	fmt.Sprintln("cidStrs", cidStrs)
-
 	cids := make([]cid.Cid, len(cidStrs))
 	for idx, cidStr := range cidStrs {
-		fmt.Sprintln("cidStr", cidStr)
-
 		cidObj, err := cid.Decode(cidStr)
-		fmt.Sprintln("err", err)
 		if err != nil {
 			return false, errors.Wrap(err, fmt.Sprintf("fail to parse cid: %s", cidStr))
 		}
@@ -77,8 +72,6 @@ func (ps *PinningService) VerifyPinned(cidStrs ...string) (bool, error) {
 		}
 	}
 
-	fmt.Sprintln("pinnedStrs", pinnedStrs)
-
 	var unpinnedCids []string
 
 	for _, cidStr := range cidStrs {
@@ -93,4 +86,3 @@ func (ps *PinningService) VerifyPinned(cidStrs ...string) (bool, error) {
 
 	return true, nil
 }
-
