@@ -15,6 +15,7 @@ import {
 import { collectionStatus } from "@/utils/launchpad";
 import { screenContentMaxWidthLarge } from "@/utils/style/layout";
 import { CollectionDataResult } from "@/utils/types/launchpad";
+import { useAppNavigation } from "@/utils/navigation";
 
 const columns: TableColumns = {
   ...commonColumns,
@@ -63,6 +64,7 @@ const LaunchpadReadyMyCollectionsTableRow: React.FC<{
   collection: CollectionDataResult;
   index: number;
 }> = ({ collection, index }) => {
+  const navigation = useAppNavigation()
   return (
     <View>
       <TableRow>
@@ -84,7 +86,7 @@ const LaunchpadReadyMyCollectionsTableRow: React.FC<{
               flex: columns.cta.flex,
             }}
           >
-            <PrimaryButton text="Complete collection" size="XXS" />
+            <PrimaryButton text="Complete collection" size="XXS" onPress={() => navigation.navigate("LaunchpadComplete", {id: collection.symbol})}/>
           </TableCell>
         )}
       </TableRow>
