@@ -150,7 +150,7 @@ func (rm *RoleManager) HasPermission(user std.Address, permission string) bool {
 		if !ok {
 			panic("role does not exist")
 		}
-		if role.permissions.Has(permission) {
+		if role.permissions.Has(permission) || role.permissions.Has(PermissionAll) {
 			res = true
 			return true
 		}
