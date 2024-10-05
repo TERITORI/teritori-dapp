@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { Collection } from "@/contracts-clients/nft-launchpad";
 import { DEFAULT_FORM_ERRORS } from "@/utils/errors";
 import { isIpfsPathValid } from "@/utils/ipfs";
 import {
@@ -9,9 +10,6 @@ import {
   URL_REGEX,
 } from "@/utils/regex";
 import { ZodLocalFileData } from "@/utils/types/files";
-import {
-  Collection,
-} from "@/contracts-clients/nft-launchpad";
 const ZodCoin = z.object({
   amount: z
     .string()
@@ -274,4 +272,7 @@ export const ZodCollectionDataResult = z.object({
 
 export type CollectionDataResult = z.infer<typeof ZodCollectionDataResult>;
 
-export type CollectionToSubmit = Omit<Collection, "deployed_address" | "base_token_uri" | "owner">;
+export type CollectionToSubmit = Omit<
+  Collection,
+  "deployed_address" | "base_token_uri" | "owner"
+>;

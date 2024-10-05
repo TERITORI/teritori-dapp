@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
-  Collection,
   MintPeriod,
   NftLaunchpadClient,
   WhitelistInfo,
@@ -54,7 +53,10 @@ export const useCreateCollection = () => {
         walletAddress,
         cosmwasmLaunchpadFeature.launchpadContractAddress,
       );
-      const pinataJWTKey = collectionFormValues.assetsMetadatas?.nftApiKey || (await generateIpfsKey(selectedNetworkId, userId));
+      const pinataJWTKey =
+        collectionFormValues.assetsMetadatas?.nftApiKey ||
+        userIPFSKey ||
+        (await generateIpfsKey(selectedNetworkId, userId));
       if (!pinataJWTKey) {
         console.error("upload file err : No Pinata JWT");
         setToast({
@@ -198,13 +200,9 @@ export const useCreateCollection = () => {
             title: "Project submitted (Incomplete)",
             message: "You will need to add Assets & Metadata",
           });
-        } 
-        else {
-          await completeCollection(
-            collectionId,
-            assetsMetadataFormsValues,
-          );
-          
+        } else {
+          await completeCollection(collectionId, assetsMetadataFormsValues);
+
           setToast({
             mode: "normal",
             type: "success",

@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { View } from "react-native";
+import { useSelector } from "react-redux";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
@@ -22,6 +23,7 @@ import { LaunchpadBasic } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCrea
 import { LaunchpadDetails } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadDetails";
 import { LaunchpadMinting } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadMinting/LaunchpadMinting";
 import { LaunchpadTeamAndInvestment } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadTeamAndInvestment";
+import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral33 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
@@ -29,8 +31,6 @@ import {
   CollectionFormValues,
   ZodCollectionFormValues,
 } from "@/utils/types/launchpad";
-import { selectNFTStorageAPI } from "@/store/slices/settings";
-import { useSelector } from "react-redux";
 
 export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const navigation = useAppNavigation();
@@ -49,8 +49,8 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
         },
       ],
       assetsMetadatas: {
-        nftApiKey: userIPFSKey
-      }
+        nftApiKey: userIPFSKey,
+      },
     },
     resolver: zodResolver(ZodCollectionFormValues),
   });

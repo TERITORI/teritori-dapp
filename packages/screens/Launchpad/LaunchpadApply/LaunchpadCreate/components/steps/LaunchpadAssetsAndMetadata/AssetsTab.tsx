@@ -1,5 +1,5 @@
 import { parse, ParseResult } from "papaparse";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { SafeAreaView, TouchableOpacity, View } from "react-native";
 
@@ -22,7 +22,6 @@ import {
   errorColor,
   neutral17,
   neutral33,
-  neutral55,
   neutral77,
   warningColor,
 } from "@/utils/style/colors";
@@ -33,9 +32,7 @@ import { LocalFileData } from "@/utils/types/files";
 import {
   CollectionAssetsMetadataFormValues,
   CollectionAssetsMetadatasFormValues,
-  CollectionFormValues,
 } from "@/utils/types/launchpad";
-import { TextInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/TextInputLaunchpad";
 
 const fileNameColIndex = 0;
 const nameColIndex = 1;

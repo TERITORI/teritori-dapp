@@ -74,10 +74,10 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
 
   const hasErrors = (stepKey: number) => {
     if (
-      stepKey === 1 &&
-      (!!collectionForm.getFieldState("name").error ||
-        !!collectionForm.getFieldState("description").error ||
-        !!collectionForm.getFieldState("symbol").error) ||
+      (stepKey === 1 &&
+        (!!collectionForm.getFieldState("name").error ||
+          !!collectionForm.getFieldState("description").error ||
+          !!collectionForm.getFieldState("symbol").error)) ||
       !!collectionForm.getFieldState("coverImage").error ||
       !!collectionForm.getFieldState("assetsMetadatas.nftApiKey").error
       // !!collectionForm.getFieldState("externalLink").error
