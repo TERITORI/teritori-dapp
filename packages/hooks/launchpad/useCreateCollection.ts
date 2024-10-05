@@ -53,7 +53,7 @@ export const useCreateCollection = () => {
         walletAddress,
         cosmwasmLaunchpadFeature.launchpadContractAddress,
       );
-      const pinataJWTKey = collectionFormValues.nftApiKey || (await generateIpfsKey(selectedNetworkId, userId));
+      const pinataJWTKey = collectionFormValues.assetsMetadatas?.nftApiKey || (await generateIpfsKey(selectedNetworkId, userId));
       if (!pinataJWTKey) {
         console.error("upload file err : No Pinata JWT");
         setToast({
@@ -173,7 +173,7 @@ export const useCreateCollection = () => {
             : 0,
 
           target_network: selectedNetworkId,
-          deployed_address: "None",
+          // deployed_address: "None",
           // whitepaper_link: "None",
           base_token_uri: "None",
         };
@@ -201,7 +201,7 @@ export const useCreateCollection = () => {
         else {
           await completeCollection(
             collectionId,
-            assetsMetadataFormsValues.assetsMetadatas,
+            assetsMetadataFormsValues,
           );
           
           setToast({

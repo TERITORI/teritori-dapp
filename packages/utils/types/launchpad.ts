@@ -9,7 +9,9 @@ import {
   URL_REGEX,
 } from "@/utils/regex";
 import { ZodLocalFileData } from "@/utils/types/files";
-
+import {
+  Collection,
+} from "@/contracts-clients/nft-launchpad";
 const ZodCoin = z.object({
   amount: z
     .string()
@@ -75,6 +77,7 @@ export const ZodCollectionAssetsMetadataFormValues = z.object({
 
 export const ZodCollectionAssetsMetadatasFormValues = z.object({
   assetsMetadatas: z.array(ZodCollectionAssetsMetadataFormValues).optional(),
+  nftApiKey: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
 });
 
 export const ZodCollectionFormValues = z.object({
@@ -160,7 +163,6 @@ export const ZodCollectionFormValues = z.object({
     ),
   expectedMintDate: z.number().min(1, DEFAULT_FORM_ERRORS.required),
   coverImage: ZodLocalFileData,
-  nftApiKey: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   isPreviouslyApplied: z.boolean(),
   isDerivativeProject: z.boolean(),
   isReadyForMint: z.boolean(),

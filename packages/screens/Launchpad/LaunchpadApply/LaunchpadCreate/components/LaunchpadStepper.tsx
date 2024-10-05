@@ -79,7 +79,7 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
         !!collectionForm.getFieldState("description").error ||
         !!collectionForm.getFieldState("symbol").error) ||
       !!collectionForm.getFieldState("coverImage").error ||
-      !!collectionForm.getFieldState("nftApiKey").error
+      !!collectionForm.getFieldState("assetsMetadatas.nftApiKey").error
       // !!collectionForm.getFieldState("externalLink").error
     ) {
       return true;

@@ -48,7 +48,9 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
           isOpen: true,
         },
       ],
-      nftApiKey: userIPFSKey
+      assetsMetadatas: {
+        nftApiKey: userIPFSKey
+      }
     },
     resolver: zodResolver(ZodCollectionFormValues),
   });

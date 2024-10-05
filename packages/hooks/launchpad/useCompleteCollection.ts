@@ -13,7 +13,7 @@ import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { mustGetLaunchpadClient } from "@/utils/backend";
 import { generateIpfsKey, isIpfsPathValid } from "@/utils/ipfs";
 import { LocalFileData, RemoteFileData } from "@/utils/types/files";
-import { CollectionAssetsMetadataFormValues } from "@/utils/types/launchpad";
+import { CollectionAssetsMetadataFormValues, CollectionAssetsMetadatasFormValues } from "@/utils/types/launchpad";
 
 export const useCompleteCollection = () => {
   const selectedNetworkId = useSelectedNetworkId();
@@ -25,7 +25,7 @@ export const useCompleteCollection = () => {
   const completeCollection = useCallback(
     async (
       collectionId: string,
-      assetsMetadataFormsValues: CollectionAssetsMetadataFormValues[],
+      assetsMetadatasFormsValues: CollectionAssetsMetadatasFormValues,
     ) => {
       if (!selectedWallet) return;
       const userId = selectedWallet.userId;
@@ -48,7 +48,7 @@ export const useCompleteCollection = () => {
         cosmwasmLaunchpadFeature.launchpadContractAddress,
       );
       const pinataJWTKey =
-        userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
+      assetsMetadatasFormsValues.nftApiKey || (await generateIpfsKey(selectedNetworkId, userId));
       if (!pinataJWTKey) {
         console.error("upload file err : No Pinata JWT");
         setToast({
@@ -61,13 +61,14 @@ export const useCompleteCollection = () => {
 
       try {
         const metadatas: Metadata[] = [];
-        if (assetsMetadataFormsValues.length) {
+        if(!assetsMetadatasFormsValues.assetsMetadatas?.length) return
+      
           // IMPORTANT TODO:
           // For now, for simplicity, we upload images to ipfs from client side then this backend will
           // only check if images have been pinnned correctly.
           // ===> Please, see go/pkg/launchpad/service.go
           const assetsMetadataImages: LocalFileData[] =
-            assetsMetadataFormsValues.map(
+          assetsMetadatasFormsValues.assetsMetadatas.map(
               (assetMetadata) => assetMetadata.image,
             );
           const remoteAssetsMetadataImages: RemoteFileData[] =
@@ -87,7 +88,7 @@ export const useCompleteCollection = () => {
             return;
           }
 
-          assetsMetadataFormsValues.forEach((assetMetadata, index) => {
+          assetsMetadatasFormsValues.assetsMetadatas.forEach((assetMetadata, index) => {
             const image = remoteAssetsMetadataImages[index];
             if (!isIpfsPathValid(image.url)) {
               setToast({
@@ -113,7 +114,7 @@ export const useCompleteCollection = () => {
               royaltyPaymentAddress: "",
             });
           });
-        }
+        
         // ========== Send Metadata of this collection to the backend
         const { merkleRoot } = await launchpadBackendClient.UploadMetadatas({
           sender: walletAddress,

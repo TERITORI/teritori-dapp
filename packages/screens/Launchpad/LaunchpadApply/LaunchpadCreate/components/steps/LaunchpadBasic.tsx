@@ -105,7 +105,7 @@ export const LaunchpadBasic: FC = () => {
         </BrandText>
         }
         placeHolder="My Awesome Collection"
-        name="nftApiKey"
+        name="assetsMetadatas.nftApiKey"
         form={collectionForm}
         />
 

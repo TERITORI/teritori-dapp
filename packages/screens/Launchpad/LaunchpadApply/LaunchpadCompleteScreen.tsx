@@ -16,8 +16,8 @@ import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
 import { AssetsTab } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadAssetsAndMetadata/AssetsTab";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
-import { neutral33, neutral77, primaryColor } from "@/utils/style/colors";
-import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
+import { neutral33, neutral55, neutral77, primaryColor } from "@/utils/style/colors";
+import { fontSemibold13, fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
   CollectionAssetsMetadatasFormValues,
@@ -26,6 +26,7 @@ import {
 } from "@/utils/types/launchpad";
 import { useSelector } from "react-redux";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
+import { TextInputLaunchpad } from "./components/inputs/TextInputLaunchpad";
 
 export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
   route,
@@ -41,7 +42,7 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
   const assetsMetadatasForm = useForm<CollectionAssetsMetadatasFormValues>({
     mode: "all",
     resolver: zodResolver(ZodCollectionAssetsMetadatasFormValues),
-    defaultValues: { assetsMetadatas: [] },
+    defaultValues: { assetsMetadatas: [], nftApiKey: userIPFSKey },
   });
   const [isLoading, setLoading] = useState(false);
   const { setLoadingFullScreen } = useFeedbacks();
@@ -54,7 +55,7 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
       if (!assetsMetadatasFormValues.assetsMetadatas?.length) return;
       await completeCollection(
         collectionId,
-        assetsMetadatasFormValues.assetsMetadatas,
+        assetsMetadatasFormValues,
       );
 
       setLoading(false);
@@ -83,6 +84,9 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
 
   const onPressComplete = () =>
     assetsMetadatasForm.handleSubmit(onValid, onInvalid)();
+
+
+  console.log('assetsMetadatasForm.getValues()', assetsMetadatasForm.getValues())
 
   return (
     <ScreenContainer
@@ -158,6 +162,20 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
               </View>
 
               <FormProvider {...assetsMetadatasForm}>
+                <View style={{maxWidth: 500, paddingLeft: layout.spacing_x2}}>
+              <TextInputLaunchpad<CollectionAssetsMetadatasFormValues>
+                label="NFT.Storage JWT"
+                sublabel={
+                <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+                Used to upload the cover image and the assets to your NFT Storage
+                </BrandText>
+                }
+                placeHolder="My Awesome Collection"
+                name="nftApiKey"
+                form={assetsMetadatasForm}
+              />
+              </View>
+
                 <AssetsTab />
               </FormProvider>
             </View>
@@ -175,7 +193,7 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
                 text="Complete Collection"
                 loader
                 isLoading={isLoading}
-                disabled={isLoading || !assetsMetadatasForm.getValues()}
+                disabled={isLoading || !assetsMetadatasForm.getValues().assetsMetadatas?.length}
                 onPress={onPressComplete}
                 boxStyle={{ margin: layout.spacing_x2 }}
               />
