@@ -107,7 +107,7 @@ export const useCompleteCollection = () => {
               description: assetMetadata.description,
               name: assetMetadata.name,
               youtubeUrl: assetMetadata.youtubeUrl,
-              attributes: [],
+              attributes: [],   //TODO: attributes etc
               backgroundColor: "",
               animationUrl: "",
               royaltyPercentage: 5,

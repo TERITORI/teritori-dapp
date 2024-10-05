@@ -273,3 +273,5 @@ export const ZodCollectionDataResult = z.object({
 });
 
 export type CollectionDataResult = z.infer<typeof ZodCollectionDataResult>;
+
+export type CollectionToSubmit = Omit<Collection, "deployed_address" | "base_token_uri" | "owner">;

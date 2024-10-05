@@ -23,6 +23,7 @@ import {
   CollectionAssetsMetadatasFormValues,
   CollectionFormValues,
   CollectionMintPeriodFormValues,
+  CollectionToSubmit,
 } from "@/utils/types/launchpad";
 
 export const useCreateCollection = () => {
@@ -116,7 +117,7 @@ export const useCreateCollection = () => {
         );
 
         // ========== Final collection
-        const collection: Collection = {
+        const collection: CollectionToSubmit = {
           name: collectionFormValues.name || "",
           desc: collectionFormValues.description || "",
           symbol: collectionFormValues.symbol || "",
@@ -175,7 +176,7 @@ export const useCreateCollection = () => {
           target_network: selectedNetworkId,
           // deployed_address: "None",
           // whitepaper_link: "None",
-          base_token_uri: "None",
+          // base_token_uri: "None",
         };
         const collectionId = collectionFormValues.symbol;
 
