@@ -238,7 +238,7 @@ fn full_flow() {
             .deploy_collection("SYMBOL_NOT_EXIST".to_string())
             .call(sender)
             .unwrap_err();
-        assert_eq!(err, ContractError::Forbidden)
+        assert_eq!(err, ContractError::WrongDeployer)
     }
 
     // Set sender as deployer and Deploy inexist collection  ---------------------------------------------------------
@@ -278,7 +278,7 @@ fn full_flow() {
             .call("unauthorized")
             .unwrap_err();
 
-        assert_eq!(err, ContractError::Forbidden);
+        assert_eq!(err, ContractError::WrongOwner);
     }
 
     // Update merkle root

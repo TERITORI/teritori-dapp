@@ -34,8 +34,14 @@ pub enum ContractError {
     #[error("Collection not deployed.")]
     CollectionNotDeployed,
 
-    #[error("Action is not allowed.")]
-    Forbidden,
+    #[error("Wrong owner.")]
+    WrongOwner,
+
+    #[error("Wrong deployer.")]
+    WrongDeployer,
+
+    #[error("Already deployed.")]
+    AlreadyDeployed,
 
     #[error("Unable to parse reply.")]
     ParseReplyError(#[from] ParseReplyError),

@@ -142,12 +142,12 @@ impl NftLaunchpad {
 
         let sender = ctx.info.sender.to_string();
         if sender != collection.owner.clone().unwrap() {
-            return Err(ContractError::Forbidden);
+            return Err(ContractError::WrongOwner);
         }
 
         // Do not allow to update merke root if the collection has been deployed already
         if collection.deployed_address.is_some() {
-            return Err(ContractError::Forbidden);
+            return Err(ContractError::AlreadyDeployed);
         }
 
         // Update merkle root
@@ -181,7 +181,7 @@ impl NftLaunchpad {
         }
 
         if sender != config.deployer.unwrap() {
-            return Err(ContractError::Forbidden);
+            return Err(ContractError::WrongDeployer);
         }
 
         let collection = self
