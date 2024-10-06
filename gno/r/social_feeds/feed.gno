@@ -7,9 +7,10 @@ import (
 	"time"
 
 	"gno.land/p/demo/avl"
+	"gno.land/p/demo/json"
 	"gno.land/p/demo/ufmt"
 	"gno.land/p/teritori/flags_index"
-	ujson "gno.land/p/teritori/ujson"
+	"gno.land/p/teritori/jsonutil"
 )
 
 type FeedID uint64
@@ -18,12 +19,8 @@ func (fid FeedID) String() string {
 	return strconv.Itoa(int(fid))
 }
 
-func (fid *FeedID) FromJSON(ast *ujson.JSONASTNode) {
-	val, err := strconv.Atoi(ast.Value)
-	if err != nil {
-		panic(err)
-	}
-	*fid = FeedID(val)
+func (fid *FeedID) FromJSON(value *json.Node) {
+	*fid = FeedID(jsonutil.MustUint64(value))
 }
 
 func (fid FeedID) ToJSON() string {
@@ -206,8 +203,10 @@ func (feed *Feed) Render() string {
 	return str
 }
 
-func (feed *Feed) ToJSON() string {
-	posts := []ujson.FormatKV{}
+func (feed *Feed) ToJSON() *json.Node {
+	posts := jsonutil.AVLTreeNode(&feed.posts, func(elem interface{}) *json.Node {
+		return elem.(*Post).ToJSON()
+	})
 	feed.posts.Iterate("", "", func(key string, value interface{}) bool {
 		posts = append(posts, ujson.FormatKV{
 			Key:   key,
@@ -215,7 +214,7 @@ func (feed *Feed) ToJSON() string {
 		})
 		return false
 	})
-	feedJSON := ujson.FormatObject([]ujson.FormatKV{
+	feedJSON := json.ObjectNode([]ujson.FormatKV{
 		{Key: "id", Value: uint64(feed.id)},
 		{Key: "url", Value: feed.url},
 		{Key: "name", Value: feed.name},

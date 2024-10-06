@@ -8,6 +8,7 @@ import (
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/json"
 	"gno.land/p/demo/users"
+	rusers "gno.land/r/demo/users"
 )
 
 func UnionNode(variant string, value *json.Node) *json.Node {
@@ -46,6 +47,10 @@ func MustTime(value *json.Node) time.Time {
 
 func DurationNode(value time.Duration) *json.Node {
 	return Int64Node(value.Nanoseconds())
+}
+
+func MustDurationSeconds(node *json.Node) time.Duration {
+	return time.Second * time.Duration(node.MustNumeric())
 }
 
 func EmptyObjectNode() *json.Node {
@@ -131,7 +136,8 @@ func AddressOrNameNode(aon users.AddressOrName) *json.Node {
 
 func MustAddressOrName(value *json.Node) users.AddressOrName {
 	aon := users.AddressOrName(value.MustString())
-	if !aon.IsValid() {
+	address := rusers.Resolve(aon)
+	if !address.IsValid() {
 		panic("invalid address or name")
 	}
 

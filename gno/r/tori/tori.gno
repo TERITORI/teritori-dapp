@@ -11,14 +11,14 @@ import (
 )
 
 var (
-	tori     *grc20.AdminToken
-	userTori grc20.IGRC20
+	tori     *grc20.Banker
+	userTori grc20.Token
 	admin    std.Address = std.DerivePkgAddr("gno.land/r/teritori/dao_realm")
 )
 
 func init() {
-	tori = grc20.NewAdminToken("Tori", "TORI", 6)
-	userTori = tori.GRC20()
+	tori = grc20.NewBanker("Tori", "TORI", 6)
+	userTori = tori.Token()
 }
 
 // method proxies as public functions.
@@ -31,19 +31,11 @@ func TotalSupply() uint64 {
 }
 
 func BalanceOf(owner users.AddressOrName) uint64 {
-	balance, err := tori.BalanceOf(rusers.Resolve(owner))
-	if err != nil {
-		panic(err)
-	}
-	return balance
+	return tori.BalanceOf(rusers.Resolve(owner))
 }
 
 func Allowance(owner, spender users.AddressOrName) uint64 {
-	allowance, err := tori.Allowance(rusers.Resolve(owner), rusers.Resolve(spender))
-	if err != nil {
-		panic(err)
-	}
-	return allowance
+	return tori.Allowance(rusers.Resolve(owner), rusers.Resolve(spender))
 }
 
 // setters.
@@ -96,7 +88,7 @@ func Render(path string) string {
 
 	case c == 2 && parts[0] == "balance":
 		owner := users.AddressOrName(parts[1])
-		balance, _ := tori.BalanceOf(rusers.Resolve(owner))
+		balance := tori.BalanceOf(rusers.Resolve(owner))
 		return ufmt.Sprintf("%d\n", balance)
 
 	default:
