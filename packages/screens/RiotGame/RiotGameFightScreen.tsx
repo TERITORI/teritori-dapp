@@ -13,12 +13,14 @@ import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSquadStakingConfig } from "@/hooks/riotGame/useSquadStakingConfig";
 import { useSquadStakingSquads } from "@/hooks/riotGame/useSquadStakingSquads";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { web3ToWeb2URI } from "@/utils/ipfs";
 import { yellowDefault } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
 import { SquadInfo } from "@/utils/types/riot-p2e";
 
-const FIGHT_BG_URI =
-  "https://bafybeigv6eunkzlb4a7je6c5ezrcxgr2bv2guuwogin6mbsmdl2i6mgvwq.ipfs.cf-ipfs.com/";
+const FIGHT_BG_URI = web3ToWeb2URI(
+  "ipfs://bafybeigv6eunkzlb4a7je6c5ezrcxgr2bv2guuwogin6mbsmdl2i6mgvwq",
+);
 
 export const RiotGameFightScreen = () => {
   const navigation = useAppNavigation();
