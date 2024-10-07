@@ -134,6 +134,9 @@ func (rm *RoleManager) RemoveRoleFromUser(user std.Address, roleName string) {
 }
 
 func (rm *RoleManager) HasPermission(user std.Address, permission string) bool {
+	if !rm.users.Has(user.String()) {
+		return false
+	}
 	userRoles := rm.mustGetUser(user)
 	res := false
 	userRoles.Iterate("", "", func(key string, value interface{}) bool {
@@ -151,6 +154,9 @@ func (rm *RoleManager) HasPermission(user std.Address, permission string) bool {
 }
 
 func (rm *RoleManager) HasRole(user std.Address, roleName string) bool {
+	if !rm.users.Has(user.String()) {
+		return false
+	}
 	userRoles := rm.mustGetUser(user)
 	return userRoles.Has(roleName)
 }
