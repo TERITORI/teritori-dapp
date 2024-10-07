@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 	"time"
 
@@ -9,7 +8,6 @@ import (
 	"github.com/TERITORI/gh-verify-agent/db"
 	"github.com/TERITORI/gh-verify-agent/signer"
 	"github.com/go-co-op/gocron"
-	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 )
 
@@ -19,11 +17,6 @@ func main() {
 	logger, err := zap.NewDevelopment()
 	if err != nil {
 		panic(err)
-	}
-
-	err = godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
 	}
 
 	db, err := db.New()
