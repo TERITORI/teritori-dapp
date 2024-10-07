@@ -55,6 +55,10 @@ func NewWithAddress(addr std.Address) *RoleManager {
 	return rm
 }
 
+func (rm *RoleManager) Owner() std.Address {
+	return rm.owner.Owner()
+}
+
 func (rm *RoleManager) CreateNewRole(roleName string, permissions []string) {
 	caller := std.PrevRealm().Addr()
 	if !rm.HasPermission(caller, PermissionWriteRole) && rm.owner.Owner() != caller {
