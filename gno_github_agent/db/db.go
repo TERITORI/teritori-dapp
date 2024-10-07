@@ -29,8 +29,19 @@ type Verification struct {
 	gorm.Model
 	Id uint `json:"id" gorm:"unique;primaryKey;autoIncrement"`
 
-	Handle    string
-	Address   string
-	Status    string
-	CreatedAt string
+	Handle      string
+	Address     string
+	Status      string
+	CreatedAt   string
+	BlockHeight int
 }
+
+type VerificationStatus string
+
+const (
+	VerificationStatusUnverified            VerificationStatus = "unverified"
+	VerificationStatusVerified              VerificationStatus = "verified"
+	VerificationStatusConfigNotFound        VerificationStatus = "config_not_found"
+	VerificationStatusInvalidData           VerificationStatus = "invalid_data"
+	VerificationStatusCallerAddressMismatch VerificationStatus = "caller_address_mismatch"
+)

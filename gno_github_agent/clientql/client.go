@@ -2,6 +2,7 @@ package clientql
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -17,24 +18,25 @@ import (
 )
 
 type IndexerQL struct {
-	gqlClient graphql.Client
-	db        *gorm.DB
-	logger    *zap.SugaredLogger
-	signer    *signer.Signer
+	gqlClient       graphql.Client
+	db              *gorm.DB
+	logger          *zap.SugaredLogger
+	signer          *signer.Signer
+	verifyRealmPath string
 }
 
-func New(graphqlEndpoint string, db *gorm.DB, logger *zap.SugaredLogger, gnoSigner *signer.Signer) *IndexerQL {
+func New(graphqlEndpoint string, db *gorm.DB, logger *zap.SugaredLogger, gnoSigner *signer.Signer, verifyRealmPath string) *IndexerQL {
 	gqlClient := graphql.NewClient(graphqlEndpoint, nil)
-	return &IndexerQL{gqlClient: gqlClient, db: db, logger: logger, signer: gnoSigner}
+	return &IndexerQL{gqlClient: gqlClient, db: db, logger: logger, signer: gnoSigner, verifyRealmPath: verifyRealmPath}
 }
 
 func (client *IndexerQL) DealWithVerifications() error {
-	lastBlock, err := getLastTreatedBlock()
+	lastBlock, err := client.getLastTreatedBlock()
 	if err != nil {
 		return err
 	}
 
-	validationRequests, err := gnoindexerql.GetValidationRequests(context.Background(), client.gqlClient, lastBlock)
+	validationRequests, err := gnoindexerql.GetValidationRequests(context.Background(), client.gqlClient, lastBlock, client.verifyRealmPath)
 	if err != nil {
 		return err
 	}
@@ -45,7 +47,8 @@ func (client *IndexerQL) DealWithVerifications() error {
 			switch event := responseEvent.(type) {
 			case *gnoindexerql.GetValidationRequestsTransactionsTransactionResponseEventsGnoEvent:
 				client.logger.Infof("args %v\n", event.Attrs)
-				err := client.dealWithVerification(event)
+
+				err := client.dealWithVerification(event, validationRequest.Block_height)
 				if err != nil {
 					client.logger.Errorf("failed to deal with verification: %s", err.Error())
 					continue
@@ -60,11 +63,21 @@ func (client *IndexerQL) DealWithVerifications() error {
 	return nil
 }
 
-func getLastTreatedBlock() (int, error) {
-	return 0, nil
+func (client *IndexerQL) getLastTreatedBlock() (int, error) {
+	var verification db.Verification
+	err := client.db.Model(&db.Verification{}).Where("status = ?", string(db.VerificationStatusVerified)).Order("id desc").First(&verification).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 0, nil
+		}
+
+		return 0, nil
+	}
+	return verification.BlockHeight, err
 }
 
-func (client *IndexerQL) dealWithVerification(event *gnoindexerql.GetValidationRequestsTransactionsTransactionResponseEventsGnoEvent) error {
+func (client *IndexerQL) dealWithVerification(event *gnoindexerql.GetValidationRequestsTransactionsTransactionResponseEventsGnoEvent, blockHeight int) error {
 	var handle string
 	var callerAddress string
 	for _, attr := range event.Attrs {
@@ -75,6 +88,7 @@ func (client *IndexerQL) dealWithVerification(event *gnoindexerql.GetValidationR
 			callerAddress = attr.Value
 		}
 	}
+
 	var verification db.Verification
 	err := client.db.Model(&db.Verification{}).Where("handle = ? AND address = ?", handle, callerAddress).Find(&verification).Error
 	if err != nil {
@@ -92,17 +106,17 @@ func (client *IndexerQL) dealWithVerification(event *gnoindexerql.GetValidationR
 		return err
 	}
 
-	client.logger.Infof("Get\n")
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		return client.updateVerification(handle, callerAddress, "config_not_found")
+		return client.updateVerification(handle, callerAddress, db.VerificationStatusConfigNotFound, blockHeight)
 	}
+
 	data, err := io.ReadAll(res.Body)
 	if err != nil {
-		client.updateVerification(handle, callerAddress, "invalid_data")
+		client.updateVerification(handle, callerAddress, db.VerificationStatusInvalidData, blockHeight)
 		return err
 	}
-	client.logger.Infof("config.yml: %s\n", string(data))
+
 	githubConfiguredAddress := strings.TrimSpace(string(data))
 	if githubConfiguredAddress == callerAddress {
 		err = client.signer.CallVerify(githubConfiguredAddress)
@@ -110,18 +124,19 @@ func (client *IndexerQL) dealWithVerification(event *gnoindexerql.GetValidationR
 			return err
 		}
 
-		return client.updateVerification(handle, callerAddress, "verified")
+		return client.updateVerification(handle, callerAddress, db.VerificationStatusVerified, blockHeight)
 	}
-	return client.updateVerification(handle, callerAddress, "caller_address_mismatch")
+	return client.updateVerification(handle, callerAddress, db.VerificationStatusCallerAddressMismatch, blockHeight)
 }
 
-func (client *IndexerQL) updateVerification(handle, address, status string) error {
+func (client *IndexerQL) updateVerification(handle, address string, status db.VerificationStatus, blockHeight int) error {
 	verification := db.Verification{
-		Handle:    handle,
-		Address:   address,
-		Status:    status,
-		CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
+		Handle:      handle,
+		Address:     address,
+		Status:      string(status),
+		CreatedAt:   time.Now().Format("2006-01-02 15:04:05"),
+		BlockHeight: blockHeight,
 	}
 
-	return client.db.Model(&verification).Where("handle = ? AND address = ?", handle, address).Assign(db.Verification{Status: status}).FirstOrCreate(&verification).Error
+	return client.db.Model(&verification).Where("handle = ? AND address = ?", handle, address).Assign(db.Verification{Status: string(status)}).FirstOrCreate(&verification).Error
 }
