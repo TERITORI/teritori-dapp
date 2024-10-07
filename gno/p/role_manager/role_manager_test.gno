@@ -1,7 +1,6 @@
 package role_manager
 
 import (
-	"fmt"
 	"std"
 	"testing"
 
@@ -17,6 +16,16 @@ func TestNewWithAddress(t *testing.T) {
 	rm := NewWithAddress(alice)
 	if rm.owner.Owner() != alice {
 		t.Fatalf("expected owner to be %s, got %s", alice, rm.owner.Owner())
+	}
+}
+
+func TestDropOwnership(t *testing.T) {
+	rm := NewWithAddress(alice)
+	std.TestSetOrigCaller(alice)
+	rm.GetOwner().DropOwnership()
+
+	if rm.GetOwner().Owner() != std.Address("") {
+		t.Fatalf("expected owner to be empty")
 	}
 }
 
@@ -76,7 +85,7 @@ func TestDeleteRole(t *testing.T) {
 		t.Fatalf("expected user to still exist")
 	}
 
-	aliceRoles := rm.getUser(alice)
+	aliceRoles := rm.mustGetUser(alice)
 	if aliceRoles.Has("role1") {
 		t.Fatalf("expected role1 to be removed from user")
 	}
@@ -86,9 +95,7 @@ func TestAddPermissionToRole(t *testing.T) {
 	std.TestSetOrigCaller(alice)
 	rm := NewWithAddress(alice)
 	rm.CreateNewRole("role1", []string{"perm1", "perm2"})
-
 	rm.AddPermissionToRole("perm3", "role1")
-
 	rm.AddRoleToUser(alice, "role1")
 
 	v, ok := rm.roles.Get("role1")
@@ -101,7 +108,7 @@ func TestAddPermissionToRole(t *testing.T) {
 		t.Fatalf("expected role1 to have perm3")
 	}
 
-	aliceRoles := rm.getUser(alice)
+	aliceRoles := rm.mustGetUser(alice)
 	if !aliceRoles.Has("role1") {
 		t.Fatalf("expected role1 to be added to user")
 	}
@@ -130,7 +137,7 @@ func TestRemovePermissionFromRole(t *testing.T) {
 		t.Fatalf("expected role1 to not have perm3")
 	}
 
-	aliceRoles := rm.getUser(alice)
+	aliceRoles := rm.mustGetUser(alice)
 	if !aliceRoles.Has("role1") {
 		t.Fatalf("expected role1 to be added to user")
 	}
@@ -153,7 +160,7 @@ func TestAddRoleToUser(t *testing.T) {
 
 	rm.RemoveRoleFromUser(alice, "role2")
 
-	aliceRoles := rm.getUser(alice)
+	aliceRoles := rm.mustGetUser(alice)
 	if !aliceRoles.Has("role1") {
 		t.Fatalf("expected role1 to be added to user")
 	}
@@ -179,7 +186,7 @@ func TestRemoveRoleFromUser(t *testing.T) {
 	rm.RemoveRoleFromUser(alice, "role2")
 	rm.RemoveRoleFromUser(alice, "role1")
 
-	aliceRoles := rm.getUser(alice)
+	aliceRoles := rm.mustGetUser(alice)
 	if aliceRoles.Has("role1") {
 		t.Fatalf("expected role1 to be removed from user")
 	}

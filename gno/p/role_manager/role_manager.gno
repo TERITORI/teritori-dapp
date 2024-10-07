@@ -8,11 +8,6 @@ import (
 )
 
 const (
-	RoleUser  = "user"
-	RoleAdmin = "admin"
-)
-
-const (
 	PermissionAll       = "*"
 	PermissionWriteRole = "role:write"
 )
@@ -36,32 +31,16 @@ func NewWithAddress(addr std.Address) *RoleManager {
 		users: avl.NewTree(),
 	}
 
-	userRole := &Role{
-		name:        RoleUser,
-		permissions: avl.NewTree(),
-		users:       avl.NewTree(),
-	}
-
-	adminRole := &Role{
-		name:        RoleAdmin,
-		permissions: avl.NewTree(),
-		users:       avl.NewTree(),
-	}
-	adminRole.permissions.Set(PermissionAll, struct{}{})
-
-	rm.roles.Set(RoleUser, userRole)
-	rm.roles.Set(RoleAdmin, adminRole)
-
 	return rm
 }
 
-func (rm *RoleManager) Owner() std.Address {
-	return rm.owner.Owner()
+func (rm *RoleManager) GetOwner() *ownable.Ownable {
+	return rm.owner
 }
 
 func (rm *RoleManager) CreateNewRole(roleName string, permissions []string) {
 	caller := std.PrevRealm().Addr()
-	if !rm.HasPermission(caller, PermissionWriteRole) && rm.owner.Owner() != caller {
+	if rm.owner.Owner() != caller && !rm.HasPermission(caller, PermissionWriteRole) {
 		panic("caller does not have permission")
 	}
 
@@ -84,7 +63,7 @@ func (rm *RoleManager) CreateNewRole(roleName string, permissions []string) {
 
 func (rm *RoleManager) DeleteRole(roleName string) {
 	caller := std.PrevRealm().Addr()
-	if !rm.HasPermission(caller, PermissionWriteRole) && rm.owner.Owner() != caller {
+	if rm.owner.Owner() != caller && !rm.HasPermission(caller, PermissionWriteRole) {
 		panic("caller does not have permission")
 	}
 
@@ -95,10 +74,7 @@ func (rm *RoleManager) DeleteRole(roleName string) {
 	role := rm.mustGetRole(roleName)
 	role.users.Iterate("", "", func(key string, value interface{}) bool {
 		user := std.Address(key)
-		userRoles := rm.getUser(user)
-		if userRoles == nil {
-			userRoles = rm.initUser(user)
-		}
+		userRoles := rm.mustGetUser(user)
 		userRoles.Remove(roleName)
 		return false
 	})
@@ -107,7 +83,7 @@ func (rm *RoleManager) DeleteRole(roleName string) {
 
 func (rm *RoleManager) AddPermissionToRole(permission string, roleName string) {
 	caller := std.PrevRealm().Addr()
-	if !rm.HasPermission(caller, PermissionWriteRole) && rm.owner.Owner() != caller {
+	if rm.owner.Owner() != caller && !rm.HasPermission(caller, PermissionWriteRole) {
 		panic("caller does not have permission")
 	}
 
@@ -117,7 +93,7 @@ func (rm *RoleManager) AddPermissionToRole(permission string, roleName string) {
 
 func (rm *RoleManager) RemovePermissionFromRole(permission string, roleName string) {
 	caller := std.PrevRealm().Addr()
-	if !rm.HasPermission(caller, PermissionWriteRole) && rm.owner.Owner() != caller {
+	if rm.owner.Owner() != caller && !rm.HasPermission(caller, PermissionWriteRole) {
 		panic("caller does not have permission")
 	}
 
@@ -127,39 +103,38 @@ func (rm *RoleManager) RemovePermissionFromRole(permission string, roleName stri
 
 func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string) {
 	caller := std.PrevRealm().Addr()
-	if !rm.HasPermission(caller, PermissionWriteRole) && rm.owner.Owner() != caller {
+	if rm.owner.Owner() != caller && !rm.HasPermission(caller, PermissionWriteRole) {
 		panic("caller does not have permission")
 	}
 
-	role := rm.mustGetRole(roleName)
-	userRoles := rm.getUser(user)
-	if userRoles == nil {
-		userRoles = rm.initUser(user)
+	if !rm.users.Has(user.String()) {
+		tree := avl.NewTree()
+		rm.users.Set(user.String(), tree)
 	}
+
+	role := rm.mustGetRole(roleName)
+	userRoles := rm.mustGetUser(user)
 	userRoles.Set(roleName, role)
 	role.users.Set(user.String(), struct{}{})
 }
 
 func (rm *RoleManager) RemoveRoleFromUser(user std.Address, roleName string) {
 	caller := std.PrevRealm().Addr()
-	if !rm.HasPermission(caller, PermissionWriteRole) && rm.owner.Owner() != caller {
+	if rm.owner.Owner() != caller && !rm.HasPermission(caller, PermissionWriteRole) {
 		panic("caller does not have permission")
 	}
 
 	role := rm.mustGetRole(roleName)
-	userRoles := rm.getUser(user)
-	if userRoles == nil {
-		userRoles = rm.initUser(user)
-	}
+	userRoles := rm.mustGetUser(user)
 	userRoles.Remove(roleName)
 	role.users.Remove(user.String())
+	if userRoles.Size() == 0 {
+		rm.users.Remove(user.String())
+	}
 }
 
 func (rm *RoleManager) HasPermission(user std.Address, permission string) bool {
-	userRoles := rm.getUser(user)
-	if userRoles == nil {
-		userRoles = rm.initUser(user)
-	}
+	userRoles := rm.mustGetUser(user)
 	res := false
 	userRoles.Iterate("", "", func(key string, value interface{}) bool {
 		role, ok := value.(*Role)
@@ -176,10 +151,7 @@ func (rm *RoleManager) HasPermission(user std.Address, permission string) bool {
 }
 
 func (rm *RoleManager) HasRole(user std.Address, roleName string) bool {
-	userRoles := rm.getUser(user)
-	if userRoles == nil {
-		userRoles = rm.initUser(user)
-	}
+	userRoles := rm.mustGetUser(user)
 	return userRoles.Has(roleName)
 }
 
@@ -191,19 +163,10 @@ func (rm *RoleManager) mustGetRole(roleName string) *Role {
 	return role.(*Role)
 }
 
-func (rm *RoleManager) initUser(user std.Address) *avl.Tree {
-	uRole := rm.mustGetRole(RoleUser)
-	tree := avl.NewTree()
-	tree.Set(RoleUser, uRole)
-	rm.users.Set(user.String(), tree)
-	uRole.users.Set(user.String(), struct{}{})
-	return tree
-}
-
-func (rm *RoleManager) getUser(addr std.Address) *avl.Tree {
+func (rm *RoleManager) mustGetUser(addr std.Address) *avl.Tree {
 	user, ok := rm.users.Get(addr.String())
 	if !ok {
-		return nil
+		panic("user does not have any roles")
 	}
 	return user.(*avl.Tree)
 }
