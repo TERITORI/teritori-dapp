@@ -188,7 +188,7 @@ func (rm *RoleManager) mustGetRole(roleName string) *Role {
 }
 
 func (rm *RoleManager) initUser(user std.Address) *avl.Tree {
-    uRole := rm.mustGetRole(RoleUser)
+	uRole := rm.mustGetRole(RoleUser)
 	tree := avl.NewTree()
 	tree.Set(RoleUser, uRole)
 	rm.users.Set(user.String(), tree)
