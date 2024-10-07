@@ -1,4 +1,4 @@
-import { parse, ParseResult } from "papaparse";
+import { parse } from "papaparse";
 import React, { useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { SafeAreaView, TouchableOpacity, View } from "react-native";
@@ -19,6 +19,11 @@ import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { IMAGE_MIME_TYPES, TXT_CSV_MIME_TYPES } from "@/utils/mime";
 import {
+  NUMBERS_COMMA_SEPARATOR_REGEXP,
+  NUMBERS_REGEXP,
+  URL_REGEX,
+} from "@/utils/regex";
+import {
   errorColor,
   neutral17,
   neutral33,
@@ -30,16 +35,10 @@ import { layout } from "@/utils/style/layout";
 import { pluralOrNot } from "@/utils/text";
 import { LocalFileData } from "@/utils/types/files";
 import {
+  CollectionAssetsAttributeFormValues,
   CollectionAssetsMetadataFormValues,
   CollectionAssetsMetadatasFormValues,
 } from "@/utils/types/launchpad";
-
-const fileNameColIndex = 0;
-const nameColIndex = 1;
-const descriptionColIndex = 2;
-const externalURLColIndex = 3;
-const youtubeURLColIndex = 4;
-const attributesColIndex = 5;
 
 export const AssetsTab: React.FC = () => {
   const isMobile = useIsMobile();
@@ -51,13 +50,16 @@ export const AssetsTab: React.FC = () => {
     control: assetsMetadatasForm.control,
     name: "assetsMetadatas",
   });
-  const [mappingFileParseResults, setMappingFileParseResults] =
-    useState<ParseResult<string[]>>();
-  const [medataUpdateModalVisible, setMedataUpdateModalVisible] =
+  const [assetsMappingDataRows, setAssetsMappingDataRows] = useState<
+    string[][]
+  >([]);
+  const [attributesMappingDataRows, setAttributesMappingDataRows] = useState<
+    string[][]
+  >([]);
+
+  const [metadataUpdateModalVisible, setMedataUpdateModalVisible] =
     useState(false);
-  const selectedElem = fields.find(
-    (metadata, index) => index === selectedElemIndex,
-  );
+  const selectedElem = fields.find((_, index) => index === selectedElemIndex);
   const [issues, setIssues] = useState<
     {
       title: string;
@@ -66,26 +68,47 @@ export const AssetsTab: React.FC = () => {
     }[]
   >([]);
 
-  const onUploadMappingDataFile = async (files: LocalFileData[]) => {
+  const attributesIdsSeparator = ",";
+  // Assets columns
+  const fileNameColIndex = 0;
+  const nameColIndex = 1;
+  const descriptionColIndex = 2;
+  const externalURLColIndex = 3;
+  const youtubeURLColIndex = 4;
+  const attributesColIndex = 5;
+  // Attributes (traits) columns
+  const idColIndex = 0;
+  const typeColIndex = 1;
+  const valueColIndex = 2;
+
+  // We ignore the first row since it's the table headings
+  // We ignore unwanted empty lines from the CSV
+  const cleanDataRows = (array: string[][]) =>
+    array.filter(
+      (dataRow, dataRowIndex) => dataRow[0] !== "" && dataRowIndex > 0,
+    );
+
+  // On upload attributes CSV mapping file
+  const onUploadAttributesMapingFile = async (files: LocalFileData[]) => {
     setIssues([]);
     assetsMetadatasForm.setValue("assetsMetadatas", []);
 
-    // Controls CSV headings present on the first row.
     try {
       await parse<string[]>(files[0].file, {
         complete: (parseResults) => {
+          const attributesDataRows = parseResults.data;
+
+          // Controls CSV headings present on the first row.
           if (
-            parseResults.data[0][fileNameColIndex] !== "fileName" ||
-            parseResults.data[0][nameColIndex] !== "name" ||
-            parseResults.data[0][descriptionColIndex] !== "description" ||
-            parseResults.data[0][externalURLColIndex] !== "externalURL" ||
-            parseResults.data[0][youtubeURLColIndex] !== "youtubeURL" ||
-            parseResults.data[0][attributesColIndex] !== "attributes"
+            attributesDataRows[0][idColIndex] !== "id" ||
+            attributesDataRows[0][valueColIndex] !== "value" ||
+            attributesDataRows[0][typeColIndex] !== "type"
           ) {
-            setMappingFileParseResults(undefined);
-            const title = "Invalid mapping file";
+            setAttributesMappingDataRows([]);
+
+            const title = "Invalid attributes mapping file";
             const message =
-              "Please verify the headings on the first row.\nThe selected file is ignored.\nCheck the description for more information.";
+              "Please verify the headings on the first row in your attributes mapping file.\nThis file is ignored.\nCheck the description for more information.";
             console.error(title + ".\n" + message);
             setIssues((issues) => [
               ...issues,
@@ -95,13 +118,112 @@ export const AssetsTab: React.FC = () => {
                 type: "error",
               },
             ]);
-          } else {
-            setMappingFileParseResults(parseResults);
+            return;
+          }
+
+          // Verifying that all attributes rows have an id, name and value
+          const missingIdRows: string[][] = [];
+          const missingTypeRows: string[][] = [];
+          const missingValueRows: string[][] = [];
+          const wrongIdRows: string[][] = [];
+          const rowsIndexesToRemove: number[] = [];
+
+          // Controling attributes
+          cleanDataRows(attributesDataRows).forEach((dataRow, dataRowIndex) => {
+            const hasNoId = !dataRow[idColIndex]?.trim();
+            const hasNoValue = !dataRow[valueColIndex]?.trim();
+            const hasNoType = !dataRow[typeColIndex]?.trim();
+            const hasWrongId =
+              dataRow[idColIndex]?.trim() &&
+              !NUMBERS_REGEXP.test(dataRow[idColIndex].trim());
+
+            // Warning if no id in attribute (Ignore attribute)
+            if (hasNoId) {
+              missingIdRows.push(dataRow);
+            }
+            // Warning if no value in attribute (Ignore attribute)
+            if (hasNoValue) {
+              missingValueRows.push(dataRow);
+            }
+            // Warning if no type in attribute (Ignore attribute)
+            if (hasNoType) {
+              missingTypeRows.push(dataRow);
+            }
+            // Warning if id is not a digit (Ignore attribute)
+            if (hasWrongId) {
+              wrongIdRows.push(dataRow);
+            }
+            // We get the invalidated rows to remove
+            if (hasNoId || hasNoValue || hasNoType || hasWrongId) {
+              rowsIndexesToRemove.push(dataRowIndex);
+            }
+          });
+
+          // We remove the wrong rows from parseResults.data (The assets rows)
+          const result = cleanDataRows(parseResults.data).filter(
+            (_, index) => !rowsIndexesToRemove.includes(index),
+          );
+          // Soring the final result
+          setAttributesMappingDataRows(result);
+
+          // Handling warnings
+          if (missingIdRows.length) {
+            const title = `Incomplete ${pluralOrNot("attribute", missingIdRows.length)}`;
+            const message = `Missing "id" in ${missingIdRows.length} ${pluralOrNot("attribute", missingIdRows.length)} that ${pluralOrNot("is", missingIdRows.length)} ignored.\nPlease complete properly your attributes mapping file.\nCheck the description for more information.`;
+            console.warn(title + ".\n" + message);
+            setIssues((issues) => [
+              ...issues,
+              {
+                title,
+                message,
+                type: "warning",
+              },
+            ]);
+          }
+          if (missingTypeRows.length) {
+            const title = `Incomplete ${pluralOrNot("attribute", missingTypeRows.length)}`;
+            const message = `Missing "type" in ${missingTypeRows.length} ${pluralOrNot("attribute", missingTypeRows.length)} that ${pluralOrNot("is", missingTypeRows.length)} ignored.\nPlease complete properly your attributes mapping file.\nCheck the description for more information.`;
+            console.warn(title + ".\n" + message);
+            setIssues((issues) => [
+              ...issues,
+              {
+                title,
+                message,
+                type: "warning",
+              },
+            ]);
+          }
+          if (missingValueRows.length) {
+            const title = `Incomplete ${pluralOrNot("attribute", missingValueRows.length)}`;
+            const message = `Missing "value" in ${missingValueRows.length} ${pluralOrNot("attribute", missingValueRows.length)} that ${pluralOrNot("is", missingValueRows.length)} ignored.\nPlease complete properly your attributes mapping file.\nCheck the description for more information.`;
+            console.warn(title + ".\n" + message);
+            setIssues((issues) => [
+              ...issues,
+              {
+                title,
+                message,
+                type: "warning",
+              },
+            ]);
+          }
+          if (wrongIdRows.length) {
+            const title = `Wrong id`;
+            const message = `${wrongIdRows.length} ${pluralOrNot("attribute", wrongIdRows.length)} contain a wrong "id" value and has beed ignored. Only a number is allwowed.\nCheck the description for more information.`;
+            console.warn(title + ".\n" + message);
+            setIssues((issues) => [
+              ...issues,
+              {
+                title,
+                message,
+                type: "warning",
+              },
+            ]);
           }
         },
       });
     } catch (e) {
-      setMappingFileParseResults(undefined);
+      setAttributesMappingDataRows([]);
+
       console.error(`${e}`);
       setToast({
         title: "Error parsing " + files[0].file.name,
@@ -112,55 +234,244 @@ export const AssetsTab: React.FC = () => {
     }
   };
 
+  // On upload assets CSV mapping file
+  const onUploadAssetsMappingFile = async (files: LocalFileData[]) => {
+    try {
+      await parse<string[]>(files[0].file, {
+        complete: (parseResults) => {
+          const assetsDataRows = parseResults.data;
+          const attributesDataRows = cleanDataRows(attributesMappingDataRows);
+
+          // Controls CSV headings present on the first row.
+          if (
+            assetsDataRows[0][fileNameColIndex] !== "file_name" ||
+            assetsDataRows[0][nameColIndex] !== "name" ||
+            assetsDataRows[0][descriptionColIndex] !== "description" ||
+            assetsDataRows[0][externalURLColIndex] !== "external_url" ||
+            assetsDataRows[0][youtubeURLColIndex] !== "youtube_url" ||
+            assetsDataRows[0][attributesColIndex] !== "attributes"
+          ) {
+            setAssetsMappingDataRows([]);
+
+            const title = "Invalid assets mapping file";
+            const message =
+              "Please verify the headings on the first row in your assets mapping file.This file is ignored.\nCheck the description for more information.";
+            console.error(title + ".\n" + message);
+            setIssues((issues) => [
+              ...issues,
+              {
+                title,
+                message,
+                type: "error",
+              },
+            ]);
+            return;
+          }
+
+          const missingNameRows: string[][] = [];
+          const missingAttributesRows: string[][] = [];
+          const unknownAttributesRowsInAssets: string[][] = [];
+          const wrongAttributesRowsInAssets: string[][] = [];
+          const wrongUrlsRowsInAssets: string[][] = [];
+          const rowsIndexesToRemove: number[] = [];
+
+          // Controling assets and attributes
+          cleanDataRows(assetsDataRows).forEach(
+            (assetDataRow, assetDataRowIndex) => {
+              const hasNoName = !assetDataRow[nameColIndex]?.trim();
+              const hasNoAttribute = !assetDataRow[attributesColIndex]?.trim();
+              const hasWrongAttribute = !NUMBERS_COMMA_SEPARATOR_REGEXP.test(
+                assetDataRow[attributesColIndex],
+              );
+              const hasWrongExternalUrl =
+                assetDataRow[externalURLColIndex]?.trim() &&
+                !URL_REGEX.test(assetDataRow[externalURLColIndex].trim());
+              const hasWrongYoutubeUrl =
+                assetDataRow[youtubeURLColIndex]?.trim() &&
+                !URL_REGEX.test(assetDataRow[youtubeURLColIndex].trim());
+
+              // Warning if no name in asset (Ignore asset)
+              if (hasNoName) {
+                missingNameRows.push(assetDataRow);
+              }
+              // Warning if no attributes in asset (Ignore asset)
+              if (hasNoAttribute) {
+                missingAttributesRows.push(assetDataRow);
+              }
+              // Else, warning if wrong attributes ids in asset. We want numbers with comma separators (Ignore asset)
+              else if (hasWrongAttribute) {
+                wrongAttributesRowsInAssets.push(assetDataRow);
+              }
+              // We get unvalidated rows to remove
+              if (hasNoName || hasNoAttribute || hasWrongAttribute) {
+                rowsIndexesToRemove.push(assetDataRowIndex);
+              }
+
+              // Warning if wrong urls in asset (No incidence)
+              if (hasWrongExternalUrl || hasWrongYoutubeUrl) {
+                wrongUrlsRowsInAssets.push(assetDataRow);
+              }
+              // Warning if unknow attributes ids in asset (No incidence)
+              const assetAttributesIds: string[] =
+                assetDataRow[attributesColIndex]
+                  ?.split(attributesIdsSeparator)
+                  .map((id) => id.trim())
+                  .filter((id) => NUMBERS_COMMA_SEPARATOR_REGEXP.test(id)) ||
+                []; // We clean attributes ids here because we already controlled "wrong attributes ids in asset" above
+
+              let nbIdsFound = 0;
+              assetAttributesIds.forEach((id) => {
+                attributesDataRows.forEach((attributeDataRow) => {
+                  if (id === attributeDataRow[idColIndex]?.trim()) {
+                    nbIdsFound++;
+                  }
+                });
+              });
+              if (nbIdsFound < assetAttributesIds.length) {
+                unknownAttributesRowsInAssets.push(assetDataRow);
+              }
+            },
+          );
+
+          // We remove the wrong rows from parseResults.data (The assets rows)
+          const result = cleanDataRows(assetsDataRows).filter(
+            (_, index) => !rowsIndexesToRemove.includes(index),
+          );
+          // Storing the final results
+          setAssetsMappingDataRows(result);
+
+          // Handling warnings
+          if (missingNameRows.length) {
+            const title = `Incomplete ${pluralOrNot("asset", missingNameRows.length)}`;
+            const message = `Missing "name" in ${missingNameRows.length} ${pluralOrNot("asset", missingNameRows.length)} that ${pluralOrNot("is", missingNameRows.length)} ignored.\nPlease complete properly your assets mapping file.\nCheck the description for more information.`;
+            console.warn(title + ".\n" + message);
+            setIssues((issues) => [
+              ...issues,
+              {
+                title,
+                message,
+                type: "warning",
+              },
+            ]);
+          }
+          if (missingAttributesRows.length) {
+            const title = `Incomplete ${pluralOrNot("asset", missingAttributesRows.length)}`;
+            const message = `Missing "attributes" in ${missingAttributesRows.length} ${pluralOrNot("asset", missingAttributesRows.length)} that ${pluralOrNot("is", missingAttributesRows.length)} ignored.\nPlease complete properly your assets mapping file.\nCheck the description for more information.`;
+            console.warn(title + ".\n" + message);
+            setIssues((issues) => [
+              ...issues,
+              {
+                title,
+                message,
+                type: "warning",
+              },
+            ]);
+          }
+          if (wrongAttributesRowsInAssets.length) {
+            const title = `Wrong attributes`;
+            const message = `${wrongAttributesRowsInAssets.length} ${pluralOrNot("asset", wrongAttributesRowsInAssets.length)} contain a wrong "attributes" value and ${pluralOrNot("is", wrongAttributesRowsInAssets.length)} ignored. Only numbers with comma separator are allwowed.\nCheck the description for more information.`;
+            console.warn(title + ".\n" + message);
+            setIssues((issues) => [
+              ...issues,
+              {
+                title,
+                message,
+                type: "warning",
+              },
+            ]);
+          }
+          if (wrongUrlsRowsInAssets.length) {
+            const title = `Wrong URLs`;
+            const message = `${wrongUrlsRowsInAssets.length} ${pluralOrNot("asset", wrongUrlsRowsInAssets.length)} contain a wrong "youtube_url" or "external_url" value (No incidence).\nCheck the description for more information.`;
+            console.warn(title + ".\n" + message);
+            setIssues((issues) => [
+              ...issues,
+              {
+                title,
+                message,
+                type: "warning",
+              },
+            ]);
+          }
+          if (unknownAttributesRowsInAssets.length) {
+            const title = `Unknown attributes`;
+            const message = `${unknownAttributesRowsInAssets.length} ${pluralOrNot("asset", unknownAttributesRowsInAssets.length)} contain at least one "attributes" id that doesn't exist in your attributes mapping file. (No incidence)\nCheck the description for more information.`;
+            console.warn(title + ".\n" + message);
+            setIssues((issues) => [
+              ...issues,
+              {
+                title,
+                message,
+                type: "warning",
+              },
+            ]);
+          }
+        },
+      });
+    } catch (e) {
+      setAssetsMappingDataRows([]);
+
+      console.error(`${e}`);
+      setToast({
+        title: "Error parsing " + files[0].file.name,
+        message: `${e}`,
+        mode: "normal",
+        type: "error",
+      });
+    }
+  };
+
+  // On upload images files
   const onUploadImages = (images: LocalFileData[]) => {
-    if (!mappingFileParseResults) return;
-    setIssues([]);
-    assetsMetadatasForm.setValue("assetsMetadatas", []);
-    const dataRows = mappingFileParseResults.data;
-    const mappedAssets: CollectionAssetsMetadataFormValues[] = [];
-    const missingNameRows: string[][] = [];
-    const missingAttributesRows: string[][] = [];
+    if (!assetsMappingDataRows.length || !attributesMappingDataRows.length)
+      return;
+
+    const collectionAssetsMetadatas: CollectionAssetsMetadataFormValues[] = [];
 
     //The rows order in the CSV determines the assets order.
-    dataRows.forEach((dataRow, dataRowIndex) => {
-      if (dataRowIndex === 0) return; // We ignore the first row since it's the table headings
+    assetsMappingDataRows.forEach((assetDataRow, assetDataRowIndex) => {
       images.forEach((image) => {
-        if (dataRow[fileNameColIndex] !== image.file.name) return;
-        const asset: CollectionAssetsMetadataFormValues = {
+        if (assetDataRow[fileNameColIndex] !== image.file.name) return;
+        // --- Mapping attributes
+        const mappedAttributes: CollectionAssetsAttributeFormValues[] = [];
+        const assetAttributesIds = [
+          ...new Set(
+            assetDataRow[attributesColIndex].split(attributesIdsSeparator),
+          ),
+        ]; // We ignore duplicate attributes ids from assets
+        assetAttributesIds.forEach((assetAttributeId) => {
+          attributesMappingDataRows.forEach(
+            (attributeDataRow, attributeDataRowIndex) => {
+              if (attributeDataRow[idColIndex] === assetAttributeId) {
+                mappedAttributes.push({
+                  value: attributeDataRow[valueColIndex],
+                  type: attributeDataRow[typeColIndex],
+                });
+              }
+            },
+          );
+        });
+
+        // --- Mapping assets
+        const mappedAssets: CollectionAssetsMetadataFormValues = {
           image,
-          // Empty values are valid, except for name and attributes
-          name: dataRow[nameColIndex],
-          description: dataRow[descriptionColIndex],
-          externalUrl: dataRow[externalURLColIndex],
-          youtubeUrl: dataRow[youtubeURLColIndex],
-          attributes: dataRow[attributesColIndex],
+          name: assetDataRow[nameColIndex],
+          description: assetDataRow[descriptionColIndex],
+          externalUrl: assetDataRow[externalURLColIndex],
+          youtubeUrl: assetDataRow[youtubeURLColIndex],
+          attributes: mappedAttributes,
         };
-        if (!dataRow[nameColIndex].trim()) {
-          missingNameRows.push(dataRow);
-        }
-        if (!dataRow[attributesColIndex].trim()) {
-          missingAttributesRows.push(dataRow);
-        }
-        if (dataRow[nameColIndex].trim() && dataRow[attributesColIndex].trim())
-          mappedAssets.push(asset);
+        collectionAssetsMetadatas.push(mappedAssets);
       });
     });
-    assetsMetadatasForm.setValue("assetsMetadatas", mappedAssets);
+    assetsMetadatasForm.setValue("assetsMetadatas", collectionAssetsMetadatas);
 
-    // ---- Handling warnings
-    if (
-      mappedAssets.length +
-        missingNameRows.length +
-        missingAttributesRows.length <
-      images.length
-    ) {
-      const nbUnexpectedAssets =
-        images.length -
-        (mappedAssets.length +
-          missingNameRows.length +
-          missingAttributesRows.length);
-      const title = `Unexpected ${pluralOrNot("asset", nbUnexpectedAssets)}`;
-      const message = `${nbUnexpectedAssets} selected ${pluralOrNot("asset", nbUnexpectedAssets)} ${pluralOrNot("is", nbUnexpectedAssets)} not expected in the mapping file and has been ignored.\nCheck the description for more information.`;
+    // Handling warnings
+    if (collectionAssetsMetadatas.length < images.length) {
+      const nbUnexpectedImages =
+        images.length - collectionAssetsMetadatas.length;
+      const title = `Unexpected ${pluralOrNot("image", nbUnexpectedImages)}`;
+      const message = `${nbUnexpectedImages} ${pluralOrNot("image", nbUnexpectedImages)} ${pluralOrNot("is", nbUnexpectedImages)} not expected in your assets mapping file and ${pluralOrNot("is", nbUnexpectedImages)} ignored.\nCheck the description for more information.`;
       console.warn(title + ".\n" + message);
       setIssues((issues) => [
         ...issues,
@@ -171,39 +482,12 @@ export const AssetsTab: React.FC = () => {
         },
       ]);
     }
-    if (missingNameRows.length) {
-      const title = `Incomplete ${pluralOrNot("asset", missingNameRows.length)}`;
-      const message = `Missing "name" in ${missingNameRows.length} selected ${pluralOrNot("asset", missingNameRows.length)} that ${pluralOrNot("is", missingNameRows.length)} ignored.\nPlease complete properly the mapping file.\nCheck the description for more information.`;
-      console.warn(title + ".\n" + message);
-      setIssues((issues) => [
-        ...issues,
-        {
-          title,
-          message,
-          type: "warning",
-        },
-      ]);
-    }
-    if (missingAttributesRows.length) {
-      const title = `Incomplete ${pluralOrNot("asset", missingAttributesRows.length)}`;
-      const message = `Missing "attributes" in ${missingAttributesRows.length} selected ${pluralOrNot("asset", missingAttributesRows.length)} that ${pluralOrNot("is", missingAttributesRows.length)} ignored.\nPlease complete properly the mapping file.\nCheck the description for more information.`;
-      console.warn(title + ".\n" + message);
-      setIssues((issues) => [
-        ...issues,
-        {
-          title,
-          message,
-          type: "warning",
-        },
-      ]);
-    }
-    if (
-      dataRows.length - 1 > //First row is headings, so we do -1
-      mappedAssets.length
-    ) {
-      const nbMissingAssets = dataRows.length - 1 - mappedAssets.length;
-      const title = `Missing ${pluralOrNot("asset", nbMissingAssets)}`;
-      const message = `${nbMissingAssets} ${pluralOrNot("asset", nbMissingAssets)} expected in the mapping file ${pluralOrNot("is", nbMissingAssets)} missing.\nCheck the description for more information.`;
+
+    if (assetsMappingDataRows.length > collectionAssetsMetadatas.length) {
+      const nbMissingImages =
+        assetsMappingDataRows.length - collectionAssetsMetadatas.length;
+      const title = `Missing ${pluralOrNot("image", nbMissingImages)}`;
+      const message = `${nbMissingImages} ${pluralOrNot("image", nbMissingImages)} expected in your assets mapping file ${pluralOrNot("is", nbMissingImages)} missing.\nCheck the description for more information.`;
       console.warn(title + ".\n" + message);
       setIssues((issues) => [
         ...issues,
@@ -300,27 +584,44 @@ export const AssetsTab: React.FC = () => {
                 width: "100%",
               }}
             >
+              {/* Firstly: Attributes */}
               <FileUploaderSmall
-                label="Assets data mapping file"
-                filesCount={mappingFileParseResults ? 1 : 0}
-                onUpload={onUploadMappingDataFile}
+                label="Attributes mapping file"
+                filesCount={attributesMappingDataRows.length ? 1 : 0}
+                onUpload={onUploadAttributesMapingFile}
                 mimeTypes={TXT_CSV_MIME_TYPES}
+                boxStyle={{ minHeight: 40 }}
+              />
+
+              <SpacerColumn size={2} />
+
+              {/* Secondly: Assets */}
+              <FileUploaderSmall
+                label="Assets mapping file"
+                filesCount={assetsMappingDataRows.length ? 1 : 0}
+                onUpload={onUploadAssetsMappingFile}
+                mimeTypes={TXT_CSV_MIME_TYPES}
+                boxStyle={{ minHeight: 40 }}
+                disabled={!attributesMappingDataRows.length}
               />
 
               <SpacerColumn size={2} />
               <Separator />
               <SpacerColumn size={2} />
 
+              {/* Thirdly: Images */}
               <FileUploaderSmall
-                disabled={!mappingFileParseResults}
-                label="Assets images"
+                disabled={!assetsMappingDataRows.length}
+                label="Images"
                 filesCount={fields.length}
                 onUpload={onUploadImages}
                 mimeTypes={IMAGE_MIME_TYPES}
                 multiple
               />
 
-              {!!fields.length && (
+              {(fields.length ||
+                assetsMappingDataRows.length ||
+                attributesMappingDataRows.length) && (
                 <>
                   <SpacerColumn size={2} />
                   <Separator />
@@ -337,6 +638,8 @@ export const AssetsTab: React.FC = () => {
                       borderColor: errorColor,
                     }}
                     onPress={() => {
+                      setAssetsMappingDataRows([]);
+                      setAttributesMappingDataRows([]);
                       assetsMetadatasForm.setValue("assetsMetadatas", []);
                       setIssues([]);
                     }}
@@ -349,7 +652,7 @@ export const AssetsTab: React.FC = () => {
                         { color: errorColor, lineHeight: layout.spacing_x2 },
                       ]}
                     >
-                      Remove all images
+                      Remove all files
                     </BrandText>
                   </TouchableOpacity>
                 </>
@@ -392,7 +695,7 @@ export const AssetsTab: React.FC = () => {
         {selectedElem && selectedElemIndex !== undefined && (
           <MetadataUpdateModal
             onClose={() => setMedataUpdateModalVisible(false)}
-            isVisible={medataUpdateModalVisible}
+            isVisible={metadataUpdateModalVisible}
             elem={selectedElem}
             elemIndex={selectedElemIndex}
           />

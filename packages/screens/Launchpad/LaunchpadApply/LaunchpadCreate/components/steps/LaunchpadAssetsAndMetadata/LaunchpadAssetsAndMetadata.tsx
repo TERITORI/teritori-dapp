@@ -43,7 +43,7 @@ export const LaunchpadAssetsAndMetadata: FC = () => {
 
   // Plug assetsMetadatas from assetsMetadatasForm to collectionForm
   useEffect(() => {
-    setValue("assetsMetadatas.assetsMetadatas", assetsMetadatas );
+    setValue("assetsMetadatas.assetsMetadatas", assetsMetadatas);
   }, [assetsMetadatas, setValue]);
 
   return (

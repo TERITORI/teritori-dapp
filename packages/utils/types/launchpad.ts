@@ -50,27 +50,34 @@ const ZodCollectionMintPeriodFormValues = z.object({
   isOpen: z.boolean(),
 });
 
+export const ZodCollectionAssetsAttributeFormValues = z.object({
+  value: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
+  type: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
+});
+
 export const ZodCollectionAssetsMetadataFormValues = z.object({
   image: ZodLocalFileData,
   externalUrl: z
     .string()
     .trim()
-    .refine(
-      (value) => !value || URL_REGEX.test(value),
-      DEFAULT_FORM_ERRORS.onlyUrl,
-    )
+    // We ignore the URL format control since externalUrl is optional
+    // .refine(
+    //   (value) => !value || URL_REGEX.test(value),
+    //   DEFAULT_FORM_ERRORS.onlyUrl,
+    // )
     .optional(),
   description: z.string().trim().optional(),
   name: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   youtubeUrl: z
     .string()
     .trim()
-    .refine(
-      (value) => !value || URL_REGEX.test(value),
-      DEFAULT_FORM_ERRORS.onlyUrl,
-    )
+    // We ignore the URL format control since youtubeUrl is optional
+    // .refine(
+    //   (value) => !value || URL_REGEX.test(value),
+    //   DEFAULT_FORM_ERRORS.onlyUrl,
+    // )
     .optional(),
-  attributes: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
+  attributes: z.array(ZodCollectionAssetsAttributeFormValues),
 });
 
 export const ZodCollectionAssetsMetadatasFormValues = z.object({
@@ -200,6 +207,10 @@ export const ZodCollectionFormValues = z.object({
 });
 
 export type CollectionFormValues = z.infer<typeof ZodCollectionFormValues>;
+
+export type CollectionAssetsAttributeFormValues = z.infer<
+  typeof ZodCollectionAssetsAttributeFormValues
+>;
 
 export type CollectionMintPeriodFormValues = z.infer<
   typeof ZodCollectionMintPeriodFormValues

@@ -5,12 +5,24 @@ import { View } from "react-native";
 import { BrandText } from "@/components/BrandText";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
+import { TertiaryBox } from "@/components/boxes/TertiaryBox";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { Label } from "@/components/inputs/TextInputCustom";
 import ModalBase from "@/components/modals/ModalBase";
 import { Separator } from "@/components/separators/Separator";
 import { TextInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/TextInputLaunchpad";
-import { neutral77, secondaryColor } from "@/utils/style/colors";
-import { fontSemibold16, fontSemibold20 } from "@/utils/style/fonts";
+import {
+  neutral22,
+  neutral33,
+  neutral77,
+  neutralFF,
+  secondaryColor,
+} from "@/utils/style/colors";
+import {
+  fontSemibold14,
+  fontSemibold16,
+  fontSemibold20,
+} from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
   CollectionAssetsMetadataFormValues,
@@ -29,7 +41,9 @@ export const MetadataUpdateModal: React.FC<{
   const descriptionPath = `assetsMetadatas.${elemIndex}.description` as const;
   const externalUrlPath = `assetsMetadatas.${elemIndex}.externalUrl` as const;
   const youtubeUrlPath = `assetsMetadatas.${elemIndex}.youtubeUrl` as const;
-  const attributesPath = `assetsMetadatas.${elemIndex}.attributes` as const;
+  const attributes = assetsMetadatasForm.watch(
+    `assetsMetadatas.${elemIndex}.attributes`,
+  );
 
   return (
     <ModalBase
@@ -64,7 +78,7 @@ export const MetadataUpdateModal: React.FC<{
           </PrimaryBox>
           <View style={{ marginLeft: layout.spacing_x2 }}>
             <BrandText style={[fontSemibold20, { color: secondaryColor }]}>
-              Metadata #{elemIndex + 1}
+              Asset #{elemIndex + 1}
             </BrandText>
             <BrandText
               style={[fontSemibold16, { color: neutral77, width: 300 }]}
@@ -146,14 +160,33 @@ export const MetadataUpdateModal: React.FC<{
           disabled
         />
 
-        {/*TODO: Attributes selection ?*/}
-        <TextInputLaunchpad<CollectionAssetsMetadatasFormValues>
-          name={attributesPath}
-          label="Attributes"
-          form={assetsMetadatasForm}
-          placeHolder="Enter trait types and values"
-          disabled
-        />
+        <View
+          style={{
+            alignSelf: "flex-start",
+            width: "100%",
+            marginBottom: layout.spacing_x2,
+          }}
+        >
+          <Label isRequired>Attributes</Label>
+
+          <TertiaryBox
+            style={{
+              backgroundColor: neutral22,
+              borderColor: neutral33,
+              paddingHorizontal: layout.spacing_x1_5,
+              paddingVertical: layout.spacing_x1_25,
+              marginTop: layout.spacing_x1_5,
+            }}
+          >
+            {attributes.map((attribute, index) => (
+              <View key={index}>
+                <BrandText style={[fontSemibold14, { color: neutralFF }]}>
+                  {`${attribute.type}: ${attribute.value}`}
+                </BrandText>
+              </View>
+            ))}
+          </TertiaryBox>
+        </View>
       </View>
     </ModalBase>
   );

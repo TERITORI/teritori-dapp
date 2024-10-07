@@ -7,3 +7,4 @@ export const HTML_TAG_REGEXP = /(<([^>]+)>)/gi;
 export const NUMBERS_REGEXP = /^\d+$/;
 export const LETTERS_REGEXP = /^[A-Za-z]+$/;
 export const EMAIL_REGEXP = /^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/;
+export const NUMBERS_COMMA_SEPARATOR_REGEXP = /^\s*\d+(\s*,\s*\d+)*\s*$/;
