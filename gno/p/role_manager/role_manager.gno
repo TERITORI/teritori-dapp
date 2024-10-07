@@ -93,7 +93,7 @@ func (rm *RoleManager) DeleteRole(roleName string) {
 		user := std.Address(key)
 		userRoles := rm.getUser(user)
 		if userRoles == nil {
-			userRoles = rm.InitUser(user)
+			userRoles = rm.initUser(user)
 		}
 		userRoles.Remove(roleName)
 		return false
@@ -130,7 +130,7 @@ func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string) {
 	role := rm.mustGetRole(roleName)
 	userRoles := rm.getUser(user)
 	if userRoles == nil {
-		userRoles = rm.InitUser(user)
+		userRoles = rm.initUser(user)
 	}
 	userRoles.Set(roleName, role)
 	role.users.Set(user.String(), struct{}{})
@@ -145,7 +145,7 @@ func (rm *RoleManager) RemoveRoleFromUser(user std.Address, roleName string) {
 	role := rm.mustGetRole(roleName)
 	userRoles := rm.getUser(user)
 	if userRoles == nil {
-		userRoles = rm.InitUser(user)
+		userRoles = rm.initUser(user)
 	}
 	userRoles.Remove(roleName)
 	role.users.Remove(user.String())
@@ -154,7 +154,7 @@ func (rm *RoleManager) RemoveRoleFromUser(user std.Address, roleName string) {
 func (rm *RoleManager) HasPermission(user std.Address, permission string) bool {
 	userRoles := rm.getUser(user)
 	if userRoles == nil {
-		userRoles = rm.InitUser(user)
+		userRoles = rm.initUser(user)
 	}
 	res := false
 	userRoles.Iterate("", "", func(key string, value interface{}) bool {
@@ -188,7 +188,7 @@ func (rm *RoleManager) mustGetRole(roleName string) *Role {
 }
 
 func (rm *RoleManager) initUser(user std.Address) *avl.Tree {
-	uRole := rm.mustGetRole(RoleUser)
+    uRole := rm.mustGetRole(RoleUser)
 	tree := avl.NewTree()
 	tree.Set(RoleUser, uRole)
 	rm.users.Set(user.String(), tree)
