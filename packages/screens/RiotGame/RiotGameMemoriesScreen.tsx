@@ -17,6 +17,7 @@ import { EmbeddedWeb } from "@/components/EmbeddedWeb";
 import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
 import { SpacerColumn } from "@/components/spacer";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { web3ToWeb2URI } from "@/utils/ipfs";
 import { fontMedium32 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
@@ -26,8 +27,9 @@ const seasonVideoUri =
 //TODO: Type and fetch this dynamically
 const episodes = [
   {
-    videoUri:
-      "https://bafybeieid23jjpzug42y6u5au2noc6hpyayqd56udgvh7pfd45jeksykoe.ipfs.cf-ipfs.com/",
+    videoUri: web3ToWeb2URI(
+      "ipfs://bafybeieid23jjpzug42y6u5au2noc6hpyayqd56udgvh7pfd45jeksykoe",
+    ),
   },
   { videoUri: "" },
   { videoUri: "" },

@@ -42,6 +42,7 @@ import {
   squadStake,
   squadWithdrawSeason1,
 } from "@/utils/game";
+import { web3ToWeb2URI } from "@/utils/ipfs";
 import {
   neutral00,
   neutral33,
@@ -58,8 +59,9 @@ import {
 import { layout } from "@/utils/style/layout";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
-const EMBEDDED_VIDEO_URI =
-  "https://bafybeihfkmpunve47w4avfnuv3mfnsgoqclahpx54zj4b2ypve52iqmxsa.ipfs.cf-ipfs.com/";
+const EMBEDDED_VIDEO_URI = web3ToWeb2URI(
+  "ipfs://bafybeihfkmpunve47w4avfnuv3mfnsgoqclahpx54zj4b2ypve52iqmxsa",
+);
 const embeddedVideoHeight = 267;
 const embeddedVideoWidth = 468;
 
