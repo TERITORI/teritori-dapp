@@ -13,8 +13,8 @@ const (
 )
 
 const (
-	PermissionAll       = "all"
-	PermissionWriteRole = "write:role"
+	PermissionAll       = "*"
+	PermissionWriteRole = "role:write"
 )
 
 type Role struct {
@@ -92,6 +92,9 @@ func (rm *RoleManager) DeleteRole(roleName string) {
 	role.users.Iterate("", "", func(key string, value interface{}) bool {
 		user := std.Address(key)
 		userRoles := rm.getUser(user)
+		if userRoles == nil {
+			userRoles = rm.InitUser(user)
+		}
 		userRoles.Remove(roleName)
 		return false
 	})
@@ -126,6 +129,9 @@ func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string) {
 
 	role := rm.mustGetRole(roleName)
 	userRoles := rm.getUser(user)
+	if userRoles == nil {
+		userRoles = rm.InitUser(user)
+	}
 	userRoles.Set(roleName, role)
 	role.users.Set(user.String(), struct{}{})
 }
@@ -138,12 +144,18 @@ func (rm *RoleManager) RemoveRoleFromUser(user std.Address, roleName string) {
 
 	role := rm.mustGetRole(roleName)
 	userRoles := rm.getUser(user)
+	if userRoles == nil {
+		userRoles = rm.InitUser(user)
+	}
 	userRoles.Remove(roleName)
 	role.users.Remove(user.String())
 }
 
 func (rm *RoleManager) HasPermission(user std.Address, permission string) bool {
 	userRoles := rm.getUser(user)
+	if userRoles == nil {
+		userRoles = rm.InitUser(user)
+	}
 	res := false
 	userRoles.Iterate("", "", func(key string, value interface{}) bool {
 		role, ok := value.(*Role)
@@ -161,6 +173,9 @@ func (rm *RoleManager) HasPermission(user std.Address, permission string) bool {
 
 func (rm *RoleManager) HasRole(user std.Address, roleName string) bool {
 	userRoles := rm.getUser(user)
+	if userRoles == nil {
+		userRoles = rm.initUser(user)
+	}
 	return userRoles.Has(roleName)
 }
 
@@ -172,16 +187,19 @@ func (rm *RoleManager) mustGetRole(roleName string) *Role {
 	return role.(*Role)
 }
 
-// if user does not exist, create it with the user role
+func (rm *RoleManager) initUser(user std.Address) *avl.Tree {
+	uRole := rm.mustGetRole(RoleUser)
+	tree := avl.NewTree()
+	tree.Set(RoleUser, uRole)
+	rm.users.Set(user.String(), tree)
+	uRole.users.Set(user.String(), struct{}{})
+	return tree
+}
+
 func (rm *RoleManager) getUser(addr std.Address) *avl.Tree {
 	user, ok := rm.users.Get(addr.String())
 	if !ok {
-		uRole := rm.mustGetRole(RoleUser)
-		tree := avl.NewTree()
-		tree.Set(RoleUser, uRole)
-		rm.users.Set(addr.String(), tree)
-		uRole.users.Set(addr.String(), struct{}{})
-		return tree
+		return nil
 	}
 	return user.(*avl.Tree)
 }
