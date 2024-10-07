@@ -85,7 +85,7 @@ func TestDeleteRole(t *testing.T) {
 		t.Fatalf("expected user to still exist")
 	}
 
-	aliceRoles := rm.mustGetUser(alice)
+	aliceRoles := rm.getUser(alice)
 	if aliceRoles.Has("role1") {
 		t.Fatalf("expected role1 to be removed from user")
 	}
@@ -108,7 +108,7 @@ func TestAddPermissionToRole(t *testing.T) {
 		t.Fatalf("expected role1 to have perm3")
 	}
 
-	aliceRoles := rm.mustGetUser(alice)
+	aliceRoles := rm.getUser(alice)
 	if !aliceRoles.Has("role1") {
 		t.Fatalf("expected role1 to be added to user")
 	}
@@ -137,7 +137,7 @@ func TestRemovePermissionFromRole(t *testing.T) {
 		t.Fatalf("expected role1 to not have perm3")
 	}
 
-	aliceRoles := rm.mustGetUser(alice)
+	aliceRoles := rm.getUser(alice)
 	if !aliceRoles.Has("role1") {
 		t.Fatalf("expected role1 to be added to user")
 	}
@@ -160,7 +160,7 @@ func TestAddRoleToUser(t *testing.T) {
 
 	rm.RemoveRoleFromUser(alice, "role2")
 
-	aliceRoles := rm.mustGetUser(alice)
+	aliceRoles := rm.getUser(alice)
 	if !aliceRoles.Has("role1") {
 		t.Fatalf("expected role1 to be added to user")
 	}
@@ -186,7 +186,7 @@ func TestRemoveRoleFromUser(t *testing.T) {
 	rm.RemoveRoleFromUser(alice, "role2")
 	rm.RemoveRoleFromUser(alice, "role1")
 
-	aliceRoles := rm.mustGetUser(alice)
+	aliceRoles := rm.getUser(alice)
 	if aliceRoles.Has("role1") {
 		t.Fatalf("expected role1 to be removed from user")
 	}

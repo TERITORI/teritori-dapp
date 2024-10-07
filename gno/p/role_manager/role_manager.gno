@@ -74,7 +74,7 @@ func (rm *RoleManager) DeleteRole(roleName string) {
 	role := rm.mustGetRole(roleName)
 	role.users.Iterate("", "", func(key string, value interface{}) bool {
 		user := std.Address(key)
-		userRoles := rm.mustGetUser(user)
+		userRoles := rm.getUser(user)
 		userRoles.Remove(roleName)
 		return false
 	})
@@ -107,13 +107,12 @@ func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string) {
 		panic("caller does not have permission")
 	}
 
-	if !rm.users.Has(user.String()) {
-		tree := avl.NewTree()
-		rm.users.Set(user.String(), tree)
-	}
-
 	role := rm.mustGetRole(roleName)
-	userRoles := rm.mustGetUser(user)
+	userRoles := rm.getUser(user)
+	if userRoles == nil {
+		userRoles = avl.NewTree()
+		rm.users.Set(user.String(), userRoles)
+	}
 	userRoles.Set(roleName, role)
 	role.users.Set(user.String(), struct{}{})
 }
@@ -125,7 +124,10 @@ func (rm *RoleManager) RemoveRoleFromUser(user std.Address, roleName string) {
 	}
 
 	role := rm.mustGetRole(roleName)
-	userRoles := rm.mustGetUser(user)
+	userRoles := rm.getUser(user)
+	if userRoles == nil {
+		return
+	}
 	userRoles.Remove(roleName)
 	role.users.Remove(user.String())
 	if userRoles.Size() == 0 {
@@ -134,10 +136,10 @@ func (rm *RoleManager) RemoveRoleFromUser(user std.Address, roleName string) {
 }
 
 func (rm *RoleManager) HasPermission(user std.Address, permission string) bool {
-	if !rm.users.Has(user.String()) {
+	userRoles := rm.getUser(user)
+	if userRoles == nil {
 		return false
 	}
-	userRoles := rm.mustGetUser(user)
 	res := false
 	userRoles.Iterate("", "", func(key string, value interface{}) bool {
 		role, ok := value.(*Role)
@@ -154,10 +156,10 @@ func (rm *RoleManager) HasPermission(user std.Address, permission string) bool {
 }
 
 func (rm *RoleManager) HasRole(user std.Address, roleName string) bool {
-	if !rm.users.Has(user.String()) {
+	userRoles := rm.getUser(user)
+	if userRoles == nil {
 		return false
 	}
-	userRoles := rm.mustGetUser(user)
 	return userRoles.Has(roleName)
 }
 
@@ -169,10 +171,10 @@ func (rm *RoleManager) mustGetRole(roleName string) *Role {
 	return role.(*Role)
 }
 
-func (rm *RoleManager) mustGetUser(addr std.Address) *avl.Tree {
+func (rm *RoleManager) getUser(addr std.Address) *avl.Tree {
 	user, ok := rm.users.Get(addr.String())
 	if !ok {
-		panic("user does not have any roles")
+		return nil
 	}
 	return user.(*avl.Tree)
 }
