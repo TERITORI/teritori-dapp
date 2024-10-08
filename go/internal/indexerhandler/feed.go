@@ -2,7 +2,6 @@ package indexerhandler
 
 import (
 	"encoding/json"
-	"math"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
@@ -173,7 +172,7 @@ func (h *Handler) createPost(
 	createPostMsg *CreatePostMsg,
 	isBot bool,
 ) error {
-	var metadataJSON map[string]interface{}
+	var metadataJSON map[string]json.RawMessage
 	if err := json.Unmarshal([]byte(createPostMsg.Metadata), &metadataJSON); err != nil {
 		// We ignore this case because there's no validation for the data on the blockchain, and wrong data would stall the indexer if we returned an error.
 		h.logger.Info("ignored post with malformed metadada", zap.String("tx", e.TxHash), zap.String("contract", execMsg.Contract), zap.Error(err))
@@ -181,16 +180,13 @@ func (h *Handler) createPost(
 	}
 
 	premium := uint32(0)
-	ipremium, ok := metadataJSON["premium"]
-	if ok {
-		if cpremium, ok := ipremium.(float64); ok && cpremium > 0 {
-			premium = uint32(math.Ceil(cpremium))
-		}
-	}
+	_ = json.Unmarshal(metadataJSON["premium"], &premium)
 
-	data, err := json.Marshal(metadataJSON)
-	if err != nil {
-		return err
+	var lat, lng float64
+	location := []float64{}
+	if err := json.Unmarshal(metadataJSON["location"], &location); err == nil && len(location) >= 2 {
+		lat = location[0]
+		lng = location[1]
 	}
 
 	createdAt, err := e.GetBlockTime()
@@ -203,12 +199,16 @@ func (h *Handler) createPost(
 		LocalIdentifier:      createPostMsg.Identifier,
 		ParentPostIdentifier: createPostMsg.ParentPostIdentifier,
 		Category:             createPostMsg.Category,
-		Metadata:             data,
+		Metadata:             datatypes.JSON(createPostMsg.Metadata),
 		UserReactions:        datatypes.JSON([]byte("{}")),
 		AuthorId:             h.config.Network.UserID(execMsg.Sender),
 		CreatedAt:            createdAt.Unix(),
 		IsBot:                isBot,
 		PremiumLevel:         premium,
+		Lat:                  lat,
+		Lng:                  lng,
+		LatInt:               int(lat),
+		LngInt:               int(lng),
 	}
 
 	if err := h.db.Create(&post).Error; err != nil {
