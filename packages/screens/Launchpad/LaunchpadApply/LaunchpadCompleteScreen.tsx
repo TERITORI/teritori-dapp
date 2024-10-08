@@ -92,11 +92,6 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
   const onPressComplete = () =>
     assetsMetadatasForm.handleSubmit(onValid, onInvalid)();
 
-  console.log(
-    "assetsMetadatasForm.getValues()",
-    assetsMetadatasForm.getValues(),
-  );
-
   return (
     <ScreenContainer
       fullWidth

@@ -3,15 +3,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { SafeAreaView, TouchableOpacity, View } from "react-native";
 
+import { AssetsAndMetadataIssue } from "./AssetsAndMetadataIssue";
 import { MetadataUpdateModal } from "./MetadataUpdateModal";
 
-import {AssetsAndMetadataIssue} from "./AssetsAndMetadataIssue"
 import trashSVG from "@/assets/icons/trash.svg";
 import { BrandText } from "@/components/BrandText";
 import { SelectedFilesPreview } from "@/components/FilePreview/SelectedFilesPreview/SelectedFilesPreview";
 import { SVG } from "@/components/SVG";
-import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { FileUploaderSmall } from "@/components/inputs/FileUploaderSmall";
+import { FileUploaderSmallHandle } from "@/components/inputs/FileUploaderSmall/FileUploaderSmall.type";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
@@ -22,14 +22,8 @@ import {
   NUMBERS_REGEXP,
   URL_REGEX,
 } from "@/utils/regex";
-import {
-  errorColor,
-  neutral17,
-  neutral33,
-  neutral77,
-  warningColor,
-} from "@/utils/style/colors";
-import { fontSemibold13, fontSemibold14 } from "@/utils/style/fonts";
+import { errorColor, neutral33 } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { pluralOrNot } from "@/utils/text";
 import { LocalFileData } from "@/utils/types/files";
@@ -38,7 +32,6 @@ import {
   CollectionAssetsMetadataFormValues,
   CollectionAssetsMetadatasFormValues,
 } from "@/utils/types/launchpad";
-import { FileUploaderSmallHandle, FileUploaderSmallProps } from "@/components/inputs/FileUploaderSmall/FileUploaderSmall.type";
 
 export const AssetsTab: React.FC = () => {
   const isMobile = useIsMobile();
@@ -57,9 +50,9 @@ export const AssetsTab: React.FC = () => {
     string[][]
   >([]);
 
-  const attributesUploaderRef = useRef<FileUploaderSmallHandle>(null)
-  const assetsUploaderRef = useRef<FileUploaderSmallHandle>(null)
-  const imagesUploaderRef = useRef<FileUploaderSmallHandle>(null)
+  const attributesUploaderRef = useRef<FileUploaderSmallHandle>(null);
+  const assetsUploaderRef = useRef<FileUploaderSmallHandle>(null);
+  const imagesUploaderRef = useRef<FileUploaderSmallHandle>(null);
 
   const [metadataUpdateModalVisible, setMedataUpdateModalVisible] =
     useState(false);
@@ -72,19 +65,19 @@ export const AssetsTab: React.FC = () => {
     }[]
   >([]);
   const [assetsIssues, setAssetsIssues] = useState<
-  {
-    title: string;
-    message: string;
-    type: "error" | "warning";
-  }[]
->([]);
-const [imagesIssues, setImagesIssues] = useState<
-{
-  title: string;
-  message: string;
-  type: "error" | "warning";
-}[]
->([]);
+    {
+      title: string;
+      message: string;
+      type: "error" | "warning";
+    }[]
+  >([]);
+  const [imagesIssues, setImagesIssues] = useState<
+    {
+      title: string;
+      message: string;
+      type: "error" | "warning";
+    }[]
+  >([]);
 
   const attributesIdsSeparator = ",";
   // Assets columns
@@ -103,23 +96,29 @@ const [imagesIssues, setImagesIssues] = useState<
     setAssetsIssues([]);
     setAttributesIssues([]);
     setImagesIssues([]);
-  }
+  };
   // We keep showing only the warnings if a image or mapping file is selected without error
   const resetIssuesErrors = () => {
-    setAttributesIssues(issues => issues.filter(issue => issue.type !== "error"))
-    setAssetsIssues(issues => issues.filter(issue => issue.type !== "error"))
-    setImagesIssues(issues => issues.filter(issue => issue.type !== "error"))
-  }
+    setAttributesIssues((issues) =>
+      issues.filter((issue) => issue.type !== "error"),
+    );
+    setAssetsIssues((issues) =>
+      issues.filter((issue) => issue.type !== "error"),
+    );
+    setImagesIssues((issues) =>
+      issues.filter((issue) => issue.type !== "error"),
+    );
+  };
 
   const resetAll = () => {
     setAssetsMappingDataRows([]);
     setAttributesMappingDataRows([]);
     assetsMetadatasForm.setValue("assetsMetadatas", []);
-    resetAllIssues()
-    attributesUploaderRef.current?.resetFiles()
-    assetsUploaderRef.current?.resetFiles()
-    imagesUploaderRef.current?.resetFiles()
-  }
+    resetAllIssues();
+    attributesUploaderRef.current?.resetFiles();
+    assetsUploaderRef.current?.resetFiles();
+    imagesUploaderRef.current?.resetFiles();
+  };
 
   // We ignore the first row since it's the table headings
   // We ignore unwanted empty lines from the CSV
@@ -129,24 +128,25 @@ const [imagesIssues, setImagesIssues] = useState<
     );
   // Converts attributes ids as string to array of ids
   const cleanAssetAttributesIds = (ids?: string) =>
-    ids?.split(attributesIdsSeparator)
-    .map((id) => id.trim())
-    .filter((id) => NUMBERS_COMMA_SEPARATOR_REGEXP.test(id)) || []
+    ids
+      ?.split(attributesIdsSeparator)
+      .map((id) => id.trim())
+      .filter((id) => NUMBERS_COMMA_SEPARATOR_REGEXP.test(id)) || [];
 
   // On remove image manually
   const onRemoveImage = (index: number) => {
-    remove(index)
-  }
+    remove(index);
+  };
   // If all images are removed, we clear the images issues
   useEffect(() => {
-    if(!fields.length) {
-      setImagesIssues([])
+    if (!fields.length) {
+      setImagesIssues([]);
     }
-  }, [fields.length])
+  }, [fields.length]);
 
   // On upload attributes CSV mapping file
   const onUploadAttributesMapingFile = async (files: LocalFileData[]) => {
-    resetAllIssues()
+    resetAllIssues();
     setAssetsMappingDataRows([]);
     assetsMetadatasForm.setValue("assetsMetadatas", []);
 
@@ -293,11 +293,11 @@ const [imagesIssues, setImagesIssues] = useState<
 
   // On upload assets CSV mapping file
   const onUploadAssetsMappingFile = async (files: LocalFileData[]) => {
-    resetIssuesErrors()
-    setAssetsIssues([])
-    setImagesIssues([])
+    resetIssuesErrors();
+    setAssetsIssues([]);
+    setImagesIssues([]);
     assetsMetadatasForm.setValue("assetsMetadatas", []);
-    imagesUploaderRef.current?.resetFiles()
+    imagesUploaderRef.current?.resetFiles();
 
     try {
       await parse<string[]>(files[0].file, {
@@ -375,8 +375,10 @@ const [imagesIssues, setImagesIssues] = useState<
                 wrongUrlsRowsInAssets.push(assetDataRow);
               }
               // Warning if unknow attributes ids in asset (No incidence)
-              const assetAttributesIds = cleanAssetAttributesIds(assetDataRow[attributesColIndex])
-                let nbIdsFound = 0;
+              const assetAttributesIds = cleanAssetAttributesIds(
+                assetDataRow[attributesColIndex],
+              );
+              let nbIdsFound = 0;
               assetAttributesIds.forEach((id) => {
                 attributesDataRows.forEach((attributeDataRow) => {
                   if (id === attributeDataRow[idColIndex]?.trim()) {
@@ -482,8 +484,8 @@ const [imagesIssues, setImagesIssues] = useState<
   const onUploadImages = (images: LocalFileData[]) => {
     if (!assetsMappingDataRows.length || !attributesMappingDataRows.length)
       return;
-    resetIssuesErrors()
-    setImagesIssues([])
+    resetIssuesErrors();
+    setImagesIssues([]);
 
     const collectionAssetsMetadatas: CollectionAssetsMetadataFormValues[] = [];
 
@@ -494,9 +496,7 @@ const [imagesIssues, setImagesIssues] = useState<
         // --- Mapping attributes
         const mappedAttributes: CollectionAssetsAttributeFormValues[] = [];
         const assetAttributesIds = [
-          ...new Set(
-            cleanAssetAttributesIds(assetDataRow[attributesColIndex]),
-          ),
+          ...new Set(cleanAssetAttributesIds(assetDataRow[attributesColIndex])),
         ]; // We ignore duplicate attributes ids from assets
         assetAttributesIds.forEach((assetAttributeId) => {
           attributesMappingDataRows.forEach(
@@ -567,16 +567,33 @@ const [imagesIssues, setImagesIssues] = useState<
     >
       {/* ===== Issues */}
       {attributesIssues.map((issue, index) => (
-        <AssetsAndMetadataIssue key={index} issue={issue} 
-        removeIssue={() => setAttributesIssues((issues) => issues.filter((_, i) => i !== index))}/>
+        <AssetsAndMetadataIssue
+          key={index}
+          issue={issue}
+          removeIssue={() =>
+            setAttributesIssues((issues) =>
+              issues.filter((_, i) => i !== index),
+            )
+          }
+        />
       ))}
-            {assetsIssues.map((issue, index) => (
-        <AssetsAndMetadataIssue  key={index} issue={issue} 
-        removeIssue={() => setAssetsIssues((issues) => issues.filter((_, i) => i !== index))}/>
+      {assetsIssues.map((issue, index) => (
+        <AssetsAndMetadataIssue
+          key={index}
+          issue={issue}
+          removeIssue={() =>
+            setAssetsIssues((issues) => issues.filter((_, i) => i !== index))
+          }
+        />
       ))}
-            {imagesIssues.map((issue, index) => (
-        <AssetsAndMetadataIssue  key={index} issue={issue} 
-        removeIssue={() => setImagesIssues((issues) => issues.filter((_, i) => i !== index))}/>
+      {imagesIssues.map((issue, index) => (
+        <AssetsAndMetadataIssue
+          key={index}
+          issue={issue}
+          removeIssue={() =>
+            setImagesIssues((issues) => issues.filter((_, i) => i !== index))
+          }
+        />
       ))}
 
       <View
@@ -613,7 +630,6 @@ const [imagesIssues, setImagesIssues] = useState<
                 mimeTypes={TXT_CSV_MIME_TYPES}
                 boxStyle={{ minHeight: 40 }}
                 ref={assetsUploaderRef}
-                // cleaner={!attributesMappingDataRows.length}
               />
 
               <SpacerColumn size={2} />
@@ -627,7 +643,6 @@ const [imagesIssues, setImagesIssues] = useState<
                 boxStyle={{ minHeight: 40 }}
                 disabled={!attributesMappingDataRows.length}
                 ref={attributesUploaderRef}
-                // cleaner={!assetsMappingDataRows.length}
               />
 
               <SpacerColumn size={2} />
@@ -643,7 +658,6 @@ const [imagesIssues, setImagesIssues] = useState<
                 mimeTypes={IMAGE_MIME_TYPES}
                 multiple
                 ref={imagesUploaderRef}
-                // cleaner={!fields.length}
               />
 
               {(!!fields.length ||

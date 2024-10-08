@@ -103,12 +103,14 @@ export const useCompleteCollection = () => {
               return;
             }
             if (!assetMetadata.attributes.length) return;
-            const attributes: Trait[] = assetMetadata.attributes.map(attribute => {
-              return {
-                value: attribute.value,
-                traitType: attribute.type
-              }
-            })
+            const attributes: Trait[] = assetMetadata.attributes.map(
+              (attribute) => {
+                return {
+                  value: attribute.value,
+                  traitType: attribute.type,
+                };
+              },
+            );
 
             metadatas.push({
               image: image.hash,
