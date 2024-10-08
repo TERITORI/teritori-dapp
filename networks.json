@@ -9226,7 +9226,7 @@
   {
     "id": "polygon",
     "kind": "Ethereum",
-    "displayName": "Polygon",
+    "displayName": "Polygon Mainnet",
     "icon": "polygon.svg",
     "features": [
       "RiotP2E"
@@ -9234,10 +9234,10 @@
     "currencies": [
       {
         "denom": "0x0000000000000000000000000000000000000000",
-        "displayName": "MATIC",
+        "displayName": "POL",
         "decimals": 18,
         "variant": "ethereum",
-        "coingeckoId": "matic",
+        "coingeckoId": "pol-ex-matic",
         "icon": "polygon.svg",
         "kind": "native",
         "color": "#232731"
