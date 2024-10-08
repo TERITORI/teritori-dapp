@@ -1,7 +1,7 @@
-import React, { FC, SyntheticEvent, useRef, useState } from "react";
+import React, { FC, forwardRef, SyntheticEvent, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { View } from "react-native";
 
-import { FileUploaderSmallProps } from "./FileUploaderSmall.type";
+import { FileUploaderSmallHandle, FileUploaderSmallProps } from "./FileUploaderSmall.type";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
@@ -21,7 +21,7 @@ import { SpacerRow } from "@/components/spacer";
 import { pluralOrNot } from "@/utils/text";
 import { LocalFileData } from "@/utils/types/files";
 
-export const FileUploaderSmall: FC<FileUploaderSmallProps> = ({
+export const FileUploaderSmall = forwardRef<FileUploaderSmallHandle, FileUploaderSmallProps>(({
   label,
   style,
   onUpload,
@@ -35,11 +35,20 @@ export const FileUploaderSmall: FC<FileUploaderSmallProps> = ({
   imageToShow,
   onPressDelete,
   disabled,
-}) => {
+}, forwardRef) => {
   const { setToast } = useFeedbacks();
-  const hiddenFileInput = useRef<HTMLInputElement>(null);
+  const hiddenFileInputRef = useRef<HTMLInputElement>(null);
   const [hovered, setHovered] = useState(false);
   const [addedFiles, setAddedFiles] = useState<LocalFileData[]>([]);
+
+  useImperativeHandle(forwardRef, () => ({
+    resetFiles: () => {
+      if (hiddenFileInputRef.current) {
+        hiddenFileInputRef.current.value = ""
+        setAddedFiles([])
+      }
+    }
+  }));
 
   const handleFiles = async (files: File[]) => {
     const _files = multiple ? files : [files[0]];
@@ -70,6 +79,7 @@ export const FileUploaderSmall: FC<FileUploaderSmallProps> = ({
   };
 
   const handleChange = async (event: SyntheticEvent) => {
+    console.log('hgubiu')
     setIsLoading?.(true);
     const targetEvent = event.target as HTMLInputElement;
 
@@ -79,13 +89,13 @@ export const FileUploaderSmall: FC<FileUploaderSmallProps> = ({
     setIsLoading?.(false);
   };
   const handleClick = () => {
-    hiddenFileInput?.current?.click?.();
+    hiddenFileInputRef?.current?.click?.();
   };
 
   const InputComponent = (
     <input
       type="file"
-      ref={hiddenFileInput}
+      ref={hiddenFileInputRef}
       style={{ display: "none", position: "absolute" }}
       onChange={handleChange}
       multiple={multiple}
@@ -179,4 +189,4 @@ export const FileUploaderSmall: FC<FileUploaderSmallProps> = ({
       {InputComponent}
     </CustomPressable>
   );
-};
+});

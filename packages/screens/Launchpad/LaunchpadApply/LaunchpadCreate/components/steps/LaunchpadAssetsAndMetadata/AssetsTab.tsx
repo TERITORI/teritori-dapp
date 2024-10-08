@@ -1,5 +1,5 @@
 import { parse } from "papaparse";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { SafeAreaView, TouchableOpacity, View } from "react-native";
 
@@ -39,6 +39,7 @@ import {
   CollectionAssetsMetadataFormValues,
   CollectionAssetsMetadatasFormValues,
 } from "@/utils/types/launchpad";
+import { FileUploaderSmallHandle, FileUploaderSmallProps } from "@/components/inputs/FileUploaderSmall/FileUploaderSmall.type";
 
 export const AssetsTab: React.FC = () => {
   const isMobile = useIsMobile();
@@ -56,6 +57,10 @@ export const AssetsTab: React.FC = () => {
   const [attributesMappingDataRows, setAttributesMappingDataRows] = useState<
     string[][]
   >([]);
+
+  const attributesUploaderRef = useRef<FileUploaderSmallHandle>(null)
+  const assetsUploaderRef = useRef<FileUploaderSmallHandle>(null)
+  const imagesUploaderRef = useRef<FileUploaderSmallHandle>(null)
 
   const [metadataUpdateModalVisible, setMedataUpdateModalVisible] =
     useState(false);
@@ -80,6 +85,16 @@ export const AssetsTab: React.FC = () => {
   const idColIndex = 0;
   const typeColIndex = 1;
   const valueColIndex = 2;
+
+  const resetAll = () => {
+    setAssetsMappingDataRows([]);
+    setAttributesMappingDataRows([]);
+    assetsMetadatasForm.setValue("assetsMetadatas", []);
+    setIssues([]);
+    attributesUploaderRef.current?.resetFiles()
+    assetsUploaderRef.current?.resetFiles()
+    imagesUploaderRef.current?.resetFiles()
+  }
 
   // We ignore the first row since it's the table headings
   // We ignore unwanted empty lines from the CSV
@@ -590,6 +605,7 @@ export const AssetsTab: React.FC = () => {
                 onUpload={onUploadAttributesMapingFile}
                 mimeTypes={TXT_CSV_MIME_TYPES}
                 boxStyle={{ minHeight: 40 }}
+                ref={assetsUploaderRef}
               />
 
               <SpacerColumn size={2} />
@@ -602,6 +618,7 @@ export const AssetsTab: React.FC = () => {
                 mimeTypes={TXT_CSV_MIME_TYPES}
                 boxStyle={{ minHeight: 40 }}
                 disabled={!attributesMappingDataRows.length}
+                ref={attributesUploaderRef}
               />
 
               <SpacerColumn size={2} />
@@ -616,11 +633,12 @@ export const AssetsTab: React.FC = () => {
                 onUpload={onUploadImages}
                 mimeTypes={IMAGE_MIME_TYPES}
                 multiple
+                ref={imagesUploaderRef}
               />
 
-              {(fields.length ||
-                assetsMappingDataRows.length ||
-                attributesMappingDataRows.length) && (
+              {(!!fields.length ||
+                !!assetsMappingDataRows.length ||
+                !!attributesMappingDataRows.length) && (
                 <>
                   <SpacerColumn size={2} />
                   <Separator />
@@ -636,12 +654,7 @@ export const AssetsTab: React.FC = () => {
                       borderWidth: 1,
                       borderColor: errorColor,
                     }}
-                    onPress={() => {
-                      setAssetsMappingDataRows([]);
-                      setAttributesMappingDataRows([]);
-                      assetsMetadatasForm.setValue("assetsMetadatas", []);
-                      setIssues([]);
-                    }}
+                    onPress={resetAll}
                   >
                     <SVG source={trashSVG} width={16} height={16} />
                     <SpacerRow size={1} />

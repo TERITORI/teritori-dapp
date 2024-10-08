@@ -19,4 +19,9 @@ export interface FileUploaderSmallProps {
   imageToShow?: LocalFileData;
   onPressDelete?: () => void;
   disabled?: boolean;
+  cleaner?: boolean;
+}
+
+export interface FileUploaderSmallHandle {
+  resetFiles: () => void;
 }
