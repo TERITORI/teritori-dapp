@@ -76,7 +76,7 @@ export const SocialMessageContent: React.FC<Props> = ({ post, isPreview }) => {
         {videoFiles?.map((file, index) => (
           <Fragment key={index}>
             <SpacerColumn size={2} />
-            <VideoView file={file} authorId={post.authorId} postId={post.id} />
+            <VideoView file={file} postId={post.id} />
           </Fragment>
         ))}
 
@@ -84,7 +84,6 @@ export const SocialMessageContent: React.FC<Props> = ({ post, isPreview }) => {
           <Fragment key={index}>
             {postMetadata.message && <SpacerColumn size={2} />}
             <AudioView
-              authorId={post.authorId}
               postId={post.id}
               duration={file.audioMetadata?.duration || 0}
               fileUrl={file.url}

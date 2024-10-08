@@ -10,12 +10,13 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { WalletStatusBox } from "@/components/WalletStatusBox";
-import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { TertiaryBox } from "@/components/boxes/TertiaryBox";
 import { FileUploader } from "@/components/fileUploader";
 import { Label, TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgressBar";
 import { RichText } from "@/components/socialFeed/RichText";
 import { PublishValues } from "@/components/socialFeed/RichText/RichText.type";
+import { MapModal } from "@/components/socialFeed/modals/MapModal/MapModal";
 import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
@@ -45,7 +46,11 @@ import {
 import { fontSemibold13, fontSemibold20 } from "@/utils/style/fonts";
 import { layout, screenContentMaxWidth } from "@/utils/style/layout";
 import { pluralOrNot } from "@/utils/text";
-import { NewArticleFormValues, PostCategory } from "@/utils/types/feed";
+import {
+  CustomLatLngExpression,
+  NewArticleFormValues,
+  PostCategory,
+} from "@/utils/types/feed";
 import { RemoteFileData } from "@/utils/types/files";
 
 //TODO: In mobile : Make ActionsContainer accessible (floating button ?)
@@ -74,7 +79,12 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     setTimeout(() => {
       setIsUploadLoading(false);
       setIsProgressBarShown(false);
-      setToastSuccess({ title: "Post submitted successfully.", message: "" });
+      setToast({
+        mode: "normal",
+        type: "success",
+        title: "Post submitted successfully.",
+        message: "",
+      });
       navigateBack();
       reset();
     }, 1000);
@@ -83,10 +93,11 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const { showNotEnoughFundsModal, showConnectWalletModal } =
     useWalletControl();
   const isLoading = isUploadLoading || isProcessing;
-  const { setToastSuccess, setToastError } = useFeedbacks();
+  const { setToast } = useFeedbacks();
   const navigation = useAppNavigation();
   const scrollViewRef = useRef<ScrollView>(null);
-
+  const [location, setLocation] = useState<CustomLatLngExpression>();
+  const [isMapShown, setIsMapShown] = useState(false);
   const {
     control,
     setValue,
@@ -167,7 +178,9 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       // If the user uploaded files, but they are not pinned to IPFS, it returns files with empty url, so this is an error.
       if (formValues.files?.length && !remoteFiles.find((file) => file.url)) {
         console.error("upload file err : Fail to pin to IPFS");
-        setToastError({
+        setToast({
+          mode: "normal",
+          type: "error",
           title: "File upload failed",
           message: "Fail to pin to IPFS, please try to Publish again",
         });
@@ -196,6 +209,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         mentions: values.mentions,
         hashtags: values.hashtags,
         message,
+        location,
       });
 
       await makePost(JSON.stringify(metadata));
@@ -203,7 +217,9 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       console.error("post submit error", err);
       setIsUploadLoading(false);
       setIsProgressBarShown(false);
-      setToastError({
+      setToast({
+        mode: "normal",
+        type: "error",
         title: "Something went wrong.",
         message: err instanceof Error ? err.message : `${err}`,
       });
@@ -251,9 +267,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         <WalletStatusBox />
         <SpacerColumn size={3} />
 
-        <LegacyTertiaryBox
-          fullWidth
-          mainContainerStyle={{
+        <TertiaryBox
+          style={{
             paddingVertical: layout.spacing_x1,
             paddingHorizontal: layout.spacing_x1_5,
             flexDirection: "row",
@@ -282,7 +297,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                 )} left`
               : `The cost for this Article is ${prettyPublishingFee}`}
           </BrandText>
-        </LegacyTertiaryBox>
+        </TertiaryBox>
 
         <FileUploader
           label="Thumbnail image"
@@ -382,6 +397,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                 onPublish={onPublish}
                 authorId={userId || ""}
                 postId=""
+                setIsMapShown={setIsMapShown}
+                hasLocation={!!location}
               />
             )}
           />
@@ -397,6 +414,16 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           </>
         )}
       </ScrollView>
+
+      {isMapShown && (
+        <MapModal
+          visible
+          onClose={() => setIsMapShown(false)}
+          setLocation={setLocation}
+          location={location}
+          postCategory={postCategory}
+        />
+      )}
     </ScreenContainer>
   );
 };

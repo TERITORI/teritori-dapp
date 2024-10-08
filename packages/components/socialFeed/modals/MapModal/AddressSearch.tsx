@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { Dispatch, FC, SetStateAction, useMemo } from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -7,22 +7,18 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { LatLng } from "react-native-leaflet-view";
 import { z } from "zod";
 
-import {
-  neutral77,
-  primaryColor,
-  secondaryColor,
-} from "../../../../utils/style/colors";
-import { fontSemibold13 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText";
 import { SVG } from "../../../SVG";
 import { TextInputCustom } from "../../../inputs/TextInputCustom";
 import { TextInputOutsideLabel } from "../../../inputs/TextInputOutsideLabel";
 
-import location from "@/assets/icons/location.svg";
-import { useDebounce } from "@/hooks/useDebounce";
+import locationRefinedSVG from "@/assets/icons/location-refined.svg";
+import { neutral77, neutralFF, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { CustomLatLngExpression } from "@/utils/types/feed";
 
 const zodAddressSearchResult = z.array(
   z.object({
@@ -36,35 +32,31 @@ interface AddressSearchProps {
   addressPlaceHolder: string;
   address: string;
   setAddress: Dispatch<SetStateAction<string>>;
-  setLocationSelected: Dispatch<SetStateAction<LatLng>>;
+  setLocationSelected: Dispatch<
+    SetStateAction<CustomLatLngExpression | undefined>
+  >;
   setAddressPlaceHolder: Dispatch<SetStateAction<string>>;
 }
 
-export const AddressSearch: React.FC<AddressSearchProps> = ({
+export const AddressSearch: FC<AddressSearchProps> = ({
   addressPlaceHolder,
   address,
   setAddress,
   setLocationSelected,
   setAddressPlaceHolder,
 }) => {
-  const debouncedAddress = useDebounce(address, 1500);
-
-  const { data, isLoading } = useQuery(
-    ["searchAddress", debouncedAddress],
-    async () => {
-      if (debouncedAddress.trim() === "") {
-        return [];
-      }
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${debouncedAddress}&format=json`,
-      );
-      if (!response.ok) {
-        throw new Error("Invalid HTTP status: " + response.status);
-      }
-      const data = zodAddressSearchResult.parse(await response.json());
-      return data;
-    },
-  );
+  const { data, isLoading } = useQuery(["searchAddress", address], async () => {
+    if (address.trim() === "") {
+      return [];
+    }
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${address}&format=json`,
+    );
+    if (!response.ok) {
+      throw new Error("Invalid HTTP status: " + response.status);
+    }
+    return zodAddressSearchResult.parse(await response.json());
+  });
 
   const results = useMemo(() => {
     if (!data) {
@@ -92,20 +84,17 @@ export const AddressSearch: React.FC<AddressSearchProps> = ({
           }}
           value={address}
         />
-        <View
-          style={[
-            locationContainer,
-            { paddingVertical: results.length || isLoading ? 20 : 0 },
-          ]}
-        >
+        <View style={locationContainerCStyle}>
           {isLoading ? (
-            <ActivityIndicator size="large" color={secondaryColor} />
+            <View style={{ margin: layout.spacing_x1 }}>
+              <ActivityIndicator size="large" color={secondaryColor} />
+            </View>
           ) : (
             <ScrollView showsVerticalScrollIndicator>
               {results.map((item, index) => (
                 <TouchableOpacity
-                  key={index.toString()}
-                  style={[locationItem]}
+                  key={index}
+                  style={locationItemCStyle}
                   onPress={() => {
                     setLocationSelected([
                       parseFloat(item.lat),
@@ -115,12 +104,19 @@ export const AddressSearch: React.FC<AddressSearchProps> = ({
                     setAddress("");
                   }}
                 >
-                  <View style={[button24]}>
+                  <View
+                    style={{
+                      height: 28,
+                      width: 32,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
                     <SVG
-                      source={location}
-                      height={24}
-                      width={24}
-                      color={primaryColor}
+                      source={locationRefinedSVG}
+                      height={20}
+                      width={20}
+                      color={neutralFF}
                     />
                   </View>
                   <BrandText style={[fontSemibold13]}>
@@ -137,26 +133,20 @@ export const AddressSearch: React.FC<AddressSearchProps> = ({
 };
 
 // AddressSearch
-const locationContainer: ViewStyle = {
+const locationContainerCStyle: ViewStyle = {
   flexDirection: "column",
   position: "absolute",
   top: 50,
   left: 0,
   width: "100%",
-  maxHeight: 200,
+  maxHeight: 600,
   backgroundColor: "rgba(0,0,0,0.8)",
 };
 
-const locationItem: ViewStyle = {
+const locationItemCStyle: ViewStyle = {
   flexDirection: "row",
+  alignItems: "center",
   borderBottomColor: neutral77,
   borderBottomWidth: 0.5,
-  paddingVertical: 5,
-};
-
-const button24: ViewStyle = {
-  height: 24,
-  width: 24,
-  alignItems: "center",
-  justifyContent: "center",
+  paddingVertical: layout.spacing_x0_75,
 };

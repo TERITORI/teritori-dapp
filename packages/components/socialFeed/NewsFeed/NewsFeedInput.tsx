@@ -7,7 +7,6 @@ import {
   ViewStyle,
   useWindowDimensions,
 } from "react-native";
-import { LatLng } from "react-native-leaflet-view";
 import Animated, { useSharedValue } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
@@ -33,13 +32,12 @@ import { MapModal } from "../modals/MapModal/MapModal";
 
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import ToggleButton from "@/components/buttons/ToggleButton";
+import { LocationButton } from "@/components/socialFeed/NewsFeed/LocationButton";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
 import { useAppMode } from "@/hooks/useAppMode";
-import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { useIpfs } from "@/hooks/useIpfs";
-import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
@@ -66,6 +64,7 @@ import {
   neutral17,
   neutral22,
   neutral77,
+  neutralFF,
   primaryColor,
   primaryTextColor,
   secondaryColor,
@@ -77,13 +76,13 @@ import {
   fontSemibold13,
   fontSemibold16,
 } from "@/utils/style/fonts";
-import {
-  RESPONSIVE_BREAKPOINT_S,
-  SOCIAL_FEED_BREAKPOINT_M,
-  layout,
-} from "@/utils/style/layout";
+import { RESPONSIVE_BREAKPOINT_S, layout } from "@/utils/style/layout";
 import { replaceBetweenString } from "@/utils/text";
-import { NewPostFormValues, ReplyToType } from "@/utils/types/feed";
+import {
+  CustomLatLngExpression,
+  NewPostFormValues,
+  ReplyToType,
+} from "@/utils/types/feed";
 import { LocalFileData, RemoteFileData } from "@/utils/types/files";
 
 interface NewsFeedInputProps {
@@ -109,7 +108,8 @@ export interface NewsFeedInputHandle {
 
 const CHARS_LIMIT_WARNING_MULTIPLIER = 0.92;
 const MAX_IMAGES = 4;
-const BREAKPOINT_S = 559;
+const BREAKPOINT_S = 690;
+const BREAKPOINT_M = 930;
 
 export const NewsFeedInput = React.forwardRef<
   NewsFeedInputHandle,
@@ -133,7 +133,6 @@ export const NewsFeedInput = React.forwardRef<
     const [appMode] = useAppMode();
     const { width: windowWidth } = useWindowDimensions();
     const { width } = useMaxResolution();
-    const isMobile = useIsMobile();
     const [viewWidth, setViewWidth] = useState(0);
     const { uploadFilesToPinata, ipfsUploadProgress } = useIpfs();
     const inputMaxHeight = 400;
@@ -148,13 +147,8 @@ export const NewsFeedInput = React.forwardRef<
     const [isUploadLoading, setIsUploadLoading] = useState(false);
     const [isProgressBarShown, setIsProgressBarShown] = useState(false);
     const [premium, setPremium] = useState(false);
-    const [isShowMap, setShowMap] = useState(false);
-    const [locationSelected, setLocationSelected] = useState<LatLng>([
-      48.8566, 2.3522,
-    ]);
-    const [description, setDescription] = useState("");
-    const [developerMode] = useDeveloperMode();
-
+    const [isMapShown, setIsMapShown] = useState(false);
+    const [location, setLocation] = useState<CustomLatLngExpression>();
     const { setValue, handleSubmit, reset, watch } = useForm<NewPostFormValues>(
       {
         defaultValues: {
@@ -200,6 +194,12 @@ export const NewsFeedInput = React.forwardRef<
       start: 10,
       end: 10,
     });
+    const isPublishDisabled =
+      (!formValues?.message &&
+        !formValues?.files?.length &&
+        !formValues?.gifs?.length) ||
+      formValues?.message.length > SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
+      !selectedWallet;
 
     const processSubmit = async () => {
       const action = premium ? "Publish a Premium Post" : "Publish a Post";
@@ -287,7 +287,7 @@ export const NewsFeedInput = React.forwardRef<
           mentions,
           gifs: formValues?.gifs || [],
           premium,
-          location: locationSelected,
+          location,
         });
 
         await makePost(
@@ -343,15 +343,13 @@ export const NewsFeedInput = React.forwardRef<
         style={[{ width }, style]}
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       >
-        {isShowMap && (
+        {isMapShown && (
           <MapModal
-            handleSubmit={() => handleSubmit(processSubmit)()}
             visible
-            onClose={() => setShowMap(false)}
-            locationSelected={locationSelected}
-            setLocationSelected={setLocationSelected}
-            description={description}
-            setDescription={setDescription}
+            onClose={() => setIsMapShown(false)}
+            setLocation={setLocation}
+            location={location}
+            postCategory={postCategory}
           />
         )}
         <View style={{ backgroundColor: neutral22, zIndex: 9 }}>
@@ -365,12 +363,22 @@ export const NewsFeedInput = React.forwardRef<
               onPress={focusInput}
               style={{
                 width: "100%",
-                paddingRight: isMobile
-                  ? layout.spacing_x1_5
-                  : layout.spacing_x2_5,
-                paddingLeft: isMobile ? layout.spacing_x1_5 : layout.spacing_x3,
-                paddingTop: isMobile ? layout.spacing_x1_5 : layout.spacing_x3,
-                paddingBottom: layout.spacing_x1_5,
+                paddingRight:
+                  windowWidth < BREAKPOINT_M
+                    ? layout.spacing_x1_5
+                    : layout.spacing_x2_5,
+                paddingLeft:
+                  windowWidth < BREAKPOINT_M
+                    ? layout.spacing_x1_5
+                    : layout.spacing_x3,
+                paddingTop:
+                  windowWidth < BREAKPOINT_M
+                    ? layout.spacing_x2
+                    : layout.spacing_x3,
+                paddingBottom:
+                  windowWidth < BREAKPOINT_M
+                    ? layout.spacing_x1
+                    : layout.spacing_x1_5,
               }}
             >
               <FlexRow style={{ marginTop: layout.spacing_x1 }}>
@@ -483,21 +491,21 @@ export const NewsFeedInput = React.forwardRef<
           style={{
             backgroundColor: appMode === "mini" ? neutral00 : neutral17,
 
-            paddingVertical: isMobile
-              ? layout.spacing_x1_5
-              : layout.spacing_x1_5,
-            paddingHorizontal: isMobile
-              ? layout.spacing_x1_5
-              : layout.spacing_x2_5,
+            paddingVertical:
+              windowWidth < BREAKPOINT_M
+                ? layout.spacing_x1_5
+                : layout.spacing_x1_5,
+            paddingHorizontal:
+              windowWidth < BREAKPOINT_M
+                ? layout.spacing_x1_5
+                : layout.spacing_x2_5,
             borderRadius: 8,
           }}
         >
           <View
             style={{
-              flexDirection:
-                viewWidth < SOCIAL_FEED_BREAKPOINT_M ? "column" : "row",
-              alignItems:
-                viewWidth < SOCIAL_FEED_BREAKPOINT_M ? "flex-end" : "center",
+              flexDirection: viewWidth < BREAKPOINT_M ? "column" : "row",
+              alignItems: viewWidth < BREAKPOINT_M ? "flex-end" : "center",
               justifyContent: "space-between",
             }}
           >
@@ -507,7 +515,7 @@ export const NewsFeedInput = React.forwardRef<
                   flexDirection: "row",
                   alignItems: "center",
                 },
-                viewWidth < SOCIAL_FEED_BREAKPOINT_M && {
+                viewWidth < BREAKPOINT_M && {
                   alignSelf: "flex-start",
                 },
               ]}
@@ -543,22 +551,48 @@ export const NewsFeedInput = React.forwardRef<
             >
               {viewWidth < BREAKPOINT_S && <SpacerColumn size={1.5} />}
 
-              {networkHasPremiumFeed && (
-                <>
-                  <PremiumPostToggle
-                    premium={premium}
-                    setPremium={setPremium}
-                  />
-                  <View
-                    style={{
-                      height: layout.spacing_x2,
-                      width: 1,
-                      backgroundColor: "#515151",
-                      marginHorizontal: layout.spacing_x2,
-                    }}
-                  />
-                </>
-              )}
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                {networkHasPremiumFeed && (
+                  <>
+                    <PremiumPostToggle
+                      premium={premium}
+                      setPremium={setPremium}
+                    />
+                    <View
+                      style={{
+                        height: layout.spacing_x2,
+                        width: 1,
+                        backgroundColor: "#515151",
+                        marginHorizontal: layout.spacing_x2,
+                      }}
+                    />
+                  </>
+                )}
+
+                {type === "post" && (
+                  <>
+                    <LocationButton
+                      onPress={() => setIsMapShown(true)}
+                      stroke={!location ? neutralFF : undefined}
+                      color={!location ? undefined : neutralFF}
+                    />
+                    {viewWidth >= BREAKPOINT_S && (
+                      <View
+                        style={{
+                          height: layout.spacing_x2,
+                          width: 1,
+                          backgroundColor: "#515151",
+                          marginHorizontal: layout.spacing_x2,
+                        }}
+                      />
+                    )}
+                  </>
+                )}
+              </View>
+              {viewWidth < BREAKPOINT_S &&
+                (networkHasPremiumFeed || type === "post") && (
+                  <SpacerColumn size={1.5} />
+                )}
 
               <View
                 style={{
@@ -700,14 +734,7 @@ export const NewsFeedInput = React.forwardRef<
                 )}
 
                 <PrimaryButton
-                  disabled={
-                    (!formValues?.message &&
-                      !formValues?.files?.length &&
-                      !formValues?.gifs?.length) ||
-                    formValues?.message.length >
-                      SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT ||
-                    !selectedWallet
-                  }
+                  disabled={isPublishDisabled}
                   isLoading={isLoading}
                   loader
                   size="M"
@@ -719,11 +746,7 @@ export const NewsFeedInput = React.forwardRef<
                         : "Publish"
                   }
                   onPress={() => {
-                    if (developerMode) {
-                      setShowMap(true);
-                    } else {
-                      handleSubmit(processSubmit)();
-                    }
+                    handleSubmit(processSubmit)();
                   }}
                 />
               </View>

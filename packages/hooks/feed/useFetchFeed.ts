@@ -7,8 +7,8 @@ import useSelectedWallet from "../useSelectedWallet";
 import {
   AggregatedPost,
   Post,
-  PostsRequest,
   PostsWithLocationRequest,
+  PostsRequest,
 } from "@/api/feed/v1/feed";
 import {
   GnoNetworkInfo,

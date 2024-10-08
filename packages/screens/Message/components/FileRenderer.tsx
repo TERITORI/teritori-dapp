@@ -33,9 +33,7 @@ export const FileRenderer = ({ files, maxWidth, waveFormMaxWidth }: Props) => {
     <View style={{ width: maxWidth || "100%" }}>
       {!!imageFiles?.length && <ImagesViews files={imageFiles || []} />}
 
-      {videoFiles?.map((file, index) => (
-        <VideoView key={index} file={file} authorId="" />
-      ))}
+      {videoFiles?.map((file, index) => <VideoView key={index} file={file} />)}
     </View>
   );
 };

@@ -178,6 +178,7 @@ export const MiniArticlePostDetails = ({ post, refetchPost }: Props) => {
                 <SocialCardHeader
                   authorId={localPost.authorId}
                   createdAt={post.createdAt}
+                  postWithLocationId={articleMetadata?.location && localPost.id}
                 />
 
                 {/*========== Article content */}
