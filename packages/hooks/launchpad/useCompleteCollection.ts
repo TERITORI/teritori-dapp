@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useSelector } from "react-redux";
 
-import { Metadata } from "@/api/launchpad/v1/launchpad";
+import { Metadata, Trait } from "@/api/launchpad/v1/launchpad";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { NftLaunchpadClient } from "@/contracts-clients/nft-launchpad";
 import { useIpfs } from "@/hooks/useIpfs";
@@ -102,6 +102,13 @@ export const useCompleteCollection = () => {
               });
               return;
             }
+            if (!assetMetadata.attributes.length) return;
+            const attributes: Trait[] = assetMetadata.attributes.map(attribute => {
+              return {
+                value: attribute.value,
+                traitType: attribute.type
+              }
+            })
 
             metadatas.push({
               image: image.hash,
@@ -110,7 +117,7 @@ export const useCompleteCollection = () => {
               description: assetMetadata.description,
               name: assetMetadata.name,
               youtubeUrl: assetMetadata.youtubeUrl,
-              attributes: [], //TODO: attributes etc
+              attributes,
               backgroundColor: "",
               animationUrl: "",
               royaltyPercentage: 5,
@@ -132,6 +139,12 @@ export const useCompleteCollection = () => {
         await nftLaunchpadContractClient.updateMerkleRoot({
           collectionId,
           merkleRoot,
+        });
+
+        setToast({
+          mode: "normal",
+          type: "success",
+          title: "Collection completed",
         });
       } catch (e: any) {
         console.error(
