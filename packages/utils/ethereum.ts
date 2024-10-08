@@ -10,7 +10,10 @@ import {
   parseNetworkObjectId,
   parseNftId,
   NetworkKind,
+  NativeCurrencyInfo,
 } from "../networks";
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 // this is used to block all calls to the provider getter while we wait for network switch auth
 const proms: {
@@ -103,6 +106,39 @@ export const getEthereumProvider = async (
   return alchemyProviders[cacheKey];
 };
 
+const addEthereumChain = async (network: EthereumNetworkInfo) => {
+  try {
+    const ethereum = (window as any).ethereum;
+    if (!ethereum) {
+      return null;
+    }
+
+    const currency = network.currencies[0] as NativeCurrencyInfo;
+
+    await ethereum.request({
+      method: "wallet_addEthereumChain",
+      params: [
+        {
+          chainId: "0x" + network.chainId.toString(16),
+          chainName: network.displayName,
+          rpcUrls: [network.endpoint],
+          nativeCurrency: {
+            name: currency.displayName,
+            symbol: currency.displayName,
+            decimals: currency.decimals,
+          },
+          blockExplorerUrls: [network.txExplorer],
+        },
+      ],
+    });
+
+    return true;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
 export const getMetaMaskEthereumSigner = async (
   network: EthereumNetworkInfo | undefined,
   address: string | undefined,
@@ -111,8 +147,19 @@ export const getMetaMaskEthereumSigner = async (
     return null;
   }
 
-  const provider = await getMetaMaskEthereumProvider(network.chainId);
-  if (!provider) return null;
+  let provider = await getMetaMaskEthereumProvider(network.chainId);
+
+  // If unable to switch to expected chain then try to
+  // add that chain to metamask then retry to get provider again
+  if (!provider) {
+    const isOk = await addEthereumChain(network);
+    if (!isOk) return null;
+
+    await sleep(1000);
+    provider = await getMetaMaskEthereumProvider(network.chainId);
+
+    if (!provider) return null;
+  }
 
   return provider.getSigner(address);
 };
