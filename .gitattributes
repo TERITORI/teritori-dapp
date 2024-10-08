@@ -9,3 +9,5 @@
 /packages/evm-contracts-clients/**/*.ts linguist-generated
 /.expo-shared/assets.json linguist-generated
 *.gno linguist-language=Go
+/rust/**/schema/raw/**/*.json linguist-generated
+/rust/apipb/src/**/*.rs linguist-generated

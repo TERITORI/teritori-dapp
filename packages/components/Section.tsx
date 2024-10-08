@@ -8,7 +8,7 @@ import { fontSemibold20 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 
 export const Section: React.FC<{
-  title: string;
+  title?: string;
   subtitle?: string;
   topRightChild?: ReactNode;
   children: ReactNode;
@@ -36,16 +36,18 @@ export const Section: React.FC<{
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <BrandText
-              style={{
-                color: "#FFFFFF",
-                fontSize,
-                letterSpacing: -(fontSize * 0.04),
-                flex: 1,
-              }}
-            >
-              {title}
-            </BrandText>
+            {!!title && (
+              <BrandText
+                style={{
+                  color: "#FFFFFF",
+                  fontSize,
+                  letterSpacing: -(fontSize * 0.04),
+                  flex: 1,
+                }}
+              >
+                {title}
+              </BrandText>
+            )}
 
             {subtitle ? (
               <BrandText

@@ -1,13 +1,12 @@
 import { OfflineSigner } from "@cosmjs/proto-signing";
 import axios from "axios";
-import { bech32 } from "bech32";
 import { program } from "commander";
 import fs from "fs";
-import { cloneDeep } from "lodash";
 import os from "os";
 import path from "path";
 
 import {
+  initDeploy,
   instantiateContract,
   instantiateNameService,
   registerTNSHandle,
@@ -15,8 +14,7 @@ import {
   testTeritoriEcosystem,
 } from "./deployLib";
 
-import { CosmosNetworkInfo, getCosmosNetwork } from "@/networks";
-import { execPromise } from "@/scripts/lib";
+import { CosmosNetworkInfo } from "@/networks";
 
 /**
  * Firstly, store name-service WASM binaries and instantiate name-service contract, if not present on the network
@@ -46,24 +44,7 @@ export const deployDA0DA0 = async (
   const daoPreProposeSingleWWasmFileName = "dao_pre_propose_single.wasm";
   const daoProposalSingleWasmFileName = "dao_proposal_single.wasm";
 
-  const network = cloneDeep(getCosmosNetwork(networkId));
-  if (!network) {
-    console.error(`Cosmos network ${networkId} not found`);
-    process.exit(1);
-  }
-  console.log(`Deploying to ${network.displayName}`);
-
-  let walletAddr = (
-    await execPromise(
-      `${opts.binaryPath} keys show --keyring-backend ${opts.keyringBackend || "test"} -a ${wallet} --home ${opts.home}`,
-      { encoding: "utf-8" },
-    )
-  ).stdout.trim();
-  if (walletAddr.startsWith("Successfully migrated")) {
-    walletAddr = walletAddr.substring(walletAddr.indexOf("\n")).trim();
-  }
-  bech32.decode(walletAddr);
-  console.log("Wallet address:", walletAddr);
+  const { network, walletAddr } = await initDeploy({ opts, networkId, wallet });
 
   if (!network.nameServiceContractAddress) {
     // ========= name-service

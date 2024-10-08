@@ -31,15 +31,16 @@ export type RootStackParamList = {
     id: string;
   };
   RiotersFooter: undefined;
-  AdministrationDashboard: undefined;
-  LaunchpadApplications: undefined;
-  ApplicationReview: undefined;
-  ReadyLaunchpadApplications: undefined;
-  AllProjectAdministrationDash: undefined;
 
   Launchpad: undefined;
   LaunchpadApply: undefined;
   LaunchpadCreate: undefined;
+  LaunchpadComplete: { id: string };
+  LaunchpadMyCollections: undefined;
+  LaunchpadAdministrationOverview: undefined;
+  LaunchpadApplications: undefined;
+  LaunchpadApplicationReview: { id: string };
+  LaunchpadReadyApplications: undefined;
 
   LaunchpadERC20: undefined;
   LaunchpadERC20Tokens?: { network?: string };
@@ -200,11 +201,6 @@ const navConfig: {
     GovernanceProposal: "governance/:id",
     UserPublicProfile: "user/:id/:tab?",
     RiotersFooter: "rioters-footer",
-    AdministrationDashboard: "launchpad/admin",
-    LaunchpadApplications: "launchpad/applications",
-    ApplicationReview: "launchpad/application-review",
-    ReadyLaunchpadApplications: "launchpad/ready-applications",
-    AllProjectAdministrationDash: "launchpad/all-projects",
 
     // === RiotGame
     RiotGame: "riot-game",
@@ -221,6 +217,12 @@ const navConfig: {
     Launchpad: "launchpad",
     LaunchpadApply: "launchpad/apply",
     LaunchpadCreate: "launchpad/create",
+    LaunchpadComplete: "launchpad/complete/:id",
+    LaunchpadMyCollections: "launchpad/my-collections",
+    LaunchpadAdministrationOverview: "launchpad/admin",
+    LaunchpadApplications: "launchpad/admin/applications",
+    LaunchpadApplicationReview: "launchpad/admin/review/:id",
+    LaunchpadReadyApplications: "launchpad/admin/ready-applications",
 
     // ==== Launchpad ERC20
     LaunchpadERC20: "launchpad-erc20",
