@@ -1,5 +1,5 @@
 import { parse } from "papaparse";
-import React, { useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { SafeAreaView, TouchableOpacity, View } from "react-native";
 
@@ -667,30 +667,7 @@ export const AssetsTab: React.FC = () => {
                   <SpacerColumn size={2} />
                   <Separator />
                   <SpacerColumn size={2} />
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: 32,
-                      paddingHorizontal: layout.spacing_x2,
-                      borderRadius: 999,
-                      borderWidth: 1,
-                      borderColor: errorColor,
-                    }}
-                    onPress={resetAll}
-                  >
-                    <SVG source={trashSVG} width={16} height={16} />
-                    <SpacerRow size={1} />
-                    <BrandText
-                      style={[
-                        fontSemibold14,
-                        { color: errorColor, lineHeight: layout.spacing_x2 },
-                      ]}
-                    >
-                      Remove all files
-                    </BrandText>
-                  </TouchableOpacity>
+                  <ResetAllButton onPress={resetAll} />
                 </>
               )}
             </View>
@@ -738,5 +715,36 @@ export const AssetsTab: React.FC = () => {
         )}
       </View>
     </SafeAreaView>
+  );
+};
+
+const ResetAllButton: FC<{
+  onPress: () => void;
+}> = ({ onPress }) => {
+  return (
+    <TouchableOpacity
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        height: 32,
+        paddingHorizontal: layout.spacing_x2,
+        borderRadius: 999,
+        borderWidth: 1,
+        borderColor: errorColor,
+      }}
+      onPress={onPress}
+    >
+      <SVG source={trashSVG} width={16} height={16} />
+      <SpacerRow size={1} />
+      <BrandText
+        style={[
+          fontSemibold14,
+          { color: errorColor, lineHeight: layout.spacing_x2 },
+        ]}
+      >
+        Remove all files
+      </BrandText>
+    </TouchableOpacity>
   );
 };
