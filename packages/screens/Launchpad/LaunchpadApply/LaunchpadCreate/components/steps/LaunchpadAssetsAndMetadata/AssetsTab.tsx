@@ -87,6 +87,11 @@ export const AssetsTab: React.FC = () => {
     array.filter(
       (dataRow, dataRowIndex) => dataRow[0] !== "" && dataRowIndex > 0,
     );
+  // Converts attributes ids as string to array of ids
+  const cleanAssetAttributesIds = (ids?: string) =>
+    ids?.split(attributesIdsSeparator)
+    .map((id) => id.trim())
+    .filter((id) => NUMBERS_COMMA_SEPARATOR_REGEXP.test(id)) || []
 
   // On upload attributes CSV mapping file
   const onUploadAttributesMapingFile = async (files: LocalFileData[]) => {
@@ -240,7 +245,7 @@ export const AssetsTab: React.FC = () => {
       await parse<string[]>(files[0].file, {
         complete: (parseResults) => {
           const assetsDataRows = parseResults.data;
-          const attributesDataRows = cleanDataRows(attributesMappingDataRows);
+          const attributesDataRows = attributesMappingDataRows; // attributesMappingDataRows is clean here
 
           // Controls CSV headings present on the first row.
           if (
@@ -312,14 +317,8 @@ export const AssetsTab: React.FC = () => {
                 wrongUrlsRowsInAssets.push(assetDataRow);
               }
               // Warning if unknow attributes ids in asset (No incidence)
-              const assetAttributesIds: string[] =
-                assetDataRow[attributesColIndex]
-                  ?.split(attributesIdsSeparator)
-                  .map((id) => id.trim())
-                  .filter((id) => NUMBERS_COMMA_SEPARATOR_REGEXP.test(id)) ||
-                []; // We clean attributes ids here because we already controlled "wrong attributes ids in asset" above
-
-              let nbIdsFound = 0;
+              const assetAttributesIds = cleanAssetAttributesIds(assetDataRow[attributesColIndex])
+                let nbIdsFound = 0;
               assetAttributesIds.forEach((id) => {
                 attributesDataRows.forEach((attributeDataRow) => {
                   if (id === attributeDataRow[idColIndex]?.trim()) {
@@ -436,7 +435,7 @@ export const AssetsTab: React.FC = () => {
         const mappedAttributes: CollectionAssetsAttributeFormValues[] = [];
         const assetAttributesIds = [
           ...new Set(
-            assetDataRow[attributesColIndex].split(attributesIdsSeparator),
+            cleanAssetAttributesIds(assetDataRow[attributesColIndex]),
           ),
         ]; // We ignore duplicate attributes ids from assets
         assetAttributesIds.forEach((assetAttributeId) => {
