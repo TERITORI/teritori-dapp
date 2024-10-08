@@ -1,13 +1,12 @@
 import { parse } from "papaparse";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { SafeAreaView, TouchableOpacity, View } from "react-native";
 
 import { MetadataUpdateModal } from "./MetadataUpdateModal";
 
-import crossSVG from "@/assets/icons/cross.svg";
+import {AssetsAndMetadataIssue} from "./AssetsAndMetadataIssue"
 import trashSVG from "@/assets/icons/trash.svg";
-import warningTriangleSVG from "@/assets/icons/warning-triangle.svg";
 import { BrandText } from "@/components/BrandText";
 import { SelectedFilesPreview } from "@/components/FilePreview/SelectedFilesPreview/SelectedFilesPreview";
 import { SVG } from "@/components/SVG";
@@ -65,13 +64,27 @@ export const AssetsTab: React.FC = () => {
   const [metadataUpdateModalVisible, setMedataUpdateModalVisible] =
     useState(false);
   const selectedElem = fields.find((_, index) => index === selectedElemIndex);
-  const [issues, setIssues] = useState<
+  const [attributesIssues, setAttributesIssues] = useState<
     {
       title: string;
       message: string;
       type: "error" | "warning";
     }[]
   >([]);
+  const [assetsIssues, setAssetsIssues] = useState<
+  {
+    title: string;
+    message: string;
+    type: "error" | "warning";
+  }[]
+>([]);
+const [imagesIssues, setImagesIssues] = useState<
+{
+  title: string;
+  message: string;
+  type: "error" | "warning";
+}[]
+>([]);
 
   const attributesIdsSeparator = ",";
   // Assets columns
@@ -86,11 +99,23 @@ export const AssetsTab: React.FC = () => {
   const typeColIndex = 1;
   const valueColIndex = 2;
 
+  const resetAllIssues = () => {
+    setAssetsIssues([]);
+    setAttributesIssues([]);
+    setImagesIssues([]);
+  }
+  // We keep showing only the warnings if a image or mapping file is selected without error
+  const resetIssuesErrors = () => {
+    setAttributesIssues(issues => issues.filter(issue => issue.type !== "error"))
+    setAssetsIssues(issues => issues.filter(issue => issue.type !== "error"))
+    setImagesIssues(issues => issues.filter(issue => issue.type !== "error"))
+  }
+
   const resetAll = () => {
     setAssetsMappingDataRows([]);
     setAttributesMappingDataRows([]);
     assetsMetadatasForm.setValue("assetsMetadatas", []);
-    setIssues([]);
+    resetAllIssues()
     attributesUploaderRef.current?.resetFiles()
     assetsUploaderRef.current?.resetFiles()
     imagesUploaderRef.current?.resetFiles()
@@ -108,9 +133,21 @@ export const AssetsTab: React.FC = () => {
     .map((id) => id.trim())
     .filter((id) => NUMBERS_COMMA_SEPARATOR_REGEXP.test(id)) || []
 
+  // On remove image manually
+  const onRemoveImage = (index: number) => {
+    remove(index)
+  }
+  // If all images are removed, we clear the images issues
+  useEffect(() => {
+    if(!fields.length) {
+      setImagesIssues([])
+    }
+  }, [fields.length])
+
   // On upload attributes CSV mapping file
   const onUploadAttributesMapingFile = async (files: LocalFileData[]) => {
-    setIssues([]);
+    resetAllIssues()
+    setAssetsMappingDataRows([]);
     assetsMetadatasForm.setValue("assetsMetadatas", []);
 
     try {
@@ -130,7 +167,7 @@ export const AssetsTab: React.FC = () => {
             const message =
               "Please verify the headings on the first row in your attributes mapping file.\nThis file is ignored.\nCheck the description for more information.";
             console.error(title + ".\n" + message);
-            setIssues((issues) => [
+            setAttributesIssues((issues) => [
               ...issues,
               {
                 title,
@@ -191,7 +228,7 @@ export const AssetsTab: React.FC = () => {
             const title = `Incomplete ${pluralOrNot("attribute", missingIdRows.length)}`;
             const message = `Missing "id" in ${missingIdRows.length} ${pluralOrNot("attribute", missingIdRows.length)} that ${pluralOrNot("is", missingIdRows.length)} ignored.\nPlease complete properly your attributes mapping file.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
-            setIssues((issues) => [
+            setAttributesIssues((issues) => [
               ...issues,
               {
                 title,
@@ -204,7 +241,7 @@ export const AssetsTab: React.FC = () => {
             const title = `Incomplete ${pluralOrNot("attribute", missingTypeRows.length)}`;
             const message = `Missing "type" in ${missingTypeRows.length} ${pluralOrNot("attribute", missingTypeRows.length)} that ${pluralOrNot("is", missingTypeRows.length)} ignored.\nPlease complete properly your attributes mapping file.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
-            setIssues((issues) => [
+            setAttributesIssues((issues) => [
               ...issues,
               {
                 title,
@@ -217,7 +254,7 @@ export const AssetsTab: React.FC = () => {
             const title = `Incomplete ${pluralOrNot("attribute", missingValueRows.length)}`;
             const message = `Missing "value" in ${missingValueRows.length} ${pluralOrNot("attribute", missingValueRows.length)} that ${pluralOrNot("is", missingValueRows.length)} ignored.\nPlease complete properly your attributes mapping file.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
-            setIssues((issues) => [
+            setAttributesIssues((issues) => [
               ...issues,
               {
                 title,
@@ -230,7 +267,7 @@ export const AssetsTab: React.FC = () => {
             const title = `Wrong id`;
             const message = `${wrongIdRows.length} ${pluralOrNot("attribute", wrongIdRows.length)} contain a wrong "id" value and has beed ignored. Only a number is allwowed.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
-            setIssues((issues) => [
+            setAttributesIssues((issues) => [
               ...issues,
               {
                 title,
@@ -256,6 +293,12 @@ export const AssetsTab: React.FC = () => {
 
   // On upload assets CSV mapping file
   const onUploadAssetsMappingFile = async (files: LocalFileData[]) => {
+    resetIssuesErrors()
+    setAssetsIssues([])
+    setImagesIssues([])
+    assetsMetadatasForm.setValue("assetsMetadatas", []);
+    imagesUploaderRef.current?.resetFiles()
+
     try {
       await parse<string[]>(files[0].file, {
         complete: (parseResults) => {
@@ -277,7 +320,7 @@ export const AssetsTab: React.FC = () => {
             const message =
               "Please verify the headings on the first row in your assets mapping file.This file is ignored.\nCheck the description for more information.";
             console.error(title + ".\n" + message);
-            setIssues((issues) => [
+            setAssetsIssues((issues) => [
               ...issues,
               {
                 title,
@@ -359,7 +402,7 @@ export const AssetsTab: React.FC = () => {
             const title = `Incomplete ${pluralOrNot("asset", missingNameRows.length)}`;
             const message = `Missing "name" in ${missingNameRows.length} ${pluralOrNot("asset", missingNameRows.length)} that ${pluralOrNot("is", missingNameRows.length)} ignored.\nPlease complete properly your assets mapping file.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
-            setIssues((issues) => [
+            setAssetsIssues((issues) => [
               ...issues,
               {
                 title,
@@ -372,7 +415,7 @@ export const AssetsTab: React.FC = () => {
             const title = `Incomplete ${pluralOrNot("asset", missingAttributesRows.length)}`;
             const message = `Missing "attributes" in ${missingAttributesRows.length} ${pluralOrNot("asset", missingAttributesRows.length)} that ${pluralOrNot("is", missingAttributesRows.length)} ignored.\nPlease complete properly your assets mapping file.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
-            setIssues((issues) => [
+            setAssetsIssues((issues) => [
               ...issues,
               {
                 title,
@@ -385,7 +428,7 @@ export const AssetsTab: React.FC = () => {
             const title = `Wrong attributes`;
             const message = `${wrongAttributesRowsInAssets.length} ${pluralOrNot("asset", wrongAttributesRowsInAssets.length)} contain a wrong "attributes" value and ${pluralOrNot("is", wrongAttributesRowsInAssets.length)} ignored. Only numbers with comma separator are allwowed.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
-            setIssues((issues) => [
+            setAssetsIssues((issues) => [
               ...issues,
               {
                 title,
@@ -398,7 +441,7 @@ export const AssetsTab: React.FC = () => {
             const title = `Wrong URLs`;
             const message = `${wrongUrlsRowsInAssets.length} ${pluralOrNot("asset", wrongUrlsRowsInAssets.length)} contain a wrong "youtube_url" or "external_url" value (No incidence).\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
-            setIssues((issues) => [
+            setAssetsIssues((issues) => [
               ...issues,
               {
                 title,
@@ -411,7 +454,7 @@ export const AssetsTab: React.FC = () => {
             const title = `Unknown attributes`;
             const message = `${unknownAttributesRowsInAssets.length} ${pluralOrNot("asset", unknownAttributesRowsInAssets.length)} contain at least one "attributes" id that doesn't exist in your attributes mapping file. (No incidence)\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
-            setIssues((issues) => [
+            setAssetsIssues((issues) => [
               ...issues,
               {
                 title,
@@ -439,6 +482,8 @@ export const AssetsTab: React.FC = () => {
   const onUploadImages = (images: LocalFileData[]) => {
     if (!assetsMappingDataRows.length || !attributesMappingDataRows.length)
       return;
+    resetIssuesErrors()
+    setImagesIssues([])
 
     const collectionAssetsMetadatas: CollectionAssetsMetadataFormValues[] = [];
 
@@ -487,7 +532,7 @@ export const AssetsTab: React.FC = () => {
       const title = `Unexpected ${pluralOrNot("image", nbUnexpectedImages)}`;
       const message = `${nbUnexpectedImages} ${pluralOrNot("image", nbUnexpectedImages)} ${pluralOrNot("is", nbUnexpectedImages)} not expected in your assets mapping file and ${pluralOrNot("is", nbUnexpectedImages)} ignored.\nCheck the description for more information.`;
       console.warn(title + ".\n" + message);
-      setIssues((issues) => [
+      setImagesIssues((issues) => [
         ...issues,
         {
           title,
@@ -503,7 +548,7 @@ export const AssetsTab: React.FC = () => {
       const title = `Missing ${pluralOrNot("image", nbMissingImages)}`;
       const message = `${nbMissingImages} ${pluralOrNot("image", nbMissingImages)} expected in your assets mapping file ${pluralOrNot("is", nbMissingImages)} missing.\nCheck the description for more information.`;
       console.warn(title + ".\n" + message);
-      setIssues((issues) => [
+      setImagesIssues((issues) => [
         ...issues,
         {
           title,
@@ -520,57 +565,19 @@ export const AssetsTab: React.FC = () => {
         width: "100%",
       }}
     >
-      {!!issues.length && (
-        <>
-          <SpacerColumn size={1} />
-          {issues.map((issue, index) => (
-            <CustomPressable
-              onPress={() =>
-                setIssues((issues) => issues.filter((issue, i) => i !== index))
-              }
-              key={index}
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                backgroundColor: neutral17,
-                padding: layout.spacing_x2,
-                borderRadius: 16,
-                marginBottom:
-                  index !== issues.length - 1 ? layout.spacing_x1 : 0,
-              }}
-            >
-              <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: "row" }}>
-                  <SVG
-                    source={warningTriangleSVG}
-                    color={issue.type === "error" ? errorColor : warningColor}
-                    height={16}
-                    width={16}
-                  />
-                  <SpacerRow size={1} />
-                  <BrandText
-                    style={[
-                      fontSemibold13,
-                      {
-                        color:
-                          issue.type === "error" ? errorColor : warningColor,
-                      },
-                    ]}
-                  >
-                    {issue.title}
-                  </BrandText>
-                </View>
-                <SpacerColumn size={0.5} />
-                <BrandText style={[fontSemibold13, { color: neutral77 }]}>
-                  {issue.message}
-                </BrandText>
-              </View>
-
-              <SVG source={crossSVG} color={neutral77} height={16} width={16} />
-            </CustomPressable>
-          ))}
-        </>
-      )}
+      {/* ===== Issues */}
+      {attributesIssues.map((issue, index) => (
+        <AssetsAndMetadataIssue key={index} issue={issue} 
+        removeIssue={() => setAttributesIssues((issues) => issues.filter((_, i) => i !== index))}/>
+      ))}
+            {assetsIssues.map((issue, index) => (
+        <AssetsAndMetadataIssue  key={index} issue={issue} 
+        removeIssue={() => setAssetsIssues((issues) => issues.filter((_, i) => i !== index))}/>
+      ))}
+            {imagesIssues.map((issue, index) => (
+        <AssetsAndMetadataIssue  key={index} issue={issue} 
+        removeIssue={() => setImagesIssues((issues) => issues.filter((_, i) => i !== index))}/>
+      ))}
 
       <View
         style={{
@@ -606,6 +613,7 @@ export const AssetsTab: React.FC = () => {
                 mimeTypes={TXT_CSV_MIME_TYPES}
                 boxStyle={{ minHeight: 40 }}
                 ref={assetsUploaderRef}
+                // cleaner={!attributesMappingDataRows.length}
               />
 
               <SpacerColumn size={2} />
@@ -619,6 +627,7 @@ export const AssetsTab: React.FC = () => {
                 boxStyle={{ minHeight: 40 }}
                 disabled={!attributesMappingDataRows.length}
                 ref={attributesUploaderRef}
+                // cleaner={!assetsMappingDataRows.length}
               />
 
               <SpacerColumn size={2} />
@@ -634,6 +643,7 @@ export const AssetsTab: React.FC = () => {
                 mimeTypes={IMAGE_MIME_TYPES}
                 multiple
                 ref={imagesUploaderRef}
+                // cleaner={!fields.length}
               />
 
               {(!!fields.length ||
@@ -700,7 +710,7 @@ export const AssetsTab: React.FC = () => {
               setMedataUpdateModalVisible(true);
               setSelectedElemIndex(itemIndex);
             }}
-            onPressDeleteItem={(itemIndex) => remove(itemIndex)}
+            onPressDeleteItem={onRemoveImage}
           />
         </View>
 

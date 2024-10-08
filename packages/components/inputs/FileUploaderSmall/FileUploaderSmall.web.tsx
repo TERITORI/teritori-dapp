@@ -79,7 +79,6 @@ export const FileUploaderSmall = forwardRef<FileUploaderSmallHandle, FileUploade
   };
 
   const handleChange = async (event: SyntheticEvent) => {
-    console.log('hgubiu')
     setIsLoading?.(true);
     const targetEvent = event.target as HTMLInputElement;
 
