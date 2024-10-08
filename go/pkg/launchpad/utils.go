@@ -80,20 +80,38 @@ func (m *Metadata) proto_encode() ([]byte, error) {
 func (m *Metadata) GetID() string {
 	id := ""
 	for _, attribute := range m.Attributes {
-		id += *attribute.DisplayType
+		if attribute.DisplayType != nil {
+			id += *attribute.DisplayType
+		}
 		id += attribute.TraitType
 		id += attribute.Value
 	}
 	id += *m.Image
-	id += *m.ImageData
-	id += *m.ExternalUrl
-	id += *m.Description
 	id += *m.Name
-	id += *m.BackgroundColor
-	id += *m.AnimationUrl
-	id += *m.YoutubeUrl
-	id += fmt.Sprintf(":%d", *m.RoyaltyPercentage)
-	id += *m.RoyaltyPaymentAddress
+	if m.ImageData != nil {
+		id += *m.ImageData
+	}
+	if m.ExternalUrl != nil {
+		id += *m.ExternalUrl
+	}
+	if m.Description != nil {
+		id += *m.Description
+	}
+	if m.BackgroundColor != nil {
+		id += *m.BackgroundColor
+	}
+	if m.AnimationUrl != nil {
+		id += *m.AnimationUrl
+	}
+	if m.YoutubeUrl != nil {
+		id += *m.YoutubeUrl
+	}
+	if m.RoyaltyPercentage != nil {
+		id += fmt.Sprintf(":%d", *m.RoyaltyPercentage)
+	}
+	if m.RoyaltyPaymentAddress != nil {
+		id += *m.RoyaltyPaymentAddress
+	}
 	return id
 }
 
