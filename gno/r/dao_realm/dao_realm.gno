@@ -4,14 +4,13 @@ import (
 	"std"
 	"time"
 
-	"gno.land/r/teritori/dao_registry"
-	"gno.land/r/teritori/tori"
-
 	dao_core "gno.land/p/teritori/dao_core"
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
 	proposal_single "gno.land/p/teritori/dao_proposal_single"
 	"gno.land/p/teritori/dao_utils"
 	voting_group "gno.land/p/teritori/dao_voting_group"
+	"gno.land/r/teritori/dao_registry"
+	"gno.land/r/teritori/tori"
 )
 
 // Example DAO realm
