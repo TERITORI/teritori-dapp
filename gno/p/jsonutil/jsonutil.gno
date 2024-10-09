@@ -49,8 +49,8 @@ func DurationNode(value time.Duration) *json.Node {
 	return Int64Node(value.Nanoseconds())
 }
 
-func MustDurationSeconds(node *json.Node) time.Duration {
-	return time.Second * time.Duration(node.MustNumeric())
+func MustDurationSeconds(value *json.Node) time.Duration {
+	return time.Duration(MustInt64(value)) * time.Second
 }
 
 func EmptyObjectNode() *json.Node {
