@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"gno.land/p/demo/avl"
-	"gno.land/p/demo/json"
+	ujson "gno.land/p/teritori/ujson"
 )
 
 type PostID uint64
@@ -164,7 +164,7 @@ func (post *Post) FromJSON(jsonData string) {
 	})
 }
 
-func (post *Post) ToJSON() *json.Node {
+func (post *Post) ToJSON() string {
 	reactionsKV := []ujson.FormatKV{}
 	post.reactions.Iterate("", "", func(key string, value interface{}) bool {
 		count := value.(int)
