@@ -35,7 +35,6 @@ export const MusicPostTrackContent: FC<{
         waveform={track.audioFile.audioMetadata?.waveform || []}
         fallbackImageURI={defaultThumbnailImage}
         imageURI={track.audioFile.thumbnailFileData?.url}
-        authorId={post.authorId}
         postId={post.id}
       />
     </>

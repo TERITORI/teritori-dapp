@@ -12,7 +12,7 @@ import FlexCol from "../FlexCol";
 import FlexRow from "../FlexRow";
 import { OmniLink } from "../OmniLink";
 import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
-import { SmallCarousel } from "../carousels/SmallCarousel";
+import { SmallCarousel } from "../carousels/SmallCarousel/SmallCarousel";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
 const ORG_CARD_WIDTH = 164;

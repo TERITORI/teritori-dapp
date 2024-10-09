@@ -13,7 +13,6 @@ import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
 import { NewsFeed } from "@/components/socialFeed/NewsFeed/NewsFeed";
-import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
@@ -23,7 +22,6 @@ import { ScreenFC } from "@/utils/navigation";
 export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
   useForceNetworkSelection(params?.network);
   const isMobile = useIsMobile();
-  const [developerMode] = useDeveloperMode();
   const selectedNetworkId = useSelectedNetworkId();
 
   const defaultFeedRequest = useMemo(() => {
@@ -35,7 +33,9 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
       case "music":
         return <MusicFeed />;
       case "map":
-        return developerMode === true ? <MapFeed /> : null;
+        return (
+          <MapFeed consultedPostId={params?.post ? params.post : undefined} />
+        );
       case "pics":
         return <PicsFeed />;
       case "videos":
@@ -60,7 +60,7 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
           />
         );
     }
-  }, [params?.tab, isMobile, developerMode, defaultFeedRequest]);
+  }, [params?.tab, params?.post, isMobile, defaultFeedRequest]);
 
   return (
     <ScreenContainer

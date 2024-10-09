@@ -1,5 +1,3 @@
-import { LatLng } from "react-native-leaflet-view";
-
 import {
   nonSigningSocialFeedClient,
   signingSocialFeedClient,
@@ -12,6 +10,7 @@ import {
   parseUserId,
 } from "../../networks";
 import {
+  CustomLatLngExpression,
   NewArticleFormValues,
   NewPostFormValues,
   PostCategory,
@@ -119,7 +118,7 @@ export const getPostCategory = ({
 interface GeneratePostMetadataParams extends Omit<NewPostFormValues, "files"> {
   files: RemoteFileData[];
   premium: boolean;
-  location?: LatLng;
+  location?: CustomLatLngExpression;
 }
 
 interface GenerateArticleMetadataParams
@@ -168,6 +167,7 @@ export const generateArticleMetadata = ({
   thumbnailImage,
   coverImage,
   shortDescription,
+  location,
 }: GenerateArticleMetadataParams): SocialFeedArticleMetadata => {
   const m = ZodSocialFeedArticleMetadata.parse({
     title,
@@ -180,6 +180,7 @@ export const generateArticleMetadata = ({
     thumbnailImage,
     coverImage,
     shortDescription: shortDescription || "",
+    location,
   });
   // we need this hack until the createdAt field is properly provided by the contract
   // @ts-expect-error: description todo

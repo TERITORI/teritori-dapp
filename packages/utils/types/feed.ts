@@ -32,6 +32,7 @@ export interface NewArticleFormValues {
   thumbnailImage?: LocalFileData;
   coverImage?: LocalFileData;
   shortDescription?: string;
+  location?: CustomLatLngExpression;
 }
 
 export interface NewPostFormValues {
@@ -72,7 +73,7 @@ export const ZodLatLngTuple = z.tuple([
 ]);
 
 export const ZodLatLngExpression = z.union([ZodLatLngLiteral, ZodLatLngTuple]);
-export type LatLngExpression = z.infer<typeof ZodLatLngExpression>;
+export type CustomLatLngExpression = z.infer<typeof ZodLatLngExpression>;
 
 export const zodSocialFeedCommonMetadata = z.object({
   title: z.string(),
