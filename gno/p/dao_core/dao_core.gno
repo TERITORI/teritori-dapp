@@ -2,9 +2,10 @@ package core
 
 import (
 	"std"
+	"strconv"
+	"strings"
 
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
-	"gno.land/p/teritori/markdown_utils"
 )
 
 // TODO: add wrapper message handler to handle multiple proposal modules messages
@@ -49,6 +50,7 @@ func NewDAOCore(
 		if mod == nil {
 			panic("proposal module factory returned nil")
 		}
+
 		core.proposalModules[i] = dao_interfaces.ActivableProposalModule{
 			Enabled: true,
 			Module:  mod,
@@ -63,6 +65,7 @@ func NewDAOCore(
 		if handler == nil {
 			panic("message handler factory returned nil")
 		}
+
 		core.registry.Register(handler)
 	}
 
@@ -76,7 +79,6 @@ func (d *daoCore) UpdateVotingModule(newVotingModule dao_interfaces.IVotingModul
 		panic(ErrUnauthorized)
 	}
 
-	// FIXME: check da0-da0 implem
 	d.votingModule = newVotingModule
 }
 
@@ -95,6 +97,7 @@ func (d *daoCore) UpdateProposalModules(toAdd []dao_interfaces.IProposalModule, 
 		if !module.Enabled {
 			panic(ErrModuleAlreadyDisabled)
 		}
+
 		module.Enabled = false
 
 		d.activeProposalModuleCount--
@@ -123,16 +126,33 @@ func (d *daoCore) ActiveProposalModuleCount() int {
 }
 
 func (d *daoCore) Render(path string) string {
-	s := "# DAO Core\n"
-	s += "This is an attempt at porting [DA0-DA0 contracts](https://github.com/DA0-DA0/dao-contracts)\n"
-	s += markdown_utils.Indent(d.votingModule.Render(path)) + "\n"
-	for _, propMod := range d.proposalModules {
+	sb := strings.Builder{}
+	sb.WriteString("# DAO Core\n")
+	votingInfo := d.votingModule.Info()
+	sb.WriteString("## Voting Module: ")
+	sb.WriteString(votingInfo.String())
+	sb.WriteRune('\n')
+	sb.WriteString(d.votingModule.Render(""))
+	sb.WriteString("## Supported Messages:\n")
+	sb.WriteString(d.registry.Render())
+
+	sb.WriteString("## Proposal Modules:\n")
+	for i, propMod := range d.proposalModules {
 		if !propMod.Enabled {
 			continue
 		}
-		s += markdown_utils.Indent(propMod.Module.Render(path)) + "\n"
+
+		info := propMod.Module.Info()
+		sb.WriteString("### #")
+		sb.WriteString(strconv.Itoa(i))
+		sb.WriteString(": ")
+		sb.WriteString(info.String())
+		sb.WriteRune('\n')
+		sb.WriteString(propMod.Module.Render(""))
 	}
-	return s
+
+	sb.WriteRune('\n')
+	return sb.String()
 }
 
 func (d *daoCore) Registry() *dao_interfaces.MessagesRegistry {
@@ -145,10 +165,12 @@ func GetProposalModule(core dao_interfaces.IDAOCore, moduleIndex int) *dao_inter
 	if moduleIndex < 0 {
 		panic("module index must be >= 0")
 	}
+
 	mods := core.ProposalModules()
 	if moduleIndex >= len(mods) {
 		panic("invalid module index")
 	}
+
 	return &mods[moduleIndex]
 }
 
@@ -169,6 +191,7 @@ func (d *daoCore) addProposalModule(proposalMod dao_interfaces.IProposalModule) 
 		if mod.Enabled {
 			panic(ErrModuleAlreadyAdded)
 		}
+
 		mod.Enabled = true
 		d.activeProposalModuleCount++
 		return
