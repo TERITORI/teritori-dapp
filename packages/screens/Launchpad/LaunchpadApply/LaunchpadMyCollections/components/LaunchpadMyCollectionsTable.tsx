@@ -95,14 +95,14 @@ const LaunchpadReadyMyCollectionsTableRow: React.FC<{
         >
           <StateBadge text={launchpadProjectStatus(launchpadProject)} />
         </TableCell>
-
-        {launchpadProjectStatus(launchpadProject) === "INCOMPLETE" && (
+        
           <TableCell
             style={{
               minWidth: columns.cta.minWidth,
               flex: columns.cta.flex,
             }}
           >
+            {launchpadProjectStatus(launchpadProject) === "INCOMPLETE" &&
             <PrimaryButton
               text="Complete collection"
               size="XXS"
@@ -112,8 +112,9 @@ const LaunchpadReadyMyCollectionsTableRow: React.FC<{
                 })
               }
             />
+}
           </TableCell>
-        )}
+        
       </TableRow>
     </View>
   );

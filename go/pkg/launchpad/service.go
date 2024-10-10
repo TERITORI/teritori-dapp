@@ -284,11 +284,15 @@ func (s *Launchpad) LaunchpadProjectsByCreator(ctx context.Context, req *launchp
 
 	result := make([]*launchpadpb.LaunchpadProject, len(projects))
 	for idx, dbProject := range projects {
+		merkleRoot := dbProject.MerkleRoot
+		deployedAddress := dbProject.DeployedAddress
 		result[idx] = &launchpadpb.LaunchpadProject{
-			Id:             dbProject.ProjectID,
-			NetworkId:      dbProject.NetworkID,
-			CreatorId:      string(dbProject.CreatorID),
-			CollectionData: string(dbProject.CollectionData),
+			Id:              dbProject.ProjectID,
+			NetworkId:       dbProject.NetworkID,
+			CreatorId:       string(dbProject.CreatorID),
+			CollectionData:  string(dbProject.CollectionData),
+			MerkleRoot:      &merkleRoot,
+			DeployedAddress: &deployedAddress,
 		}
 	}
 
@@ -386,11 +390,15 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 
 	result := make([]*launchpadpb.LaunchpadProject, len(projects))
 	for idx, dbProject := range projects {
+		merkleRoot := dbProject.MerkleRoot
+		deployedAddress := dbProject.DeployedAddress
 		result[idx] = &launchpadpb.LaunchpadProject{
-			Id:             dbProject.ProjectID,
-			NetworkId:      dbProject.NetworkID,
-			CreatorId:      string(dbProject.CreatorID),
-			CollectionData: string(dbProject.CollectionData),
+			Id:              dbProject.ProjectID,
+			NetworkId:       dbProject.NetworkID,
+			CreatorId:       string(dbProject.CreatorID),
+			CollectionData:  string(dbProject.CollectionData),
+			MerkleRoot:      &merkleRoot,
+			DeployedAddress: &deployedAddress,
 		}
 	}
 
@@ -443,12 +451,16 @@ func (s *Launchpad) LaunchpadProjectById(ctx context.Context, req *launchpadpb.L
 		return nil, errors.Wrap(err, "failed to query database")
 	}
 
+	merkleRoot := project.MerkleRoot
+	deployedAddress := project.DeployedAddress
 	return &launchpadpb.LaunchpadProjectByIdResponse{
 		Project: &launchpadpb.LaunchpadProject{
-			Id:             project.ProjectID,
-			NetworkId:      project.NetworkID,
-			CreatorId:      string(project.CreatorID),
-			CollectionData: string(project.CollectionData),
+			Id:              project.ProjectID,
+			NetworkId:       project.NetworkID,
+			CreatorId:       string(project.CreatorID),
+			CollectionData:  string(project.CollectionData),
+			MerkleRoot:      &merkleRoot,
+			DeployedAddress: &deployedAddress,
 		},
 	}, nil
 }
@@ -534,4 +546,3 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 // 	}
 // 	return isUserAuthorized, nil
 // }
-
