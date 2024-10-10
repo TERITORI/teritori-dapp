@@ -5,26 +5,6 @@
     {
       "type": "object",
       "required": [
-        "get_collections_by_owner"
-      ],
-      "properties": {
-        "get_collections_by_owner": {
-          "type": "object",
-          "required": [
-            "owner"
-          ],
-          "properties": {
-            "owner": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "required": [
         "get_collection_by_id"
       ],
       "properties": {
@@ -35,26 +15,6 @@
           ],
           "properties": {
             "collection_id": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "required": [
-        "get_collection_by_addr"
-      ],
-      "properties": {
-        "get_collection_by_addr": {
-          "type": "object",
-          "required": [
-            "collection_addr"
-          ],
-          "properties": {
-            "collection_addr": {
               "type": "string"
             }
           }

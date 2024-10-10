@@ -6,23 +6,13 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { Addr, InstantiateMsg, Config, ExecuteMsg, Uint128, ConfigChanges, Collection, MintPeriod, Coin, WhitelistInfo, QueryMsg, ArrayOfCollection } from "./NftLaunchpad.types";
+import { Addr, InstantiateMsg, Config, ExecuteMsg, Uint128, ConfigChanges, Collection, MintPeriod, Coin, WhitelistInfo, QueryMsg } from "./NftLaunchpad.types";
 export interface NftLaunchpadReadOnlyInterface {
   contractAddress: string;
-  getCollectionsByOwner: ({
-    owner
-  }: {
-    owner: string;
-  }) => Promise<ArrayOfCollection>;
   getCollectionById: ({
     collectionId
   }: {
     collectionId: string;
-  }) => Promise<Collection>;
-  getCollectionByAddr: ({
-    collectionAddr
-  }: {
-    collectionAddr: string;
   }) => Promise<Collection>;
   getConfig: () => Promise<Config>;
 }
@@ -33,23 +23,10 @@ export class NftLaunchpadQueryClient implements NftLaunchpadReadOnlyInterface {
   constructor(client: CosmWasmClient, contractAddress: string) {
     this.client = client;
     this.contractAddress = contractAddress;
-    this.getCollectionsByOwner = this.getCollectionsByOwner.bind(this);
     this.getCollectionById = this.getCollectionById.bind(this);
-    this.getCollectionByAddr = this.getCollectionByAddr.bind(this);
     this.getConfig = this.getConfig.bind(this);
   }
 
-  getCollectionsByOwner = async ({
-    owner
-  }: {
-    owner: string;
-  }): Promise<ArrayOfCollection> => {
-    return this.client.queryContractSmart(this.contractAddress, {
-      get_collections_by_owner: {
-        owner
-      }
-    });
-  };
   getCollectionById = async ({
     collectionId
   }: {
@@ -58,17 +35,6 @@ export class NftLaunchpadQueryClient implements NftLaunchpadReadOnlyInterface {
     return this.client.queryContractSmart(this.contractAddress, {
       get_collection_by_id: {
         collection_id: collectionId
-      }
-    });
-  };
-  getCollectionByAddr = async ({
-    collectionAddr
-  }: {
-    collectionAddr: string;
-  }): Promise<Collection> => {
-    return this.client.queryContractSmart(this.contractAddress, {
-      get_collection_by_addr: {
-        collection_addr: collectionAddr
       }
     });
   };
