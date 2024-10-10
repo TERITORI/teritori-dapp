@@ -50,3 +50,31 @@ func (h *Handler) handleExecuteSubmitCollection(e *Message, execMsg *wasmtypes.M
 
 	return nil
 }
+
+func (h *Handler) handleExecuteUpdateMerkleRoot(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	var jsonData map[string]map[string]interface{}
+	if err := json.Unmarshal(execMsg.Msg.Bytes(), &jsonData); err != nil {
+		return errors.Wrap(err, "failed to unmarshal json")
+	}
+
+	merkleRoot := jsonData["update_merkle_root"]["merkle_root"]
+	if merkleRoot == nil {
+		return errors.New("failed to get merkle root")
+	}
+
+	collectionId := jsonData["update_merkle_root"]["collection_id"]
+	if collectionId == "" {
+		return errors.New("failed to get collection id")
+	}
+
+	if err :=
+		h.db.
+			Model(&indexerdb.LaunchpadProject{}).
+			Where("project_id = ?", collectionId).
+			UpdateColumn("merkle_root", merkleRoot).
+			Error; err != nil {
+		return errors.Wrap(err, "failed to update merkle root")
+	}
+
+	return nil
+}

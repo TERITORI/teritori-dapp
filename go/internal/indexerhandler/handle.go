@@ -340,6 +340,10 @@ func (h *Handler) handleExecute(e *Message) error {
 			if err := h.handleExecuteSubmitCollection(e, &executeMsg); err != nil {
 				return errors.Wrap(err, "failed to handle submit collection")
 			}
+		case "update_merkle_root":
+			if err := h.handleExecuteUpdateMerkleRoot(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle update merkle root")
+			}
 		}
 	}
 	return nil
