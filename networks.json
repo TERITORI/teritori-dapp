@@ -4574,7 +4574,8 @@
     "daoProposalSinglePkgPath": "gno.land/p/teritori/dao_proposal_single",
     "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
     "daoCorePkgPath": "gno.land/p/teritori/dao_core",
-    "profilePkgPath": "gno.land/r/demo/profile"
+    "profilePkgPath": "gno.land/r/demo/profile",
+    "txIndexerURL": "https://indexer.portal-loop.gno.testnet.teritori.com"
   },
   {
     "id": "gno-teritori",
