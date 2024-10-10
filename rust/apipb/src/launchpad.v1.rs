@@ -1,9 +1,23 @@
 // @generated
 // -------------------------------
 
+// message CollectionsByCreatorRequest {
+//    string creator_id = 1;
+//    string network_id = 2;
+//    int32 limit = 3;
+//    int32 offset = 4;
+//    Sort sort = 5;
+//    SortDirection sort_direction = 6;
+//    optional Status status = 7;
+// }
+
+// message CollectionsByCreatorResponse {
+//    repeated string collections = 1;
+// }
+
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct CollectionsByCreatorRequest {
+pub struct LaunchpadProjectsByCreatorRequest {
     #[prost(string, tag="1")]
     pub creator_id: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
@@ -21,9 +35,9 @@ pub struct CollectionsByCreatorRequest {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct CollectionsByCreatorResponse {
-    #[prost(string, repeated, tag="1")]
-    pub collections: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+pub struct LaunchpadProjectsByCreatorResponse {
+    #[prost(message, repeated, tag="1")]
+    pub projects: ::prost::alloc::vec::Vec<LaunchpadProject>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

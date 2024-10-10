@@ -7,7 +7,8 @@ service LaunchpadService {
   rpc UploadMetadatas(UploadMetadatasRequest) returns (UploadMetadatasResponse);
   rpc CalculateCollectionMerkleRoot(CalculateCollectionMerkleRootRequest) returns (CalculateCollectionMerkleRootResponse);
   rpc TokenMetadata(TokenMetadataRequest) returns (TokenMetadataResponse);
-  rpc CollectionsByCreator(CollectionsByCreatorRequest) returns (CollectionsByCreatorResponse);
+  // rpc CollectionsByCreator(CollectionsByCreatorRequest) returns (CollectionsByCreatorResponse);
+  rpc LaunchpadProjectsByCreator(LaunchpadProjectsByCreatorRequest) returns (LaunchpadProjectsByCreatorResponse);
   rpc LaunchpadProjects(LaunchpadProjectsRequest) returns (LaunchpadProjectsResponse);
   rpc LaunchpadProjectById(LaunchpadProjectByIdRequest) returns (LaunchpadProjectByIdResponse);
   rpc LaunchpadProjectsCount(LaunchpadProjectsCountRequest) returns (LaunchpadProjectsCountResponse);
@@ -34,7 +35,21 @@ enum Status {
 
 // -------------------------------
 
-message CollectionsByCreatorRequest {
+// message CollectionsByCreatorRequest {
+//   string creator_id = 1;
+//   string network_id = 2;
+//   int32 limit = 3;
+//   int32 offset = 4;
+//   Sort sort = 5;
+//   SortDirection sort_direction = 6;
+//   optional Status status = 7;
+// }
+
+// message CollectionsByCreatorResponse {
+//   repeated string collections = 1;
+// }
+
+message LaunchpadProjectsByCreatorRequest {
   string creator_id = 1;
   string network_id = 2;
   int32 limit = 3;
@@ -44,8 +59,8 @@ message CollectionsByCreatorRequest {
   optional Status status = 7;
 }
 
-message CollectionsByCreatorResponse {
-  repeated string collections = 1;
+message LaunchpadProjectsByCreatorResponse {
+  repeated LaunchpadProject projects = 1;
 }
 
 message LaunchpadProjectsRequest {
@@ -252,3 +267,4 @@ message Trait {
 //   uint64 start_time = 6;
 //   uint64 end_time = 7;
 // }
+

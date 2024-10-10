@@ -25,7 +25,8 @@ type LaunchpadServiceClient interface {
 	UploadMetadatas(ctx context.Context, in *UploadMetadatasRequest, opts ...grpc.CallOption) (*UploadMetadatasResponse, error)
 	CalculateCollectionMerkleRoot(ctx context.Context, in *CalculateCollectionMerkleRootRequest, opts ...grpc.CallOption) (*CalculateCollectionMerkleRootResponse, error)
 	TokenMetadata(ctx context.Context, in *TokenMetadataRequest, opts ...grpc.CallOption) (*TokenMetadataResponse, error)
-	CollectionsByCreator(ctx context.Context, in *CollectionsByCreatorRequest, opts ...grpc.CallOption) (*CollectionsByCreatorResponse, error)
+	// rpc CollectionsByCreator(CollectionsByCreatorRequest) returns (CollectionsByCreatorResponse);
+	LaunchpadProjectsByCreator(ctx context.Context, in *LaunchpadProjectsByCreatorRequest, opts ...grpc.CallOption) (*LaunchpadProjectsByCreatorResponse, error)
 	LaunchpadProjects(ctx context.Context, in *LaunchpadProjectsRequest, opts ...grpc.CallOption) (*LaunchpadProjectsResponse, error)
 	LaunchpadProjectById(ctx context.Context, in *LaunchpadProjectByIdRequest, opts ...grpc.CallOption) (*LaunchpadProjectByIdResponse, error)
 	LaunchpadProjectsCount(ctx context.Context, in *LaunchpadProjectsCountRequest, opts ...grpc.CallOption) (*LaunchpadProjectsCountResponse, error)
@@ -66,9 +67,9 @@ func (c *launchpadServiceClient) TokenMetadata(ctx context.Context, in *TokenMet
 	return out, nil
 }
 
-func (c *launchpadServiceClient) CollectionsByCreator(ctx context.Context, in *CollectionsByCreatorRequest, opts ...grpc.CallOption) (*CollectionsByCreatorResponse, error) {
-	out := new(CollectionsByCreatorResponse)
-	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/CollectionsByCreator", in, out, opts...)
+func (c *launchpadServiceClient) LaunchpadProjectsByCreator(ctx context.Context, in *LaunchpadProjectsByCreatorRequest, opts ...grpc.CallOption) (*LaunchpadProjectsByCreatorResponse, error) {
+	out := new(LaunchpadProjectsByCreatorResponse)
+	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/LaunchpadProjectsByCreator", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +110,8 @@ type LaunchpadServiceServer interface {
 	UploadMetadatas(context.Context, *UploadMetadatasRequest) (*UploadMetadatasResponse, error)
 	CalculateCollectionMerkleRoot(context.Context, *CalculateCollectionMerkleRootRequest) (*CalculateCollectionMerkleRootResponse, error)
 	TokenMetadata(context.Context, *TokenMetadataRequest) (*TokenMetadataResponse, error)
-	CollectionsByCreator(context.Context, *CollectionsByCreatorRequest) (*CollectionsByCreatorResponse, error)
+	// rpc CollectionsByCreator(CollectionsByCreatorRequest) returns (CollectionsByCreatorResponse);
+	LaunchpadProjectsByCreator(context.Context, *LaunchpadProjectsByCreatorRequest) (*LaunchpadProjectsByCreatorResponse, error)
 	LaunchpadProjects(context.Context, *LaunchpadProjectsRequest) (*LaunchpadProjectsResponse, error)
 	LaunchpadProjectById(context.Context, *LaunchpadProjectByIdRequest) (*LaunchpadProjectByIdResponse, error)
 	LaunchpadProjectsCount(context.Context, *LaunchpadProjectsCountRequest) (*LaunchpadProjectsCountResponse, error)
@@ -129,8 +131,8 @@ func (UnimplementedLaunchpadServiceServer) CalculateCollectionMerkleRoot(context
 func (UnimplementedLaunchpadServiceServer) TokenMetadata(context.Context, *TokenMetadataRequest) (*TokenMetadataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TokenMetadata not implemented")
 }
-func (UnimplementedLaunchpadServiceServer) CollectionsByCreator(context.Context, *CollectionsByCreatorRequest) (*CollectionsByCreatorResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CollectionsByCreator not implemented")
+func (UnimplementedLaunchpadServiceServer) LaunchpadProjectsByCreator(context.Context, *LaunchpadProjectsByCreatorRequest) (*LaunchpadProjectsByCreatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LaunchpadProjectsByCreator not implemented")
 }
 func (UnimplementedLaunchpadServiceServer) LaunchpadProjects(context.Context, *LaunchpadProjectsRequest) (*LaunchpadProjectsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LaunchpadProjects not implemented")
@@ -208,20 +210,20 @@ func _LaunchpadService_TokenMetadata_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LaunchpadService_CollectionsByCreator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CollectionsByCreatorRequest)
+func _LaunchpadService_LaunchpadProjectsByCreator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LaunchpadProjectsByCreatorRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LaunchpadServiceServer).CollectionsByCreator(ctx, in)
+		return srv.(LaunchpadServiceServer).LaunchpadProjectsByCreator(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/launchpad.v1.LaunchpadService/CollectionsByCreator",
+		FullMethod: "/launchpad.v1.LaunchpadService/LaunchpadProjectsByCreator",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LaunchpadServiceServer).CollectionsByCreator(ctx, req.(*CollectionsByCreatorRequest))
+		return srv.(LaunchpadServiceServer).LaunchpadProjectsByCreator(ctx, req.(*LaunchpadProjectsByCreatorRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -300,8 +302,8 @@ var LaunchpadService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LaunchpadService_TokenMetadata_Handler,
 		},
 		{
-			MethodName: "CollectionsByCreator",
-			Handler:    _LaunchpadService_CollectionsByCreator_Handler,
+			MethodName: "LaunchpadProjectsByCreator",
+			Handler:    _LaunchpadService_LaunchpadProjectsByCreator_Handler,
 		},
 		{
 			MethodName: "LaunchpadProjects",
