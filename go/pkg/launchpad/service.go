@@ -210,7 +210,7 @@ func (s *Launchpad) TokenMetadata(ctx context.Context, req *launchpadpb.TokenMet
 	}, nil
 }
 
-func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.CollectionsByCreatorRequest) (*launchpadpb.CollectionsByCreatorResponse, error) {
+func (s *Launchpad) LaunchpadProjectsByCreator(ctx context.Context, req *launchpadpb.LaunchpadProjectsByCreatorRequest) (*launchpadpb.LaunchpadProjectsByCreatorResponse, error) {
 	limit := req.GetLimit()
 	if limit <= 0 {
 		return nil, errors.New("limit must be a positive number")
@@ -245,14 +245,16 @@ func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.C
 	case launchpadpb.Status_STATUS_UNSPECIFIED:
 		statusFilterSQL = ""
 	case launchpadpb.Status_STATUS_INCOMPLETE:
-		statusFilterSQL = "AND lp.collection_data->>'metadatas_merkle_root' ISNULL"
+		statusFilterSQL = "AND lp.merkle_root ISNULL"
 	case launchpadpb.Status_STATUS_COMPLETE:
-		statusFilterSQL = "AND NOT lp.collection_data->>'metadatas_merkle_root' ISNULL"
+		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
 		// TODO: Is status confirmed useless ? For now, it's same as Status_STATUS_COMPLETE
 	case launchpadpb.Status_STATUS_CONFIRMED:
-		statusFilterSQL = "AND NOT lp.collection_data->>'metadatas_merkle_root' ISNULL"
+		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
+		// TODO: deployed_address from indexer ? For now, it's same as Status_STATUS_COMPLETE
 	case launchpadpb.Status_STATUS_DEPLOYED:
-		statusFilterSQL = "AND NOT lp.collection_data->>'deployed_address' ISNULL"
+		// statusFilterSQL = "AND NOT lp.collection_data->>'deployed_address' ISNULL"
+		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
 	}
 
 	var projects []indexerdb.LaunchpadProject
@@ -275,7 +277,7 @@ func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.C
 	}
 
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`
-		SELECT collection_data FROM launchpad_projects AS lp WHERE lp.creator_id = ? AND lp.network_id = ? %s %s LIMIT ?
+		SELECT * FROM launchpad_projects AS lp WHERE lp.creator_id = ? AND lp.network_id = ? %s %s LIMIT ?
 	`,
 		statusFilterSQL,
 		orderSQL), creatorID, networkID, limit).Scan(&projects).Error
@@ -283,13 +285,18 @@ func (s *Launchpad) CollectionsByCreator(ctx context.Context, req *launchpadpb.C
 		return nil, errors.Wrap(err, "failed to query database")
 	}
 
-	result := make([]string, len(projects))
-	for idx, pj := range projects {
-		result[idx] = string(pj.CollectionData)
+	result := make([]*launchpadpb.LaunchpadProject, len(projects))
+	for idx, dbProject := range projects {
+		result[idx] = &launchpadpb.LaunchpadProject{
+			Id:             dbProject.ProjectID,
+			NetworkId:      dbProject.NetworkID,
+			CreatorId:      string(dbProject.CreatorID),
+			CollectionData: string(dbProject.CollectionData),
+		}
 	}
 
-	return &launchpadpb.CollectionsByCreatorResponse{
-		Collections: result,
+	return &launchpadpb.LaunchpadProjectsByCreatorResponse{
+		Projects: result,
 	}, nil
 }
 
@@ -342,14 +349,16 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 	statusFilterSQL := ""
 	switch status {
 	case launchpadpb.Status_STATUS_INCOMPLETE:
-		statusFilterSQL = "AND lp.collection_data->>'metadatas_merkle_root' ISNULL"
+		statusFilterSQL = "AND lp.merkle_root ISNULL"
 	case launchpadpb.Status_STATUS_COMPLETE:
-		statusFilterSQL = "AND NOT lp.collection_data->>'metadatas_merkle_root' ISNULL"
+		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
 		// TODO: Is status confirmed useless ? For now, it's same as Status_STATUS_COMPLETE
 	case launchpadpb.Status_STATUS_CONFIRMED:
-		statusFilterSQL = "AND NOT lp.collection_data->>'metadatas_merkle_root' ISNULL"
+		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
+		// TODO: deployed_address from indexer ? For now, it's same as Status_STATUS_COMPLETE
 	case launchpadpb.Status_STATUS_DEPLOYED:
-		statusFilterSQL = "AND NOT lp.collection_data->>'deployed_address' ISNULL"
+		// statusFilterSQL = "AND NOT lp.collection_data->>'deployed_address' ISNULL"
+		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
 	}
 
 	var projects []indexerdb.LaunchpadProject
@@ -461,14 +470,16 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 	statusFilterSQL := ""
 	switch status {
 	case launchpadpb.Status_STATUS_INCOMPLETE:
-		statusFilterSQL = "AND lp.collection_data->>'metadatas_merkle_root' ISNULL"
+		statusFilterSQL = "AND lp.merkle_root ISNULL"
 	case launchpadpb.Status_STATUS_COMPLETE:
-		statusFilterSQL = "AND NOT lp.collection_data->>'metadatas_merkle_root' ISNULL"
+		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
 		// TODO: Status confirmed ?
 	case launchpadpb.Status_STATUS_CONFIRMED:
 		statusFilterSQL = "AND NOT lp.collection_data->>'TODO' ISNULL"
+		// TODO: deployed_address from indexer ? For now, it's same as Status_STATUS_COMPLETE
 	case launchpadpb.Status_STATUS_DEPLOYED:
-		statusFilterSQL = "AND NOT lp.collection_data->>'deployed_address' ISNULL"
+		// statusFilterSQL = "AND NOT lp.collection_data->>'deployed_address' ISNULL"
+		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
 	}
 
 	userAddress := req.GetUserAddress()
