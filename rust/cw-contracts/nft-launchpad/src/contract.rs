@@ -25,7 +25,7 @@ const INSTANTIATE_REPLY_ID: u64 = 1u64;
 pub struct NftLaunchpad {
     pub(crate) config: Item<'static, Config>, // nft launchpad config
     pub(crate) collections: Map<'static, String, Collection>, // collection id => collection info
-
+    pub(crate) collections_by_creator: Map<'static, (Addr, String), Collection>, // owner addr => collection info
     pub(crate) instantiating_collection_id: Item<'static, String>,
 }
 
@@ -38,8 +38,8 @@ impl NftLaunchpad {
     pub const fn new() -> Self {
         Self {
             config: Item::new("config"),
-
             collections: Map::new("collections"),
+            collections_by_creator: Map::new("collections_by_creator"),
             instantiating_collection_id: Item::new("instantiating_collection_id"),
         }
     }
@@ -241,6 +241,23 @@ impl NftLaunchpad {
     }
 
     #[msg(query)]
+    pub fn get_collections_by_creator(
+        &self,
+        ctx: QueryCtx,
+        owner: String,
+    ) -> StdResult<Vec<Collection>> {
+        let owner_addr = ctx.deps.api.addr_validate(&owner)?;
+
+        let collections: Vec<Collection> = self.collections_by_creator
+            .prefix(owner_addr)
+            .range(ctx.deps.storage, None, None, Order::Ascending)
+            .filter_map(|item| item.ok().map(|(_, collection)| collection)) // Utilisez filter_map pour éviter des erreurs
+            .collect();
+
+        Ok(collections)
+    }
+
+    #[msg(query)]
     pub fn get_collection_by_id(
         &self,
         ctx: QueryCtx,
@@ -401,3 +418,4 @@ pub enum CollectionState {
     Pending,  // When user summit the collection but not deployed yet
     Deployed, // When collection has been deployed
 }
+

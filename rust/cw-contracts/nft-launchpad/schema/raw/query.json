@@ -5,6 +5,26 @@
     {
       "type": "object",
       "required": [
+        "get_collections_by_creator"
+      ],
+      "properties": {
+        "get_collections_by_creator": {
+          "type": "object",
+          "required": [
+            "owner"
+          ],
+          "properties": {
+            "owner": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
         "get_collection_by_id"
       ],
       "properties": {

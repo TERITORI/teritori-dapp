@@ -99,6 +99,11 @@ export interface WhitelistInfo {
   addresses_merkle_root: string;
 }
 export type QueryMsg = {
+  get_collections_by_creator: {
+    owner: string;
+    [k: string]: unknown;
+  };
+} | {
   get_collection_by_id: {
     collection_id: string;
     [k: string]: unknown;
@@ -113,3 +118,4 @@ export type QueryMsg = {
     [k: string]: unknown;
   };
 };
+export type ArrayOfCollection = Collection[];

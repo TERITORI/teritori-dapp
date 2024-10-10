@@ -6,9 +6,14 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { Addr, InstantiateMsg, Config, ExecuteMsg, Uint128, ConfigChanges, Collection, MintPeriod, Coin, WhitelistInfo, QueryMsg } from "./NftLaunchpad.types";
+import { Addr, InstantiateMsg, Config, ExecuteMsg, Uint128, ConfigChanges, Collection, MintPeriod, Coin, WhitelistInfo, QueryMsg, ArrayOfCollection } from "./NftLaunchpad.types";
 export interface NftLaunchpadReadOnlyInterface {
   contractAddress: string;
+  getCollectionsByCreator: ({
+    owner
+  }: {
+    owner: string;
+  }) => Promise<ArrayOfCollection>;
   getCollectionById: ({
     collectionId
   }: {
@@ -28,11 +33,23 @@ export class NftLaunchpadQueryClient implements NftLaunchpadReadOnlyInterface {
   constructor(client: CosmWasmClient, contractAddress: string) {
     this.client = client;
     this.contractAddress = contractAddress;
+    this.getCollectionsByCreator = this.getCollectionsByCreator.bind(this);
     this.getCollectionById = this.getCollectionById.bind(this);
     this.getCollectionByAddr = this.getCollectionByAddr.bind(this);
     this.getConfig = this.getConfig.bind(this);
   }
 
+  getCollectionsByCreator = async ({
+    owner
+  }: {
+    owner: string;
+  }): Promise<ArrayOfCollection> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      get_collections_by_creator: {
+        owner
+      }
+    });
+  };
   getCollectionById = async ({
     collectionId
   }: {
