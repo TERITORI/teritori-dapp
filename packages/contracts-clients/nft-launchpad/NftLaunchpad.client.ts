@@ -9,7 +9,7 @@ import { StdFee } from "@cosmjs/amino";
 import { Addr, InstantiateMsg, Config, ExecuteMsg, Uint128, ConfigChanges, Collection, MintPeriod, Coin, WhitelistInfo, QueryMsg, ArrayOfCollection } from "./NftLaunchpad.types";
 export interface NftLaunchpadReadOnlyInterface {
   contractAddress: string;
-  getCollectionsByCreator: ({
+  getCollectionsByOwner: ({
     owner
   }: {
     owner: string;
@@ -33,19 +33,19 @@ export class NftLaunchpadQueryClient implements NftLaunchpadReadOnlyInterface {
   constructor(client: CosmWasmClient, contractAddress: string) {
     this.client = client;
     this.contractAddress = contractAddress;
-    this.getCollectionsByCreator = this.getCollectionsByCreator.bind(this);
+    this.getCollectionsByOwner = this.getCollectionsByOwner.bind(this);
     this.getCollectionById = this.getCollectionById.bind(this);
     this.getCollectionByAddr = this.getCollectionByAddr.bind(this);
     this.getConfig = this.getConfig.bind(this);
   }
 
-  getCollectionsByCreator = async ({
+  getCollectionsByOwner = async ({
     owner
   }: {
     owner: string;
   }): Promise<ArrayOfCollection> => {
     return this.client.queryContractSmart(this.contractAddress, {
-      get_collections_by_creator: {
+      get_collections_by_owner: {
         owner
       }
     });

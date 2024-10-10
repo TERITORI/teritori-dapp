@@ -202,7 +202,7 @@ fn full_flow() {
         assert_eq!(commited_collection.name, default_collection.name);
     }
 
-    // Submit collection with same name
+    // Submit collection with same symbol
     {
         let err = contract
             .submit_collection(default_collection.clone())
@@ -343,4 +343,15 @@ fn full_flow() {
         let collection = contract.get_collection_by_id(collection_id).unwrap();
         assert_eq!(collection.deployed_address, Some("contract1".to_string()));
     }
+
+    // Get created collections by owner  --------------------------------------------------------------------------------------------
+    {
+        let owner = sender.to_string();
+        let collections = contract
+            .get_collections_by_owner(owner.clone())
+            .unwrap();
+
+        assert!(!collections.is_empty(), "No collection found for owner {}", owner);
+    }
 }
+

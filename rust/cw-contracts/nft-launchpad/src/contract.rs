@@ -25,7 +25,7 @@ const INSTANTIATE_REPLY_ID: u64 = 1u64;
 pub struct NftLaunchpad {
     pub(crate) config: Item<'static, Config>, // nft launchpad config
     pub(crate) collections: Map<'static, String, Collection>, // collection id => collection info
-    pub(crate) collections_by_creator: Map<'static, (Addr, String), Collection>, // owner addr => collection info
+    pub(crate) collections_by_owner: Map<'static, (Addr, String), Collection>, // owner addr => collection info
     pub(crate) instantiating_collection_id: Item<'static, String>,
 }
 
@@ -39,7 +39,7 @@ impl NftLaunchpad {
         Self {
             config: Item::new("config"),
             collections: Map::new("collections"),
-            collections_by_creator: Map::new("collections_by_creator"),
+            collections_by_owner: Map::new("collections_by_owner"),
             instantiating_collection_id: Item::new("instantiating_collection_id"),
         }
     }
@@ -119,6 +119,10 @@ impl NftLaunchpad {
         // Add new collection
         self.collections
             .save(storage, collection_id.to_owned(), &collection_with_owner)?;
+
+        let owner = ctx.deps.api.addr_validate(&sender)?;
+        self.collections_by_owner
+            .save(storage, (owner, collection_id.to_owned()), &collection_with_owner)?;
 
         Ok(Response::new()
             .add_attribute("action", "submit_collection")
@@ -241,14 +245,14 @@ impl NftLaunchpad {
     }
 
     #[msg(query)]
-    pub fn get_collections_by_creator(
+    pub fn get_collections_by_owner(
         &self,
         ctx: QueryCtx,
         owner: String,
     ) -> StdResult<Vec<Collection>> {
         let owner_addr = ctx.deps.api.addr_validate(&owner)?;
 
-        let collections: Vec<Collection> = self.collections_by_creator
+        let collections: Vec<Collection> = self.collections_by_owner
             .prefix(owner_addr)
             .range(ctx.deps.storage, None, None, Order::Ascending)
             .filter_map(|item| item.ok().map(|(_, collection)| collection)) // Utilisez filter_map pour éviter des erreurs
@@ -418,4 +422,5 @@ pub enum CollectionState {
     Pending,  // When user summit the collection but not deployed yet
     Deployed, // When collection has been deployed
 }
+
 

@@ -99,7 +99,7 @@ export interface WhitelistInfo {
   addresses_merkle_root: string;
 }
 export type QueryMsg = {
-  get_collections_by_creator: {
+  get_collections_by_owner: {
     owner: string;
     [k: string]: unknown;
   };
