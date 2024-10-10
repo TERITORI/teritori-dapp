@@ -222,6 +222,7 @@ export interface LaunchpadProject {
   creatorId: string;
   collectionData: string;
   merkleRoot?: string | undefined;
+  deployedAddress?: string | undefined;
 }
 
 export interface Metadata {
@@ -1511,7 +1512,14 @@ export const LaunchpadProjectsCountResponse = {
 };
 
 function createBaseLaunchpadProject(): LaunchpadProject {
-  return { id: "", networkId: "", creatorId: "", collectionData: "", merkleRoot: undefined };
+  return {
+    id: "",
+    networkId: "",
+    creatorId: "",
+    collectionData: "",
+    merkleRoot: undefined,
+    deployedAddress: undefined,
+  };
 }
 
 export const LaunchpadProject = {
@@ -1530,6 +1538,9 @@ export const LaunchpadProject = {
     }
     if (message.merkleRoot !== undefined) {
       writer.uint32(42).string(message.merkleRoot);
+    }
+    if (message.deployedAddress !== undefined) {
+      writer.uint32(50).string(message.deployedAddress);
     }
     return writer;
   },
@@ -1576,6 +1587,13 @@ export const LaunchpadProject = {
 
           message.merkleRoot = reader.string();
           continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.deployedAddress = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1592,6 +1610,7 @@ export const LaunchpadProject = {
       creatorId: isSet(object.creatorId) ? globalThis.String(object.creatorId) : "",
       collectionData: isSet(object.collectionData) ? globalThis.String(object.collectionData) : "",
       merkleRoot: isSet(object.merkleRoot) ? globalThis.String(object.merkleRoot) : undefined,
+      deployedAddress: isSet(object.deployedAddress) ? globalThis.String(object.deployedAddress) : undefined,
     };
   },
 
@@ -1612,6 +1631,9 @@ export const LaunchpadProject = {
     if (message.merkleRoot !== undefined) {
       obj.merkleRoot = message.merkleRoot;
     }
+    if (message.deployedAddress !== undefined) {
+      obj.deployedAddress = message.deployedAddress;
+    }
     return obj;
   },
 
@@ -1625,6 +1647,7 @@ export const LaunchpadProject = {
     message.creatorId = object.creatorId ?? "";
     message.collectionData = object.collectionData ?? "";
     message.merkleRoot = object.merkleRoot ?? undefined;
+    message.deployedAddress = object.deployedAddress ?? undefined;
     return message;
   },
 };

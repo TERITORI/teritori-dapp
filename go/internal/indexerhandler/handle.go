@@ -344,6 +344,10 @@ func (h *Handler) handleExecute(e *Message) error {
 			if err := h.handleExecuteUpdateMerkleRoot(e, &executeMsg); err != nil {
 				return errors.Wrap(err, "failed to handle update merkle root")
 			}
+		case "deploy_collection":
+			if err := h.handleExecuteDeployCollection(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle deploy collection")
+			}
 		}
 	}
 	return nil
@@ -386,3 +390,4 @@ func (h *Handler) handleExecuteMint(e *Message, execMsg *wasmtypes.MsgExecuteCon
 
 	return nil
 }
+

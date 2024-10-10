@@ -172,6 +172,8 @@ pub struct LaunchpadProject {
     pub collection_data: ::prost::alloc::string::String,
     #[prost(string, optional, tag="5")]
     pub merkle_root: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(string, optional, tag="6")]
+    pub deployed_address: ::core::option::Option<::prost::alloc::string::String>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

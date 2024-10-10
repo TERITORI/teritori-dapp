@@ -6,7 +6,8 @@ type LaunchpadProject struct {
 	NetworkID string `gorm:"primaryKey"`
 	ProjectID uint32 `gorm:"primaryKey"`
 
-	MerkleRoot     string
+	MerkleRoot      string
+	DeployedAddress string
 }
 
 type LaunchpadToken struct {
@@ -25,3 +26,4 @@ type LaunchpadWhitelist struct {
 	MerkleRoot string
 	Data       datatypes.JSON
 }
+

@@ -144,6 +144,7 @@ message LaunchpadProject {
   string creator_id = 3;
   string collection_data = 4;
   optional string merkle_root = 5;
+  optional string deployed_address = 6;
 }
 
 message Metadata {
@@ -269,5 +270,6 @@ message Trait {
 //   uint64 start_time = 6;
 //   uint64 end_time = 7;
 // }
+
 
 

@@ -78,3 +78,30 @@ func (h *Handler) handleExecuteUpdateMerkleRoot(e *Message, execMsg *wasmtypes.M
 
 	return nil
 }
+
+func (h *Handler) handleExecuteDeployCollection(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+	var jsonData map[string]map[string]interface{}
+	if err := json.Unmarshal(execMsg.Msg.Bytes(), &jsonData); err != nil {
+		return errors.Wrap(err, "failed to unmarshal json")
+	}
+	collectionId := jsonData["deploy_collection"]["collection_id"]
+	if collectionId == "" {
+		return errors.New("failed to get collection id")
+	}
+
+	deployedAddress := e.Events["instantiate._contract_address"][0]
+	if deployedAddress == "" {
+		return errors.New("failed to get deployed address from reply")
+	}
+
+	if err := h.db.
+		Model(&indexerdb.LaunchpadProject{}).
+		Where("project_id = ?", collectionId).
+		UpdateColumn("deployed_address", deployedAddress).
+		Error; err != nil {
+		return errors.Wrap(err, "failed to update deployed address")
+	}
+
+	return nil
+}
+
