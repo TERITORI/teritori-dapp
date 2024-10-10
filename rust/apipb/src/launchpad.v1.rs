@@ -30,7 +30,10 @@ pub struct LaunchpadProjectsByCreatorRequest {
     pub sort: i32,
     #[prost(enumeration="SortDirection", tag="6")]
     pub sort_direction: i32,
-    #[prost(enumeration="Status", optional, tag="7")]
+    ///   TODO: user authentication (Member of the admin DAO) using a token
+    #[prost(string, tag="7")]
+    pub user_address: ::prost::alloc::string::String,
+    #[prost(enumeration="Status", optional, tag="8")]
     pub status: ::core::option::Option<i32>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]

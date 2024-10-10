@@ -136,6 +136,8 @@ export interface LaunchpadProjectsByCreatorRequest {
   offset: number;
   sort: Sort;
   sortDirection: SortDirection;
+  /** TODO: user authentication (Member of the admin DAO) using a token */
+  userAddress: string;
   status?: Status | undefined;
 }
 
@@ -243,7 +245,16 @@ export interface Trait {
 }
 
 function createBaseLaunchpadProjectsByCreatorRequest(): LaunchpadProjectsByCreatorRequest {
-  return { creatorId: "", networkId: "", limit: 0, offset: 0, sort: 0, sortDirection: 0, status: undefined };
+  return {
+    creatorId: "",
+    networkId: "",
+    limit: 0,
+    offset: 0,
+    sort: 0,
+    sortDirection: 0,
+    userAddress: "",
+    status: undefined,
+  };
 }
 
 export const LaunchpadProjectsByCreatorRequest = {
@@ -266,8 +277,11 @@ export const LaunchpadProjectsByCreatorRequest = {
     if (message.sortDirection !== 0) {
       writer.uint32(48).int32(message.sortDirection);
     }
+    if (message.userAddress !== "") {
+      writer.uint32(58).string(message.userAddress);
+    }
     if (message.status !== undefined) {
-      writer.uint32(56).int32(message.status);
+      writer.uint32(64).int32(message.status);
     }
     return writer;
   },
@@ -322,7 +336,14 @@ export const LaunchpadProjectsByCreatorRequest = {
           message.sortDirection = reader.int32() as any;
           continue;
         case 7:
-          if (tag !== 56) {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.userAddress = reader.string();
+          continue;
+        case 8:
+          if (tag !== 64) {
             break;
           }
 
@@ -345,6 +366,7 @@ export const LaunchpadProjectsByCreatorRequest = {
       offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
       sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
       sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
+      userAddress: isSet(object.userAddress) ? globalThis.String(object.userAddress) : "",
       status: isSet(object.status) ? statusFromJSON(object.status) : undefined,
     };
   },
@@ -369,6 +391,9 @@ export const LaunchpadProjectsByCreatorRequest = {
     if (message.sortDirection !== 0) {
       obj.sortDirection = sortDirectionToJSON(message.sortDirection);
     }
+    if (message.userAddress !== "") {
+      obj.userAddress = message.userAddress;
+    }
     if (message.status !== undefined) {
       obj.status = statusToJSON(message.status);
     }
@@ -390,6 +415,7 @@ export const LaunchpadProjectsByCreatorRequest = {
     message.offset = object.offset ?? 0;
     message.sort = object.sort ?? 0;
     message.sortDirection = object.sortDirection ?? 0;
+    message.userAddress = object.userAddress ?? "";
     message.status = object.status ?? undefined;
     return message;
   },
