@@ -56,9 +56,9 @@ message LaunchpadProjectsByCreatorRequest {
   int32 offset = 4;
   Sort sort = 5;
   SortDirection sort_direction = 6;
+  optional Status status = 7;
   //  TODO: user authentication (Member of the admin DAO) using a token
-  string user_address = 7;
-  optional Status status = 8;
+  // string user_address = 8;
 }
 
 message LaunchpadProjectsByCreatorResponse {
@@ -71,9 +71,9 @@ message LaunchpadProjectsRequest {
   int32 offset = 3;
   Sort sort = 4;
   SortDirection sort_direction = 5;
+  optional Status status = 6;
   //  TODO: user authentication (Member of the admin DAO) using a token
-  string user_address = 6;
-  optional Status status = 7;
+  // string user_address = 7;
 }
 
 message LaunchpadProjectsResponse {
@@ -84,7 +84,7 @@ message LaunchpadProjectByIdRequest {
   string network_id = 1;
   string project_id = 2;
   //  TODO: user authentication (Member of the admin DAO) using a token
-  string user_address = 3;
+  // string user_address = 3;
 }
 
 message LaunchpadProjectByIdResponse {
@@ -126,10 +126,10 @@ message TokenMetadataResponse {
 }
 
 message LaunchpadProjectsCountRequest {
+  string network_id = 1;
+  optional Status status = 2;
   //  TODO: user authentication (Member of the admin DAO) using a token
-  string user_address = 1;
-  string network_id = 2;
-  optional Status status = 3;
+  // string user_address = 3;
 }
 
 message LaunchpadProjectsCountResponse {
@@ -270,6 +270,7 @@ message Trait {
 //   uint64 start_time = 6;
 //   uint64 end_time = 7;
 // }
+
 
 
 

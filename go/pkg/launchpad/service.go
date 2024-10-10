@@ -6,8 +6,6 @@ import (
 	"fmt"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
-	"github.com/TERITORI/teritori-dapp/go/pkg/dao"
-	"github.com/TERITORI/teritori-dapp/go/pkg/daopb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/pkg/errors"
@@ -210,6 +208,7 @@ func (s *Launchpad) TokenMetadata(ctx context.Context, req *launchpadpb.TokenMet
 	}, nil
 }
 
+// Get launchpad projects by creator_id
 func (s *Launchpad) LaunchpadProjectsByCreator(ctx context.Context, req *launchpadpb.LaunchpadProjectsByCreatorRequest) (*launchpadpb.LaunchpadProjectsByCreatorResponse, error) {
 	limit := req.GetLimit()
 	if limit <= 0 {
@@ -251,10 +250,8 @@ func (s *Launchpad) LaunchpadProjectsByCreator(ctx context.Context, req *launchp
 		// TODO: Is status confirmed useless ? For now, it's same as Status_STATUS_COMPLETE
 	case launchpadpb.Status_STATUS_CONFIRMED:
 		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
-		// TODO: deployed_address from indexer ? For now, it's same as Status_STATUS_COMPLETE
 	case launchpadpb.Status_STATUS_DEPLOYED:
-		// statusFilterSQL = "AND NOT lp.collection_data->>'deployed_address' ISNULL"
-		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
+		statusFilterSQL = "AND NOT lp.deployed_address ISNULL"
 	}
 
 	var projects []indexerdb.LaunchpadProject
@@ -300,6 +297,7 @@ func (s *Launchpad) LaunchpadProjectsByCreator(ctx context.Context, req *launchp
 	}, nil
 }
 
+// Get all launchpad projects
 func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.LaunchpadProjectsRequest) (*launchpadpb.LaunchpadProjectsResponse, error) {
 	limit := req.GetLimit()
 	if limit <= 0 {
@@ -321,26 +319,26 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
 	}
 
-	userAddress := req.GetUserAddress()
-	if userAddress == "" {
-		return nil, errors.New("missing user address")
-	}
+	// userAddress := req.GetUserAddress()
+	// if userAddress == "" {
+	// 	return nil, errors.New("missing user address")
+	// }
 
-	daoService := dao.NewDAOService(context.Background(), &dao.Config{
-		Logger:    s.conf.Logger,
-		IndexerDB: s.conf.IndexerDB,
-		NetStore:  &s.conf.NetworkStore,
-	})
+	// daoService := dao.NewDAOService(context.Background(), &dao.Config{
+	// 	Logger:    s.conf.Logger,
+	// 	IndexerDB: s.conf.IndexerDB,
+	// 	NetStore:  &s.conf.NetworkStore,
+	// })
 
-	isUserAdminResponse, err := daoService.IsUserAdmin(context.Background(), &daopb.IsUserAdminRequest{
-		UserAddress: userAddress,
-	})
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to verify user's authentication")
-	}
-	if !isUserAdminResponse.IsUserAdmin {
-		return nil, errors.New("Unauthorized")
-	}
+	// isUserAdminResponse, err := daoService.IsUserAdmin(context.Background(), &daopb.IsUserAdminRequest{
+	// 	UserAddress: userAddress,
+	// })
+	// if err != nil {
+	// 	return nil, errors.Wrap(err, "failed to verify user's authentication")
+	// }
+	// if !isUserAdminResponse.IsUserAdmin {
+	// 	return nil, errors.New("Unauthorized")
+	// }
 
 	status := req.GetStatus()
 	if status < 0 {
@@ -355,10 +353,8 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		// TODO: Is status confirmed useless ? For now, it's same as Status_STATUS_COMPLETE
 	case launchpadpb.Status_STATUS_CONFIRMED:
 		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
-		// TODO: deployed_address from indexer ? For now, it's same as Status_STATUS_COMPLETE
 	case launchpadpb.Status_STATUS_DEPLOYED:
-		// statusFilterSQL = "AND NOT lp.collection_data->>'deployed_address' ISNULL"
-		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
+		statusFilterSQL = "AND NOT lp.deployed_address ISNULL"
 	}
 
 	var projects []indexerdb.LaunchpadProject
@@ -403,10 +399,15 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 	}, nil
 }
 
+// Get launchpad project by project_id
 func (s *Launchpad) LaunchpadProjectById(ctx context.Context, req *launchpadpb.LaunchpadProjectByIdRequest) (*launchpadpb.LaunchpadProjectByIdResponse, error) {
 	networkID := req.GetNetworkId()
 	if networkID == "" {
 		return nil, errors.New("missing network id")
+	}
+	_, err := s.conf.NetworkStore.GetNetwork(networkID)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
 	}
 
 	projectID := req.GetProjectId()
@@ -414,31 +415,26 @@ func (s *Launchpad) LaunchpadProjectById(ctx context.Context, req *launchpadpb.L
 		return nil, errors.New("missing project id")
 	}
 
-	userAddress := req.GetUserAddress()
-	if userAddress == "" {
-		return nil, errors.New("missing user address")
-	}
+	// userAddress := req.GetUserAddress()
+	// if userAddress == "" {
+	// 	return nil, errors.New("missing user address")
+	// }
 
-	_, err := s.conf.NetworkStore.GetNetwork(networkID)
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
-	}
+	// daoService := dao.NewDAOService(context.Background(), &dao.Config{
+	// 	Logger:    s.conf.Logger,
+	// 	IndexerDB: s.conf.IndexerDB,
+	// 	NetStore:  &s.conf.NetworkStore,
+	// })
 
-	daoService := dao.NewDAOService(context.Background(), &dao.Config{
-		Logger:    s.conf.Logger,
-		IndexerDB: s.conf.IndexerDB,
-		NetStore:  &s.conf.NetworkStore,
-	})
-
-	isUserAdminResponse, err := daoService.IsUserAdmin(context.Background(), &daopb.IsUserAdminRequest{
-		UserAddress: userAddress,
-	})
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to verify user's authentication")
-	}
-	if !isUserAdminResponse.IsUserAdmin {
-		return nil, errors.New("Unauthorized")
-	}
+	// isUserAdminResponse, err := daoService.IsUserAdmin(context.Background(), &daopb.IsUserAdminRequest{
+	// 	UserAddress: userAddress,
+	// })
+	// if err != nil {
+	// 	return nil, errors.Wrap(err, "failed to verify user's authentication")
+	// }
+	// if !isUserAdminResponse.IsUserAdmin {
+	// 	return nil, errors.New("Unauthorized")
+	// }
 
 	var project *indexerdb.LaunchpadProject
 
@@ -457,10 +453,15 @@ func (s *Launchpad) LaunchpadProjectById(ctx context.Context, req *launchpadpb.L
 	}, nil
 }
 
+// Get all launchpad projects counts
 func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb.LaunchpadProjectsCountRequest) (*launchpadpb.LaunchpadProjectsCountResponse, error) {
 	networkID := req.GetNetworkId()
 	if networkID == "" {
 		return nil, errors.New("missing network id")
+	}
+	_, err := s.conf.NetworkStore.GetNetwork(networkID)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
 	}
 
 	status := req.GetStatus()
@@ -475,38 +476,31 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
 		// TODO: Status confirmed ?
 	case launchpadpb.Status_STATUS_CONFIRMED:
-		statusFilterSQL = "AND NOT lp.collection_data->>'TODO' ISNULL"
-		// TODO: deployed_address from indexer ? For now, it's same as Status_STATUS_COMPLETE
-	case launchpadpb.Status_STATUS_DEPLOYED:
-		// statusFilterSQL = "AND NOT lp.collection_data->>'deployed_address' ISNULL"
 		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
+	case launchpadpb.Status_STATUS_DEPLOYED:
+		statusFilterSQL = "AND NOT lp.deployed_address ISNULL"
 	}
 
-	userAddress := req.GetUserAddress()
-	if userAddress == "" {
-		return nil, errors.New("missing user address")
-	}
+	// userAddress := req.GetUserAddress()
+	// if userAddress == "" {
+	// 	return nil, errors.New("missing user address")
+	// }
 
-	_, err := s.conf.NetworkStore.GetNetwork(networkID)
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
-	}
+	// daoService := dao.NewDAOService(context.Background(), &dao.Config{
+	// 	Logger:    s.conf.Logger,
+	// 	IndexerDB: s.conf.IndexerDB,
+	// 	NetStore:  &s.conf.NetworkStore,
+	// })
 
-	daoService := dao.NewDAOService(context.Background(), &dao.Config{
-		Logger:    s.conf.Logger,
-		IndexerDB: s.conf.IndexerDB,
-		NetStore:  &s.conf.NetworkStore,
-	})
-
-	isUserAdminResponse, err := daoService.IsUserAdmin(context.Background(), &daopb.IsUserAdminRequest{
-		UserAddress: userAddress,
-	})
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to verify user's authentication")
-	}
-	if !isUserAdminResponse.IsUserAdmin {
-		return nil, errors.New("Unauthorized")
-	}
+	// isUserAdminResponse, err := daoService.IsUserAdmin(context.Background(), &daopb.IsUserAdminRequest{
+	// 	UserAddress: userAddress,
+	// })
+	// if err != nil {
+	// 	return nil, errors.Wrap(err, "failed to verify user's authentication")
+	// }
+	// if !isUserAdminResponse.IsUserAdmin {
+	// 	return nil, errors.New("Unauthorized")
+	// }
 
 	var count uint32
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`SELECT COUNT(*) FROM launchpad_projects AS lp WHERE lp.network_id = ? %s`, statusFilterSQL), networkID).Scan(&count).Error
@@ -540,3 +534,4 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 // 	}
 // 	return isUserAuthorized, nil
 // }
+

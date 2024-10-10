@@ -136,8 +136,10 @@ export interface LaunchpadProjectsByCreatorRequest {
   offset: number;
   sort: Sort;
   sortDirection: SortDirection;
-  /** TODO: user authentication (Member of the admin DAO) using a token */
-  userAddress: string;
+  /**
+   * TODO: user authentication (Member of the admin DAO) using a token
+   * string user_address = 8;
+   */
   status?: Status | undefined;
 }
 
@@ -151,8 +153,10 @@ export interface LaunchpadProjectsRequest {
   offset: number;
   sort: Sort;
   sortDirection: SortDirection;
-  /** TODO: user authentication (Member of the admin DAO) using a token */
-  userAddress: string;
+  /**
+   * TODO: user authentication (Member of the admin DAO) using a token
+   * string user_address = 7;
+   */
   status?: Status | undefined;
 }
 
@@ -162,9 +166,11 @@ export interface LaunchpadProjectsResponse {
 
 export interface LaunchpadProjectByIdRequest {
   networkId: string;
+  /**
+   * TODO: user authentication (Member of the admin DAO) using a token
+   * string user_address = 3;
+   */
   projectId: string;
-  /** TODO: user authentication (Member of the admin DAO) using a token */
-  userAddress: string;
 }
 
 export interface LaunchpadProjectByIdResponse {
@@ -206,9 +212,11 @@ export interface TokenMetadataResponse {
 }
 
 export interface LaunchpadProjectsCountRequest {
-  /** TODO: user authentication (Member of the admin DAO) using a token */
-  userAddress: string;
   networkId: string;
+  /**
+   * TODO: user authentication (Member of the admin DAO) using a token
+   * string user_address = 3;
+   */
   status?: Status | undefined;
 }
 
@@ -246,16 +254,7 @@ export interface Trait {
 }
 
 function createBaseLaunchpadProjectsByCreatorRequest(): LaunchpadProjectsByCreatorRequest {
-  return {
-    creatorId: "",
-    networkId: "",
-    limit: 0,
-    offset: 0,
-    sort: 0,
-    sortDirection: 0,
-    userAddress: "",
-    status: undefined,
-  };
+  return { creatorId: "", networkId: "", limit: 0, offset: 0, sort: 0, sortDirection: 0, status: undefined };
 }
 
 export const LaunchpadProjectsByCreatorRequest = {
@@ -278,11 +277,8 @@ export const LaunchpadProjectsByCreatorRequest = {
     if (message.sortDirection !== 0) {
       writer.uint32(48).int32(message.sortDirection);
     }
-    if (message.userAddress !== "") {
-      writer.uint32(58).string(message.userAddress);
-    }
     if (message.status !== undefined) {
-      writer.uint32(64).int32(message.status);
+      writer.uint32(56).int32(message.status);
     }
     return writer;
   },
@@ -337,14 +333,7 @@ export const LaunchpadProjectsByCreatorRequest = {
           message.sortDirection = reader.int32() as any;
           continue;
         case 7:
-          if (tag !== 58) {
-            break;
-          }
-
-          message.userAddress = reader.string();
-          continue;
-        case 8:
-          if (tag !== 64) {
+          if (tag !== 56) {
             break;
           }
 
@@ -367,7 +356,6 @@ export const LaunchpadProjectsByCreatorRequest = {
       offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
       sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
       sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
-      userAddress: isSet(object.userAddress) ? globalThis.String(object.userAddress) : "",
       status: isSet(object.status) ? statusFromJSON(object.status) : undefined,
     };
   },
@@ -392,9 +380,6 @@ export const LaunchpadProjectsByCreatorRequest = {
     if (message.sortDirection !== 0) {
       obj.sortDirection = sortDirectionToJSON(message.sortDirection);
     }
-    if (message.userAddress !== "") {
-      obj.userAddress = message.userAddress;
-    }
     if (message.status !== undefined) {
       obj.status = statusToJSON(message.status);
     }
@@ -416,7 +401,6 @@ export const LaunchpadProjectsByCreatorRequest = {
     message.offset = object.offset ?? 0;
     message.sort = object.sort ?? 0;
     message.sortDirection = object.sortDirection ?? 0;
-    message.userAddress = object.userAddress ?? "";
     message.status = object.status ?? undefined;
     return message;
   },
@@ -488,7 +472,7 @@ export const LaunchpadProjectsByCreatorResponse = {
 };
 
 function createBaseLaunchpadProjectsRequest(): LaunchpadProjectsRequest {
-  return { networkId: "", limit: 0, offset: 0, sort: 0, sortDirection: 0, userAddress: "", status: undefined };
+  return { networkId: "", limit: 0, offset: 0, sort: 0, sortDirection: 0, status: undefined };
 }
 
 export const LaunchpadProjectsRequest = {
@@ -508,11 +492,8 @@ export const LaunchpadProjectsRequest = {
     if (message.sortDirection !== 0) {
       writer.uint32(40).int32(message.sortDirection);
     }
-    if (message.userAddress !== "") {
-      writer.uint32(50).string(message.userAddress);
-    }
     if (message.status !== undefined) {
-      writer.uint32(56).int32(message.status);
+      writer.uint32(48).int32(message.status);
     }
     return writer;
   },
@@ -560,14 +541,7 @@ export const LaunchpadProjectsRequest = {
           message.sortDirection = reader.int32() as any;
           continue;
         case 6:
-          if (tag !== 50) {
-            break;
-          }
-
-          message.userAddress = reader.string();
-          continue;
-        case 7:
-          if (tag !== 56) {
+          if (tag !== 48) {
             break;
           }
 
@@ -589,7 +563,6 @@ export const LaunchpadProjectsRequest = {
       offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
       sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
       sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
-      userAddress: isSet(object.userAddress) ? globalThis.String(object.userAddress) : "",
       status: isSet(object.status) ? statusFromJSON(object.status) : undefined,
     };
   },
@@ -611,9 +584,6 @@ export const LaunchpadProjectsRequest = {
     if (message.sortDirection !== 0) {
       obj.sortDirection = sortDirectionToJSON(message.sortDirection);
     }
-    if (message.userAddress !== "") {
-      obj.userAddress = message.userAddress;
-    }
     if (message.status !== undefined) {
       obj.status = statusToJSON(message.status);
     }
@@ -630,7 +600,6 @@ export const LaunchpadProjectsRequest = {
     message.offset = object.offset ?? 0;
     message.sort = object.sort ?? 0;
     message.sortDirection = object.sortDirection ?? 0;
-    message.userAddress = object.userAddress ?? "";
     message.status = object.status ?? undefined;
     return message;
   },
@@ -698,7 +667,7 @@ export const LaunchpadProjectsResponse = {
 };
 
 function createBaseLaunchpadProjectByIdRequest(): LaunchpadProjectByIdRequest {
-  return { networkId: "", projectId: "", userAddress: "" };
+  return { networkId: "", projectId: "" };
 }
 
 export const LaunchpadProjectByIdRequest = {
@@ -708,9 +677,6 @@ export const LaunchpadProjectByIdRequest = {
     }
     if (message.projectId !== "") {
       writer.uint32(18).string(message.projectId);
-    }
-    if (message.userAddress !== "") {
-      writer.uint32(26).string(message.userAddress);
     }
     return writer;
   },
@@ -736,13 +702,6 @@ export const LaunchpadProjectByIdRequest = {
 
           message.projectId = reader.string();
           continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.userAddress = reader.string();
-          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -756,7 +715,6 @@ export const LaunchpadProjectByIdRequest = {
     return {
       networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
       projectId: isSet(object.projectId) ? globalThis.String(object.projectId) : "",
-      userAddress: isSet(object.userAddress) ? globalThis.String(object.userAddress) : "",
     };
   },
 
@@ -768,9 +726,6 @@ export const LaunchpadProjectByIdRequest = {
     if (message.projectId !== "") {
       obj.projectId = message.projectId;
     }
-    if (message.userAddress !== "") {
-      obj.userAddress = message.userAddress;
-    }
     return obj;
   },
 
@@ -781,7 +736,6 @@ export const LaunchpadProjectByIdRequest = {
     const message = createBaseLaunchpadProjectByIdRequest();
     message.networkId = object.networkId ?? "";
     message.projectId = object.projectId ?? "";
-    message.userAddress = object.userAddress ?? "";
     return message;
   },
 };
@@ -1362,19 +1316,16 @@ export const TokenMetadataResponse = {
 };
 
 function createBaseLaunchpadProjectsCountRequest(): LaunchpadProjectsCountRequest {
-  return { userAddress: "", networkId: "", status: undefined };
+  return { networkId: "", status: undefined };
 }
 
 export const LaunchpadProjectsCountRequest = {
   encode(message: LaunchpadProjectsCountRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.userAddress !== "") {
-      writer.uint32(10).string(message.userAddress);
-    }
     if (message.networkId !== "") {
-      writer.uint32(18).string(message.networkId);
+      writer.uint32(10).string(message.networkId);
     }
     if (message.status !== undefined) {
-      writer.uint32(24).int32(message.status);
+      writer.uint32(16).int32(message.status);
     }
     return writer;
   },
@@ -1391,17 +1342,10 @@ export const LaunchpadProjectsCountRequest = {
             break;
           }
 
-          message.userAddress = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
           message.networkId = reader.string();
           continue;
-        case 3:
-          if (tag !== 24) {
+        case 2:
+          if (tag !== 16) {
             break;
           }
 
@@ -1418,7 +1362,6 @@ export const LaunchpadProjectsCountRequest = {
 
   fromJSON(object: any): LaunchpadProjectsCountRequest {
     return {
-      userAddress: isSet(object.userAddress) ? globalThis.String(object.userAddress) : "",
       networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
       status: isSet(object.status) ? statusFromJSON(object.status) : undefined,
     };
@@ -1426,9 +1369,6 @@ export const LaunchpadProjectsCountRequest = {
 
   toJSON(message: LaunchpadProjectsCountRequest): unknown {
     const obj: any = {};
-    if (message.userAddress !== "") {
-      obj.userAddress = message.userAddress;
-    }
     if (message.networkId !== "") {
       obj.networkId = message.networkId;
     }
@@ -1445,7 +1385,6 @@ export const LaunchpadProjectsCountRequest = {
     object: I,
   ): LaunchpadProjectsCountRequest {
     const message = createBaseLaunchpadProjectsCountRequest();
-    message.userAddress = object.userAddress ?? "";
     message.networkId = object.networkId ?? "";
     message.status = object.status ?? undefined;
     return message;

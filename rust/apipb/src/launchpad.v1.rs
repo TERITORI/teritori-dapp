@@ -31,9 +31,8 @@ pub struct LaunchpadProjectsByCreatorRequest {
     #[prost(enumeration="SortDirection", tag="6")]
     pub sort_direction: i32,
     ///   TODO: user authentication (Member of the admin DAO) using a token
-    #[prost(string, tag="7")]
-    pub user_address: ::prost::alloc::string::String,
-    #[prost(enumeration="Status", optional, tag="8")]
+    /// string user_address = 8;
+    #[prost(enumeration="Status", optional, tag="7")]
     pub status: ::core::option::Option<i32>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -56,9 +55,8 @@ pub struct LaunchpadProjectsRequest {
     #[prost(enumeration="SortDirection", tag="5")]
     pub sort_direction: i32,
     ///   TODO: user authentication (Member of the admin DAO) using a token
-    #[prost(string, tag="6")]
-    pub user_address: ::prost::alloc::string::String,
-    #[prost(enumeration="Status", optional, tag="7")]
+    /// string user_address = 7;
+    #[prost(enumeration="Status", optional, tag="6")]
     pub status: ::core::option::Option<i32>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -72,11 +70,10 @@ pub struct LaunchpadProjectsResponse {
 pub struct LaunchpadProjectByIdRequest {
     #[prost(string, tag="1")]
     pub network_id: ::prost::alloc::string::String,
+    ///   TODO: user authentication (Member of the admin DAO) using a token
+    /// string user_address = 3;
     #[prost(string, tag="2")]
     pub project_id: ::prost::alloc::string::String,
-    ///   TODO: user authentication (Member of the admin DAO) using a token
-    #[prost(string, tag="3")]
-    pub user_address: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -143,12 +140,11 @@ pub struct TokenMetadataResponse {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LaunchpadProjectsCountRequest {
-    ///   TODO: user authentication (Member of the admin DAO) using a token
     #[prost(string, tag="1")]
-    pub user_address: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
     pub network_id: ::prost::alloc::string::String,
-    #[prost(enumeration="Status", optional, tag="3")]
+    ///   TODO: user authentication (Member of the admin DAO) using a token
+    /// string user_address = 3;
+    #[prost(enumeration="Status", optional, tag="2")]
     pub status: ::core::option::Option<i32>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
