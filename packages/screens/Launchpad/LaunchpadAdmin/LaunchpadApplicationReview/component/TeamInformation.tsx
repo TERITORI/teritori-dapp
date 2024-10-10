@@ -11,8 +11,8 @@ import { layout } from "@/utils/style/layout";
 import { CollectionDataResult } from "@/utils/types/launchpad";
 
 export const TeamInformation: React.FC<{
-  collection: CollectionDataResult;
-}> = ({ collection }) => {
+  collectionData: CollectionDataResult;
+}> = ({ collectionData }) => {
   const { width } = useWindowDimensions();
 
   return (
@@ -31,11 +31,11 @@ export const TeamInformation: React.FC<{
       >
         <ApplicationCard
           title="Team Description"
-          value={collection.team_desc}
+          value={collectionData.team_desc}
         />
         <ApplicationCard
           title="Partners Description"
-          value={collection.partners}
+          value={collectionData.partners}
         />
         <LinkCard
           style={{ borderColor: "red" }}

@@ -11,15 +11,23 @@ import { mustGetLaunchpadClient } from "@/utils/backend";
 export const useLaunchpadProjectById = (req: LaunchpadProjectByIdRequest) => {
   const { setToast } = useFeedbacks();
   const networkId = req.networkId;
-  const userAddress = req.userAddress;
+  // const userAddress = req.userAddress;
   const collectionId = req.projectId;
 
   const { data, ...other } = useQuery<LaunchpadProject | null>(
-    ["launchpadProjectById", collectionId, networkId, userAddress],
+    [
+      "launchpadProjectById",
+      collectionId,
+      networkId,
+      // , userAddress
+    ],
     async () => {
       try {
         const client = mustGetLaunchpadClient(networkId);
-        if (!client || !userAddress) {
+        if (
+          !client
+          // || !userAddress
+        ) {
           return null;
         }
         const response: LaunchpadProjectByIdResponse =

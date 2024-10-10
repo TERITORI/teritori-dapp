@@ -13,8 +13,8 @@ import { CollectionDataResult } from "@/utils/types/launchpad";
 
 export const CreatorInformation: React.FC<{
   creatorId: string;
-  collection: CollectionDataResult;
-}> = ({ creatorId, collection }) => {
+  collectionData: CollectionDataResult;
+}> = ({ creatorId, collectionData }) => {
   const { width } = useWindowDimensions();
   const creatorNSInfo = useNSUserInfo(creatorId);
   const [, creatorAddress] = parseUserId(creatorId);
@@ -43,7 +43,7 @@ export const CreatorInformation: React.FC<{
         />
         <ApplicationCard
           title="Twitter URL"
-          value={collection.twitter_profile}
+          value={collectionData.twitter_profile}
           style={{ flex: 2 }}
         />
 
@@ -57,7 +57,7 @@ export const CreatorInformation: React.FC<{
           />
           <ApplicationCard
             title="Twitter Follower Count"
-            value={collection.twitter_followers_count.toString()}
+            value={collectionData.twitter_followers_count.toString()}
             style={{ flex: 1 }}
           />
         </View>
@@ -71,7 +71,7 @@ export const CreatorInformation: React.FC<{
       >
         <ApplicationCard
           title="Main Contact Discord"
-          value={collection.contact_discord_name}
+          value={collectionData.contact_discord_name}
         />
         <ApplicationCard
           title="Discord URL"
@@ -80,7 +80,7 @@ export const CreatorInformation: React.FC<{
         />
         <ApplicationCard
           title="Main Contact Email"
-          value={collection.contact_email}
+          value={collectionData.contact_email}
         />
       </View>
     </View>

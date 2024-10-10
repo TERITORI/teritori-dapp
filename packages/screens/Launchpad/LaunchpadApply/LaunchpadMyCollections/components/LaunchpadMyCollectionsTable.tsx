@@ -1,6 +1,7 @@
 import React from "react";
 import { FlatList, View } from "react-native";
 
+import { LaunchpadProject } from "@/api/launchpad/v1/launchpad";
 import { StateBadge } from "@/components/badges/StateBadge";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { TableCell } from "@/components/table/TableCell";
@@ -12,10 +13,9 @@ import {
   commonColumns,
   LaunchpadTablesCommonColumns,
 } from "@/screens/Launchpad/components/LaunchpadTablesCommonColumns";
-import { collectionStatus } from "@/utils/launchpad";
+import { launchpadProjectStatus, parseCollectionData } from "@/utils/launchpad";
 import { useAppNavigation } from "@/utils/navigation";
 import { screenContentMaxWidthLarge } from "@/utils/style/layout";
-import { CollectionDataResult } from "@/utils/types/launchpad";
 
 const columns: TableColumns = {
   ...commonColumns,
@@ -34,8 +34,25 @@ const columns: TableColumns = {
 const breakpointM = 1120;
 
 export const LaunchpadMyCollectionsTable: React.FC<{
-  rows: CollectionDataResult[];
+  rows: LaunchpadProject[];
 }> = ({ rows }) => {
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: LaunchpadProject;
+    index: number;
+  }) => {
+    const collectionData = parseCollectionData(item);
+    return (
+      <LaunchpadReadyMyCollectionsTableRow
+        launchpadProject={item}
+        index={index}
+        key={collectionData?.symbol || index}
+      />
+    );
+  };
+
   return (
     <View
       style={{
@@ -47,13 +64,8 @@ export const LaunchpadMyCollectionsTable: React.FC<{
         <TableHeader columns={columns} />
         <FlatList
           data={rows}
-          renderItem={({ item, index }) => (
-            <LaunchpadReadyMyCollectionsTableRow
-              collection={item}
-              index={index}
-            />
-          )}
-          keyExtractor={(item) => item.symbol}
+          renderItem={renderItem}
+          // keyExtractor={keyExtractor}
         />
       </TableWrapper>
     </View>
@@ -61,14 +73,19 @@ export const LaunchpadMyCollectionsTable: React.FC<{
 };
 
 const LaunchpadReadyMyCollectionsTableRow: React.FC<{
-  collection: CollectionDataResult;
+  launchpadProject: LaunchpadProject;
   index: number;
-}> = ({ collection, index }) => {
+}> = ({ launchpadProject, index }) => {
   const navigation = useAppNavigation();
+  const collectionData = parseCollectionData(launchpadProject);
+  if (!collectionData) return null;
   return (
     <View>
       <TableRow>
-        <LaunchpadTablesCommonColumns collection={collection} index={index} />
+        <LaunchpadTablesCommonColumns
+          collectionData={collectionData}
+          index={index}
+        />
 
         <TableCell
           style={{
@@ -76,10 +93,10 @@ const LaunchpadReadyMyCollectionsTableRow: React.FC<{
             flex: columns.status.flex,
           }}
         >
-          <StateBadge text={collectionStatus(collection)} />
+          <StateBadge text={launchpadProjectStatus(launchpadProject)} />
         </TableCell>
 
-        {collectionStatus(collection) === "INCOMPLETE" && (
+        {launchpadProjectStatus(launchpadProject) === "INCOMPLETE" && (
           <TableCell
             style={{
               minWidth: columns.cta.minWidth,
@@ -91,7 +108,7 @@ const LaunchpadReadyMyCollectionsTableRow: React.FC<{
               size="XXS"
               onPress={() =>
                 navigation.navigate("LaunchpadComplete", {
-                  id: collection.symbol,
+                  id: collectionData.symbol,
                 })
               }
             />

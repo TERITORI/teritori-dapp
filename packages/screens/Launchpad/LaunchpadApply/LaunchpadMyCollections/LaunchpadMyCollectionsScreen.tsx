@@ -8,7 +8,7 @@ import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { Box } from "@/components/boxes/Box";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
-import { useCollectionsByCreator } from "@/hooks/launchpad/useCollectionsByCreator";
+import { useLaunchpadProjectsByCreator } from "@/hooks/launchpad/useLaunchpadProjectsByCreator";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
@@ -33,7 +33,7 @@ export const LaunchpadMyCollectionsScreen: ScreenFC<
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
-  const { userCollections = [] } = useCollectionsByCreator({
+  const { launchpadProjects = [] } = useLaunchpadProjectsByCreator({
     networkId: selectedNetworkId,
     creatorId: selectedWallet?.userId || "",
     offset: 0,
@@ -83,8 +83,8 @@ export const LaunchpadMyCollectionsScreen: ScreenFC<
 
         <SpacerColumn size={3} />
 
-        {userCollections?.length ? (
-          <LaunchpadMyCollectionsTable rows={userCollections} />
+        {launchpadProjects?.length ? (
+          <LaunchpadMyCollectionsTable rows={launchpadProjects} />
         ) : (
           <Box
             style={{

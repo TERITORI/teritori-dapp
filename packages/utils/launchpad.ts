@@ -5,17 +5,19 @@ import {
   ZodCollectionDataResult,
 } from "@/utils/types/launchpad";
 
-export const collectionStatus = (collectionData: CollectionDataResult) =>
-  !collectionData.metadatas_merkle_root
+export const launchpadProjectStatus = (launchpadProject: LaunchpadProject) =>
+  !launchpadProject.merkleRoot
     ? "INCOMPLETE"
-    : !collectionData.deployed_address
+    : !launchpadProject.deployedAddress
       ? "COMPLETE"
       : "DEPLOYED";
 
-export const collectionData = (launchpadProject: LaunchpadProject) =>
+export const parseCollectionData = (launchpadProject: LaunchpadProject) =>
   zodTryParseJSON(ZodCollectionDataResult, launchpadProject.collectionData);
 
-export const collectionsData = (launchpadProjects: LaunchpadProject[]) => {
+export const parseMultipleCollectionsData = (
+  launchpadProjects: LaunchpadProject[],
+) => {
   const result: CollectionDataResult[] = [];
   launchpadProjects.forEach((project) => {
     if (!project) {

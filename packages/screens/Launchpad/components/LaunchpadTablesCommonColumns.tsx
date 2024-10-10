@@ -36,10 +36,10 @@ export const commonColumns: TableColumns = {
 };
 
 export const LaunchpadTablesCommonColumns: React.FC<{
-  collection: CollectionDataResult;
+  collectionData: CollectionDataResult;
   index: number;
-}> = ({ collection, index }) => {
-  const network = getNetwork(collection.target_network);
+}> = ({ collectionData, index }) => {
+  const network = getNetwork(collectionData.target_network);
   return (
     <>
       <TableTextCell
@@ -61,13 +61,13 @@ export const LaunchpadTablesCommonColumns: React.FC<{
       >
         <RoundedGradientImage
           size="XS"
-          sourceURI={web3ToWeb2URI(collection.cover_img_uri)}
+          sourceURI={web3ToWeb2URI(collectionData.cover_img_uri)}
           fallbackURI={defaultCollectionImagePNG}
           style={{
             marginRight: layout.spacing_x1,
           }}
         />
-        <CellBrandText>{collection.name}</CellBrandText>
+        <CellBrandText>{collectionData.name}</CellBrandText>
 
         <SVG
           source={checkBadgeSVG}
@@ -83,7 +83,7 @@ export const LaunchpadTablesCommonColumns: React.FC<{
           flex: commonColumns.symbol.flex,
         }}
       >
-        {collection.symbol}
+        {collectionData.symbol}
       </TableTextCell>
 
       <TableCell

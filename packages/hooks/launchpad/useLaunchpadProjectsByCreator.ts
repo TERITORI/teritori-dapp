@@ -1,22 +1,26 @@
 import { useQuery } from "@tanstack/react-query";
 
 import {
+  LaunchpadProjectsByCreatorRequest,
+  LaunchpadProjectsByCreatorResponse,
   LaunchpadProject,
-  LaunchpadProjectsRequest,
-  LaunchpadProjectsResponse,
 } from "@/api/launchpad/v1/launchpad";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { mustGetLaunchpadClient } from "@/utils/backend";
 
-export const useLaunchpadProjects = (req: LaunchpadProjectsRequest) => {
+export const useLaunchpadProjectsByCreator = (
+  req: LaunchpadProjectsByCreatorRequest,
+) => {
   const { setToast } = useFeedbacks();
   const networkId = req.networkId;
+  const creatorId = req.creatorId;
   // const userAddress = req.userAddress;
 
   const { data, ...other } = useQuery<LaunchpadProject[]>(
     [
-      "collectionsByCreator",
+      "launchpadProjectsByCreator",
       networkId,
+      creatorId,
       // , userAddress
     ],
     async () => {
@@ -26,13 +30,14 @@ export const useLaunchpadProjects = (req: LaunchpadProjectsRequest) => {
         const client = mustGetLaunchpadClient(networkId);
 
         if (
-          !client
-          // || !userAddress
+          !client ||
+          !creatorId
+          // !userAddress
         ) {
           return [];
         }
-        const response: LaunchpadProjectsResponse =
-          await client.LaunchpadProjects(req);
+        const response: LaunchpadProjectsByCreatorResponse =
+          await client.LaunchpadProjectsByCreator(req);
         response.projects.forEach((data) => {
           if (!data) {
             return;
@@ -48,7 +53,6 @@ export const useLaunchpadProjects = (req: LaunchpadProjectsRequest) => {
           message: e.message,
         });
       }
-
       return launchpadProjects;
     },
   );

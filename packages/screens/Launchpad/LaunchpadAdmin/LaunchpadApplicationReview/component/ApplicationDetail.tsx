@@ -13,7 +13,6 @@ import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SocialButton } from "@/components/buttons/SocialButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
-import { collectionStatus } from "@/utils/launchpad";
 import { neutral33 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -26,8 +25,9 @@ import { CollectionDataResult } from "@/utils/types/launchpad";
 const breakpointM = 900;
 
 export const ApplicationDetail: React.FC<{
-  collection: CollectionDataResult;
-}> = ({ collection }) => {
+  collectionData: CollectionDataResult;
+  projectStatus: string;
+}> = ({ collectionData, projectStatus }) => {
   const { width } = useMaxResolution();
 
   return (
@@ -55,12 +55,10 @@ export const ApplicationDetail: React.FC<{
             justifyContent: "center",
           }}
         >
-          <BrandText style={fontSemibold13}>
-            {collectionStatus(collection)}
-          </BrandText>
+          <BrandText style={fontSemibold13}>{projectStatus}</BrandText>
         </View>
         <BrandText style={[fontSemibold28, { marginTop: layout.spacing_x3 }]}>
-          {collection.name}
+          {collectionData.name}
         </BrandText>
         <View
           style={{
@@ -73,22 +71,22 @@ export const ApplicationDetail: React.FC<{
         >
           <ApplicationCard
             title="Supply"
-            value={collection.expected_supply.toString()}
+            value={collectionData.expected_supply.toString()}
             style={applicationCardCStyle}
           />
           <ApplicationCard
             title="Price"
-            value={collection.expected_public_mint_price.toString()}
+            value={collectionData.expected_public_mint_price.toString()}
             style={applicationCardCStyle}
           />
           <ApplicationCard
             title="Symbol"
-            value={collection.symbol}
+            value={collectionData.symbol}
             style={applicationCardCStyle}
           />
         </View>
         <View style={{ marginTop: layout.spacing_x3 }}>
-          <BrandText style={fontSemibold14}>{collection.desc}</BrandText>
+          <BrandText style={fontSemibold14}>{collectionData.desc}</BrandText>
         </View>
         <View
           style={{
@@ -102,18 +100,18 @@ export const ApplicationDetail: React.FC<{
           <SocialButton
             text="Discord"
             iconSvg={discordSVG}
-            onPress={() => Linking.openURL(collection.contact_discord_name)}
+            onPress={() => Linking.openURL(collectionData.contact_discord_name)}
           />
           <SocialButton
             text="Twitter"
             iconSvg={twitterSVG}
-            onPress={() => Linking.openURL(collection.twitter_profile)}
+            onPress={() => Linking.openURL(collectionData.twitter_profile)}
           />
-          {collection.website_link && (
+          {collectionData.website_link && (
             <SocialButton
               text="Website"
               iconSvg={websiteSVG}
-              onPress={() => Linking.openURL(collection.website_link!)}
+              onPress={() => Linking.openURL(collectionData.website_link!)}
             />
           )}
         </View>

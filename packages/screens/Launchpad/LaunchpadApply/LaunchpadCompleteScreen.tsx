@@ -12,9 +12,10 @@ import { ScreenContainer } from "@/components/ScreenContainer";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
-import { useCollectionById } from "@/hooks/launchpad/useCollectionById";
 import { useCompleteCollection } from "@/hooks/launchpad/useCompleteCollection";
+import { useLaunchpadProjectById } from "@/hooks/launchpad/useLaunchpadProjectById";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
 import { AssetsTab } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadAssetsAndMetadata/AssetsTab";
@@ -44,11 +45,15 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
   const isMobile = useIsMobile();
   const { setToast } = useFeedbacks();
   const userIPFSKey = useSelector(selectNFTStorageAPI);
-  const { id: collectionId } = route.params;
+  const { id: symbol } = route.params;
+  const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
   const selectedWallet = useSelectedWallet();
   const { completeCollection } = useCompleteCollection();
-  const { collection } = useCollectionById({ collectionId });
+  const { launchpadProject } = useLaunchpadProjectById({
+    networkId: selectedNetworkId,
+    projectId: symbol,
+  });
   const assetsMetadatasForm = useForm<CollectionAssetsMetadatasFormValues>({
     mode: "all",
     resolver: zodResolver(ZodCollectionAssetsMetadatasFormValues),
@@ -63,7 +68,7 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
     try {
       const assetsMetadatasFormValues = assetsMetadatasForm.getValues();
       if (!assetsMetadatasFormValues.assetsMetadatas?.length) return;
-      await completeCollection(collectionId, assetsMetadatasFormValues);
+      await completeCollection(symbol, assetsMetadatasFormValues);
 
       setLoading(false);
       setLoadingFullScreen(false);
@@ -114,9 +119,11 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
           <BrandText style={{ alignSelf: "center" }}>
             You are not connected
           </BrandText>
-        ) : !collection ? (
+        ) : !launchpadProject ? (
           <NotFound label="Collection" />
-        ) : selectedWallet.address !== collection?.owner ? (
+        ) : launchpadProject.networkId !== selectedNetworkId ? (
+          <BrandText style={{ alignSelf: "center" }}>Wrong network</BrandText>
+        ) : selectedWallet.userId !== launchpadProject?.creatorId ? (
           <BrandText style={{ alignSelf: "center" }}>
             You don't own this Collection
           </BrandText>

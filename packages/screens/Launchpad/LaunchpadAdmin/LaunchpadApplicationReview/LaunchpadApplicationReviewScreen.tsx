@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { View } from "react-native";
 
 import { ApplicationDetail } from "./component/ApplicationDetail";
@@ -14,9 +14,8 @@ import { SpacerColumn } from "@/components/spacer";
 import { useLaunchpadProjectById } from "@/hooks/launchpad/useLaunchpadProjectById";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
-import { collectionData } from "@/utils/launchpad";
+import { launchpadProjectStatus, parseCollectionData } from "@/utils/launchpad";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
@@ -29,19 +28,16 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
 > = ({ route }) => {
   const { id: projectId } = route.params;
   const navigation = useAppNavigation();
-  const networkId = useSelectedNetworkId();
-  const selectedWallet = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
   const { launchpadProject } = useLaunchpadProjectById({
     projectId,
-    networkId,
-    userAddress: selectedWallet?.address || "",
+    networkId: selectedNetworkId,
+    // userAddress: selectedWallet?.address || "",
   });
-  const collection = useMemo(
-    () => (launchpadProject ? collectionData(launchpadProject) : null),
-    [launchpadProject],
-  );
+  const collectionData =
+    launchpadProject && parseCollectionData(launchpadProject);
 
-  if (!launchpadProject || !collection) {
+  if (!launchpadProject || !collectionData) {
     return (
       <ScreenContainer
         footerChildren={<></>}
@@ -75,19 +71,28 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
       }
       forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
     >
-      <View style={{ marginTop: layout.spacing_x4 }}>
-        <ApplicationDetail collection={collection} />
-        <SpacerColumn size={5} />
-        <View style={{ borderTopColor: neutral33, borderTopWidth: 1 }}>
-          <CreatorInformation
-            collection={collection}
-            creatorId={launchpadProject.creatorId}
+      {!launchpadProject || !collectionData ? (
+        <NotFound label="Application" />
+      ) : selectedNetworkId !== launchpadProject.networkId ? (
+        <BrandText style={{ alignSelf: "center" }}>Wrong network</BrandText>
+      ) : (
+        <View style={{ marginTop: layout.spacing_x4 }}>
+          <ApplicationDetail
+            collectionData={collectionData}
+            projectStatus={launchpadProjectStatus(launchpadProject)}
           />
-          <ProjectInformation collection={collection} />
-          <TeamInformation collection={collection} />
-          <InvestmentInformation collection={collection} />
+          <SpacerColumn size={5} />
+          <View style={{ borderTopColor: neutral33, borderTopWidth: 1 }}>
+            <CreatorInformation
+              collectionData={collectionData}
+              creatorId={launchpadProject.creatorId}
+            />
+            <ProjectInformation collectionData={collectionData} />
+            <TeamInformation collectionData={collectionData} />
+            <InvestmentInformation collectionData={collectionData} />
+          </View>
         </View>
-      </View>
+      )}
     </ScreenContainer>
   );
 };

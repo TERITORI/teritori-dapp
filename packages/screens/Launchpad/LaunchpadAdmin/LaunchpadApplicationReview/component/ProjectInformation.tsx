@@ -11,8 +11,8 @@ import { layout } from "@/utils/style/layout";
 import { CollectionDataResult } from "@/utils/types/launchpad";
 
 export const ProjectInformation: React.FC<{
-  collection: CollectionDataResult;
-}> = ({ collection }) => {
+  collectionData: CollectionDataResult;
+}> = ({ collectionData }) => {
   const { width } = useWindowDimensions();
 
   return (
@@ -32,7 +32,7 @@ export const ProjectInformation: React.FC<{
       >
         <ApplicationCard
           title="Project Description"
-          value={collection.project_desc}
+          value={collectionData.project_desc}
         />
         <LinkCard
           title="Other Links"
@@ -46,7 +46,7 @@ export const ProjectInformation: React.FC<{
         <View style={{ flex: 1, gap: layout.spacing_x1_5 }}>
           <ApplicationCard
             title="Previous Apply"
-            value={collection.is_applied_previously ? "Yes" : "No"}
+            value={collectionData.is_applied_previously ? "Yes" : "No"}
           />
           <ApplicationCard
             title="Previous Type"
