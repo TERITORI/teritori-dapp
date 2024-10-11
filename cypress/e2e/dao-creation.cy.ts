@@ -15,7 +15,7 @@ describe("Create a dao flow", () => {
 
     cy.contains("Create Dao").click();
 
-    cy.get("input[placeholder='Type organization\\'s name here']").type(
+    cy.get("input[plac  eholder='Type organization\\'s name here']").type(
       daoName,
     );
     cy.get("input[placeholder='your_organization']").type(handle);
@@ -35,5 +35,7 @@ describe("Create a dao flow", () => {
     cy.get(
       '.r-display-6koalj > :nth-child(1) > .r-alignItems-obd0qt > .r-cursor-1loqt21 > [style="height: 48px; opacity: 1;"] > [style="width: 100%; height: 100%; border-width: 1px; border-color: rgba(0, 0, 0, 0); padding: 0px 20px; align-items: center; justify-content: center;"]',
     ).click();
+
+    cy.contains("Confirm & Launch the Organization").click();
   });
 });
