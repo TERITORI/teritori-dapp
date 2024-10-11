@@ -1,13 +1,12 @@
 KEY = teritori-test4-seed
 BASE = teritori
-REMOTE = https://rpc.test4.gno.land:443
-CHAIN_ID = test4
+REMOTE = https://rpc.gno.land:443
+CHAIN_ID = portal-loop
 
 .PHONY: add_social_feeds_realm add_utf16_pkg add_ujson_pkg add_flags_index_pkg add_dao_interfaces_pkg add_social_feed all
 
 add_social_feeds_realm:
 	gnokey maketx addpkg \
-		-deposit="1ugnot" \
 		-gas-fee="1ugnot" \
 		-gas-wanted="50000000" \
 		-broadcast="true" \
@@ -31,7 +30,6 @@ add_social_feed:
 
 add_utf16_pkg:
 	gnokey maketx addpkg \
-		-deposit="1ugnot" \
 		-gas-fee="1ugnot" \
 		-gas-wanted="50000000" \
 		-broadcast="true" \
@@ -43,7 +41,6 @@ add_utf16_pkg:
 
 add_ujson_pkg: 
 	gnokey maketx addpkg \
-		-deposit="1ugnot" \
 		-gas-fee="1ugnot" \
 		-gas-wanted="50000000" \
 		-broadcast="true" \
@@ -55,7 +52,6 @@ add_ujson_pkg:
 
 add_flags_index_pkg:
 	gnokey maketx addpkg \
-		-deposit="1ugnot" \
 		-gas-fee="1ugnot" \
 		-gas-wanted="50000000" \
 		-broadcast="true" \
@@ -67,7 +63,6 @@ add_flags_index_pkg:
 
 add_dao_interfaces_pkg:
 	gnokey maketx addpkg \
-		-deposit="1ugnot" \
 		-gas-fee="1ugnot" \
 		-gas-wanted="50000000" \
 		-broadcast="true" \
@@ -77,4 +72,15 @@ add_dao_interfaces_pkg:
 		-pkgpath="gno.land/p/${BASE}/dao_interfaces" \
 		${KEY}
 
-all: add_utf16_pkg add_ujson_pkg add_flags_index_pkg add_dao_interfaces_pkg add_social_feeds_realm add_social_feed
+add_jsonutil_pkg:
+	gnokey maketx addpkg \
+		-gas-fee="1ugnot" \
+		-gas-wanted="50000000" \
+		-broadcast="true" \
+		-chainid="${CHAIN_ID}" \
+		-remote="${REMOTE}" \
+		-pkgdir="./p/jsonutil" \
+		-pkgpath="gno.land/p/${BASE}/jsonutil" \
+		${KEY}
+
+all: add_utf16_pkg add_ujson_pkg add_jsonutil_pkg add_flags_index_pkg add_dao_interfaces_pkg add_social_feeds_realm add_social_feed

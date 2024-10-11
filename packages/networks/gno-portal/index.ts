@@ -39,4 +39,5 @@ export const gnoPortalNetwork: GnoNetworkInfo = {
   daoInterfacesPkgPath: "gno.land/p/teritori/dao_interfaces",
   daoCorePkgPath: "gno.land/p/teritori/dao_core",
   profilePkgPath: "gno.land/r/demo/profile",
+  txIndexerURL: "https://indexer.portal-loop.gno.testnet.teritori.com",
 };

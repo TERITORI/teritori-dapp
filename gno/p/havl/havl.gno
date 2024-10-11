@@ -13,9 +13,9 @@ type Tree struct {
 	initialHeight int64
 }
 
-// FIXME: don't cast height to int
+var Latest = int64(0)
 
-// this is not optimized at all, we make a full copy on write
+// FIXME: this is not optimized at all, we make a full copy on write
 
 func NewTree() *Tree {
 	return &Tree{initialHeight: std.GetHeight()}
@@ -88,9 +88,11 @@ func (t *Tree) GetSnapshot(height int64) (*avl.Tree, int64) {
 		}
 		return true
 	})
+
 	if snapshot == nil {
 		snapshot = avl.NewTree()
 	}
+
 	return snapshot, int64(snapshotHeight)
 }
 
@@ -100,6 +102,7 @@ func getPaddedKey(height int64) string {
 	if height <= 0 {
 		height = std.GetHeight()
 	}
+
 	val := strconv.Itoa(int(height))
 	return strings.Repeat("0", len("9223372036854775807")-len(val)) + val
 }
@@ -110,6 +113,7 @@ func clone(t *avl.Tree) *avl.Tree {
 		r.Set(key, value)
 		return false
 	})
+
 	return r
 }
 
@@ -124,5 +128,6 @@ func (t *Tree) getOrCreateCurrentRoot() *avl.Tree {
 		root = clone(snapshot)
 		t.root.Set(key, root)
 	}
+
 	return root
 }
