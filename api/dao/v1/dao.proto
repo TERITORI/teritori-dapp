@@ -4,6 +4,7 @@ option go_package = "./daopb";
 
 service DAOService {
     rpc DAOs(DAOsRequest) returns (DAOsResponse);
+    rpc IsUserLaunchpadAdmin(IsUserLaunchpadAdminRequest) returns (IsUserLaunchpadAdminResponse);
 }
 
 message DAOsRequest {
@@ -13,6 +14,15 @@ message DAOsRequest {
 
 message DAOsResponse {
     repeated DAO daos = 1;
+}
+
+message IsUserLaunchpadAdminRequest {
+  string network_id = 1;
+  string user_address = 2;
+}
+
+message IsUserLaunchpadAdminResponse {
+  bool is_user_admin = 1;
 }
 
 message DAO {
