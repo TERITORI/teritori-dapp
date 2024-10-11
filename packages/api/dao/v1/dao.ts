@@ -15,6 +15,15 @@ export interface DAOsResponse {
   daos: DAO[];
 }
 
+export interface IsUserLaunchpadAdminRequest {
+  networkId: string;
+  userAddress: string;
+}
+
+export interface IsUserLaunchpadAdminResponse {
+  isUserAdmin: boolean;
+}
+
 export interface DAO {
   id: string;
   admin: string;
@@ -156,6 +165,137 @@ export const DAOsResponse = {
   fromPartial<I extends Exact<DeepPartial<DAOsResponse>, I>>(object: I): DAOsResponse {
     const message = createBaseDAOsResponse();
     message.daos = object.daos?.map((e) => DAO.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseIsUserLaunchpadAdminRequest(): IsUserLaunchpadAdminRequest {
+  return { networkId: "", userAddress: "" };
+}
+
+export const IsUserLaunchpadAdminRequest = {
+  encode(message: IsUserLaunchpadAdminRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.networkId !== "") {
+      writer.uint32(10).string(message.networkId);
+    }
+    if (message.userAddress !== "") {
+      writer.uint32(18).string(message.userAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IsUserLaunchpadAdminRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIsUserLaunchpadAdminRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.userAddress = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsUserLaunchpadAdminRequest {
+    return {
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      userAddress: isSet(object.userAddress) ? globalThis.String(object.userAddress) : "",
+    };
+  },
+
+  toJSON(message: IsUserLaunchpadAdminRequest): unknown {
+    const obj: any = {};
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    if (message.userAddress !== "") {
+      obj.userAddress = message.userAddress;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<IsUserLaunchpadAdminRequest>, I>>(base?: I): IsUserLaunchpadAdminRequest {
+    return IsUserLaunchpadAdminRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<IsUserLaunchpadAdminRequest>, I>>(object: I): IsUserLaunchpadAdminRequest {
+    const message = createBaseIsUserLaunchpadAdminRequest();
+    message.networkId = object.networkId ?? "";
+    message.userAddress = object.userAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseIsUserLaunchpadAdminResponse(): IsUserLaunchpadAdminResponse {
+  return { isUserAdmin: false };
+}
+
+export const IsUserLaunchpadAdminResponse = {
+  encode(message: IsUserLaunchpadAdminResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.isUserAdmin === true) {
+      writer.uint32(8).bool(message.isUserAdmin);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IsUserLaunchpadAdminResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIsUserLaunchpadAdminResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.isUserAdmin = reader.bool();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsUserLaunchpadAdminResponse {
+    return { isUserAdmin: isSet(object.isUserAdmin) ? globalThis.Boolean(object.isUserAdmin) : false };
+  },
+
+  toJSON(message: IsUserLaunchpadAdminResponse): unknown {
+    const obj: any = {};
+    if (message.isUserAdmin === true) {
+      obj.isUserAdmin = message.isUserAdmin;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<IsUserLaunchpadAdminResponse>, I>>(base?: I): IsUserLaunchpadAdminResponse {
+    return IsUserLaunchpadAdminResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<IsUserLaunchpadAdminResponse>, I>>(object: I): IsUserLaunchpadAdminResponse {
+    const message = createBaseIsUserLaunchpadAdminResponse();
+    message.isUserAdmin = object.isUserAdmin ?? false;
     return message;
   },
 };
@@ -383,6 +523,10 @@ export const DAO = {
 
 export interface DAOService {
   DAOs(request: DeepPartial<DAOsRequest>, metadata?: grpc.Metadata): Promise<DAOsResponse>;
+  IsUserLaunchpadAdmin(
+    request: DeepPartial<IsUserLaunchpadAdminRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<IsUserLaunchpadAdminResponse>;
 }
 
 export class DAOServiceClientImpl implements DAOService {
@@ -391,10 +535,22 @@ export class DAOServiceClientImpl implements DAOService {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.DAOs = this.DAOs.bind(this);
+    this.IsUserLaunchpadAdmin = this.IsUserLaunchpadAdmin.bind(this);
   }
 
   DAOs(request: DeepPartial<DAOsRequest>, metadata?: grpc.Metadata): Promise<DAOsResponse> {
     return this.rpc.unary(DAOServiceDAOsDesc, DAOsRequest.fromPartial(request), metadata);
+  }
+
+  IsUserLaunchpadAdmin(
+    request: DeepPartial<IsUserLaunchpadAdminRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<IsUserLaunchpadAdminResponse> {
+    return this.rpc.unary(
+      DAOServiceIsUserLaunchpadAdminDesc,
+      IsUserLaunchpadAdminRequest.fromPartial(request),
+      metadata,
+    );
   }
 }
 
@@ -413,6 +569,29 @@ export const DAOServiceDAOsDesc: UnaryMethodDefinitionish = {
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = DAOsResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const DAOServiceIsUserLaunchpadAdminDesc: UnaryMethodDefinitionish = {
+  methodName: "IsUserLaunchpadAdmin",
+  service: DAOServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return IsUserLaunchpadAdminRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = IsUserLaunchpadAdminResponse.decode(data);
       return {
         ...value,
         toObject() {
