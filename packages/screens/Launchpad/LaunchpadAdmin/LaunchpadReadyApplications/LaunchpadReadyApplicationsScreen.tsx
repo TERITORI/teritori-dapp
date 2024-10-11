@@ -8,26 +8,26 @@ import { SpacerColumn } from "@/components/spacer";
 import { useLaunchpadProjects } from "@/hooks/launchpad/useLaunchpadProjects";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
 import { LaunchpadReadyApplicationsTable } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadReadyApplications/component/LaunchpadReadyApplicationsTable";
-import { collectionsData } from "@/utils/launchpad";
-import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
+import {
+  fontSemibold13,
+  fontSemibold20,
+  fontSemibold28,
+} from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const LaunchpadReadyApplicationsScreen: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
-  const selectedWallet = useSelectedWallet();
   const navigation = useAppNavigation();
   const { launchpadProjects = [] } = useLaunchpadProjects({
     networkId: selectedNetworkId,
-    userAddress: selectedWallet?.address || "",
+    // userAddress: selectedWallet?.address || "",
     offset: 0,
     limit: 100, // TODO: Pagination
     sort: Sort.SORT_UNSPECIFIED,
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
-    //TODO: STATUS_INCOMPLETE here is just for tests ==> Use STATUS_COMPLETE finally.
-    status: Status.STATUS_INCOMPLETE, // TODO: Or STATUS_CONFIRMED ?
+    status: Status.STATUS_CONFIRMED, // TODO: Or STATUS_CONFIRMED ?
   });
 
   return (
@@ -66,9 +66,13 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
             marginTop: layout.spacing_x4,
           }}
         >
-          <LaunchpadReadyApplicationsTable
-            rows={collectionsData(launchpadProjects)}
-          />
+          {launchpadProjects?.length ? (
+            <LaunchpadReadyApplicationsTable rows={launchpadProjects} />
+          ) : (
+            <BrandText style={fontSemibold13}>
+              There is no application ready to launch
+            </BrandText>
+          )}
         </View>
 
         <SpacerColumn size={16} />

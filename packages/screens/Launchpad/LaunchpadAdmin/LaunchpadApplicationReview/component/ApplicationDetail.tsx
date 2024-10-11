@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image, Linking } from "react-native";
+import { View, Image } from "react-native";
 
 import { ApplicationCard } from "./ApplicationCard";
 
@@ -100,18 +100,18 @@ export const ApplicationDetail: React.FC<{
           <SocialButton
             text="Discord"
             iconSvg={discordSVG}
-            onPress={() => Linking.openURL(collectionData.contact_discord_name)}
+            // onPress={() => Linking.openURL(collectionData.contact_discord_name)}
           />
           <SocialButton
             text="Twitter"
             iconSvg={twitterSVG}
-            onPress={() => Linking.openURL(collectionData.twitter_profile)}
+            // onPress={() => Linking.openURL(collectionData.twitter_profile)}
           />
           {collectionData.website_link && (
             <SocialButton
               text="Website"
               iconSvg={websiteSVG}
-              onPress={() => Linking.openURL(collectionData.website_link!)}
+              // onPress={() => Linking.openURL(collectionData.website_link)}
             />
           )}
         </View>

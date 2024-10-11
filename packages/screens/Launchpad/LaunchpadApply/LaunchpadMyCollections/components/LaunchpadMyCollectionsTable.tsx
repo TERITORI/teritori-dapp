@@ -78,6 +78,7 @@ const LaunchpadReadyMyCollectionsTableRow: React.FC<{
 }> = ({ launchpadProject, index }) => {
   const navigation = useAppNavigation();
   const collectionData = parseCollectionData(launchpadProject);
+
   if (!collectionData) return null;
   return (
     <View>
@@ -95,14 +96,14 @@ const LaunchpadReadyMyCollectionsTableRow: React.FC<{
         >
           <StateBadge text={launchpadProjectStatus(launchpadProject)} />
         </TableCell>
-        
-          <TableCell
-            style={{
-              minWidth: columns.cta.minWidth,
-              flex: columns.cta.flex,
-            }}
-          >
-            {launchpadProjectStatus(launchpadProject) === "INCOMPLETE" &&
+
+        <TableCell
+          style={{
+            minWidth: columns.cta.minWidth,
+            flex: columns.cta.flex,
+          }}
+        >
+          {launchpadProjectStatus(launchpadProject) === "INCOMPLETE" && (
             <PrimaryButton
               text="Complete collection"
               size="XXS"
@@ -112,9 +113,8 @@ const LaunchpadReadyMyCollectionsTableRow: React.FC<{
                 })
               }
             />
-}
-          </TableCell>
-        
+          )}
+        </TableCell>
       </TableRow>
     </View>
   );

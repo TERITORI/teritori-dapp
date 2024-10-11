@@ -49,7 +49,7 @@ export const ApplicationStatusCard: React.FC<{
         <View>
           <BrandText style={fontSemibold24}>{count}</BrandText>
         </View>
-        {onPress && (
+        {onPress && !!count && (
           <View
             style={{
               height: 32,

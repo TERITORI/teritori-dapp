@@ -2,6 +2,7 @@ import moment from "moment";
 import React from "react";
 import { FlatList, View } from "react-native";
 
+import { LaunchpadProject } from "@/api/launchpad/v1/launchpad";
 import externalLinkSVG from "@/assets/icons/external-link.svg";
 import { Link } from "@/components/Link";
 import { OmniLink } from "@/components/OmniLink";
@@ -16,9 +17,9 @@ import {
   commonColumns,
   LaunchpadTablesCommonColumns,
 } from "@/screens/Launchpad/components/LaunchpadTablesCommonColumns";
+import { parseCollectionData } from "@/utils/launchpad";
 import { secondaryColor } from "@/utils/style/colors";
 import { screenContentMaxWidthLarge } from "@/utils/style/layout";
-import { CollectionDataResult } from "@/utils/types/launchpad";
 
 const columns: TableColumns = {
   ...commonColumns,
@@ -52,8 +53,25 @@ const breakpointM = 1110;
 
 // Displays collection_data as CollectionDataResult[] from many launchpad_projects
 export const LaunchpadCollectionsTable: React.FC<{
-  rows: CollectionDataResult[];
+  rows: LaunchpadProject[];
 }> = ({ rows }) => {
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: LaunchpadProject;
+    index: number;
+  }) => {
+    const collectionData = parseCollectionData(item);
+    return (
+      <LaunchpadCollectionsTableRow
+        launchpadProject={item}
+        index={index}
+        key={collectionData?.symbol || index}
+      />
+    );
+  };
+
   return (
     <View
       style={{
@@ -65,10 +83,8 @@ export const LaunchpadCollectionsTable: React.FC<{
         <TableHeader columns={columns} />
         <FlatList
           data={rows}
-          renderItem={({ item, index }) => (
-            <LaunchpadCollectionsTableRow collection={item} index={index} />
-          )}
-          keyExtractor={(item) => item.symbol}
+          renderItem={renderItem}
+          // keyExtractor={(item) => item.symbol}
         />
       </TableWrapper>
     </View>
@@ -76,23 +92,23 @@ export const LaunchpadCollectionsTable: React.FC<{
 };
 
 const LaunchpadCollectionsTableRow: React.FC<{
-  collection: CollectionDataResult;
+  launchpadProject: LaunchpadProject;
   index: number;
-  // prices: CoingeckoPrices;
-}> = ({
-  collection,
-  index,
-  //  prices
-}) => {
+}> = ({ launchpadProject, index }) => {
+  const collectionData = parseCollectionData(launchpadProject);
+  if (!collectionData) return null;
   return (
     <OmniLink
       to={{
         screen: "LaunchpadApplicationReview",
-        params: { id: collection.symbol },
+        params: { id: collectionData.symbol },
       }}
     >
       <TableRow>
-        <LaunchpadTablesCommonColumns collection={collection} index={index} />
+        <LaunchpadTablesCommonColumns
+          collectionData={collectionData}
+          index={index}
+        />
 
         <TableCell
           style={{
@@ -100,7 +116,8 @@ const LaunchpadCollectionsTableRow: React.FC<{
             flex: columns.twitterURL.flex,
           }}
         >
-          <Link to={collection.twitter_profile}>
+          {/* <Link to={collectionData.twitter_profile}> */}
+          <Link to="">
             <SVG source={externalLinkSVG} color={secondaryColor} />
           </Link>
         </TableCell>
@@ -111,7 +128,8 @@ const LaunchpadCollectionsTableRow: React.FC<{
             flex: columns.discordURL.flex,
           }}
         >
-          <Link to={collection.contact_discord_name}>
+          {/* <Link to={collectionData.contact_discord_name}> */}
+          <Link to="">
             <SVG source={externalLinkSVG} color={secondaryColor} />
           </Link>
         </TableCell>
@@ -122,7 +140,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
             minWidth: columns.expectedTotalSupply.minWidth,
           }}
         >
-          {`${collection.expected_supply}`}
+          {`${collectionData.expected_supply}`}
         </TableTextCell>
 
         <TableTextCell
@@ -131,7 +149,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
             minWidth: columns.expectedPublicMintPrice.minWidth,
           }}
         >
-          {`${collection.expected_public_mint_price}`}
+          {`${collectionData.expected_public_mint_price}`}
         </TableTextCell>
 
         <TableTextCell
@@ -140,7 +158,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
             minWidth: columns.expectedMintDate.minWidth,
           }}
         >
-          {moment(collection.expected_mint_date).format("MMM D YYYY")}
+          {moment(collectionData.expected_mint_date).format("MMM D YYYY")}
         </TableTextCell>
 
         {/*TODO: Three dots here with possible actions on the collection ?*/}

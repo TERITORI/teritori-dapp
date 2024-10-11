@@ -10,10 +10,8 @@ import { useLaunchpadProjects } from "@/hooks/launchpad/useLaunchpadProjects";
 import { useLaunchpadProjectsCounts } from "@/hooks/launchpad/useLaunchpadProjectsCounts";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
 import { LaunchpadCollectionsTable } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplications/component/LaunchpadCollectionsTable";
-import { collectionsData } from "@/utils/launchpad";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -23,11 +21,10 @@ type TabsListType = "pendingApplications" | "pendingConfirmations";
 export const LaunchpadApplicationsScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
-  const selectedWallet = useSelectedWallet();
   const { counts } = useLaunchpadProjectsCounts(
     {
       networkId: selectedNetworkId,
-      userAddress: selectedWallet?.address || "",
+      // userAddress: selectedWallet?.address || "",
     },
     [Status.STATUS_COMPLETE, Status.STATUS_INCOMPLETE],
   );
@@ -117,34 +114,28 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
 
 const PendingApplicationsTable: FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
-  const selectedWallet = useSelectedWallet();
   const { launchpadProjects = [] } = useLaunchpadProjects({
     networkId: selectedNetworkId,
-    userAddress: selectedWallet?.address || "",
+    // userAddress: selectedWallet?.address || "",
     offset: 0,
     limit: 100, // TODO: Pagination
     sort: Sort.SORT_UNSPECIFIED,
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
     status: Status.STATUS_INCOMPLETE,
   });
-  return (
-    <LaunchpadCollectionsTable rows={collectionsData(launchpadProjects)} />
-  );
+  return <LaunchpadCollectionsTable rows={launchpadProjects} />;
 };
 
 const PendingConfirmationsTable: FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
-  const selectedWallet = useSelectedWallet();
   const { launchpadProjects = [] } = useLaunchpadProjects({
     networkId: selectedNetworkId,
-    userAddress: selectedWallet?.address || "",
+    // userAddress: selectedWallet?.address || "",
     offset: 0,
     limit: 100, // TODO: Pagination
     sort: Sort.SORT_UNSPECIFIED,
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
     status: Status.STATUS_COMPLETE,
   });
-  return (
-    <LaunchpadCollectionsTable rows={collectionsData(launchpadProjects)} />
-  );
+  return <LaunchpadCollectionsTable rows={launchpadProjects} />;
 };

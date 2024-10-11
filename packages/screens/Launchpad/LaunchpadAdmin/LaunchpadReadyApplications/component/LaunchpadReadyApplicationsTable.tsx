@@ -1,6 +1,7 @@
 import React from "react";
 import { FlatList, View } from "react-native";
 
+import { LaunchpadProject } from "@/api/launchpad/v1/launchpad";
 import { StateBadge } from "@/components/badges/StateBadge";
 import { TableCell } from "@/components/table/TableCell";
 import { TableHeader } from "@/components/table/TableHeader";
@@ -11,8 +12,8 @@ import {
   commonColumns,
   LaunchpadTablesCommonColumns,
 } from "@/screens/Launchpad/components/LaunchpadTablesCommonColumns";
+import { launchpadProjectStatus, parseCollectionData } from "@/utils/launchpad";
 import { screenContentMaxWidthLarge } from "@/utils/style/layout";
-import { CollectionDataResult } from "@/utils/types/launchpad";
 
 const columns: TableColumns = {
   ...commonColumns,
@@ -41,8 +42,25 @@ const columns: TableColumns = {
 const breakpointM = 1120;
 
 export const LaunchpadReadyApplicationsTable: React.FC<{
-  rows: CollectionDataResult[];
+  rows: LaunchpadProject[];
 }> = ({ rows }) => {
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: LaunchpadProject;
+    index: number;
+  }) => {
+    const collectionData = parseCollectionData(item);
+    return (
+      <LaunchpadReadyApplicationsTableRow
+        launchpadProject={item}
+        index={index}
+        key={collectionData?.symbol || index}
+      />
+    );
+  };
+
   return (
     <View
       style={{
@@ -54,13 +72,8 @@ export const LaunchpadReadyApplicationsTable: React.FC<{
         <TableHeader columns={columns} />
         <FlatList
           data={rows}
-          renderItem={({ item, index }) => (
-            <LaunchpadReadyApplicationsTableRow
-              collection={item}
-              index={index}
-            />
-          )}
-          keyExtractor={(item) => item.symbol}
+          renderItem={renderItem}
+          // keyExtractor={(item) => item.symbol}
         />
       </TableWrapper>
     </View>
@@ -68,13 +81,18 @@ export const LaunchpadReadyApplicationsTable: React.FC<{
 };
 
 const LaunchpadReadyApplicationsTableRow: React.FC<{
-  collection: CollectionDataResult;
+  launchpadProject: LaunchpadProject;
   index: number;
-}> = ({ collection, index }) => {
+}> = ({ launchpadProject, index }) => {
+  const collectionData = parseCollectionData(launchpadProject);
+  if (!collectionData) return null;
   return (
     <View>
       <TableRow>
-        <LaunchpadTablesCommonColumns collection={collection} index={index} />
+        <LaunchpadTablesCommonColumns
+          collectionData={collectionData}
+          index={index}
+        />
 
         {/*TODO: "Project readiness for mint", "Whitelist quantity", "Premium marketing package", "Basic marketing package"*/}
 
@@ -93,15 +111,7 @@ const LaunchpadReadyApplicationsTableRow: React.FC<{
             flex: columns.whitelistQuantity.flex,
           }}
         >
-          <StateBadge
-            text={collection.mint_periods
-              .reduce(
-                (total, period) =>
-                  total + (period.whitelist_info?.addresses_count || 0),
-                0,
-              )
-              .toString()}
-          />
+          <StateBadge text={launchpadProjectStatus(launchpadProject)} />
         </TableCell>
 
         <TableCell

@@ -247,9 +247,9 @@ func (s *Launchpad) LaunchpadProjectsByCreator(ctx context.Context, req *launchp
 		statusFilterSQL = "AND lp.merkle_root ISNULL"
 	case launchpadpb.Status_STATUS_COMPLETE:
 		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
-		// TODO: Is status confirmed useless ? For now, it's same as Status_STATUS_COMPLETE
+		// TODO: status confirmed ?
 	case launchpadpb.Status_STATUS_CONFIRMED:
-		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
+		statusFilterSQL = "AND lp.merkle_root = 'TODO'"
 	case launchpadpb.Status_STATUS_DEPLOYED:
 		statusFilterSQL = "AND NOT lp.deployed_address ISNULL"
 	}
@@ -354,9 +354,9 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		statusFilterSQL = "AND lp.merkle_root ISNULL"
 	case launchpadpb.Status_STATUS_COMPLETE:
 		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
-		// TODO: Is status confirmed useless ? For now, it's same as Status_STATUS_COMPLETE
+		// TODO: status confirmed ?
 	case launchpadpb.Status_STATUS_CONFIRMED:
-		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
+		statusFilterSQL = "AND lp.merkle_root = 'TODO'"
 	case launchpadpb.Status_STATUS_DEPLOYED:
 		statusFilterSQL = "AND NOT lp.deployed_address ISNULL"
 	}
@@ -488,7 +488,7 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
 		// TODO: Status confirmed ?
 	case launchpadpb.Status_STATUS_CONFIRMED:
-		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
+		statusFilterSQL = "AND lp.merkle_root = 'TODO'"
 	case launchpadpb.Status_STATUS_DEPLOYED:
 		statusFilterSQL = "AND NOT lp.deployed_address ISNULL"
 	}

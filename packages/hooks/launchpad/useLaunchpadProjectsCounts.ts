@@ -20,10 +20,14 @@ export const useLaunchpadProjectsCounts = (
 ) => {
   const { setToast } = useFeedbacks();
   const networkId = req.networkId;
-  const userAddress = req.userAddress;
+  // const userAddress = req.userAddress;
 
   const { data, ...other } = useQuery<LaunchpadProjectsCounts | undefined>(
-    ["launchpadProjectsCounts", networkId, userAddress],
+    [
+      "launchpadProjectsCounts",
+      networkId,
+      // , userAddress
+    ],
     async () => {
       const counts: LaunchpadProjectsCounts = {
         countComplete: 0,
@@ -33,7 +37,10 @@ export const useLaunchpadProjectsCounts = (
       };
       try {
         const client = mustGetLaunchpadClient(networkId);
-        if (!client || !userAddress) {
+        if (
+          !client
+          // || !userAddress
+        ) {
           return counts;
         }
         // TODO: Getting these status could be done in one db request in go/pkg/launchpad/service.go

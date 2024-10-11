@@ -43,7 +43,8 @@ export const CreatorInformation: React.FC<{
         />
         <ApplicationCard
           title="Twitter URL"
-          value={collectionData.twitter_profile}
+          // value={collectionData.twitter_profile}
+          value="0"
           style={{ flex: 2 }}
         />
 
@@ -57,7 +58,8 @@ export const CreatorInformation: React.FC<{
           />
           <ApplicationCard
             title="Twitter Follower Count"
-            value={collectionData.twitter_followers_count.toString()}
+            // value={collectionData.twitter_followers_count.toString()}
+            value="0"
             style={{ flex: 1 }}
           />
         </View>
@@ -71,7 +73,8 @@ export const CreatorInformation: React.FC<{
       >
         <ApplicationCard
           title="Main Contact Discord"
-          value={collectionData.contact_discord_name}
+          // value={collectionData.contact_discord_name}
+          value="TODO"
         />
         <ApplicationCard
           title="Discord URL"

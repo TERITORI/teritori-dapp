@@ -16,7 +16,6 @@ import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
 import { MarketingEdition } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/component/MarketingEdition/MarketingEdition";
-import { parseMultipleCollectionsData } from "@/utils/launchpad";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
@@ -101,7 +100,11 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
           <ApplicationStatusCard
             label="Ready to Launch"
             count={counts?.countConfirmed || 0}
-            onPress={() => navigation.navigate("LaunchpadReadyApplications")}
+            onPress={
+              counts?.countConfirmed
+                ? () => navigation.navigate("LaunchpadReadyApplications")
+                : undefined
+            }
             isReady
           />
         </View>
@@ -158,11 +161,7 @@ const PendingApplicationsTable: FC = () => {
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
     status: Status.STATUS_INCOMPLETE,
   });
-  return (
-    <LaunchpadCollectionsTable
-      rows={parseMultipleCollectionsData(launchpadProjects)}
-    />
-  );
+  return <LaunchpadCollectionsTable rows={launchpadProjects} />;
 };
 
 const PendingConfirmationsTable: FC = () => {
@@ -176,9 +175,5 @@ const PendingConfirmationsTable: FC = () => {
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
     status: Status.STATUS_COMPLETE,
   });
-  return (
-    <LaunchpadCollectionsTable
-      rows={parseMultipleCollectionsData(launchpadProjects)}
-    />
-  );
+  return <LaunchpadCollectionsTable rows={launchpadProjects} />;
 };
