@@ -82,7 +82,7 @@ func (s *DAOService) IsUserDAOMember(ctx context.Context, req *daopb.IsUserDAOMe
 	daoAddress := req.GetDaoAddress()
 	networkId := req.GetNetworkId()
 
-	var isUserMember bool
+	var isMember bool
 	err := db.Raw(`SELECT EXISTS (
         SELECT 1
         FROM dao_members dm
@@ -94,11 +94,11 @@ func (s *DAOService) IsUserDAOMember(ctx context.Context, req *daopb.IsUserDAOMe
 		daoAddress,
 		networkId,
 		userAddress,
-	).Scan(&isUserMember).Error
+	).Scan(&isMember).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
 	return &daopb.IsUserDAOMemberResponse{
-		IsUserMember: isUserMember,
+		IsMember: isMember,
 	}, nil
 }
