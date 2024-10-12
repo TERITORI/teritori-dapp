@@ -88,7 +88,7 @@ func (s *DAOService) IsUserDAOMember(ctx context.Context, req *daopb.IsUserDAOMe
         FROM dao_members dm
         JOIN daos d ON dm.dao_contract_address = d.contract_address
         WHERE d.contract_address = ?
-        WHERE d.network_id = ?
+        AND d.network_id = ?
         AND dm.member_address = ?
     ) AS dao_exists;`,
 		daoAddress,
