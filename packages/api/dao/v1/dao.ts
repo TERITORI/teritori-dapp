@@ -16,9 +16,8 @@ export interface DAOsResponse {
 }
 
 export interface IsUserDAOMemberRequest {
-  networkId: string;
-  userAddress: string;
-  daoAddress: string;
+  userId: string;
+  daoId: string;
 }
 
 export interface IsUserDAOMemberResponse {
@@ -171,19 +170,16 @@ export const DAOsResponse = {
 };
 
 function createBaseIsUserDAOMemberRequest(): IsUserDAOMemberRequest {
-  return { networkId: "", userAddress: "", daoAddress: "" };
+  return { userId: "", daoId: "" };
 }
 
 export const IsUserDAOMemberRequest = {
   encode(message: IsUserDAOMemberRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.networkId !== "") {
-      writer.uint32(10).string(message.networkId);
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
     }
-    if (message.userAddress !== "") {
-      writer.uint32(18).string(message.userAddress);
-    }
-    if (message.daoAddress !== "") {
-      writer.uint32(26).string(message.daoAddress);
+    if (message.daoId !== "") {
+      writer.uint32(18).string(message.daoId);
     }
     return writer;
   },
@@ -200,21 +196,14 @@ export const IsUserDAOMemberRequest = {
             break;
           }
 
-          message.networkId = reader.string();
+          message.userId = reader.string();
           continue;
         case 2:
           if (tag !== 18) {
             break;
           }
 
-          message.userAddress = reader.string();
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.daoAddress = reader.string();
+          message.daoId = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -227,22 +216,18 @@ export const IsUserDAOMemberRequest = {
 
   fromJSON(object: any): IsUserDAOMemberRequest {
     return {
-      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
-      userAddress: isSet(object.userAddress) ? globalThis.String(object.userAddress) : "",
-      daoAddress: isSet(object.daoAddress) ? globalThis.String(object.daoAddress) : "",
+      userId: isSet(object.userId) ? globalThis.String(object.userId) : "",
+      daoId: isSet(object.daoId) ? globalThis.String(object.daoId) : "",
     };
   },
 
   toJSON(message: IsUserDAOMemberRequest): unknown {
     const obj: any = {};
-    if (message.networkId !== "") {
-      obj.networkId = message.networkId;
+    if (message.userId !== "") {
+      obj.userId = message.userId;
     }
-    if (message.userAddress !== "") {
-      obj.userAddress = message.userAddress;
-    }
-    if (message.daoAddress !== "") {
-      obj.daoAddress = message.daoAddress;
+    if (message.daoId !== "") {
+      obj.daoId = message.daoId;
     }
     return obj;
   },
@@ -252,9 +237,8 @@ export const IsUserDAOMemberRequest = {
   },
   fromPartial<I extends Exact<DeepPartial<IsUserDAOMemberRequest>, I>>(object: I): IsUserDAOMemberRequest {
     const message = createBaseIsUserDAOMemberRequest();
-    message.networkId = object.networkId ?? "";
-    message.userAddress = object.userAddress ?? "";
-    message.daoAddress = object.daoAddress ?? "";
+    message.userId = object.userId ?? "";
+    message.daoId = object.daoId ?? "";
     return message;
   },
 };

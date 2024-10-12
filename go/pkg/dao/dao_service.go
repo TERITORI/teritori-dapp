@@ -77,13 +77,23 @@ func (s *DAOService) DAOs(ctx context.Context, req *daopb.DAOsRequest) (*daopb.D
 
 func (s *DAOService) IsUserDAOMember(ctx context.Context, req *daopb.IsUserDAOMemberRequest) (*daopb.IsUserDAOMemberResponse, error) {
 	db := s.conf.IndexerDB
+	userId := req.GetUserId()
+	daoId := req.GetDaoId()
 
-	userAddress := req.GetUserAddress()
-	daoAddress := req.GetDaoAddress()
-	networkId := req.GetNetworkId()
+	daoNetwork, daoAddress, parseDaoIdErr := s.conf.NetStore.ParseUserID(daoId)
+	if parseDaoIdErr != nil {
+		return nil,
+			errors.Wrap(parseDaoIdErr, "failed to parse dao id")
+	}
+
+	_, userAddress, parseUSerIdErr := s.conf.NetStore.ParseUserID(userId)
+	if parseUSerIdErr != nil {
+		return nil,
+			errors.Wrap(parseUSerIdErr, "failed to parse user id")
+	}
 
 	var isMember bool
-	err := db.Raw(`SELECT EXISTS (
+	dbErr := db.Raw(`SELECT EXISTS (
         SELECT 1
         FROM dao_members dm
         JOIN daos d ON dm.dao_contract_address = d.contract_address
@@ -92,13 +102,14 @@ func (s *DAOService) IsUserDAOMember(ctx context.Context, req *daopb.IsUserDAOMe
         AND dm.member_address = ?
     ) AS dao_exists;`,
 		daoAddress,
-		networkId,
+		daoNetwork.GetBase().ID,
 		userAddress,
 	).Scan(&isMember).Error
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to query database")
+	if dbErr != nil {
+		return nil, errors.Wrap(dbErr, "failed to query database")
 	}
 	return &daopb.IsUserDAOMemberResponse{
 		IsMember: isMember,
 	}, nil
 }
+

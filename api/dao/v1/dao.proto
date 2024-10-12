@@ -8,8 +8,8 @@ service DAOService {
 }
 
 message DAOsRequest {
-  string network_id = 1;
-  string member_address = 2;
+    string network_id = 1;
+    string member_address = 2;
 }
 
 message DAOsResponse {
@@ -17,13 +17,12 @@ message DAOsResponse {
 }
 
 message IsUserDAOMemberRequest {
-    string network_id = 1;
-    string user_address = 2;
-    string dao_address = 3;
-  }
-  message IsUserDAOMemberResponse {
+    string user_id = 1;
+    string dao_id = 2;
+}
+message IsUserDAOMemberResponse {
     bool is_member = 1;
-  }
+}
 
 message DAO {
     string id = 1;
@@ -38,3 +37,4 @@ message DAO {
     string token_symbol = 10;
     uint64 unstaking_duration = 11;
 }
+
