@@ -4,6 +4,7 @@ option go_package = "./daopb";
 
 service DAOService {
     rpc DAOs(DAOsRequest) returns (DAOsResponse);
+    rpc IsUserDAOMember(IsUserDAOMemberRequest) returns (IsUserDAOMemberResponse);
 }
 
 message DAOsRequest {
@@ -14,6 +15,15 @@ message DAOsRequest {
 message DAOsResponse {
     repeated DAO daos = 1;
 }
+
+message IsUserDAOMemberRequest {
+    string network_id = 1;
+    string user_address = 2;
+    string dao_address = 3;
+  }
+  message IsUserDAOMemberResponse {
+    bool is_member = 1;
+  }
 
 message DAO {
     string id = 1;

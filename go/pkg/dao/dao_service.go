@@ -74,3 +74,31 @@ func (s *DAOService) DAOs(ctx context.Context, req *daopb.DAOsRequest) (*daopb.D
 		Daos: pbdaos,
 	}, nil
 }
+
+func (s *DAOService) IsUserDAOMember(ctx context.Context, req *daopb.IsUserDAOMemberRequest) (*daopb.IsUserDAOMemberResponse, error) {
+	db := s.conf.IndexerDB
+
+	userAddress := req.GetUserAddress()
+	daoAddress := req.GetDaoAddress()
+	networkId := req.GetNetworkId()
+
+	var isUserMember bool
+	err := db.Raw(`SELECT EXISTS (
+        SELECT 1
+        FROM dao_members dm
+        JOIN daos d ON dm.dao_contract_address = d.contract_address
+        WHERE d.contract_address = ?
+        WHERE d.network_id = ?
+        AND dm.member_address = ?
+    ) AS dao_exists;`,
+		daoAddress,
+		networkId,
+		userAddress,
+	).Scan(&isUserMember).Error
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query database")
+	}
+	return &daopb.IsUserDAOMemberResponse{
+		IsUserMember: isUserMember,
+	}, nil
+}
