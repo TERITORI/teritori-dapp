@@ -36,12 +36,13 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
   const tabs = useMemo(() => {
     return {
       pendingApplications: {
-        name: "Pending Applications",
+        name: "INCOMPLETES",
         badgeCount: counts?.countIncomplete || 0,
       },
       pendingConfirmations: {
-        name: "Pending Confirmations",
-        badgeCount: counts?.countComplete || 0,
+        name: "???",
+        // badgeCount: counts?.countComplete || 0,
+        badgeCount: 0,
       },
     };
   }, [counts]);
@@ -82,25 +83,26 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
           }}
         >
           <ApplicationStatusCard
-            label="Pending Applications"
+            label="INCOMPLETES"
             count={counts?.countIncomplete || 0}
-            isReady={false}
           />
           <ApplicationStatusCard
-            label="Pending Confirmations"
-            count={counts?.countComplete || 0}
+            label="???"
+            // count={counts?.countComplete || 0}
+            count={0}
             style={{
               marginHorizontal:
                 width >= MD_BREAKPOINT ? layout.spacing_x1_5 : 0,
               marginVertical: width >= MD_BREAKPOINT ? 0 : layout.spacing_x1_5,
             }}
-            isReady={false}
           />
           <ApplicationStatusCard
-            label="Ready to Launch"
-            count={counts?.countConfirmed || 0}
+            label="COMPLETES"
+            // count={counts?.countConfirmed || 0}
+            count={counts?.countComplete || 0}
             onPress={
-              counts?.countConfirmed
+              // counts?.countConfirmed
+              counts?.countComplete
                 ? () => navigation.navigate("LaunchpadReadyApplications")
                 : undefined
             }
