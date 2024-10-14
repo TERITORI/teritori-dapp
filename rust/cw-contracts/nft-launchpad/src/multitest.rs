@@ -221,6 +221,21 @@ fn full_flow() {
         assert_eq!(err, ContractError::DeployerMissing)
     }
 
+    // Update config when sender is not contract owner 
+    {
+        let err = contract
+            .update_config(ConfigChanges {
+                name: "test".to_string(),
+                nft_code_id: Some(deployed_nft_code_id),
+                supported_networks: vec![],
+                deployer: Some(sender.to_string()),
+                owner: Some(sender.to_string()),
+            })
+            .call("wrong_owner")
+            .unwrap_err();
+        assert_eq!(err, ContractError::Unauthorized)
+    }
+
     // Deploy when sender is not deployer  ---------------------------------------------------------
     {
         contract
