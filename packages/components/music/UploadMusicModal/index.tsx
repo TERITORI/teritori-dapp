@@ -31,7 +31,7 @@ export const UploadMusicModal: FC<{
       {uploadMode === UploadMode.SINGLE_TRACK ? (
         <UploadTrack onUploadDone={onClose} />
       ) : (
-        <>{/*TODO*/}</>
+        <>{/*TODO Album ?*/}</>
       )}
     </ModalBase>
   );

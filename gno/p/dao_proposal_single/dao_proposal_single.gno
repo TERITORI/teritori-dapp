@@ -3,11 +3,12 @@ package dao_proposal_single
 import (
 	"std"
 	"strconv"
+	"strings"
 
 	"gno.land/p/demo/avl"
+	"gno.land/p/demo/json"
 	"gno.land/p/teritori/dao_interfaces"
 	"gno.land/p/teritori/dao_utils"
-	"gno.land/p/teritori/ujson"
 )
 
 type DAOProposalSingleOpts struct {
@@ -43,14 +44,14 @@ type DAOProposalSingleOpts struct {
 	CloseProposalOnExecutionFailure bool
 }
 
-func (opts DAOProposalSingleOpts) ToJSON() string {
-	return ujson.FormatObject([]ujson.FormatKV{
-		{Key: "threshold", Value: opts.Threshold},
-		{Key: "maxVotingPeriod", Value: opts.MaxVotingPeriod},
-		{Key: "minVotingPeriod", Value: opts.MinVotingPeriod},
-		{Key: "onlyMembersExecute", Value: opts.OnlyMembersExecute},
-		{Key: "allowRevoting", Value: opts.AllowRevoting},
-		{Key: "closeProposalOnExecutionFailure", Value: opts.CloseProposalOnExecutionFailure},
+func (opts DAOProposalSingleOpts) ToJSON() *json.Node {
+	return json.ObjectNode("", map[string]*json.Node{
+		"threshold":                       opts.Threshold.ToJSON(),
+		"maxVotingPeriod":                 opts.MaxVotingPeriod.ToJSON(),
+		"minVotingPeriod":                 opts.MinVotingPeriod.ToJSON(),
+		"onlyMembersExecute":              json.BoolNode("", opts.OnlyMembersExecute),
+		"allowRevoting":                   json.BoolNode("", opts.AllowRevoting),
+		"closeProposalOnExecutionFailure": json.BoolNode("", opts.CloseProposalOnExecutionFailure),
 	})
 }
 
@@ -94,20 +95,25 @@ func NewDAOProposalSingle(core dao_interfaces.IDAOCore, opts *DAOProposalSingleO
 		switch threshold.Threshold.(type) {
 		case *PercentageThresholdMajority:
 			panic("not implemented")
+
 		case *PercentageThresholdPercent:
 			if *threshold.Threshold.(*PercentageThresholdPercent) > 10000 {
 				panic("opts.Threshold.Threshold must be <= 100%")
 			}
+
 		default:
 			panic("unknown Threshold type")
 		}
+
 		switch threshold.Quorum.(type) {
 		case *PercentageThresholdMajority:
 			panic("not implemented")
+
 		case *PercentageThresholdPercent:
 			if *threshold.Quorum.(*PercentageThresholdPercent) > 10000 {
 				panic("opts.Threshold.Quorum must be <= 100%")
 			}
+
 		default:
 			panic("unknown PercentageThreshold type")
 		}
@@ -139,54 +145,97 @@ func (d *DAOProposalSingle) Render(path string) string {
 		closeOnExecFailureStr = "Proposals will be closed if their execution fails"
 	}
 
-	thresholdStr := ""
+	sb := strings.Builder{}
+	sb.WriteString("Max voting period: ")
+	sb.WriteString(d.opts.MaxVotingPeriod.String())
+	sb.WriteString("\n\n")
+	sb.WriteString(minVotingPeriodStr)
+	sb.WriteString("\n\n")
+	sb.WriteString(executeStr)
+	sb.WriteString("\n\n")
+	sb.WriteString(revotingStr)
+	sb.WriteString("\n\n")
+	sb.WriteString(closeOnExecFailureStr)
+	sb.WriteString("\n\n")
 	switch d.opts.Threshold.(type) {
 	case *ThresholdThresholdQuorum:
 		threshold := d.opts.Threshold.(*ThresholdThresholdQuorum)
-		thresholdStr = "Threshold: " + threshold.Threshold.String() + "\n\n" +
-			"Quorum: " + threshold.Quorum.String()
+		sb.WriteString("Threshold: ")
+		sb.WriteString(threshold.Threshold.String())
+		sb.WriteString("\n\nQuorum: ")
+		sb.WriteString(threshold.Quorum.String())
+
+	case *ThresholdAbsolutePercentage:
+		threshold := d.opts.Threshold.(*ThresholdAbsolutePercentage)
+		sb.WriteString("Threshold (Absolute Percentage): ")
+		sb.WriteString(threshold.Value.String())
+
+	case *ThresholdAbsoluteCount:
+		threshold := d.opts.Threshold.(*ThresholdAbsoluteCount)
+		sb.WriteString("Threshold (Absolute Count): ")
+		sb.WriteString(strconv.FormatUint(uint64(*threshold), 10))
+
 	default:
 		panic("unsupported Threshold type")
 	}
 
-	proposalsStr := "## Proposals\n"
+	sb.WriteString("\n\n")
+	sb.WriteString("Proposals:\n\n")
 	for _, p := range d.proposals {
-		messagesStr := ""
+		sb.WriteString("\\#")
+		sb.WriteString(strconv.Itoa(p.ID))
+		sb.WriteString(": ")
+		sb.WriteString(p.Title)
+		sb.WriteString(":\n\n")
+		sb.WriteString("  Status: ")
+		sb.WriteString(p.Status.String())
+		sb.WriteString("\n\n")
+		sb.WriteString("  Proposed by ")
+		sb.WriteString(p.Proposer.String())
+		sb.WriteString("\n\n")
+		sb.WriteString("  ")
+		sb.WriteString(p.Description)
+		sb.WriteString("\n\n")
+		sb.WriteString("  Votes summary:")
+		sb.WriteString("\n\n")
+		sb.WriteString("  - Yes: ")
+		sb.WriteString(strconv.FormatUint(p.Votes.Yes, 10))
+		sb.WriteRune('\n')
+		sb.WriteString("  - No: ")
+		sb.WriteString(strconv.FormatUint(p.Votes.No, 10))
+		sb.WriteRune('\n')
+		sb.WriteString("  - Abstain: ")
+		sb.WriteString(strconv.FormatUint(p.Votes.Abstain, 10))
+		sb.WriteString("\n\n")
+		sb.WriteString("  Total: ")
+		sb.WriteString(strconv.FormatUint(p.Votes.Total(), 10))
+		sb.WriteString("\n\n")
+
+		sb.WriteString("  Messages:")
+		sb.WriteString("\n\n")
 		for _, m := range p.Messages {
-			messagesStr += "- " + m.(dao_interfaces.ExecutableMessage).String() + "\n"
+			sb.WriteString(m.(dao_interfaces.ExecutableMessage).Type())
+			sb.WriteString("\n\n")
+			sb.WriteString(m.(dao_interfaces.ExecutableMessage).String())
+			sb.WriteString("\n\n")
 		}
 
-		proposalsStr += "### #" + strconv.Itoa(p.ID) + " " + p.Title + "\n" +
-			"Status: " + p.Status.String() + "\n\n" +
-			"Proposed by " + p.Proposer.String() + "\n\n" +
-			p.Description + "\n\n" +
-			"Votes summary:" + "\n\n" +
-			"- Yes: " + strconv.FormatUint(p.Votes.Yes, 10) + "\n" +
-			"- No: " + strconv.FormatUint(p.Votes.No, 10) + "\n" +
-			"- Abstain: " + strconv.FormatUint(p.Votes.Abstain, 10) + "\n\n" +
-			"Total: " + strconv.FormatUint(p.Votes.Total(), 10) + "\n" +
-			"#### Messages\n" +
-			messagesStr +
-			"#### Votes\n"
+		sb.WriteString("  Votes:")
+		sb.WriteString("\n\n")
 
 		p.Ballots.Iterate("", "", func(k string, v interface{}) bool {
 			ballot := v.(Ballot)
-			proposalsStr += "- " + k + " voted " + ballot.Vote.String() + "\n"
+			sb.WriteString(k)
+			sb.WriteString(" voted ")
+			sb.WriteString(ballot.String())
+			sb.WriteString("\n\n")
 			return false
 		})
 
-		proposalsStr += "\n"
+		sb.WriteRune('\n')
 	}
 
-	return "# Single choice proposals module" + "\n" +
-		"## Summary" + "\n" +
-		"Max voting period: " + d.opts.MaxVotingPeriod.String() + "\n\n" +
-		minVotingPeriodStr + "\n\n" +
-		executeStr + "\n\n" +
-		revotingStr + "\n\n" +
-		closeOnExecFailureStr + "\n\n" +
-		thresholdStr + "\n\n" +
-		proposalsStr
+	return sb.String()
 }
 
 func (d *DAOProposalSingle) Core() dao_interfaces.IDAOCore {
@@ -195,13 +244,17 @@ func (d *DAOProposalSingle) Core() dao_interfaces.IDAOCore {
 
 func (d *DAOProposalSingle) Info() dao_interfaces.ModuleInfo {
 	return dao_interfaces.ModuleInfo{
-		Kind:    "SingleChoiceProposal",
+		Kind:    "gno.land/p/teritori/dao_proposal_single",
 		Version: "0.1.0",
 	}
 }
 
 func (d *DAOProposalSingle) ConfigJSON() string {
-	return ujson.FormatAny(d.opts)
+	b, err := json.Marshal(d.opts.ToJSON())
+	if err != nil {
+		panic(err)
+	}
+	return string(b)
 }
 
 func (d *DAOProposalSingle) Propose(title string, description string, messages []dao_interfaces.ExecutableMessage) int {
@@ -241,11 +294,13 @@ func (d *DAOProposalSingle) GetBallot(proposalID int, memberAddress std.Address)
 	if len(d.proposals) <= proposalID || proposalID < 0 {
 		panic("proposal does not exist")
 	}
+
 	proposal := d.proposals[proposalID]
 	ballot, has := proposal.Ballots.Get(memberAddress.String())
 	if !has {
 		panic("ballot does not exist")
 	}
+
 	return ballot.(Ballot)
 }
 
@@ -254,22 +309,22 @@ type VoteWithRationale struct {
 	Rationale string
 }
 
-func (v *VoteWithRationale) FromJSON(ast *ujson.JSONASTNode) {
-	ast.ParseObject([]*ujson.ParseKV{
-		{Key: "vote", Value: &v.Vote},
-		{Key: "rationale", Value: &v.Rationale},
-	})
+func (v *VoteWithRationale) FromJSON(ast *json.Node) {
+	obj := ast.MustObject()
+	v.Vote.FromJSON(obj["vote"])
+	v.Rationale = obj["rationale"].MustString()
 }
 
 func (d *DAOProposalSingle) VoteJSON(proposalID int, voteJSON string) {
 	var v VoteWithRationale
-	ujson.ParseAny(voteJSON, &v)
+	v.FromJSON(json.Must(json.Unmarshal([]byte(voteJSON))))
 
 	voter := std.PrevRealm().Addr()
 
 	if len(d.proposals) <= proposalID || proposalID < 0 {
 		panic("proposal does not exist")
 	}
+
 	proposal := d.proposals[proposalID]
 
 	if proposal.Expiration.IsExpired() {
@@ -285,6 +340,7 @@ func (d *DAOProposalSingle) VoteJSON(proposalID int, voteJSON string) {
 	if ok := proposal.Ballots.Has(voter.String()); ok {
 		panic("already voted")
 	}
+
 	proposal.Ballots.Set(voter.String(), Ballot{
 		Vote:      v.Vote,
 		Power:     votePower,
@@ -300,6 +356,7 @@ func (d *DAOProposalSingle) Execute(proposalID int) {
 	if len(d.proposals) <= proposalID || proposalID < 0 {
 		panic("proposal does not exist")
 	}
+
 	prop := d.proposals[proposalID]
 
 	prop.updateStatus()
@@ -317,21 +374,20 @@ func (d *DAOProposalSingle) Execute(proposalID int) {
 type ProposalRequest struct {
 	Title       string
 	Description string
-	Messages    *ujson.JSONASTNode
+	Messages    []*json.Node
 }
 
-func (pr *ProposalRequest) FromJSON(ast *ujson.JSONASTNode) {
-	ast.ParseObject([]*ujson.ParseKV{
-		{Key: "title", Value: &pr.Title},
-		{Key: "description", Value: &pr.Description},
-		{Key: "messages", Value: &pr.Messages},
-	})
+func (pr *ProposalRequest) FromJSON(ast *json.Node) {
+	obj := ast.MustObject()
+	pr.Title = obj["title"].MustString()
+	pr.Description = obj["description"].MustString()
+	pr.Messages = obj["messages"].MustArray()
 }
 
 func (d *DAOProposalSingle) ProposeJSON(proposalJSON string) int {
 	var req ProposalRequest
-	ujson.ParseAny(proposalJSON, &req)
-	msgs := d.core.Registry().MessagesFromJSON(req.Messages.String()) // TODO: optimize
+	req.FromJSON(json.Must(json.Unmarshal([]byte(proposalJSON))))
+	msgs := d.core.Registry().MessagesFromJSON(req.Messages)
 	return d.Propose(req.Title, req.Description, msgs)
 }
 
@@ -340,18 +396,20 @@ func (d *DAOProposalSingle) Proposals() []*Proposal {
 }
 
 func (d *DAOProposalSingle) ProposalsJSON(limit int, startAfter string, reverse bool) string {
-	iSlice := make([]interface{}, len(d.proposals))
+	iSlice := make([]*json.Node, len(d.proposals))
 	for i, p := range d.proposals {
-		iSlice[i] = p
+		iSlice[i] = p.ToJSON()
 	}
-	return ujson.FormatSlice(iSlice)
+
+	return json.ArrayNode("", iSlice).String()
 }
 
 func (d *DAOProposalSingle) ProposalJSON(proposalID int) string {
 	if proposalID < 0 || proposalID >= len(d.proposals) {
 		panic("proposal does not exist")
 	}
-	return ujson.FormatAny(d.proposals[proposalID])
+
+	return d.proposals[proposalID].ToJSON().String()
 }
 
 func (d *DAOProposalSingle) Threshold() Threshold {
@@ -369,6 +427,7 @@ func (proposal *Proposal) isPassed() bool {
 	switch proposal.Threshold.(interface{}).(type) {
 	case *ThresholdAbsolutePercentage:
 		panic("'isPassed' not implemented for 'ThresholdAbsolutePercentage'")
+
 	case *ThresholdThresholdQuorum:
 		thresholdObj := proposal.Threshold.(*ThresholdThresholdQuorum)
 
@@ -384,8 +443,10 @@ func (proposal *Proposal) isPassed() bool {
 		// TODO: handle expiration
 		options := totalPower - proposal.Votes.Abstain
 		return doesVoteCountPass(proposal.Votes.Yes, options, threshold)
+
 	case *ThresholdAbsoluteCount:
 		panic("'isPassed' not implemented for 'ThresholdAbsoluteCount'")
+
 	default:
 		panic("unknown Threshold type")
 	}
@@ -395,14 +456,17 @@ func doesVoteCountPass(yesVotes uint64, options uint64, percent PercentageThresh
 	switch percent.(type) {
 	case *PercentageThresholdMajority:
 		panic("'doesVoteCountPass' not implemented for 'PercentageThresholdMajority'")
+
 	case *PercentageThresholdPercent:
 		if options == 0 {
 			return false
 		}
+
 		percentValue := uint64(*percent.(*PercentageThresholdPercent))
 		votes := yesVotes * 10000
 		threshold := options * percentValue
 		return votes >= threshold
+
 	default:
 		panic("unknown PercentageThreshold type")
 	}

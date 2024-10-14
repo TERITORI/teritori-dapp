@@ -1,38 +1,21 @@
-import React, { Suspense, lazy } from "react";
-import { Platform, ScrollView, useWindowDimensions } from "react-native";
+import React, { FC, Suspense } from "react";
+import { ScrollView, useWindowDimensions } from "react-native";
 
 import { FeedHeader } from "./FeedHeader";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
+
+import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
+import { Map } from "@/components/socialFeed/Map";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
 import {
   headerHeight,
   RESPONSIVE_BREAKPOINT_S,
   screenContentMaxWidth,
-} from "../../../utils/style/layout";
+} from "@/utils/style/layout";
 
-import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
-
-const MapView = Platform.select({
-  native: () =>
-    lazy(
-      () =>
-        import(
-          "@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.native"
-        ),
-    ),
-  web: () =>
-    lazy(
-      () =>
-        import("@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.web"),
-    ),
-  default: () =>
-    lazy(
-      () =>
-        import("@/components/socialFeed/NewsFeed/FeedMapList/FeedMapList.web"),
-    ),
-})();
-
-export const MapFeed = () => {
+export const MapFeed: FC<{
+  consultedPostId?: string;
+}> = ({ consultedPostId }) => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const { width, height } = useMaxResolution();
   const isMobile = useIsMobile();
@@ -42,13 +25,13 @@ export const MapFeed = () => {
       {isMobile && <MobileTitle title="SOCIAL FEED" />}
       <FeedHeader selectedTab="map" />
       <Suspense fallback={<></>}>
-        <MapView
+        <Map
           style={{
-            alignSelf: "center",
             height: windowHeight - (headerHeight + 110),
             width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
             maxWidth: screenContentMaxWidth,
           }}
+          consultedPostId={consultedPostId}
         />
       </Suspense>
     </ScrollView>

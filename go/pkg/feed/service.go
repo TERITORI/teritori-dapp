@@ -238,11 +238,7 @@ func (s *FeedService) PostsWithLocation(ctx context.Context, data *feedpb.PostsW
 }
 func (s *FeedService) getPostsWithLocationFilter(networkID string, locationFilter *locationQueryData) ([]indexerdb.Post, error) {
 	posts := make([]indexerdb.Post, 0)
-	cachekey := fmt.Sprintf("%s/%s", networkID, locationFilter.cacheKey())
-	data, ok := s.cache.Get(cachekey)
-	if ok {
-		return data.([]indexerdb.Post), nil
-	}
+
 	query := s.conf.IndexerDB.Model(&indexerdb.Post{})
 	if networkID != "" {
 		query = query.Where("network_id = ?", networkID)
@@ -252,17 +248,10 @@ func (s *FeedService) getPostsWithLocationFilter(networkID string, locationFilte
 		return nil, err
 	}
 
-	s.cache.SetWithTTL(cachekey, posts, 0, time.Minute*5)
-
 	return posts, nil
 }
 
 func (s *FeedService) getPostsCountWithLocationFilter(networkID string, locationFilter *locationQueryData) (int64, error) {
-	cachekey := fmt.Sprintf("%s/%s", networkID, locationFilter.countCacheKey())
-	data, ok := s.cache.Get(cachekey)
-	if ok {
-		return data.(int64), nil
-	}
 	var totalPost int64
 
 	query := s.conf.IndexerDB.Model(&indexerdb.Post{})
@@ -273,8 +262,6 @@ func (s *FeedService) getPostsCountWithLocationFilter(networkID string, location
 	if err != nil {
 		return 0, err
 	}
-
-	s.cache.SetWithTTL(cachekey, totalPost, 0, time.Minute*5)
 
 	return totalPost, nil
 }
@@ -356,12 +343,6 @@ func (s *FeedService) loadDetailedPosts(data *feedpb.PostsWithLocationRequest, l
 	}
 
 	return res, nil
-}
-func (data *locationQueryData) countCacheKey() string {
-	return "count_" + data.cacheKey()
-}
-func (data *locationQueryData) cacheKey() string {
-	return fmt.Sprintf("%d_%d_%d_%d", data.N, data.S, data.W, data.E)
 }
 
 func locationFilter(data *feedpb.PostsWithLocationRequest) *locationQueryData {

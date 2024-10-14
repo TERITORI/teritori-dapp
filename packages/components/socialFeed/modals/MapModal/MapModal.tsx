@@ -1,58 +1,45 @@
-import React, {
-  Suspense,
-  lazy,
-  useState,
-  Dispatch,
-  SetStateAction,
-} from "react";
-import { Platform, View, ViewStyle } from "react-native";
-import { LatLng } from "react-native-leaflet-view";
+import React, { useState, Dispatch, SetStateAction } from "react";
+import { View } from "react-native";
 
-import {
-  neutral17,
-  primaryColor,
-  transparentColor,
-} from "../../../../utils/style/colors";
-import { layout } from "../../../../utils/style/layout";
 import { PrimaryButton } from "../../../buttons/PrimaryButton";
 import { SecondaryButtonOutline } from "../../../buttons/SecondaryButtonOutline";
 import { SpacerColumn, SpacerRow } from "../../../spacer";
 
 import { ModalWithoutHeader } from "@/components/modals/ModalWithoutHeader";
+import { Map } from "@/components/socialFeed/Map";
 import { AddressSearch } from "@/components/socialFeed/modals/MapModal/AddressSearch";
-import { MapDescriptionInput } from "@/components/socialFeed/modals/MapModal/MapDescriptionInput";
-import { MapHeader } from "@/components/socialFeed/modals/MapModal/MapHeader";
-
-const MapView = Platform.select({
-  native: () =>
-    lazy(() => import("@/components/socialFeed/modals/MapModal/Map.native")),
-  web: () =>
-    lazy(() => import("@/components/socialFeed/modals/MapModal/Map.web")),
-  default: () =>
-    lazy(() => import("@/components/socialFeed/modals/MapModal/Map.web")),
-})();
+import { MapModalHeader } from "@/components/socialFeed/modals/MapModal/MapModalHeader";
+import {
+  neutral17,
+  primaryColor,
+  transparentColor,
+} from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
+import { CustomLatLngExpression, PostCategory } from "@/utils/types/feed";
 
 interface TMapModalProps {
   visible: boolean;
   onClose: () => void;
-  handleSubmit?: () => void;
-  locationSelected: LatLng;
-  setLocationSelected: Dispatch<SetStateAction<LatLng>>;
-  description: string;
-  setDescription: (newDescription: string) => void;
+  setLocation: Dispatch<SetStateAction<CustomLatLngExpression | undefined>>;
+  // TODO: Description ?
+  // description: string;
+  // setDescription: (newDescription: string) => void;
+  location?: CustomLatLngExpression;
+  postCategory?: PostCategory;
 }
 
 export const MapModal: React.FC<TMapModalProps> = ({
-  handleSubmit,
   onClose,
   visible,
-  locationSelected,
-  setLocationSelected,
-  description,
-  setDescription,
+  setLocation,
+  location,
+  postCategory,
 }) => {
   const [addressPlaceHolder, setAddressPlaceHolder] = useState("Address");
   const [address, setAddress] = useState("");
+  const [creatingPostLocation, setCreatingPostLocation] = useState<
+    CustomLatLngExpression | undefined
+  >(location);
 
   return (
     <ModalWithoutHeader
@@ -60,77 +47,97 @@ export const MapModal: React.FC<TMapModalProps> = ({
       hideHeader
       visible={visible}
       onClose={onClose}
-      width={457}
+      boxStyle={{
+        width: "100%",
+        height: "100%",
+        maxWidth: 700,
+        maxHeight: 800,
+      }}
+      childrenContainerStyle={{
+        height: "100%",
+      }}
     >
-      <MapHeader onClose={onClose} />
+      <MapModalHeader onClose={onClose} />
 
-      <View style={[unitCardStyle]}>
+      <View
+        style={{
+          width: "100%",
+          flex: 1,
+          backgroundColor: neutral17,
+          padding: layout.spacing_x1_5,
+          borderRadius: 12,
+          justifyContent: "space-between",
+        }}
+      >
         <AddressSearch
           addressPlaceHolder={addressPlaceHolder}
           setAddressPlaceHolder={setAddressPlaceHolder}
           address={address}
           setAddress={setAddress}
-          setLocationSelected={setLocationSelected}
+          setLocationSelected={setCreatingPostLocation}
         />
 
         <SpacerColumn size={2} />
 
-        <View style={[mapContainer]}>
-          <Suspense fallback={<></>}>
-            <MapView locationSelected={locationSelected} />
-          </Suspense>
+        <View
+          style={{
+            flex: 1,
+            height: "100%",
+          }}
+        >
+          <Map
+            creatingPostLocation={creatingPostLocation}
+            creatingPostCategory={postCategory}
+          />
         </View>
 
+        {/*TODO: Description ?*/}
+        {/*<SpacerColumn size={2} />*/}
+        {/*<MapDescriptionInput*/}
+        {/*  description={description}*/}
+        {/*  setDescription={setDescription}*/}
+        {/*/>*/}
+
         <SpacerColumn size={2} />
 
-        <MapDescriptionInput
-          description={description}
-          setDescription={setDescription}
-        />
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {location && (
+            <>
+              <SecondaryButtonOutline
+                size="M"
+                color={primaryColor}
+                borderColor={transparentColor}
+                text="Remove Location"
+                onPress={() => {
+                  setCreatingPostLocation(undefined);
+                  setLocation(undefined);
+                  onClose();
+                }}
+                squaresBackgroundColor={neutral17}
+              />
+              <SpacerRow size={2} />
+            </>
+          )}
 
-        <SpacerColumn size={2} />
-
-        <View style={[bottomButtom]}>
-          <SecondaryButtonOutline
-            size="M"
-            color={primaryColor}
-            borderColor={transparentColor}
-            text="Skip location"
-            onPress={handleSubmit}
-            squaresBackgroundColor={neutral17}
-          />
-          <SpacerRow size={2} />
           <PrimaryButton
             disabled={addressPlaceHolder === "Address"}
             loader
             size="M"
-            text="Add location"
-            onPress={handleSubmit}
+            text={location ? "Update Location" : "Add Location"}
+            onPress={() => {
+              setLocation(creatingPostLocation);
+              onClose();
+            }}
           />
         </View>
       </View>
-
       <SpacerColumn size={2} />
     </ModalWithoutHeader>
   );
-};
-
-const bottomButtom: ViewStyle = {
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "center",
-};
-
-const mapContainer: ViewStyle = {
-  flexDirection: "row",
-  alignItems: "center",
-  aspectRatio: 6 / 3,
-  zIndex: 10,
-};
-
-const unitCardStyle: ViewStyle = {
-  backgroundColor: neutral17,
-  padding: layout.spacing_x1_5,
-  borderRadius: 12,
-  justifyContent: "space-between",
 };

@@ -14,7 +14,13 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import {
+  AnimatableNumericValue,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
 import { TimerSlider } from "./TimerSlider";
@@ -37,7 +43,7 @@ import { useMousePosition } from "@/hooks/useMousePosition";
 import { web3ToWeb2URI } from "@/utils/ipfs";
 import { prettyMediaDuration } from "@/utils/mediaPlayer";
 import { SOCIAl_CARD_BORDER_RADIUS } from "@/utils/social-feed";
-import { neutralA3, secondaryColor } from "@/utils/style/colors";
+import { neutral00, neutralA3, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { SocialFeedVideoMetadata } from "@/utils/types/feed";
@@ -48,6 +54,7 @@ interface MediaPlayerVideoProps {
   postId?: string;
   resizeMode?: ResizeMode;
   style?: StyleProp<ViewStyle>;
+  hideControls?: boolean;
 }
 
 const CONTROLS_HEIGHT = 68;
@@ -59,16 +66,22 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
   postId,
   resizeMode,
   style,
+  hideControls,
 }) => {
   const { media, onLayoutPlayerVideo } = useMediaPlayer();
   const { current: id } = useRef(uuidv4());
-  const isInMediaPlayer = useMemo(() => media?.id === id, [id, media?.id]);
+  // TODO: Really need useMemo here ?
+  const isInMediaPlayer = useMemo(
+    () => !!media && (postId === media?.postId || media?.id === id),
+    [media, postId, id],
+  );
 
   const containerRef = useRef<View>(null);
   const videoRef = useRef<Video>(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
   const [isControlsShown, setControlsShown] = useState(false);
+  const { borderRadius } = StyleSheet.flatten(style);
 
   return (
     <View
@@ -87,12 +100,13 @@ export const MediaPlayerVideo: FC<MediaPlayerVideoProps> = ({
         containerRef={containerRef}
         containerWidth={containerWidth}
         containerHeight={containerHeight}
-        isControlsShown={isControlsShown}
+        isControlsShown={!hideControls && isControlsShown}
         isInMediaPlayer={isInMediaPlayer}
         videoMetadata={videoMetadata}
         postId={postId}
         resizeMode={resizeMode}
         id={id}
+        borderRadius={borderRadius}
         setControlsShown={setControlsShown}
       />
     </View>
@@ -107,6 +121,7 @@ type ExpoAvVideoType = {
   containerHeight: number;
   isControlsShown: boolean;
   videoMetadata: SocialFeedVideoMetadata;
+  borderRadius?: AnimatableNumericValue | number;
   postId?: string;
   resizeMode?: ResizeMode;
   id: string;
@@ -120,6 +135,7 @@ function ExpoAvVideo({
   containerHeight,
   isControlsShown,
   videoMetadata,
+  borderRadius,
   postId,
   resizeMode,
   id,
@@ -138,7 +154,7 @@ function ExpoAvVideo({
   const [localStatus, setLocalStatus] = useState<AVPlaybackStatusSuccess>();
   const [extraPressCount, setExtraPressCount] = useState(0);
   const [pressTimer, setPressTimer] = useState<NodeJS.Timeout>();
-  const [isThumbnailShown, setThumbnailShown] = useState(true);
+  const [isThumbnailShown, setThumbnailShown] = useState(false);
 
   // Handle show/hide controls by hovering the video area with mouse
   const mousePosition = useMousePosition();
@@ -163,7 +179,7 @@ function ExpoAvVideo({
     id,
     fileUrl: videoMetadata.videoFile.url,
     duration: videoMetadata.videoFile.videoMetadata?.duration,
-    // postId is used to difference videos from Social Feed (News feed or Article consultation)
+    // postId is used to difference videos from Social Feed
     postId,
     isVideo: true,
   };
@@ -244,7 +260,7 @@ function ExpoAvVideo({
             style={{
               width: containerWidth,
               height: containerHeight,
-              borderRadius: SOCIAl_CARD_BORDER_RADIUS,
+              borderRadius: borderRadius || SOCIAl_CARD_BORDER_RADIUS,
               position: "absolute",
               zIndex: 1,
             }}
@@ -264,7 +280,8 @@ function ExpoAvVideo({
           videoStyle={{
             width: "100%",
             height: "100%",
-            borderRadius: SOCIAl_CARD_BORDER_RADIUS,
+            borderRadius: borderRadius || SOCIAl_CARD_BORDER_RADIUS,
+            backgroundColor: neutral00,
           }}
           resizeMode={resizeMode}
         />

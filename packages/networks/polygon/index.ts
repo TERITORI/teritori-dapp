@@ -4,7 +4,7 @@ import { EthereumNetworkInfo, NetworkFeature, NetworkKind } from "../types";
 export const polygonNetwork: EthereumNetworkInfo = {
   id: "polygon",
   kind: NetworkKind.Ethereum,
-  displayName: "Polygon",
+  displayName: "Polygon Mainnet",
   icon: "polygon.svg",
   features: [NetworkFeature.RiotP2E],
   currencies: polygonCurrencies,

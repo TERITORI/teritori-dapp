@@ -11,8 +11,8 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 import { useSelector } from "react-redux";
 
-import Add from "../../../assets/icons/add-primary.svg";
 import Img from "../../../assets/icons/img.svg";
+import VideoSVG from "../../../assets/icons/video.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useWalletControl } from "../../context/WalletControlProvider";
 import { useFeedPosting } from "../../hooks/feed/useFeedPosting";
@@ -32,7 +32,11 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { PostCategory, SocialFeedVideoMetadata } from "../../utils/types/feed";
+import {
+  CustomLatLngExpression,
+  PostCategory,
+  SocialFeedVideoMetadata,
+} from "../../utils/types/feed";
 import { LocalFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
 import { DeleteButton } from "../FilePreview/DeleteButton";
@@ -49,6 +53,8 @@ import ModalBase from "../modals/ModalBase";
 import { FeedFeeText } from "../socialFeed/FeedFeeText";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
+import LocationRefinedSvg from "@/assets/icons/location-refined.svg";
+import { MapModal } from "@/components/socialFeed/modals/MapModal/MapModal";
 import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
 
 const UPLOAD_VIDEO_MODAL_WIDTH = 590;
@@ -58,7 +64,12 @@ export const UploadVideoModal: FC<{
   onClose: () => void;
   isVisible: boolean;
 }> = ({ onClose, isVisible }) => {
-  const { setToastError } = useFeedbacks();
+  const [isMapShown, setIsMapShown] = useState(false);
+  const [location, setLocation] = useState<
+    CustomLatLngExpression | undefined
+  >();
+
+  const { setToast } = useFeedbacks();
   const selectedNetwork = useSelectedNetworkInfo();
   const selectedWallet = useSelectedWallet();
   const userId = selectedWallet?.userId || "";
@@ -95,6 +106,8 @@ export const UploadVideoModal: FC<{
   const [description, setDescription] = useState("");
   const [localVideoFile, setLocalVideoFile] = useState<LocalFileData>();
   const [localImageFile, setLocalImageFile] = useState<LocalFileData>();
+  const isPublishDisabled =
+    !localVideoFile?.url || !title || isLoading || !canPayForPost;
 
   const processCreateVideoPost = async (video: SocialFeedVideoMetadata) => {
     // we need this hack until the createdAt field is properly provided by the contract
@@ -109,9 +122,11 @@ export const UploadVideoModal: FC<{
       console.error("post submit err", err);
       setIsUploadLoading(false);
       setIsProgressBarShown(false);
-      setToastError({
+      setToast({
         title: "Post creation failed",
         message: err instanceof Error ? err.message : `${err}`,
+        mode: "normal",
+        type: "success",
       });
     }
   };
@@ -146,9 +161,11 @@ export const UploadVideoModal: FC<{
       userIPFSKey || (await generateIpfsKey(selectedNetwork?.id || "", userId));
     if (!pinataJWTKey) {
       console.error("upload file err : No Pinata JWT");
-      setToastError({
+      setToast({
         title: "File upload failed",
         message: "No Pinata JWT",
+        mode: "normal",
+        type: "success",
       });
       setIsUploadLoading(false);
       return;
@@ -167,9 +184,11 @@ export const UploadVideoModal: FC<{
     });
     if (!uploadedFiles.find((file) => file.url)) {
       console.error("upload file err : Fail to pin to IPFS");
-      setToastError({
+      setToast({
         title: "File upload failed",
         message: "Fail to pin to IPFS, please try to Publish again",
+        mode: "normal",
+        type: "success",
       });
       setIsUploadLoading(false);
       return;
@@ -178,6 +197,7 @@ export const UploadVideoModal: FC<{
       title,
       description,
       videoFile: uploadedFiles[0],
+      location,
     };
     await processCreateVideoPost(video);
   };
@@ -318,7 +338,7 @@ export const UploadVideoModal: FC<{
           </View>
         </View>
 
-        <SpacerColumn size={2.5} />
+        <SpacerColumn size={3} />
         {localVideoFile?.url ? (
           <View>
             <DeleteButton
@@ -361,7 +381,7 @@ export const UploadVideoModal: FC<{
                       paddingVertical: layout.spacing_x2,
                     }}
                   >
-                    <BrandText style={[fontSemibold14]}>+ Add Video</BrandText>
+                    <BrandText style={[fontSemibold14]}>Add Video</BrandText>
                   </View>
                 }
               />
@@ -382,10 +402,10 @@ export const UploadVideoModal: FC<{
                     disabled={isLoading}
                   >
                     <SVG
-                      source={Add}
+                      source={VideoSVG}
                       width={20}
                       height={20}
-                      stroke={primaryColor}
+                      color={primaryColor}
                     />
                     <SpacerRow size={1} />
                     <BrandText style={buttonTextStyle}>Add video</BrandText>
@@ -395,8 +415,25 @@ export const UploadVideoModal: FC<{
             )}
           </View>
         )}
-        <SpacerColumn size={2.5} />
 
+        <SpacerColumn size={2.5} />
+        <TouchableOpacity
+          style={[buttonContainerStyle, isLoading && { opacity: 0.5 }]}
+          onPress={() => setIsMapShown(true)}
+          disabled={isLoading}
+        >
+          <SVG
+            source={LocationRefinedSvg}
+            width={20}
+            height={20}
+            stroke={!location ? primaryColor : undefined}
+            color={location ? primaryColor : undefined}
+          />
+          <SpacerRow size={1} />
+          <BrandText style={buttonTextStyle}>Handle location</BrandText>
+        </TouchableOpacity>
+
+        <SpacerColumn size={3} />
         <BrandText
           style={[
             fontSemibold14,
@@ -424,10 +461,8 @@ export const UploadVideoModal: FC<{
             Use.
           </BrandText>
           <PrimaryButton
-            text="Upload"
-            disabled={
-              !localVideoFile?.url || !title || isLoading || !canPayForPost
-            }
+            text="Publish"
+            disabled={isPublishDisabled}
             size="SM"
             onPress={onPressUpload}
             isLoading={isLoading}
@@ -448,6 +483,16 @@ export const UploadVideoModal: FC<{
         )}
         {Platform.OS !== "web" ? <SpacerColumn size={20} /> : null}
       </KeyboardAwareScrollView>
+
+      {isMapShown && (
+        <MapModal
+          visible
+          onClose={() => setIsMapShown(false)}
+          setLocation={setLocation}
+          location={location}
+          postCategory={postCategory}
+        />
+      )}
     </ModalBase>
   );
 };
@@ -503,5 +548,5 @@ const uploadButtonStyle: ViewStyle = {
   paddingLeft: layout.spacing_x1,
   paddingRight: layout.spacing_x1_5,
   height: 32,
-  marginBottom: layout.spacing_x2,
+  // marginBottom: layout.spacing_x2,
 };

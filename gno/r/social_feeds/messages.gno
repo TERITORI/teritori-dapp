@@ -3,29 +3,37 @@ package social_feeds
 import (
 	"strings"
 
+	"gno.land/p/demo/json"
 	"gno.land/p/teritori/dao_interfaces"
-	"gno.land/p/teritori/ujson"
+	"gno.land/p/teritori/jsonutil"
 )
 
 // Ban a post
 type ExecutableMessageBanPost struct {
-	dao_interfaces.ExecutableMessage
-
 	FeedID FeedID
 	PostID PostID
 	Reason string
 }
 
+var _ dao_interfaces.ExecutableMessage = (*ExecutableMessageBanPost)(nil)
+
 func (msg ExecutableMessageBanPost) Type() string {
 	return "gno.land/r/teritori/social_feeds.BanPost"
 }
 
-func (msg *ExecutableMessageBanPost) ToJSON() string {
-	return ujson.FormatObject([]ujson.FormatKV{
-		{Key: "feedId", Value: msg.FeedID},
-		{Key: "postId", Value: msg.PostID},
-		{Key: "reason", Value: msg.Reason},
+func (msg *ExecutableMessageBanPost) ToJSON() *json.Node {
+	return json.ObjectNode("", map[string]*json.Node{
+		"feedId": jsonutil.IntNode(int(msg.FeedID)),
+		"postId": jsonutil.IntNode(int(msg.PostID)),
+		"reason": json.StringNode("", msg.Reason),
 	})
+}
+
+func (msg *ExecutableMessageBanPost) FromJSON(ast *json.Node) {
+	obj := ast.MustObject()
+	msg.FeedID = FeedID(jsonutil.MustInt(obj["feedId"]))
+	msg.PostID = PostID(jsonutil.MustInt(obj["postId"]))
+	msg.Reason = obj["reason"].MustString()
 }
 
 func (msg *ExecutableMessageBanPost) String() string {
@@ -56,8 +64,9 @@ func (msg *ExecutableMessageBanPost) String() string {
 }
 
 type BanPostHandler struct {
-	dao_interfaces.MessageHandler
 }
+
+var _ dao_interfaces.MessageHandler = (*BanPostHandler)(nil)
 
 func NewBanPostHandler() *BanPostHandler {
 	return &BanPostHandler{}
@@ -72,12 +81,6 @@ func (h BanPostHandler) Type() string {
 	return ExecutableMessageBanPost{}.Type()
 }
 
-func (h *BanPostHandler) MessageFromJSON(ast *ujson.JSONASTNode) dao_interfaces.ExecutableMessage {
-	msg := &ExecutableMessageBanPost{}
-	ast.ParseObject([]*ujson.ParseKV{
-		{Key: "feedId", Value: &msg.FeedID},
-		{Key: "postId", Value: &msg.PostID},
-		{Key: "reason", Value: &msg.Reason},
-	})
-	return msg
+func (h BanPostHandler) Instantiate() dao_interfaces.ExecutableMessage {
+	return &ExecutableMessageBanPost{}
 }

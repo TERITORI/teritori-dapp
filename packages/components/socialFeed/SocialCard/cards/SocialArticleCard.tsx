@@ -146,6 +146,7 @@ export const SocialArticleCard: FC<{
               isWrapped
               authorId={localPost.authorId}
               createdAt={localPost.createdAt}
+              postWithLocationId={metadata?.location && localPost.id}
             />
 
             <SpacerColumn size={1.5} />

@@ -11,6 +11,8 @@ import {
   parseCollectionId,
 } from "../networks";
 
+import { web3ToWeb2URI } from "@/utils/ipfs";
+
 const main = async () => {
   program.argument("<collection-id>");
   program.parse();
@@ -37,12 +39,7 @@ const main = async () => {
 
   const dir = collectionId + ".d";
   fs.mkdirSync(dir, { recursive: true });
-  const [finalCIDString, ...pathRest] = collectionMetadataURI
-    .substring("ipfs://".length)
-    .split("/");
-  const web2URI = `https://${finalCIDString}.ipfs.cf-ipfs.com/${pathRest.join(
-    "/",
-  )}`;
+  const web2URI = web3ToWeb2URI(collectionMetadataURI);
   const data = {
     ...nftContractInfo,
     ...bunkerConfig,

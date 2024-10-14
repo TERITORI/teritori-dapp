@@ -7,6 +7,7 @@ import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { getAudioData } from "@/utils/audio";
 import { AUDIO_MIME_TYPES, VIDEO_MIME_TYPES } from "@/utils/mime";
+import { neutralFF } from "@/utils/style/colors";
 import { LocalFileData } from "@/utils/types/files";
 import { getVideoData } from "@/utils/video";
 
@@ -94,6 +95,7 @@ export const SelectAudioVideo = ({
           style={{
             opacity: Array.isArray(files) && files?.length > 0 ? 0.7 : 1,
           }}
+          color={neutralFF}
         />
       )}
     </CustomPressable>

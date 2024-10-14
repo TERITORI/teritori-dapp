@@ -17,7 +17,7 @@ import {
   COLLECTION_VIEW_SM_HEIGHT,
   COLLECTION_VIEW_SM_WIDTH,
 } from "../CollectionView";
-import { SmallCarousel } from "../carousels/SmallCarousel";
+import { SmallCarousel } from "../carousels/SmallCarousel/SmallCarousel";
 
 export const TopMenuLiveMint: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();

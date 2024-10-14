@@ -27,7 +27,6 @@ export const AudioView: React.FC<{
   imageURI?: string;
   duration: number;
   waveform: number[];
-  authorId: string;
   postId: string;
   fallbackImageURI?: string;
 }> = ({
@@ -35,13 +34,12 @@ export const AudioView: React.FC<{
   imageURI,
   duration,
   waveform,
-  authorId,
   postId,
   fallbackImageURI: fallbackImageSource,
 }) => {
   const { media, handlePlayPause, loadAndPlaySoundsQueue, playbackStatus } =
     useMediaPlayer();
-  const isInMediaPlayer = media?.postId === postId;
+  const isInMediaPlayer = !!media && postId === media.postId;
 
   const onPressPlayPause = async () => {
     if (isInMediaPlayer) {

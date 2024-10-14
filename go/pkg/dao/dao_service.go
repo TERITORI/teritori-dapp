@@ -112,4 +112,7 @@ func (s *DAOService) IsUserDAOMember(ctx context.Context, req *daopb.IsUserDAOMe
 		IsMember: isMember,
 	}, nil
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/main
