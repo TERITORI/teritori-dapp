@@ -81,15 +81,15 @@ func (s *DAOService) IsUserDAOMember(ctx context.Context, req *daopb.IsUserDAOMe
 	daoId := req.GetDaoId()
 
 	daoNetwork, daoAddress, err := s.conf.NetStore.ParseUserID(daoId)
-	if parseDaoIdErr != nil {
+	if err != nil {
 		return nil,
-			errors.Wrap(parseDaoIdErr, "failed to parse dao id")
+			errors.Wrap(err, "failed to parse dao id")
 	}
 
 	_, userAddress, err := s.conf.NetStore.ParseUserID(userId)
-	if parseUSerIdErr != nil {
+	if err != nil {
 		return nil,
-			errors.Wrap(parseUSerIdErr, "failed to parse user id")
+			errors.Wrap(err, "failed to parse user id")
 	}
 
 	var isMember bool
@@ -112,4 +112,3 @@ func (s *DAOService) IsUserDAOMember(ctx context.Context, req *daopb.IsUserDAOMe
 		IsMember: isMember,
 	}, nil
 }
-
