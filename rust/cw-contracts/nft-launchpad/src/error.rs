@@ -34,8 +34,8 @@ pub enum ContractError {
     #[error("Collection not deployed.")]
     CollectionNotDeployed,
 
-    #[error("Wrong owner.")]
-    WrongOwner,
+    #[error("Wrong collection owner.")]
+    WrongCollectionOwner,
 
     #[error("Wrong deployer.")]
     WrongDeployer,
