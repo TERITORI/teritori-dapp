@@ -190,11 +190,12 @@ func GetLastTokensJSON() string {
 	return json.ArrayNode("", nodes).String()
 }
 
-func GetUserTokensJSON(user std.Address) string {
+func GetUserTokensJSON(user string) string {
+	userAddr := std.Address(user)
 	var nodes []*json.Node
 	tokens.Iterate("", "", func(key string, value interface{}) bool {
 		token, _ := value.(*Token)
-		if token.admin.Owner() == user {
+		if token.admin.Owner() == userAddr {
 			nodes = append(nodes, token.ToJSON())
 		}
 		return false
