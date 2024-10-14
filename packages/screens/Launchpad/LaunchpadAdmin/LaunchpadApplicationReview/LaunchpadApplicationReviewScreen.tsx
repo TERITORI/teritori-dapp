@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 
 import { ApplicationDetail } from "./component/ApplicationDetail";
@@ -20,6 +20,8 @@ import { ScreenFC } from "@/utils/navigation";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { useDeployCollection } from './../../../../hooks/launchpad/useDeployCollection';
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 
 export const launchpadReviewBreakpointM = 800;
 
@@ -29,6 +31,9 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
   const { id: projectId } = route.params;
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
+  const [isLoading, setLoading] = useState(false);
+  const { setLoadingFullScreen } = useFeedbacks();
+  const { deployCollection } = useDeployCollection();
   const { launchpadProject } = useLaunchpadProjectById({
     projectId,
     networkId: selectedNetworkId,
@@ -36,6 +41,23 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
   });
   const collectionData =
     launchpadProject && parseCollectionData(launchpadProject);
+
+  const onPressApprove = async () => {
+    setLoading(true);
+    setLoadingFullScreen(true);
+
+    try {
+      await deployCollection(projectId)
+    } catch (e) {
+      console.error("Error deploying the NFT collection", e);
+      setLoading(false);
+      setLoadingFullScreen(false);
+    }
+    setTimeout(() => {
+      setLoading(false);
+      setLoadingFullScreen(false);
+    }, 1000);
+  }
 
   if (!launchpadProject || !collectionData) {
     return (
@@ -80,6 +102,8 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
           <ApplicationDetail
             collectionData={collectionData}
             projectStatus={launchpadProjectStatus(launchpadProject)}
+            onPressApprove={onPressApprove}
+            isApproveLoading={isLoading}
           />
           <SpacerColumn size={5} />
           <View style={{ borderTopColor: neutral33, borderTopWidth: 1 }}>

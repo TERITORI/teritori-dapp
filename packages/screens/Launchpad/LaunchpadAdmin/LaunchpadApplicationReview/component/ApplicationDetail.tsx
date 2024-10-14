@@ -27,7 +27,9 @@ const breakpointM = 900;
 export const ApplicationDetail: React.FC<{
   collectionData: CollectionDataResult;
   projectStatus: string;
-}> = ({ collectionData, projectStatus }) => {
+  onPressApprove: () => void;
+  isApproveLoading?: boolean
+}> = ({ collectionData, projectStatus, onPressApprove, isApproveLoading }) => {
   const { width } = useMaxResolution();
 
   return (
@@ -116,7 +118,13 @@ export const ApplicationDetail: React.FC<{
           )}
         </View>
         <SpacerColumn size={4} />
-        <PrimaryButton text="Approve" boxStyle={{ width: 146 }} />
+        <PrimaryButton 
+        text="Approve"
+         boxStyle={{ width: 146 }} 
+         onPress={onPressApprove} 
+        isLoading={isApproveLoading}
+        disabled={isApproveLoading}
+        />
       </View>
 
       {width >= breakpointM ? (
