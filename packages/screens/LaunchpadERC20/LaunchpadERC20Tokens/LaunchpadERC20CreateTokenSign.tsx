@@ -117,6 +117,7 @@ export const CreateTokenSign: React.FC = () => {
       );
 
       await queryClient.invalidateQueries(["lastTokens"]);
+      await queryClient.invalidateQueries(["userTokens"]);
 
       setIsShowConfirmModal(false);
       setIsShowModal(true);

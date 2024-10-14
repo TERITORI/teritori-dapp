@@ -15,7 +15,7 @@ import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature, NetworkKind } from "@/networks";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
-import { SelectTokenModal } from "../component/LaunchpadERC20SelectTokenModal";
+import { SelectUserTokenModal } from "../component/LaunchpadERC20SelectUserTokenModal";
 
 export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
   route: { params },
@@ -71,7 +71,7 @@ export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
           disabled
         />
       </View>
-      <SelectTokenModal isVisible={isModalVisible} onClose={toggleModal} />
+      <SelectUserTokenModal networkId={networkId} isVisible={isModalVisible} onClose={toggleModal} />
       <SpacerColumn size={2} />
       <TokensTable networkId={networkId} />
     </ScreenContainer>
