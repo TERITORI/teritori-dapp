@@ -15,6 +15,15 @@ export interface DAOsResponse {
   daos: DAO[];
 }
 
+export interface IsUserDAOMemberRequest {
+  userId: string;
+  daoId: string;
+}
+
+export interface IsUserDAOMemberResponse {
+  isMember: boolean;
+}
+
 export interface DAO {
   id: string;
   admin: string;
@@ -156,6 +165,137 @@ export const DAOsResponse = {
   fromPartial<I extends Exact<DeepPartial<DAOsResponse>, I>>(object: I): DAOsResponse {
     const message = createBaseDAOsResponse();
     message.daos = object.daos?.map((e) => DAO.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseIsUserDAOMemberRequest(): IsUserDAOMemberRequest {
+  return { userId: "", daoId: "" };
+}
+
+export const IsUserDAOMemberRequest = {
+  encode(message: IsUserDAOMemberRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    if (message.daoId !== "") {
+      writer.uint32(18).string(message.daoId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IsUserDAOMemberRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIsUserDAOMemberRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.daoId = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsUserDAOMemberRequest {
+    return {
+      userId: isSet(object.userId) ? globalThis.String(object.userId) : "",
+      daoId: isSet(object.daoId) ? globalThis.String(object.daoId) : "",
+    };
+  },
+
+  toJSON(message: IsUserDAOMemberRequest): unknown {
+    const obj: any = {};
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
+    if (message.daoId !== "") {
+      obj.daoId = message.daoId;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<IsUserDAOMemberRequest>, I>>(base?: I): IsUserDAOMemberRequest {
+    return IsUserDAOMemberRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<IsUserDAOMemberRequest>, I>>(object: I): IsUserDAOMemberRequest {
+    const message = createBaseIsUserDAOMemberRequest();
+    message.userId = object.userId ?? "";
+    message.daoId = object.daoId ?? "";
+    return message;
+  },
+};
+
+function createBaseIsUserDAOMemberResponse(): IsUserDAOMemberResponse {
+  return { isMember: false };
+}
+
+export const IsUserDAOMemberResponse = {
+  encode(message: IsUserDAOMemberResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.isMember === true) {
+      writer.uint32(8).bool(message.isMember);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): IsUserDAOMemberResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseIsUserDAOMemberResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.isMember = reader.bool();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IsUserDAOMemberResponse {
+    return { isMember: isSet(object.isMember) ? globalThis.Boolean(object.isMember) : false };
+  },
+
+  toJSON(message: IsUserDAOMemberResponse): unknown {
+    const obj: any = {};
+    if (message.isMember === true) {
+      obj.isMember = message.isMember;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<IsUserDAOMemberResponse>, I>>(base?: I): IsUserDAOMemberResponse {
+    return IsUserDAOMemberResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<IsUserDAOMemberResponse>, I>>(object: I): IsUserDAOMemberResponse {
+    const message = createBaseIsUserDAOMemberResponse();
+    message.isMember = object.isMember ?? false;
     return message;
   },
 };
@@ -383,6 +523,10 @@ export const DAO = {
 
 export interface DAOService {
   DAOs(request: DeepPartial<DAOsRequest>, metadata?: grpc.Metadata): Promise<DAOsResponse>;
+  IsUserDAOMember(
+    request: DeepPartial<IsUserDAOMemberRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<IsUserDAOMemberResponse>;
 }
 
 export class DAOServiceClientImpl implements DAOService {
@@ -391,10 +535,18 @@ export class DAOServiceClientImpl implements DAOService {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.DAOs = this.DAOs.bind(this);
+    this.IsUserDAOMember = this.IsUserDAOMember.bind(this);
   }
 
   DAOs(request: DeepPartial<DAOsRequest>, metadata?: grpc.Metadata): Promise<DAOsResponse> {
     return this.rpc.unary(DAOServiceDAOsDesc, DAOsRequest.fromPartial(request), metadata);
+  }
+
+  IsUserDAOMember(
+    request: DeepPartial<IsUserDAOMemberRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<IsUserDAOMemberResponse> {
+    return this.rpc.unary(DAOServiceIsUserDAOMemberDesc, IsUserDAOMemberRequest.fromPartial(request), metadata);
   }
 }
 
@@ -413,6 +565,29 @@ export const DAOServiceDAOsDesc: UnaryMethodDefinitionish = {
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = DAOsResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const DAOServiceIsUserDAOMemberDesc: UnaryMethodDefinitionish = {
+  methodName: "IsUserDAOMember",
+  service: DAOServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return IsUserDAOMemberRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = IsUserDAOMemberResponse.decode(data);
       return {
         ...value,
         toObject() {
