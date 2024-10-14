@@ -17,43 +17,50 @@ interface GnoDAOConfig {
   imageURI: string;
 }
 
+const generateFakeSource = (networkId: string, conf: GnoDAOConfig) => {
+  const network = mustGetGnoNetwork(networkId);
+  return `package ${conf.name}
+  func Render(path string) string {
+	return "Hello, World!"
+}
+`;
+}
+
 const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
   const network = mustGetGnoNetwork(networkId);
   return `package ${conf.name}
 
   import (
+    "std"
     "time"
 
     dao_core "${network.daoCorePkgPath}"
     dao_interfaces "${network.daoInterfacesPkgPath}"
     proposal_single "${network.daoProposalSinglePkgPath}"
+    "${network.daoUtilsPkgPath}"
     voting_group "${network.votingGroupPkgPath}"
-    "${network.groupsPkgPath}"
-    modboards "${network.modboardsPkgPath}"
     "${network.daoRegistryPkgPath}"
+    "${network.toriPkgPath}"
   )
   
-  var (
-    daoCore       dao_interfaces.IDAOCore
-    mainBoardName = "${conf.name}"
-    groupName     = mainBoardName + "_voting_group"
-    groupID       groups.GroupID
-  )
-  
-  func init() {
-    modboards.CreateBoard(mainBoardName)
-  
-    votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
-      groupID = groups.CreateGroup(groupName)
+var (
+	daoCore    dao_interfaces.IDAOCore
+	group      *voting_group.VotingGroup
+	registered bool
+)
+
+func init() {
+	votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
+		group = voting_group.NewVotingGroup()
       ${conf.initialMembers
       .map(
         (member) =>
-          `groups.AddMember(groupID, "${member.address}", ${member.weight}, "");`,
+          `group.SetMemberPower("${member.address}", ${member.weight});`,
       )
       .join("\n\t")}
-      return voting_group.NewVotingGroup(groupID)
-    }
-  
+		return group
+	}
+
     // TODO: consider using factories that return multiple modules and handlers
   
     proposalModulesFactories := []dao_interfaces.ProposalModuleFactory{
@@ -65,7 +72,7 @@ const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
         conf.quorumPercent * 100,
       )}) // ${Math.ceil(conf.quorumPercent * 100) / 100}%
         return proposal_single.NewDAOProposalSingle(core, &proposal_single.DAOProposalSingleOpts{
-          MaxVotingPeriod: time.Second * ${conf.maxVotingPeriodSeconds},
+          MaxVotingPeriod: dao_utils.DurationTime(time.Second * ${conf.maxVotingPeriodSeconds}),
           Threshold: &proposal_single.ThresholdThresholdQuorum{
             Threshold: &tt,
             Quorum:    &tq,
@@ -74,35 +81,33 @@ const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
       },
     }
   
-    messageHandlersFactories := []dao_interfaces.MessageHandlerFactory{
-      func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-        return groups.NewAddMemberHandler()
-      },
-      func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-        return groups.NewDeleteMemberHandler()
-      },
-      func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-        // TODO: add a router to support multiple proposal modules
-        propMod := core.ProposalModules()[0]
-        return proposal_single.NewUpdateSettingsHandler(propMod.Module.(*proposal_single.DAOProposalSingle))
-      },
-      func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-        return modboards.NewCreateBoardHandler()
-      },
-      func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-        return modboards.NewDeletePostHandler()
-      },
-    }
-  
-    daoCore = dao_core.NewDAOCore(votingModuleFactory, proposalModulesFactories, messageHandlersFactories)
+	messageHandlersFactories := []dao_interfaces.MessageHandlerFactory{
+		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
+			return group.UpdateMembersHandler()
+		},
+		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
+			// TODO: add a router to support multiple proposal modules
+			propMod := core.ProposalModules()[0]
+			return proposal_single.NewUpdateSettingsHandler(propMod.Module.(*proposal_single.DAOProposalSingle))
+		},
+		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
+			return tori.NewMintToriHandler()
+		},
+		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
+			return tori.NewBurnToriHandler()
+		},
+		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
+			return tori.NewChangeAdminHandler()
+		},
+	}
 
-    dao_registry.Register(${JSON.stringify(conf.displayName)}, ${JSON.stringify(
-        conf.description,
-      )}, ${JSON.stringify(conf.imageURI)})
+	daoCore = dao_core.NewDAOCore(votingModuleFactory, proposalModulesFactories, messageHandlersFactories)
+
+  dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "${conf.displayName}", "${conf.description}", "${conf.imageURI}")
   }
   
   func Render(path string) string {
-    return "[[board](/r/demo/modboards:" + mainBoardName + ")]\\n\\n" + daoCore.Render(path)
+    return daoCore.Render(path)
   }
   
   func VoteJSON(moduleIndex int, proposalID int, voteJSON string) {
@@ -111,31 +116,40 @@ const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
     if !module.Enabled {
       panic("proposal module is not enabled")
     }
+
     module.Module.VoteJSON(proposalID, voteJSON)
   }
-  
+
   func Execute(moduleIndex int, proposalID int) {
     // move check in dao core
     module := dao_core.GetProposalModule(daoCore, moduleIndex)
     if !module.Enabled {
       panic("proposal module is not enabled")
     }
+
     module.Module.Execute(proposalID)
   }
-  
-  func ProposeJSON(moduleIndex int, proposalJSON string) {
+
+  func ProposeJSON(moduleIndex int, proposalJSON string) int {
     // move check in dao core
     module := dao_core.GetProposalModule(daoCore, moduleIndex)
     if !module.Enabled {
       panic("proposal module is not enabled")
     }
-    module.Module.ProposeJSON(proposalJSON)
+
+    return module.Module.ProposeJSON(proposalJSON)
   }
-  
+
   func getProposalsJSON(moduleIndex int, limit int, startAfter string, reverse bool) string {
     // move logic in dao core
     module := dao_core.GetProposalModule(daoCore, moduleIndex)
     return module.Module.ProposalsJSON(limit, startAfter, reverse)
+  }
+
+  func getProposalJSON(moduleIndex int, proposalIndex int) string {
+    // move logic in dao core
+    module := dao_core.GetProposalModule(daoCore, moduleIndex)
+    return module.Module.ProposalJSON(proposalIndex)
   }
 `;
 };
@@ -145,9 +159,10 @@ export const adenaDeployGnoDAO = async (
   creator: string,
   conf: GnoDAOConfig,
 ) => {
-  const source = generateDAORealmSource(networkId, conf);
+  const source = generateFakeSource(networkId, conf);
   console.log("Deploying DAO with source:", source);
-  const pkgPath = `gno.land/r/demo/${conf.name}`;
+  const pkgPath = `gno.land/r/teritori/${conf.name}`;
+  console.log("Deploying DAO with pkgPath:", pkgPath);
   await adenaAddPkg(
     networkId,
     {

@@ -109,14 +109,14 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   nameServiceDefaultImage: string;
   gnowebURL: string;
   daoRegistryPkgPath?: string;
-  modboardsPkgPath?: string;
   socialFeedsPkgPath?: string;
   socialFeedsDAOPkgPath?: string;
   votingGroupPkgPath?: string;
   daoProposalSinglePkgPath?: string;
   daoInterfacesPkgPath?: string;
   daoCorePkgPath?: string;
-  groupsPkgPath?: string;
+  daoUtilsPkgPath?: string;
+  toriPkgPath?: string;
   profilePkgPath?: string;
   faucetURL?: string;
   txIndexerURL?: string;
