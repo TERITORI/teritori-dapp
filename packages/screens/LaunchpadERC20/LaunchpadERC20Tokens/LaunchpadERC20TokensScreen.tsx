@@ -15,6 +15,7 @@ import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature, NetworkKind } from "@/networks";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { SelectTokenModal } from "../component/LaunchpadERC20SelectTokenModal";
 
 export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
   route: { params },
@@ -24,6 +25,11 @@ export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
   const networkId = useSelectedNetworkId();
   const { width } = useWindowDimensions();
   const navigation = useAppNavigation();
+  const [isModalVisible, setIsModalVisible] = React.useState(false);
+
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  }
 
   return (
     <ScreenContainer
@@ -51,21 +57,21 @@ export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
           label="Manage"
           description="Mint, burn, or transfer the tokens you own"
           iconSVG={penSVG}
-          onPress={() => {}}
+          onPress={() => { setIsModalVisible(true) }}
           style={{
             marginHorizontal: width >= breakpoints.MD_BREAKPOINT ? 12 : 0,
             marginVertical: width >= breakpoints.LG_BREAKPOINT ? 0 : 12,
           }}
-          disabled
         />
         <FlowCard
           label="Explore"
           description="Lookup tokens and explore their details"
           iconSVG={exploreSVG}
-          onPress={() => {}}
+          onPress={() => { }}
           disabled
         />
       </View>
+      <SelectTokenModal isVisible={isModalVisible} onClose={toggleModal} />
       <SpacerColumn size={2} />
       <TokensTable networkId={networkId} />
     </ScreenContainer>
