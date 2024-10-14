@@ -3,12 +3,12 @@ ADMIN_ADDR=$(shell teritorid keys show $(ADMIN) --keyring-backend test --output 
 NODE_FLAG=--node https://rpc.testnet.teritori.com:443
 TX_FLAGS=--from $(ADMIN) --chain-id teritori-test-7 $(NODE_FLAG) --gas auto --gas-adjustment 1.3 -y -b sync --output json --keyring-backend test -o json
 QUERY_FLAGS=$(NODE_FLAG) -o json
-CODE_ID=58
+CODE_ID=59
 CONFIG=$(shell cat config.json | jq -r '.owner="$(ADMIN_ADDR)" | tojson | @sh')
 WORKSPACE_PATH := $(shell realpath $(shell dirname $(shell pwd))/../..)
 
 # only informative
-# CONTRACT_ADDRESS=tori1j90y9dw8khz6wt399phsluahau2vdrlqgseh8tc7tca7v9d2s39qg2e97k
+# CONTRACT_ADDRESS=tori1apvccnnpduysm9236czxarzf8cme6f049ykf34ypu6eencx7gyhsve0fsf
 
 .PHONY: artifacts/nft_launchpad.wasm
 artifacts/nft_launchpad.wasm:

@@ -11670,9 +11670,9 @@
       },
       {
         "type": "NFTLaunchpad",
-        "launchpadContractAddress": "tori1xwgcenw5032s9pnwzp4d0754ep6cp47dd5uxl05szqmunu5k9kvs528l9z",
+        "launchpadContractAddress": "tori1apvccnnpduysm9236czxarzf8cme6f049ykf34ypu6eencx7gyhsve0fsf",
         "launchpadEndpoint": "https://dapp-backend.testnet.teritori.com",
-        "codeId": 57,
+        "codeId": 59,
         "defaultMintDenom": "utori"
       }
     ],
