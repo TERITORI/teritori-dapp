@@ -2,6 +2,7 @@
   "config": {
     "name": "NFT Launchpad",
     "supported_networks": ["teritori", "teritori-testnet"],
-    "owner": ""
+    "owner": "tori1kjvyqf4mttwrhfuq5gfj9xgxx9jdt92xnxzf770x853567ymx8cscrnw05",
+    "deployer": "tori1kjvyqf4mttwrhfuq5gfj9xgxx9jdt92xnxzf770x853567ymx8cscrnw05"
   } 
 }
