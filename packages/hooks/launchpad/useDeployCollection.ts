@@ -6,17 +6,17 @@ import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetworkFeature, NetworkFeature } from "@/networks";
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
+import { useIsUserLaunchpadAdmin } from "./useIsUserLaunchpadAdmin";
 
 export const useDeployCollection = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
+  const {isUserLaunchpadAdmin} = useIsUserLaunchpadAdmin(selectedWallet?.userId);
   const { setToast } = useFeedbacks();
 
   const deployCollection = useCallback(
-    async (
-      collectionId: string,
-    ) => {
-      if (!selectedWallet) return;
+    async (collectionId: string) => {
+      if (!selectedWallet || !isUserLaunchpadAdmin) return;
       const walletAddress = selectedWallet.address;
 
       const signingComswasmClient =
@@ -44,10 +44,7 @@ export const useDeployCollection = () => {
           title: "Collection deployed",
         });
       } catch (e: any) {
-        console.error(
-          "Error deploying a NFT Collection in the Launchpad: ",
-          e,
-        );
+        console.error("Error deploying a NFT Collection in the Launchpad: ", e);
         setToast({
           mode: "normal",
           type: "error",
@@ -56,11 +53,7 @@ export const useDeployCollection = () => {
         });
       }
     },
-    [
-      selectedNetworkId,
-      selectedWallet,
-      setToast,
-    ],
+    [selectedNetworkId, selectedWallet, setToast],
   );
 
   return { deployCollection };

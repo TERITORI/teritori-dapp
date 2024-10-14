@@ -1,68 +1,89 @@
-
 import { useQuery } from "@tanstack/react-query";
-import { mustGetDAOClient } from "@/utils/backend";
 
 import { useFeedbacks } from "@/context/FeedbacksProvider";
-import { useSelectedWallet } from '@/hooks/useSelectedWallet';
-import { useSelectedNetworkId } from '@/hooks/useSelectedNetwork';
-import { getKeplrSigningCosmWasmClient } from '@/networks/signer';
-import { getNetworkFeature } from '@/networks';
-import { NetworkFeature } from '@/networks';
-import { NftLaunchpadClient } from '@/contracts-clients/nft-launchpad';
+import { NftLaunchpadClient } from "@/contracts-clients/nft-launchpad";
+import {
+  getNetworkFeature,
+  parseUserId,
+  NetworkFeature,
+  getUserId,
+} from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
+import { mustGetDAOClient } from "@/utils/backend";
 
-export const useIsUserLaunchpadAdmin = () => {
+export const useIsUserLaunchpadAdmin = (userId?: string) => {
   const { setToast } = useFeedbacks();
-  const selectedNetworkId = useSelectedNetworkId()
-  const selectedWallet = useSelectedWallet()
 
-  if(!selectedWallet) return false
-
-  const { data, ...other } = useQuery<boolean>(
+  const {data, ...other} = useQuery<boolean>(
     [
       "isUserLaunchpadAdmin",
-      selectedWallet.userId,
-      selectedNetworkId
+      userId
     ],
     async () => {
       try {
-        const signingComswasmClient =
-        await getKeplrSigningCosmWasmClient(selectedNetworkId);
-      const cosmwasmLaunchpadFeature = getNetworkFeature(
-        selectedNetworkId,
-        NetworkFeature.NFTLaunchpad,
-      );
-      if (!cosmwasmLaunchpadFeature) return false;
-        const daoClient = mustGetDAOClient(selectedNetworkId);
-        const nftLaunchpadContractClient = new NftLaunchpadClient(
-            signingComswasmClient,
-            selectedWallet.walletAddress,
-            cosmwasmLaunchpadFeature.launchpadContractAddress,
-          );
+        const [network, userAddress] = parseUserId(userId);
+        if (!userId) {
+          throw Error("No user id");
+        } if(!network) {
+          throw Error("No network parsed from user id");
+        }
+        const networkId = network.id;
 
-        if (
-          !daoClient
-          || !nftLaunchpadContractClient
-        ) {
-          return false;
+        const signingComswasmClient =
+          await getKeplrSigningCosmWasmClient(networkId);
+        const cosmwasmLaunchpadFeature = getNetworkFeature(
+          networkId,
+          NetworkFeature.NFTLaunchpad,
+        );
+
+        if (!cosmwasmLaunchpadFeature) {
+          throw Error("No Launchpad feature");
         }
 
-        const isUserAdmin = await daoClient.IsUserAdmin(selectedWallet.walletAddress)
-        return isUserAdmin
+        const daoClient = mustGetDAOClient(networkId);
+        const nftLaunchpadContractClient = new NftLaunchpadClient(
+          signingComswasmClient,
+          userAddress,
+          cosmwasmLaunchpadFeature.launchpadContractAddress,
+        );
 
-        //TODO: nftLaunchpadContractClient.getConfig to get deployer,
-        // then daoClient.IsUserDaoMember
+        if (!daoClient) {
+          throw Error("DAO client not found");
+        }
+        if (!nftLaunchpadContractClient) {
+          throw Error("Launchpad contract client not found");
+        }
 
-      } catch (e: any) {
-        console.error("Error getting launchpad projects: ", e);
-        setToast({
-          mode: "normal",
-          type: "error",
-          title: "Error getting launchpad projects",
-          message: e.message,
+        // The Launchapd Admin DAO is the deployer set in the config of the nft-launchpad contract
+        const config = await nftLaunchpadContractClient.getConfig();
+        if (!config.deployer) {
+          throw Error("No Launchpad admin set");
+        }
+
+        const adminDaoId = getUserId(networkId, config.deployer);
+        const { isMember } = await daoClient.IsUserDAOMember({
+          userId,
+          daoId: adminDaoId,
         });
-        return false
+
+        console.log("=== isMember", isMember);
+
+        return isMember;
+      } 
+      catch (e: any) {
+          console.error("Error veryfing Launchpad admin: ", e);
+          setToast({
+            mode: "normal",
+            type: "error",
+            title: "Error veryfing Launchpad admin",
+            message: e.message,
+          });
+        return false;
       }
     },
+    {
+      enabled: !!userId,
+    }
   );
-  return { isUserAdmin: data, ...other };
+  return { isUserLaunchpadAdmin: data, ...other };
 };

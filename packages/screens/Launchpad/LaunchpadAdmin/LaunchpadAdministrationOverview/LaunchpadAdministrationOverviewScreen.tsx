@@ -10,13 +10,16 @@ import { ScreenContainer } from "@/components/ScreenContainer";
 import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
 import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
+import { useIsUserLaunchpadAdmin } from "@/hooks/launchpad/useIsUserLaunchpadAdmin";
 import { useLaunchpadProjects } from "@/hooks/launchpad/useLaunchpadProjects";
 import { useLaunchpadProjectsCounts } from "@/hooks/launchpad/useLaunchpadProjectsCounts";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { errorColor } from "@/utils/style/colors";
 
 const MD_BREAKPOINT = 820;
 type TabsListType = "pendingApplications" | "pendingConfirmations";
@@ -24,6 +27,9 @@ type TabsListType = "pendingApplications" | "pendingConfirmations";
 export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
+  const userId = useSelectedWallet()?.userId;
+  const {isUserLaunchpadAdmin} = useIsUserLaunchpadAdmin(userId);
+
   const { width } = useWindowDimensions();
   const { counts } = useLaunchpadProjectsCounts(
     {
@@ -50,6 +56,20 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<TabsListType>(
     "pendingApplications",
   );
+
+  if(!isUserLaunchpadAdmin) return (
+    <ScreenContainer
+      isLarge
+      footerChildren={<></>}
+      headerChildren={
+        <BrandText style={fontSemibold20}>Unauthorized</BrandText>
+      }
+      responsive
+      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+    >
+      <BrandText style={{color: errorColor, marginTop: layout.spacing_x4}}>Unauthorized</BrandText>
+    </ScreenContainer>
+  )
 
   return (
     <ScreenContainer
@@ -140,7 +160,7 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
 
         <PrimaryButtonOutline
           size="M"
-          text=" Load More"
+          text="Load More"
           onPress={() => navigation.navigate("LaunchpadApplications")}
           style={{ alignSelf: "center" }}
         />
