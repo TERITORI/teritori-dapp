@@ -86,7 +86,7 @@ func (s *DAOService) IsUserDAOMember(ctx context.Context, req *daopb.IsUserDAOMe
 			errors.Wrap(parseDaoIdErr, "failed to parse dao id")
 	}
 
-	_, userAddress, parseUSerIdErr := s.conf.NetStore.ParseUserID(userId)
+	_, userAddress, err := s.conf.NetStore.ParseUserID(userId)
 	if parseUSerIdErr != nil {
 		return nil,
 			errors.Wrap(parseUSerIdErr, "failed to parse user id")
