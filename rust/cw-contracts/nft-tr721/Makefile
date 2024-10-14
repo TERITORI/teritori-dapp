@@ -4,7 +4,7 @@ NODE_FLAG=--node https://rpc.testnet.teritori.com:443
 TX_FLAGS=--from $(ADMIN) --chain-id teritori-test-7 $(NODE_FLAG) --gas auto --gas-adjustment 1.3 -y -b sync --output json --keyring-backend test -o json
 QUERY_FLAGS=$(NODE_FLAG) -o json
 CODE_ID=0
-CONFIG=$(shell cat config.json | jq -r '.owner="$(ADMIN_ADDR)" | tojson | @sh')
+CONFIG=$(shell cat config.json | jq -r '.admin_addr="$(ADMIN_ADDR)" | tojson | @sh')
 WORKSPACE_PATH := $(shell realpath $(shell dirname $(shell pwd))/../..)
 
 # only informative
@@ -27,5 +27,5 @@ deploy.testnet: artifacts/nft_tr721.wasm
 .PHONY: instantiate.testnet
 instantiate.testnet: config.json
 	set -o pipefail; \
-	TXHASH=$$(teritorid tx wasm instantiate $(CODE_ID) $(CONFIG) --label NftTr721 --admin $(ADMIN_ADDR) $(TX_FLAGS) | jq -r .txhash); \
+	TXHASH=$$(teritorid tx wasm instantiate $(CODE_ID) $(CONFIG) --label Tr721 --admin $(ADMIN_ADDR) $(TX_FLAGS) | jq -r .txhash); \
 	while ! teritorid query tx $$TXHASH $(QUERY_FLAGS) 2>/dev/null | jq -r '.logs[0].events[] | select(.type=="instantiate").attributes[] | select(.key=="_contract_address").value'; do sleep 1; done
