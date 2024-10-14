@@ -98,12 +98,13 @@ const LaunchpadCollectionsTableRow: React.FC<{
   const collectionData = parseCollectionData(launchpadProject);
   if (!collectionData) return null;
   return (
-    <OmniLink
-      to={{
-        screen: "LaunchpadApplicationReview",
-        params: { id: collectionData.symbol },
-      }}
-    >
+    // <OmniLink
+    //   to={{
+    //     screen: "LaunchpadApplicationReview",
+    //     params: { id: collectionData.symbol },
+    //   }}
+    // >
+    <View>
       <TableRow>
         <LaunchpadTablesCommonColumns
           collectionData={collectionData}
@@ -169,6 +170,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
         {/*  style={{ marginLeft: layout.spacing_x0_5 }}*/}
         {/*/>*/}
       </TableRow>
-    </OmniLink>
+      </View>
+    // </OmniLink>
   );
 };

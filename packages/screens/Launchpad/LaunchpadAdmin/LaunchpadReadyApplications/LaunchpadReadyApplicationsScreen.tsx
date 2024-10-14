@@ -27,7 +27,7 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
     limit: 100, // TODO: Pagination
     sort: Sort.SORT_UNSPECIFIED,
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
-    status: Status.STATUS_CONFIRMED, // TODO: Or STATUS_CONFIRMED ?
+    status: Status.STATUS_COMPLETE, // TODO: Or STATUS_CONFIRMED ?
   });
 
   return (

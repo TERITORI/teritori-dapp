@@ -14,6 +14,7 @@ import {
 } from "@/screens/Launchpad/components/LaunchpadTablesCommonColumns";
 import { launchpadProjectStatus, parseCollectionData } from "@/utils/launchpad";
 import { screenContentMaxWidthLarge } from "@/utils/style/layout";
+import { OmniLink } from "@/components/OmniLink";
 
 const columns: TableColumns = {
   ...commonColumns,
@@ -87,7 +88,12 @@ const LaunchpadReadyApplicationsTableRow: React.FC<{
   const collectionData = parseCollectionData(launchpadProject);
   if (!collectionData) return null;
   return (
-    <View>
+    <OmniLink
+    to={{
+      screen: "LaunchpadApplicationReview",
+      params: { id: collectionData.symbol },
+    }}
+  >
       <TableRow>
         <LaunchpadTablesCommonColumns
           collectionData={collectionData}
@@ -132,6 +138,6 @@ const LaunchpadReadyApplicationsTableRow: React.FC<{
           <StateBadge text="TODO" />
         </TableCell>
       </TableRow>
-    </View>
+    </OmniLink>
   );
 };
