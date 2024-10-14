@@ -244,14 +244,14 @@ func (s *Launchpad) LaunchpadProjectsByCreator(ctx context.Context, req *launchp
 	case launchpadpb.Status_STATUS_UNSPECIFIED:
 		statusFilterSQL = ""
 	case launchpadpb.Status_STATUS_INCOMPLETE:
-		statusFilterSQL = "AND lp.merkle_root ISNULL"
+		statusFilterSQL = "AND lp.merkle_root = ''"
 	case launchpadpb.Status_STATUS_COMPLETE:
-		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
+		statusFilterSQL = "AND NOT lp.merkle_root = ''"
 		// TODO: status confirmed ?
 	case launchpadpb.Status_STATUS_CONFIRMED:
 		statusFilterSQL = "AND lp.merkle_root = 'TODO'"
 	case launchpadpb.Status_STATUS_DEPLOYED:
-		statusFilterSQL = "AND NOT lp.deployed_address ISNULL"
+		statusFilterSQL = "AND NOT lp.deployed_address = ''"
 	}
 
 	var projects []indexerdb.LaunchpadProject
@@ -351,14 +351,14 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 	statusFilterSQL := ""
 	switch status {
 	case launchpadpb.Status_STATUS_INCOMPLETE:
-		statusFilterSQL = "AND lp.merkle_root ISNULL"
+		statusFilterSQL = "AND lp.merkle_root = ''"
 	case launchpadpb.Status_STATUS_COMPLETE:
-		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
+		statusFilterSQL = "AND NOT lp.merkle_root = ''"
 		// TODO: status confirmed ?
 	case launchpadpb.Status_STATUS_CONFIRMED:
 		statusFilterSQL = "AND lp.merkle_root = 'TODO'"
 	case launchpadpb.Status_STATUS_DEPLOYED:
-		statusFilterSQL = "AND NOT lp.deployed_address ISNULL"
+		statusFilterSQL = "AND NOT lp.deployed_address = ''"
 	}
 
 	var projects []indexerdb.LaunchpadProject
@@ -483,14 +483,14 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 	statusFilterSQL := ""
 	switch status {
 	case launchpadpb.Status_STATUS_INCOMPLETE:
-		statusFilterSQL = "AND lp.merkle_root ISNULL"
+		statusFilterSQL = "AND lp.merkle_root = ''"
 	case launchpadpb.Status_STATUS_COMPLETE:
-		statusFilterSQL = "AND NOT lp.merkle_root ISNULL"
+		statusFilterSQL = "AND NOT lp.merkle_root = ''"
 		// TODO: Status confirmed ?
 	case launchpadpb.Status_STATUS_CONFIRMED:
 		statusFilterSQL = "AND lp.merkle_root = 'TODO'"
 	case launchpadpb.Status_STATUS_DEPLOYED:
-		statusFilterSQL = "AND NOT lp.deployed_address ISNULL"
+		statusFilterSQL = "AND NOT lp.deployed_address = ''"
 	}
 
 	// userAddress := req.GetUserAddress()
