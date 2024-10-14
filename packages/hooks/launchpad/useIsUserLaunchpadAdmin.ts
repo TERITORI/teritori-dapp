@@ -14,17 +14,15 @@ import { mustGetDAOClient } from "@/utils/backend";
 export const useIsUserLaunchpadAdmin = (userId?: string) => {
   const { setToast } = useFeedbacks();
 
-  const {data, ...other} = useQuery<boolean>(
-    [
-      "isUserLaunchpadAdmin",
-      userId
-    ],
+  const { data, ...other } = useQuery<boolean>(
+    ["isUserLaunchpadAdmin", userId],
     async () => {
       try {
         const [network, userAddress] = parseUserId(userId);
         if (!userId) {
           throw Error("No user id");
-        } if(!network) {
+        }
+        if (!network) {
           throw Error("No network parsed from user id");
         }
         const networkId = network.id;
@@ -69,21 +67,20 @@ export const useIsUserLaunchpadAdmin = (userId?: string) => {
         console.log("=== isMember", isMember);
 
         return isMember;
-      } 
-      catch (e: any) {
-          console.error("Error veryfing Launchpad admin: ", e);
-          setToast({
-            mode: "normal",
-            type: "error",
-            title: "Error veryfing Launchpad admin",
-            message: e.message,
-          });
+      } catch (e: any) {
+        console.error("Error veryfing Launchpad admin: ", e);
+        setToast({
+          mode: "normal",
+          type: "error",
+          title: "Error veryfing Launchpad admin",
+          message: e.message,
+        });
         return false;
       }
     },
     {
       enabled: !!userId,
-    }
+    },
   );
   return { isUserLaunchpadAdmin: data, ...other };
 };

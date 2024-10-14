@@ -2,6 +2,7 @@ import React from "react";
 import { FlatList, View } from "react-native";
 
 import { LaunchpadProject } from "@/api/launchpad/v1/launchpad";
+import { OmniLink } from "@/components/OmniLink";
 import { StateBadge } from "@/components/badges/StateBadge";
 import { TableCell } from "@/components/table/TableCell";
 import { TableHeader } from "@/components/table/TableHeader";
@@ -14,7 +15,6 @@ import {
 } from "@/screens/Launchpad/components/LaunchpadTablesCommonColumns";
 import { launchpadProjectStatus, parseCollectionData } from "@/utils/launchpad";
 import { screenContentMaxWidthLarge } from "@/utils/style/layout";
-import { OmniLink } from "@/components/OmniLink";
 
 const columns: TableColumns = {
   ...commonColumns,
@@ -89,11 +89,11 @@ const LaunchpadReadyApplicationsTableRow: React.FC<{
   if (!collectionData) return null;
   return (
     <OmniLink
-    to={{
-      screen: "LaunchpadApplicationReview",
-      params: { id: collectionData.symbol },
-    }}
-  >
+      to={{
+        screen: "LaunchpadApplicationReview",
+        params: { id: collectionData.symbol },
+      }}
+    >
       <TableRow>
         <LaunchpadTablesCommonColumns
           collectionData={collectionData}

@@ -17,9 +17,9 @@ import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
+import { errorColor } from "@/utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { errorColor } from "@/utils/style/colors";
 
 const MD_BREAKPOINT = 820;
 type TabsListType = "pendingApplications" | "pendingConfirmations";
@@ -28,7 +28,7 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const userId = useSelectedWallet()?.userId;
-  const {isUserLaunchpadAdmin} = useIsUserLaunchpadAdmin(userId);
+  const { isUserLaunchpadAdmin } = useIsUserLaunchpadAdmin(userId);
 
   const { width } = useWindowDimensions();
   const { counts } = useLaunchpadProjectsCounts(
@@ -57,19 +57,22 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
     "pendingApplications",
   );
 
-  if(!isUserLaunchpadAdmin) return (
-    <ScreenContainer
-      isLarge
-      footerChildren={<></>}
-      headerChildren={
-        <BrandText style={fontSemibold20}>Unauthorized</BrandText>
-      }
-      responsive
-      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
-    >
-      <BrandText style={{color: errorColor, marginTop: layout.spacing_x4}}>Unauthorized</BrandText>
-    </ScreenContainer>
-  )
+  if (!isUserLaunchpadAdmin)
+    return (
+      <ScreenContainer
+        isLarge
+        footerChildren={<></>}
+        headerChildren={
+          <BrandText style={fontSemibold20}>Unauthorized</BrandText>
+        }
+        responsive
+        forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+      >
+        <BrandText style={{ color: errorColor, marginTop: layout.spacing_x4 }}>
+          Unauthorized
+        </BrandText>
+      </ScreenContainer>
+    );
 
   return (
     <ScreenContainer

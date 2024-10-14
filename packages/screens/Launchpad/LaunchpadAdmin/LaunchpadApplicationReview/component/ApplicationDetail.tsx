@@ -28,7 +28,7 @@ export const ApplicationDetail: React.FC<{
   collectionData: CollectionDataResult;
   projectStatus: string;
   onPressApprove: () => void;
-  isApproveLoading?: boolean
+  isApproveLoading?: boolean;
 }> = ({ collectionData, projectStatus, onPressApprove, isApproveLoading }) => {
   const { width } = useMaxResolution();
 
@@ -118,12 +118,12 @@ export const ApplicationDetail: React.FC<{
           )}
         </View>
         <SpacerColumn size={4} />
-        <PrimaryButton 
-        text="Approve"
-         boxStyle={{ width: 146 }} 
-         onPress={onPressApprove} 
-        isLoading={isApproveLoading}
-        disabled={isApproveLoading}
+        <PrimaryButton
+          text="Approve"
+          boxStyle={{ width: 146 }}
+          onPress={onPressApprove}
+          isLoading={isApproveLoading}
+          disabled={isApproveLoading}
         />
       </View>
 

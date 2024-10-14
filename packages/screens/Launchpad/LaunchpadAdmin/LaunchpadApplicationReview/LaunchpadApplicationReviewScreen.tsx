@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
+import { useDeployCollection } from "./../../../../hooks/launchpad/useDeployCollection";
 import { ApplicationDetail } from "./component/ApplicationDetail";
 import { CreatorInformation } from "./component/CreatorInformation";
 import { InvestmentInformation } from "./component/InvestmentInformation";
@@ -11,6 +12,7 @@ import { BrandText } from "@/components/BrandText";
 import { NotFound } from "@/components/NotFound";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useLaunchpadProjectById } from "@/hooks/launchpad/useLaunchpadProjectById";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
@@ -20,8 +22,6 @@ import { ScreenFC } from "@/utils/navigation";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { useDeployCollection } from './../../../../hooks/launchpad/useDeployCollection';
-import { useFeedbacks } from "@/context/FeedbacksProvider";
 
 export const launchpadReviewBreakpointM = 800;
 
@@ -47,7 +47,7 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
     setLoadingFullScreen(true);
 
     try {
-      await deployCollection(projectId)
+      await deployCollection(projectId);
     } catch (e) {
       console.error("Error deploying the NFT collection", e);
       setLoading(false);
@@ -57,7 +57,7 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
       setLoading(false);
       setLoadingFullScreen(false);
     }, 1000);
-  }
+  };
 
   if (!launchpadProject || !collectionData) {
     return (

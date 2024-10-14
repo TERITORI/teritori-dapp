@@ -5,7 +5,6 @@ import { FlatList, View } from "react-native";
 import { LaunchpadProject } from "@/api/launchpad/v1/launchpad";
 import externalLinkSVG from "@/assets/icons/external-link.svg";
 import { Link } from "@/components/Link";
-import { OmniLink } from "@/components/OmniLink";
 import { SVG } from "@/components/SVG";
 import { TableCell } from "@/components/table/TableCell";
 import { TableHeader } from "@/components/table/TableHeader";
@@ -170,7 +169,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
         {/*  style={{ marginLeft: layout.spacing_x0_5 }}*/}
         {/*/>*/}
       </TableRow>
-      </View>
+    </View>
     // </OmniLink>
   );
 };

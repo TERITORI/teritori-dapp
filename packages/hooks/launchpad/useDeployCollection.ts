@@ -1,17 +1,20 @@
 import { useCallback } from "react";
 
+import { useIsUserLaunchpadAdmin } from "./useIsUserLaunchpadAdmin";
+
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { NftLaunchpadClient } from "@/contracts-clients/nft-launchpad";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetworkFeature, NetworkFeature } from "@/networks";
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
-import { useIsUserLaunchpadAdmin } from "./useIsUserLaunchpadAdmin";
 
 export const useDeployCollection = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
-  const {isUserLaunchpadAdmin} = useIsUserLaunchpadAdmin(selectedWallet?.userId);
+  const { isUserLaunchpadAdmin } = useIsUserLaunchpadAdmin(
+    selectedWallet?.userId,
+  );
   const { setToast } = useFeedbacks();
 
   const deployCollection = useCallback(
@@ -53,7 +56,7 @@ export const useDeployCollection = () => {
         });
       }
     },
-    [selectedNetworkId, selectedWallet, setToast],
+    [selectedNetworkId, selectedWallet, setToast, isUserLaunchpadAdmin],
   );
 
   return { deployCollection };

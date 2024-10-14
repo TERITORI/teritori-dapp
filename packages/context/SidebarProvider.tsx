@@ -1,7 +1,8 @@
+import { has, cloneDeep } from "lodash";
 import { useEffect, useMemo } from "react";
 import { Platform } from "react-native";
 import { useSelector } from "react-redux";
-import {has} from "lodash"
+
 import { useIsMobile } from "../hooks/useIsMobile";
 import {
   selectAvailableApps,
@@ -15,18 +16,17 @@ import {
 import { useAppDispatch } from "../store/store";
 import { SIDEBAR_LIST } from "../utils/sidebar";
 
-import { useDeveloperMode } from "@/hooks/useDeveloperMode";
-import { getValuesFromId, SEPARATOR } from "@/utils/dapp-store";
-import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { useIsUserLaunchpadAdmin } from "@/hooks/launchpad/useIsUserLaunchpadAdmin";
-import { cloneDeep } from "lodash";
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { getValuesFromId, SEPARATOR } from "@/utils/dapp-store";
 
 export const useSidebar = () => {
   const isSidebarExpanded = useSelector(selectSidebarExpanded);
   const selectedApps = useSelector(selectCheckedApps);
   const availableApps = useSelector(selectAvailableApps);
   const userId = useSelectedWallet()?.userId;
-  const {isUserLaunchpadAdmin} = useIsUserLaunchpadAdmin(userId);
+  const { isUserLaunchpadAdmin } = useIsUserLaunchpadAdmin(userId);
 
   const [developerMode] = useDeveloperMode();
   const dispatch = useAppDispatch();
@@ -85,25 +85,29 @@ export const useSidebar = () => {
           return;
         }
 
-        if(SIDEBAR_LIST[option.id]) {
-          const newOption = cloneDeep(SIDEBAR_LIST[option.id])
+        if (SIDEBAR_LIST[option.id]) {
+          const newOption = cloneDeep(SIDEBAR_LIST[option.id]);
 
           // Sidebar restriction (Hide items or nested items):
           // Launchpad Admin
-          if(!isUserLaunchpadAdmin && newOption.id === "Launchpad" && newOption.nested && has(newOption, "nested.admin") ) {
-            delete newOption.nested.admin
+          if (
+            !isUserLaunchpadAdmin &&
+            newOption.id === "Launchpad" &&
+            newOption.nested &&
+            has(newOption, "nested.admin")
+          ) {
+            delete newOption.nested.admin;
           }
-          
-          dynamicAppsSelection[element] = newOption
-        }
-        else {
+
+          dynamicAppsSelection[element] = newOption;
+        } else {
           dynamicAppsSelection[element] = {
             id: option.id,
             title: option.title,
             route: option.route,
             url: option.url,
             icon: option.icon,
-          }
+          };
         }
       });
 
