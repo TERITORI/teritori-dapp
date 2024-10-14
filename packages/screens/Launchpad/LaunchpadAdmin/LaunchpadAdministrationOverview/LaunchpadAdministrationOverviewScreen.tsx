@@ -15,7 +15,6 @@ import { useLaunchpadProjectsCounts } from "@/hooks/launchpad/useLaunchpadProjec
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
-import { MarketingEdition } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/component/MarketingEdition/MarketingEdition";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
@@ -143,8 +142,6 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
           onPress={() => navigation.navigate("LaunchpadApplications")}
           style={{ alignSelf: "center" }}
         />
-
-        <MarketingEdition />
       </View>
     </ScreenContainer>
   );
