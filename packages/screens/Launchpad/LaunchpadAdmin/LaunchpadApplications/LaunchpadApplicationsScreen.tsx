@@ -6,13 +6,15 @@ import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
+import { useIsUserLaunchpadAdmin } from "@/hooks/launchpad/useIsUserLaunchpadAdmin";
 import { useLaunchpadProjects } from "@/hooks/launchpad/useLaunchpadProjects";
 import { useLaunchpadProjectsCounts } from "@/hooks/launchpad/useLaunchpadProjectsCounts";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
 import { LaunchpadCollectionsTable } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplications/component/LaunchpadCollectionsTable";
-import { neutral33 } from "@/utils/style/colors";
+import { errorColor, neutral33 } from "@/utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
@@ -21,6 +23,8 @@ type TabsListType = "pendingApplications" | "pendingConfirmations";
 export const LaunchpadApplicationsScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
+  const userId = useSelectedWallet()?.userId;
+  const { isUserLaunchpadAdmin } = useIsUserLaunchpadAdmin(userId);
   const { counts } = useLaunchpadProjectsCounts(
     {
       networkId: selectedNetworkId,
@@ -45,6 +49,27 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<TabsListType>(
     "pendingApplications",
   );
+
+  if (!isUserLaunchpadAdmin) {
+    return (
+      <ScreenContainer
+        isLarge
+        footerChildren={<></>}
+        headerChildren={
+          <BrandText style={fontSemibold20}>Unauthorized</BrandText>
+        }
+        responsive
+        onBackPress={() =>
+          navigation.navigate("LaunchpadAdministrationOverview")
+        }
+        forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+      >
+        <BrandText style={{ color: errorColor, marginTop: layout.spacing_x4 }}>
+          Unauthorized
+        </BrandText>
+      </ScreenContainer>
+    );
+  }
 
   return (
     <ScreenContainer

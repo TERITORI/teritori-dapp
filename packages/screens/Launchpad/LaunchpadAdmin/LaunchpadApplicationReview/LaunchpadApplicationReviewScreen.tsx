@@ -13,13 +13,15 @@ import { NotFound } from "@/components/NotFound";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useIsUserLaunchpadAdmin } from "@/hooks/launchpad/useIsUserLaunchpadAdmin";
 import { useLaunchpadProjectById } from "@/hooks/launchpad/useLaunchpadProjectById";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
 import { launchpadProjectStatus, parseCollectionData } from "@/utils/launchpad";
 import { ScreenFC } from "@/utils/navigation";
-import { neutral33 } from "@/utils/style/colors";
+import { errorColor, neutral33 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
@@ -34,6 +36,8 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
   const [isLoading, setLoading] = useState(false);
   const { setLoadingFullScreen } = useFeedbacks();
   const { deployCollection } = useDeployCollection();
+  const userId = useSelectedWallet()?.userId;
+  const { isUserLaunchpadAdmin } = useIsUserLaunchpadAdmin(userId);
   const { launchpadProject } = useLaunchpadProjectById({
     projectId,
     networkId: selectedNetworkId,
@@ -58,6 +62,28 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
       setLoadingFullScreen(false);
     }, 1000);
   };
+
+  if (!isUserLaunchpadAdmin) {
+    return (
+      <ScreenContainer
+        footerChildren={<></>}
+        headerChildren={
+          <BrandText style={fontSemibold20}>Unauthorized</BrandText>
+        }
+        responsive
+        onBackPress={() =>
+          navigation.canGoBack()
+            ? navigation.goBack()
+            : navigation.navigate("LaunchpadAdministrationOverview")
+        }
+        forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+      >
+        <BrandText style={{ color: errorColor, marginTop: layout.spacing_x4 }}>
+          Unauthorized
+        </BrandText>
+      </ScreenContainer>
+    );
+  }
 
   if (!launchpadProject || !collectionData) {
     return (
