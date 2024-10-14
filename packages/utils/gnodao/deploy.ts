@@ -161,7 +161,7 @@ export const adenaDeployGnoDAO = async (
 ) => {
   const source = generateFakeSource(networkId, conf);
   console.log("Deploying DAO with source:", source);
-  const pkgPath = `gno.land/r/teritori/${conf.name}`;
+  const pkgPath = `gno.land/r/${creator}/${conf.name}`;
   console.log("Deploying DAO with pkgPath:", pkgPath);
   await adenaAddPkg(
     networkId,
