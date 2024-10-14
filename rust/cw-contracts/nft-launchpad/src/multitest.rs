@@ -270,7 +270,7 @@ fn full_flow() {
         assert_eq!(err, ContractError::MerkleRootMissing)
     }
 
-    // Update merkle root from unauthorized user
+    // Update merkle root from unauthorized collection owner
     {
         let new_merkle_root = "new merkle root";
         let err = contract
@@ -278,7 +278,7 @@ fn full_flow() {
             .call("unauthorized")
             .unwrap_err();
 
-        assert_eq!(err, ContractError::WrongOwner);
+        assert_eq!(err, ContractError::WrongCollectionOwner);
     }
 
     // Update merkle root
