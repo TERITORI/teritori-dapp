@@ -190,6 +190,18 @@ func GetLastTokensJSON() string {
 	return json.ArrayNode("", nodes).String()
 }
 
+func GetUserTokensJSON(user std.Address) string {
+	var nodes []*json.Node
+	tokens.Iterate("", "", func(key string, value interface{}) bool {
+		token, _ := value.(*Token)
+		if token.admin.Owner() == user {
+			nodes = append(nodes, token.ToJSON())
+		}
+		return false
+	})
+	return json.ArrayNode("", nodes).String()
+}
+
 func mustGetToken(name string) *Token {
 	t, exists := tokens.Get(name)
 	if !exists {

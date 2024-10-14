@@ -1,7 +1,5 @@
 import { BrandText } from "@/components/BrandText";
 import ModalBase from "@/components/modals/ModalBase";
-import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { useAppNavigation } from "@/utils/navigation";
 import { neutral77 } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { View } from "react-native";
@@ -14,8 +12,6 @@ interface SelectTokenModalProps {
 
 export const SelectTokenModal: React.FC<SelectTokenModalProps> = ({ isVisible, onClose }) => {
     const props = { isVisible: isVisible, onClose: onClose };
-    const navigation = useAppNavigation();
-    const networkId = useSelectedNetworkId();
 
     return (
         <View
