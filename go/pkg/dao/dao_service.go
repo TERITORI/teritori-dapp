@@ -75,27 +75,41 @@ func (s *DAOService) DAOs(ctx context.Context, req *daopb.DAOsRequest) (*daopb.D
 	}, nil
 }
 
-func (s *DAOService) IsUserAdmin(ctx context.Context, req *daopb.IsUserAdminRequest) (*daopb.IsUserAdminResponse, error) {
-	userAddress := req.GetUserAddress()
-	//  TODO: user authentication (Member of the admin DAO)
-	// Control if sender is member of the admin DAO
-	daoAdminAddress := "tori129kpfu7krgumuc38hfyxwfluq7eu06rhr3awcztr3a9cgjjcx5hswlqj8v"
-	var isUserAuthorized bool
-	err := s.conf.IndexerDB.Raw(`SELECT EXISTS (
+func (s *DAOService) IsUserDAOMember(ctx context.Context, req *daopb.IsUserDAOMemberRequest) (*daopb.IsUserDAOMemberResponse, error) {
+	db := s.conf.IndexerDB
+	userId := req.GetUserId()
+	daoId := req.GetDaoId()
+
+	daoNetwork, daoAddress, err := s.conf.NetStore.ParseUserID(daoId)
+	if err != nil {
+		return nil,
+			errors.Wrap(err, "failed to parse dao id")
+	}
+
+	_, userAddress, err := s.conf.NetStore.ParseUserID(userId)
+	if err != nil {
+		return nil,
+			errors.Wrap(err, "failed to parse user id")
+	}
+
+	var isMember bool
+	dbErr := db.Raw(`SELECT EXISTS (
         SELECT 1
         FROM dao_members dm
         JOIN daos d ON dm.dao_contract_address = d.contract_address
         WHERE d.contract_address = ?
+        AND d.network_id = ?
         AND dm.member_address = ?
     ) AS dao_exists;`,
-		daoAdminAddress,
+		daoAddress,
+		daoNetwork.GetBase().ID,
 		userAddress,
-	).Scan(&isUserAuthorized).Error
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to query database")
+	).Scan(&isMember).Error
+	if dbErr != nil {
+		return nil, errors.Wrap(dbErr, "failed to query database")
 	}
-
-	return &daopb.IsUserAdminResponse{
-		IsUserAdmin: isUserAuthorized,
+	return &daopb.IsUserDAOMemberResponse{
+		IsMember: isMember,
 	}, nil
 }
+

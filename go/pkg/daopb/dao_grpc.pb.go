@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DAOServiceClient interface {
 	DAOs(ctx context.Context, in *DAOsRequest, opts ...grpc.CallOption) (*DAOsResponse, error)
-	IsUserAdmin(ctx context.Context, in *IsUserAdminRequest, opts ...grpc.CallOption) (*IsUserAdminResponse, error)
+	IsUserDAOMember(ctx context.Context, in *IsUserDAOMemberRequest, opts ...grpc.CallOption) (*IsUserDAOMemberResponse, error)
 }
 
 type dAOServiceClient struct {
@@ -43,9 +43,9 @@ func (c *dAOServiceClient) DAOs(ctx context.Context, in *DAOsRequest, opts ...gr
 	return out, nil
 }
 
-func (c *dAOServiceClient) IsUserAdmin(ctx context.Context, in *IsUserAdminRequest, opts ...grpc.CallOption) (*IsUserAdminResponse, error) {
-	out := new(IsUserAdminResponse)
-	err := c.cc.Invoke(ctx, "/dao.v1.DAOService/IsUserAdmin", in, out, opts...)
+func (c *dAOServiceClient) IsUserDAOMember(ctx context.Context, in *IsUserDAOMemberRequest, opts ...grpc.CallOption) (*IsUserDAOMemberResponse, error) {
+	out := new(IsUserDAOMemberResponse)
+	err := c.cc.Invoke(ctx, "/dao.v1.DAOService/IsUserDAOMember", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *dAOServiceClient) IsUserAdmin(ctx context.Context, in *IsUserAdminReque
 // for forward compatibility
 type DAOServiceServer interface {
 	DAOs(context.Context, *DAOsRequest) (*DAOsResponse, error)
-	IsUserAdmin(context.Context, *IsUserAdminRequest) (*IsUserAdminResponse, error)
+	IsUserDAOMember(context.Context, *IsUserDAOMemberRequest) (*IsUserDAOMemberResponse, error)
 	mustEmbedUnimplementedDAOServiceServer()
 }
 
@@ -68,8 +68,8 @@ type UnimplementedDAOServiceServer struct {
 func (UnimplementedDAOServiceServer) DAOs(context.Context, *DAOsRequest) (*DAOsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DAOs not implemented")
 }
-func (UnimplementedDAOServiceServer) IsUserAdmin(context.Context, *IsUserAdminRequest) (*IsUserAdminResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method IsUserAdmin not implemented")
+func (UnimplementedDAOServiceServer) IsUserDAOMember(context.Context, *IsUserDAOMemberRequest) (*IsUserDAOMemberResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsUserDAOMember not implemented")
 }
 func (UnimplementedDAOServiceServer) mustEmbedUnimplementedDAOServiceServer() {}
 
@@ -102,20 +102,20 @@ func _DAOService_DAOs_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DAOService_IsUserAdmin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IsUserAdminRequest)
+func _DAOService_IsUserDAOMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsUserDAOMemberRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DAOServiceServer).IsUserAdmin(ctx, in)
+		return srv.(DAOServiceServer).IsUserDAOMember(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dao.v1.DAOService/IsUserAdmin",
+		FullMethod: "/dao.v1.DAOService/IsUserDAOMember",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DAOServiceServer).IsUserAdmin(ctx, req.(*IsUserAdminRequest))
+		return srv.(DAOServiceServer).IsUserDAOMember(ctx, req.(*IsUserDAOMemberRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -132,8 +132,8 @@ var DAOService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DAOService_DAOs_Handler,
 		},
 		{
-			MethodName: "IsUserAdmin",
-			Handler:    _DAOService_IsUserAdmin_Handler,
+			MethodName: "IsUserDAOMember",
+			Handler:    _DAOService_IsUserDAOMember_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
