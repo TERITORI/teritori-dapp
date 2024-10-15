@@ -1,6 +1,6 @@
 import { connectWallet, resetChain } from "./lib";
 
-describe("Create a dao flow", () => {
+describe("Create an organization flow", () => {
   it("works", () => {
 
     resetChain();
@@ -30,5 +30,7 @@ describe("Create a dao flow", () => {
     cy.contains("Next: Set tokens or members").click();
     cy.get('[data-testid="member-settings-next"]').click();
     cy.contains("Confirm & Launch the Organization").click();
+
+    cy.contains('Get Started', { timeout: 10000 }).should('exist');
   });
 });
