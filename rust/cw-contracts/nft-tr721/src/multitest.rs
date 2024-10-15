@@ -100,7 +100,7 @@ fn full_flow() {
         let token_id = FIRST_TOKEN_ID.to_string();
         let owner = OWNER.to_string();
         let token_uri = Some("token_uri".to_string());
-        let extention = Some(Metadata {
+        let extension = Some(Metadata {
             name: Some("this is NFT name".to_string()),
             royalty_payment_address: Some(ROYALTY_ADDR.to_string()),
             royalty_percentage: Some(5), // royalty 5%
@@ -108,12 +108,12 @@ fn full_flow() {
             ..Metadata::default()
         });
         contract
-            .mint(token_id, owner, token_uri, extention)
+            .mint(token_id, owner, token_uri, extension)
             .call(MINTER)
             .unwrap();
 
         let resp = contract.nft_info(FIRST_TOKEN_ID.to_string()).unwrap();
-        let ext = resp.extension.unwrap();
+        let ext = resp.extension;
 
         assert_eq!(ext.name, Some("this is NFT name".to_string()));
         assert_eq!(ext.royalty_payment_address, Some(ROYALTY_ADDR.to_string()));
@@ -680,6 +680,6 @@ fn full_flow() {
         // At this step, token should exist and mint
         let resp = contract.nft_info("2".to_string()).unwrap();
         assert_eq!(resp.token_uri, None);
-        assert_eq!(resp.extension.unwrap().name, nft2.name);
+        assert_eq!(resp.extension.name, nft2.name);
     }
 }

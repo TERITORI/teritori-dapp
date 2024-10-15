@@ -13,7 +13,6 @@ use cw721::{
     NftInfoResponse, NumTokensResponse, OperatorResponse, OperatorsResponse, OwnerOfResponse,
     TokensResponse,
 };
-use cw721_metadata_onchain::Metadata;
 use cw_storage_plus::{IndexedMap, Item, Map, MultiIndex};
 use rs_merkle::{Hasher, MerkleProof};
 use serde::de::DeserializeOwned;
@@ -33,7 +32,7 @@ use cw721_base::{
     MinterResponse, Ownership,
 };
 
-pub type NftExtension = Metadata;
+pub type NftExtension = Tr721Metadata;
 pub type Tr721QueryMsg = cw721_base::QueryMsg<Cw2981QueryMsg>;
 
 // Version info for migration
