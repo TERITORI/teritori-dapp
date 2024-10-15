@@ -19,7 +19,6 @@ describe("Contractor proposer full flow", () => {
     cy.contains("Create a Project").click();
 
     connectWallet();
-    changeTestUser("bob");
 
     // first step: basic project info
     cy.get("input[placeholder='Your Grant name']").type(projectName);
