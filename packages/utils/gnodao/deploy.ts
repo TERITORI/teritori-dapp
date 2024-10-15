@@ -17,21 +17,11 @@ interface GnoDAOConfig {
   imageURI: string;
 }
 
-const generateFakeSource = (networkId: string, conf: GnoDAOConfig) => {
-  const network = mustGetGnoNetwork(networkId);
-  return `package ${conf.name}
-  func Render(path string) string {
-	return "Hello, World!"
-}
-`;
-}
-
 const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
   const network = mustGetGnoNetwork(networkId);
   return `package ${conf.name}
 
   import (
-    "std"
     "time"
 
     dao_core "${network.daoCorePkgPath}"
@@ -159,19 +149,17 @@ export const adenaDeployGnoDAO = async (
   creator: string,
   conf: GnoDAOConfig,
 ) => {
-  const source = generateFakeSource(networkId, conf);
-  console.log("Deploying DAO with source:", source);
+  const source = generateDAORealmSource(networkId, conf);
   const pkgPath = `gno.land/r/${creator}/${conf.name}`;
-  console.log("Deploying DAO with pkgPath:", pkgPath);
   await adenaAddPkg(
     networkId,
     {
       creator,
       deposit: "1ugnot",
       package: {
-        Name: conf.name,
-        Path: pkgPath,
-        Files: [{ Name: `${conf.name}.gno`, Body: source }],
+        name: conf.name,
+        path: pkgPath,
+        files: [{ name: `${conf.name}.gno`, body: source }],
       },
     },
     { gasWanted: 10000000 },

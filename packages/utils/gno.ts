@@ -79,14 +79,14 @@ export const adenaVMCall = async (
 };
 
 interface Package {
-  Name: string;
-  Path: string;
-  Files: PackageFile[];
+  name: string;
+  path: string;
+  files: PackageFile[];
 }
 
 interface PackageFile {
-  Name: string;
-  Body: string;
+  name: string;
+  body: string;
 }
 
 interface VmAddPackage {
