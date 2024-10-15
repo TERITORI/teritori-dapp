@@ -74,3 +74,41 @@ func (s *DAOService) DAOs(ctx context.Context, req *daopb.DAOsRequest) (*daopb.D
 		Daos: pbdaos,
 	}, nil
 }
+
+func (s *DAOService) IsUserDAOMember(ctx context.Context, req *daopb.IsUserDAOMemberRequest) (*daopb.IsUserDAOMemberResponse, error) {
+	db := s.conf.IndexerDB
+	userId := req.GetUserId()
+	daoId := req.GetDaoId()
+
+	daoNetwork, daoAddress, err := s.conf.NetStore.ParseUserID(daoId)
+	if err != nil {
+		return nil,
+			errors.Wrap(err, "failed to parse dao id")
+	}
+
+	_, userAddress, err := s.conf.NetStore.ParseUserID(userId)
+	if err != nil {
+		return nil,
+			errors.Wrap(err, "failed to parse user id")
+	}
+
+	var isMember bool
+	dbErr := db.Raw(`SELECT EXISTS (
+        SELECT 1
+        FROM dao_members dm
+        JOIN daos d ON dm.dao_contract_address = d.contract_address
+        WHERE d.contract_address = ?
+        AND d.network_id = ?
+        AND dm.member_address = ?
+    ) AS dao_exists;`,
+		daoAddress,
+		daoNetwork.GetBase().ID,
+		userAddress,
+	).Scan(&isMember).Error
+	if dbErr != nil {
+		return nil, errors.Wrap(dbErr, "failed to query database")
+	}
+	return &daopb.IsUserDAOMemberResponse{
+		IsMember: isMember,
+	}, nil
+}
