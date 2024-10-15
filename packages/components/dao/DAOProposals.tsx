@@ -46,10 +46,11 @@ export const DAOProposals: React.FC<{
 // TODO: double check we properly use threshold and quorum
 // TODO: use correct threshold, quorum and total power for passed/executed proposals
 
-const ProposalRow: React.FC<{
+export const ProposalRow: React.FC<{
   daoId: string | undefined;
   proposal: AppProposalResponse;
-}> = ({ daoId, proposal }) => {
+  style?: StyleProp<ViewStyle>;
+}> = ({ daoId, proposal, style }) => {
   const [network] = parseUserId(daoId);
 
   const halfGap = 24;
@@ -109,13 +110,16 @@ const ProposalRow: React.FC<{
 
   return (
     <View
-      style={{
-        flexDirection: "row",
-        height: 64,
-        alignItems: "center",
-        borderBottomColor: neutral33,
-        borderBottomWidth: 1,
-      }}
+      style={[
+        {
+          flexDirection: "row",
+          height: 64,
+          alignItems: "center",
+          borderBottomColor: neutral33,
+          borderBottomWidth: 1,
+        },
+        style,
+      ]}
     >
       <View
         style={{

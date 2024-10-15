@@ -9,7 +9,6 @@ import twitterSVG from "@/assets/icons/twitter.svg";
 import websiteSVG from "@/assets/icons/website.svg";
 import { BrandText } from "@/components/BrandText";
 import { BoxStyle } from "@/components/boxes/Box";
-import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SocialButton } from "@/components/buttons/SocialButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
@@ -27,9 +26,7 @@ const breakpointM = 900;
 export const ApplicationDetail: React.FC<{
   collectionData: CollectionDataResult;
   projectStatus: string;
-  onPressApprove: () => void;
-  isApproveLoading?: boolean;
-}> = ({ collectionData, projectStatus, onPressApprove, isApproveLoading }) => {
+}> = ({ collectionData, projectStatus }) => {
   const { width } = useMaxResolution();
 
   return (
@@ -109,7 +106,7 @@ export const ApplicationDetail: React.FC<{
             iconSvg={twitterSVG}
             // onPress={() => Linking.openURL(collectionData.twitter_profile)}
           />
-          {collectionData.website_link && (
+          {!!collectionData.website_link && (
             <SocialButton
               text="Website"
               iconSvg={websiteSVG}
@@ -117,14 +114,6 @@ export const ApplicationDetail: React.FC<{
             />
           )}
         </View>
-        <SpacerColumn size={4} />
-        <PrimaryButton
-          text="Approve"
-          boxStyle={{ width: 146 }}
-          onPress={onPressApprove}
-          isLoading={isApproveLoading}
-          disabled={isApproveLoading}
-        />
       </View>
 
       {width >= breakpointM ? (

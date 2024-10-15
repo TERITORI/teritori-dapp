@@ -1,70 +1,56 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { useSelectedNetworkId } from "./../useSelectedNetwork";
+import useSelectedWallet from "./../useSelectedWallet";
+
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { NftLaunchpadClient } from "@/contracts-clients/nft-launchpad";
-import {
-  getNetworkFeature,
-  parseUserId,
-  NetworkFeature,
-  getUserId,
-} from "@/networks";
+import { getNetworkFeature, NetworkFeature, getUserId } from "@/networks";
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
-import { mustGetDAOClient } from "@/utils/backend";
 
-export const useIsUserLaunchpadAdmin = (userId?: string) => {
+export const useGetLaunchpadAdmin = () => {
+  const selectedWallet = useSelectedWallet();
+  const userAddress = selectedWallet?.address;
+  const selectedNetworkId = useSelectedNetworkId();
   const { setToast } = useFeedbacks();
 
-  const { data, ...other } = useQuery<boolean>(
-    ["isUserLaunchpadAdmin", userId],
+  const { data, ...other } = useQuery<string>(
+    ["getLaunchpadAdmin", userAddress, selectedNetworkId],
     async () => {
       try {
-        const [network, userAddress] = parseUserId(userId);
-        if (!userId) {
-          throw new Error("Invalid sender");
+        if (!userAddress) {
+          throw Error("No user address");
         }
-        if (!network) {
-          throw new Error("Invalid network");
-        }
-        const networkId = network.id;
-
         const signingComswasmClient =
-          await getKeplrSigningCosmWasmClient(networkId);
+          await getKeplrSigningCosmWasmClient(selectedNetworkId);
         const cosmwasmLaunchpadFeature = getNetworkFeature(
-          networkId,
+          selectedNetworkId,
           NetworkFeature.NFTLaunchpad,
         );
 
         if (!cosmwasmLaunchpadFeature) {
-          throw new Error("No Launchpad feature");
+          throw Error("No Launchpad feature");
         }
 
-        const daoClient = mustGetDAOClient(networkId);
         const nftLaunchpadContractClient = new NftLaunchpadClient(
           signingComswasmClient,
           userAddress,
           cosmwasmLaunchpadFeature.launchpadContractAddress,
         );
 
-        if (!daoClient) {
-          throw new Error("DAO client not found");
-        }
         if (!nftLaunchpadContractClient) {
-          throw new Error("Launchpad contract client not found");
+          throw Error("Launchpad contract client not found");
         }
 
         // The Launchapd Admin DAO is the deployer set in the config of the nft-launchpad contract
         const config = await nftLaunchpadContractClient.getConfig();
         if (!config.deployer) {
-          throw new Error("No Launchpad admin set");
+          throw Error("No Launchpad admin set");
         }
 
-        const adminDaoId = getUserId(networkId, config.deployer);
-        const { isMember } = await daoClient.IsUserDAOMember({
-          userId,
-          daoId: adminDaoId,
-        });
+        const adminDaoId = getUserId(selectedNetworkId, config.deployer);
 
-        return isMember;
+        return adminDaoId;
       } catch (e: any) {
         console.error("Error veryfing Launchpad admin: ", e);
         setToast({
@@ -77,8 +63,8 @@ export const useIsUserLaunchpadAdmin = (userId?: string) => {
       }
     },
     {
-      enabled: !!userId,
+      enabled: !!userAddress,
     },
   );
-  return { isUserLaunchpadAdmin: data, ...other };
+  return { launchpadAdminId: data, ...other };
 };
