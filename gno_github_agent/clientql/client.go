@@ -65,7 +65,7 @@ func (client *IndexerQL) DealWithVerifications() error {
 
 func (client *IndexerQL) getLastTreatedBlock() (int, error) {
 	var verification db.Verification
-	err := client.db.Model(&db.Verification{}).Where("status = ?", string(db.VerificationStatusVerified)).Order("id desc").First(&verification).Error
+	err := client.db.Model(&db.Verification{}).Where("status != ?", string(db.VerificationStatusVerified)).Order("id asc").First(&verification).Error
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
