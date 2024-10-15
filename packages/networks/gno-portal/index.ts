@@ -1,5 +1,5 @@
-import { GnoNetworkInfo, NetworkFeature, NetworkKind } from "../types";
 import { gnoCurrencies } from "./currencies";
+import { GnoNetworkInfo, NetworkFeature, NetworkKind } from "../types";
 
 export const gnoPortalNetwork: GnoNetworkInfo = {
   id: "gno-portal",
