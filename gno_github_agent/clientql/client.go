@@ -72,7 +72,7 @@ func (client *IndexerQL) getLastTreatedBlock() (int, error) {
 			return 0, nil
 		}
 
-		return 0, nil
+		return 0, err
 	}
 	return verification.BlockHeight, err
 }
@@ -81,10 +81,10 @@ func (client *IndexerQL) dealWithVerification(event *gnoindexerql.GetValidationR
 	var handle string
 	var callerAddress string
 	for _, attr := range event.Attrs {
-		if attr.Key == "handle" {
+		switch attr.Key {
+		case "handle":
 			handle = attr.Value
-		}
-		if attr.Key == "from" {
+		case "from":
 			callerAddress = attr.Value
 		}
 	}
