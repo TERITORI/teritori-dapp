@@ -129,6 +129,8 @@ export interface Metadata {
   image?: string | null;
   image_data?: string | null;
   name?: string | null;
+  royalty_payment_address?: string | null;
+  royalty_percentage?: number | null;
   youtube_url?: string | null;
 }
 export interface Trait {

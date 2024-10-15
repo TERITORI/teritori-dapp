@@ -1,20 +1,6 @@
 // @generated
 // -------------------------------
 
-// message CollectionsByCreatorRequest {
-//    string creator_id = 1;
-//    string network_id = 2;
-//    int32 limit = 3;
-//    int32 offset = 4;
-//    Sort sort = 5;
-//    SortDirection sort_direction = 6;
-//    optional Status status = 7;
-// }
-
-// message CollectionsByCreatorResponse {
-//    repeated string collections = 1;
-// }
-
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LaunchpadProjectsByCreatorRequest {
@@ -30,8 +16,6 @@ pub struct LaunchpadProjectsByCreatorRequest {
     pub sort: i32,
     #[prost(enumeration="SortDirection", tag="6")]
     pub sort_direction: i32,
-    ///   TODO: user authentication (Member of the admin DAO) using a token
-    /// string user_address = 8;
     #[prost(enumeration="Status", optional, tag="7")]
     pub status: ::core::option::Option<i32>,
 }
@@ -54,8 +38,6 @@ pub struct LaunchpadProjectsRequest {
     pub sort: i32,
     #[prost(enumeration="SortDirection", tag="5")]
     pub sort_direction: i32,
-    ///   TODO: user authentication (Member of the admin DAO) using a token
-    /// string user_address = 7;
     #[prost(enumeration="Status", optional, tag="6")]
     pub status: ::core::option::Option<i32>,
 }
@@ -70,8 +52,6 @@ pub struct LaunchpadProjectsResponse {
 pub struct LaunchpadProjectByIdRequest {
     #[prost(string, tag="1")]
     pub network_id: ::prost::alloc::string::String,
-    ///   TODO: user authentication (Member of the admin DAO) using a token
-    /// string user_address = 3;
     #[prost(string, tag="2")]
     pub project_id: ::prost::alloc::string::String,
 }
@@ -142,8 +122,6 @@ pub struct TokenMetadataResponse {
 pub struct LaunchpadProjectsCountRequest {
     #[prost(string, tag="1")]
     pub network_id: ::prost::alloc::string::String,
-    ///   TODO: user authentication (Member of the admin DAO) using a token
-    /// string user_address = 3;
     #[prost(enumeration="Status", optional, tag="2")]
     pub status: ::core::option::Option<i32>,
 }
