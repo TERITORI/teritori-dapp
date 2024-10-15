@@ -296,12 +296,7 @@ const setupAdenaMock = () => {
             txFee,
           );
         } else {
-          res = await deployPackage(
-            state.wallet,
-            msg,
-            sendMap,
-            txFee,
-          );
+          res = await deployPackage(state.wallet, msg, sendMap, txFee);
         }
         return {
           status: "success",
@@ -325,24 +320,28 @@ const setupAdenaMock = () => {
   };
 };
 
-
-const deployPackage = async (wallet: GnoWallet, msg: AdenaDoContractMessage, funds: Map<string, number> | undefined, txFee: TxFee) => {
-  const files: MemFile[] = msg.value.package.files
+const deployPackage = async (
+  wallet: GnoWallet,
+  msg: AdenaDoContractMessage,
+  funds: Map<string, number> | undefined,
+  txFee: TxFee,
+) => {
+  const files: MemFile[] = msg.value.package.files;
 
   const pkg: MemPackage = {
     name: msg.value.package.name,
     path: msg.value.package.path,
-    files: files
-  }
+    files,
+  };
 
   const tx = await wallet.deployPackage(
     pkg,
     TransactionEndpoint.BROADCAST_TX_COMMIT,
     funds,
     txFee,
-  )
+  );
   return tx;
-}
+};
 
 export const useGnotest: () => UseGnotestResult = () => {
   const { wallet, address } = useGnotestStore();

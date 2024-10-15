@@ -2,7 +2,6 @@ import { connectWallet, resetChain } from "./lib";
 
 describe("Create an organization flow", () => {
   it("works", () => {
-
     resetChain();
 
     cy.visit("http://localhost:8081/orgs?network=gno-dev", {
@@ -31,6 +30,6 @@ describe("Create an organization flow", () => {
     cy.get('[data-testid="member-settings-next"]').click();
     cy.contains("Confirm & Launch the Organization").click();
 
-    cy.contains('Get Started', { timeout: 10000 }).should('exist');
+    cy.contains("Get Started", { timeout: 10000 }).should("exist");
   });
 });
