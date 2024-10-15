@@ -26,14 +26,12 @@ export const useUserTokens = (networkId: string) => {
 
         const client = new GnoJSONRPCProvider(gnoNetwork.endpoint);
         const pkgPath = pmFeature.launchpadERC20PkgPath;
-        const query = `GetUserTokensJSON(${caller})`;
-        console.log(query);
+        const query = `GetUserTokensJSON("${caller}")`;
         const contractData = await client.evaluateExpression(pkgPath, query);
 
         const res = extractGnoJSONString(contractData);
-        console.log(res);
-
         const tokens = z.array(zodToken).parse(res);
+
         return tokens;
     });
 };
