@@ -51,7 +51,6 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
   const { launchpadProject } = useLaunchpadProjectById({
     projectId,
     networkId: selectedNetworkId,
-    // userAddress: selectedWallet?.address || "",
   });
   const collectionData =
     launchpadProject && parseCollectionData(launchpadProject);

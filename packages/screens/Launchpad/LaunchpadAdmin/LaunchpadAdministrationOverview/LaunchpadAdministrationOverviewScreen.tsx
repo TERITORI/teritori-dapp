@@ -34,7 +34,6 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
   const { counts } = useLaunchpadProjectsCounts(
     {
       networkId: selectedNetworkId,
-      // userAddress: selectedWallet?.address || "",
     },
     [Status.STATUS_COMPLETE, Status.STATUS_INCOMPLETE, Status.STATUS_CONFIRMED],
   );
@@ -176,7 +175,6 @@ const PendingApplicationsTable: FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const { launchpadProjects = [] } = useLaunchpadProjects({
     networkId: selectedNetworkId,
-    // userAddress: selectedWallet?.address || "",
     offset: 0,
     limit: 10,
     sort: Sort.SORT_UNSPECIFIED,
@@ -190,7 +188,6 @@ const PendingConfirmationsTable: FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const { launchpadProjects = [] } = useLaunchpadProjects({
     networkId: selectedNetworkId,
-    // userAddress: selectedWallet?.address || "",
     offset: 0,
     limit: 10,
     sort: Sort.SORT_UNSPECIFIED,
