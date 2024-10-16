@@ -1,139 +1,136 @@
-import { LegacyTertiaryBox } from '@/components/boxes/LegacyTertiaryBox';
-import { TertiaryBox } from '@/components/boxes/TertiaryBox';
-import { BrandText } from '@/components/BrandText';
-import { Label } from '@/components/inputs/TextInputCustom';
-import { useDropdowns } from '@/hooks/useDropdowns';
-import { neutral17, neutral77, secondaryColor } from '@/utils/style/colors';
-import { fontSemibold14, fontSemibold16 } from '@/utils/style/fonts';
-import { layout } from '@/utils/style/layout';
-import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useState } from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
-import { SVG } from '@/components/SVG';
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 
+import { BrandText } from "@/components/BrandText";
+import FlexRow from "@/components/FlexRow";
+import { SVG } from "@/components/SVG";
+import { TertiaryBox } from "@/components/boxes/TertiaryBox";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { Label } from "@/components/inputs/TextInputCustom";
+import { SpacerColumn } from "@/components/spacer";
+import { neutral17, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+
 interface LaunchpadERC20TokensDropdownProps {
-    items: string[];
-    placeholder?: string;
+  items: string[];
+  placeholder?: string;
 }
 
-export const LaunchpadERC20TokensDropdown: React.FC<LaunchpadERC20TokensDropdownProps> = ({ items, placeholder = "Select an item" }) => {
-    const [selectedItem, setSelectedItem] = useState<string | null>(null);
-    const [isDropdownOpen, setDropdownState, ref] = useDropdowns();
+export const LaunchpadERC20TokensDropdown: React.FC<
+  LaunchpadERC20TokensDropdownProps
+> = ({ items, placeholder = "Select an item" }) => {
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [isDropdownOpen, setDropdownState] = useState<boolean>(false);
 
-    const selectItem = (item: string) => {
-        setSelectedItem(item);;
-    };
+  const selectItem = (item: string) => {
+    setSelectedItem(item);
+    setDropdownState(false);
+  };
 
-    return (
-        <View>
-            <Label style={{ marginBottom: layout.spacing_x1 }} isRequired>
-                Hello
-            </Label>
+  return (
+    <View>
+      <Label style={styles.label} isRequired>
+        Token
+      </Label>
 
-            <TertiaryBox
-                style={{
-                    width: "100%",
-                    height: 40,
-                    flexDirection: "row",
-                    paddingHorizontal: 12,
-                    backgroundColor: neutral17,
-                    alignItems: "center",
-                }}
-            >
+      <TertiaryBox style={styles.dropdownBox}>
+        <TouchableOpacity
+          style={styles.dropdownButton}
+          activeOpacity={1}
+          onPress={() => setDropdownState(!isDropdownOpen)}
+        >
+          <BrandText
+            style={[
+              fontSemibold16,
+              {
+                color: "white",
+              },
+            ]}
+          >
+            {selectedItem || placeholder}
+          </BrandText>
+          <SVG
+            source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
+            width={16}
+            height={16}
+            color={secondaryColor}
+          />
+        </TouchableOpacity>
+      </TertiaryBox>
+      {isDropdownOpen && (
+        <View
+          style={{
+            padding: 10,
+            width: "100%",
+          }}
+        >
+          <TertiaryBox style={styles.dropdownContent}>
+            {items &&
+              items.map((item, index) => (
                 <TouchableOpacity
-                    style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        flex: 1,
-                    }}
-                    activeOpacity={1}
-                    onPress={() => setDropdownState()}
+                  key={index}
+                  style={styles.dropdownItem}
+                  onPress={() => selectItem(item)}
                 >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <BrandText
-                        style={[
-                            fontSemibold14,
-                            { marginRight: layout.spacing_x1, color: neutral77 },
-                        ]}
+                      style={[
+                        fontSemibold16,
+                        { marginLeft: layout.spacing_x1_5 },
+                      ]}
                     >
-                        Select your Token
+                      {item}
                     </BrandText>
-                    <SVG
-                        source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
-                        width={16}
-                        height={16}
-                        color={secondaryColor}
-                    />
+                  </View>
                 </TouchableOpacity>
-            </TertiaryBox>
-            <View style={styles.container}>
-                <LegacyTertiaryBox
-                    width={416}
-                    mainContainerStyle={[
-                        {
-                            paddingHorizontal: layout.spacing_x2,
-                            paddingTop: layout.spacing_x2,
-                            backgroundColor: neutral17,
-                            alignItems: "flex-start",
-                        },
-                    ]}
-                >
-                    {items && items.map((item, index) => (
-                        <TouchableOpacity
-                            key={index}
-                            style={{
-                                marginBottom: layout.spacing_x2,
-                                opacity: 1,
-                            }}
-                            onPress={() => selectItem(item)}
-                        >
-                            <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                <BrandText style={[fontSemibold16, { marginLeft: layout.spacing_x1_5 }]}>{item}</BrandText>
-                            </View>
-                        </TouchableOpacity>
-                    ))}
-                </LegacyTertiaryBox>
-            </View >
+              ))}
+          </TertiaryBox>
         </View>
-    );
+      )}
+      <SpacerColumn size={3.5} />
+      <FlexRow style={{ justifyContent: "center" }}>
+        <PrimaryButton
+          onPress={() => {}}
+          text="Open"
+          size="SM"
+          disabled={!selectedItem}
+        />
+      </FlexRow>
+    </View>
+  );
 };
 
+// eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
-    container: {
-        padding: 10,
-        width: '100%',
-    },
-    inputField: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        backgroundColor: '#fff',
-    },
-    inputText: {
-        fontSize: 16,
-        color: '#333',
-    },
-    dropdownMenu: {
-        marginTop: 5,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        backgroundColor: '#fff',
-    },
-    dropdownItem: {
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: '#eee',
-    },
-    itemText: {
-
-    },
+  label: {
+    marginBottom: layout.spacing_x1,
+  },
+  dropdownBox: {
+    width: "100%",
+    height: 40,
+    flexDirection: "row",
+    paddingHorizontal: 12,
+    backgroundColor: neutral17,
+    alignItems: "center",
+  },
+  dropdownButton: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flex: 1,
+  },
+  dropdownItem: {
+    marginBottom: layout.spacing_x2,
+    opacity: 1,
+  },
+  dropdownContent: {
+    paddingTop: layout.spacing_x2,
+    backgroundColor: neutral17,
+    alignItems: "flex-start",
+    borderRadius: 8,
+  },
 });
