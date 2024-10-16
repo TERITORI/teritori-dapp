@@ -1,8 +1,10 @@
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { GasPrice } from "@cosmjs/stargate";
+import { readFileSync } from "fs";
+import path from "path";
 
-// import { MNEMONIC } from "./mnemonic";
+import { MNEMONIC } from "./mnemonic";
 
 const GAS_PRICE = GasPrice.fromString("0.025utori");
 
@@ -10,13 +12,9 @@ const NODE_RPC = "https://rpc.testnet.teritori.com:443";
 // const CHAIN_ID = "teritori-test-7";
 
 export const getClientInfos = async () => {
-  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(
-    "???",
-    // MNEMONIC
-    {
-      prefix: "tori",
-    },
-  );
+  const wallet = await DirectSecp256k1HdWallet.fromMnemonic(MNEMONIC, {
+    prefix: "tori",
+  });
 
   const client = await SigningCosmWasmClient.connectWithSigner(
     NODE_RPC,
@@ -31,27 +29,31 @@ export const getClientInfos = async () => {
   return { wallet, client, sender };
 };
 
-// const getWasmFile = (wasmFile: string) => {
-//   const filePath = path.join(__dirname, "../..", "artifacts", wasmFile);
-//   console.log("filePath:", filePath);
-//   return fs.readFileSync(filePath);
-// };
+const getWasmFile = (wasmFile: string) => {
+  const filePath = path.join(__dirname, "../..", "artifacts", wasmFile);
+  console.log("filePath:", filePath);
+  return readFileSync(filePath);
+};
 
-// const deploy = async (wasmFile: string) => {
-//   const { client, sender } = await getClientInfos();
-//   const uploadRes = await client.upload(sender, getWasmFile(wasmFile), "auto");
-//
-//   return uploadRes.codeId;
-// };
-// const instantiate = async (codeId: number, label: string, msg: any) => {
-//   const { client, sender } = await getClientInfos();
-//
-//   const instantiateRes = await client.instantiate(
-//     sender,
-//     codeId,
-//     msg,
-//     `${label} - ${codeId}`,
-//     "auto",
-//   );
-//   return instantiateRes.contractAddress;
-// };
+export const deploy = async (wasmFile: string) => {
+  const { client, sender } = await getClientInfos();
+  const buffer = getWasmFile(wasmFile);
+  const u8Array = new Uint8Array(buffer);
+
+  const uploadRes = await client.upload(sender, u8Array, "auto");
+
+  return uploadRes.codeId;
+};
+
+export const instantiate = async (codeId: number, label: string, msg: any) => {
+  const { client, sender } = await getClientInfos();
+
+  const instantiateRes = await client.instantiate(
+    sender,
+    codeId,
+    msg,
+    `${label} - ${codeId}`,
+    "auto",
+  );
+  return instantiateRes.contractAddress;
+};
