@@ -1,10 +1,12 @@
 import {
   GnoJSONRPCProvider,
   GnoWallet,
+  MemFile,
+  MemPackage,
   MsgSend,
   decodeTxMessages,
 } from "@gnolang/gno-js-client";
-import { TxFee, TransactionEndpoint, Tx } from "@gnolang/tm2-js-client";
+import { TransactionEndpoint, Tx, TxFee } from "@gnolang/tm2-js-client";
 import Long from "long";
 import React from "react";
 import { Pressable } from "react-native";
@@ -16,7 +18,11 @@ import { getUserId } from "@/networks";
 import { gnoDevNetwork } from "@/networks/gno-dev";
 import { setSelectedWalletId } from "@/store/slices/settings";
 import { useAppDispatch } from "@/store/store";
-import { RequestDocontractMessage } from "@/utils/gno";
+import {
+  AdenaDoContractMessage,
+  AdenaDoContractMessageType,
+  RequestDocontractMessage,
+} from "@/utils/gno";
 import { WalletProvider } from "@/utils/walletProvider";
 
 type UseGnotestResult = [true, boolean, Wallet[]] | [false, boolean, undefined];
@@ -268,7 +274,10 @@ const setupAdenaMock = () => {
           throw new Error("Wallet not connected");
         }
         const msg = req.messages[0];
-        if (msg.type !== "/vm.m_call") {
+        if (
+          msg.type !== AdenaDoContractMessageType.CALL &&
+          msg.type !== AdenaDoContractMessageType.ADD_PKG
+        ) {
           throw new Error("Unsupported message type: " + msg.type);
         }
         const txFee: TxFee = {
@@ -283,14 +292,19 @@ const setupAdenaMock = () => {
           console.log("docontract sendAmount", sendAmount);
           sendMap.set("ugnot", +sendAmount);
         }
-        const res = await state.wallet.callMethod(
-          msg.value.pkg_path,
-          msg.value.func,
-          msg.value.args,
-          TransactionEndpoint.BROADCAST_TX_COMMIT,
-          sendMap,
-          txFee,
-        );
+        let res;
+        if (msg.type === AdenaDoContractMessageType.CALL) {
+          res = await state.wallet.callMethod(
+            msg.value.pkg_path,
+            msg.value.func,
+            msg.value.args,
+            TransactionEndpoint.BROADCAST_TX_COMMIT,
+            sendMap,
+            txFee,
+          );
+        } else {
+          res = await deployPackage(state.wallet, msg, sendMap, txFee);
+        }
         return {
           status: "success",
           data: {
@@ -311,6 +325,29 @@ const setupAdenaMock = () => {
       }
     },
   };
+};
+
+const deployPackage = async (
+  wallet: GnoWallet,
+  msg: AdenaDoContractMessage,
+  funds: Map<string, number> | undefined,
+  txFee: TxFee,
+) => {
+  const files: MemFile[] = msg.value.package.files;
+
+  const pkg: MemPackage = {
+    name: msg.value.package.name,
+    path: msg.value.package.path,
+    files,
+  };
+
+  const tx = await wallet.deployPackage(
+    pkg,
+    TransactionEndpoint.BROADCAST_TX_COMMIT,
+    funds,
+    txFee,
+  );
+  return tx;
 };
 
 export const useGnotest: () => UseGnotestResult = () => {

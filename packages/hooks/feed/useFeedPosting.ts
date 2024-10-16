@@ -13,16 +13,16 @@ import { useBalances } from "../useBalances";
 
 import { signingSocialFeedClient } from "@/client-creators/socialFeedClient";
 import {
-  parseUserId,
   getStakingCurrency,
   mustGetCosmosNetwork,
   NetworkKind,
+  parseUserId,
 } from "@/networks";
 import { prettyPrice } from "@/utils/coins";
 import { defaultSocialFeedFee } from "@/utils/fee";
 import { TERITORI_FEED_ID } from "@/utils/feed/constants";
-import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
-import { adenaDoContract } from "@/utils/gno";
+import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
+import { adenaDoContract, AdenaDoContractMessageType } from "@/utils/gno";
 import { PostCategory } from "@/utils/types/feed";
 
 export const useFeedPosting = (
@@ -124,7 +124,7 @@ export const useFeedPosting = (
 
           const txHash = await adenaDoContract(
             network.id,
-            [{ type: "/vm.m_call", value: vmCall }],
+            [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
             { gasWanted: 2_000_000 },
           );
 

@@ -15,7 +15,7 @@ import {
   NetworkKind,
 } from "@/networks";
 import { TERITORI_FEED_ID } from "@/utils/feed/constants";
-import { adenaDoContract } from "@/utils/gno";
+import { adenaDoContract, AdenaDoContractMessageType } from "@/utils/gno";
 import {
   DISLIKE_EMOJI,
   getUpdatedReactions,
@@ -77,7 +77,7 @@ export const useSocialReactions = ({
     };
     const txHash = await adenaDoContract(
       post.networkId,
-      [{ type: "/vm.m_call", value: vmCall }],
+      [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
       {
         gasWanted: 2_000_000,
       },
