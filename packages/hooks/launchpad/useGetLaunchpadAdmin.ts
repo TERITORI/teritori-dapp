@@ -14,7 +14,7 @@ export const useGetLaunchpadAdmin = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const { setToast } = useFeedbacks();
 
-  const { data, ...other } = useQuery<string>(
+  const { data, ...other } = useQuery<string | undefined>(
     ["getLaunchpadAdmin", userAddress, selectedNetworkId],
     async () => {
       try {
@@ -52,14 +52,13 @@ export const useGetLaunchpadAdmin = () => {
 
         return adminDaoId;
       } catch (e: any) {
-        console.error("Error veryfing Launchpad admin: ", e);
+        console.error("Error getting Launchpad admin: ", e);
         setToast({
           mode: "normal",
           type: "error",
-          title: "Error veryfing Launchpad admin",
+          title: "Error getting Launchpad admin",
           message: e.message,
         });
-        return false;
       }
     },
     {
