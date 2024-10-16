@@ -1,5 +1,4 @@
 import { BrandText } from "@/components/BrandText";
-import { DropdownWithListItem } from "@/components/mini/DropdownWithListItem";
 import ModalBase from "@/components/modals/ModalBase";
 import { SpacerColumn } from "@/components/spacer";
 import { errorColor, neutral77 } from "@/utils/style/colors";
@@ -7,6 +6,7 @@ import { fontSemibold14 } from "@/utils/style/fonts";
 import { useState } from "react";
 import { View } from "react-native";
 import { useUserTokens } from "../hooks/useUserTokens";
+import { LaunchpadERC20TokensDropdown } from "./LaunchpadERC20TokensDropdown";
 
 
 // type DropdownItemType = {
@@ -24,12 +24,11 @@ interface SelectTokenModalProps {
 export const SelectUserTokenModal: React.FC<SelectTokenModalProps> = ({ isVisible, onClose, networkId }) => {
     const [error, setError] = useState<string | null>(null);
     const { data: userTokens } = useUserTokens(networkId);
+    console.log(userTokens);
     const dropdownItems = userTokens?.map((token) => {
-        return {
-            name: token.name,
-            onPress: () => console.log("Token selected"),
-        }
+        return token.name;
     });
+    console.log(dropdownItems);
 
     const props = { isVisible: isVisible, onClose: onClose };
 
@@ -50,8 +49,8 @@ export const SelectUserTokenModal: React.FC<SelectTokenModalProps> = ({ isVisibl
                     Select your ERC20 Token
                 </BrandText>
                 <SpacerColumn size={2.5} />
-                {dropdownItems && dropdownItems.length === 0 ?
-                    <DropdownWithListItem items={dropdownItems} />
+                {dropdownItems && dropdownItems.length !== 0 ?
+                    <LaunchpadERC20TokensDropdown items={dropdownItems} />
                     : <BrandText style={[{ color: errorColor }, fontSemibold14]}>
                         You don't have any ERC20 tokens
                     </BrandText>
