@@ -35,7 +35,6 @@ export const adenaDoContract = async (
     gasWanted: opts?.gasWanted === undefined ? 10000000 : opts.gasWanted,
     memo: opts?.memo,
   };
-  console.log(JSON.stringify(req));
   const res = await adena.DoContract(req);
   if (res.status === "failure") {
     throw new Error(res.message);
