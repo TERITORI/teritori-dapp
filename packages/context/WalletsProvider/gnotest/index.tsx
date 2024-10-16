@@ -18,7 +18,11 @@ import { getUserId } from "@/networks";
 import { gnoDevNetwork } from "@/networks/gno-dev";
 import { setSelectedWalletId } from "@/store/slices/settings";
 import { useAppDispatch } from "@/store/store";
-import { AdenaDoContractMessage, RequestDocontractMessage } from "@/utils/gno";
+import {
+  AdenaDoContractMessage,
+  AdenaDoContractMessageType,
+  RequestDocontractMessage,
+} from "@/utils/gno";
 import { WalletProvider } from "@/utils/walletProvider";
 
 type UseGnotestResult = [true, boolean, Wallet[]] | [false, boolean, undefined];
@@ -270,7 +274,10 @@ const setupAdenaMock = () => {
           throw new Error("Wallet not connected");
         }
         const msg = req.messages[0];
-        if (msg.type !== "/vm.m_call" && msg.type !== "/vm.m_addpkg") {
+        if (
+          msg.type !== AdenaDoContractMessageType.CALL &&
+          msg.type !== AdenaDoContractMessageType.ADD_PKG
+        ) {
           throw new Error("Unsupported message type: " + msg.type);
         }
         const txFee: TxFee = {
@@ -286,7 +293,7 @@ const setupAdenaMock = () => {
           sendMap.set("ugnot", +sendAmount);
         }
         let res;
-        if (msg.type === "/vm.m_call") {
+        if (msg.type === AdenaDoContractMessageType.CALL) {
           res = await state.wallet.callMethod(
             msg.value.pkg_path,
             msg.value.func,
