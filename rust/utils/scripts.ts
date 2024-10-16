@@ -11,7 +11,7 @@ const GAS_PRICE = GasPrice.fromString("0.025utori");
 const NODE_RPC = "https://rpc.testnet.teritori.com:443";
 // const CHAIN_ID = "teritori-test-7";
 
-export const getClientInfos = async () => {
+const getClientInfos = async () => {
   const wallet = await DirectSecp256k1HdWallet.fromMnemonic(MNEMONIC, {
     prefix: "tori",
   });

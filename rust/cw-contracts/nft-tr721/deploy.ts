@@ -1,5 +1,4 @@
-import { deploy } from "./utils";
-
+import { deploy } from "../../utils/scripts";
 const WASM_FILE = "nft_tr721.wasm";
 
 const main = async () => {
