@@ -13,9 +13,11 @@ import { FlowCard } from "@/components/cards/FlowCard";
 import { SpacerColumn } from "@/components/spacer";
 import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature, NetworkKind } from "@/networks";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { SelectUserTokenModal } from "../component/LaunchpadERC20SelectUserTokenModal";
+import { useUserTokens } from "../hooks/useUserTokens";
 
 export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
   route: { params },
@@ -26,6 +28,12 @@ export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
   const { width } = useWindowDimensions();
   const navigation = useAppNavigation();
   const [isModalVisible, setIsModalVisible] = React.useState(false);
+  const selectedWallet = useSelectedWallet();
+  const caller = selectedWallet?.address;
+  const { data: tokens } = useUserTokens(networkId, caller || "");
+  const dropdownItems = tokens?.map((token) =>
+    token.name
+  );
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
@@ -71,7 +79,7 @@ export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
           disabled
         />
       </View>
-      <SelectUserTokenModal networkId={networkId} isVisible={isModalVisible} onClose={toggleModal} />
+      <SelectUserTokenModal networkId={networkId} isVisible={isModalVisible} onClose={toggleModal} items={dropdownItems} />
       <SpacerColumn size={2} />
       <TokensTable networkId={networkId} />
     </ScreenContainer>

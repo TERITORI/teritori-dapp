@@ -2,7 +2,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import React, { useMemo, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
-import { TopMenuSection } from "./TopMenuSection";
 import walletsSVG from "../../../assets/icons/wallets.svg";
 import { useBalances } from "../../hooks/useBalances";
 import { useDelegations } from "../../hooks/useDelegations";
@@ -38,6 +37,7 @@ import FlexRow from "../FlexRow";
 import { SVG } from "../SVG";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SendModal } from "../modals/SendModal";
+import { TopMenuSection } from "./TopMenuSection";
 
 import { DepositWithdrawModal } from "@/components/modals/DepositWithdrawModal";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
