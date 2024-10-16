@@ -25,7 +25,6 @@ type LaunchpadServiceClient interface {
 	UploadMetadatas(ctx context.Context, in *UploadMetadatasRequest, opts ...grpc.CallOption) (*UploadMetadatasResponse, error)
 	CalculateCollectionMerkleRoot(ctx context.Context, in *CalculateCollectionMerkleRootRequest, opts ...grpc.CallOption) (*CalculateCollectionMerkleRootResponse, error)
 	TokenMetadata(ctx context.Context, in *TokenMetadataRequest, opts ...grpc.CallOption) (*TokenMetadataResponse, error)
-	// rpc CollectionsByCreator(CollectionsByCreatorRequest) returns (CollectionsByCreatorResponse);
 	LaunchpadProjectsByCreator(ctx context.Context, in *LaunchpadProjectsByCreatorRequest, opts ...grpc.CallOption) (*LaunchpadProjectsByCreatorResponse, error)
 	LaunchpadProjects(ctx context.Context, in *LaunchpadProjectsRequest, opts ...grpc.CallOption) (*LaunchpadProjectsResponse, error)
 	LaunchpadProjectById(ctx context.Context, in *LaunchpadProjectByIdRequest, opts ...grpc.CallOption) (*LaunchpadProjectByIdResponse, error)
@@ -110,7 +109,6 @@ type LaunchpadServiceServer interface {
 	UploadMetadatas(context.Context, *UploadMetadatasRequest) (*UploadMetadatasResponse, error)
 	CalculateCollectionMerkleRoot(context.Context, *CalculateCollectionMerkleRootRequest) (*CalculateCollectionMerkleRootResponse, error)
 	TokenMetadata(context.Context, *TokenMetadataRequest) (*TokenMetadataResponse, error)
-	// rpc CollectionsByCreator(CollectionsByCreatorRequest) returns (CollectionsByCreatorResponse);
 	LaunchpadProjectsByCreator(context.Context, *LaunchpadProjectsByCreatorRequest) (*LaunchpadProjectsByCreatorResponse, error)
 	LaunchpadProjects(context.Context, *LaunchpadProjectsRequest) (*LaunchpadProjectsResponse, error)
 	LaunchpadProjectById(context.Context, *LaunchpadProjectByIdRequest) (*LaunchpadProjectByIdResponse, error)

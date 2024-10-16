@@ -5,6 +5,8 @@ import {
   ZodCollectionDataResult,
 } from "@/utils/types/launchpad";
 
+export const DEPLOY_PROPOSAL_DESC_PREFIX = "Symbol/ID: ";
+
 export const launchpadProjectStatus = (launchpadProject: LaunchpadProject) =>
   !launchpadProject.merkleRoot
     ? "INCOMPLETE"

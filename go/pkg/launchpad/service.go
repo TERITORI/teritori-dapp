@@ -323,27 +323,6 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
 	}
 
-	// userAddress := req.GetUserAddress()
-	// if userAddress == "" {
-	// 	return nil, errors.New("missing user address")
-	// }
-
-	// daoService := dao.NewDAOService(context.Background(), &dao.Config{
-	// 	Logger:    s.conf.Logger,
-	// 	IndexerDB: s.conf.IndexerDB,
-	// 	NetStore:  &s.conf.NetworkStore,
-	// })
-
-	// isUserAdminResponse, err := daoService.IsUserAdmin(context.Background(), &daopb.IsUserAdminRequest{
-	// 	UserAddress: userAddress,
-	// })
-	// if err != nil {
-	// 	return nil, errors.Wrap(err, "failed to verify user's authentication")
-	// }
-	// if !isUserAdminResponse.IsUserAdmin {
-	// 	return nil, errors.New("Unauthorized")
-	// }
-
 	status := req.GetStatus()
 	if status < 0 {
 		return nil, errors.New("invalid status")
@@ -423,27 +402,6 @@ func (s *Launchpad) LaunchpadProjectById(ctx context.Context, req *launchpadpb.L
 		return nil, errors.New("missing project id")
 	}
 
-	// userAddress := req.GetUserAddress()
-	// if userAddress == "" {
-	// 	return nil, errors.New("missing user address")
-	// }
-
-	// daoService := dao.NewDAOService(context.Background(), &dao.Config{
-	// 	Logger:    s.conf.Logger,
-	// 	IndexerDB: s.conf.IndexerDB,
-	// 	NetStore:  &s.conf.NetworkStore,
-	// })
-
-	// isUserAdminResponse, err := daoService.IsUserAdmin(context.Background(), &daopb.IsUserAdminRequest{
-	// 	UserAddress: userAddress,
-	// })
-	// if err != nil {
-	// 	return nil, errors.Wrap(err, "failed to verify user's authentication")
-	// }
-	// if !isUserAdminResponse.IsUserAdmin {
-	// 	return nil, errors.New("Unauthorized")
-	// }
-
 	var project *indexerdb.LaunchpadProject
 
 	err = s.conf.IndexerDB.Raw(`SELECT * FROM launchpad_projects AS lp WHERE lp.project_id = ? AND lp.network_id = ?`, projectID, networkID).Scan(&project).Error
@@ -493,27 +451,6 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 		statusFilterSQL = "AND NOT lp.deployed_address = ''"
 	}
 
-	// userAddress := req.GetUserAddress()
-	// if userAddress == "" {
-	// 	return nil, errors.New("missing user address")
-	// }
-
-	// daoService := dao.NewDAOService(context.Background(), &dao.Config{
-	// 	Logger:    s.conf.Logger,
-	// 	IndexerDB: s.conf.IndexerDB,
-	// 	NetStore:  &s.conf.NetworkStore,
-	// })
-
-	// isUserAdminResponse, err := daoService.IsUserAdmin(context.Background(), &daopb.IsUserAdminRequest{
-	// 	UserAddress: userAddress,
-	// })
-	// if err != nil {
-	// 	return nil, errors.Wrap(err, "failed to verify user's authentication")
-	// }
-	// if !isUserAdminResponse.IsUserAdmin {
-	// 	return nil, errors.New("Unauthorized")
-	// }
-
 	var count uint32
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`SELECT COUNT(*) FROM launchpad_projects AS lp WHERE lp.network_id = ? %s`, statusFilterSQL), networkID).Scan(&count).Error
 	if err != nil {
@@ -524,25 +461,3 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 		Count: count,
 	}, nil
 }
-
-// func (s *Launchpad) IsUserAdmin(userAddress string) (bool, error) {
-// 	//  TODO: user authentication (Member of the admin DAO)
-// 	// Control if sender is member of the admin DAO
-// 	daoAdminAddress := "tori129kpfu7krgumuc38hfyxwfluq7eu06rhr3awcztr3a9cgjjcx5hswlqj8v"
-// 	var isUserAuthorized bool
-// 	err := s.conf.IndexerDB.Raw(`SELECT EXISTS (
-// 		SELECT 1
-// 		FROM dao_members dm
-// 		JOIN daos d ON dm.dao_contract_address = d.contract_address
-// 		WHERE d.contract_address = ?
-// 		AND dm.member_address = ?
-// 	) AS dao_exists;
-// 	`,
-// 		daoAdminAddress,
-// 		userAddress,
-// 	).Scan(&isUserAuthorized).Error
-// 	if err != nil {
-// 		return false, errors.Wrap(err, "failed to query database")
-// 	}
-// 	return isUserAuthorized, nil
-// }

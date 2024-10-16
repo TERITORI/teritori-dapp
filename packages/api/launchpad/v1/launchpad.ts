@@ -136,10 +136,6 @@ export interface LaunchpadProjectsByCreatorRequest {
   offset: number;
   sort: Sort;
   sortDirection: SortDirection;
-  /**
-   * TODO: user authentication (Member of the admin DAO) using a token
-   * string user_address = 8;
-   */
   status?: Status | undefined;
 }
 
@@ -153,10 +149,6 @@ export interface LaunchpadProjectsRequest {
   offset: number;
   sort: Sort;
   sortDirection: SortDirection;
-  /**
-   * TODO: user authentication (Member of the admin DAO) using a token
-   * string user_address = 7;
-   */
   status?: Status | undefined;
 }
 
@@ -166,10 +158,6 @@ export interface LaunchpadProjectsResponse {
 
 export interface LaunchpadProjectByIdRequest {
   networkId: string;
-  /**
-   * TODO: user authentication (Member of the admin DAO) using a token
-   * string user_address = 3;
-   */
   projectId: string;
 }
 
@@ -213,10 +201,6 @@ export interface TokenMetadataResponse {
 
 export interface LaunchpadProjectsCountRequest {
   networkId: string;
-  /**
-   * TODO: user authentication (Member of the admin DAO) using a token
-   * string user_address = 3;
-   */
   status?: Status | undefined;
 }
 
@@ -1915,7 +1899,6 @@ export interface LaunchpadService {
     metadata?: grpc.Metadata,
   ): Promise<CalculateCollectionMerkleRootResponse>;
   TokenMetadata(request: DeepPartial<TokenMetadataRequest>, metadata?: grpc.Metadata): Promise<TokenMetadataResponse>;
-  /** rpc CollectionsByCreator(CollectionsByCreatorRequest) returns (CollectionsByCreatorResponse); */
   LaunchpadProjectsByCreator(
     request: DeepPartial<LaunchpadProjectsByCreatorRequest>,
     metadata?: grpc.Metadata,

@@ -1,18 +1,21 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { useDeployCollection } from "./../../../../hooks/launchpad/useDeployCollection";
 import { ApplicationDetail } from "./component/ApplicationDetail";
 import { CreatorInformation } from "./component/CreatorInformation";
 import { InvestmentInformation } from "./component/InvestmentInformation";
 import { ProjectInformation } from "./component/ProjectInformation";
 import { TeamInformation } from "./component/TeamInformation";
+import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
+import { ProposalRow } from "../../../../components/dao/DAOProposals";
+import { AppProposalResponse } from "../../../../hooks/dao/useDAOProposals";
+import { useProposeApproveDeployCollection } from "../../../../hooks/launchpad/useProposeApproveDeployCollection";
+import { DEPLOY_PROPOSAL_DESC_PREFIX } from "../../../../utils/launchpad";
 
 import { BrandText } from "@/components/BrandText";
 import { NotFound } from "@/components/NotFound";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
-import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useIsUserLaunchpadAdmin } from "@/hooks/launchpad/useIsUserLaunchpadAdmin";
 import { useLaunchpadProjectById } from "@/hooks/launchpad/useLaunchpadProjectById";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
@@ -34,32 +37,34 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const [isLoading, setLoading] = useState(false);
-  const { setLoadingFullScreen } = useFeedbacks();
-  const { deployCollection } = useDeployCollection();
   const userId = useSelectedWallet()?.userId;
   const { isUserLaunchpadAdmin } = useIsUserLaunchpadAdmin(userId);
+  const { proposeApproveDeployCollection, daoProposals, launchpadAdminId } =
+    useProposeApproveDeployCollection();
+  // We find the deploy proposal by searching projectId into the proposal's description
+  const proposal = daoProposals?.find(
+    (appProposalResponse: AppProposalResponse) =>
+      appProposalResponse.proposal.description ===
+      DEPLOY_PROPOSAL_DESC_PREFIX + projectId,
+  );
+
   const { launchpadProject } = useLaunchpadProjectById({
     projectId,
     networkId: selectedNetworkId,
-    // userAddress: selectedWallet?.address || "",
   });
   const collectionData =
     launchpadProject && parseCollectionData(launchpadProject);
 
   const onPressApprove = async () => {
     setLoading(true);
-    setLoadingFullScreen(true);
-
     try {
-      await deployCollection(projectId);
+      await proposeApproveDeployCollection(projectId);
     } catch (e) {
-      console.error("Error deploying the NFT collection", e);
+      console.error("Error approving the collection", e);
       setLoading(false);
-      setLoadingFullScreen(false);
     }
     setTimeout(() => {
       setLoading(false);
-      setLoadingFullScreen(false);
     }, 1000);
   };
 
@@ -128,10 +133,29 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
           <ApplicationDetail
             collectionData={collectionData}
             projectStatus={launchpadProjectStatus(launchpadProject)}
-            onPressApprove={onPressApprove}
-            isApproveLoading={isLoading}
           />
-          <SpacerColumn size={5} />
+
+          <SpacerColumn size={3} />
+          {proposal ? (
+            <ProposalRow
+              daoId={launchpadAdminId}
+              proposal={proposal}
+              style={{ borderBottomWidth: 0 }}
+            />
+          ) : (
+            <View style={{ flexDirection: "row" }}>
+              <PrimaryButton
+                text="Approve"
+                boxStyle={{ width: 146 }}
+                onPress={onPressApprove}
+                loader
+                isLoading={isLoading}
+                disabled={isLoading}
+              />
+            </View>
+          )}
+          <SpacerColumn size={3} />
+
           <View style={{ borderTopColor: neutral33, borderTopWidth: 1 }}>
             <CreatorInformation
               collectionData={collectionData}

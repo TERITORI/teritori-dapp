@@ -27,7 +27,6 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
   const { isUserLaunchpadAdmin } = useIsUserLaunchpadAdmin(userId);
   const { launchpadProjects = [] } = useLaunchpadProjects({
     networkId: selectedNetworkId,
-    // userAddress: selectedWallet?.address || "",
     offset: 0,
     limit: 100, // TODO: Pagination
     sort: Sort.SORT_UNSPECIFIED,
