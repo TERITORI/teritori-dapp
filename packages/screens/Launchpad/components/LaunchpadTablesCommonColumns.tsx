@@ -1,9 +1,12 @@
 import React from "react";
 
+import { NetworkIcon } from "./../../../components/NetworkIcon";
+
 import defaultCollectionImagePNG from "@/assets/default-images/ava.png";
 import checkBadgeSVG from "@/assets/icons/certified.svg";
 import { SVG } from "@/components/SVG";
 import { RoundedGradientImage } from "@/components/images/RoundedGradientImage";
+import { SpacerRow } from "@/components/spacer";
 import { TableCell } from "@/components/table/TableCell";
 import { CellBrandText, TableTextCell } from "@/components/table/TableTextCell";
 import { TableColumns } from "@/components/table/utils";
@@ -40,6 +43,9 @@ export const LaunchpadTablesCommonColumns: React.FC<{
   index: number;
 }> = ({ collectionData, index }) => {
   const network = getNetwork(collectionData.target_network);
+
+  // console.log('network.icon', network.icon)
+
   return (
     <>
       <TableTextCell
@@ -94,14 +100,8 @@ export const LaunchpadTablesCommonColumns: React.FC<{
           alignItems: "center",
         }}
       >
-        {network?.icon && (
-          <SVG
-            source={network?.icon}
-            width={18}
-            height={18}
-            style={{ marginRight: layout.spacing_x1 }}
-          />
-        )}
+        <NetworkIcon networkId={collectionData.target_network} size={18} />
+        <SpacerRow size={1} />
         <CellBrandText>
           {network?.displayName || "UNKNOWN NETWORK"}
         </CellBrandText>
