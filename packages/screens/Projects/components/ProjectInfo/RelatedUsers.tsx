@@ -1,6 +1,6 @@
 import { Link } from "@react-navigation/native";
 import React from "react";
-import { Table, Row, Cell, TableWrapper } from "react-native-reanimated-table";
+import { Cell, Row, Table, TableWrapper } from "react-native-reanimated-table";
 
 import { SubmitCandidacyButton } from "./LeftBlock";
 

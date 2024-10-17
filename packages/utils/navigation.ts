@@ -63,11 +63,11 @@ export type RootStackParamList = {
     post?: string;
   };
   FeedNewArticle:
-  | (NewPostFormValues & {
-    additionalMention?: string;
-    additionalHashtag?: string;
-  })
-  | undefined;
+    | (NewPostFormValues & {
+        additionalMention?: string;
+        additionalHashtag?: string;
+      })
+    | undefined;
   FeedPostView: { id: string };
   HashtagFeed: { hashtag: string };
 

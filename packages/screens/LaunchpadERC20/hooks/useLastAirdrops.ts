@@ -9,7 +9,7 @@ import {
 } from "../../../networks";
 
 import { extractGnoJSONString } from "@/utils/gno";
-import { zodAidrop } from "@/utils/launchpadERC20/types";
+import { zodAidrop } from "@/utils/types/types";
 
 export const useLastAirdrops = (networkId: string) => {
   return useQuery(["lastAirdrops"], async () => {

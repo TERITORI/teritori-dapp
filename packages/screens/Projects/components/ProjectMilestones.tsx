@@ -9,10 +9,10 @@ import { Separator } from "../../../components/separators/Separator";
 import { SpacerRow } from "../../../components/spacer";
 import { ProjectMilestone } from "../../../utils/projects/types";
 import {
-  neutral77,
-  neutral33,
   neutral00,
   neutral17,
+  neutral33,
+  neutral77,
 } from "../../../utils/style/colors";
 import { fontSemibold20 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
@@ -8,7 +8,7 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
 import { Label } from "@/components/inputs/TextInputCustom";
-import { neutral17, secondaryColor } from "@/utils/style/colors";
+import { neutral17, neutralFF, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
@@ -21,7 +21,12 @@ interface LaunchpadERC20TokensDropdownProps {
 
 export const LaunchpadERC20TokensDropdown: React.FC<
   LaunchpadERC20TokensDropdownProps
-> = ({ items, setSelectedItem, selectedItem, placeholder = "Select an item" }) => {
+> = ({
+  items,
+  setSelectedItem,
+  selectedItem,
+  placeholder = "Select an item",
+}) => {
   const [isDropdownOpen, setDropdownState] = useState<boolean>(false);
 
   const selectItem = (item: string) => {
@@ -31,13 +36,27 @@ export const LaunchpadERC20TokensDropdown: React.FC<
 
   return (
     <View>
-      <Label style={styles.label} isRequired>
+      <Label style={{ marginBottom: layout.spacing_x1 }} isRequired>
         Token
       </Label>
 
-      <TertiaryBox style={styles.dropdownBox}>
+      <TertiaryBox
+        style={{
+          width: "100%",
+          height: 40,
+          flexDirection: "row",
+          paddingHorizontal: 12,
+          backgroundColor: neutral17,
+          alignItems: "center",
+        }}
+      >
         <TouchableOpacity
-          style={styles.dropdownButton}
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flex: 1,
+          }}
           activeOpacity={1}
           onPress={() => setDropdownState(!isDropdownOpen)}
         >
@@ -45,7 +64,7 @@ export const LaunchpadERC20TokensDropdown: React.FC<
             style={[
               fontSemibold16,
               {
-                color: "white",
+                color: neutralFF,
               },
             ]}
           >
@@ -66,12 +85,22 @@ export const LaunchpadERC20TokensDropdown: React.FC<
             width: "100%",
           }}
         >
-          <TertiaryBox style={styles.dropdownContent}>
+          <TertiaryBox
+            style={{
+              paddingTop: layout.spacing_x2,
+              backgroundColor: neutral17,
+              alignItems: "flex-start",
+              borderRadius: 8,
+            }}
+          >
             {items &&
               items.map((item, index) => (
                 <TouchableOpacity
                   key={index}
-                  style={styles.dropdownItem}
+                  style={{
+                    marginBottom: layout.spacing_x2,
+                    opacity: 1,
+                  }}
                   onPress={() => selectItem(item)}
                 >
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -92,34 +121,3 @@ export const LaunchpadERC20TokensDropdown: React.FC<
     </View>
   );
 };
-
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  label: {
-    marginBottom: layout.spacing_x1,
-  },
-  dropdownBox: {
-    width: "100%",
-    height: 40,
-    flexDirection: "row",
-    paddingHorizontal: 12,
-    backgroundColor: neutral17,
-    alignItems: "center",
-  },
-  dropdownButton: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flex: 1,
-  },
-  dropdownItem: {
-    marginBottom: layout.spacing_x2,
-    opacity: 1,
-  },
-  dropdownContent: {
-    paddingTop: layout.spacing_x2,
-    backgroundColor: neutral17,
-    alignItems: "flex-start",
-    borderRadius: 8,
-  },
-});
