@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useRef } from "react";
 import { View, TouchableOpacity } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
@@ -8,12 +7,12 @@ import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { News } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getNetwork } from "../../networks";
-import { getMarketplaceClient } from "../../utils/backend";
 import { FullWidthSeparator } from "../FullWidthSeparator";
 import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { NewsBox } from "../hub/NewsBox";
+
+import { useNews } from "@/hooks/marketing/useNews";
 
 export const NewsCarouselSection: React.FC = () => {
   const { width } = useMaxResolution();
@@ -61,23 +60,4 @@ export const NewsCarouselSection: React.FC = () => {
       <FullWidthSeparator />
     </Section>
   );
-};
-
-const useNews = (networkId: string) => {
-  const { data } = useQuery(
-    ["news", networkId],
-    async () => {
-      const backendClient = getMarketplaceClient(networkId);
-      if (!backendClient) {
-        return [];
-      }
-      const network = getNetwork(networkId);
-      const { news } = await backendClient.News({ testnet: network?.testnet });
-      return news;
-    },
-    {
-      staleTime: Infinity,
-    },
-  );
-  return data;
 };

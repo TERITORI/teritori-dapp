@@ -2,7 +2,7 @@ import React from "react";
 import { Image } from "react-native";
 
 import { TopMenuSection } from "./TopMenuSection";
-import { useBanners } from "../../hooks/useBanners";
+import { useBanners } from "../../hooks/marketing/useBanners";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { web3ToWeb2URI } from "../../utils/ipfs";
 import FlexCol from "../FlexCol";
