@@ -33,11 +33,16 @@ export const DAOProposals: React.FC<{
   daoId: string | undefined;
   style?: StyleProp<ViewStyle>;
 }> = ({ daoId, style }) => {
-  const { daoProposals } = useDAOProposals(daoId);
+  const { daoProposals, refetch } = useDAOProposals(daoId);
   return (
     <View style={style}>
       {[...(daoProposals || [])].reverse().map((proposal) => (
-        <ProposalRow daoId={daoId} key={proposal.id} proposal={proposal} />
+        <ProposalRow
+          daoId={daoId}
+          key={proposal.id}
+          proposal={proposal}
+          onProposalActionDone={() => refetch()}
+        />
       ))}
     </View>
   );
@@ -49,7 +54,8 @@ export const DAOProposals: React.FC<{
 const ProposalRow: React.FC<{
   daoId: string | undefined;
   proposal: AppProposalResponse;
-}> = ({ daoId, proposal }) => {
+  onProposalActionDone: () => void;
+}> = ({ daoId, proposal, onProposalActionDone }) => {
   const [network] = parseUserId(daoId);
 
   const halfGap = 24;
@@ -263,7 +269,11 @@ const ProposalRow: React.FC<{
             marginLeft: halfGap,
           }}
         >
-          <ProposalActions daoId={daoId} proposal={proposal} />
+          <ProposalActions
+            daoId={daoId}
+            proposal={proposal}
+            onProposalActionDone={onProposalActionDone}
+          />
         </View>
       </View>
       <DAOProposalModal
@@ -271,6 +281,7 @@ const ProposalRow: React.FC<{
         onClose={() => setDisplayProposalModal(false)}
         proposalInfo={proposal}
         daoId={daoId}
+        onProposalActionDone={onProposalActionDone}
       />
     </View>
   );
