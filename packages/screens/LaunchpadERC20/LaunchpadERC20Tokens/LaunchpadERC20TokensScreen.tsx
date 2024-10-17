@@ -79,7 +79,7 @@ export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
           disabled
         />
       </View>
-      <SelectUserTokenModal networkId={networkId} isVisible={isModalVisible} onClose={toggleModal} items={dropdownItems} />
+      <SelectUserTokenModal isVisible={isModalVisible} onClose={toggleModal} items={dropdownItems} />
       <SpacerColumn size={2} />
       <TokensTable networkId={networkId} />
     </ScreenContainer>

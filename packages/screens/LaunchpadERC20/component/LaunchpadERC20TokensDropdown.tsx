@@ -5,25 +5,23 @@ import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 
 import { BrandText } from "@/components/BrandText";
-import FlexRow from "@/components/FlexRow";
 import { SVG } from "@/components/SVG";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
-import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { Label } from "@/components/inputs/TextInputCustom";
-import { SpacerColumn } from "@/components/spacer";
 import { neutral17, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 interface LaunchpadERC20TokensDropdownProps {
   items: string[];
+  setSelectedItem: (item: string) => void;
+  selectedItem?: string | null;
   placeholder?: string;
 }
 
 export const LaunchpadERC20TokensDropdown: React.FC<
   LaunchpadERC20TokensDropdownProps
-> = ({ items, placeholder = "Select an item" }) => {
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+> = ({ items, setSelectedItem, selectedItem, placeholder = "Select an item" }) => {
   const [isDropdownOpen, setDropdownState] = useState<boolean>(false);
 
   const selectItem = (item: string) => {
@@ -91,15 +89,6 @@ export const LaunchpadERC20TokensDropdown: React.FC<
           </TertiaryBox>
         </View>
       )}
-      <SpacerColumn size={3.5} />
-      <FlexRow style={{ justifyContent: "center" }}>
-        <PrimaryButton
-          onPress={() => {}}
-          text="Open"
-          size="SM"
-          disabled={!selectedItem}
-        />
-      </FlexRow>
     </View>
   );
 };

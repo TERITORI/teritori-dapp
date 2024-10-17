@@ -28,6 +28,7 @@ import { LaunchpadERC20CreateSaleScreen } from "@/screens/LaunchpadERC20/Launchp
 import { LaunchpadERC20SalesScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Sales/LaunchpadERC20SalesScreen";
 import { LaunchpadERC20Screen } from "@/screens/LaunchpadERC20/LaunchpadERC20Screen";
 import { LaunchpadERC20CreateTokenScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Tokens/LaunchpadERC20CreateTokenScreen";
+import { LaunchpadERC20ManageTokenScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Tokens/LaunchpadERC20ManageToken";
 import { LaunchpadERC20TokensScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Tokens/LaunchpadERC20TokensScreen";
 import { LaunchpadERC20AirdropsScreen } from "@/screens/LaunchpadERC20/LaunchpadERCAirdrops/LaunchpadERC20AirdropsScreen";
 import { LaunchpadERC20CreateAirdropScreen } from "@/screens/LaunchpadERC20/LaunchpadERCAirdrops/LaunchpadERC20CreateAirdropScreen";
@@ -312,6 +313,15 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         options={{
           header: () => null,
           title: screenTitle("Launchpad ERC20 Create Token"),
+        }}
+      />
+
+      <Nav.Screen
+        name="LaunchpadERC20ManageToken"
+        component={LaunchpadERC20ManageTokenScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad ERC20 Manage Token"),
         }}
       />
 
