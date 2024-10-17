@@ -9,7 +9,7 @@ import {
 } from "../../../networks";
 
 import { extractGnoJSONString } from "@/utils/gno";
-import { zodToken } from "@/utils/launchpadERC20/types";
+import { zodToken } from "@/utils/types/types";
 
 export const useLastTokens = (networkId: string) => {
   return useQuery(["lastTokens"], async () => {
