@@ -161,7 +161,7 @@ export const SwapSettings: React.FC<{
               onHoverIn={() => setInfoVisible(true)}
               onHoverOut={() => setInfoVisible(false)}
             >
-              <SVG source={infoSVG} width={16} height={16} />
+              <SVG source={infoSVG} width={16} height={16} color={neutral77} />
             </CustomPressable>
           </View>
 
