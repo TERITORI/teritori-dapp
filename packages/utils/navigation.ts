@@ -6,6 +6,7 @@ import { feedsTabItems } from "./social-feed";
 import { AppMode } from "./types/app-mode";
 import { NewPostFormValues } from "./types/feed";
 import { MessageFriendsTabItem } from "./types/message";
+import { Token } from "./types/types";
 import { uppTabItems } from "./upp";
 export type RouteName = keyof RootStackParamList;
 
@@ -43,7 +44,7 @@ export type RootStackParamList = {
   LaunchpadERC20: undefined;
   LaunchpadERC20Tokens?: { network?: string };
   LaunchpadERC20CreateToken: { step?: number };
-  LaunchpadERC20ManageToken: { network?: string };
+  LaunchpadERC20ManageToken: { network?: string; token: Token };
   LaunchpadERC20Airdrops?: { network?: string };
   LaunchpadERC20CreateAirdrop: { step?: number };
   LaunchpadERC20Sales?: { network?: string };

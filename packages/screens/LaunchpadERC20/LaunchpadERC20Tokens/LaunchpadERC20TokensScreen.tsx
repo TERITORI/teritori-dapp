@@ -31,7 +31,6 @@ export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
   const selectedWallet = useSelectedWallet();
   const caller = selectedWallet?.address;
   const { data: tokens } = useUserTokens(networkId, caller || "");
-  const dropdownItems = tokens?.map((token) => token.name);
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
@@ -82,7 +81,7 @@ export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
       <SelectUserTokenModal
         isVisible={isModalVisible}
         onClose={toggleModal}
-        items={dropdownItems}
+        items={tokens}
       />
       <SpacerColumn size={2} />
       <TokensTable networkId={networkId} />

@@ -11,11 +11,12 @@ import { Label } from "@/components/inputs/TextInputCustom";
 import { neutral17, neutralFF, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { Token } from "@/utils/types/types";
 
 interface LaunchpadERC20TokensDropdownProps {
-  items: string[];
-  setSelectedItem: (item: string) => void;
-  selectedItem?: string | null;
+  items: Token[];
+  setSelectedItem: (token: Token) => void;
+  selectedItem?: Token | null;
   placeholder?: string;
 }
 
@@ -29,7 +30,7 @@ export const LaunchpadERC20TokensDropdown: React.FC<
 }) => {
   const [isDropdownOpen, setDropdownState] = useState<boolean>(false);
 
-  const selectItem = (item: string) => {
+  const selectItem = (item: Token) => {
     setSelectedItem(item);
     setDropdownState(false);
   };
@@ -68,7 +69,7 @@ export const LaunchpadERC20TokensDropdown: React.FC<
               },
             ]}
           >
-            {selectedItem || placeholder}
+            {selectedItem?.name || placeholder}
           </BrandText>
           <SVG
             source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
@@ -110,7 +111,7 @@ export const LaunchpadERC20TokensDropdown: React.FC<
                         { marginLeft: layout.spacing_x1_5 },
                       ]}
                     >
-                      {item}
+                      {item.name}
                     </BrandText>
                   </View>
                 </TouchableOpacity>

@@ -14,6 +14,18 @@ export const zodToken = z.object({
 
 export type Token = z.infer<typeof zodToken>;
 
+export const emptyToken = {
+  symbol: "",
+  name: "",
+  decimals: "",
+  admin: "",
+  image: "",
+  totalSupply: "",
+  totalSupplyCap: "",
+  allowMint: false,
+  allowBurn: false,
+};
+
 export const zodAidrop = z.object({
   id: z.string(),
   tokenName: z.string(),

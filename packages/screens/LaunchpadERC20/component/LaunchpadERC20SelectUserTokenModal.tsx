@@ -11,11 +11,12 @@ import { SpacerColumn } from "@/components/spacer";
 import { useAppNavigation } from "@/utils/navigation";
 import { errorColor, neutral77 } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
+import { emptyToken, Token } from "@/utils/types/types";
 
 interface SelectTokenModalProps {
   isVisible: boolean;
   onClose: () => void;
-  items: string[] | undefined;
+  items: Token[] | undefined | null;
 }
 
 export const SelectUserTokenModal: React.FC<SelectTokenModalProps> = ({
@@ -23,7 +24,7 @@ export const SelectUserTokenModal: React.FC<SelectTokenModalProps> = ({
   onClose,
   items,
 }) => {
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [selectedItem, setSelectedItem] = useState<Token>(emptyToken);
   const props = { isVisible, onClose };
   const navigation = useAppNavigation();
 
@@ -59,7 +60,9 @@ export const SelectUserTokenModal: React.FC<SelectTokenModalProps> = ({
         <FlexRow style={{ justifyContent: "center" }}>
           <PrimaryButton
             onPress={() => {
-              navigation.navigate("LaunchpadERC20ManageToken", {});
+              navigation.navigate("LaunchpadERC20ManageToken", {
+                token: selectedItem,
+              });
               onClose();
             }}
             text="Open"
