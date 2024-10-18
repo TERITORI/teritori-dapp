@@ -10,9 +10,11 @@ import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { generateIpfsKey } from "@/utils/ipfs";
 import { LocalFileData, RemoteFileData } from "@/utils/types/files";
 
+type CIDVersion = "v1" | "v0";
 interface UploadPostFilesToPinataParams {
   files: LocalFileData[];
   pinataJWTKey: string;
+  cidVersion?: CIDVersion;
 }
 
 interface IPFSUploadProgress {
@@ -23,6 +25,7 @@ interface IPFSUploadProgress {
 export interface PinataFileProps {
   file: LocalFileData;
   pinataJWTKey: string;
+  cidVersion?: CIDVersion;
 }
 
 export const useIpfs = () => {
@@ -34,9 +37,8 @@ export const useIpfs = () => {
     async ({
       file,
       pinataJWTKey,
-    }: PinataFileProps): Promise<
-      { ipfsCid: string | undefined; ipfsHash: string } | undefined
-    > => {
+      cidVersion,
+    }: PinataFileProps): Promise<string | undefined> => {
       try {
         const formData = new FormData();
         if (Platform.OS !== "web") {
@@ -74,10 +76,9 @@ export const useIpfs = () => {
             "Content-Type": "multipart/form-data",
           },
         });
-        return {
-          ipfsCid: CID.parse(responseFile.data.IpfsHash).toV1().toString(),
-          ipfsHash: responseFile.data.IpfsHash,
-        };
+        return cidVersion === "v1"
+          ? CID.parse(responseFile.data.IpfsHash).toV1().toString()
+          : responseFile.data.IpfsHash;
       } catch (err) {
         console.error("Error pinning " + file.fileName + " to IPFS", err);
       }
@@ -89,39 +90,36 @@ export const useIpfs = () => {
     async ({
       files,
       pinataJWTKey,
+      cidVersion,
     }: UploadPostFilesToPinataParams): Promise<RemoteFileData[]> => {
       setIpfsUploadProgresses([]);
 
       const storedFile = async (
         file: LocalFileData,
       ): Promise<RemoteFileData> => {
-        const pinFileToIPFSResult = await pinataPinFileToIPFS({
+        const fileIpfsHash = await pinataPinFileToIPFS({
           file,
           pinataJWTKey,
         });
 
-        const url = !pinFileToIPFSResult?.ipfsCid
-          ? ""
-          : "ipfs://" + pinFileToIPFSResult.ipfsCid;
+        const url = !fileIpfsHash ? "" : "ipfs://" + fileIpfsHash;
 
         if (file.thumbnailFileData) {
-          const pinThumbnailToIPFSResult = await pinataPinFileToIPFS({
+          const thumbnailFileIpfsHash = await pinataPinFileToIPFS({
             file: file.thumbnailFileData,
             pinataJWTKey,
+            cidVersion,
           });
-
-          const thumbnailUrl = !pinThumbnailToIPFSResult?.ipfsCid
+          const thumbnailUrl = !thumbnailFileIpfsHash
             ? ""
-            : "ipfs://" + pinThumbnailToIPFSResult.ipfsCid;
+            : "ipfs://" + thumbnailFileIpfsHash;
 
           return {
             ...omit(file, "file"),
             url,
-            hash: pinFileToIPFSResult?.ipfsHash,
             thumbnailFileData: {
               ...omit(file.thumbnailFileData, "file"),
               url: thumbnailUrl,
-              hash: pinThumbnailToIPFSResult?.ipfsHash,
             },
           };
         } else {
@@ -130,12 +128,11 @@ export const useIpfs = () => {
             // Thumbnails cannot have a thumbnail, so we set isThumbnailImage here
             isThumbnailImage: file.isThumbnailImage,
             url,
-            hash: pinFileToIPFSResult?.ipfsHash,
           };
         }
       };
 
-      const queries: Promise<RemoteFileData>[] = [];
+      const queries = [];
       for (const file of files) {
         setIpfsUploadProgresses((ipfsUploadProgresses) => [
           ...ipfsUploadProgresses,
@@ -156,7 +153,7 @@ export const useIpfs = () => {
   const userIPFSKey = useSelector(selectNFTStorageAPI);
 
   const uploadToIPFS = useCallback(
-    async (userId: string, file: LocalFileData) => {
+    async (userId: string, file: LocalFileData, cidVersion?: CIDVersion) => {
       const [network] = parseUserId(userId);
       if (!network) {
         throw new Error("Invalid user id");
@@ -166,14 +163,15 @@ export const useIpfs = () => {
       if (!pinataJWTKey) {
         throw new Error("Failed to get upload key");
       }
-      const pinFileToIPFSResult = await pinataPinFileToIPFS({
+      const fileIpfsHash = await pinataPinFileToIPFS({
         file,
         pinataJWTKey,
+        cidVersion,
       });
-      if (!pinFileToIPFSResult?.ipfsCid) {
+      if (!fileIpfsHash) {
         throw new Error("Failed to pin file");
       }
-      return "ipfs://" + pinFileToIPFSResult.ipfsCid;
+      return "ipfs://" + fileIpfsHash;
     },
     [pinataPinFileToIPFS, userIPFSKey],
   );
