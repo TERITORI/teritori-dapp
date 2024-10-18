@@ -109,4 +109,4 @@ rust/cw-contracts/*/target
 # cypress
 cypress/screenshots
 # secret files
-rust/scripts/mnemonic.ts
+rust/utils/mnemonic.ts
