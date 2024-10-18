@@ -1,7 +1,7 @@
 import React, { CSSProperties } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 
-import { LocalFileData } from "../../utils/types/files";
+import { LocalFileData } from "../../../utils/types/files";
 
 export interface FileUploaderProps {
   defaultFile?: string;
@@ -14,4 +14,5 @@ export interface FileUploaderProps {
   children?: ({ onPress }: { onPress: () => void }) => React.ReactNode;
   maxUpload?: number;
   setIsLoading?: (value: boolean) => void;
+  required?: boolean;
 }
