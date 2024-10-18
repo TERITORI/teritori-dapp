@@ -37,7 +37,7 @@ export const useIpfs = () => {
     async ({
       file,
       pinataJWTKey,
-      cidVersion,
+      cidVersion = "v1",
     }: PinataFileProps): Promise<string | undefined> => {
       try {
         const formData = new FormData();
@@ -76,9 +76,11 @@ export const useIpfs = () => {
             "Content-Type": "multipart/form-data",
           },
         });
-        return cidVersion === "v1"
-          ? CID.parse(responseFile.data.IpfsHash).toV1().toString()
-          : responseFile.data.IpfsHash;
+        return cidVersion === "v0"
+          ? responseFile.data.IpfsHash
+          : cidVersion === "v1"
+            ? CID.parse(responseFile.data.IpfsHash).toV1().toString()
+            : responseFile.data.IpfsHash;
       } catch (err) {
         console.error("Error pinning " + file.fileName + " to IPFS", err);
       }
