@@ -10,15 +10,15 @@ const main = async () => {
   program.parse();
   const [networkId, wallet] = program.args;
 
-  const network = await deployTeritoriEcosystem(
-    {
+  const network = await deployTeritoriEcosystem({
+    opts: {
       home: path.join(os.homedir(), ".teritorid"),
       binaryPath: "teritorid",
       signer: undefined,
     },
     networkId,
     wallet,
-  );
+  });
 
   console.log(JSON.stringify(network, null, 2));
 };

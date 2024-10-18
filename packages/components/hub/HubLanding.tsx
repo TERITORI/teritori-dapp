@@ -11,11 +11,8 @@ import {
   Sort,
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
-import { useBanners } from "../../hooks/useBanners";
-import { useMaxResolution } from "../../hooks/useMaxResolution";
+import { useBanners } from "../../hooks/marketing/useBanners";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { Link } from "../Link";
-import { OptimizedImage } from "../OptimizedImage";
 import { Section } from "../Section";
 import { DAppCard } from "../cards/DAppCard";
 import { LabelCard } from "../cards/LabelCard";
@@ -23,13 +20,14 @@ import { MyWalletsCard } from "../cards/MyWalletsCard";
 import { CollectionsCarouselSection } from "../carousels/CollectionsCarouselSection";
 import { NewsCarouselSection } from "../carousels/NewsCarouselSection";
 
+import { HubBanner } from "@/components/hub/HubBanner/HubBanner";
+import { SpacerColumn } from "@/components/spacer";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const gridHalfGutter = 12;
 
 export const HubLanding: React.FC = () => {
   const navigation = useAppNavigation();
-  const { width } = useMaxResolution();
   const networkId = useSelectedNetworkId();
   const banners = useBanners(networkId);
   const banner = banners?.length ? banners[0] : undefined;
@@ -37,19 +35,10 @@ export const HubLanding: React.FC = () => {
     <View style={{ alignItems: "center", width: "100%" }}>
       <View style={{ flex: 1 }}>
         {!!banner && (
-          <Link to={banner?.url} style={{ width: "100%", maxHeight: 500 }}>
-            <OptimizedImage
-              sourceURI={banner?.image}
-              width={width}
-              height={350}
-              style={{
-                height: 350,
-                width,
-                borderRadius: 20,
-                marginTop: 56,
-              }}
-            />
-          </Link>
+          <>
+            <SpacerColumn size={7} />
+            <HubBanner banner={banner} />
+          </>
         )}
 
         <NewsCarouselSection />
