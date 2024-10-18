@@ -1,0 +1,9 @@
+{
+  "config": {
+    "name": "NFT Launchpad",
+    "supported_networks": ["teritori"],
+    "owner": "",
+    "deployer": "",
+    "nft_code_id": 0
+  } 
+}
