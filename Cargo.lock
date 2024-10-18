@@ -20,6 +20,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "86fdf8605db99b54d3cd748a44c6d04df638eb5dafb219b135d0149bd0db01f6"
 
 [[package]]
+name = "apipb"
+version = "0.1.0"
+dependencies = [
+ "prost 0.12.6",
+]
+
+[[package]]
 name = "base16ct"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -936,6 +943,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "keccak"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ecc2af9a1119c51f12a14607e783cb977bde58bc069ff0c3da1095e635d70654"
+dependencies = [
+ "cpufeatures",
+]
+
+[[package]]
 name = "konst"
 version = "0.3.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -975,6 +991,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
 
 [[package]]
+name = "nft-launchpad"
+version = "0.2.0"
+dependencies = [
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cw-storage-plus 1.2.0",
+ "cw-utils 1.0.3",
+ "cw2981-royalties",
+ "cw721 0.18.0",
+ "cw721-base 0.18.0",
+ "nft-tr721",
+ "schemars",
+ "serde",
+ "sylvia 0.9.3",
+ "thiserror",
+]
+
+[[package]]
 name = "nft-marketplace"
 version = "0.1.0"
 dependencies = [
@@ -986,6 +1020,29 @@ dependencies = [
  "cw721-base 0.15.0",
  "schemars",
  "serde",
+]
+
+[[package]]
+name = "nft-tr721"
+version = "0.2.0"
+dependencies = [
+ "apipb",
+ "cosmwasm-schema",
+ "cosmwasm-std",
+ "cw-multi-test 0.20.1",
+ "cw-storage-plus 1.2.0",
+ "cw-utils 1.0.3",
+ "cw2981-royalties",
+ "cw721 0.18.0",
+ "cw721-base 0.18.0",
+ "cw721-metadata-onchain",
+ "prost 0.12.6",
+ "rs_merkle",
+ "schemars",
+ "serde",
+ "sha3",
+ "sylvia 0.9.3",
+ "thiserror",
 ]
 
 [[package]]
@@ -1175,6 +1232,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "rs_merkle"
+version = "1.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3b241d2e59b74ef9e98d94c78c47623d04c8392abaf82014dfd372a16041128f"
+dependencies = [
+ "sha2 0.10.8",
+]
+
+[[package]]
 name = "ryu"
 version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1330,6 +1396,16 @@ dependencies = [
  "cfg-if",
  "cpufeatures",
  "digest 0.10.7",
+]
+
+[[package]]
+name = "sha3"
+version = "0.10.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "75872d278a8f37ef87fa0ddbda7802605cb18344497949862c0d4dcb291eba60"
+dependencies = [
+ "digest 0.10.7",
+ "keccak",
 ]
 
 [[package]]
