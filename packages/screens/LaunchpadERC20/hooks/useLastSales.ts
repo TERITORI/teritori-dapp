@@ -12,7 +12,7 @@ import { extractGnoJSONString } from "@/utils/gno";
 import { zodSale } from "@/utils/types/types";
 
 export const useLastSales = (networkId: string) => {
-  return useQuery(["lastSales"], async () => {
+  return useQuery(["lastSales", networkId], async () => {
     const gnoNetwork = getGnoNetwork(networkId);
     if (!gnoNetwork) {
       return null;

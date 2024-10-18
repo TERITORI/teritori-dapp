@@ -7,7 +7,7 @@ import { extractGnoJSONString } from "@/utils/gno";
 import { zodToken } from "@/utils/types/types";
 
 export const useUserTokens = (networkId: string, addr: string) => {
-  return useQuery(["userTokens", addr], async () => {
+  return useQuery(["userTokens", addr, networkId], async () => {
     const gnoNetwork = getGnoNetwork(networkId);
     if (!gnoNetwork) {
       return null;
