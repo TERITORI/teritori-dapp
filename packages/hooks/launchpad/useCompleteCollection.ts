@@ -1,3 +1,4 @@
+import { CID } from "multiformats";
 import { useCallback } from "react";
 import { useSelector } from "react-redux";
 
@@ -113,7 +114,7 @@ export const useCompleteCollection = () => {
             );
 
             metadatas.push({
-              image: image.hash,
+              image: CID.parse(image.url).toV0().toString(),
               // imageData: "", //TODO: What is this ? Needed ?
               externalUrl: assetMetadata.externalUrl,
               description: assetMetadata.description,

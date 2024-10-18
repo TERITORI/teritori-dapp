@@ -69,7 +69,7 @@ export const useCreateCollection = () => {
 
       try {
         // ========== Cover image
-        const pinFileToIPFSResult = await pinataPinFileToIPFS({
+        const fileIpfsHash = await pinataPinFileToIPFS({
           pinataJWTKey,
           file: collectionFormValues.coverImage,
         } as PinataFileProps);
@@ -153,7 +153,7 @@ export const useCreateCollection = () => {
               : 0,
           expected_mint_date: collectionFormValues.expectedMintDate,
 
-          cover_img_uri: pinFileToIPFSResult?.ipfsCid || "",
+          cover_img_uri: fileIpfsHash || "",
           is_applied_previously:
             collectionFormValues.isPreviouslyApplied || false,
           is_project_derivative:

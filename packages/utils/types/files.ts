@@ -31,7 +31,6 @@ const ZodBaseFileData = z.object({
   isCoverImage: z.boolean().optional(),
   isThumbnailImage: z.boolean().optional(),
   base64Image: z.string().optional(),
-  hash: z.string().optional(),
 });
 
 export const ZodLocalFileData = z
