@@ -30,15 +30,9 @@ export type RootStackParamList = {
     id: string;
   };
   RiotersFooter: undefined;
-  AdministrationDashboard: undefined;
-  LaunchpadApplications: undefined;
-  ApplicationReview: undefined;
-  ReadyLaunchpadApplications: undefined;
-  AllProjectAdministrationDash: undefined;
 
   Launchpad: undefined;
   LaunchpadApply: undefined;
-  LaunchpadCreate: undefined;
 
   LaunchpadERC20: undefined;
   LaunchpadERC20Tokens?: { network?: string };
@@ -203,11 +197,6 @@ const navConfig: {
     GovernanceProposal: "governance/:id",
     UserPublicProfile: "user/:id/:tab?",
     RiotersFooter: "rioters-footer",
-    AdministrationDashboard: "launchpad/admin",
-    LaunchpadApplications: "launchpad/applications",
-    ApplicationReview: "launchpad/application-review",
-    ReadyLaunchpadApplications: "launchpad/ready-applications",
-    AllProjectAdministrationDash: "launchpad/all-projects",
 
     // === RiotGame
     RiotGame: "riot-game",
@@ -223,7 +212,6 @@ const navConfig: {
     // ==== Launchpad
     Launchpad: "launchpad",
     LaunchpadApply: "launchpad/apply",
-    LaunchpadCreate: "launchpad/create",
 
     // ==== Launchpad ERC20
     LaunchpadERC20: "launchpad-erc20",
