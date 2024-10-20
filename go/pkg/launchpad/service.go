@@ -65,8 +65,8 @@ func (s *Launchpad) UploadMetadatas(ctx context.Context, req *launchpadpb.Upload
 	}
 
 	pinnedCIDs := []string{}
-	for _, item := range req.Metadatas {
-		pinnedCIDs = append(pinnedCIDs, *item.Image)
+	for _, metadataItem := range req.Metadatas {
+		pinnedCIDs = append(pinnedCIDs, extractCID(*metadataItem.Image))
 	}
 
 	// Check pinning
@@ -80,9 +80,9 @@ func (s *Launchpad) UploadMetadatas(ctx context.Context, req *launchpadpb.Upload
 	}
 
 	// Check if all files have been pinned correctly
-	for _, metadata := range req.Metadatas {
-		if !slices.Contains(pinnedCIDs, extractCID(*metadata.Image)) {
-			return nil, errors.New(fmt.Sprintf("image %s has not been pinned correctly", *metadata.Image))
+	for _, metadataItem := range req.Metadatas {
+		if !slices.Contains(pinnedCIDs, extractCID(*metadataItem.Image)) {
+			return nil, errors.New(fmt.Sprintf("image %s has not been pinned correctly", *metadataItem.Image))
 		}
 	}
 

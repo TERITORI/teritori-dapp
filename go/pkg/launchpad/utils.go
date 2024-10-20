@@ -146,5 +146,8 @@ func (m *Metadata) ToJSONB() interface{} {
 }
 
 func extractCID(imageURL string) string {
+	if len(imageURL) >= 7 && imageURL[:7] == "ipfs://" {
+		return imageURL[7:]
+	}
 	return imageURL
 }

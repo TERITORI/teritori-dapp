@@ -51,8 +51,9 @@ func (ps *PinningService) VerifyPinned(cidStrs ...string) (bool, error) {
 		if err != nil {
 			return false, errors.Wrap(err, fmt.Sprintf("fail to parse cid: %s", cidStr))
 		}
-
-		cids[idx] = cidObj
+		// LsSync doesn't work with CIDv1, so we convert to CIDv0 to use LsSync
+		cidv0 := cid.NewCidV0(cidObj.Hash())
+		cids[idx] = cidv0
 	}
 
 	pinnedItems, err := ps.client.LsSync(
@@ -62,18 +63,23 @@ func (ps *PinningService) VerifyPinned(cidStrs ...string) (bool, error) {
 	)
 
 	if err != nil {
-		return false, errors.Wrap(err, "failed to fetch pinned items")
+		return false, errors.Wrap(err, "error while fetching pinned items")
+	}
+	if len(pinnedItems) == 0 {
+		return false, errors.New("no pinned items fetched")
 	}
 
 	pinnedStrs := make([]string, len(pinnedItems))
 	for idx, item := range pinnedItems {
 		if string(item.GetStatus()) == remoteClient.StatusPinned.String() {
-			pinnedStrs[idx] = item.GetPin().GetCid().String()
+			// We convert back to CIDv1
+			cidv1 := cid.NewCidV1(0x70, item.GetPin().GetCid().Hash())
+			pinnedStrs[idx] = cidv1.String()
 		}
 	}
-
 	var unpinnedCids []string
 
+	// Veryfing given CIDs and pinned ones
 	for _, cidStr := range cidStrs {
 		if !slices.Contains(pinnedStrs, cidStr) {
 			unpinnedCids = append(unpinnedCids, cidStr)
