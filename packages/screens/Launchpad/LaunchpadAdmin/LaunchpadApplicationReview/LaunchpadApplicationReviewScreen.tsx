@@ -8,25 +8,28 @@ import { ProjectInformation } from "./component/ProjectInformation";
 import { TeamInformation } from "./component/TeamInformation";
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import { ProposalRow } from "../../../../components/dao/DAOProposals";
-import {
-  AppProposalResponse,
-  useDAOProposals,
-  useInvalidateDAOProposals,
-} from "../../../../hooks/dao/useDAOProposals";
 import { useProposeApproveDeployCollection } from "../../../../hooks/launchpad/useProposeApproveDeployCollection";
-import { DEPLOY_PROPOSAL_DESC_PREFIX } from "../../../../utils/launchpad";
 
 import { BrandText } from "@/components/BrandText";
 import { NotFound } from "@/components/NotFound";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
+import {
+  AppProposalResponse,
+  useDAOProposals,
+  useInvalidateDAOProposals,
+} from "@/hooks/dao/useDAOProposals";
 import { useIsUserLaunchpadAdmin } from "@/hooks/launchpad/useIsUserLaunchpadAdmin";
 import { useLaunchpadProjectById } from "@/hooks/launchpad/useLaunchpadProjectById";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
-import { launchpadProjectStatus, parseCollectionData } from "@/utils/launchpad";
+import {
+  DEPLOY_PROPOSAL_TITLE_PREFIX,
+  launchpadProjectStatus,
+  parseCollectionData,
+} from "@/utils/launchpad";
 import { ScreenFC } from "@/utils/navigation";
 import { errorColor, neutral33 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
@@ -51,8 +54,8 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
   // We find the deploy proposal by searching projectId into the proposal's description
   const proposal = daoProposals?.find(
     (appProposalResponse: AppProposalResponse) =>
-      appProposalResponse.proposal.description ===
-      DEPLOY_PROPOSAL_DESC_PREFIX + projectId,
+      appProposalResponse.proposal.title ===
+      DEPLOY_PROPOSAL_TITLE_PREFIX + projectId,
   );
 
   const { launchpadProject } = useLaunchpadProjectById({

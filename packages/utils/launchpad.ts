@@ -5,7 +5,7 @@ import {
   ZodCollectionDataResult,
 } from "@/utils/types/launchpad";
 
-export const DEPLOY_PROPOSAL_DESC_PREFIX = "Symbol/ID: ";
+export const DEPLOY_PROPOSAL_TITLE_PREFIX = "Approve Collection ";
 
 export const launchpadProjectStatus = (launchpadProject: LaunchpadProject) =>
   !launchpadProject.merkleRoot

@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { useGetLaunchpadAdmin } from "./useGetLaunchpadAdmin";
 import { useIsUserLaunchpadAdmin } from "./useIsUserLaunchpadAdmin";
 import { DaoProposalSingleClient } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
-import { DEPLOY_PROPOSAL_DESC_PREFIX } from "../../utils/launchpad";
+import { DEPLOY_PROPOSAL_TITLE_PREFIX } from "../../utils/launchpad";
 import { useDAOMakeProposal } from "../dao/useDAOMakeProposal";
 import { useDAOFirstProposalModule } from "../dao/useDAOProposalModules";
 
@@ -51,8 +51,8 @@ export const useProposeApproveDeployCollection = () => {
 
         // ---- Make the proposal
         const makeProposalRes = await makeProposal(userAddress, {
-          title: "Approve Launchpad collection",
-          description: DEPLOY_PROPOSAL_DESC_PREFIX + projectId,
+          title: DEPLOY_PROPOSAL_TITLE_PREFIX + projectId,
+          description: "",
           msgs: [
             {
               wasm: {
