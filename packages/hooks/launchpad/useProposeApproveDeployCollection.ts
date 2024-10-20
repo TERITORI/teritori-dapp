@@ -3,11 +3,9 @@ import { useCallback } from "react";
 import { useGetLaunchpadAdmin } from "./useGetLaunchpadAdmin";
 import { useIsUserLaunchpadAdmin } from "./useIsUserLaunchpadAdmin";
 import { DaoProposalSingleClient } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
-import { mustGetNonSigningCosmWasmClient } from "../../networks";
 import { DEPLOY_PROPOSAL_DESC_PREFIX } from "../../utils/launchpad";
 import { useDAOMakeProposal } from "../dao/useDAOMakeProposal";
 import { useDAOFirstProposalModule } from "../dao/useDAOProposalModules";
-import { useDAOProposals } from "../dao/useDAOProposals";
 
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
@@ -25,7 +23,6 @@ export const useProposeApproveDeployCollection = () => {
     selectedWallet?.userId,
   );
   const { setToast } = useFeedbacks();
-  const { daoProposals } = useDAOProposals(launchpadAdminId);
   const { daoFirstProposalModule } =
     useDAOFirstProposalModule(launchpadAdminId);
 
@@ -53,7 +50,7 @@ export const useProposeApproveDeployCollection = () => {
         }
 
         // ---- Make the proposal
-        await makeProposal(userAddress, {
+        const makeProposalRes = await makeProposal(userAddress, {
           title: "Approve Launchpad collection",
           description: DEPLOY_PROPOSAL_DESC_PREFIX + projectId,
           msgs: [
@@ -76,17 +73,16 @@ export const useProposeApproveDeployCollection = () => {
           ],
         });
 
-        const nonSigningCosmWasmClient =
-          await mustGetNonSigningCosmWasmClient(selectedNetworkId);
-
-        // ---- Get the proposal id
-        const proposals = await nonSigningCosmWasmClient.queryContractSmart(
-          daoFirstProposalModule.address,
-          {
-            list_proposals: { start_after: null, limit: 1 },
-          },
+        // ---- Get the freshly made proposal id
+        const event = makeProposalRes.events.find((ev) =>
+          ev.attributes.some((attr) => attr.key === "proposal_id"),
         );
-        const proposalId = proposals.proposals[0].id;
+        const proposalId = event?.attributes.find(
+          (attribute) => attribute.key === "proposal_id",
+        )?.value;
+        if (!proposalId) {
+          throw new Error("Failed to retreive the proposal");
+        }
 
         const signingCosmWasmClient =
           await getKeplrSigningCosmWasmClient(selectedNetworkId);
@@ -97,21 +93,26 @@ export const useProposeApproveDeployCollection = () => {
         );
 
         // ---- Approve the proposal
-        await daoProposalClient.vote({ proposalId, vote: "yes" }, "auto");
+        await daoProposalClient.vote(
+          { proposalId: parseInt(proposalId, 10), vote: "yes" },
+          "auto",
+        );
 
         setToast({
           mode: "normal",
           type: "success",
           title: "Successfully approved the Launchpad Collection",
         });
-      } catch (e: any) {
-        console.error("Error approving the Launchpad Collection: ", e);
-        setToast({
-          mode: "normal",
-          type: "error",
-          title: "Error approving the Launchpad Collection",
-          message: e.message,
-        });
+      } catch (err: unknown) {
+        console.error("Error approving the Launchpad Collection: ", err);
+        if (err instanceof Error) {
+          setToast({
+            mode: "normal",
+            type: "error",
+            title: "Error approving the Launchpad Collection",
+            message: err.message,
+          });
+        }
       }
     },
     [
@@ -124,5 +125,5 @@ export const useProposeApproveDeployCollection = () => {
     ],
   );
 
-  return { proposeApproveDeployCollection, daoProposals, launchpadAdminId };
+  return { proposeApproveDeployCollection, launchpadAdminId };
 };

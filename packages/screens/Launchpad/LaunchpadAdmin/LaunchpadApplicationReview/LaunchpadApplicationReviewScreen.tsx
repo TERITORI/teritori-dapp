@@ -8,7 +8,11 @@ import { ProjectInformation } from "./component/ProjectInformation";
 import { TeamInformation } from "./component/TeamInformation";
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import { ProposalRow } from "../../../../components/dao/DAOProposals";
-import { AppProposalResponse } from "../../../../hooks/dao/useDAOProposals";
+import {
+  AppProposalResponse,
+  useDAOProposals,
+  useInvalidateDAOProposals,
+} from "../../../../hooks/dao/useDAOProposals";
 import { useProposeApproveDeployCollection } from "../../../../hooks/launchpad/useProposeApproveDeployCollection";
 import { DEPLOY_PROPOSAL_DESC_PREFIX } from "../../../../utils/launchpad";
 
@@ -39,8 +43,11 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
   const [isLoading, setLoading] = useState(false);
   const userId = useSelectedWallet()?.userId;
   const { isUserLaunchpadAdmin } = useIsUserLaunchpadAdmin(userId);
-  const { proposeApproveDeployCollection, daoProposals, launchpadAdminId } =
+  const { proposeApproveDeployCollection, launchpadAdminId } =
     useProposeApproveDeployCollection();
+  const invalidateDAOProposals = useInvalidateDAOProposals(launchpadAdminId);
+  const { daoProposals } = useDAOProposals(launchpadAdminId);
+
   // We find the deploy proposal by searching projectId into the proposal's description
   const proposal = daoProposals?.find(
     (appProposalResponse: AppProposalResponse) =>
@@ -62,6 +69,10 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
     } catch (e) {
       console.error("Error approving the collection", e);
       setLoading(false);
+    } finally {
+      // FIXME, it dosen't refresh the proposals
+      invalidateDAOProposals();
+      // But refetch() from useDAOProposals() works
     }
     setTimeout(() => {
       setLoading(false);
