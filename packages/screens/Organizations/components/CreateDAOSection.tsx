@@ -131,6 +131,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
               // isAsterickSign
               multiline
               numberOfLines={3}
+              testID="organization-description"
             />
           </View>
         </View>
