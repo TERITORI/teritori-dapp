@@ -58,11 +58,11 @@ export const useCreateCollection = () => {
         userIPFSKey ||
         (await generateIpfsKey(selectedNetworkId, userId));
       if (!pinataJWTKey) {
-        console.error("upload file err : No Pinata JWT");
+        console.error("Project creation error: No Pinata JWT");
         setToast({
           mode: "normal",
           type: "error",
-          title: "Files upload failed",
+          title: "Project creation error: No Pinata JWT",
         });
         return;
       }
@@ -73,6 +73,15 @@ export const useCreateCollection = () => {
           pinataJWTKey,
           file: collectionFormValues.coverImage,
         } as PinataFileProps);
+        if (!fileIpfsHash) {
+          console.error("Project creation error: Pin to Pinata failed");
+          setToast({
+            mode: "normal",
+            type: "error",
+            title: "Project creation error: Pin to Pinata failed",
+          });
+          return;
+        }
 
         // ========== Whitelists
         const whitelistAddressesFilesToUpload: LocalFileData[] = [];
@@ -120,65 +129,45 @@ export const useCreateCollection = () => {
 
         // ========== Final collection
         const collection: CollectionToSubmit = {
-          name: collectionFormValues.name || "",
-          desc: collectionFormValues.description || "",
-          symbol: collectionFormValues.symbol || "",
-          // external_link: collectionFormValues.externalLink || "",
-          website_link: collectionFormValues.websiteLink || "",
-          // twitter_profile: collectionFormValues.twitterProfileUrl || "",
-          // twitter_followers_count: collectionFormValues.nbTwitterFollowers
-          //   ? parseInt(collectionFormValues.nbTwitterFollowers, 10)
-          //   : 0,
-          // contact_discord_name: collectionFormValues.discordName || "",
-          contact_email: collectionFormValues.email || "",
-          project_type: collectionFormValues.projectTypes?.join() || "",
-          project_desc: collectionFormValues.projectDescription || "",
-          tokens_count: collectionFormValues.tokensCount
-            ? parseInt(collectionFormValues.tokensCount, 10)
-            : 0,
+          name: collectionFormValues.name,
+          desc: collectionFormValues.description,
+          symbol: collectionFormValues.symbol,
+          website_link: collectionFormValues.websiteLink,
+          contact_email: collectionFormValues.email,
+          project_type: collectionFormValues.projectTypes.join(),
+          project_desc: collectionFormValues.projectDescription,
+          tokens_count: parseInt(collectionFormValues.tokensCount, 10),
           reveal_time: collectionFormValues.revealTime,
-          team_desc: collectionFormValues.teamDescription || "",
-          // team_link: collectionFormValues.teamLink || "",
-          partners: collectionFormValues.partnersDescription || "",
-          investment_desc: collectionFormValues.investDescription || "",
-          investment_link: collectionFormValues.investLink || "",
-          // roadmap_link: collectionFormValues.roadmapLink || "",
-          artwork_desc: collectionFormValues.artworkDescription || "",
-          expected_supply: collectionFormValues.expectedSupply
-            ? parseInt(collectionFormValues.expectedSupply, 10)
-            : 0,
-          expected_public_mint_price:
-            collectionFormValues.expectedPublicMintPrice
-              ? parseInt(collectionFormValues.expectedPublicMintPrice, 10)
-              : 0,
+          team_desc: collectionFormValues.teamDescription,
+          partners: collectionFormValues.partnersDescription,
+          investment_desc: collectionFormValues.investDescription,
+          investment_link: collectionFormValues.investLink,
+          artwork_desc: collectionFormValues.artworkDescription,
+          expected_supply: parseInt(collectionFormValues.expectedSupply, 10),
+          expected_public_mint_price: parseInt(
+            collectionFormValues.expectedPublicMintPrice,
+            10,
+          ),
           expected_mint_date: collectionFormValues.expectedMintDate,
-
-          cover_img_uri: fileIpfsHash || "",
-          is_applied_previously:
-            collectionFormValues.isPreviouslyApplied || false,
-          is_project_derivative:
-            collectionFormValues.isDerivativeProject || false,
-          is_ready_for_mint: collectionFormValues.isReadyForMint || false,
-          is_dox: collectionFormValues.isDox || false,
-          escrow_mint_proceeds_period:
-            collectionFormValues.escrowMintProceedsPeriod
-              ? parseInt(collectionFormValues.escrowMintProceedsPeriod, 10)
-              : 0,
-          dao_whitelist_count: collectionFormValues.daoWhitelistCount
-            ? parseInt(collectionFormValues.daoWhitelistCount, 10)
-            : 0,
-
+          cover_img_uri: "ipfs://" + fileIpfsHash,
+          is_applied_previously: collectionFormValues.isPreviouslyApplied,
+          is_project_derivative: collectionFormValues.isDerivativeProject,
+          is_ready_for_mint: collectionFormValues.isReadyForMint,
+          is_dox: collectionFormValues.isDox,
+          escrow_mint_proceeds_period: parseInt(
+            collectionFormValues.escrowMintProceedsPeriod,
+            10,
+          ),
+          dao_whitelist_count: parseInt(
+            collectionFormValues.daoWhitelistCount,
+            10,
+          ),
           mint_periods,
-
-          royalty_address: collectionFormValues.royaltyAddress || "",
+          royalty_address: collectionFormValues.royaltyAddress,
           royalty_percentage: collectionFormValues.royaltyPercentage
             ? parseInt(collectionFormValues.royaltyPercentage, 10)
-            : 0,
-
+            : null,
           target_network: selectedNetworkId,
-          // deployed_address: "None",
-          // whitepaper_link: "None",
-          // base_token_uri: "None",
         };
         const collectionId = collectionFormValues.symbol;
 
