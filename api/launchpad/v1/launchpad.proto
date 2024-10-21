@@ -11,6 +11,7 @@ service LaunchpadService {
   rpc LaunchpadProjects(LaunchpadProjectsRequest) returns (LaunchpadProjectsResponse);
   rpc LaunchpadProjectById(LaunchpadProjectByIdRequest) returns (LaunchpadProjectByIdResponse);
   rpc LaunchpadProjectsCount(LaunchpadProjectsCountRequest) returns (LaunchpadProjectsCountResponse);
+  rpc ProposeApproveProject(ProposeApproveProjectRequest) returns (ProposeApproveProjectResponse);
 }
 
 enum Sort {
@@ -28,8 +29,8 @@ enum Status {
   STATUS_UNSPECIFIED = 0;
   STATUS_INCOMPLETE = 1;
   STATUS_COMPLETE = 2;
-  STATUS_CONFIRMED = 3;
-  STATUS_DEPLOYED = 4;
+  STATUS_REVIEWING = 3;
+  STATUS_CONFIRMED = 4;
 }
 
 // -------------------------------
@@ -113,6 +114,17 @@ message LaunchpadProjectsCountResponse {
   uint32 count = 1;
 }
 
+message ProposeApproveProjectRequest {
+  string sender = 1;
+  string network_id = 2;
+  string project_id = 3;
+  string proposal_id = 4;
+}
+
+message ProposeApproveProjectResponse {
+  bool approved = 1;
+}
+
 // -------------------------------
 
 message LaunchpadProject {
@@ -120,8 +132,8 @@ message LaunchpadProject {
   string network_id = 2;
   string creator_id = 3;
   string collection_data = 4;
-  optional string merkle_root = 5;
-  optional string deployed_address = 6;
+  optional Status status = 5;
+  optional string proposal_id = 6;
 }
 
 message Metadata {
@@ -143,5 +155,6 @@ message Trait {
   string trait_type = 2;
   string value = 3;
 }
+
 
 

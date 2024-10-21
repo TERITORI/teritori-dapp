@@ -82,8 +82,8 @@ export enum Status {
   STATUS_UNSPECIFIED = 0,
   STATUS_INCOMPLETE = 1,
   STATUS_COMPLETE = 2,
-  STATUS_CONFIRMED = 3,
-  STATUS_DEPLOYED = 4,
+  STATUS_REVIEWING = 3,
+  STATUS_CONFIRMED = 4,
   UNRECOGNIZED = -1,
 }
 
@@ -99,11 +99,11 @@ export function statusFromJSON(object: any): Status {
     case "STATUS_COMPLETE":
       return Status.STATUS_COMPLETE;
     case 3:
+    case "STATUS_REVIEWING":
+      return Status.STATUS_REVIEWING;
+    case 4:
     case "STATUS_CONFIRMED":
       return Status.STATUS_CONFIRMED;
-    case 4:
-    case "STATUS_DEPLOYED":
-      return Status.STATUS_DEPLOYED;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -119,10 +119,10 @@ export function statusToJSON(object: Status): string {
       return "STATUS_INCOMPLETE";
     case Status.STATUS_COMPLETE:
       return "STATUS_COMPLETE";
+    case Status.STATUS_REVIEWING:
+      return "STATUS_REVIEWING";
     case Status.STATUS_CONFIRMED:
       return "STATUS_CONFIRMED";
-    case Status.STATUS_DEPLOYED:
-      return "STATUS_DEPLOYED";
     case Status.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -208,13 +208,24 @@ export interface LaunchpadProjectsCountResponse {
   count: number;
 }
 
+export interface ProposeApproveProjectRequest {
+  sender: string;
+  networkId: string;
+  projectId: string;
+  proposalId: string;
+}
+
+export interface ProposeApproveProjectResponse {
+  approved: boolean;
+}
+
 export interface LaunchpadProject {
   id: string;
   networkId: string;
   creatorId: string;
   collectionData: string;
-  merkleRoot?: string | undefined;
-  deployedAddress?: string | undefined;
+  status?: Status | undefined;
+  proposalId?: string | undefined;
 }
 
 export interface Metadata {
@@ -1434,15 +1445,171 @@ export const LaunchpadProjectsCountResponse = {
   },
 };
 
+function createBaseProposeApproveProjectRequest(): ProposeApproveProjectRequest {
+  return { sender: "", networkId: "", projectId: "", proposalId: "" };
+}
+
+export const ProposeApproveProjectRequest = {
+  encode(message: ProposeApproveProjectRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
+    if (message.networkId !== "") {
+      writer.uint32(18).string(message.networkId);
+    }
+    if (message.projectId !== "") {
+      writer.uint32(26).string(message.projectId);
+    }
+    if (message.proposalId !== "") {
+      writer.uint32(34).string(message.proposalId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ProposeApproveProjectRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseProposeApproveProjectRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.networkId = reader.string();
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.projectId = reader.string();
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.proposalId = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ProposeApproveProjectRequest {
+    return {
+      sender: isSet(object.sender) ? globalThis.String(object.sender) : "",
+      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
+      projectId: isSet(object.projectId) ? globalThis.String(object.projectId) : "",
+      proposalId: isSet(object.proposalId) ? globalThis.String(object.proposalId) : "",
+    };
+  },
+
+  toJSON(message: ProposeApproveProjectRequest): unknown {
+    const obj: any = {};
+    if (message.sender !== "") {
+      obj.sender = message.sender;
+    }
+    if (message.networkId !== "") {
+      obj.networkId = message.networkId;
+    }
+    if (message.projectId !== "") {
+      obj.projectId = message.projectId;
+    }
+    if (message.proposalId !== "") {
+      obj.proposalId = message.proposalId;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ProposeApproveProjectRequest>, I>>(base?: I): ProposeApproveProjectRequest {
+    return ProposeApproveProjectRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ProposeApproveProjectRequest>, I>>(object: I): ProposeApproveProjectRequest {
+    const message = createBaseProposeApproveProjectRequest();
+    message.sender = object.sender ?? "";
+    message.networkId = object.networkId ?? "";
+    message.projectId = object.projectId ?? "";
+    message.proposalId = object.proposalId ?? "";
+    return message;
+  },
+};
+
+function createBaseProposeApproveProjectResponse(): ProposeApproveProjectResponse {
+  return { approved: false };
+}
+
+export const ProposeApproveProjectResponse = {
+  encode(message: ProposeApproveProjectResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.approved === true) {
+      writer.uint32(8).bool(message.approved);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ProposeApproveProjectResponse {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseProposeApproveProjectResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.approved = reader.bool();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ProposeApproveProjectResponse {
+    return { approved: isSet(object.approved) ? globalThis.Boolean(object.approved) : false };
+  },
+
+  toJSON(message: ProposeApproveProjectResponse): unknown {
+    const obj: any = {};
+    if (message.approved === true) {
+      obj.approved = message.approved;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ProposeApproveProjectResponse>, I>>(base?: I): ProposeApproveProjectResponse {
+    return ProposeApproveProjectResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ProposeApproveProjectResponse>, I>>(
+    object: I,
+  ): ProposeApproveProjectResponse {
+    const message = createBaseProposeApproveProjectResponse();
+    message.approved = object.approved ?? false;
+    return message;
+  },
+};
+
 function createBaseLaunchpadProject(): LaunchpadProject {
-  return {
-    id: "",
-    networkId: "",
-    creatorId: "",
-    collectionData: "",
-    merkleRoot: undefined,
-    deployedAddress: undefined,
-  };
+  return { id: "", networkId: "", creatorId: "", collectionData: "", status: undefined, proposalId: undefined };
 }
 
 export const LaunchpadProject = {
@@ -1459,11 +1626,11 @@ export const LaunchpadProject = {
     if (message.collectionData !== "") {
       writer.uint32(34).string(message.collectionData);
     }
-    if (message.merkleRoot !== undefined) {
-      writer.uint32(42).string(message.merkleRoot);
+    if (message.status !== undefined) {
+      writer.uint32(40).int32(message.status);
     }
-    if (message.deployedAddress !== undefined) {
-      writer.uint32(50).string(message.deployedAddress);
+    if (message.proposalId !== undefined) {
+      writer.uint32(50).string(message.proposalId);
     }
     return writer;
   },
@@ -1504,18 +1671,18 @@ export const LaunchpadProject = {
           message.collectionData = reader.string();
           continue;
         case 5:
-          if (tag !== 42) {
+          if (tag !== 40) {
             break;
           }
 
-          message.merkleRoot = reader.string();
+          message.status = reader.int32() as any;
           continue;
         case 6:
           if (tag !== 50) {
             break;
           }
 
-          message.deployedAddress = reader.string();
+          message.proposalId = reader.string();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1532,8 +1699,8 @@ export const LaunchpadProject = {
       networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
       creatorId: isSet(object.creatorId) ? globalThis.String(object.creatorId) : "",
       collectionData: isSet(object.collectionData) ? globalThis.String(object.collectionData) : "",
-      merkleRoot: isSet(object.merkleRoot) ? globalThis.String(object.merkleRoot) : undefined,
-      deployedAddress: isSet(object.deployedAddress) ? globalThis.String(object.deployedAddress) : undefined,
+      status: isSet(object.status) ? statusFromJSON(object.status) : undefined,
+      proposalId: isSet(object.proposalId) ? globalThis.String(object.proposalId) : undefined,
     };
   },
 
@@ -1551,11 +1718,11 @@ export const LaunchpadProject = {
     if (message.collectionData !== "") {
       obj.collectionData = message.collectionData;
     }
-    if (message.merkleRoot !== undefined) {
-      obj.merkleRoot = message.merkleRoot;
+    if (message.status !== undefined) {
+      obj.status = statusToJSON(message.status);
     }
-    if (message.deployedAddress !== undefined) {
-      obj.deployedAddress = message.deployedAddress;
+    if (message.proposalId !== undefined) {
+      obj.proposalId = message.proposalId;
     }
     return obj;
   },
@@ -1569,8 +1736,8 @@ export const LaunchpadProject = {
     message.networkId = object.networkId ?? "";
     message.creatorId = object.creatorId ?? "";
     message.collectionData = object.collectionData ?? "";
-    message.merkleRoot = object.merkleRoot ?? undefined;
-    message.deployedAddress = object.deployedAddress ?? undefined;
+    message.status = object.status ?? undefined;
+    message.proposalId = object.proposalId ?? undefined;
     return message;
   },
 };
@@ -1915,6 +2082,10 @@ export interface LaunchpadService {
     request: DeepPartial<LaunchpadProjectsCountRequest>,
     metadata?: grpc.Metadata,
   ): Promise<LaunchpadProjectsCountResponse>;
+  ProposeApproveProject(
+    request: DeepPartial<ProposeApproveProjectRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<ProposeApproveProjectResponse>;
 }
 
 export class LaunchpadServiceClientImpl implements LaunchpadService {
@@ -1929,6 +2100,7 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
     this.LaunchpadProjects = this.LaunchpadProjects.bind(this);
     this.LaunchpadProjectById = this.LaunchpadProjectById.bind(this);
     this.LaunchpadProjectsCount = this.LaunchpadProjectsCount.bind(this);
+    this.ProposeApproveProject = this.ProposeApproveProject.bind(this);
   }
 
   UploadMetadatas(
@@ -1993,6 +2165,17 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
     return this.rpc.unary(
       LaunchpadServiceLaunchpadProjectsCountDesc,
       LaunchpadProjectsCountRequest.fromPartial(request),
+      metadata,
+    );
+  }
+
+  ProposeApproveProject(
+    request: DeepPartial<ProposeApproveProjectRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<ProposeApproveProjectResponse> {
+    return this.rpc.unary(
+      LaunchpadServiceProposeApproveProjectDesc,
+      ProposeApproveProjectRequest.fromPartial(request),
       metadata,
     );
   }
@@ -2151,6 +2334,29 @@ export const LaunchpadServiceLaunchpadProjectsCountDesc: UnaryMethodDefinitionis
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = LaunchpadProjectsCountResponse.decode(data);
+      return {
+        ...value,
+        toObject() {
+          return value;
+        },
+      };
+    },
+  } as any,
+};
+
+export const LaunchpadServiceProposeApproveProjectDesc: UnaryMethodDefinitionish = {
+  methodName: "ProposeApproveProject",
+  service: LaunchpadServiceDesc,
+  requestStream: false,
+  responseStream: false,
+  requestType: {
+    serializeBinary() {
+      return ProposeApproveProjectRequest.encode(this).finish();
+    },
+  } as any,
+  responseType: {
+    deserializeBinary(data: Uint8Array) {
+      const value = ProposeApproveProjectResponse.decode(data);
       return {
         ...value,
         toObject() {
