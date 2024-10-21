@@ -91,18 +91,16 @@ export const useDAOProposalById = (
 
         return proposal;
       } catch (err) {
+        const title =
+          "Failed to fetch the Gno DAO proposal\nThis proposal might not exist in this DAO";
         const message = err instanceof Error ? err.message : `${err}`;
         setToast({
-          title:
-            "Failed to fetch the Gno DAO proposal\nThis proposal might not exist in this DAO",
+          title,
           message,
           type: "error",
           mode: "normal",
         });
-        console.error(
-          "Failed to fetch the Gno DAO. This proposal might not exist in this DAO: ",
-          message,
-        );
+        console.error(title, message);
         return null;
       }
     },
@@ -164,18 +162,16 @@ const useCosmWasmDAOProposalById = (
 
         return proposal;
       } catch (err) {
+        const title =
+          "Failed to fetch the Cosmos DAO proposal\nThis proposal might not exist in this DAO";
         const message = err instanceof Error ? err.message : `${err}`;
         setToast({
-          title:
-            "Failed to fetch the Cosmos DAO proposal\nThis proposal might not exist in this DAO",
+          title,
           message,
           type: "error",
           mode: "normal",
         });
-        console.error(
-          "Failed to fetch the Cosmos DAO proposal. This proposal might not exist in this DAO: ",
-          message,
-        );
+        console.error(title, message);
         return null;
       }
     },
