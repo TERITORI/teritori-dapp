@@ -51,7 +51,7 @@ export const useDAOProposals = (daoId: string | undefined) => {
   const { daoProposals: cosmWasmDAOProposals, ...cosmWasmOther } =
     useCosmWasmDAOProposals(daoId);
   const { data: gnoDAOProposals, ...gnoOther } = useQuery(
-    [...daoProposalsQueryKey(daoId), NetworkKind.Gno],
+    daoProposalsQueryKey(daoId),
     async () => {
       if (network?.kind !== NetworkKind.Gno) return [];
       const provider = new GnoJSONRPCProvider(network.endpoint);
@@ -133,7 +133,7 @@ const useCosmWasmDAOProposals = (daoId: string | undefined) => {
   const proposalModuleAddress = daoFirstProposalModule?.address;
 
   const { data, ...other } = useQuery(
-    [...daoProposalsQueryKey(daoId), NetworkKind.Cosmos],
+    daoProposalsQueryKey(daoId),
     async () => {
       if (!networkId || !proposalModuleAddress) return null;
 
