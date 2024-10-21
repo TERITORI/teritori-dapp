@@ -25,7 +25,7 @@ export type AppProposalResponse = ProposalResponse & {
   proposal: { actions: string[] };
 };
 
-export type GnoProposalVotes = {
+type GnoProposalVotes = {
   yes: number;
   no: number;
   abstain: number;
