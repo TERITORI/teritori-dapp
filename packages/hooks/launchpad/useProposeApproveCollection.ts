@@ -99,16 +99,6 @@ export const useProposeApproveProject = () => {
           "auto",
         );
 
-        // ---- Update the DB by adding proposalId to the project
-        // The proposal has always at least a vote "yes". So this project is considered as
-        const launchpadBackendClient = mustGetLaunchpadClient(selectedNetworkId);
-        await launchpadBackendClient.ProposeApproveProject({
-          sender: userAddress,
-          projectId,
-          networkId: selectedNetworkId,
-          proposalId,
-        });
-
         setToast({
           mode: "normal",
           type: "success",
