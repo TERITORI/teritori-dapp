@@ -18,8 +18,7 @@ export const DAOProposalModal: React.FC<{
   onClose: () => void;
   daoId: string | undefined;
   proposalInfo: AppProposalResponse;
-  onProposalActionDone: () => void;
-}> = ({ visible, onClose, daoId, proposalInfo, onProposalActionDone }) => {
+}> = ({ visible, onClose, daoId, proposalInfo }) => {
   const [network] = parseUserId(daoId);
   const networkId = network?.id;
   const creatorId = getUserId(networkId, proposalInfo.proposal.proposer);
@@ -74,11 +73,7 @@ export const DAOProposalModal: React.FC<{
         </View>
         <SpacerColumn size={2.5} />
         <View style={{ marginBottom: modalMarginPadding }}>
-          <ProposalActions
-            daoId={daoId}
-            proposal={proposalInfo}
-            onProposalActionDone={onProposalActionDone}
-          />
+          <ProposalActions daoId={daoId} proposal={proposalInfo} />
         </View>
       </View>
     </ModalBase>

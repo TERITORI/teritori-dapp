@@ -31,8 +31,7 @@ import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 export const ProposalActions: React.FC<{
   daoId: string | undefined;
   proposal: ProposalResponse;
-  onProposalActionDone: () => void;
-}> = ({ daoId, proposal, onProposalActionDone }) => {
+}> = ({ daoId, proposal }) => {
   const selectedWallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
   const { setToastError, setToastSuccess } = useFeedbacks();
@@ -122,8 +121,6 @@ export const ProposalActions: React.FC<{
         title: "Failed to vote",
         message: err.message,
       });
-    } finally {
-      onProposalActionDone();
     }
   };
 
@@ -195,8 +192,6 @@ export const ProposalActions: React.FC<{
         title: "Failed to execute",
         message: err instanceof Error ? err.message : `${err}`,
       });
-    } finally {
-      onProposalActionDone();
     }
   };
 
