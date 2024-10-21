@@ -25,13 +25,13 @@ export type AppProposalResponse = ProposalResponse & {
   proposal: { actions: string[] };
 };
 
-type GnoProposalVotes = {
+export type GnoProposalVotes = {
   yes: number;
   no: number;
   abstain: number;
 };
 
-type GnoDAOProposal = {
+export type GnoDAOProposal = {
   id: number;
   title: string;
   description: string;
