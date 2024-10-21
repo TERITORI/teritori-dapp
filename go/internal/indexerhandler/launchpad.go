@@ -5,6 +5,7 @@ import (
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
 	"github.com/friendsofgo/errors"
 )
 
@@ -43,6 +44,7 @@ func (h *Handler) handleExecuteSubmitCollection(e *Message, execMsg *wasmtypes.M
 		ProjectID:      collectionId,
 		CollectionData: collectionDataJson,
 		CreatorID:      h.config.Network.UserID(execMsg.Sender),
+		Status:         launchpadpb.Status_STATUS_INCOMPLETE,
 	}
 	if err := h.db.Create(project).Error; err != nil {
 		return errors.Wrap(err, "failed to create project")
@@ -57,11 +59,6 @@ func (h *Handler) handleExecuteUpdateMerkleRoot(e *Message, execMsg *wasmtypes.M
 		return errors.Wrap(err, "failed to unmarshal json")
 	}
 
-	merkleRoot := jsonData["update_merkle_root"]["merkle_root"]
-	if merkleRoot == nil {
-		return errors.New("failed to get merkle root")
-	}
-
 	collectionId := jsonData["update_merkle_root"]["collection_id"]
 	if collectionId == "" {
 		return errors.New("failed to get collection id")
@@ -71,9 +68,10 @@ func (h *Handler) handleExecuteUpdateMerkleRoot(e *Message, execMsg *wasmtypes.M
 		h.db.
 			Model(&indexerdb.LaunchpadProject{}).
 			Where("project_id = ?", collectionId).
-			UpdateColumn("merkle_root", merkleRoot).
+			Where("network_id = ?", h.config.Network.ID).
+			UpdateColumn("status", launchpadpb.Status_STATUS_COMPLETE).
 			Error; err != nil {
-		return errors.Wrap(err, "failed to update merkle root")
+		return errors.Wrap(err, "failed to update project status to COMPLETE")
 	}
 
 	return nil
@@ -89,19 +87,14 @@ func (h *Handler) handleExecuteDeployCollection(e *Message, execMsg *wasmtypes.M
 		return errors.New("failed to get collection id")
 	}
 
-	deployedAddress := e.Events["instantiate._contract_address"][0]
-	if deployedAddress == "" {
-		return errors.New("failed to get deployed address from reply")
-	}
-
 	if err := h.db.
 		Model(&indexerdb.LaunchpadProject{}).
 		Where("project_id = ?", collectionId).
-		UpdateColumn("deployed_address", deployedAddress).
+		Where("network_id = ?", h.config.Network.ID).
+		UpdateColumn("status", launchpadpb.Status_STATUS_CONFIRMED).
 		Error; err != nil {
-		return errors.Wrap(err, "failed to update deployed address")
+		return errors.Wrap(err, "failed to update project status to CONFIRMED")
 	}
 
 	return nil
 }
-

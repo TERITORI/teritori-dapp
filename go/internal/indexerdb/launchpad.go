@@ -1,6 +1,7 @@
 package indexerdb
 
 import (
+	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"gorm.io/datatypes"
 )
@@ -10,9 +11,10 @@ type LaunchpadProject struct {
 	ProjectID string          `gorm:"primaryKey"`
 	CreatorID networks.UserID `gorm:"index"`
 
-	MerkleRoot      string
-	DeployedAddress string
-	CollectionData  datatypes.JSON
+	Status     launchpadpb.Status
+	ProposalId string
+
+	CollectionData datatypes.JSON
 }
 
 type LaunchpadToken struct {
@@ -31,4 +33,3 @@ type LaunchpadWhitelist struct {
 	MerkleRoot string
 	Data       datatypes.JSON
 }
-

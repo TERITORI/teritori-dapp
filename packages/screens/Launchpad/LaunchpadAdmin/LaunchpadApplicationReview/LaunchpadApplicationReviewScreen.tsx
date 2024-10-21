@@ -8,7 +8,7 @@ import { ProjectInformation } from "./component/ProjectInformation";
 import { TeamInformation } from "./component/TeamInformation";
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import { ProposalRow } from "../../../../components/dao/DAOProposals";
-import { useProposeApproveDeployCollection } from "../../../../hooks/launchpad/useProposeApproveDeployCollection";
+import { useProposeApproveProject } from "../../../../hooks/launchpad/useProposeApproveProject";
 
 import { BrandText } from "@/components/BrandText";
 import { NotFound } from "@/components/NotFound";
@@ -47,7 +47,7 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
   const userId = useSelectedWallet()?.userId;
   const { isUserLaunchpadAdmin } = useIsUserLaunchpadAdmin(userId);
   const { proposeApproveDeployCollection, launchpadAdminId } =
-    useProposeApproveDeployCollection();
+    useProposeApproveProject();
   const invalidateDAOProposals = useInvalidateDAOProposals(launchpadAdminId);
   const { daoProposals } = useDAOProposals(launchpadAdminId);
 
@@ -73,9 +73,7 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
       console.error("Error approving the collection", e);
       setLoading(false);
     } finally {
-      // FIXME, it dosen't refresh the proposals
       invalidateDAOProposals();
-      // But refetch() from useDAOProposals() works
     }
     setTimeout(() => {
       setLoading(false);

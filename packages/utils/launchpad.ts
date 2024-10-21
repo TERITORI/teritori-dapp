@@ -1,4 +1,4 @@
-import { LaunchpadProject } from "@/api/launchpad/v1/launchpad";
+import { LaunchpadProject, Status } from "@/api/launchpad/v1/launchpad";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {
   CollectionDataResult,
@@ -7,12 +7,21 @@ import {
 
 export const DEPLOY_PROPOSAL_TITLE_PREFIX = "Approve Collection ";
 
-export const launchpadProjectStatus = (launchpadProject: LaunchpadProject) =>
-  !launchpadProject.merkleRoot
-    ? "INCOMPLETE"
-    : !launchpadProject.deployedAddress
-      ? "COMPLETE"
-      : "DEPLOYED";
+export const launchpadProjectStatus = (status: Status) => {
+  switch (status) {
+    case Status.STATUS_INCOMPLETE:
+      return "INCOMPLETE";
+    case Status.STATUS_COMPLETE:
+      return "COMPLETE";
+    case Status.STATUS_REVIEWING:
+      return "REVIEWING";
+    case Status.STATUS_CONFIRMED:
+      return "CONFIRMED";
+    case Status.STATUS_UNSPECIFIED:
+      return "UNSPECIFIED";
+  }
+  return "UNSPECIFIED";
+};
 
 export const parseCollectionData = (launchpadProject: LaunchpadProject) =>
   zodTryParseJSON(ZodCollectionDataResult, launchpadProject.collectionData);

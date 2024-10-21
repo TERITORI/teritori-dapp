@@ -1,13 +1,16 @@
 package main
 
-import "gorm.io/datatypes"
+import (
+	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
+	"gorm.io/datatypes"
+)
 
 type LaunchpadProject struct {
 	NetworkID string `gorm:"primaryKey"`
 	ProjectID uint32 `gorm:"primaryKey"`
 
-	MerkleRoot      string
-	DeployedAddress string
+	Status     launchpadpb.Status
+	ProposalId string
 }
 
 type LaunchpadToken struct {
@@ -26,4 +29,3 @@ type LaunchpadWhitelist struct {
 	MerkleRoot string
 	Data       datatypes.JSON
 }
-

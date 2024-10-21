@@ -34,6 +34,8 @@ func NewLaunchpadService(ctx context.Context, conf *Config) launchpadpb.Launchpa
 	}
 }
 
+// ================================
+
 // IMPORTANT !!! TODO !!!
 // For now, for simplicity, we upload images to ipfs from client side then this backend will
 // only check if images have been pinnned correctly.
@@ -86,7 +88,8 @@ func (s *Launchpad) UploadMetadatas(ctx context.Context, req *launchpadpb.Upload
 		}
 	}
 
-	// At this step, LaunchpadProject must be created by indexer when collection has been submitted on-chain
+	// We search for the LaunchpadProject
+	// It has been created by indexer when collection has been submitted on-chain
 	project := indexerdb.LaunchpadProject{
 		ProjectID: req.ProjectId,
 		NetworkID: req.NetworkId,
@@ -130,9 +133,6 @@ func (s *Launchpad) UploadMetadatas(ctx context.Context, req *launchpadpb.Upload
 		}
 		hex_root = tree.GetHexRootWithoutPrefix()
 
-		// At this step, LaunchpadProject has to be created by indexer when collection has been submitted on-chain
-		project.MerkleRoot = hex_root
-
 		if err := s.conf.IndexerDB.Save(&project).Error; err != nil {
 			return errors.Wrap(err, "failed to update project merkle root")
 		}
@@ -144,6 +144,34 @@ func (s *Launchpad) UploadMetadatas(ctx context.Context, req *launchpadpb.Upload
 
 	return &launchpadpb.UploadMetadatasResponse{MerkleRoot: hex_root}, nil
 }
+
+// Store the proposal made by the admin DAO at the first "Approve"
+func (s *Launchpad) ProposeApproveProject(ctx context.Context, req *launchpadpb.ProposeApproveProjectRequest) (*launchpadpb.ProposeApproveProjectResponse, error) {
+	if err := s.verifySender(req.Sender); err != nil {
+		return nil, errors.Wrap(err, "failed to verify sender")
+	}
+
+	updates := map[string]interface{}{
+		"proposal_id": req.ProposalId,
+		"status":      launchpadpb.Status_STATUS_REVIEWING,
+	}
+
+	if err :=
+		s.conf.IndexerDB.
+			Model(&indexerdb.LaunchpadProject{}).
+			Where("project_id = ?", req.ProjectId).
+			Where("network_id = ?", req.NetworkId).
+			UpdateColumns(updates).
+			Error; err != nil {
+		return nil, errors.Wrap(err, "failed to update propsal id and project status to REVIEWING")
+	}
+
+	return &launchpadpb.ProposeApproveProjectResponse{
+		Approved: true,
+	}, nil
+}
+
+// ================================
 
 // Calculate collection merkle root
 func (s *Launchpad) CalculateCollectionMerkleRoot(ctx context.Context, req *launchpadpb.CalculateCollectionMerkleRootRequest) (*launchpadpb.CalculateCollectionMerkleRootResponse, error) {
@@ -239,20 +267,6 @@ func (s *Launchpad) LaunchpadProjectsByCreator(ctx context.Context, req *launchp
 	if status < 0 {
 		return nil, errors.New("invalid status")
 	}
-	statusFilterSQL := ""
-	switch status {
-	case launchpadpb.Status_STATUS_UNSPECIFIED:
-		statusFilterSQL = ""
-	case launchpadpb.Status_STATUS_INCOMPLETE:
-		statusFilterSQL = "AND lp.merkle_root = ''"
-	case launchpadpb.Status_STATUS_COMPLETE:
-		statusFilterSQL = "AND NOT lp.merkle_root = ''"
-		// TODO: status confirmed ?
-	case launchpadpb.Status_STATUS_CONFIRMED:
-		statusFilterSQL = "AND lp.merkle_root = 'TODO'"
-	case launchpadpb.Status_STATUS_DEPLOYED:
-		statusFilterSQL = "AND NOT lp.deployed_address = ''"
-	}
 
 	var projects []indexerdb.LaunchpadProject
 
@@ -274,25 +288,22 @@ func (s *Launchpad) LaunchpadProjectsByCreator(ctx context.Context, req *launchp
 	}
 
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`
-		SELECT * FROM launchpad_projects AS lp WHERE lp.creator_id = ? AND lp.network_id = ? %s %s LIMIT ?
+		SELECT * FROM launchpad_projects AS lp WHERE lp.creator_id = ? AND lp.network_id = ? AND lp.status = ? %s LIMIT ?
 	`,
-		statusFilterSQL,
-		orderSQL), creatorID, networkID, limit).Scan(&projects).Error
+		orderSQL), creatorID, networkID, status, limit).Scan(&projects).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
 
 	result := make([]*launchpadpb.LaunchpadProject, len(projects))
 	for idx, dbProject := range projects {
-		merkleRoot := dbProject.MerkleRoot
-		deployedAddress := dbProject.DeployedAddress
 		result[idx] = &launchpadpb.LaunchpadProject{
-			Id:              dbProject.ProjectID,
-			NetworkId:       dbProject.NetworkID,
-			CreatorId:       string(dbProject.CreatorID),
-			CollectionData:  string(dbProject.CollectionData),
-			MerkleRoot:      &merkleRoot,
-			DeployedAddress: &deployedAddress,
+			Id:             dbProject.ProjectID,
+			NetworkId:      dbProject.NetworkID,
+			CreatorId:      string(dbProject.CreatorID),
+			CollectionData: string(dbProject.CollectionData),
+			Status:         &dbProject.Status,
+			ProposalId:     &dbProject.ProposalId,
 		}
 	}
 
@@ -327,18 +338,6 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 	if status < 0 {
 		return nil, errors.New("invalid status")
 	}
-	statusFilterSQL := ""
-	switch status {
-	case launchpadpb.Status_STATUS_INCOMPLETE:
-		statusFilterSQL = "AND lp.merkle_root = ''"
-	case launchpadpb.Status_STATUS_COMPLETE:
-		statusFilterSQL = "AND NOT lp.merkle_root = ''"
-		// TODO: status confirmed ?
-	case launchpadpb.Status_STATUS_CONFIRMED:
-		statusFilterSQL = "AND lp.merkle_root = 'TODO'"
-	case launchpadpb.Status_STATUS_DEPLOYED:
-		statusFilterSQL = "AND NOT lp.deployed_address = ''"
-	}
 
 	var projects []indexerdb.LaunchpadProject
 
@@ -360,24 +359,22 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 	}
 
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`
-		SELECT * FROM launchpad_projects AS lp WHERE lp.network_id = ? %s %s LIMIT ?
-	`, statusFilterSQL,
-		orderSQL), networkID, limit).Scan(&projects).Error
+		SELECT * FROM launchpad_projects AS lp WHERE lp.network_id = ? AND lp.status = ? %s LIMIT ?
+	`,
+		orderSQL), networkID, status, limit).Scan(&projects).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
 
 	result := make([]*launchpadpb.LaunchpadProject, len(projects))
 	for idx, dbProject := range projects {
-		merkleRoot := dbProject.MerkleRoot
-		deployedAddress := dbProject.DeployedAddress
 		result[idx] = &launchpadpb.LaunchpadProject{
-			Id:              dbProject.ProjectID,
-			NetworkId:       dbProject.NetworkID,
-			CreatorId:       string(dbProject.CreatorID),
-			CollectionData:  string(dbProject.CollectionData),
-			MerkleRoot:      &merkleRoot,
-			DeployedAddress: &deployedAddress,
+			Id:             dbProject.ProjectID,
+			NetworkId:      dbProject.NetworkID,
+			CreatorId:      string(dbProject.CreatorID),
+			CollectionData: string(dbProject.CollectionData),
+			Status:         &dbProject.Status,
+			ProposalId:     &dbProject.ProposalId,
 		}
 	}
 
@@ -409,16 +406,14 @@ func (s *Launchpad) LaunchpadProjectById(ctx context.Context, req *launchpadpb.L
 		return nil, errors.Wrap(err, "failed to query database")
 	}
 
-	merkleRoot := project.MerkleRoot
-	deployedAddress := project.DeployedAddress
 	return &launchpadpb.LaunchpadProjectByIdResponse{
 		Project: &launchpadpb.LaunchpadProject{
-			Id:              project.ProjectID,
-			NetworkId:       project.NetworkID,
-			CreatorId:       string(project.CreatorID),
-			CollectionData:  string(project.CollectionData),
-			MerkleRoot:      &merkleRoot,
-			DeployedAddress: &deployedAddress,
+			Id:             project.ProjectID,
+			NetworkId:      project.NetworkID,
+			CreatorId:      string(project.CreatorID),
+			CollectionData: string(project.CollectionData),
+			Status:         &project.Status,
+			ProposalId:     &project.ProposalId,
 		},
 	}, nil
 }
@@ -438,21 +433,9 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 	if status < 0 {
 		return nil, errors.New("invalid status")
 	}
-	statusFilterSQL := ""
-	switch status {
-	case launchpadpb.Status_STATUS_INCOMPLETE:
-		statusFilterSQL = "AND lp.merkle_root = ''"
-	case launchpadpb.Status_STATUS_COMPLETE:
-		statusFilterSQL = "AND NOT lp.merkle_root = ''"
-		// TODO: Status confirmed ?
-	case launchpadpb.Status_STATUS_CONFIRMED:
-		statusFilterSQL = "AND lp.merkle_root = 'TODO'"
-	case launchpadpb.Status_STATUS_DEPLOYED:
-		statusFilterSQL = "AND NOT lp.deployed_address = ''"
-	}
 
 	var count uint32
-	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`SELECT COUNT(*) FROM launchpad_projects AS lp WHERE lp.network_id = ? %s`, statusFilterSQL), networkID).Scan(&count).Error
+	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`SELECT COUNT(*) FROM launchpad_projects AS lp WHERE lp.network_id = ? AND lp.status = ?`), networkID, status).Scan(&count).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
