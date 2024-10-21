@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 
 import { FileUploaderProps } from "./FileUploader.type";
-import uploadSVG from "../../../assets/icons/upload.svg";
 import {
   gradientColorBlue,
   gradientColorDarkerBlue,
@@ -10,24 +9,34 @@ import {
   neutral17,
   neutral77,
   withAlpha,
-} from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { BrandText } from "../BrandText";
-import { DeleteButton } from "../FilePreview/DeleteButton";
-import { SVG } from "../SVG";
-import { LegacyPrimaryBox } from "../boxes/LegacyPrimaryBox";
-import { GradientText } from "../gradientText";
-import { Label } from "../inputs/TextInputCustom";
+} from "../../../utils/style/colors";
+import { fontSemibold14 } from "../../../utils/style/fonts";
+import { layout } from "../../../utils/style/layout";
+import { BrandText } from "../../BrandText";
+import { DeleteButton } from "../../FilePreview/DeleteButton";
+import { SVG } from "../../SVG";
+import { LegacyPrimaryBox } from "../../boxes/LegacyPrimaryBox";
+import { GradientText } from "../../gradientText";
+import { Label } from "../TextInputCustom";
+
+import uploadSVG from "@/assets/icons/upload.svg";
 
 //FIXME: Doesn't work for now =>  Only the .web version is used
 
-export const FileUploader: React.FC<FileUploaderProps> = ({ label, style }) => {
+export const FileUploader: React.FC<FileUploaderProps> = ({
+  label,
+  style,
+  required,
+}) => {
   const [files, setFiles] = useState<File[] | FileList>([]);
 
   return (
     <View style={style}>
-      {!!label && <Label style={{ marginBottom: 12 }}>{label}</Label>}
+      {!!label && (
+        <Label isRequired={required} style={{ marginBottom: 12 }}>
+          {label}
+        </Label>
+      )}
       <TouchableOpacity>
         <View
           style={{
