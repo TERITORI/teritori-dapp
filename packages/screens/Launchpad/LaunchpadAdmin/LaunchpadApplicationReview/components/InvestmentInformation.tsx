@@ -1,11 +1,11 @@
 import React from "react";
 import { View, useWindowDimensions } from "react-native";
 
+import { ApplicationCard } from "./ApplicationCard";
 import { LinkCard } from "./LinkCard";
 
 import { BrandText } from "@/components/BrandText";
 import { launchpadReviewBreakpointM } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplicationReview/LaunchpadApplicationReviewScreen";
-import { ApplicationCard } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplicationReview/component/ApplicationCard";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { CollectionDataResult } from "@/utils/types/launchpad";

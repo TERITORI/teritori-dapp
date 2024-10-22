@@ -5,6 +5,7 @@ import { FlatList, View } from "react-native";
 import { LaunchpadProject } from "@/api/launchpad/v1/launchpad";
 import externalLinkSVG from "@/assets/icons/external-link.svg";
 import { Link } from "@/components/Link";
+import { OmniLink } from "@/components/OmniLink";
 import { SVG } from "@/components/SVG";
 import { TableCell } from "@/components/table/TableCell";
 import { TableHeader } from "@/components/table/TableHeader";
@@ -97,13 +98,13 @@ const LaunchpadCollectionsTableRow: React.FC<{
   const collectionData = parseCollectionData(launchpadProject);
   if (!collectionData) return null;
   return (
-    // <OmniLink
-    //   to={{
-    //     screen: "LaunchpadApplicationReview",
-    //     params: { id: collectionData.symbol },
-    //   }}
-    // >
-    <View>
+    <OmniLink
+      to={{
+        screen: "LaunchpadApplicationReview",
+        params: { id: launchpadProject.id },
+      }}
+    >
+      {/* <View> */}
       <TableRow>
         <LaunchpadTablesCommonColumns
           collectionData={collectionData}
@@ -169,7 +170,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
         {/*  style={{ marginLeft: layout.spacing_x0_5 }}*/}
         {/*/>*/}
       </TableRow>
-    </View>
-    // </OmniLink>
+      {/* </View> */}
+    </OmniLink>
   );
 };

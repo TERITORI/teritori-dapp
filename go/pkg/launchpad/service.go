@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
@@ -287,7 +288,7 @@ func (s *Launchpad) LaunchpadProjectsByCreator(ctx context.Context, req *launchp
 		orderSQL = ""
 	}
 
-	statusFilterSQL := "AND lp.status = " + status.String()
+	statusFilterSQL := "AND lp.status = " + strconv.FormatInt(int64(status.Number()), 10)
 	if status == launchpadpb.Status_STATUS_UNSPECIFIED {
 		statusFilterSQL = ""
 	}
@@ -307,7 +308,7 @@ func (s *Launchpad) LaunchpadProjectsByCreator(ctx context.Context, req *launchp
 			NetworkId:      dbProject.NetworkID,
 			CreatorId:      string(dbProject.CreatorID),
 			CollectionData: string(dbProject.CollectionData),
-			Status:         &dbProject.Status,
+			Status:         dbProject.Status,
 			ProposalId:     &dbProject.ProposalId,
 		}
 	}
@@ -363,7 +364,7 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		orderSQL = ""
 	}
 
-	statusFilterSQL := "AND lp.status = " + status.String()
+	statusFilterSQL := "AND lp.status = " + strconv.FormatInt(int64(status.Number()), 10)
 	if status == launchpadpb.Status_STATUS_UNSPECIFIED {
 		statusFilterSQL = ""
 	}
@@ -371,7 +372,7 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`
 		SELECT * FROM launchpad_projects AS lp WHERE lp.network_id = ? %s %s LIMIT ?
 	`,
-		statusFilterSQL, orderSQL), networkID, status, limit).Scan(&projects).Error
+		statusFilterSQL, orderSQL), networkID, limit).Scan(&projects).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
@@ -383,7 +384,7 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 			NetworkId:      dbProject.NetworkID,
 			CreatorId:      string(dbProject.CreatorID),
 			CollectionData: string(dbProject.CollectionData),
-			Status:         &dbProject.Status,
+			Status:         dbProject.Status,
 			ProposalId:     &dbProject.ProposalId,
 		}
 	}
@@ -422,7 +423,7 @@ func (s *Launchpad) LaunchpadProjectById(ctx context.Context, req *launchpadpb.L
 			NetworkId:      project.NetworkID,
 			CreatorId:      string(project.CreatorID),
 			CollectionData: string(project.CollectionData),
-			Status:         &project.Status,
+			Status:         project.Status,
 			ProposalId:     &project.ProposalId,
 		},
 	}, nil
@@ -444,7 +445,7 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 		return nil, errors.New("invalid status")
 	}
 
-	statusFilterSQL := "AND lp.status = " + status.String()
+	statusFilterSQL := "AND lp.status = " + strconv.FormatInt(int64(status.Number()), 10)
 	if status == launchpadpb.Status_STATUS_UNSPECIFIED {
 		statusFilterSQL = ""
 	}
@@ -459,4 +460,3 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 		Count: count,
 	}, nil
 }
-

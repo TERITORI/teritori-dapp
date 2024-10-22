@@ -43,9 +43,6 @@ export const LaunchpadTablesCommonColumns: React.FC<{
   index: number;
 }> = ({ collectionData, index }) => {
   const network = getNetwork(collectionData.target_network);
-
-  // console.log('network.icon', network.icon)
-
   return (
     <>
       <TableTextCell

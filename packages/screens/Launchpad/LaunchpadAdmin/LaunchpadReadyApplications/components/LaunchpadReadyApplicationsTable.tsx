@@ -91,7 +91,7 @@ const LaunchpadReadyApplicationsTableRow: React.FC<{
     <OmniLink
       to={{
         screen: "LaunchpadApplicationReview",
-        params: { id: collectionData.symbol },
+        params: { id: launchpadProject.id },
       }}
     >
       <TableRow>
@@ -117,7 +117,7 @@ const LaunchpadReadyApplicationsTableRow: React.FC<{
             flex: columns.whitelistQuantity.flex,
           }}
         >
-          <StateBadge text={launchpadProjectStatus(launchpadProject)} />
+          <StateBadge text={launchpadProjectStatus(launchpadProject.status)} />
         </TableCell>
 
         <TableCell

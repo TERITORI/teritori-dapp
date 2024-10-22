@@ -92,7 +92,7 @@ export const useDAOProposalById = (
         return proposal;
       } catch (err) {
         const title =
-          "Failed to fetch the Gno DAO proposal\nThis proposal might not exist in this DAO";
+          "Failed to fetch the Gno DAO proposal.\nThis proposal might not exist in this DAO";
         const message = err instanceof Error ? err.message : `${err}`;
         setToast({
           title,
@@ -163,7 +163,7 @@ const useCosmWasmDAOProposalById = (
         return proposal;
       } catch (err) {
         const title =
-          "Failed to fetch the Cosmos DAO proposal\nThis proposal might not exist in this DAO";
+          "Failed to fetch the Cosmos DAO proposal.\nThis proposal might not exist in this DAO";
         const message = err instanceof Error ? err.message : `${err}`;
         setToast({
           title,
@@ -177,7 +177,7 @@ const useCosmWasmDAOProposalById = (
     },
     {
       staleTime: Infinity,
-      enabled: !!(networkId && proposalModuleAddress && proposalId),
+      enabled: !!(networkId && proposalModuleAddress && daoId && proposalId),
     },
   );
   return { daoProposal: data, ...other };

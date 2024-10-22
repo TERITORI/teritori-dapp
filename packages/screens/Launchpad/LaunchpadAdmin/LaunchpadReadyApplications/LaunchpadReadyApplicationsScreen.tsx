@@ -1,6 +1,8 @@
 import React from "react";
 import { View } from "react-native";
 
+import { LaunchpadReadyApplicationsTable } from "./components/LaunchpadReadyApplicationsTable";
+
 import { Sort, SortDirection, Status } from "@/api/launchpad/v1/launchpad";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
@@ -11,7 +13,6 @@ import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
-import { LaunchpadReadyApplicationsTable } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadReadyApplications/component/LaunchpadReadyApplicationsTable";
 import { errorColor } from "@/utils/style/colors";
 import {
   fontSemibold13,

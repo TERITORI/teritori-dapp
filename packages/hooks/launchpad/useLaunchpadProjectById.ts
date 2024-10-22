@@ -12,12 +12,12 @@ export const useLaunchpadProjectById = (req: LaunchpadProjectByIdRequest) => {
   const { setToast } = useFeedbacks();
   const networkId = req.networkId;
   // const userAddress = req.userAddress;
-  const collectionId = req.projectId;
+  const projectId = req.projectId;
 
   const { data, ...other } = useQuery<LaunchpadProject | null>(
     [
       "launchpadProjectById",
-      collectionId,
+      projectId,
       networkId,
       // , userAddress
     ],

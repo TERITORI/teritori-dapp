@@ -1,35 +1,29 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 
-import { ApplicationDetail } from "./component/ApplicationDetail";
-import { CreatorInformation } from "./component/CreatorInformation";
-import { InvestmentInformation } from "./component/InvestmentInformation";
-import { ProjectInformation } from "./component/ProjectInformation";
-import { TeamInformation } from "./component/TeamInformation";
+import { ApplicationDetail } from "./components/ApplicationDetail";
+import { CreatorInformation } from "./components/CreatorInformation";
+import { InvestmentInformation } from "./components/InvestmentInformation";
+import { ProjectInformation } from "./components/ProjectInformation";
+import { TeamInformation } from "./components/TeamInformation";
+import { Status } from "../../../../api/launchpad/v1/launchpad";
 import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import { ProposalRow } from "../../../../components/dao/DAOProposals";
+import { useDAOProposalById } from "../../../../hooks/dao/useDAOProposalById";
 import { useProposeApproveProject } from "../../../../hooks/launchpad/useProposeApproveProject";
 
 import { BrandText } from "@/components/BrandText";
 import { NotFound } from "@/components/NotFound";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
-import {
-  AppProposalResponse,
-  useDAOProposals,
-  useInvalidateDAOProposals,
-} from "@/hooks/dao/useDAOProposals";
+import { useInvalidateDAOProposals } from "@/hooks/dao/useDAOProposals";
 import { useIsUserLaunchpadAdmin } from "@/hooks/launchpad/useIsUserLaunchpadAdmin";
 import { useLaunchpadProjectById } from "@/hooks/launchpad/useLaunchpadProjectById";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
-import {
-  DEPLOY_PROPOSAL_TITLE_PREFIX,
-  launchpadProjectStatus,
-  parseCollectionData,
-} from "@/utils/launchpad";
+import { launchpadProjectStatus, parseCollectionData } from "@/utils/launchpad";
 import { ScreenFC } from "@/utils/navigation";
 import { errorColor, neutral33 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
@@ -46,29 +40,24 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
   const [isLoading, setLoading] = useState(false);
   const userId = useSelectedWallet()?.userId;
   const { isUserLaunchpadAdmin } = useIsUserLaunchpadAdmin(userId);
-  const { proposeApproveDeployCollection, launchpadAdminId } =
+  const { proposeApproveProject, launchpadAdminId } =
     useProposeApproveProject();
   const invalidateDAOProposals = useInvalidateDAOProposals(launchpadAdminId);
-  const { daoProposals } = useDAOProposals(launchpadAdminId);
-
-  // We find the deploy proposal by searching projectId into the proposal's description
-  const proposal = daoProposals?.find(
-    (appProposalResponse: AppProposalResponse) =>
-      appProposalResponse.proposal.title ===
-      DEPLOY_PROPOSAL_TITLE_PREFIX + projectId,
-  );
-
   const { launchpadProject } = useLaunchpadProjectById({
     projectId,
     networkId: selectedNetworkId,
   });
   const collectionData =
     launchpadProject && parseCollectionData(launchpadProject);
+  const { daoProposal } = useDAOProposalById(
+    launchpadAdminId,
+    launchpadProject?.proposalId,
+  );
 
   const onPressApprove = async () => {
     setLoading(true);
     try {
-      await proposeApproveDeployCollection(projectId);
+      await proposeApproveProject(projectId);
     } catch (e) {
       console.error("Error approving the collection", e);
       setLoading(false);
@@ -144,17 +133,18 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
         <View style={{ marginTop: layout.spacing_x4 }}>
           <ApplicationDetail
             collectionData={collectionData}
-            projectStatus={launchpadProjectStatus(launchpadProject)}
+            projectStatus={launchpadProjectStatus(launchpadProject.status)}
           />
 
           <SpacerColumn size={3} />
-          {proposal ? (
+          {daoProposal &&
+          launchpadProject.status !== Status.STATUS_INCOMPLETE ? (
             <ProposalRow
               daoId={launchpadAdminId}
-              proposal={proposal}
+              proposal={daoProposal}
               style={{ borderBottomWidth: 0 }}
             />
-          ) : (
+          ) : launchpadProject.status !== Status.STATUS_INCOMPLETE ? (
             <View style={{ flexDirection: "row" }}>
               <PrimaryButton
                 text="Approve"
@@ -165,7 +155,7 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
                 disabled={isLoading}
               />
             </View>
-          )}
+          ) : null}
           <SpacerColumn size={3} />
 
           <View style={{ borderTopColor: neutral33, borderTopWidth: 1 }}>

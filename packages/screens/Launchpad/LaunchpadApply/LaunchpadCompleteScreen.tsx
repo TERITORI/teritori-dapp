@@ -207,7 +207,8 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
                 isLoading={isLoading}
                 disabled={
                   isLoading ||
-                  !assetsMetadatasForm.getValues().assetsMetadatas?.length
+                  !assetsMetadatasForm.getValues().assetsMetadatas?.length ||
+                  !assetsMetadatasForm.getValues().nftApiKey
                 }
                 onPress={onPressComplete}
                 boxStyle={{ margin: layout.spacing_x2 }}

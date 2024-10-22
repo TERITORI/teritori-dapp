@@ -5,8 +5,6 @@ import {
   ZodCollectionDataResult,
 } from "@/utils/types/launchpad";
 
-export const DEPLOY_PROPOSAL_TITLE_PREFIX = "Approve Collection ";
-
 export const launchpadProjectStatus = (status: Status) => {
   switch (status) {
     case Status.STATUS_INCOMPLETE:
@@ -19,8 +17,9 @@ export const launchpadProjectStatus = (status: Status) => {
       return "CONFIRMED";
     case Status.STATUS_UNSPECIFIED:
       return "UNSPECIFIED";
+    default:
+      return "UNSPECIFIED";
   }
-  return "UNSPECIFIED";
 };
 
 export const parseCollectionData = (launchpadProject: LaunchpadProject) =>

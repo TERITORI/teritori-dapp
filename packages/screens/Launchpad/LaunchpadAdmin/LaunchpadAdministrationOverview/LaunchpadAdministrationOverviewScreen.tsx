@@ -1,18 +1,22 @@
-import React, { FC, useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 
-import { ApplicationStatusCard } from "./component/ApplicationStatusCard";
-import { LaunchpadCollectionsTable } from "../LaunchpadApplications/component/LaunchpadCollectionsTable";
+import { ReviewingsTable } from "./../components/ReviewingsTable";
+import { ApplicationStatusCard } from "./components/ApplicationStatusCard";
+import { CompletesTable } from "../components/CompletesTable";
+import { IncompletesTable } from "../components/IncompletesTable";
 
-import { Sort, SortDirection, Status } from "@/api/launchpad/v1/launchpad";
+import { Status } from "@/api/launchpad/v1/launchpad";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
 import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
 import { useIsUserLaunchpadAdmin } from "@/hooks/launchpad/useIsUserLaunchpadAdmin";
-import { useLaunchpadProjects } from "@/hooks/launchpad/useLaunchpadProjects";
-import { useLaunchpadProjectsCounts } from "@/hooks/launchpad/useLaunchpadProjectsCounts";
+import {
+  LaunchpadProjectsCounts,
+  useLaunchpadProjectsCounts,
+} from "@/hooks/launchpad/useLaunchpadProjectsCounts";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
@@ -22,7 +26,27 @@ import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 const MD_BREAKPOINT = 820;
-type TabsListType = "pendingApplications" | "pendingConfirmations";
+export type LaunchpadAdminDashboardTabsListType =
+  | "INCOMPLETE"
+  | "COMPLETE"
+  | "REVIEWING";
+
+export const launchpadAdminTabs = (counts: LaunchpadProjectsCounts) => {
+  return {
+    INCOMPLETE: {
+      name: "INCOMPLETE",
+      badgeCount: counts?.countIncomplete || 0,
+    },
+    COMPLETE: {
+      name: "COMPLETE",
+      badgeCount: counts?.countComplete || 0,
+    },
+    REVIEWING: {
+      name: "REVIEWING",
+      badgeCount: counts?.countReviewing || 0,
+    },
+  };
+};
 
 export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
   const navigation = useAppNavigation();
@@ -35,26 +59,11 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
     {
       networkId: selectedNetworkId,
     },
-    [Status.STATUS_COMPLETE, Status.STATUS_INCOMPLETE, Status.STATUS_CONFIRMED],
+    [Status.STATUS_COMPLETE, Status.STATUS_INCOMPLETE, Status.STATUS_REVIEWING],
   );
 
-  const tabs = useMemo(() => {
-    return {
-      pendingApplications: {
-        name: "INCOMPLETES",
-        badgeCount: counts?.countIncomplete || 0,
-      },
-      pendingConfirmations: {
-        name: "???",
-        // badgeCount: counts?.countComplete || 0,
-        badgeCount: 0,
-      },
-    };
-  }, [counts]);
-
-  const [selectedTab, setSelectedTab] = useState<TabsListType>(
-    "pendingApplications",
-  );
+  const [selectedTab, setSelectedTab] =
+    useState<LaunchpadAdminDashboardTabsListType>("INCOMPLETE");
 
   if (!isUserLaunchpadAdmin)
     return (
@@ -105,13 +114,12 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
           }}
         >
           <ApplicationStatusCard
-            label="INCOMPLETES"
+            label="INCOMPLETE"
             count={counts?.countIncomplete || 0}
           />
           <ApplicationStatusCard
-            label="???"
-            // count={counts?.countComplete || 0}
-            count={0}
+            label="COMPLETE"
+            count={counts?.countComplete || 0}
             style={{
               marginHorizontal:
                 width >= MD_BREAKPOINT ? layout.spacing_x1_5 : 0,
@@ -119,21 +127,20 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
             }}
           />
           <ApplicationStatusCard
-            label="COMPLETES"
-            // count={counts?.countConfirmed || 0}
-            count={counts?.countComplete || 0}
-            onPress={
-              // counts?.countConfirmed
-              counts?.countComplete
-                ? () => navigation.navigate("LaunchpadReadyApplications")
-                : undefined
-            }
+            label="REVIEWING"
+            count={counts?.countReviewing || 0}
+            // onPress={
+            //   // counts?.countConfirmed
+            //   counts?.countConfirmed
+            //     ? () => navigation.navigate("LaunchpadReadyApplications")
+            //     : undefined
+            // }
             isReady
           />
         </View>
 
         <Tabs
-          items={tabs}
+          items={launchpadAdminTabs(counts)}
           selected={selectedTab}
           style={{ height: 48 }}
           onSelect={setSelectedTab}
@@ -149,10 +156,12 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
             marginTop: layout.spacing_x4,
           }}
         >
-          {selectedTab === "pendingApplications" ? (
-            <PendingApplicationsTable />
-          ) : selectedTab === "pendingConfirmations" ? (
-            <PendingConfirmationsTable />
+          {selectedTab === "INCOMPLETE" ? (
+            <IncompletesTable limit={10} />
+          ) : selectedTab === "COMPLETE" ? (
+            <CompletesTable limit={10} />
+          ) : selectedTab === "REVIEWING" ? (
+            <ReviewingsTable limit={10} />
           ) : (
             <></>
           )}
@@ -169,30 +178,4 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
       </View>
     </ScreenContainer>
   );
-};
-
-const PendingApplicationsTable: FC = () => {
-  const selectedNetworkId = useSelectedNetworkId();
-  const { launchpadProjects = [] } = useLaunchpadProjects({
-    networkId: selectedNetworkId,
-    offset: 0,
-    limit: 10,
-    sort: Sort.SORT_UNSPECIFIED,
-    sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
-    status: Status.STATUS_INCOMPLETE,
-  });
-  return <LaunchpadCollectionsTable rows={launchpadProjects} />;
-};
-
-const PendingConfirmationsTable: FC = () => {
-  const selectedNetworkId = useSelectedNetworkId();
-  const { launchpadProjects = [] } = useLaunchpadProjects({
-    networkId: selectedNetworkId,
-    offset: 0,
-    limit: 10,
-    sort: Sort.SORT_UNSPECIFIED,
-    sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
-    status: Status.STATUS_COMPLETE,
-  });
-  return <LaunchpadCollectionsTable rows={launchpadProjects} />;
 };
