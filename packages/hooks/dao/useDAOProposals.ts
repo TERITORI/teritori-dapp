@@ -31,7 +31,7 @@ type GnoProposalVotes = {
   abstain: number;
 };
 
-type GnoDAOProposal = {
+export type GnoDAOProposal = {
   id: number;
   title: string;
   description: string;
