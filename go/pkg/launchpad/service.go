@@ -287,10 +287,15 @@ func (s *Launchpad) LaunchpadProjectsByCreator(ctx context.Context, req *launchp
 		orderSQL = ""
 	}
 
+	statusFilterSQL := "AND lp.status = " + status.String()
+	if status == launchpadpb.Status_STATUS_UNSPECIFIED {
+		statusFilterSQL = ""
+	}
+
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`
-		SELECT * FROM launchpad_projects AS lp WHERE lp.creator_id = ? AND lp.network_id = ? AND lp.status = ? %s LIMIT ?
+		SELECT * FROM launchpad_projects AS lp WHERE lp.creator_id = ? AND lp.network_id = ? %s %s LIMIT ?
 	`,
-		orderSQL), creatorID, networkID, status, limit).Scan(&projects).Error
+		statusFilterSQL, orderSQL), creatorID, networkID, limit).Scan(&projects).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
@@ -358,10 +363,15 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		orderSQL = ""
 	}
 
+	statusFilterSQL := "AND lp.status = " + status.String()
+	if status == launchpadpb.Status_STATUS_UNSPECIFIED {
+		statusFilterSQL = ""
+	}
+
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`
-		SELECT * FROM launchpad_projects AS lp WHERE lp.network_id = ? AND lp.status = ? %s LIMIT ?
+		SELECT * FROM launchpad_projects AS lp WHERE lp.network_id = ? %s %s LIMIT ?
 	`,
-		orderSQL), networkID, status, limit).Scan(&projects).Error
+		statusFilterSQL, orderSQL), networkID, status, limit).Scan(&projects).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
@@ -434,8 +444,13 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 		return nil, errors.New("invalid status")
 	}
 
+	statusFilterSQL := "AND lp.status = " + status.String()
+	if status == launchpadpb.Status_STATUS_UNSPECIFIED {
+		statusFilterSQL = ""
+	}
+
 	var count uint32
-	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`SELECT COUNT(*) FROM launchpad_projects AS lp WHERE lp.network_id = ? AND lp.status = ?`), networkID, status).Scan(&count).Error
+	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`SELECT COUNT(*) FROM launchpad_projects AS lp WHERE lp.network_id = ? %s`, statusFilterSQL), networkID).Scan(&count).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
@@ -444,3 +459,4 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 		Count: count,
 	}, nil
 }
+

@@ -38,8 +38,8 @@ pub struct LaunchpadProjectsRequest {
     pub sort: i32,
     #[prost(enumeration="SortDirection", tag="5")]
     pub sort_direction: i32,
-    #[prost(enumeration="Status", tag="6")]
-    pub status: i32,
+    #[prost(enumeration="Status", optional, tag="6")]
+    pub status: ::core::option::Option<i32>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -162,8 +162,8 @@ pub struct LaunchpadProject {
     pub creator_id: ::prost::alloc::string::String,
     #[prost(string, tag="4")]
     pub collection_data: ::prost::alloc::string::String,
-    #[prost(enumeration="Status", optional, tag="5")]
-    pub status: ::core::option::Option<i32>,
+    #[prost(enumeration="Status", tag="5")]
+    pub status: i32,
     #[prost(string, optional, tag="6")]
     pub proposal_id: ::core::option::Option<::prost::alloc::string::String>,
 }

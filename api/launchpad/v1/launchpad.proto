@@ -55,7 +55,7 @@ message LaunchpadProjectsRequest {
   int32 offset = 3;
   Sort sort = 4;
   SortDirection sort_direction = 5;
-  Status status = 6;
+  optional Status status = 6;
 }
 
 message LaunchpadProjectsResponse {
@@ -132,7 +132,7 @@ message LaunchpadProject {
   string network_id = 2;
   string creator_id = 3;
   string collection_data = 4;
-  optional Status status = 5;
+  Status status = 5;
   optional string proposal_id = 6;
 }
 
@@ -155,7 +155,6 @@ message Trait {
   string trait_type = 2;
   string value = 3;
 }
-
 
 
 

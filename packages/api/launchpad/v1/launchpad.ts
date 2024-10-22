@@ -149,7 +149,7 @@ export interface LaunchpadProjectsRequest {
   offset: number;
   sort: Sort;
   sortDirection: SortDirection;
-  status: Status;
+  status?: Status | undefined;
 }
 
 export interface LaunchpadProjectsResponse {
@@ -224,7 +224,7 @@ export interface LaunchpadProject {
   networkId: string;
   creatorId: string;
   collectionData: string;
-  status?: Status | undefined;
+  status: Status;
   proposalId?: string | undefined;
 }
 
@@ -467,7 +467,7 @@ export const LaunchpadProjectsByCreatorResponse = {
 };
 
 function createBaseLaunchpadProjectsRequest(): LaunchpadProjectsRequest {
-  return { networkId: "", limit: 0, offset: 0, sort: 0, sortDirection: 0, status: 0 };
+  return { networkId: "", limit: 0, offset: 0, sort: 0, sortDirection: 0, status: undefined };
 }
 
 export const LaunchpadProjectsRequest = {
@@ -487,7 +487,7 @@ export const LaunchpadProjectsRequest = {
     if (message.sortDirection !== 0) {
       writer.uint32(40).int32(message.sortDirection);
     }
-    if (message.status !== 0) {
+    if (message.status !== undefined) {
       writer.uint32(48).int32(message.status);
     }
     return writer;
@@ -558,7 +558,7 @@ export const LaunchpadProjectsRequest = {
       offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
       sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
       sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
-      status: isSet(object.status) ? statusFromJSON(object.status) : 0,
+      status: isSet(object.status) ? statusFromJSON(object.status) : undefined,
     };
   },
 
@@ -579,7 +579,7 @@ export const LaunchpadProjectsRequest = {
     if (message.sortDirection !== 0) {
       obj.sortDirection = sortDirectionToJSON(message.sortDirection);
     }
-    if (message.status !== 0) {
+    if (message.status !== undefined) {
       obj.status = statusToJSON(message.status);
     }
     return obj;
@@ -595,7 +595,7 @@ export const LaunchpadProjectsRequest = {
     message.offset = object.offset ?? 0;
     message.sort = object.sort ?? 0;
     message.sortDirection = object.sortDirection ?? 0;
-    message.status = object.status ?? 0;
+    message.status = object.status ?? undefined;
     return message;
   },
 };
@@ -1609,7 +1609,7 @@ export const ProposeApproveProjectResponse = {
 };
 
 function createBaseLaunchpadProject(): LaunchpadProject {
-  return { id: "", networkId: "", creatorId: "", collectionData: "", status: undefined, proposalId: undefined };
+  return { id: "", networkId: "", creatorId: "", collectionData: "", status: 0, proposalId: undefined };
 }
 
 export const LaunchpadProject = {
@@ -1626,7 +1626,7 @@ export const LaunchpadProject = {
     if (message.collectionData !== "") {
       writer.uint32(34).string(message.collectionData);
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       writer.uint32(40).int32(message.status);
     }
     if (message.proposalId !== undefined) {
@@ -1699,7 +1699,7 @@ export const LaunchpadProject = {
       networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
       creatorId: isSet(object.creatorId) ? globalThis.String(object.creatorId) : "",
       collectionData: isSet(object.collectionData) ? globalThis.String(object.collectionData) : "",
-      status: isSet(object.status) ? statusFromJSON(object.status) : undefined,
+      status: isSet(object.status) ? statusFromJSON(object.status) : 0,
       proposalId: isSet(object.proposalId) ? globalThis.String(object.proposalId) : undefined,
     };
   },
@@ -1718,7 +1718,7 @@ export const LaunchpadProject = {
     if (message.collectionData !== "") {
       obj.collectionData = message.collectionData;
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       obj.status = statusToJSON(message.status);
     }
     if (message.proposalId !== undefined) {
@@ -1736,7 +1736,7 @@ export const LaunchpadProject = {
     message.networkId = object.networkId ?? "";
     message.creatorId = object.creatorId ?? "";
     message.collectionData = object.collectionData ?? "";
-    message.status = object.status ?? undefined;
+    message.status = object.status ?? 0;
     message.proposalId = object.proposalId ?? undefined;
     return message;
   },
