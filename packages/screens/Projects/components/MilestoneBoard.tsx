@@ -18,9 +18,9 @@ import { SVG } from "../../../components/SVG";
 import { SimpleButton } from "../../../components/buttons/SimpleButton";
 import { SpacerColumn, SpacerRow } from "../../../components/spacer";
 import {
-  ProjectMilestone,
-  MilestoneStatus,
   MilestoneFormValues,
+  MilestoneStatus,
+  ProjectMilestone,
 } from "../../../utils/projects/types";
 import {
   neutral00,
