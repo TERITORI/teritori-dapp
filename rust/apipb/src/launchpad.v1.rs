@@ -38,8 +38,8 @@ pub struct LaunchpadProjectsRequest {
     pub sort: i32,
     #[prost(enumeration="SortDirection", tag="5")]
     pub sort_direction: i32,
-    #[prost(enumeration="Status", optional, tag="6")]
-    pub status: ::core::option::Option<i32>,
+    #[prost(enumeration="Status", tag="6")]
+    pub status: i32,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

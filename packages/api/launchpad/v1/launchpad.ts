@@ -149,7 +149,7 @@ export interface LaunchpadProjectsRequest {
   offset: number;
   sort: Sort;
   sortDirection: SortDirection;
-  status?: Status | undefined;
+  status: Status;
 }
 
 export interface LaunchpadProjectsResponse {
@@ -467,7 +467,7 @@ export const LaunchpadProjectsByCreatorResponse = {
 };
 
 function createBaseLaunchpadProjectsRequest(): LaunchpadProjectsRequest {
-  return { networkId: "", limit: 0, offset: 0, sort: 0, sortDirection: 0, status: undefined };
+  return { networkId: "", limit: 0, offset: 0, sort: 0, sortDirection: 0, status: 0 };
 }
 
 export const LaunchpadProjectsRequest = {
@@ -487,7 +487,7 @@ export const LaunchpadProjectsRequest = {
     if (message.sortDirection !== 0) {
       writer.uint32(40).int32(message.sortDirection);
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       writer.uint32(48).int32(message.status);
     }
     return writer;
@@ -558,7 +558,7 @@ export const LaunchpadProjectsRequest = {
       offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
       sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
       sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
-      status: isSet(object.status) ? statusFromJSON(object.status) : undefined,
+      status: isSet(object.status) ? statusFromJSON(object.status) : 0,
     };
   },
 
@@ -579,7 +579,7 @@ export const LaunchpadProjectsRequest = {
     if (message.sortDirection !== 0) {
       obj.sortDirection = sortDirectionToJSON(message.sortDirection);
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       obj.status = statusToJSON(message.status);
     }
     return obj;
@@ -595,7 +595,7 @@ export const LaunchpadProjectsRequest = {
     message.offset = object.offset ?? 0;
     message.sort = object.sort ?? 0;
     message.sortDirection = object.sortDirection ?? 0;
-    message.status = object.status ?? undefined;
+    message.status = object.status ?? 0;
     return message;
   },
 };
