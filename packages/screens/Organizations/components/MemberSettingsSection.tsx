@@ -112,6 +112,7 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
           size="M"
           text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[3]}`}
           onPress={handleSubmit(onSubmit)}
+          testID="member-settings-next"
         />
       </View>
     </View>
