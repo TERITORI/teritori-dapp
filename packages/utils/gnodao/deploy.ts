@@ -81,12 +81,6 @@ func init() {
 			return proposal_single.NewUpdateSettingsHandler(propMod.Module.(*proposal_single.DAOProposalSingle))
 		},
 		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-			return tori.NewMintToriHandler()
-		},
-		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-			return tori.NewBurnToriHandler()
-		},
-		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
 			return tori.NewChangeAdminHandler()
 		},
 	}
@@ -162,7 +156,7 @@ export const adenaDeployGnoDAO = async (
         files: [{ name: `${conf.name}.gno`, body: source }],
       },
     },
-    { gasWanted: 10000000 },
+    { gasWanted: 20000000 },
   );
   return pkgPath;
 };
