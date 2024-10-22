@@ -64,6 +64,20 @@ func (h *Handler) handleExecuteUpdateMerkleRoot(e *Message, execMsg *wasmtypes.M
 		return errors.New("failed to get collection id")
 	}
 
+	merkleRoot := jsonData["update_merkle_root"]["merkle_root"]
+	if merkleRoot == "" {
+		return errors.New("failed to get merkle root")
+	}
+
+	if err := h.db.Exec(`
+    UPDATE launchpad_projects 
+    SET collection_data = jsonb_set(collection_data, '{metadatas_merkle_root}', to_jsonb(?::text))
+    WHERE project_id = ? AND network_id = ?`,
+		merkleRoot, collectionId, h.config.Network.ID,
+	).Error; err != nil {
+		return errors.Wrap(err, "failed to update deployed address in collection_data")
+	}
+
 	if err :=
 		h.db.
 			Model(&indexerdb.LaunchpadProject{}).
@@ -85,6 +99,20 @@ func (h *Handler) handleExecuteDeployCollection(e *Message, execMsg *wasmtypes.M
 	collectionId := jsonData["deploy_collection"]["collection_id"]
 	if collectionId == "" {
 		return errors.New("failed to get collection id")
+	}
+
+	deployedAddress := e.Events["instantiate._contract_address"][0]
+	if deployedAddress == "" {
+		return errors.New("failed to get deployed address from reply")
+	}
+
+	if err := h.db.Exec(`
+    UPDATE launchpad_projects 
+    SET collection_data = jsonb_set(collection_data, '{deployed_address}', to_jsonb(?::text))
+    WHERE project_id = ? AND network_id = ?`,
+		deployedAddress, collectionId, h.config.Network.ID,
+	).Error; err != nil {
+		return errors.Wrap(err, "failed to update deployed address in collection_data")
 	}
 
 	if err := h.db.

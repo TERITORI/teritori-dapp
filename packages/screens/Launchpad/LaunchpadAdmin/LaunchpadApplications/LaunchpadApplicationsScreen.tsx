@@ -7,6 +7,7 @@ import {
   LaunchpadAdminDashboardTabsListType,
   launchpadAdminTabs,
 } from "../LaunchpadAdministrationOverview/LaunchpadAdministrationOverviewScreen";
+import { ConfirmedsTable } from "../components/ConfirmedsTable";
 import { ReviewingsTable } from "../components/ReviewingsTable";
 
 import { Status } from "@/api/launchpad/v1/launchpad";
@@ -33,7 +34,12 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
     {
       networkId: selectedNetworkId,
     },
-    [Status.STATUS_INCOMPLETE, Status.STATUS_COMPLETE, Status.STATUS_REVIEWING],
+    [
+      Status.STATUS_INCOMPLETE,
+      Status.STATUS_COMPLETE,
+      Status.STATUS_REVIEWING,
+      Status.STATUS_CONFIRMED,
+    ],
   );
 
   const [selectedTab, setSelectedTab] =
@@ -117,6 +123,8 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
             <CompletesTable limit={100} />
           ) : selectedTab === "REVIEWING" ? (
             <ReviewingsTable limit={100} />
+          ) : selectedTab === "CONFIRMED" ? (
+            <ConfirmedsTable limit={100} />
           ) : (
             <></>
           )}

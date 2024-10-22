@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 
+import { ConfirmedsTable } from "./../components/ConfirmedsTable";
 import { ReviewingsTable } from "./../components/ReviewingsTable";
 import { ApplicationStatusCard } from "./components/ApplicationStatusCard";
 import { CompletesTable } from "../components/CompletesTable";
@@ -29,7 +30,8 @@ const MD_BREAKPOINT = 820;
 export type LaunchpadAdminDashboardTabsListType =
   | "INCOMPLETE"
   | "COMPLETE"
-  | "REVIEWING";
+  | "REVIEWING"
+  | "CONFIRMED";
 
 export const launchpadAdminTabs = (counts: LaunchpadProjectsCounts) => {
   return {
@@ -45,6 +47,10 @@ export const launchpadAdminTabs = (counts: LaunchpadProjectsCounts) => {
       name: "REVIEWING",
       badgeCount: counts?.countReviewing || 0,
     },
+    CONFIRMED: {
+      name: "CONFIRMED",
+      badgeCount: counts?.countConfirmed || 0,
+    },
   };
 };
 
@@ -59,7 +65,12 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
     {
       networkId: selectedNetworkId,
     },
-    [Status.STATUS_COMPLETE, Status.STATUS_INCOMPLETE, Status.STATUS_REVIEWING],
+    [
+      Status.STATUS_COMPLETE,
+      Status.STATUS_INCOMPLETE,
+      Status.STATUS_REVIEWING,
+      Status.STATUS_CONFIRMED,
+    ],
   );
 
   const [selectedTab, setSelectedTab] =
@@ -162,6 +173,8 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
             <CompletesTable limit={10} />
           ) : selectedTab === "REVIEWING" ? (
             <ReviewingsTable limit={10} />
+          ) : selectedTab === "CONFIRMED" ? (
+            <ConfirmedsTable limit={10} />
           ) : (
             <></>
           )}
