@@ -1,10 +1,14 @@
 import React, { useEffect, useRef } from "react";
+import { TouchableOpacity, View } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 
+import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
+import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { News } from "../../api/marketplace/v1/marketplace";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { FullWidthSeparator } from "../FullWidthSeparator";
+import { SVG } from "../SVG";
 import { Section } from "../Section";
 import { NewsBox } from "../hub/NewsBox";
 
@@ -17,20 +21,27 @@ export const NewsCarouselSection: React.FC = () => {
   const networkId = useSelectedNetworkId();
   const news = useNews(networkId);
 
+  const topRightChild = (
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <TouchableOpacity
+        onPress={() => carouselRef.current?.prev()}
+        style={{ marginRight: 24 }}
+      >
+        <SVG width={16} height={16} source={chevronLeftSVG} />
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => carouselRef.current?.next()}>
+        <SVG width={16} height={16} source={chevronRightSVG} />
+      </TouchableOpacity>
+    </View>
+  );
+
   useEffect(() => {
     carouselRef.current?.next();
   }, [width]);
 
   return (
-    <Section
-      title="Highlighted News"
-      topRightChild={
-        <LeftRightButtons
-          onPressNext={() => carouselRef.current?.next()}
-          onPressPrev={() => carouselRef.current?.prev()}
-        />
-      }
-    >
+    <Section title="Highlighted News" topRightChild={topRightChild}>
       <FullWidthSeparator />
       {/*TODO: Async fetchMore for these data ?*/}
 
