@@ -8,7 +8,6 @@ import { FullWidthSeparator } from "../FullWidthSeparator";
 import { Section } from "../Section";
 import { NewsBox } from "../hub/NewsBox";
 
-import { LeftRightButtons } from "@/components/carousels/LeftRightButtons";
 import { useNews } from "@/hooks/marketing/useNews";
 
 export const NewsCarouselSection: React.FC = () => {
