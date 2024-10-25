@@ -3,11 +3,14 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 
 import { useDAOFirstProposalModule } from "./useDAOProposalModules";
-import { AppProposalResponse, GnoDAOProposal } from "./useDAOProposals";
+import {
+  cosmwasmToAppProposal,
+  GnoDAOProposal,
+  gnoToAppProposal,
+} from "./useDAOProposals";
 
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { DaoProposalSingleQueryClient } from "@/contracts-clients/dao-proposal-single/DaoProposalSingle.client";
-import { Status } from "@/contracts-clients/dao-proposal-single/DaoProposalSingle.types";
 import {
   NetworkKind,
   mustGetNonSigningCosmWasmClient,
@@ -46,50 +49,7 @@ export const useDAOProposalById = (
           ),
         );
 
-        const title = gnoProposal.title;
-        const description = gnoProposal.description;
-        const status = gnoProposal.status.toLowerCase() as Status;
-        const proposer = gnoProposal.proposer;
-        const yesVotes = gnoProposal.votes.yes;
-        const noVotes = gnoProposal.votes.no;
-        const abstainVotes = gnoProposal.votes.abstain;
-        const threshold =
-          gnoProposal.threshold.thresholdQuorum.threshold.percent / 10000;
-        const quorum =
-          gnoProposal.threshold.thresholdQuorum.quorum.percent / 10000;
-        const actions = gnoProposal.messages.map((m) => JSON.stringify(m));
-
-        const proposal: AppProposalResponse = {
-          id: gnoProposal.id,
-          proposal: {
-            title,
-            description,
-            votes: {
-              yes: yesVotes.toString(),
-              no: noVotes.toString(),
-              abstain: abstainVotes.toString(),
-            },
-            allow_revoting: false,
-            expiration: "TODO" as any,
-            msgs: gnoProposal.messages.map((m) => ({
-              ...m,
-              gno: true,
-            })),
-            actions,
-            proposer,
-            start_height: gnoProposal.startHeight,
-            status,
-            threshold: {
-              threshold_quorum: {
-                threshold: { percent: `${threshold}` },
-                quorum: { percent: `${quorum}` },
-              },
-            },
-            total_power: gnoProposal.totalPower.toString(),
-          },
-        };
-
-        return proposal;
+        return gnoToAppProposal(gnoProposal);
       } catch (err) {
         const title =
           "Failed to fetch the Gno DAO proposal\nThis proposal might not exist in this DAO";
@@ -152,15 +112,7 @@ const useCosmWasmDAOProposalById = (
           proposalId,
         });
 
-        const proposal: AppProposalResponse = {
-          ...daoProposal,
-          proposal: {
-            ...daoProposal.proposal,
-            actions: [] as string[],
-          },
-        };
-
-        return proposal;
+        return cosmwasmToAppProposal(daoProposal);
       } catch (err) {
         const title =
           "Failed to fetch the Cosmos DAO proposal\nThis proposal might not exist in this DAO";
