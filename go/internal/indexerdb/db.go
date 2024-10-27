@@ -94,7 +94,6 @@ var allModels = []interface{}{
 	// launchpad
 	&LaunchpadProject{},
 	&LaunchpadToken{},
-	&LaunchpadWhitelist{},
 }
 
 func NewSQLiteDB(path string) (*gorm.DB, error) {

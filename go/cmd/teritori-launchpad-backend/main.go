@@ -74,7 +74,6 @@ func main() {
 		// launchpad
 		&LaunchpadProject{},
 		&LaunchpadToken{},
-		&LaunchpadWhitelist{},
 	}
 
 	dataConnexion := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",

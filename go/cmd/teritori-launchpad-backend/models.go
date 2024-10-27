@@ -20,12 +20,3 @@ type LaunchpadToken struct {
 
 	Metadata datatypes.JSON
 }
-
-type LaunchpadWhitelist struct {
-	NetworkID   string `gorm:"primaryKey"`
-	ProjectID   uint32 `gorm:"primaryKey"`
-	WhitelistID uint32 `gorm:"primaryKey"`
-
-	MerkleRoot string
-	Data       datatypes.JSON
-}
