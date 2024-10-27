@@ -127,7 +127,7 @@ pub struct LaunchpadProjectsCountsRequest {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LaunchpadProjectsCountsResponse {
     #[prost(message, repeated, tag="1")]
-    pub counts: ::prost::alloc::vec::Vec<StatusCount>,
+    pub status_counts: ::prost::alloc::vec::Vec<StatusCount>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]

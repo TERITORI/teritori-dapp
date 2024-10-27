@@ -204,7 +204,7 @@ export interface LaunchpadProjectsCountsRequest {
 }
 
 export interface LaunchpadProjectsCountsResponse {
-  counts: StatusCount[];
+  statusCounts: StatusCount[];
 }
 
 export interface ProposeApproveProjectRequest {
@@ -1374,12 +1374,12 @@ export const LaunchpadProjectsCountsRequest = {
 };
 
 function createBaseLaunchpadProjectsCountsResponse(): LaunchpadProjectsCountsResponse {
-  return { counts: [] };
+  return { statusCounts: [] };
 }
 
 export const LaunchpadProjectsCountsResponse = {
   encode(message: LaunchpadProjectsCountsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.counts) {
+    for (const v of message.statusCounts) {
       StatusCount.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
@@ -1397,7 +1397,7 @@ export const LaunchpadProjectsCountsResponse = {
             break;
           }
 
-          message.counts.push(StatusCount.decode(reader, reader.uint32()));
+          message.statusCounts.push(StatusCount.decode(reader, reader.uint32()));
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1410,14 +1410,16 @@ export const LaunchpadProjectsCountsResponse = {
 
   fromJSON(object: any): LaunchpadProjectsCountsResponse {
     return {
-      counts: globalThis.Array.isArray(object?.counts) ? object.counts.map((e: any) => StatusCount.fromJSON(e)) : [],
+      statusCounts: globalThis.Array.isArray(object?.statusCounts)
+        ? object.statusCounts.map((e: any) => StatusCount.fromJSON(e))
+        : [],
     };
   },
 
   toJSON(message: LaunchpadProjectsCountsResponse): unknown {
     const obj: any = {};
-    if (message.counts?.length) {
-      obj.counts = message.counts.map((e) => StatusCount.toJSON(e));
+    if (message.statusCounts?.length) {
+      obj.statusCounts = message.statusCounts.map((e) => StatusCount.toJSON(e));
     }
     return obj;
   },
@@ -1429,7 +1431,7 @@ export const LaunchpadProjectsCountsResponse = {
     object: I,
   ): LaunchpadProjectsCountsResponse {
     const message = createBaseLaunchpadProjectsCountsResponse();
-    message.counts = object.counts?.map((e) => StatusCount.fromPartial(e)) || [];
+    message.statusCounts = object.statusCounts?.map((e) => StatusCount.fromPartial(e)) || [];
     return message;
   },
 };
