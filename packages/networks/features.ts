@@ -64,7 +64,6 @@ const zodCosmWasmLaunchpad = z.object({
   launchpadEndpoint: z.string(),
   codeId: z.number(),
   nftTr721CodeId: z.number(),
-  // allowedMintDenoms: z.array(z.string()), // for future
 });
 
 export type CosmWasmLaunchpad = z.infer<typeof zodCosmWasmLaunchpad>;
