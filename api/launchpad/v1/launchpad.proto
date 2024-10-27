@@ -10,7 +10,7 @@ service LaunchpadService {
   rpc LaunchpadProjectsByCreator(LaunchpadProjectsByCreatorRequest) returns (LaunchpadProjectsByCreatorResponse);
   rpc LaunchpadProjects(LaunchpadProjectsRequest) returns (LaunchpadProjectsResponse);
   rpc LaunchpadProjectById(LaunchpadProjectByIdRequest) returns (LaunchpadProjectByIdResponse);
-  rpc LaunchpadProjectsCount(LaunchpadProjectsCountRequest) returns (LaunchpadProjectsCountResponse);
+  rpc LaunchpadProjectsCounts(LaunchpadProjectsCountsRequest) returns (LaunchpadProjectsCountsResponse);
   rpc ProposeApproveProject(ProposeApproveProjectRequest) returns (ProposeApproveProjectResponse);
 }
 
@@ -105,13 +105,12 @@ message TokenMetadataResponse {
   repeated string merkle_proof = 3;
 }
 
-message LaunchpadProjectsCountRequest {
+message LaunchpadProjectsCountsRequest {
   string network_id = 1;
-  optional Status status = 2;
 }
 
-message LaunchpadProjectsCountResponse {
-  uint32 count = 1;
+message LaunchpadProjectsCountsResponse {
+  repeated StatusCount counts = 1;
 }
 
 message ProposeApproveProjectRequest {
@@ -126,6 +125,11 @@ message ProposeApproveProjectResponse {
 }
 
 // -------------------------------
+
+message StatusCount {
+  Status status = 1;
+  uint32 count = 2;
+}
 
 message LaunchpadProject {
   string id = 1;
@@ -155,6 +159,7 @@ message Trait {
   string trait_type = 2;
   string value = 3;
 }
+
 
 
 

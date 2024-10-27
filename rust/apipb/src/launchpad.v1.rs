@@ -119,17 +119,15 @@ pub struct TokenMetadataResponse {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct LaunchpadProjectsCountRequest {
+pub struct LaunchpadProjectsCountsRequest {
     #[prost(string, tag="1")]
     pub network_id: ::prost::alloc::string::String,
-    #[prost(enumeration="Status", optional, tag="2")]
-    pub status: ::core::option::Option<i32>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct LaunchpadProjectsCountResponse {
-    #[prost(uint32, tag="1")]
-    pub count: u32,
+pub struct LaunchpadProjectsCountsResponse {
+    #[prost(message, repeated, tag="1")]
+    pub counts: ::prost::alloc::vec::Vec<StatusCount>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -151,6 +149,14 @@ pub struct ProposeApproveProjectResponse {
 }
 // -------------------------------
 
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct StatusCount {
+    #[prost(enumeration="Status", tag="1")]
+    pub status: i32,
+    #[prost(uint32, tag="2")]
+    pub count: u32,
+}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LaunchpadProject {

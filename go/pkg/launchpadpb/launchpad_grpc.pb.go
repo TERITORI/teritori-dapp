@@ -28,7 +28,7 @@ type LaunchpadServiceClient interface {
 	LaunchpadProjectsByCreator(ctx context.Context, in *LaunchpadProjectsByCreatorRequest, opts ...grpc.CallOption) (*LaunchpadProjectsByCreatorResponse, error)
 	LaunchpadProjects(ctx context.Context, in *LaunchpadProjectsRequest, opts ...grpc.CallOption) (*LaunchpadProjectsResponse, error)
 	LaunchpadProjectById(ctx context.Context, in *LaunchpadProjectByIdRequest, opts ...grpc.CallOption) (*LaunchpadProjectByIdResponse, error)
-	LaunchpadProjectsCount(ctx context.Context, in *LaunchpadProjectsCountRequest, opts ...grpc.CallOption) (*LaunchpadProjectsCountResponse, error)
+	LaunchpadProjectsCounts(ctx context.Context, in *LaunchpadProjectsCountsRequest, opts ...grpc.CallOption) (*LaunchpadProjectsCountsResponse, error)
 	ProposeApproveProject(ctx context.Context, in *ProposeApproveProjectRequest, opts ...grpc.CallOption) (*ProposeApproveProjectResponse, error)
 }
 
@@ -94,9 +94,9 @@ func (c *launchpadServiceClient) LaunchpadProjectById(ctx context.Context, in *L
 	return out, nil
 }
 
-func (c *launchpadServiceClient) LaunchpadProjectsCount(ctx context.Context, in *LaunchpadProjectsCountRequest, opts ...grpc.CallOption) (*LaunchpadProjectsCountResponse, error) {
-	out := new(LaunchpadProjectsCountResponse)
-	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/LaunchpadProjectsCount", in, out, opts...)
+func (c *launchpadServiceClient) LaunchpadProjectsCounts(ctx context.Context, in *LaunchpadProjectsCountsRequest, opts ...grpc.CallOption) (*LaunchpadProjectsCountsResponse, error) {
+	out := new(LaunchpadProjectsCountsResponse)
+	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/LaunchpadProjectsCounts", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +122,7 @@ type LaunchpadServiceServer interface {
 	LaunchpadProjectsByCreator(context.Context, *LaunchpadProjectsByCreatorRequest) (*LaunchpadProjectsByCreatorResponse, error)
 	LaunchpadProjects(context.Context, *LaunchpadProjectsRequest) (*LaunchpadProjectsResponse, error)
 	LaunchpadProjectById(context.Context, *LaunchpadProjectByIdRequest) (*LaunchpadProjectByIdResponse, error)
-	LaunchpadProjectsCount(context.Context, *LaunchpadProjectsCountRequest) (*LaunchpadProjectsCountResponse, error)
+	LaunchpadProjectsCounts(context.Context, *LaunchpadProjectsCountsRequest) (*LaunchpadProjectsCountsResponse, error)
 	ProposeApproveProject(context.Context, *ProposeApproveProjectRequest) (*ProposeApproveProjectResponse, error)
 	mustEmbedUnimplementedLaunchpadServiceServer()
 }
@@ -149,8 +149,8 @@ func (UnimplementedLaunchpadServiceServer) LaunchpadProjects(context.Context, *L
 func (UnimplementedLaunchpadServiceServer) LaunchpadProjectById(context.Context, *LaunchpadProjectByIdRequest) (*LaunchpadProjectByIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LaunchpadProjectById not implemented")
 }
-func (UnimplementedLaunchpadServiceServer) LaunchpadProjectsCount(context.Context, *LaunchpadProjectsCountRequest) (*LaunchpadProjectsCountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LaunchpadProjectsCount not implemented")
+func (UnimplementedLaunchpadServiceServer) LaunchpadProjectsCounts(context.Context, *LaunchpadProjectsCountsRequest) (*LaunchpadProjectsCountsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LaunchpadProjectsCounts not implemented")
 }
 func (UnimplementedLaunchpadServiceServer) ProposeApproveProject(context.Context, *ProposeApproveProjectRequest) (*ProposeApproveProjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProposeApproveProject not implemented")
@@ -276,20 +276,20 @@ func _LaunchpadService_LaunchpadProjectById_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LaunchpadService_LaunchpadProjectsCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LaunchpadProjectsCountRequest)
+func _LaunchpadService_LaunchpadProjectsCounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LaunchpadProjectsCountsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LaunchpadServiceServer).LaunchpadProjectsCount(ctx, in)
+		return srv.(LaunchpadServiceServer).LaunchpadProjectsCounts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/launchpad.v1.LaunchpadService/LaunchpadProjectsCount",
+		FullMethod: "/launchpad.v1.LaunchpadService/LaunchpadProjectsCounts",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LaunchpadServiceServer).LaunchpadProjectsCount(ctx, req.(*LaunchpadProjectsCountRequest))
+		return srv.(LaunchpadServiceServer).LaunchpadProjectsCounts(ctx, req.(*LaunchpadProjectsCountsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -344,8 +344,8 @@ var LaunchpadService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LaunchpadService_LaunchpadProjectById_Handler,
 		},
 		{
-			MethodName: "LaunchpadProjectsCount",
-			Handler:    _LaunchpadService_LaunchpadProjectsCount_Handler,
+			MethodName: "LaunchpadProjectsCounts",
+			Handler:    _LaunchpadService_LaunchpadProjectsCounts_Handler,
 		},
 		{
 			MethodName: "ProposeApproveProject",
