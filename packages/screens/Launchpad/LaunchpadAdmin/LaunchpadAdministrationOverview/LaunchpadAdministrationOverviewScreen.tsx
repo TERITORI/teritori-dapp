@@ -7,21 +7,19 @@ import { ApplicationStatusCard } from "./components/ApplicationStatusCard";
 import { CompletesTable } from "../components/CompletesTable";
 import { IncompletesTable } from "../components/IncompletesTable";
 
-import { Status } from "@/api/launchpad/v1/launchpad";
+import { StatusCount } from "@/api/launchpad/v1/launchpad";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
 import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
 import { useIsUserLaunchpadAdmin } from "@/hooks/launchpad/useIsUserLaunchpadAdmin";
-import {
-  LaunchpadProjectsCounts,
-  useLaunchpadProjectsCounts,
-} from "@/hooks/launchpad/useLaunchpadProjectsCounts";
+import { useLaunchpadProjectsCounts } from "@/hooks/launchpad/useLaunchpadProjectsCounts";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
+import { statusToCount } from "@/utils/launchpad";
 import { errorColor } from "@/utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -33,23 +31,23 @@ export type LaunchpadAdminDashboardTabsListType =
   | "REVIEWING"
   | "CONFIRMED";
 
-export const launchpadAdminTabs = (counts: LaunchpadProjectsCounts) => {
+export const launchpadAdminTabs = (statusCounts?: StatusCount[]) => {
   return {
     INCOMPLETE: {
       name: "INCOMPLETE",
-      badgeCount: counts?.countIncomplete || 0,
+      badgeCount: statusToCount("INCOMPLETE", statusCounts),
     },
     COMPLETE: {
       name: "COMPLETE",
-      badgeCount: counts?.countComplete || 0,
+      badgeCount: statusToCount("COMPLETE", statusCounts),
     },
     REVIEWING: {
       name: "REVIEWING",
-      badgeCount: counts?.countReviewing || 0,
+      badgeCount: statusToCount("REVIEWING", statusCounts),
     },
     CONFIRMED: {
       name: "CONFIRMED",
-      badgeCount: counts?.countConfirmed || 0,
+      badgeCount: statusToCount("CONFIRMED", statusCounts),
     },
   };
 };
@@ -61,17 +59,9 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
   const { isUserLaunchpadAdmin } = useIsUserLaunchpadAdmin(userId);
 
   const { width } = useWindowDimensions();
-  const { counts } = useLaunchpadProjectsCounts(
-    {
-      networkId: selectedNetworkId,
-    },
-    [
-      Status.STATUS_COMPLETE,
-      Status.STATUS_INCOMPLETE,
-      Status.STATUS_REVIEWING,
-      Status.STATUS_CONFIRMED,
-    ],
-  );
+  const { statusCounts } = useLaunchpadProjectsCounts({
+    networkId: selectedNetworkId,
+  });
 
   const [selectedTab, setSelectedTab] =
     useState<LaunchpadAdminDashboardTabsListType>("INCOMPLETE");
@@ -126,11 +116,11 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
         >
           <ApplicationStatusCard
             label="INCOMPLETE"
-            count={counts?.countIncomplete || 0}
+            count={statusToCount("INCOMPLETE", statusCounts)}
           />
           <ApplicationStatusCard
             label="COMPLETE"
-            count={counts?.countComplete || 0}
+            count={statusToCount("COMPLETE", statusCounts)}
             style={{
               marginHorizontal:
                 width >= MD_BREAKPOINT ? layout.spacing_x1_5 : 0,
@@ -139,7 +129,7 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
           />
           <ApplicationStatusCard
             label="REVIEWING"
-            count={counts?.countReviewing || 0}
+            count={statusToCount("REVIEWING", statusCounts)}
             // onPress={
             //   // counts?.countConfirmed
             //   counts?.countConfirmed
@@ -151,7 +141,7 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
         </View>
 
         <Tabs
-          items={launchpadAdminTabs(counts)}
+          items={launchpadAdminTabs(statusCounts)}
           selected={selectedTab}
           style={{ height: 48 }}
           onSelect={setSelectedTab}

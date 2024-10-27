@@ -1,4 +1,8 @@
-import { LaunchpadProject, Status } from "@/api/launchpad/v1/launchpad";
+import {
+  LaunchpadProject,
+  Status,
+  StatusCount,
+} from "@/api/launchpad/v1/launchpad";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {
   CollectionDataResult,
@@ -21,6 +25,11 @@ export const launchpadProjectStatus = (status: Status) => {
       return "UNSPECIFIED";
   }
 };
+
+export const statusToCount = (status: string, statusCounts?: StatusCount[]) =>
+  statusCounts?.find(
+    (statusCount) => launchpadProjectStatus(statusCount.status) === status,
+  )?.count || 0;
 
 export const parseCollectionData = (launchpadProject: LaunchpadProject) =>
   zodTryParseJSON(ZodCollectionDataResult, launchpadProject.collectionData);

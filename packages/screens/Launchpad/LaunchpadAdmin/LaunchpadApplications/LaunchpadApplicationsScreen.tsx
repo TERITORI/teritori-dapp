@@ -10,7 +10,6 @@ import {
 import { ConfirmedsTable } from "../components/ConfirmedsTable";
 import { ReviewingsTable } from "../components/ReviewingsTable";
 
-import { Status } from "@/api/launchpad/v1/launchpad";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
@@ -30,17 +29,9 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const userId = useSelectedWallet()?.userId;
   const { isUserLaunchpadAdmin } = useIsUserLaunchpadAdmin(userId);
-  const { counts } = useLaunchpadProjectsCounts(
-    {
-      networkId: selectedNetworkId,
-    },
-    [
-      Status.STATUS_INCOMPLETE,
-      Status.STATUS_COMPLETE,
-      Status.STATUS_REVIEWING,
-      Status.STATUS_CONFIRMED,
-    ],
-  );
+  const { statusCounts } = useLaunchpadProjectsCounts({
+    networkId: selectedNetworkId,
+  });
 
   const [selectedTab, setSelectedTab] =
     useState<LaunchpadAdminDashboardTabsListType>("INCOMPLETE");
@@ -101,7 +92,7 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
           }}
         >
           <Tabs
-            items={launchpadAdminTabs(counts)}
+            items={launchpadAdminTabs(statusCounts)}
             selected={selectedTab}
             style={{ height: 58, flex: 1 }}
             onSelect={setSelectedTab}

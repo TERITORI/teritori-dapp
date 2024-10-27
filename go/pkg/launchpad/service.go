@@ -430,7 +430,7 @@ func (s *Launchpad) LaunchpadProjectById(ctx context.Context, req *launchpadpb.L
 }
 
 // Get all launchpad projects counts
-func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb.LaunchpadProjectsCountRequest) (*launchpadpb.LaunchpadProjectsCountResponse, error) {
+func (s *Launchpad) LaunchpadProjectsCounts(ctx context.Context, req *launchpadpb.LaunchpadProjectsCountsRequest) (*launchpadpb.LaunchpadProjectsCountsResponse, error) {
 	networkID := req.GetNetworkId()
 	if networkID == "" {
 		return nil, errors.New("missing network id")
@@ -440,23 +440,15 @@ func (s *Launchpad) LaunchpadProjectsCount(ctx context.Context, req *launchpadpb
 		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
 	}
 
-	status := req.GetStatus()
-	if status < 0 {
-		return nil, errors.New("invalid status")
-	}
-
-	statusFilterSQL := "AND lp.status = " + strconv.FormatInt(int64(status.Number()), 10)
-	if status == launchpadpb.Status_STATUS_UNSPECIFIED {
-		statusFilterSQL = ""
-	}
-
-	var count uint32
-	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`SELECT COUNT(*) FROM launchpad_projects AS lp WHERE lp.network_id = ? %s`, statusFilterSQL), networkID).Scan(&count).Error
-	if err != nil {
+	var statusCounts []*launchpadpb.StatusCount
+	if err := s.conf.IndexerDB.Model(&indexerdb.LaunchpadProject{}).
+		Select("status, COUNT(*) as count").
+		Group("status").
+		Scan(&statusCounts).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
 
-	return &launchpadpb.LaunchpadProjectsCountResponse{
-		Count: count,
+	return &launchpadpb.LaunchpadProjectsCountsResponse{
+		StatusCounts: statusCounts,
 	}, nil
 }
