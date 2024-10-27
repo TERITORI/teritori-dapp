@@ -66,7 +66,7 @@ impl NftLaunchpad {
             return Err(ContractError::Unauthorized);
         }
         // Save new config
-        config.deployer = changes.deployer;
+        config.launchpad_admin = changes.launchpad_admin;
         config.nft_code_id = changes.nft_code_id;
         config.supported_networks = changes.supported_networks;
         if let Some(owner) = changes.owner {
@@ -168,11 +168,11 @@ impl NftLaunchpad {
         let sender = ctx.info.sender.to_string();
         let config = self.config.load(ctx.deps.storage)?;
 
-        // Only allow deployer to deploy
-        if config.deployer.is_none() {
+        // Only allow launchpad_admin to deploy
+        if config.launchpad_admin.is_none() {
             return Err(ContractError::DeployerMissing);
         }
-        if sender != config.deployer.unwrap() {
+        if sender != config.launchpad_admin.unwrap() {
             return Err(ContractError::WrongDeployer);
         }
 
@@ -282,7 +282,7 @@ pub struct Config {
     pub name: String,
     pub nft_code_id: Option<u64>,
     pub supported_networks: Vec<String>,
-    pub deployer: Option<String>,
+    pub launchpad_admin: Option<String>,
     pub owner: Addr,
 }
 
@@ -291,7 +291,7 @@ pub struct ConfigChanges {
     pub name: String,
     pub nft_code_id: Option<u64>,
     pub supported_networks: Vec<String>,
-    pub deployer: Option<String>,
+    pub launchpad_admin: Option<String>,
     pub owner: Option<String>,
 }
 
