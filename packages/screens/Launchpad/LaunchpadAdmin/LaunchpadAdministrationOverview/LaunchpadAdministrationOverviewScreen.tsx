@@ -56,7 +56,8 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const userId = useSelectedWallet()?.userId;
-  const { isUserLaunchpadAdmin } = useIsUserLaunchpadAdmin(userId);
+  const { isUserLaunchpadAdmin, isLoading: isUserAdminLoading } =
+    useIsUserLaunchpadAdmin(userId);
 
   const { width } = useWindowDimensions();
   const { statusCounts } = useLaunchpadProjectsCounts({
@@ -72,13 +73,20 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
         isLarge
         footerChildren={<></>}
         headerChildren={
-          <BrandText style={fontSemibold20}>Unauthorized</BrandText>
+          <BrandText style={fontSemibold20}>
+            {isUserAdminLoading ? "Loading..." : "Unauthorized"}
+          </BrandText>
         }
         responsive
         forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
       >
-        <BrandText style={{ color: errorColor, marginTop: layout.spacing_x4 }}>
-          Unauthorized
+        <BrandText
+          style={[
+            { marginTop: layout.spacing_x4 },
+            !isUserAdminLoading && { color: errorColor },
+          ]}
+        >
+          {isUserAdminLoading ? "Loading..." : "Unauthorized"}
         </BrandText>
       </ScreenContainer>
     );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 
 import { ApplicationDetail } from "./components/ApplicationDetail";
@@ -37,35 +37,41 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
   const { id: projectId } = route.params;
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
-  const [isLoading, setLoading] = useState(false);
+  const [isApproveLoading, setApproveLoading] = useState(false);
   const userId = useSelectedWallet()?.userId;
-  const { isUserLaunchpadAdmin } = useIsUserLaunchpadAdmin(userId);
+  const { isUserLaunchpadAdmin, isLoading: isUserAdminLoading } =
+    useIsUserLaunchpadAdmin(userId);
   const { proposeApproveProject, launchpadAdminId } =
     useProposeApproveProject();
   const invalidateDAOProposals = useInvalidateDAOProposals(launchpadAdminId);
-  const { launchpadProject } = useLaunchpadProjectById({
-    projectId,
-    networkId: selectedNetworkId,
-  });
+  const { launchpadProject, isLoading: isProjectsLoading } =
+    useLaunchpadProjectById({
+      projectId,
+      networkId: selectedNetworkId,
+    });
   const collectionData =
     launchpadProject && parseCollectionData(launchpadProject);
   const { daoProposal } = useDAOProposalById(
     launchpadAdminId,
     launchpadProject?.proposalId,
   );
+  const isLoading = useMemo(
+    () => isUserAdminLoading || isProjectsLoading,
+    [isUserAdminLoading, isProjectsLoading],
+  );
 
   const onPressApprove = async () => {
-    setLoading(true);
+    setApproveLoading(true);
     try {
       await proposeApproveProject(projectId);
     } catch (e) {
       console.error("Error approving the collection", e);
-      setLoading(false);
+      setApproveLoading(false);
     } finally {
       invalidateDAOProposals();
     }
     setTimeout(() => {
-      setLoading(false);
+      setApproveLoading(false);
     }, 1000);
   };
 
@@ -74,7 +80,9 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
       <ScreenContainer
         footerChildren={<></>}
         headerChildren={
-          <BrandText style={fontSemibold20}>Unauthorized</BrandText>
+          <BrandText style={fontSemibold20}>
+            {isLoading ? "Loading..." : "Unauthorized"}
+          </BrandText>
         }
         responsive
         onBackPress={() =>
@@ -84,8 +92,13 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
         }
         forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
       >
-        <BrandText style={{ color: errorColor, marginTop: layout.spacing_x4 }}>
-          Unauthorized
+        <BrandText
+          style={[
+            { marginTop: layout.spacing_x4 },
+            !isLoading && { color: errorColor },
+          ]}
+        >
+          {isLoading ? "Loading..." : "Unauthorized"}
         </BrandText>
       </ScreenContainer>
     );
@@ -96,7 +109,9 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
       <ScreenContainer
         footerChildren={<></>}
         headerChildren={
-          <BrandText style={fontSemibold20}>Application Review</BrandText>
+          <BrandText style={fontSemibold20}>
+            {isLoading ? "Loading..." : "Application not found"}
+          </BrandText>
         }
         responsive
         onBackPress={() =>
@@ -106,7 +121,13 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
         }
         forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
       >
-        <NotFound label="Application" />
+        {isLoading ? (
+          <BrandText style={{ marginTop: layout.spacing_x4 }}>
+            Loading...
+          </BrandText>
+        ) : (
+          <NotFound label="Application" />
+        )}
       </ScreenContainer>
     );
   }
@@ -125,9 +146,7 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
       }
       forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
     >
-      {!launchpadProject || !collectionData ? (
-        <NotFound label="Application" />
-      ) : selectedNetworkId !== launchpadProject.networkId ? (
+      {selectedNetworkId !== launchpadProject.networkId ? (
         <BrandText style={{ alignSelf: "center" }}>Wrong network</BrandText>
       ) : (
         <View style={{ marginTop: layout.spacing_x4 }}>
@@ -151,8 +170,8 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
                 boxStyle={{ width: 146 }}
                 onPress={onPressApprove}
                 loader
-                isLoading={isLoading}
-                disabled={isLoading}
+                isLoading={isApproveLoading}
+                disabled={isApproveLoading}
               />
             </View>
           ) : null}

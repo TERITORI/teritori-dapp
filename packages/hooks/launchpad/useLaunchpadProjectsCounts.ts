@@ -1,8 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import {
-  LaunchpadProjectsCountsRequest,  
-} from "@/api/launchpad/v1/launchpad";
+import { LaunchpadProjectsCountsRequest } from "@/api/launchpad/v1/launchpad";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { mustGetLaunchpadClient } from "@/utils/backend";
 

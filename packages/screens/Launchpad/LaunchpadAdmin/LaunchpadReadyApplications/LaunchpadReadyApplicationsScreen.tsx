@@ -25,7 +25,8 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
   const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
   const userId = useSelectedWallet()?.userId;
-  const { isUserLaunchpadAdmin } = useIsUserLaunchpadAdmin(userId);
+  const { isUserLaunchpadAdmin, isLoading: isUserAdminLoading } =
+    useIsUserLaunchpadAdmin(userId);
   const { launchpadProjects = [] } = useLaunchpadProjects({
     networkId: selectedNetworkId,
     offset: 0,
@@ -41,7 +42,9 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
         isLarge
         footerChildren={<></>}
         headerChildren={
-          <BrandText style={fontSemibold20}>Unauthorized</BrandText>
+          <BrandText style={fontSemibold20}>
+            {isUserAdminLoading ? "Loading..." : "Unauthorized"}
+          </BrandText>
         }
         responsive
         onBackPress={() =>
@@ -49,8 +52,13 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
         }
         forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
       >
-        <BrandText style={{ color: errorColor, marginTop: layout.spacing_x4 }}>
-          Unauthorized
+        <BrandText
+          style={[
+            { marginTop: layout.spacing_x4 },
+            !isUserAdminLoading && { color: errorColor },
+          ]}
+        >
+          {isUserAdminLoading ? "Loading..." : "Unauthorized"}
         </BrandText>
       </ScreenContainer>
     );
