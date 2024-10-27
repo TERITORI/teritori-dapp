@@ -61,14 +61,14 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
   });
   const [isLoading, setLoading] = useState(false);
   const { setLoadingFullScreen } = useFeedbacks();
+  const assetsMetadatas = assetsMetadatasForm.watch("assetsMetadatas");
+  const nftApiKey = assetsMetadatasForm.watch("nftApiKey");
 
   const onValid = async () => {
     setLoading(true);
     setLoadingFullScreen(true);
     try {
-      const assetsMetadatasFormValues = assetsMetadatasForm.getValues();
-      if (!assetsMetadatasFormValues.assetsMetadatas?.length) return;
-      await completeCollection(symbol, assetsMetadatasFormValues);
+      await completeCollection(symbol, assetsMetadatasForm.getValues());
 
       setLoading(false);
       setLoadingFullScreen(false);
@@ -205,11 +205,7 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
                 text="Complete Collection"
                 loader
                 isLoading={isLoading}
-                disabled={
-                  isLoading ||
-                  !assetsMetadatasForm.getValues().assetsMetadatas?.length ||
-                  !assetsMetadatasForm.getValues().nftApiKey
-                }
+                disabled={isLoading || !assetsMetadatas?.length || !nftApiKey}
                 onPress={onPressComplete}
                 boxStyle={{ margin: layout.spacing_x2 }}
               />

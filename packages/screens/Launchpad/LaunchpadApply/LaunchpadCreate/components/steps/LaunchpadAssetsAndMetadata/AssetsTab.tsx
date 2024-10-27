@@ -137,10 +137,11 @@ export const AssetsTab: React.FC = () => {
   const onRemoveImage = (index: number) => {
     remove(index);
   };
-  // If all images are removed, we clear the images issues
+  // If all images are removed, we clear the images issues and the input file images
   useEffect(() => {
     if (!fields.length) {
       setImagesIssues([]);
+      imagesUploaderRef.current?.resetFiles();
     }
   }, [fields.length]);
 
