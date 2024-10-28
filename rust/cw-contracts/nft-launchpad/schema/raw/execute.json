@@ -289,7 +289,7 @@
         "supported_networks"
       ],
       "properties": {
-        "deployer": {
+        "launchpad_admin": {
           "type": [
             "string",
             "null"
