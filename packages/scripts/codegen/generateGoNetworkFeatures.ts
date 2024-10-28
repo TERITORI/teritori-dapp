@@ -1,4 +1,4 @@
-import { ZodString } from "zod";
+import { ZodNumber, ZodString } from "zod";
 
 import { NetworkFeature, allFeatureObjects } from "@/networks/features";
 import { capitalize } from "@/utils/text";
@@ -42,6 +42,8 @@ const zodToGoType = (zodType: unknown) => {
   switch (true) {
     case zodType instanceof ZodString:
       return "string";
+    case zodType instanceof ZodNumber:
+      return "float64";
     default:
       throw new Error(`failed to convert zod type ${zodType} to go type`);
   }
@@ -107,3 +109,4 @@ func UnmarshalFeature(b []byte) (Feature, error) {
 };
 
 main();
+
