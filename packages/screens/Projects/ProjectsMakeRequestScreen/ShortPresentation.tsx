@@ -9,6 +9,7 @@ import { BrandText } from "../../../components/BrandText";
 import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
 import { RoundedGradientImage } from "../../../components/images/RoundedGradientImage";
 import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
+import { FileUploader } from "../../../components/inputs/fileUploader";
 import { SpacerColumn } from "../../../components/spacer";
 import { useNameSearch } from "../../../hooks/search/useNameSearch";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";

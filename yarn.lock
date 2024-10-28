@@ -6029,7 +6029,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native/normalize-color@npm:*, @react-native/normalize-color@npm:^2.0.0, @react-native/normalize-color@npm:^2.1.0":
+"@react-native/normalize-color@npm:^2.0.0, @react-native/normalize-color@npm:^2.1.0":
   version: 2.1.0
   resolution: "@react-native/normalize-color@npm:2.1.0"
   checksum: 8ccbd40b3c7629f1dc97b3e9aadd95fd3507fcf2e37535a6299a70436ab891c34cbdc4240b07380553d6e85dd909e23d5773b5be1da2906b026312e0b0768838
@@ -10201,17 +10201,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deprecated-react-native-prop-types@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "deprecated-react-native-prop-types@npm:2.3.0"
-  dependencies:
-    "@react-native/normalize-color": "*"
-    invariant: "*"
-    prop-types: "*"
-  checksum: d14f4be1dfe780a7fa9197a31b4a9a2b409c8cf1bf677713fd92d06733dee1043578662d1a8858541cf06164ae91d295db6e595f29bf13e808d9fb37bc58c90b
-  languageName: node
-  linkType: hard
-
 "deprecated-react-native-prop-types@npm:^4.0.0":
   version: 4.2.3
   resolution: "deprecated-react-native-prop-types@npm:4.2.3"
@@ -13426,7 +13415,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"invariant@npm:*, invariant@npm:2.2.4, invariant@npm:^2.2.1, invariant@npm:^2.2.4":
+"invariant@npm:2.2.4, invariant@npm:^2.2.1, invariant@npm:^2.2.4":
   version: 2.2.4
   resolution: "invariant@npm:2.2.4"
   dependencies:
@@ -17284,7 +17273,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:*, prop-types@npm:^15.5.6, prop-types@npm:^15.5.8, prop-types@npm:^15.7.2, prop-types@npm:^15.8.0, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.5.6, prop-types@npm:^15.5.8, prop-types@npm:^15.7.2, prop-types@npm:^15.8.0, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -17855,16 +17844,6 @@ __metadata:
     react-native: ">=0.69.0"
     react-native-svg: ">=13.0.0"
   checksum: 3fa9064c94a1d135558218a9464f4359c65223519e0c2fd3d9d83fdfd47fd35e7d7abc69f4f960bf752330eb6f496febfc9ca384a0d213d792296d2cb8b77922
-  languageName: node
-  linkType: hard
-
-"react-native-popover-view@npm:^5.1.8":
-  version: 5.1.8
-  resolution: "react-native-popover-view@npm:5.1.8"
-  dependencies:
-    deprecated-react-native-prop-types: ^2.3.0
-    prop-types: ^15.8.1
-  checksum: d219dccbf89d9536ef4edf73a7576b6cb9d828cb8cc92fa851821d0e55e7b9bbff2a3907e88c2e3a0e267301e5c2c50980bb4507640fac1eba6d9d0429bca615
   languageName: node
   linkType: hard
 
@@ -20358,7 +20337,6 @@ __metadata:
     react-native-paper: ^4.12.5
     react-native-pell-rich-editor: ^1.8.8
     react-native-pie-chart: ^3.0.1
-    react-native-popover-view: ^5.1.8
     react-native-popup-menu: ^0.16.1
     react-native-qrcode-svg: ^6.2.0
     react-native-reanimated: ^3.6.2
