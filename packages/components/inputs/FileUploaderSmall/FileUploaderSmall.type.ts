@@ -20,3 +20,7 @@ export interface FileUploaderSmallProps {
   onPressDelete?: () => void;
   disabled?: boolean;
 }
+
+export interface FileUploaderSmallHandle {
+  resetFiles: () => void;
+}
