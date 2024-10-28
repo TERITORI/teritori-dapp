@@ -2,6 +2,7 @@ package networks
 
 import (
 	"encoding/json"
+
 	"github.com/pkg/errors"
 )
 
@@ -69,6 +70,7 @@ type FeatureNFTLaunchpad struct {
 	DefaultMintDenom         string  `json:"defaultMintDenom"`
 	LaunchpadEndpoint        string  `json:"launchpadEndpoint"`
 	CodeId                   float64 `json:"codeId"`
+	NftTr721CodeId           float64 `json:"nftTr721CodeId"`
 }
 
 var _ Feature = &FeatureNFTLaunchpad{}

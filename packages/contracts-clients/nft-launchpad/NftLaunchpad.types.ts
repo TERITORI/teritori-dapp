@@ -10,7 +10,7 @@ export interface InstantiateMsg {
   [k: string]: unknown;
 }
 export interface Config {
-  deployer?: string | null;
+  launchpad_admin?: string | null;
   name: string;
   nft_code_id?: number | null;
   owner: Addr;
@@ -40,7 +40,7 @@ export type ExecuteMsg = {
 };
 export type Uint128 = string;
 export interface ConfigChanges {
-  deployer?: string | null;
+  launchpad_admin?: string | null;
   name: string;
   nft_code_id?: number | null;
   owner?: string | null;
