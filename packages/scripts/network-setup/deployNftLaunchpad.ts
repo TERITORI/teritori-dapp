@@ -12,7 +12,7 @@ import {
 } from "@/networks";
 import { CosmWasmLaunchpad } from "@/networks/features";
 import {
-  DeployProps,
+  DeployOpts,
   initDeploy,
   instantiateContract,
   storeWASM,
@@ -21,9 +21,19 @@ import {
 export const deployNftLaunchpad = async ({
   opts,
   networkId,
-  wallet,
-}: DeployProps) => {
-  const { network, walletAddr } = await initDeploy({ opts, networkId, wallet });
+  wallet: deployerWallet,
+  launchpadAdmin,
+}: {
+  networkId: string;
+  wallet: string;
+  launchpadAdmin: string;
+  opts: DeployOpts;
+}) => {
+  const { network, walletAddr: deployerAddr } = await initDeploy({
+    opts,
+    networkId,
+    wallet: deployerWallet,
+  });
 
   const cosmwasmLaunchpadFeature = cloneDeep(
     getNetworkFeature(networkId, NetworkFeature.NFTLaunchpad),
@@ -36,7 +46,7 @@ export const deployNftLaunchpad = async ({
   const nftLaunchpadWasmFilePath = path.join(__dirname, "nft_launchpad.wasm");
   cosmwasmLaunchpadFeature.codeId = await storeWASM(
     opts,
-    wallet,
+    deployerWallet,
     network,
     nftLaunchpadWasmFilePath,
   );
@@ -45,8 +55,9 @@ export const deployNftLaunchpad = async ({
   cosmwasmLaunchpadFeature.launchpadContractAddress =
     await instantiateNftLaunchpad(
       opts,
-      wallet,
-      walletAddr,
+      deployerWallet,
+      deployerAddr,
+      launchpadAdmin,
       network,
       cosmwasmLaunchpadFeature,
     );
@@ -58,15 +69,25 @@ export const deployNftLaunchpad = async ({
 };
 
 export const instantiateNftLaunchpad = async (
-  opts: { home: string; binaryPath: string },
-  wallet: string,
-  adminAddr: string,
+  opts: DeployOpts,
+  deployerWallet: string,
+  deployerAddr: string,
+  launchpadAdmin: string,
   network: CosmosNetworkInfo,
   featureObject: CosmWasmLaunchpad,
 ) => {
   const codeId = featureObject.codeId;
   if (!codeId) {
-    throw new Error("Nft Launchpad code ID not found");
+    console.error("Nft Launchpad code ID not found");
+    process.exit(1);
+  }
+  let nftCodeId = featureObject.nftTr721CodeId;
+  if (!nftCodeId) {
+    nftCodeId = await deployNftTr721({
+      opts,
+      networkId: network.id,
+      deployerWallet,
+    });
   }
   const instantiateMsg: NftLaunchpadInstantiateMsg = {
     config: {
@@ -74,37 +95,75 @@ export const instantiateNftLaunchpad = async (
       supported_networks: allNetworks
         .filter((n) => n.features.includes(NetworkFeature.NFTLaunchpad))
         .map((n) => n.id),
-      owner: "FIXME",
+      owner: deployerAddr,
+      launchpadAdmin,
+      nft_code_id: nftCodeId,
     },
   };
   return await instantiateContract(
     opts,
-    wallet,
+    deployerWallet,
     network,
     codeId,
-    adminAddr,
+    deployerAddr,
     "Teritori NFT Launchpad",
     instantiateMsg,
   );
 };
 
+const deployNftTr721 = async ({
+  opts,
+  networkId,
+  deployerWallet,
+}: {
+  networkId: string;
+  deployerWallet: string;
+  opts: DeployOpts;
+}) => {
+  const { network } = await initDeploy({
+    opts,
+    networkId,
+    wallet: deployerWallet,
+  });
+  const cosmwasmLaunchpadFeature = cloneDeep(
+    getNetworkFeature(networkId, NetworkFeature.NFTLaunchpad),
+  );
+  if (!cosmwasmLaunchpadFeature) {
+    console.error(`Cosmwasm Launchpad feature not found on ${networkId}`);
+    process.exit(1);
+  }
+  const nftTr721WasmFilePath = path.join(__dirname, "nft_tr721.wasm");
+  cosmwasmLaunchpadFeature.nftTr721CodeId = await storeWASM(
+    opts,
+    deployerWallet,
+    network,
+    nftTr721WasmFilePath,
+  );
+  return cosmwasmLaunchpadFeature.nftTr721CodeId;
+};
+
 const main = async () => {
   program.argument("<network-id>", "Network id to deploy to");
   program.argument("<wallet>", "Wallet to deploy from");
+  program.argument(
+    "<launchpad-admin>",
+    "The DAO wallet adress to make admin things",
+  );
   program.option("--keyring-backend [keyring-backend]", "Keyring backend");
   program.parse();
-  const [networkId, wallet] = program.args;
-  // const { keyringBackend } = program.opts();
+  const [networkId, wallet, launchpadAdmin] = program.args;
+  const { keyringBackend } = program.opts();
 
   await deployNftLaunchpad({
     opts: {
       home: path.join(os.homedir(), ".teritorid"),
       binaryPath: "teritorid",
-      // keyringBackend,
+      keyringBackend,
       signer: undefined,
     },
     networkId,
     wallet,
+    launchpadAdmin,
   });
 };
 main();

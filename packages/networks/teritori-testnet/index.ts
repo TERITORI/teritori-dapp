@@ -27,6 +27,7 @@ const cosmwasmLaunchpadFeature: CosmWasmLaunchpad = {
   launchpadContractAddress:
     "tori1dqy2areatyu6372d67a25t494x63n046qd83dyzrwl73yrnuky4qg8fqsh",
   launchpadEndpoint: "https://dapp-backend.testnet.teritori.com",
+  nftTr721CodeId: 60,
   codeId: 61,
   defaultMintDenom: "utori",
 };

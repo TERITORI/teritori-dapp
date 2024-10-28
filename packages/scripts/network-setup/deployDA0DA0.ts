@@ -1,4 +1,3 @@
-import { OfflineSigner } from "@cosmjs/proto-signing";
 import axios from "axios";
 import { program } from "commander";
 import fs from "fs";
@@ -6,6 +5,7 @@ import os from "os";
 import path from "path";
 
 import {
+  DeployOpts,
   initDeploy,
   instantiateContract,
   instantiateNameService,
@@ -23,11 +23,8 @@ import { CosmosNetworkInfo } from "@/networks";
  * And deploy cw_admin_factory contract
  */
 export const deployDA0DA0 = async (
-  opts: {
-    home: string;
-    binaryPath: string;
+  opts: DeployOpts & {
     keyringBackend?: string;
-    signer: OfflineSigner | undefined;
   },
   networkId: string,
   wallet: string,
@@ -137,7 +134,7 @@ export const deployDA0DA0 = async (
 };
 
 const instantiateCwAdminFactory = async (
-  opts: { home: string; binaryPath: string; keyringBackend?: string },
+  opts: DeployOpts,
   wallet: string,
   adminAddr: string,
   network: CosmosNetworkInfo,
@@ -158,7 +155,7 @@ const instantiateCwAdminFactory = async (
 };
 
 const deployRemoteWASM = async (
-  opts: { home: string; binaryPath: string; signer: OfflineSigner | undefined },
+  opts: DeployOpts,
   wallet: string,
   network: CosmosNetworkInfo,
   url: string,

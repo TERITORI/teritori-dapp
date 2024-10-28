@@ -119,44 +119,20 @@ pub struct TokenMetadataResponse {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct LaunchpadProjectsCountsRequest {
+pub struct LaunchpadProjectsCountRequest {
     #[prost(string, tag="1")]
     pub network_id: ::prost::alloc::string::String,
+    #[prost(enumeration="Status", optional, tag="2")]
+    pub status: ::core::option::Option<i32>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct LaunchpadProjectsCountsResponse {
-    #[prost(message, repeated, tag="1")]
-    pub status_counts: ::prost::alloc::vec::Vec<StatusCount>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ProposeApproveProjectRequest {
-    #[prost(string, tag="1")]
-    pub sender: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
-    pub network_id: ::prost::alloc::string::String,
-    #[prost(string, tag="3")]
-    pub project_id: ::prost::alloc::string::String,
-    #[prost(string, tag="4")]
-    pub proposal_id: ::prost::alloc::string::String,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ProposeApproveProjectResponse {
-    #[prost(bool, tag="1")]
-    pub approved: bool,
+pub struct LaunchpadProjectsCountResponse {
+    #[prost(uint32, tag="1")]
+    pub count: u32,
 }
 // -------------------------------
 
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct StatusCount {
-    #[prost(enumeration="Status", tag="1")]
-    pub status: i32,
-    #[prost(uint32, tag="2")]
-    pub count: u32,
-}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LaunchpadProject {
@@ -168,10 +144,10 @@ pub struct LaunchpadProject {
     pub creator_id: ::prost::alloc::string::String,
     #[prost(string, tag="4")]
     pub collection_data: ::prost::alloc::string::String,
-    #[prost(enumeration="Status", tag="5")]
-    pub status: i32,
+    #[prost(string, optional, tag="5")]
+    pub merkle_root: ::core::option::Option<::prost::alloc::string::String>,
     #[prost(string, optional, tag="6")]
-    pub proposal_id: ::core::option::Option<::prost::alloc::string::String>,
+    pub deployed_address: ::core::option::Option<::prost::alloc::string::String>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -270,8 +246,8 @@ pub enum Status {
     Unspecified = 0,
     Incomplete = 1,
     Complete = 2,
-    Reviewing = 3,
-    Confirmed = 4,
+    Confirmed = 3,
+    Deployed = 4,
 }
 impl Status {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -283,8 +259,8 @@ impl Status {
             Status::Unspecified => "STATUS_UNSPECIFIED",
             Status::Incomplete => "STATUS_INCOMPLETE",
             Status::Complete => "STATUS_COMPLETE",
-            Status::Reviewing => "STATUS_REVIEWING",
             Status::Confirmed => "STATUS_CONFIRMED",
+            Status::Deployed => "STATUS_DEPLOYED",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
@@ -293,8 +269,8 @@ impl Status {
             "STATUS_UNSPECIFIED" => Some(Self::Unspecified),
             "STATUS_INCOMPLETE" => Some(Self::Incomplete),
             "STATUS_COMPLETE" => Some(Self::Complete),
-            "STATUS_REVIEWING" => Some(Self::Reviewing),
             "STATUS_CONFIRMED" => Some(Self::Confirmed),
+            "STATUS_DEPLOYED" => Some(Self::Deployed),
             _ => None,
         }
     }
