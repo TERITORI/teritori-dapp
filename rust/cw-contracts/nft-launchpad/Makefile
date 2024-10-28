@@ -3,7 +3,7 @@ ADMIN_ADDR_TESTNET=$(shell teritorid keys show $(ADMIN_TESTNET) --keyring-backen
 NODE_FLAG_TESTNET=--node https://rpc.testnet.teritori.com:443
 TX_FLAGS_TESTNET=--from $(ADMIN_TESTNET) --chain-id teritori-test-7 $(NODE_FLAG_TESTNET) --gas auto --gas-adjustment 1.3 -y -b sync --output json --keyring-backend test -o json
 QUERY_FLAGS_TESTNET=$(NODE_FLAG_TESTNET) -o json
-CODE_ID_TESTNET=61
+CODE_ID_TESTNET=62
 CONFIG_TESTNET=$(shell cat config.json | jq -r '.owner="$(ADMIN_ADDR_TESTNET)" | tojson | @sh')
 
 ADMIN_MAINNET=mainnet-adm
@@ -18,7 +18,7 @@ CONFIG_MAINNET=$(shell cat config-mainnet.json | jq -r '.owner="$(ADMIN_ADDR_MAI
 WORKSPACE_PATH := $(shell realpath $(shell dirname $(shell pwd))/../..)
 
 # only informative
-# CONTRACT_ADDRESS_TESTNET=tori1dqy2areatyu6372d67a25t494x63n046qd83dyzrwl73yrnuky4qg8fqsh
+# CONTRACT_ADDRESS_TESTNET=tori1lp4qdzknyzwtsp45jn3vau4c9eedgafutkqq2j3lrc25u8jpftdqmsqxhu
 # CONTRACT_ADDRESS_MAINNET=
 
 .PHONY: artifacts/nft_launchpad.wasm
