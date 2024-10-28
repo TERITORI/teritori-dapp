@@ -44,11 +44,11 @@ const main = async () => {
     throw new Error("adm signer is undefined");
   }
 
-  const initialEcosystem = await deployTeritoriEcosystem({
-    opts: { binaryPath: binaries["v1.2.0"], home, signer: admSigner },
-    networkId: teritoriLocalnetNetwork.id,
-    wallet: "testnet-adm",
-  });
+  const initialEcosystem = await deployTeritoriEcosystem(
+    { binaryPath: binaries["v1.2.0"], home, signer: admSigner },
+    teritoriLocalnetNetwork.id,
+    "testnet-adm",
+  );
 
   let upgradeHeight = await upgradeCosmosLocalnet(
     binaries["v1.2.0"],
@@ -97,11 +97,11 @@ const main = async () => {
 
   await testTeritoriEcosystem(initialEcosystem);
 
-  await deployTeritoriEcosystem({
-    opts: { binaryPath: latestBinary, home, signer: admSigner },
-    networkId: teritoriLocalnetNetwork.id,
-    wallet: "testnet-adm",
-  });
+  await deployTeritoriEcosystem(
+    { binaryPath: latestBinary, home, signer: admSigner },
+    teritoriLocalnetNetwork.id,
+    "testnet-adm",
+  );
 
   // clean
 

@@ -22,11 +22,11 @@ const main = async () => {
 
   // test cosmwasm
 
-  await deployTeritoriEcosystem({
-    opts: { binaryPath: binary, home, signer: admSigner },
-    networkId: teritoriLocalnetNetwork.id,
-    wallet: "testnet-adm",
-  });
+  await deployTeritoriEcosystem(
+    { binaryPath: binary, home, signer: admSigner },
+    teritoriLocalnetNetwork.id,
+    "testnet-adm",
+  );
 
   // clean
 

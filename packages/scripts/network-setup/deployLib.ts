@@ -29,7 +29,6 @@ import {
   mustGetNonSigningCosmWasmClient,
   NetworkFeature,
 } from "@/networks";
-import { deployNftLaunchpad } from "@/scripts/network-setup/deployNftLaunchpad";
 import { zodTryParseJSON } from "@/utils/sanitize";
 
 export interface DeployOpts {
