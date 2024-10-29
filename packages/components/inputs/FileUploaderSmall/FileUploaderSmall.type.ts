@@ -25,7 +25,3 @@ export interface FileUploaderSmallProps {
 export interface FileUploaderSmallHandle {
   resetFiles: () => void;
 }
-
-export interface FileUploaderSmallHandle {
-  resetFiles: () => void;
-}
