@@ -2,6 +2,7 @@ CANDYMACHINE_REPO=teritori-nfts
 BUNKER_MINTER_PACKAGE=teritori-bunker-minter
 GO?=go
 GOFMT?=$(shell $(GO) env GOROOT)/bin/gofmt
+CAT := $(if $(filter $(OS),Windows_NT),type,cat)
 
 COSMWASM_CONTRACTS_DIR=rust/cw-contracts
 INTERNAL_COSMWASM_CONTRACTS=$(wildcard $(COSMWASM_CONTRACTS_DIR)/*)
@@ -446,7 +447,7 @@ start.gnodev-e2e:
 clone-gno:
 	rm -fr gnobuild
 	mkdir -p gnobuild
-	cd gnobuild && git clone https://github.com/gnolang/gno.git && cd gno && git checkout 9786fa366f922f04e1251ec6f1df6423b4fd2bf4
+	cd gnobuild && git clone https://github.com/gnolang/gno.git && cd gno && git checkout $(shell $(CAT) .gnoversion)
 	cp -r ./gno/p ./gnobuild/gno/examples/gno.land/p/teritori
 	cp -r ./gno/r ./gnobuild/gno/examples/gno.land/r/teritori
 
