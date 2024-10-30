@@ -92,6 +92,9 @@ export const teritoriTestnetNetwork: CosmosNetworkInfo = {
   excludeFromLaunchpadList: [riotContractAddressGen1],
   socialFeedContractAddress:
     "tori1mf6ptkssddfmxvhdx0ech0k03ktp6kf9yk59renau2gvht3nq2gqg87tkw",
+  cwAddressListContractAddress:
+    "tori1x72plnprsjnmszylmdm3cnvu5h6u55fyf0pe02lye9p6q2ws05ps33qmft",
+  cwAddressListCodeId: 63,
   daoCoreCodeId: 30,
   daoPreProposeSingleCodeId: 32,
   daoProposalSingleCodeId: 33,
