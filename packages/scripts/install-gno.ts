@@ -5,7 +5,7 @@ import path from "path";
 
 import sqh from "./sqh";
 
-const ref = "fec2d18f630b44ccc2121472aa2284cd9c8caf6f";
+const ref = "9786fa366f922f04e1251ec6f1df6423b4fd2bf4";
 const remote = "https://github.com/gnolang/gno.git";
 
 const main = async () => {
