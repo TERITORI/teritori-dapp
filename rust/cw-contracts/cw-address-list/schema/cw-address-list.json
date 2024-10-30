@@ -1,5 +1,5 @@
 {
-  "contract_name": "cw_address_list",
+  "contract_name": "cw-address-list",
   "contract_version": "0.1.0",
   "idl_version": "1.0.0",
   "instantiate": {
