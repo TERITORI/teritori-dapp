@@ -1,0 +1,7 @@
+{
+    "config": {
+        "name": "CW Address List",
+        "supported_networks": ["teritori"],
+        "admin": ""
+    } 
+  }
