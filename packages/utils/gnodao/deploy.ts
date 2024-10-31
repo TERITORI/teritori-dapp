@@ -30,7 +30,6 @@ const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
     "${network.daoUtilsPkgPath}"
     voting_group "${network.votingGroupPkgPath}"
     "${network.daoRegistryPkgPath}"
-    "${network.toriPkgPath}"
   )
   
 var (
