@@ -16,7 +16,7 @@ import {
   storeWASM,
 } from "@/scripts/network-setup/deployLib";
 
-export const deployCwAddressList = async ({
+const deployCwAddressList = async ({
   opts,
   networkId,
   wallet,
