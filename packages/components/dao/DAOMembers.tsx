@@ -268,14 +268,14 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
               "daoCore.VotingModule().ConfigJSON()",
             ),
           );
-          const { groupId } = moduleConfig;
+          // const { groupId } = moduleConfig;
 
           const msgs: GnoAddMemberMessage[] = [];
           for (const member of membersToAdd) {
             msgs.push({
               type: "gno.land/r/teritori/groups.AddMember",
               payload: {
-                groupId,
+                groupId: 0, // TODO: FIX ME
                 address: member,
                 weight,
                 metadata: "",
