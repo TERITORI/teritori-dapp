@@ -1,13 +1,10 @@
-import { OfflineSigner } from "@cosmjs/proto-signing";
 import { bech32 } from "bech32";
 import { program } from "commander";
 import { cloneDeep } from "lodash";
 import os from "os";
 import path from "path";
 
-import { InstantiateMsg as CwAddressListInstantiateMsg } from "@/contracts-clients/cw-address-list";
 import {
-  allNetworks,
   CosmosNetworkInfo,
   getCosmosNetwork,
   getNetworkFeature,
@@ -18,9 +15,6 @@ import {
   instantiateContract,
   storeWASM,
 } from "@/scripts/network-setup/deployLib";
-
-// CONTRACT_ADDRESS_TESTNET = tori1x72plnprsjnmszylmdm3cnvu5h6u55fyf0pe02lye9p6q2ws05ps33qmft
-// CODE_ID_TESTNET = 63
 
 export const deployCwAddressList = async ({
   opts,
@@ -50,7 +44,15 @@ export const deployCwAddressList = async ({
   bech32.decode(walletAddr);
   console.log("Wallet address:", walletAddr);
 
-  if (!network.cwAddressListContractAddress) {
+  const cwAddressListFeature = cloneDeep(
+    getNetworkFeature(networkId, NetworkFeature.CosmWasmAddressList),
+  );
+  if (!cwAddressListFeature) {
+    console.error(`Cw Address List feature not found on ${networkId}`);
+    process.exit(1);
+  }
+
+  if (!cwAddressListFeature.cwAddressListContractAddress) {
     console.log("Storing cw address list");
     const cwAddressListWasmFilePath = path.join(
       __dirname,
@@ -64,12 +66,14 @@ export const deployCwAddressList = async ({
     );
 
     console.log("Instantiating cw address list", network.cwAdminFactoryCodeId);
-    network.cwAddressListContractAddress = await instantiateCwAddressList(
-      opts,
-      wallet,
-      walletAddr,
-      network,
-    );
+    cwAddressListFeature.cwAddressListContractAddress =
+      await instantiateCwAddressList(opts, wallet, walletAddr, network);
+
+    network.featureObjects = network.featureObjects?.map((featureObject) => {
+      if (featureObject.type === NetworkFeature.CosmWasmAddressList) {
+        return cwAddressListFeature;
+      } else return featureObject;
+    });
   }
 };
 

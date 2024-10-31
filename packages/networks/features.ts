@@ -17,7 +17,18 @@ export enum NetworkFeature {
   LaunchpadERC20 = "LaunchpadERC20",
   NFTMarketplaceLeaderboard = "NFTMarketplaceLeaderboard",
   CosmWasmNFTsBurner = "CosmWasmNFTsBurner",
+  CosmWasmAddressList = "CosmWasmAddressList",
 }
+
+// CosmWasm Address List
+
+const zodCCosmWasmAddressList = z.object({
+  type: z.literal(NetworkFeature.CosmWasmAddressList),
+  cwAddressListContractAddress: z.string(),
+  codeId: z.number(),
+});
+
+export type CosmWasmAddressList = z.infer<typeof zodCCosmWasmAddressList>;
 
 // CosmWasm Premium Feed
 
@@ -72,6 +83,7 @@ export const allFeatureObjects = [
   zodCosmWasmNFTsBurner,
   zodGnoProjectManager,
   zodLaunchpadERC20,
+  zodCCosmWasmAddressList,
 ];
 
 export type NetworkFeatureObject =
@@ -79,4 +91,5 @@ export type NetworkFeatureObject =
   | CosmWasmSocialFeed
   | CosmWasmNFTsBurner
   | GnoProjectManager
-  | LaunchpadERC20;
+  | LaunchpadERC20
+  | CosmWasmAddressList;
