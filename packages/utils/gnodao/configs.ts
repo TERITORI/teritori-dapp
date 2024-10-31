@@ -1,3 +1,4 @@
 export interface VotingGroupConfig {
-  groupId: number;
+  totalPower: number;
+  members: number;
 }

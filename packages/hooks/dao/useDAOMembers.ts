@@ -10,14 +10,11 @@ import {
   parseUserId,
 } from "@/networks";
 import { extractGnoJSONString } from "@/utils/gno";
-import { VotingGroupConfig } from "@/utils/gnodao/configs";
 
 // FIXME: pagination
 
 type GnoDAOMember = {
   address: string;
-  id: number;
-  metadata: string;
   weight: number;
 };
 
@@ -46,21 +43,11 @@ export const useDAOMembers = (daoId: string | undefined) => {
           return members;
         }
         case NetworkKind.Gno: {
-          if (!network.groupsPkgPath) {
-            return [];
-          }
           const provider = new GnoJSONRPCProvider(network.endpoint);
-          const moduleConfig: VotingGroupConfig = extractGnoJSONString(
+          const res: GnoDAOMember[] = extractGnoJSONString(
             await provider.evaluateExpression(
               daoAddress,
               "daoCore.VotingModule().ConfigJSON()",
-            ),
-          );
-          const { groupId } = moduleConfig;
-          const res: GnoDAOMember[] = extractGnoJSONString(
-            await provider.evaluateExpression(
-              network.groupsPkgPath,
-              `GetMembersJSON(${groupId})`,
             ),
           );
           return res.map((member) => ({

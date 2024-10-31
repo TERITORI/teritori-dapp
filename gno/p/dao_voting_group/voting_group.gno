@@ -150,6 +150,16 @@ func (g *VotingGroup) GetMembers(start, end string, limit uint64, height int64) 
 	return members
 }
 
+func (g *VotingGroup) GetMembersJSON(start, end string, limit uint64, height int64) *json.Node {
+	members := g.GetMembers(start, end, limit, height)
+	nodes := make([]*json.Node, len(members))
+	for i, m := range members {
+		nodes[i] = m.ToJSON()
+	}
+
+	return json.ArrayNode("", nodes)
+}
+
 func (v *VotingGroup) Render(path string) string {
 	sb := strings.Builder{}
 	sb.WriteString("Member count: ")
