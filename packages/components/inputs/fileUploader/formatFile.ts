@@ -1,11 +1,11 @@
+import { getAudioData } from "../../../utils/audio";
 import {
   AUDIO_MIME_TYPES,
   IMAGE_MIME_TYPES,
   VIDEO_MIME_TYPES,
-} from "./../../utils/mime";
-import { getAudioData } from "../../utils/audio";
-import { FileType, LocalFileData } from "../../utils/types/files";
-import { getVideoData } from "../../utils/video";
+} from "../../../utils/mime";
+import { FileType, LocalFileData } from "../../../utils/types/files";
+import { getVideoData } from "../../../utils/video";
 
 export const formatFile = async (file: File): Promise<LocalFileData> => {
   let fileType: FileType = "file";

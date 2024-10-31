@@ -1,10 +1,9 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { LaunchpadBanner } from "./components/LaunchpadBanner";
+import { LaunchpadBanner } from "../components/LaunchpadBanner";
 
 import { BrandText } from "@/components/BrandText";
-import { OmniLink } from "@/components/OmniLink";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import {
   LargeBoxButton,
@@ -25,7 +24,7 @@ const BUTTONS: LargeBoxButtonProps[] = [
     title: "Create",
     description:
       "Upload your assets, enter collection metadata and deploy your collection.",
-    buttonTitle: "Open",
+    buttonTitle: "Coming soon",
   },
   {
     title: "My Collections",
@@ -57,9 +56,7 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
           url="https://airtable.com/shr1kU7kXW0267gNV"
         />
         <SpacerRow size={1.2} />
-        <OmniLink noHoverEffect to={{ screen: "LaunchpadCreate" }}>
-          <LargeBoxButton {...BUTTONS[1]} />
-        </OmniLink>
+        <LargeBoxButton {...BUTTONS[1]} />
         <SpacerRow size={1.2} />
         <LargeBoxButton {...BUTTONS[2]} />
       </View>

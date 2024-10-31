@@ -3,9 +3,6 @@ import React from "react";
 import { platformScreens } from "./platformSpecific";
 import { getNav, screenTitle } from "./util";
 
-import { AdministrationDashboardScreen } from "@/screens/AdministrationDashboard/AdministrationDashboardScreen";
-import { AllProjectAdministrationDashScreen } from "@/screens/AllProjectAdministrationDash/AllProjectAdministrationDashScreen";
-import { ApplicationRewiewScreen } from "@/screens/ApplicationRewiew/ApplicationRewiew";
 import { BurnCapitalScreen } from "@/screens/BurnCapital/BurnCapitalScreen";
 import { ComingSoonScreen } from "@/screens/ComingSoon/ComingSoon";
 import { CoreDAOScreen } from "@/screens/CoreDAO/CoreDAOScreen";
@@ -19,11 +16,9 @@ import { GovernanceScreen } from "@/screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "@/screens/Guardians/GuardiansScreen";
 import { HashtagFeedScreen } from "@/screens/HashtagFeed/HashtagFeedScreen";
 import { HomeScreen } from "@/screens/Home/HomeScreen";
-import { LaunchpadApplyScreen } from "@/screens/Launchpad/LaunchpadApplyScreen";
-import { LaunchpadCreateScreen } from "@/screens/Launchpad/LaunchpadCreateScreen";
-import { LaunchpadScreen } from "@/screens/Launchpad/LaunchpadScreen";
+import { LaunchpadApplyScreen } from "@/screens/Launchpad/LaunchpadApply/LaunchpadApplyScreen";
+import { LaunchpadScreen } from "@/screens/Launchpad/LaunchpadHome/LaunchpadScreen";
 import { MintCollectionScreen } from "@/screens/Launchpad/MintCollectionScreen";
-import { LaunchpadApplicationsScreen } from "@/screens/LaunchpadApplications/LaunchpadApplicationsScreen";
 import { LaunchpadERC20CreateSaleScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Sales/LaunchpadERC20CreateSaleScreen";
 import { LaunchpadERC20SalesScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Sales/LaunchpadERC20SalesScreen";
 import { LaunchpadERC20Screen } from "@/screens/LaunchpadERC20/LaunchpadERC20Screen";
@@ -53,7 +48,6 @@ import { ProjectsMakeRequestScreen } from "@/screens/Projects/ProjectsMakeReques
 import { ProjectsManagerScreen } from "@/screens/Projects/ProjectsManagerScreen";
 import { ProjectsPaymentScreen } from "@/screens/Projects/ProjectsPaymentScreen";
 import { ProjectsScreen } from "@/screens/Projects/ProjectsScreen";
-import { ReadyLaunchpadApplicationsScreen } from "@/screens/ReadyLaunchpadApplications/ReadyLaunchpadApplicationsScreen";
 import { RiotGameBreedingScreen } from "@/screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "@/screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "@/screens/RiotGame/RiotGameFightScreen";
@@ -131,47 +125,6 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         component={RiotersFooterScreen}
         options={{ header: () => null, title: screenTitle("Rioters Footer") }}
       />
-      <Nav.Screen
-        name="AdministrationDashboard"
-        component={AdministrationDashboardScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Administration Dashboard"),
-        }}
-      />
-      <Nav.Screen
-        name="LaunchpadApplications"
-        component={LaunchpadApplicationsScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Launchpad Applications"),
-        }}
-      />
-      <Nav.Screen
-        name="ReadyLaunchpadApplications"
-        component={ReadyLaunchpadApplicationsScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Ready Launchpad Applications"),
-        }}
-      />
-      <Nav.Screen
-        name="AllProjectAdministrationDash"
-        component={AllProjectAdministrationDashScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("All Launchpad Applications"),
-        }}
-      />
-      <Nav.Screen
-        name="ApplicationReview"
-        component={ApplicationRewiewScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Application Review"),
-        }}
-      />
-
       <Nav.Screen
         name="MarketplaceLeaderboard"
         component={MarketplaceLeaderboardScreen}
@@ -273,14 +226,7 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
           title: screenTitle("Launchpad (Apply)"),
         }}
       />
-      <Nav.Screen
-        name="LaunchpadCreate"
-        component={LaunchpadCreateScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Launchpad (Apply)"),
-        }}
-      />
+
       <Nav.Screen
         name="MintCollection"
         component={MintCollectionScreen}
