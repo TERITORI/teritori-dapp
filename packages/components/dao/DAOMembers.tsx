@@ -1,4 +1,3 @@
-import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { Buffer } from "buffer";
 import React, { useCallback, useState } from "react";
 import { StyleProp, View, ViewStyle, useWindowDimensions } from "react-native";
@@ -13,8 +12,7 @@ import { useInvalidateDAOProposals } from "../../hooks/dao/useDAOProposals";
 import { useNameSearch } from "../../hooks/search/useNameSearch";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, getUserId, parseUserId } from "../../networks";
-import { adenaVMCall, extractGnoJSONString } from "../../utils/gno";
-import { VotingGroupConfig } from "../../utils/gnodao/configs";
+import { adenaVMCall } from "../../utils/gno";
 import {
   GnoAddMemberMessage,
   GnoSingleChoiceProposal,
@@ -260,22 +258,12 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
           break;
         }
         case NetworkKind.Gno: {
-          const client = new GnoJSONRPCProvider(network.endpoint);
-
-          const moduleConfig: VotingGroupConfig = extractGnoJSONString(
-            await client.evaluateExpression(
-              daoAddress,
-              "daoCore.VotingModule().ConfigJSON()",
-            ),
-          );
-          // const { groupId } = moduleConfig;
-
           const msgs: GnoAddMemberMessage[] = [];
           for (const member of membersToAdd) {
             msgs.push({
               type: "gno.land/r/teritori/groups.AddMember",
               payload: {
-                groupId: 0, // TODO: FIX ME
+                groupId: 0,
                 address: member,
                 weight,
                 metadata: "",
