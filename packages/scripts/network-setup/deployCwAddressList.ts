@@ -44,15 +44,15 @@ const deployCwAddressList = async ({
   bech32.decode(walletAddr);
   console.log("Wallet address:", walletAddr);
 
-  const cwAddressListFeature = cloneDeep(
-    getNetworkFeature(networkId, NetworkFeature.CosmWasmAddressList),
+  const nftMarketplaceFeature = cloneDeep(
+    getNetworkFeature(networkId, NetworkFeature.NFTMarketplace),
   );
-  if (!cwAddressListFeature) {
-    console.error(`Cw Address List feature not found on ${networkId}`);
+  if (!nftMarketplaceFeature) {
+    console.error(`NFT Marketplace feature not found on ${networkId}`);
     process.exit(1);
   }
 
-  if (!cwAddressListFeature.cwAddressListContractAddress) {
+  if (!nftMarketplaceFeature.cwAddressListContractAddress) {
     console.log("Storing cw address list");
     const cwAddressListWasmFilePath = path.join(
       __dirname,
@@ -66,12 +66,12 @@ const deployCwAddressList = async ({
     );
 
     console.log("Instantiating cw address list", network.cwAdminFactoryCodeId);
-    cwAddressListFeature.cwAddressListContractAddress =
+    nftMarketplaceFeature.cwAddressListContractAddress =
       await instantiateCwAddressList(opts, wallet, walletAddr, network);
 
     network.featureObjects = network.featureObjects?.map((featureObject) => {
-      if (featureObject.type === NetworkFeature.CosmWasmAddressList) {
-        return cwAddressListFeature;
+      if (featureObject.type === NetworkFeature.NFTMarketplace) {
+        return nftMarketplaceFeature;
       } else return featureObject;
     });
   }
