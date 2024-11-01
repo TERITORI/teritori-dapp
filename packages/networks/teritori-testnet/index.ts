@@ -3,6 +3,7 @@ import {
   CosmWasmNFTsBurner,
   CosmWasmPremiumFeed,
   NetworkFeature,
+  NFTMarketplace,
 } from "../features";
 import { CosmosNetworkInfo, NetworkKind } from "../types";
 
@@ -19,6 +20,13 @@ const nftsBurnerFeature: CosmWasmNFTsBurner = {
   type: NetworkFeature.CosmWasmNFTsBurner,
   burnerContractAddress:
     "tori1qyl0j7a24amk8k8gcmvv07y2zjx7nkcwpk73js24euh64hkja6esd2p2xp",
+};
+
+const nftMarketplace: NFTMarketplace = {
+  type: NetworkFeature.NFTMarketplace,
+  cwAddressListCodeId: 63,
+  cwAddressListContractAddress:
+    "tori1x72plnprsjnmszylmdm3cnvu5h6u55fyf0pe02lye9p6q2ws05ps33qmft",
 };
 
 const riotContractAddressGen0 =
@@ -45,7 +53,7 @@ export const teritoriTestnetNetwork: CosmosNetworkInfo = {
     NetworkFeature.NFTMarketplaceLeaderboard,
     NetworkFeature.CosmWasmNFTsBurner,
   ],
-  featureObjects: [premiumFeedFeature, nftsBurnerFeature],
+  featureObjects: [premiumFeedFeature, nftsBurnerFeature, nftMarketplace],
   currencies: teritoriTestnetCurrencies,
   txExplorer: "https://explorer.teritori.com/teritori-testnet/tx/$hash",
   accountExplorer:
