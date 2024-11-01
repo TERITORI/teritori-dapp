@@ -35,7 +35,7 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 
 export type SelectInputItem = {
   label: string;
-  value: string | boolean;
+  value: string;
   iconComponent?: ReactElement;
 };
 

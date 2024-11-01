@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 
 import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
