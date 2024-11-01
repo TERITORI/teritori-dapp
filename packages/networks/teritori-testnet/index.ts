@@ -4,6 +4,7 @@ import {
   CosmWasmNFTsBurner,
   CosmWasmPremiumFeed,
   NetworkFeature,
+  NFTMarketplace,
 } from "../features";
 import { CosmosNetworkInfo, NetworkKind } from "../types";
 
@@ -30,6 +31,13 @@ const cosmwasmLaunchpadFeature: CosmWasmLaunchpad = {
   nftTr721CodeId: 60,
   codeId: 62,
   defaultMintDenom: "utori",
+};
+
+const nftMarketplace: NFTMarketplace = {
+  type: NetworkFeature.NFTMarketplace,
+  cwAddressListCodeId: 63,
+  cwAddressListContractAddress:
+    "tori1x72plnprsjnmszylmdm3cnvu5h6u55fyf0pe02lye9p6q2ws05ps33qmft",
 };
 
 const riotContractAddressGen0 =
@@ -60,6 +68,7 @@ export const teritoriTestnetNetwork: CosmosNetworkInfo = {
     premiumFeedFeature,
     nftsBurnerFeature,
     cosmwasmLaunchpadFeature,
+    nftMarketplace,
   ],
   currencies: teritoriTestnetCurrencies,
   txExplorer: "https://explorer.teritori.com/teritori-testnet/tx/$hash",

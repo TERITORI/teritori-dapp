@@ -127,6 +127,26 @@ func (nb *NetworkBase) GetFeatureLaunchpadERC20() (*FeatureLaunchpadERC20, error
 	return feature.(*FeatureLaunchpadERC20), nil
 }
 
+type FeatureNFTMarketplace struct {
+	*FeatureBase
+	CwAddressListContractAddress string  `json:"cwAddressListContractAddress"`
+	CwAddressListCodeId          float64 `json:"cwAddressListCodeId"`
+}
+
+var _ Feature = &FeatureNFTMarketplace{}
+
+func (f FeatureNFTMarketplace) Type() FeatureType {
+	return FeatureTypeNFTMarketplace
+}
+
+func (nb *NetworkBase) GetFeatureNFTMarketplace() (*FeatureNFTMarketplace, error) {
+	feature, err := nb.GetFeature(FeatureTypeNFTMarketplace)
+	if err != nil {
+		return nil, err
+	}
+	return feature.(*FeatureNFTMarketplace), nil
+}
+
 func UnmarshalFeature(b []byte) (Feature, error) {
 	var base FeatureBase
 	if err := json.Unmarshal(b, &base); err != nil {
@@ -161,6 +181,12 @@ func UnmarshalFeature(b []byte) (Feature, error) {
 		var f FeatureLaunchpadERC20
 		if err := json.Unmarshal(b, &f); err != nil {
 			return nil, errors.Wrap(err, "failed to unmarshal feature LaunchpadERC20")
+		}
+		return &f, nil
+	case FeatureTypeNFTMarketplace:
+		var f FeatureNFTMarketplace
+		if err := json.Unmarshal(b, &f); err != nil {
+			return nil, errors.Wrap(err, "failed to unmarshal feature NFTMarketplace")
 		}
 		return &f, nil
 	}

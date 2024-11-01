@@ -11676,6 +11676,11 @@
         "nftTr721CodeId": 60,
         "codeId": 62,
         "defaultMintDenom": "utori"
+      },
+      {
+        "type": "NFTMarketplace",
+        "cwAddressListCodeId": 63,
+        "cwAddressListContractAddress": "tori1x72plnprsjnmszylmdm3cnvu5h6u55fyf0pe02lye9p6q2ws05ps33qmft"
       }
     ],
     "currencies": [
