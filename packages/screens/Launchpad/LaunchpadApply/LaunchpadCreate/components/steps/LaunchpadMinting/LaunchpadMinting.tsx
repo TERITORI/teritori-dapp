@@ -9,7 +9,6 @@ import { DateTimeInput } from "@/components/inputs/DateTimeInput";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { LaunchpadMintPeriods } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadMinting/LaunchpadMintPeriods";
-import { TextInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/TextInputLaunchpad";
 import { neutral77 } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -33,13 +32,6 @@ export const LaunchpadMinting: FC = () => {
           Configure the global minting settings
         </BrandText>
         <SpacerColumn size={2} />
-
-        <TextInputLaunchpad<CollectionFormValues>
-          label="Number of Tokens "
-          placeHolder="0"
-          name="tokensCount"
-          form={collectionForm}
-        />
 
         <Controller<CollectionFormValues>
           name="revealTime"

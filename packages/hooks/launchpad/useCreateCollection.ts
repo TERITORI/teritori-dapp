@@ -127,6 +127,10 @@ export const useCreateCollection = () => {
           },
         );
 
+        const assetsMetadataFormsValues:
+          | CollectionAssetsMetadatasFormValues
+          | undefined = collectionFormValues.assetsMetadatas;
+
         // ========== Final collection
         const collection: CollectionToSubmit = {
           name: collectionFormValues.name,
@@ -136,7 +140,7 @@ export const useCreateCollection = () => {
           contact_email: collectionFormValues.email,
           project_type: collectionFormValues.projectTypes.join(),
           project_desc: collectionFormValues.projectDescription,
-          tokens_count: parseInt(collectionFormValues.tokensCount, 10),
+          tokens_count: assetsMetadataFormsValues?.assetsMetadatas?.length || 0,
           reveal_time: collectionFormValues.revealTime,
           team_desc: collectionFormValues.teamDescription,
           partners: collectionFormValues.partnersDescription,
@@ -178,10 +182,6 @@ export const useCreateCollection = () => {
           });
 
         // ========== Handle assets metadata
-        const assetsMetadataFormsValues:
-          | CollectionAssetsMetadatasFormValues
-          | undefined = collectionFormValues.assetsMetadatas;
-
         if (!assetsMetadataFormsValues?.assetsMetadatas?.length) {
           setToast({
             mode: "normal",

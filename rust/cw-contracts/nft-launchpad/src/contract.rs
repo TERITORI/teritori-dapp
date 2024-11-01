@@ -206,8 +206,8 @@ impl NftLaunchpad {
                 mint_info: Tr721MintInfo {
                     metadatas_merkle_root: collection.metadatas_merkle_root.unwrap(),
                     tokens_count: collection.tokens_count,
-                    royalty_address: None,
-                    royalty_percentage: None,
+                    royalty_address: collection.royalty_address,
+                    royalty_percentage: collection.royalty_percentage,
                 },
                 mint_periods: collection.mint_periods,
             })?,
