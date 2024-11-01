@@ -96,7 +96,7 @@ export const instantiateNftLaunchpad = async (
         .filter((n) => n.features.includes(NetworkFeature.NFTLaunchpad))
         .map((n) => n.id),
       owner: deployerAddr,
-      launchpadAdmin,
+      launchpad_admin: launchpadAdmin,
       nft_code_id: nftCodeId,
     },
   };
@@ -159,7 +159,6 @@ const main = async () => {
       home: path.join(os.homedir(), ".teritorid"),
       binaryPath: "teritorid",
       keyringBackend,
-      signer: undefined,
     },
     networkId,
     wallet,

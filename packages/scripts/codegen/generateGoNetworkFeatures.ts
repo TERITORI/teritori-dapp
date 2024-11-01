@@ -109,4 +109,3 @@ func UnmarshalFeature(b []byte) (Feature, error) {
 };
 
 main();
-
