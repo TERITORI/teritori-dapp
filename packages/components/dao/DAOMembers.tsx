@@ -269,6 +269,7 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
             ),
           );
           const { groupId } = moduleConfig;
+
           const msgs: GnoAddMemberMessage[] = [];
           for (const member of membersToAdd) {
             msgs.push({

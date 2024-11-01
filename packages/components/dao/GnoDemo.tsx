@@ -40,8 +40,11 @@ export const GnoDemo: React.FC<{
     <View>
       <GnoCreateProposal daoId={daoId} />
       <SpacerColumn size={4} />
+      <CreateBoard daoId={daoId} />
       <SpacerColumn size={4} />
+      <DeletePost daoId={daoId} />
       <SpacerColumn size={4} />
+      <MintTori daoId={daoId} />
       <ConfigureVotingSection
         onSubmit={async (form) =>
           wrapWithFeedback(async () => {
