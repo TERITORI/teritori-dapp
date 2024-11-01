@@ -69,17 +69,7 @@ export const AirdropsTable: React.FC<AirdropsTableProps> = ({ networkId }) => {
     >
       <BrandText>Latest ERC20 Airdrops Created</BrandText>
       <SpacerColumn size={2} />
-      <TableWrapper
-        paginationProps={{
-          currentPage: 0,
-          maxPage: 1,
-          itemsPerPage: 10,
-          nbItemsOptions: [],
-          setItemsPerPage: () => {},
-          onChangePage: () => {},
-        }}
-        horizontalScrollBreakpoint={breakpointM}
-      >
+      <TableWrapper horizontalScrollBreakpoint={breakpointM}>
         <TableHeader columns={columns} />
         {airdrops && (
           <FlatList
