@@ -42,6 +42,8 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   socialFeedsPkgPath: "gno.land/r/teritori/social_feeds",
   socialFeedsDAOPkgPath: "gno.land/r/teritori/social_feeds_dao",
   nameServiceContractAddress: "gno.land/r/demo/users",
+  modboardsPkgPath: "gno.land/r/teritori/modboards",
+  groupsPkgPath: "gno.land/r/teritori/groups",
   votingGroupPkgPath: "gno.land/p/teritori/dao_voting_group",
   daoProposalSinglePkgPath: "gno.land/p/teritori/dao_proposal_single",
   profilePkgPath: "gno.land/r/demo/profile",
