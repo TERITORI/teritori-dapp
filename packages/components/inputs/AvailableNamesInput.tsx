@@ -9,6 +9,7 @@ import { BrandText } from "../BrandText";
 import { useNSAvailability } from "@/hooks/useNSAvailability";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { NetworkInfo, NetworkKind, getNetwork } from "@/networks";
+import { LETTERS_REGEXP } from "@/utils/regex";
 import {
   neutral17,
   neutral33,
@@ -154,7 +155,7 @@ export const AvailableNamesInput = <T extends FieldValues>({
       onPressEnter={onPressEnter}
       value={value}
       rules={{ required: true }}
-      regexp={new RegExp(/^[a-zA-Z]+$/)}
+      regexp={new RegExp(LETTERS_REGEXP)}
       style={style}
       readOnly={readOnly}
       boxMainContainerStyle={{
