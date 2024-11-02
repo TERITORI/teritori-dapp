@@ -25,16 +25,6 @@ export const patternOnlyNumbers: ValidationRule<RegExp> = {
   message: DEFAULT_FORM_ERRORS.onlyNumbers,
 };
 
-// export const patternOnlyEmail: ValidationRule<RegExp> = {
-//   value: EMAIL_REGEXP,
-//   message: DEFAULT_FORM_ERRORS.onlyEmail,
-// };
-//
-// export const patternOnlyUrl: ValidationRule<RegExp> = {
-//   value: URL_REGEX,
-//   message: DEFAULT_FORM_ERRORS.onlyUrl,
-// };
-
 export const validateMaxNumber = (value: string, max: number) => {
   if (parseFloat(value) > max) {
     return "Max input value is " + max;

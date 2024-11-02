@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React from "react";
 import { FlatList, View } from "react-native";
 
 import { screenContentMaxWidthLarge } from "../../../utils/style/layout";
@@ -59,18 +59,13 @@ export const MarketplaceLeaderboardTable: React.FC<{
   networkId: string | undefined;
   timePeriodHours: number;
 }> = React.memo(({ networkId, timePeriodHours }) => {
-  const [pageIndex, setPageIndex] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(100);
   const { data: leaderboard } = useMarketplaceLeaderboard(
     networkId,
     timePeriodHours,
   );
 
-  // NOTE: we only show the first 100 items, because getting the total count to properly find maxPage will slow the query down
+  // NOTE: we only show the first 100 items (limit from backend), because getting the total count to properly find maxPage will slow the query down
   // see https://stackoverflow.com/questions/28888375/run-a-query-with-a-limit-offset-and-also-get-the-total-number-of-rows
-
-  const numItems = leaderboard?.length || 0;
-  const maxPage = Math.max(Math.ceil(numItems / itemsPerPage), 1);
 
   return (
     <View
@@ -79,17 +74,7 @@ export const MarketplaceLeaderboardTable: React.FC<{
         maxWidth: screenContentMaxWidthLarge,
       }}
     >
-      <TableWrapper
-        horizontalScrollBreakpoint={breakpointM}
-        paginationProps={{
-          currentPage: pageIndex,
-          maxPage,
-          itemsPerPage,
-          nbItemsOptions: [100],
-          setItemsPerPage,
-          onChangePage: setPageIndex,
-        }}
-      >
+      <TableWrapper horizontalScrollBreakpoint={breakpointM}>
         <TableHeader columns={columns} />
         <FlatList
           data={leaderboard}

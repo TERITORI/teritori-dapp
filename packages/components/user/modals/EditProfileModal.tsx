@@ -6,8 +6,8 @@ import React, { useMemo } from "react";
 import { View } from "react-native";
 
 import {
-  ExecuteMsg as TNSExecuteMsg,
   Metadata,
+  ExecuteMsg as TNSExecuteMsg,
 } from "../../../contracts-clients/teritori-name-service/TeritoriNameService.types";
 import { EditProfileForm } from "../forms/EditProfileForm";
 import { TNSModalCommonProps } from "../types";
@@ -22,7 +22,12 @@ import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { useRunOrProposeTransaction } from "@/hooks/useRunOrProposeTransaction";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetwork, NetworkKind, UserKind } from "@/networks";
-import { adenaDoContract, AdenaDoContractMessage, VmCall } from "@/utils/gno";
+import {
+  adenaDoContract,
+  AdenaDoContractMessage,
+  AdenaDoContractMessageType,
+  VmCall,
+} from "@/utils/gno";
 import { neutral17, neutral77 } from "@/utils/style/colors";
 import { fontMedium16 } from "@/utils/style/fonts";
 import { EMPTY_PROFILE, ProfileData } from "@/utils/upp";
@@ -183,7 +188,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
         func: "Register",
         args: ["", usernameValue, ""],
       };
-      msgs.push({ type: "/vm.m_call", value: vmCall });
+      msgs.push({ type: AdenaDoContractMessageType.CALL, value: vmCall });
     }
 
     // FIXME: the contract supports only update data one by one
@@ -242,7 +247,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
         args: [field, val],
       };
 
-      msgs.push({ type: "/vm.m_call", value: vmCall });
+      msgs.push({ type: AdenaDoContractMessageType.CALL, value: vmCall });
     }
 
     if (msgs.length === 0) {

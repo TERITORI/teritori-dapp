@@ -11,14 +11,17 @@ import { useBalances } from "../../../hooks/useBalances";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
-  NetworkKind,
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
+  NetworkKind,
 } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
 import { TERITORI_FEED_ID } from "../../../utils/feed/constants";
-import { adenaDoContract } from "../../../utils/gno";
+import {
+  adenaDoContract,
+  AdenaDoContractMessageType,
+} from "../../../utils/gno";
 import { neutral77, primaryColor } from "../../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
@@ -95,7 +98,7 @@ export const TipModal: React.FC<{
       try {
         await adenaDoContract(
           selectedNetworkId || "",
-          [{ type: "/vm.m_call", value: vmCall }],
+          [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
           {
             gasWanted: 1_000_000,
           },
