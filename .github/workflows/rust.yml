@@ -14,12 +14,27 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
 
-      - name: Build
-        run: make build.rust
+      - name: Format
+        run: make fmt.rust
+
+      - name: Lint
+        run: make lint.rust
 
       - name: Test
         run: make test.rust
 
-      - name: Check diff
-        run: git diff --exit-code
+      - name: Build
+        run: make build.rust
+
+      - name: Check that there is no diff
+        run: |
+          mrdiff=$(git status --porcelain)
+          if [[ $mrdiff ]]; then
+              echo 'ERROR: Diff found!'
+              echo $mrdiff
+              git diff
+              exit 1
+          fi
