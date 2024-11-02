@@ -1,4 +1,4 @@
-package feed
+package pinata
 
 import (
 	"encoding/json"
