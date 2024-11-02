@@ -42,7 +42,9 @@ export const gnoTeritoriNetwork: GnoNetworkInfo = {
   votingGroupPkgPath: "gno.land/p/teritori/dao_voting_group_v2",
   daoProposalSinglePkgPath: "gno.land/p/teritori/dao_proposal_single_v4",
   daoInterfacesPkgPath: "gno.land/p/teritori/dao_interfaces_v5",
+  daoUtilsPkgPath: "", //TODO: fill with the correct path
   daoCorePkgPath: "gno.land/p/teritori/dao_core_v4",
+  toriPkgPath: "", //TODO: fill with the correct path
   gnowebURL: "https://testnet.gno.teritori.com",
   faucetURL: "https://testnet.gno.teritori.com:5050/?toaddr=$addr",
 };
