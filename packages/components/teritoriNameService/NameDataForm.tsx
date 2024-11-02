@@ -10,6 +10,8 @@ import { ExternalLink } from "../ExternalLink";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 
+import { LETTERS_REGEXP } from "@/utils/regex";
+
 export const NameDataForm: React.FC<{
   isMintPath?: boolean;
   btnLabel: string;
@@ -122,7 +124,7 @@ export const NameDataForm: React.FC<{
         placeHolder="Type name here"
         value={publicName}
         onChangeText={setPublicName}
-        regexp={new RegExp(/^[a-zA-Z]+$/)}
+        regexp={new RegExp(LETTERS_REGEXP)}
         squaresBackgroundColor={neutral17}
       />
       <TextInputCustom<Metadata>
