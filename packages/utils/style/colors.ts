@@ -3,7 +3,6 @@ export const primaryTextColor = "#2B0945";
 
 export const secondaryColor = "#FFFFFF";
 export const successColor = "#C8FFAE";
-export const warningColor = "#FFE768";
 export const errorColor = "#F46F76";
 export const toastRed = "#F34242";
 export const toastGreen = "#52DB68";

@@ -7,7 +7,6 @@ import {
   neutral11,
   neutral77,
   successColor,
-  warningColor,
 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -20,7 +19,7 @@ export interface NormalToastProps {
   title: string;
   message?: string;
   onPress?: () => void;
-  type?: "error" | "success" | "warning";
+  type?: "error" | "success";
   topOffset?: number;
 }
 
@@ -57,16 +56,11 @@ export const NormalToast: React.FC<NormalToastProps> = ({
           flexDirection: "row",
           alignItems: "center",
           backgroundColor: neutral11,
-          borderColor:
-            type === "error"
-              ? errorColor
-              : type === "warning"
-                ? warningColor
-                : successColor,
+          borderColor: type === "error" ? errorColor : successColor,
           borderWidth: 1,
         }}
       >
-        {type === "error" && (
+        {(type === "error" || type === "warning") && (
           <>
             <SpacerRow size={3} />
             <SVG
@@ -92,7 +86,10 @@ export const NormalToast: React.FC<NormalToastProps> = ({
                 fontSize: 13,
                 lineHeight: 15,
                 color: neutral77,
-                maxWidth: type === "error" ? maxWidth - 130 : maxWidth - 50,
+                maxWidth:
+                  type === "error" || type === "warning"
+                    ? maxWidth - 130
+                    : maxWidth - 50,
               }}
             >
               {message}

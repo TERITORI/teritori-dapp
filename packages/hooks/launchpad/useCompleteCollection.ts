@@ -95,9 +95,10 @@ export const useCompleteCollection = () => {
             const image = remoteAssetsMetadataImages[index];
             if (!isIpfsPathValid(image.url)) {
               setToast({
-                title: "At least one uploaded image have an invalid IPFS hash",
+                title:
+                  "At least one uploaded image has an invalid IPFS hash and has beed ignored",
                 message: "Please try again",
-                type: "warning",
+                type: "error",
                 mode: "normal",
               });
               return;
