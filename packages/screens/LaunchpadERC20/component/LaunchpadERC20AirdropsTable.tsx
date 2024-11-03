@@ -15,8 +15,8 @@ import { TableRow } from "@/components/table/TableRow";
 import { TableTextCell } from "@/components/table/TableTextCell";
 import { TableWrapper } from "@/components/table/TableWrapper";
 import { TableColumns } from "@/components/table/utils";
-import { Airdrop } from "@/utils/launchpadERC20/types";
 import { screenContentMaxWidthLarge } from "@/utils/style/layout";
+import { Airdrop } from "@/utils/types/types";
 
 const columns: TableColumns = {
   id: {

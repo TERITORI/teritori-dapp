@@ -1,10 +1,12 @@
-import React from "react";
+import { useState } from "react";
 import { useWindowDimensions, View } from "react-native";
 
 import exploreSVG from "../../../../assets/icons/explore-neutral77.svg";
 import penSVG from "../../../../assets/icons/pen-neutral77.svg";
 import registerSVG from "../../../../assets/icons/register-neutral77.svg";
+import { SelectUserTokenModal } from "../component/LaunchpadERC20SelectUserTokenModal";
 import { TokensTable } from "../component/LaunchpadERC20TokensTable";
+import { useUserTokens } from "../hooks/useUserTokens";
 import { breakpoints } from "../utils/breakpoints";
 
 import { BrandText } from "@/components/BrandText";
@@ -13,6 +15,7 @@ import { FlowCard } from "@/components/cards/FlowCard";
 import { SpacerColumn } from "@/components/spacer";
 import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature, NetworkKind } from "@/networks";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 
@@ -24,6 +27,14 @@ export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
   const networkId = useSelectedNetworkId();
   const { width } = useWindowDimensions();
   const navigation = useAppNavigation();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const selectedWallet = useSelectedWallet();
+  const caller = selectedWallet?.address;
+  const { data: tokens } = useUserTokens(networkId, caller || "");
+
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  };
 
   return (
     <ScreenContainer
@@ -51,12 +62,13 @@ export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
           label="Manage"
           description="Mint, burn, or transfer the tokens you own"
           iconSVG={penSVG}
-          onPress={() => {}}
+          onPress={() => {
+            setIsModalVisible(true);
+          }}
           style={{
             marginHorizontal: width >= breakpoints.MD_BREAKPOINT ? 12 : 0,
             marginVertical: width >= breakpoints.LG_BREAKPOINT ? 0 : 12,
           }}
-          disabled
         />
         <FlowCard
           label="Explore"
@@ -66,6 +78,11 @@ export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
           disabled
         />
       </View>
+      <SelectUserTokenModal
+        isVisible={isModalVisible}
+        onClose={toggleModal}
+        items={tokens}
+      />
       <SpacerColumn size={2} />
       <TokensTable networkId={networkId} />
     </ScreenContainer>

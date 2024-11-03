@@ -6,6 +6,7 @@ import { feedsTabItems } from "./social-feed";
 import { AppMode } from "./types/app-mode";
 import { NewPostFormValues } from "./types/feed";
 import { MessageFriendsTabItem } from "./types/message";
+import { Token } from "./types/types";
 import { uppTabItems } from "./upp";
 export type RouteName = keyof RootStackParamList;
 
@@ -37,6 +38,7 @@ export type RootStackParamList = {
   LaunchpadERC20: undefined;
   LaunchpadERC20Tokens?: { network?: string };
   LaunchpadERC20CreateToken: { step?: number };
+  LaunchpadERC20ManageToken: { network?: string; token: Token };
   LaunchpadERC20Airdrops?: { network?: string };
   LaunchpadERC20CreateAirdrop: { step?: number };
   LaunchpadERC20Sales?: { network?: string };
@@ -217,6 +219,7 @@ const navConfig: {
     LaunchpadERC20: "launchpad-erc20",
     LaunchpadERC20Tokens: "launchpad-erc20/tokens",
     LaunchpadERC20CreateToken: "launchpad-erc20/create-token",
+    LaunchpadERC20ManageToken: "launchpad-erc20/manage-token",
     LaunchpadERC20Airdrops: "launchpad-erc20/airdrops",
     LaunchpadERC20CreateAirdrop: "launchpad-erc20/create-airdrop",
     LaunchpadERC20Sales: "launchpad-erc20/sales",
