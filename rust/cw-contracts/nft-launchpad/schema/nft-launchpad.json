@@ -193,7 +193,8 @@
           "symbol",
           "target_network",
           "team_desc",
-          "tokens_count"
+          "tokens_count",
+          "website_link"
         ],
         "properties": {
           "artwork_desc": {
@@ -334,10 +335,7 @@
             "minimum": 0.0
           },
           "website_link": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -536,7 +534,8 @@
         "symbol",
         "target_network",
         "team_desc",
-        "tokens_count"
+        "tokens_count",
+        "website_link"
       ],
       "properties": {
         "artwork_desc": {
@@ -677,10 +676,7 @@
           "minimum": 0.0
         },
         "website_link": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         }
       },
       "additionalProperties": false,

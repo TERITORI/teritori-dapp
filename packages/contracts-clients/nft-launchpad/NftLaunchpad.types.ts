@@ -78,7 +78,7 @@ export interface Collection {
   target_network: string;
   team_desc: string;
   tokens_count: number;
-  website_link?: string | null;
+  website_link: string;
 }
 export interface MintPeriod {
   end_time?: number | null;
