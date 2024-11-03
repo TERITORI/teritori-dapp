@@ -2,7 +2,6 @@ import React from "react";
 import { View, useWindowDimensions } from "react-native";
 
 import warningTriangleSVG from "@/assets/icons/warning-triangle.svg";
-
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
