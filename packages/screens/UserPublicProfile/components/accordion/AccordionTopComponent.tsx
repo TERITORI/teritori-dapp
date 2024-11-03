@@ -28,7 +28,7 @@ interface AccordionTopProps {
   elemIndex: number;
 }
 
-export const UPPSubscriptionAccordionFormTop = ({
+export const AccordionTopComponent = ({
   isOpen,
   setIsOpen,
   networkId,

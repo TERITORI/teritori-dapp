@@ -23,7 +23,7 @@ import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNativeCurrency, getNetworkFeature, parseUserId } from "@/networks";
 import { NetworkFeature } from "@/networks/features";
-import { UppSubscriptionAccordionForm } from "@/screens/UserPublicProfile/components/accordionForm/UppSubscriptionAccordionForm";
+import { AccordionComponent } from "@/screens/UserPublicProfile/components/accordion/AccordionComponent";
 import { bigDaySeconds } from "@/utils/big-time";
 import { mustGetCw721MembershipSigningClient } from "@/utils/feed/client";
 import { mapTierToFormElement } from "@/utils/feed/premium";
@@ -231,7 +231,7 @@ const SubscriptionSetupForm: React.FC<{
       >
         {fields.map((elem, index) => {
           return (
-            <UppSubscriptionAccordionForm
+            <AccordionComponent
               key={elem.id}
               elem={elem}
               elemIndex={index}
