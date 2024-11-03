@@ -349,7 +349,13 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   if (notFound) {
     return (
       <ScreenContainer noMargin>
-        <View style={{ alignItems: "center", width: "100%", marginTop: layout.spacing_x5 }}>
+        <View
+          style={{
+            alignItems: "center",
+            width: "100%",
+            marginTop: layout.spacing_x5,
+          }}
+        >
           <BrandText>Collection not found</BrandText>
         </View>
       </ScreenContainer>
@@ -377,7 +383,9 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 margin: layout.spacing_x2,
               }}
             >
-              <BrandText style={{ marginBottom: layout.spacing_x1_5 }}>{info.name}</BrandText>
+              <BrandText style={{ marginBottom: layout.spacing_x1_5 }}>
+                {info.name}
+              </BrandText>
 
               <View style={{ marginBottom: layout.spacing_x2_5 }}>
                 <View
@@ -715,12 +723,17 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                       justifyContent: "center",
                     }}
                   >
-                    <ActivityIndicator size="large" style={{ margin: layout.spacing_x5 }} />
+                    <ActivityIndicator
+                      size="large"
+                      style={{ margin: layout.spacing_x5 }}
+                    />
                   </View>
                 )}
               </LegacyTertiaryBox>
 
-              <BrandText style={[fontSemibold20, { marginBottom: layout.spacing_x3 }]}>
+              <BrandText
+                style={[fontSemibold20, { marginBottom: layout.spacing_x3 }]}
+              >
                 Activity
               </BrandText>
               {info.mintStarted ? (
@@ -773,7 +786,10 @@ const AttributesCard: React.FC<{
       }}
     >
       <BrandText
-        style={[fontSemibold12, { color: neutral77, marginBottom: layout.spacing_x0_75 }]}
+        style={[
+          fontSemibold12,
+          { color: neutral77, marginBottom: layout.spacing_x0_75 },
+        ]}
       >
         {label}
       </BrandText>
@@ -831,7 +847,10 @@ const PresaleActivy: React.FC<{
           }}
         >
           <BrandText
-            style={[fontSemibold16, { color: neutral77, marginRight: layout.spacing_x0_5 }]}
+            style={[
+              fontSemibold16,
+              { color: neutral77, marginRight: layout.spacing_x0_5 },
+            ]}
           >
             Whitelist
           </BrandText>
@@ -850,20 +869,29 @@ const PresaleActivy: React.FC<{
           {maxPerAddress && maxPerAddress !== "0" ? (
             <>
               <BrandText
-                style={[fontSemibold16, { color: neutral77, marginRight: layout.spacing_x0_5 }]}
+                style={[
+                  fontSemibold16,
+                  { color: neutral77, marginRight: layout.spacing_x0_5 },
+                ]}
               >
                 Max
               </BrandText>
               <BrandText style={fontSemibold16}>{maxPerAddress}</BrandText>
               <BrandText
-                style={[fontSemibold16, { color: neutral77, marginLeft: layout.spacing_x0_5 }]}
+                style={[
+                  fontSemibold16,
+                  { color: neutral77, marginLeft: layout.spacing_x0_5 },
+                ]}
               >
                 Token
               </BrandText>
             </>
           ) : (
             <BrandText
-              style={[fontSemibold16, { color: neutral77, marginRight: layout.spacing_x0_5 }]}
+              style={[
+                fontSemibold16,
+                { color: neutral77, marginRight: layout.spacing_x0_5 },
+              ]}
             >
               Unlimited
             </BrandText>
