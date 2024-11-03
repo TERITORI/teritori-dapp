@@ -112,7 +112,6 @@ export default function MiniTextInput({
                 source={icon}
                 width={iconSize ?? 22}
                 height={iconSize ?? 22}
-                color="#999999"
               />
               <SpacerRow size={1} />
             </>
