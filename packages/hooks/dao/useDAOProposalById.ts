@@ -20,12 +20,12 @@ import { extractGnoJSONString } from "@/utils/gno";
 
 const daoProposalByIdQueryKey = (
   daoId: string | undefined,
-  proposalId: string | undefined,
+  proposalId: number | undefined,
 ) => ["dao-proposals", daoId, proposalId];
 
 export const useDAOProposalById = (
   daoId: string | undefined,
-  proposalId: string | undefined,
+  proposalId: number | undefined,
 ) => {
   const { setToast } = useFeedbacks();
   const [network, daoAddress] = parseUserId(daoId);
@@ -85,7 +85,7 @@ export const useDAOProposalById = (
 
 const useCosmWasmDAOProposalById = (
   daoId: string | undefined,
-  proposalId: string | undefined,
+  proposalId: number | undefined,
 ) => {
   const { setToast } = useFeedbacks();
   const [network] = parseUserId(daoId);
@@ -109,7 +109,7 @@ const useCosmWasmDAOProposalById = (
         );
 
         const daoProposal = await daoProposalClient.proposal({
-          proposalId: parseInt(proposalId, 10),
+          proposalId,
         });
 
         return cosmwasmToAppProposal(daoProposal);

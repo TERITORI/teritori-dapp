@@ -53,7 +53,9 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
     launchpadProject && parseCollectionData(launchpadProject);
   const { daoProposal } = useDAOProposalById(
     launchpadAdminId,
-    launchpadProject?.proposalId,
+    launchpadProject?.proposalId
+      ? parseInt(launchpadProject.proposalId, 10)
+      : undefined,
   );
   const isLoading = useMemo(
     () => isUserAdminLoading || isProjectsLoading,
