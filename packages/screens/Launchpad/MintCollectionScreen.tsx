@@ -84,7 +84,7 @@ import {
 import { layout } from "@/utils/style/layout";
 
 const maxImageSize = 532;
-const cardsHalfGap = 6;
+const cardsHalfGap = layout.spacing_x0_75;
 
 const sleep = (duration: number) =>
   new Promise((resolve) => setTimeout(resolve, duration));
@@ -349,7 +349,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   if (notFound) {
     return (
       <ScreenContainer noMargin>
-        <View style={{ alignItems: "center", width: "100%", marginTop: 40 }}>
+        <View style={{ alignItems: "center", width: "100%", marginTop: layout.spacing_x5 }}>
           <BrandText>Collection not found</BrandText>
         </View>
       </ScreenContainer>
@@ -377,9 +377,9 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 margin: layout.spacing_x2,
               }}
             >
-              <BrandText style={{ marginBottom: 12 }}>{info.name}</BrandText>
+              <BrandText style={{ marginBottom: layout.spacing_x1_5 }}>{info.name}</BrandText>
 
-              <View style={{ marginBottom: 20 }}>
+              <View style={{ marginBottom: layout.spacing_x2_5 }}>
                 <View
                   style={{
                     flexDirection: "row",
@@ -694,7 +694,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 margin: layout.spacing_x2,
               }}
             >
-              <LegacyTertiaryBox style={{ marginBottom: 40 }}>
+              <LegacyTertiaryBox style={{ marginBottom: layout.spacing_x5 }}>
                 {info.image ? (
                   <OptimizedImage
                     sourceURI={info.image}
@@ -715,12 +715,12 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                       justifyContent: "center",
                     }}
                   >
-                    <ActivityIndicator size="large" style={{ margin: 40 }} />
+                    <ActivityIndicator size="large" style={{ margin: layout.spacing_x5 }} />
                   </View>
                 )}
               </LegacyTertiaryBox>
 
-              <BrandText style={[fontSemibold20, { marginBottom: 24 }]}>
+              <BrandText style={[fontSemibold20, { marginBottom: layout.spacing_x3 }]}>
                 Activity
               </BrandText>
               {info.mintStarted ? (
@@ -768,12 +768,12 @@ const AttributesCard: React.FC<{
       height={62}
       mainContainerStyle={{
         alignItems: "flex-start",
-        paddingHorizontal: 12,
-        paddingVertical: 14,
+        paddingHorizontal: layout.spacing_x1_5,
+        paddingVertical: layout.spacing_x1_75,
       }}
     >
       <BrandText
-        style={[fontSemibold12, { color: neutral77, marginBottom: 6 }]}
+        style={[fontSemibold12, { color: neutral77, marginBottom: layout.spacing_x0_75 }]}
       >
         {label}
       </BrandText>
@@ -815,7 +815,7 @@ const PresaleActivy: React.FC<{
       <View
         style={[
           {
-            marginBottom: 24,
+            marginBottom: layout.spacing_x3,
           },
           !running && {
             borderBottomColor: neutral33,
@@ -827,11 +827,11 @@ const PresaleActivy: React.FC<{
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginVertical: 16,
+            marginVertical: layout.spacing_x2,
           }}
         >
           <BrandText
-            style={[fontSemibold16, { color: neutral77, marginRight: 5 }]}
+            style={[fontSemibold16, { color: neutral77, marginRight: layout.spacing_x0_5 }]}
           >
             Whitelist
           </BrandText>
@@ -842,7 +842,7 @@ const PresaleActivy: React.FC<{
               borderRadius: 999,
               width: 2,
               height: 2,
-              marginHorizontal: 12,
+              marginHorizontal: layout.spacing_x1_5,
               backgroundColor: neutral77,
             }}
           />
@@ -850,20 +850,20 @@ const PresaleActivy: React.FC<{
           {maxPerAddress && maxPerAddress !== "0" ? (
             <>
               <BrandText
-                style={[fontSemibold16, { color: neutral77, marginRight: 5 }]}
+                style={[fontSemibold16, { color: neutral77, marginRight: layout.spacing_x0_5 }]}
               >
                 Max
               </BrandText>
               <BrandText style={fontSemibold16}>{maxPerAddress}</BrandText>
               <BrandText
-                style={[fontSemibold16, { color: neutral77, marginLeft: 5 }]}
+                style={[fontSemibold16, { color: neutral77, marginLeft: layout.spacing_x0_5 }]}
               >
                 Token
               </BrandText>
             </>
           ) : (
             <BrandText
-              style={[fontSemibold16, { color: neutral77, marginRight: 5 }]}
+              style={[fontSemibold16, { color: neutral77, marginRight: layout.spacing_x0_5 }]}
             >
               Unlimited
             </BrandText>
