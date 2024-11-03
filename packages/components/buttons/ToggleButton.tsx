@@ -1,10 +1,12 @@
-import { SwitchProps, Switch } from "react-native";
+import { SwitchProps, Switch, Platform } from "react-native";
 
 import {
   blueDefault,
   neutral33,
+  neutral67,
   neutral99,
   secondaryColor,
+  withAlpha,
 } from "@/utils/style/colors";
 
 interface ToggleButtonProps extends SwitchProps {
@@ -38,8 +40,24 @@ export default function ToggleButton({
     <Switch
       // @ts-expect-error: the active thumb color is a weird green on web that can't be changed without "activeThumbColor"
       activeThumbColor={secondaryColor}
-      trackColor={{ false: neutral33, true: blueDefault }}
-      thumbColor={isActive ? secondaryColor : neutral99}
+      trackColor={{
+        false: neutral33,
+        true:
+          Platform.OS === "android"
+            ? disabled
+              ? withAlpha(blueDefault, 0.6)
+              : blueDefault
+            : blueDefault,
+      }}
+      thumbColor={
+        isActive
+          ? Platform.OS === "android"
+            ? disabled
+              ? neutral67
+              : secondaryColor
+            : secondaryColor
+          : neutral99
+      }
       ios_backgroundColor={getIOSBackgroundColor()}
       value={isActive}
       onValueChange={onValueChangeHandler}
