@@ -304,62 +304,35 @@ pub struct Collection {
     pub symbol: String, // Unique
     pub cover_img_uri: String,
     pub target_network: String,
-    // pub external_link: Option<String>,
-
     // Collection details ----------------------------
-    pub website_link: Option<String>,
-
-    // pub twitter_profile: String,
-    // pub twitter_followers_count: u64,
-
-    // pub contact_discord_name: String,
+    pub website_link: String,
     pub contact_email: String,
-
     pub is_project_derivative: bool,
-
     pub project_type: String,
     pub project_desc: String,
-
     pub is_applied_previously: bool,
-
     // Team info --------------------------------------
     pub team_desc: String,
-    // pub team_link: String,
-
     pub partners: String,
-
     pub investment_desc: String,
     pub investment_link: String,
-
-    // pub whitepaper_link: String,
-    // pub roadmap_link: String,
-
     // Additional info ----------------------------
     pub artwork_desc: String,
-
     pub is_ready_for_mint: bool,
-
     pub expected_supply: u64,
     pub expected_public_mint_price: u64,
     pub expected_mint_date: u64,
-
     pub escrow_mint_proceeds_period: u64,
     pub is_dox: bool,
-
     pub dao_whitelist_count: u32,
-
     pub reveal_time: Option<u64>,
-
     // Minting details ----------------------------
     pub tokens_count: u64,
-
     // Mint periods --------------------------
     pub mint_periods: Vec<Tr721MintPeriod>,
-
     // Royalty --------------------------
     pub royalty_address: Option<Addr>,
     pub royalty_percentage: Option<u8>,
-
     // Extend info --------------------------
     pub base_token_uri: Option<String>,
     pub metadatas_merkle_root: Option<String>,
@@ -372,6 +345,7 @@ pub enum CollectionState {
     Pending,  // When user summit the collection but not deployed yet
     Deployed, // When collection has been deployed
 }
+
 
 
 
