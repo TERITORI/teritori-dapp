@@ -239,7 +239,7 @@ export const ZodCollectionDataResult = z.object({
   target_network: z.string(),
   team_desc: z.string(),
   tokens_count: z.number(),
-  website_link: z.string().optional(),
+  website_link: z.string(),
 });
 
 export type CollectionDataResult = z.infer<typeof ZodCollectionDataResult>;
