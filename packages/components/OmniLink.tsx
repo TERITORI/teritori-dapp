@@ -58,7 +58,12 @@ export const OmniLink: React.FC<{
   }
 
   return (
-    <TouchableOpacity style={style} onPress={onPress} {...props}>
+    <TouchableOpacity
+      style={style}
+      onPress={onPress}
+      disabled={disabled}
+      {...props}
+    >
       {children}
     </TouchableOpacity>
   );
