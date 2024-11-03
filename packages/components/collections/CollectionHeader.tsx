@@ -249,7 +249,7 @@ export const CollectionHeader: React.FC<{
               <SocialButtonSecondary
                 text="Explorer"
                 iconSvg={etherscanSVG}
-                style={{ marginRight: 12 }}
+                style={{ marginRight: 12, height: 46 }}
                 onPress={() => {
                   const url = contractExplorerLink(
                     network?.id,
@@ -261,6 +261,7 @@ export const CollectionHeader: React.FC<{
               <SocialButtonSecondary
                 text="Share"
                 iconSvg={shareSVG}
+                style={{ marginRight: 12, height: 46 }}
                 onPress={onShare}
               />
             </View>
