@@ -37,55 +37,15 @@ export const CreatorInformation: React.FC<{
           flexWrap: "wrap",
         }}
       >
-        <ApplicationCard
-          title="Creator Name"
-          value={creatorDisplayName}
-          style={{ flex: 2 }}
-        />
-        <ApplicationCard
-          title="Twitter URL"
-          // value={collectionData.twitter_profile}
-          value="0"
-          style={{ flex: 2 }}
-        />
-
         <View
           style={{ flex: 2, flexDirection: "row", gap: layout.spacing_x1_5 }}
         >
+          <ApplicationCard title="Creator Name" value={creatorDisplayName} />
           <ApplicationCard
-            title="Twitter Follower Range"
-            value="TODO" //TODO: ?
-            style={{ flex: 1, borderColor: "red" }}
-          />
-          <ApplicationCard
-            title="Twitter Follower Count"
-            // value={collectionData.twitter_followers_count.toString()}
-            value="0"
-            style={{ flex: 1 }}
+            title="Main Contact Email"
+            value={collectionData.contact_email}
           />
         </View>
-      </View>
-      <View
-        style={{
-          flexDirection: width >= launchpadReviewBreakpointM ? "row" : "column",
-          marginTop: layout.spacing_x1_5,
-          gap: layout.spacing_x1_5,
-        }}
-      >
-        <ApplicationCard
-          title="Main Contact Discord"
-          // value={collectionData.contact_discord_name}
-          value="TODO"
-        />
-        <ApplicationCard
-          title="Discord URL"
-          value="TODO" //TODO: ? We don't have input for this data
-          style={{ borderColor: "red" }}
-        />
-        <ApplicationCard
-          title="Main Contact Email"
-          value={collectionData.contact_email}
-        />
       </View>
     </View>
   );

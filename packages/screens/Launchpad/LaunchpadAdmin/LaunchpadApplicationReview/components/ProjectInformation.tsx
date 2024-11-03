@@ -2,7 +2,6 @@ import React from "react";
 import { useWindowDimensions, View } from "react-native";
 
 import { ApplicationCard } from "./ApplicationCard";
-import { LinkCard } from "./LinkCard";
 
 import { BrandText } from "@/components/BrandText";
 import { launchpadReviewBreakpointM } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplicationReview/LaunchpadApplicationReviewScreen";
@@ -34,24 +33,14 @@ export const ProjectInformation: React.FC<{
           title="Project Description"
           value={collectionData.project_desc}
         />
-        <LinkCard
-          title="Other Links"
-          linksData={[
-            { title: "Instagram", link: "TODO" }, //TODO: ?   We have only one input for these 3 data (external_link)
-            { title: "Telegram", link: "TODO" }, //TODO: ?
-            { title: "Signal", link: "TODO" }, //TODO: ?
-          ]}
-          style={{ borderColor: "red" }}
+        <ApplicationCard
+          title="Website Link"
+          value={collectionData.website_link}
         />
         <View style={{ flex: 1, gap: layout.spacing_x1_5 }}>
           <ApplicationCard
             title="Previous Apply"
             value={collectionData.is_applied_previously ? "Yes" : "No"}
-          />
-          <ApplicationCard
-            title="Previous Type"
-            value="TODO"
-            style={{ borderColor: "red" }} //TODO: ?  We don't have inout for this data
           />
         </View>
       </View>

@@ -1,13 +1,11 @@
 import React from "react";
-import { View, Image } from "react-native";
+import { View, Linking } from "react-native";
 
 import { ApplicationCard } from "./ApplicationCard";
 
-import guardianPng from "@/assets/default-images/guardian_profile.png";
-import discordSVG from "@/assets/icons/discord.svg";
-import twitterSVG from "@/assets/icons/twitter.svg";
 import websiteSVG from "@/assets/icons/website.svg";
 import { BrandText } from "@/components/BrandText";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import { BoxStyle } from "@/components/boxes/Box";
 import { SocialButton } from "@/components/buttons/SocialButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
@@ -97,22 +95,10 @@ export const ApplicationDetail: React.FC<{
           }}
         >
           <SocialButton
-            text="Discord"
-            iconSvg={discordSVG}
-            // onPress={() => Linking.openURL(collectionData.contact_discord_name)}
+            text="Website"
+            iconSvg={websiteSVG}
+            onPress={() => Linking.openURL(collectionData.website_link)}
           />
-          <SocialButton
-            text="Twitter"
-            iconSvg={twitterSVG}
-            // onPress={() => Linking.openURL(collectionData.twitter_profile)}
-          />
-          {!!collectionData.website_link && (
-            <SocialButton
-              text="Website"
-              iconSvg={websiteSVG}
-              // onPress={() => Linking.openURL(collectionData.website_link)}
-            />
-          )}
         </View>
       </View>
 
@@ -123,8 +109,10 @@ export const ApplicationDetail: React.FC<{
       )}
 
       {/* ===== Right container */}
-      <Image
+      <OptimizedImage
         resizeMode="contain"
+        height={width >= breakpointM ? 534 : 380}
+        width={width >= breakpointM ? 534 : 380}
         style={[
           {
             height: width >= breakpointM ? 534 : 380,
@@ -132,7 +120,7 @@ export const ApplicationDetail: React.FC<{
           },
           width >= breakpointM && { flex: 1 },
         ]}
-        source={guardianPng}
+        sourceURI={collectionData.cover_img_uri}
       />
     </View>
   );

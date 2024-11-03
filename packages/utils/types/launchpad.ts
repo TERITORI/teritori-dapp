@@ -92,11 +92,11 @@ export const ZodCollectionFormValues = z.object({
   websiteLink: z
     .string()
     .trim()
+    .min(1, DEFAULT_FORM_ERRORS.required)
     .refine(
       (value) => !value || URL_REGEX.test(value),
       DEFAULT_FORM_ERRORS.onlyUrl,
-    )
-    .optional(),
+    ),
   email: z
     .string()
     .trim()
