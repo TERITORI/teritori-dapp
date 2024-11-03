@@ -8,15 +8,16 @@ import React, {
 } from "react";
 import { Pressable, View } from "react-native";
 
-import infoSVG from "../../../../../assets/icons/info.svg";
 import { FadeInView } from "../FadeInView";
 
+import infoSVG from "@/assets/icons/info.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
-import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { Box } from "@/components/boxes/Box";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import {
+  neutral33,
   neutral77,
   neutralA3,
   primaryColor,
@@ -131,13 +132,13 @@ export const SwapSettings: React.FC<{
   if (settingsOpened)
     return (
       <FadeInView style={{ position: "absolute", right: 20, top: 55 }}>
-        <LegacyTertiaryBox
-          mainContainerStyle={{
+        <Box
+          style={{
+            borderWidth: 1,
+            borderColor: neutral33,
             padding: layout.spacing_x2_5,
             alignItems: "flex-start",
           }}
-          width={306}
-          noBrokenCorners
         >
           <BrandText style={fontSemibold16}>Transaction Settings</BrandText>
 
@@ -161,17 +162,17 @@ export const SwapSettings: React.FC<{
               onHoverIn={() => setInfoVisible(true)}
               onHoverOut={() => setInfoVisible(false)}
             >
-              <SVG source={infoSVG} width={16} height={16} />
+              <SVG source={infoSVG} width={16} height={16} color={neutral77} />
             </CustomPressable>
           </View>
 
-          <LegacyTertiaryBox
-            mainContainerStyle={{
+          <Box
+            style={{
               padding: layout.spacing_x0_5,
               flexDirection: "row",
+              borderWidth: 1,
+              borderColor: neutral33,
             }}
-            fullWidth
-            noBrokenCorners
           >
             {slippageItems.map((item, index) => (
               <SelectableItem
@@ -231,22 +232,28 @@ export const SwapSettings: React.FC<{
                 %
               </BrandText>
             </SelectableItem>
-          </LegacyTertiaryBox>
+          </Box>
 
           {/*====== Info box */}
           {infoVisible && (
-            <LegacyTertiaryBox
-              mainContainerStyle={{ padding: layout.spacing_x2 }}
-              style={{ position: "absolute", left: -36, top: -26 }}
-              noBrokenCorners
+            <Box
+              style={{
+                borderWidth: 1,
+                borderColor: neutral33,
+
+                padding: layout.spacing_x2,
+                position: "absolute",
+                left: -36,
+                top: -26,
+              }}
             >
               <BrandText style={fontSemibold14}>
                 Your transaction will revert if the price changes {"\n"}
                 unfavorably by more than this percentage.
               </BrandText>
-            </LegacyTertiaryBox>
+            </Box>
           )}
-        </LegacyTertiaryBox>
+        </Box>
       </FadeInView>
     );
   return <></>;
