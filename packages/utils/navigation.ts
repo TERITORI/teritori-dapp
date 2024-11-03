@@ -1,5 +1,6 @@
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import * as Linking from "expo-linking";
 import React from "react";
 
 import { feedsTabItems } from "./social-feed";
@@ -127,7 +128,7 @@ export type RootStackParamList = {
   MiniDAppStore: undefined;
   MiniNewConversation: undefined;
   MiniFriend: { activeTab?: "friends" | "requests" };
-  MiniAddFriend: undefined;
+  MiniAddFriend: { contactUrl: string } | undefined;
   MiniNewGroup: undefined;
   MiniChatSetting: { back?: RouteName };
   MiniPreferencesSetting: { back?: RouteName };
@@ -295,7 +296,7 @@ const navConfig: {
     MiniWallets: "mini-wallet",
     MiniFeeds: "mini-feed",
     MiniCreatePost: "mini-create-post",
-    Conversation: "mini-conversation",
+    Conversation: "mini-conversation/:conversationId",
     MiniProfile: "mini-profile",
     MiniProfileDetail: "mini-profile-detail",
     MiniDAppStore: "mini-dApp-store",
@@ -338,7 +339,9 @@ const navConfig: {
   },
 };
 
+const prefix = Linking.createURL("/");
+
 export const linking = {
-  prefixes: [],
+  prefixes: [prefix, "https://app.teritori.com"],
   config: navConfig,
 };

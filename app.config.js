@@ -1,5 +1,6 @@
 const config = {
   expo: {
+    scheme: "teritori",
     name: "Teritori",
     slug: "teritori",
     version: "1.0.3",
@@ -29,6 +30,7 @@ const config = {
         ITSAppUsesNonExemptEncryption: false,
         UIBackgroundModes: ["audio"],
       },
+      // associatedDomains: ["applinks:app.teritori.com"], FIXME: when adding this ios is not build but it is needed for deep linking
     },
     android: {
       package: "com.teritori",
@@ -46,6 +48,21 @@ const config = {
         "ACCESS_WIFI_STATE",
         "CHANGE_WIFI_MULTICAST_STATE",
         "NFC",
+      ],
+      scheme: "teritori",
+      intentFilters: [
+        {
+          action: "VIEW",
+          autoVerify: true,
+          data: [
+            {
+              scheme: "https",
+              host: "app.teritori.com",
+              pathPrefix: "/",
+            },
+          ],
+          category: ["BROWSABLE", "DEFAULT"],
+        },
       ],
     },
     web: {
