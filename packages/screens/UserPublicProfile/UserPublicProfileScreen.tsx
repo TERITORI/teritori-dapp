@@ -39,6 +39,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
 }) => {
   const navigation = useAppNavigation();
   const [network, userAddress] = parseUserId(id);
+  console.log(userAddress);
   useForceNetworkSelection(network?.id);
   const { metadata, notFound } = useNSUserInfo(id);
   const screenContainerOtherProps: Partial<ScreenContainerProps> =

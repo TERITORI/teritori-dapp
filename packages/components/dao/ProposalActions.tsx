@@ -10,15 +10,15 @@ import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
 import { useDAOFirstProposalModule } from "../../hooks/dao/useDAOProposalModules";
 import { useInvalidateDAOProposals } from "../../hooks/dao/useDAOProposals";
 import {
-  useInvalidateDAOVoteInfo,
   useDAOVoteInfo,
+  useInvalidateDAOVoteInfo,
 } from "../../hooks/dao/useDAOVoteInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, getNetwork, parseUserId } from "../../networks";
 import { adenaVMCall } from "../../utils/gno";
 import { GnoDAOVoteRequest } from "../../utils/gnodao/messages";
-import { neutral77, primaryColor, errorColor } from "../../utils/style/colors";
+import { errorColor, neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { PrimaryButton } from "../buttons/PrimaryButton";
@@ -101,6 +101,7 @@ export const ProposalActions: React.FC<{
             vote: gnoVote,
             rationale: "Me like it",
           };
+          console.log(pkgPath);
           await adenaVMCall(networkId, {
             caller: walletAddress,
             send: "",
@@ -263,13 +264,13 @@ export const ProposalActions: React.FC<{
           size="M"
           color={errorColor}
           onPress={() => vote("no")}
-          // loader
+        // loader
         />
         <TertiaryButton
           text="Abstain"
           size="M"
           onPress={() => vote("abstain")}
-          // loader
+        // loader
         />
       </View>
     );

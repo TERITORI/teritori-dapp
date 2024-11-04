@@ -4,12 +4,12 @@ import { Buffer } from "buffer";
 import { useCallback, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { useCreatePost } from "./useCreatePost";
-import { useFeedPostFee } from "./useFeedPostFee";
-import { useFreePostsCount } from "./useFreePostsCount";
 import { useIsDAO } from "../cosmwasm/useCosmWasmContractInfo";
 import { useDAOMakeProposal } from "../dao/useDAOMakeProposal";
 import { useBalances } from "../useBalances";
+import { useCreatePost } from "./useCreatePost";
+import { useFeedPostFee } from "./useFeedPostFee";
+import { useFreePostsCount } from "./useFreePostsCount";
 
 import { signingSocialFeedClient } from "@/client-creators/socialFeedClient";
 import {
@@ -23,7 +23,9 @@ import { defaultSocialFeedFee } from "@/utils/fee";
 import { TERITORI_FEED_ID } from "@/utils/feed/constants";
 import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
 import { adenaDoContract, AdenaDoContractMessageType } from "@/utils/gno";
+import { GnoSingleChoiceProposal } from "@/utils/gnodao/messages";
 import { PostCategory } from "@/utils/types/feed";
+import useSelectedWallet from "../useSelectedWallet";
 
 export const useFeedPosting = (
   networkId: string | undefined,
@@ -43,8 +45,9 @@ export const useFeedPosting = (
   const { freePostCount } = useFreePostsCount(userId, category);
   const { isDAO } = useIsDAO(userId);
   const makeProposal = useDAOMakeProposal(isDAO ? userId : undefined);
+  const selectedWallet = useSelectedWallet();
   const { mutateAsync, isLoading: isProcessing } = useCreatePost({
-    onMutate: () => {},
+    onMutate: () => { },
     onSuccess,
   });
 
@@ -74,34 +77,63 @@ export const useFeedPosting = (
       };
 
       if (isDAO) {
-        const network = mustGetCosmosNetwork(networkId);
+        if (network?.kind === NetworkKind.Gno) {
+          if (!selectedWallet) {
+            throw new Error("No wallet selected");
+          }
+          const propReq: GnoSingleChoiceProposal = {
+            title: "Post on feed",
+            description: JSON.stringify(msg),
+            messages: [],
+          }
 
-        if (!network.socialFeedContractAddress) {
-          throw new Error("Social feed contract address not found");
-        }
-        if (!userAddress) {
-          throw new Error("Invalid sender");
-        }
-        setStep(feedPostingStep(FeedPostingStepId.PROPOSING));
+          setStep(feedPostingStep(FeedPostingStepId.PROPOSING));
+          const vmCall = {
+            caller: selectedWallet.address,
+            send: "",
+            pkg_path: userAddress,
+            func: "ProposeJSON",
+            args: ["0", JSON.stringify(propReq)],
+          }
+          const txHash = await adenaDoContract(
+            network.id,
+            [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
+            { gasWanted: 20_000_000 },
+          );
+          const provider = new GnoJSONRPCProvider(network.endpoint);
+          await provider.waitForTransaction(txHash);
+          setStep(feedPostingStep(FeedPostingStepId.DONE));
+          onSuccess && onSuccess();
+        } else {
+          const network = mustGetCosmosNetwork(networkId);
 
-        await makeProposal(userAddress, {
-          title: "Post on feed",
-          description: "",
-          msgs: [
-            {
-              wasm: {
-                execute: {
-                  contract_addr: network.socialFeedContractAddress,
-                  msg: Buffer.from(
-                    JSON.stringify({ create_post: msg }),
-                  ).toString("base64"),
-                  funds: [{ amount: postFee.toString(), denom: "utori" }],
+          if (!network.socialFeedContractAddress) {
+            throw new Error("Social feed contract address not found");
+          }
+          if (!userAddress) {
+            throw new Error("Invalid sender");
+          }
+          setStep(feedPostingStep(FeedPostingStepId.PROPOSING));
+
+          await makeProposal(userAddress, {
+            title: "Post on feed",
+            description: "",
+            msgs: [
+              {
+                wasm: {
+                  execute: {
+                    contract_addr: network.socialFeedContractAddress,
+                    msg: Buffer.from(
+                      JSON.stringify({ create_post: msg }),
+                    ).toString("base64"),
+                    funds: [{ amount: postFee.toString(), denom: "utori" }],
+                  },
                 },
               },
-            },
-          ],
-        });
-        setStep(feedPostingStep(FeedPostingStepId.DONE));
+            ],
+          });
+          setStep(feedPostingStep(FeedPostingStepId.DONE));
+        }
       } else {
         if (network?.kind === NetworkKind.Gno) {
           parentPostIdentifier = !parentPostIdentifier

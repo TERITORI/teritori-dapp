@@ -41,9 +41,9 @@ import { useIpfs } from "@/hooks/useIpfs";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { getNetworkFeature, getUserId, NetworkFeature } from "@/networks";
+import { NetworkFeature, getNetworkFeature } from "@/networks";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
-import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
+import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
 import { generatePostMetadata, getPostCategory } from "@/utils/feed/queries";
 import { generateIpfsKey } from "@/utils/ipfs";
 import {
@@ -141,7 +141,9 @@ export const NewsFeedInput = React.forwardRef<
     const selectedNetwork = useSelectedNetworkInfo();
     const selectedNetworkId = selectedNetwork?.id || "teritori";
     const selectedWallet = useSelectedWallet();
-    const userId = getUserId(selectedNetworkId, selectedWallet?.address);
+    const userId = daoId
+      ? daoId
+      : selectedWallet?.userId;
     const inputRef = useRef<TextInput>(null);
     const { setToastError } = useFeedbacks();
     const [isUploadLoading, setIsUploadLoading] = useState(false);
@@ -399,11 +401,9 @@ export const NewsFeedInput = React.forwardRef<
                     onSelectionChange={(event) =>
                       setSelection(event.nativeEvent.selection)
                     }
-                    placeholder={`Hey yo! ${
-                      type === "post" ? "Post something" : "Write your comment"
-                    } ${
-                      windowWidth < RESPONSIVE_BREAKPOINT_S ? "" : "here! _____"
-                    }`}
+                    placeholder={`Hey yo! ${type === "post" ? "Post something" : "Write your comment"
+                      } ${windowWidth < RESPONSIVE_BREAKPOINT_S ? "" : "here! _____"
+                      }`}
                     placeholderTextColor={neutral77}
                     onChangeText={handleTextChange}
                     multiline
@@ -437,13 +437,13 @@ export const NewsFeedInput = React.forwardRef<
                     color: !formValues?.message
                       ? neutral77
                       : formValues?.message?.length >
-                            SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
-                              CHARS_LIMIT_WARNING_MULTIPLIER &&
-                          formValues?.message?.length <
-                            SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
+                        CHARS_LIMIT_WARNING_MULTIPLIER &&
+                        formValues?.message?.length <
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                         ? yellowDefault
                         : formValues?.message?.length >=
-                            SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                           ? errorColor
                           : primaryColor,
                     marginTop: layout.spacing_x0_5,
@@ -616,8 +616,8 @@ export const NewsFeedInput = React.forwardRef<
                     (formValues.files?.[0] &&
                       formValues.files[0].fileType !== "image") ||
                     (formValues.files || []).length +
-                      (formValues.gifs || [])?.length >=
-                      MAX_IMAGES
+                    (formValues.gifs || [])?.length >=
+                    MAX_IMAGES
                   }
                 />
                 {appMode !== "mini" && (
@@ -677,8 +677,8 @@ export const NewsFeedInput = React.forwardRef<
                             (formValues.files?.[0] &&
                               formValues.files[0].fileType !== "image") ||
                             (formValues.files || []).length +
-                              (formValues.gifs || [])?.length >=
-                              MAX_IMAGES
+                            (formValues.gifs || [])?.length >=
+                            MAX_IMAGES
                           }
                           icon={cameraSVG}
                           onPress={onPress}
@@ -713,7 +713,7 @@ export const NewsFeedInput = React.forwardRef<
                       size="M"
                       color={
                         formValues?.message.length >
-                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                           ? primaryTextColor
                           : primaryColor
                       }
@@ -723,7 +723,7 @@ export const NewsFeedInput = React.forwardRef<
                       }}
                       backgroundColor={
                         formValues?.message.length >
-                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                           ? primaryColor
                           : neutral17
                       }
