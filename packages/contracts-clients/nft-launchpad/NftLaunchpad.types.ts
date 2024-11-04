@@ -10,7 +10,7 @@ export interface InstantiateMsg {
   [k: string]: unknown;
 }
 export interface Config {
-  launchpad_admin?: string | null;
+  launchpad_admin: Addr;
   name: string;
   nft_code_id?: number | null;
   owner: Addr;

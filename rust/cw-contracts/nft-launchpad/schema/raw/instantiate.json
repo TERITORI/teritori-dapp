@@ -18,16 +18,14 @@
     "Config": {
       "type": "object",
       "required": [
+        "launchpad_admin",
         "name",
         "owner",
         "supported_networks"
       ],
       "properties": {
         "launchpad_admin": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "$ref": "#/definitions/Addr"
         },
         "name": {
           "type": "string"
