@@ -36,61 +36,35 @@ fn get_default_collection() -> Collection {
         symbol: "SYMBOL".to_string(),
         cover_img_uri: "img".to_string(),
         target_network: "network".to_string(),
-        // external_link: None,
-
         // Collection details ----------------------------
-        website_link: None,
-
-        // twitter_profile: "twitter_profile".to_string(),
-        // twitter_followers_count: 1,
-
-        // contact_discord_name: "contact_discord_name".to_string(),
+        website_link: "website_link".to_string(),
         contact_email: "contact_email".to_string(),
-
         is_project_derivative: true,
-
         project_type: "project_type".to_string(),
         project_desc: "project_desc".to_string(),
-
         is_applied_previously: false,
-
         // Team info --------------------------------------
         team_desc: "team_desc".to_string(),
-        // team_link: "team_link".to_string(),
-
         partners: "partners".to_string(),
-
         investment_desc: "investment_desc".to_string(),
         investment_link: "investment_link".to_string(),
-
-        // whitepaper_link: "whitepaper_link".to_string(),
-        // roadmap_link: "roadmap_link".to_string(),
-
         // Additional info ----------------------------
         artwork_desc: "artwork_desc".to_string(),
-
         is_ready_for_mint: true,
-
         expected_supply: 1000,
         expected_public_mint_price: 100,
         expected_mint_date: u64::default(),
-
         escrow_mint_proceeds_period: u64::default(),
         is_dox: true,
-
         dao_whitelist_count: 10,
-
         // Minting details ----------------------------
         tokens_count: 1000,
         reveal_time: Some(u64::default()),
-
         // Whitelist minting --------------------------
         mint_periods,
-
         // Royalty --------------------------
         royalty_address: Some(Addr::unchecked("royalty_address")),
         royalty_percentage: Some(50),
-
         // Extend info --------------------------
         base_token_uri: None,
         metadatas_merkle_root: None,
@@ -104,13 +78,14 @@ fn instantiate() {
     let app = App::default();
     let code_id = LaunchpadCodeId::store_code(&app);
     let sender = "sender";
+    let admin: &str = "admin";
 
     // Instantiate
     let config = Config {
         name: "teritori launchpad".to_string(),
         supported_networks: vec![],
         nft_code_id: None,
-        deployer: None,
+        launchpad_admin: Addr::unchecked(admin),
         owner: Addr::unchecked(sender),
     };
 
@@ -128,6 +103,7 @@ fn full_flow() {
 
     let app: App<sylvia::cw_multi_test::App> = App::default();
     let sender = "sender";
+    let admin: &str = "admin";
 
     // Deploy NFT contract for non-sylvia contract
     // let contract_wrapper = ContractWrapper::new(tr721_execute, tr721_instantiate, tr721_query);
@@ -144,7 +120,7 @@ fn full_flow() {
             name: "teritori launchpad".to_string(),
             supported_networks: vec![],
             nft_code_id: None,
-            deployer: None,
+            launchpad_admin: Addr::unchecked(admin),
             owner: Addr::unchecked(sender),
         })
         .call(sender)
@@ -218,7 +194,7 @@ fn full_flow() {
             .deploy_collection("SYMBOL_NOT_EXIST".to_string())
             .call(sender)
             .unwrap_err();
-        assert_eq!(err, ContractError::DeployerMissing)
+        assert_eq!(err, ContractError::AdminMissing)
     }
 
     // Update config when sender is not contract owner 
@@ -228,7 +204,7 @@ fn full_flow() {
                 name: "test".to_string(),
                 nft_code_id: Some(deployed_nft_code_id),
                 supported_networks: vec![],
-                deployer: Some(sender.to_string()),
+                launchpad_admin: Some(admin.to_string()),
                 owner: Some(sender.to_string()),
             })
             .call("wrong_owner")
@@ -243,7 +219,7 @@ fn full_flow() {
                 name: "test".to_string(),
                 supported_networks: vec![],
                 nft_code_id: None,
-                deployer: Some("deployer".to_string()),
+                launchpad_admin: Some(admin.to_string()),
                 owner: Some(sender.to_string()),
             })
             .call(sender)
@@ -253,7 +229,7 @@ fn full_flow() {
             .deploy_collection("SYMBOL_NOT_EXIST".to_string())
             .call(sender)
             .unwrap_err();
-        assert_eq!(err, ContractError::WrongDeployer)
+        assert_eq!(err, ContractError::WrongAdmin)
     }
 
     // Set sender as deployer and Deploy inexist collection  ---------------------------------------------------------
@@ -263,7 +239,7 @@ fn full_flow() {
                 name: "test".to_string(),
                 supported_networks: vec![],
                 nft_code_id: None,
-                deployer: Some(sender.to_string()),
+                launchpad_admin: Some(admin.to_string()),
                 owner: Some(sender.to_string()),
             })
             .call(sender)
@@ -328,7 +304,7 @@ fn full_flow() {
                 name: "test".to_string(),
                 nft_code_id: Some(deployed_nft_code_id),
                 supported_networks: vec![],
-                deployer: Some(sender.to_string()),
+                launchpad_admin: Some(admin.to_string()),
                 owner: Some(sender.to_string()),
             })
             .call(sender)

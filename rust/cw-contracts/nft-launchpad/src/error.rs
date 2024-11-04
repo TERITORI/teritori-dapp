@@ -13,8 +13,8 @@ pub enum ContractError {
     #[error("Merkle root missing.")]
     MerkleRootMissing,
 
-    #[error("Deployer missing.")]
-    DeployerMissing,
+    #[error("Admin missing.")]
+    AdminMissing,
 
     #[error("Unauthorized.")]
     Unauthorized,
@@ -37,8 +37,8 @@ pub enum ContractError {
     #[error("Wrong collection owner.")]
     WrongCollectionOwner,
 
-    #[error("Wrong deployer.")]
-    WrongDeployer,
+    #[error("Wrong admin.")]
+    WrongAdmin,
 
     #[error("Already deployed.")]
     AlreadyDeployed,
