@@ -188,15 +188,6 @@ fn full_flow() {
         assert_eq!(err, ContractError::CollectionSymbolExists);
     }
 
-    // Deploy when deployer missing  ---------------------------------------------------------
-    {
-        let err = contract
-            .deploy_collection("SYMBOL_NOT_EXIST".to_string())
-            .call(sender)
-            .unwrap_err();
-        assert_eq!(err, ContractError::AdminMissing)
-    }
-
     // Update config when sender is not contract owner 
     {
         let err = contract
@@ -212,7 +203,7 @@ fn full_flow() {
         assert_eq!(err, ContractError::Unauthorized)
     }
 
-    // Deploy when sender is not deployer  ---------------------------------------------------------
+    // Deploy when sender is not launchpad_admin  ---------------------------------------------------------
     {
         contract
             .update_config(ConfigChanges {
@@ -239,7 +230,7 @@ fn full_flow() {
                 name: "test".to_string(),
                 supported_networks: vec![],
                 nft_code_id: None,
-                launchpad_admin: Some(admin.to_string()),
+                launchpad_admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
             })
             .call(sender)
@@ -319,7 +310,7 @@ fn full_flow() {
         let collection_id = "SYMBOL".to_string();
         let resp = contract
             .deploy_collection(collection_id.to_owned())
-            .call(sender)
+            .call(admin)
             .unwrap();
         let attrs = resp.custom_attrs(1);
         assert_eq!(

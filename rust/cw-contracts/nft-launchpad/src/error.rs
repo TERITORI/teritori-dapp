@@ -13,9 +13,6 @@ pub enum ContractError {
     #[error("Merkle root missing.")]
     MerkleRootMissing,
 
-    #[error("Admin missing.")]
-    AdminMissing,
-
     #[error("Unauthorized.")]
     Unauthorized,
 
