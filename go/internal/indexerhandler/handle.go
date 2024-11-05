@@ -335,6 +335,15 @@ func (h *Handler) handleExecute(e *Message) error {
 			if err := h.handleExecutePremiumFeedSubscribe(e, &executeMsg); err != nil {
 				return errors.Wrap(err, "failed to handle premium feed subscribe")
 			}
+		// Marketplace (cw-address-list)
+		case "add_whitelisted_collection":
+			if err := h.handleExecuteAddWhitelistedCollection(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to add whitelisted collection")
+			}
+		case "remove_whitelisted_collection":
+			if err := h.handleExecuteRemoveWhitelistedCollection(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to remove whitelisted collection")
+			}
 		}
 	}
 

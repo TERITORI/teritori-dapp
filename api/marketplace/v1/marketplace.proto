@@ -93,6 +93,7 @@ message Collection {
   int32 num_owners = 20;
   string denom = 21;
   float volume_compare = 22;
+  bool whitelisted = 23;
 }
 
 message CollectionStats {
