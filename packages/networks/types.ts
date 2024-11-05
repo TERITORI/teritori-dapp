@@ -72,6 +72,8 @@ export type CosmosNetworkInfo = NetworkInfoBase & {
   daoVotingCw4CodeId?: number;
   cwAdminFactoryContractAddress?: string;
   coreDAOAddress?: string;
+  cwAddressListContractAddress?: string;
+  cwAddressListCodeId?: number;
 };
 
 export type EthereumNetworkInfo = NetworkInfoBase & {
@@ -117,6 +119,8 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   daoInterfacesPkgPath?: string;
   daoCorePkgPath?: string;
   groupsPkgPath?: string;
+  daoUtilsPkgPath?: string;
+  toriPkgPath?: string;
   profilePkgPath?: string;
   faucetURL?: string;
   txIndexerURL?: string;

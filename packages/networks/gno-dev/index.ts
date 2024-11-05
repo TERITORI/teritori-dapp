@@ -47,9 +47,10 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   votingGroupPkgPath: "gno.land/p/teritori/dao_voting_group",
   daoProposalSinglePkgPath: "gno.land/p/teritori/dao_proposal_single",
   profilePkgPath: "gno.land/r/demo/profile",
-
   daoInterfacesPkgPath: "gno.land/p/teritori/dao_interfaces",
   daoCorePkgPath: "gno.land/p/teritori/dao_core",
+  daoUtilsPkgPath: "gno.land/p/teritori/dao_utils",
+  toriPkgPath: "gno.land/r/teritori/tori",
   nameServiceDefaultImage:
     "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
   gnowebURL: "http://127.0.0.1:8888",

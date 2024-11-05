@@ -10,10 +10,10 @@ import { NetworkKind, parseUserId } from "../../networks";
 import { adenaVMCall, extractGnoNumber } from "../../utils/gno";
 import {
   GnoDAOUpdateSettings,
-  GnoSingleChoiceProposal,
-  GnoModboardsDeletePostMessage,
-  GnoModboardsCreateMessage,
   GnoMintToriMessage,
+  GnoModboardsCreateMessage,
+  GnoModboardsDeletePostMessage,
+  GnoSingleChoiceProposal,
 } from "../../utils/gnodao/messages";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { modalMarginPadding } from "../../utils/style/modals";
@@ -376,7 +376,7 @@ const GnoCreateProposal: React.FC<{ daoId: string | undefined }> = ({
                 {
                   caller: selectedWallet.address,
                   send: "",
-                  pkg_path: daoAddress,
+                  pkg_path: "gno.land/r/" + selectedWallet,
                   func: "ProposeJSON",
                   args: ["0", JSON.stringify(propReq)],
                 },
