@@ -24,9 +24,9 @@ const nftsBurnerFeature: CosmWasmNFTsBurner = {
 
 const nftMarketplace: NFTMarketplace = {
   type: NetworkFeature.NFTMarketplace,
-  cwAddressListCodeId: 63,
+  cwAddressListCodeId: 70,
   cwAddressListContractAddress:
-    "tori1x72plnprsjnmszylmdm3cnvu5h6u55fyf0pe02lye9p6q2ws05ps33qmft",
+    "tori1qy83plv887wwqu6tepr93q8guat28hytg92cclaj5gsad4r5260qlhewer",
 };
 
 const riotContractAddressGen0 =
