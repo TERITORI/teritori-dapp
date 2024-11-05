@@ -1,3 +1,4 @@
+import { upperFirst } from "lodash";
 import { View } from "react-native";
 
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -27,7 +28,6 @@ import { SecondaryButton } from "../buttons/SecondaryButton";
 import { TertiaryButton } from "../buttons/TertiaryButton";
 
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
-import { capitalizeFirstLetter } from "@/utils/strings";
 
 export const ProposalActions: React.FC<{
   daoId: string | undefined;
@@ -85,7 +85,7 @@ export const ProposalActions: React.FC<{
             throw new Error("invalid vote");
           }
           const msg: GnoDAOVoteRequest = {
-            vote: capitalizeFirstLetter(v),
+            vote: upperFirst(v),
             rationale: "Me like it",
           };
           await adenaVMCall(
