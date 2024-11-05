@@ -64,8 +64,7 @@ func (msg *ExecutableMessageBanPost) String() string {
 	return strings.Join(ss, "\n---\n")
 }
 
-type BanPostHandler struct {
-}
+type BanPostHandler struct{}
 
 var _ dao_interfaces.MessageHandler = (*BanPostHandler)(nil)
 
@@ -138,8 +137,7 @@ func (msg *ExecutableMessageCreatePost) String() string {
 	return strings.Join(ss, "\n---\n")
 }
 
-type CreatePostHandler struct {
-}
+type CreatePostHandler struct{}
 
 var _ dao_interfaces.MessageHandler = (*CreatePostHandler)(nil)
 
