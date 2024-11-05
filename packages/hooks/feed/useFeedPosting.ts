@@ -96,8 +96,6 @@ export const useFeedPosting = (
             },
           };
 
-          console.log(msg);
-
           const propReq: GnoSingleChoiceProposal = {
             title: "Post on feed",
             description: JSON.stringify(msg),

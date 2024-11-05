@@ -88,7 +88,6 @@ export const ProposalActions: React.FC<{
             vote: capitalizeFirstLetter(v),
             rationale: "Me like it",
           };
-          console.log(pkgPath);
           await adenaVMCall(
             networkId,
             {
@@ -255,13 +254,13 @@ export const ProposalActions: React.FC<{
           size="M"
           color={errorColor}
           onPress={() => vote("no")}
-          // loader
+        // loader
         />
         <TertiaryButton
           text="Abstain"
           size="M"
           onPress={() => vote("abstain")}
-          // loader
+        // loader
         />
       </View>
     );
