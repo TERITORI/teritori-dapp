@@ -210,11 +210,12 @@ export const NewsFeedInput = React.forwardRef<
         });
         return;
       }
+
       if (!canPayForPost) {
         showNotEnoughFundsModal({
           action,
           cost: {
-            amount: publishingFee.toString(),
+            amount: publishingFee.amount.toString(),
             denom: publishingFee.denom || "",
           },
         });

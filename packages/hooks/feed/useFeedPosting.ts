@@ -4,13 +4,13 @@ import { Buffer } from "buffer";
 import { useCallback, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+import { useCreatePost } from "./useCreatePost";
+import { useFeedPostFee } from "./useFeedPostFee";
+import { useFreePostsCount } from "./useFreePostsCount";
 import { useIsDAO } from "../cosmwasm/useCosmWasmContractInfo";
 import { useDAOMakeProposal } from "../dao/useDAOMakeProposal";
 import { useBalances } from "../useBalances";
 import useSelectedWallet from "../useSelectedWallet";
-import { useCreatePost } from "./useCreatePost";
-import { useFeedPostFee } from "./useFeedPostFee";
-import { useFreePostsCount } from "./useFreePostsCount";
 
 import { signingSocialFeedClient } from "@/client-creators/socialFeedClient";
 import {
@@ -43,14 +43,15 @@ export const useFeedPosting = (
   const [step, setStep] = useState(
     feedPostingStep(FeedPostingStepId.UNDEFINED),
   );
-  const { balances } = useBalances(networkId, userAddress);
+
+  const selectedWallet = useSelectedWallet();
+  const { balances } = useBalances(networkId, selectedWallet?.address);
   const { postFee } = useFeedPostFee(networkId, category);
   const { freePostCount } = useFreePostsCount(userId, category);
   const { isDAO } = useIsDAO(userId);
   const makeProposal = useDAOMakeProposal(isDAO ? userId : undefined);
-  const selectedWallet = useSelectedWallet();
   const { mutateAsync, isLoading: isProcessing } = useCreatePost({
-    onMutate: () => { },
+    onMutate: () => {},
     onSuccess,
   });
 
@@ -126,12 +127,12 @@ export const useFeedPosting = (
           if (!network.socialFeedContractAddress) {
             throw new Error("Social feed contract address not found");
           }
-          if (!userAddress) {
+          if (!selectedWallet || !selectedWallet.address) {
             throw new Error("Invalid sender");
           }
           setStep(feedPostingStep(FeedPostingStepId.PROPOSING));
 
-          await makeProposal(userAddress, {
+          await makeProposal(selectedWallet.address, {
             title: "Post on feed",
             description: "",
             msgs: [
@@ -210,6 +211,7 @@ export const useFeedPosting = (
       network,
       postFee,
       userAddress,
+      selectedWallet,
     ],
   );
 
