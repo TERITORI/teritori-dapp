@@ -27,6 +27,7 @@ import { SecondaryButton } from "../buttons/SecondaryButton";
 import { TertiaryButton } from "../buttons/TertiaryButton";
 
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
+import { capitalizeFirstLetter } from "@/utils/strings";
 
 export const ProposalActions: React.FC<{
   daoId: string | undefined;
@@ -80,35 +81,25 @@ export const ProposalActions: React.FC<{
         case NetworkKind.Gno: {
           const walletAddress = selectedWallet.address;
           const [, pkgPath] = parseUserId(daoId);
-          let gnoVote;
-          switch (v) {
-            case "yes": {
-              gnoVote = 0;
-              break;
-            }
-            case "no": {
-              gnoVote = 1;
-              break;
-            }
-            case "abstain": {
-              gnoVote = 2;
-              break;
-            }
-            default:
-              throw new Error("invalid vote");
+          if (["yes", "no", "abstain"].indexOf(v) === -1) {
+            throw new Error("invalid vote");
           }
           const msg: GnoDAOVoteRequest = {
-            vote: gnoVote,
+            vote: capitalizeFirstLetter(v),
             rationale: "Me like it",
           };
           console.log(pkgPath);
-          await adenaVMCall(networkId, {
-            caller: walletAddress,
-            send: "",
-            pkg_path: pkgPath,
-            func: "VoteJSON",
-            args: ["0", proposal.id.toString(), JSON.stringify(msg)],
-          });
+          await adenaVMCall(
+            networkId,
+            {
+              caller: walletAddress,
+              send: "",
+              pkg_path: pkgPath,
+              func: "VoteJSON",
+              args: ["0", proposal.id.toString(), JSON.stringify(msg)],
+            },
+            { gasWanted: 10000000 },
+          );
           break;
         }
         default:
@@ -264,13 +255,13 @@ export const ProposalActions: React.FC<{
           size="M"
           color={errorColor}
           onPress={() => vote("no")}
-        // loader
+          // loader
         />
         <TertiaryButton
           text="Abstain"
           size="M"
           onPress={() => vote("abstain")}
-        // loader
+          // loader
         />
       </View>
     );

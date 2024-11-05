@@ -30,6 +30,7 @@ const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
     "${network.daoUtilsPkgPath}"
     voting_group "${network.votingGroupPkgPath}"
     "${network.daoRegistryPkgPath}"
+    "${network.socialFeedsPkgPath}"
   )
   
 var (
@@ -78,6 +79,9 @@ func init() {
 			// TODO: add a router to support multiple proposal modules
 			propMod := core.ProposalModules()[0]
 			return proposal_single.NewUpdateSettingsHandler(propMod.Module.(*proposal_single.DAOProposalSingle))
+		},
+    func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
+			return social_feeds.NewCreatePostHandler()
 		},
 	}
 

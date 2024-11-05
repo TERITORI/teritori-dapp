@@ -187,7 +187,7 @@ export const parseUserId = (
     try {
       bech32.decode(rest);
       return [network, rest];
-    } catch { }
+    } catch {}
     return [network, "gno.land/" + rest.replaceAll("-", "/")];
   }
   return [network, rest];

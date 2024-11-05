@@ -11,4 +11,5 @@ require (
 	gno.land/r/demo/users v0.0.0-latest
 	gno.land/r/teritori/dao_registry v0.0.0-latest
 	gno.land/r/teritori/tori v0.0.0-latest
+	gno.land/r/teritori/social_feeds v0.0.0-latest
 )

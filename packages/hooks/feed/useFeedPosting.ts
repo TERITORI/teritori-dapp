@@ -4,12 +4,13 @@ import { Buffer } from "buffer";
 import { useCallback, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { useIsDAO } from "../cosmwasm/useCosmWasmContractInfo";
-import { useDAOMakeProposal } from "../dao/useDAOMakeProposal";
-import { useBalances } from "../useBalances";
 import { useCreatePost } from "./useCreatePost";
 import { useFeedPostFee } from "./useFeedPostFee";
 import { useFreePostsCount } from "./useFreePostsCount";
+import { useIsDAO } from "../cosmwasm/useCosmWasmContractInfo";
+import { useDAOMakeProposal } from "../dao/useDAOMakeProposal";
+import { useBalances } from "../useBalances";
+import useSelectedWallet from "../useSelectedWallet";
 
 import { signingSocialFeedClient } from "@/client-creators/socialFeedClient";
 import {
@@ -23,9 +24,11 @@ import { defaultSocialFeedFee } from "@/utils/fee";
 import { TERITORI_FEED_ID } from "@/utils/feed/constants";
 import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
 import { adenaDoContract, AdenaDoContractMessageType } from "@/utils/gno";
-import { GnoSingleChoiceProposal } from "@/utils/gnodao/messages";
+import {
+  GnoCreatePostMessage,
+  GnoSingleChoiceProposal,
+} from "@/utils/gnodao/messages";
 import { PostCategory } from "@/utils/types/feed";
-import useSelectedWallet from "../useSelectedWallet";
 
 export const useFeedPosting = (
   networkId: string | undefined,
@@ -47,7 +50,7 @@ export const useFeedPosting = (
   const makeProposal = useDAOMakeProposal(isDAO ? userId : undefined);
   const selectedWallet = useSelectedWallet();
   const { mutateAsync, isLoading: isProcessing } = useCreatePost({
-    onMutate: () => { },
+    onMutate: () => {},
     onSuccess,
   });
 
@@ -81,11 +84,24 @@ export const useFeedPosting = (
           if (!selectedWallet) {
             throw new Error("No wallet selected");
           }
+
+          const msg: GnoCreatePostMessage = {
+            type: "gno.land/r/teritori/social_feeds.CreatePost",
+            payload: {
+              feedId: TERITORI_FEED_ID,
+              parentId: "0",
+              category: category.toString(),
+              metadata,
+            },
+          };
+
+          console.log(msg);
+
           const propReq: GnoSingleChoiceProposal = {
             title: "Post on feed",
             description: JSON.stringify(msg),
-            messages: [],
-          }
+            messages: [msg],
+          };
 
           setStep(feedPostingStep(FeedPostingStepId.PROPOSING));
           const vmCall = {
@@ -94,7 +110,7 @@ export const useFeedPosting = (
             pkg_path: userAddress,
             func: "ProposeJSON",
             args: ["0", JSON.stringify(propReq)],
-          }
+          };
           const txHash = await adenaDoContract(
             network.id,
             [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
@@ -194,6 +210,7 @@ export const useFeedPosting = (
       network,
       postFee,
       userAddress,
+      selectedWallet,
     ],
   );
 
