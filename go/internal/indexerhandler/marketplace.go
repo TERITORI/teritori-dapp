@@ -17,7 +17,6 @@ func (h *Handler) handleExecuteAddWhitelistedCollection(e *Message, execMsg *was
 	}
 
 	if err := h.db.
-		Preload("TeritoriCollection").
 		Joins("JOIN teritori_collections ON teritori_collections.collection_id = collections.id").
 		Where("teritori_collections.nft_contract_address = ?", collectionAddress).
 		UpdateColumn("whitelisted", true).
@@ -41,7 +40,6 @@ func (h *Handler) handleExecuteRemoveWhitelistedCollection(e *Message, execMsg *
 	}
 
 	if err := h.db.
-		Preload("TeritoriCollection").
 		Joins("JOIN teritori_collections ON teritori_collections.collection_id = collections.id").
 		Where("teritori_collections.nft_contract_address = ?", collectionAddress).
 		UpdateColumn("whitelisted", false).
