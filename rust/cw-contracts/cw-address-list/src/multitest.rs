@@ -3,7 +3,6 @@ use sylvia::multitest::App;
 
 use crate::contract::sv::multitest_utils::CodeId;
 
-
 #[test]
 fn instantiate() {
     let app = App::default();

@@ -15,6 +15,7 @@ import {
 import ConfettiCannon from "react-native-confetti-cannon";
 import CountDown from "react-native-countdown-component";
 
+import { NUMBERS_REGEXP } from "./../../utils/regex";
 import balanceSVG from "../../../assets/icons/balance.svg";
 import minusSVG from "../../../assets/icons/minus.svg";
 import plusSVG from "../../../assets/icons/plus.svg";
@@ -131,7 +132,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   const mintButtonDisabled = minted;
 
   const updateTotalBulkMint = (newTotalBulkMint: number | string) => {
-    const numOnlyRegexp = new RegExp(/^\d+$/);
+    const numOnlyRegexp = new RegExp(NUMBERS_REGEXP);
     if (!numOnlyRegexp.test("" + newTotalBulkMint)) {
       return;
     }

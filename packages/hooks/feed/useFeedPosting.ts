@@ -4,13 +4,13 @@ import { Buffer } from "buffer";
 import { useCallback, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { useCreatePost } from "./useCreatePost";
-import { useFeedPostFee } from "./useFeedPostFee";
-import { useFreePostsCount } from "./useFreePostsCount";
 import { useIsDAO } from "../cosmwasm/useCosmWasmContractInfo";
 import { useDAOMakeProposal } from "../dao/useDAOMakeProposal";
 import { useBalances } from "../useBalances";
 import useSelectedWallet from "../useSelectedWallet";
+import { useCreatePost } from "./useCreatePost";
+import { useFeedPostFee } from "./useFeedPostFee";
+import { useFreePostsCount } from "./useFreePostsCount";
 
 import { signingSocialFeedClient } from "@/client-creators/socialFeedClient";
 import {
@@ -50,7 +50,7 @@ export const useFeedPosting = (
   const makeProposal = useDAOMakeProposal(isDAO ? userId : undefined);
   const selectedWallet = useSelectedWallet();
   const { mutateAsync, isLoading: isProcessing } = useCreatePost({
-    onMutate: () => {},
+    onMutate: () => { },
     onSuccess,
   });
 
@@ -210,7 +210,6 @@ export const useFeedPosting = (
       network,
       postFee,
       userAddress,
-      selectedWallet,
     ],
   );
 
