@@ -83,7 +83,7 @@ generate.graphql-thegraph:
 	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/thegraph/genqlient.yaml
 
 .PHONY: lint
-lint: lint.buf lint.js
+lint: lint.buf lint.js lint.rust
 
 .PHONY: lint.buf
 lint.buf:
@@ -93,6 +93,14 @@ lint.buf:
 .PHONY: lint.js
 lint.js: node_modules
 	yarn lint
+
+.PHONY: lint.rust
+lint.rust:
+	cargo clippy
+
+.PHONY: fmt.rust
+fmt.rust:
+	cargo fmt
 
 .PHONY: go/pkg/holagql/holaplex-schema.graphql
 go/pkg/holagql/holaplex-schema.graphql:
@@ -396,6 +404,7 @@ bump-app-build-number:
 
 .PHONY: test.rust
 test.rust:
+	set -e ; \
 	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
 		echo "> Testing $${file}" ; \
 		cd $${file} ; \
@@ -405,6 +414,7 @@ test.rust:
 
 .PHONY: build.rust
 build.rust:
+	set -e ; \
 	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
 		echo "> Building $${file}" ; \
 		cd $${file} ; \
@@ -414,10 +424,11 @@ build.rust:
 
 .PHONY: generate.internal-contracts-clients
 generate.internal-contracts-clients: node_modules
+	set -e ; \
 	for indir in $(INTERNAL_COSMWASM_CONTRACTS) ; do \
 		echo "> Generating client for $${indir}" ; \
 		rm -fr $${indir}/schema ; \
-		(cd $${indir} && cargo schema && cd -) || exit 1 ; \
+		cd $${indir} && cargo schema && cd - ; \
 		pkgname="$$(basename $${indir})" ; \
 		outdir="$(CONTRACTS_CLIENTS_DIR)/$${pkgname}" ; \
 		rm -fr $${outdir} ; \
@@ -427,8 +438,8 @@ generate.internal-contracts-clients: node_modules
 			--out $${outdir} \
 			--name $${pkgname} \
 			--no-bundle \
-		|| exit 1 ;\
-		npx tsx packages/scripts/makeTypescriptIndex $${outdir} || exit 1 ; \
+		;\
+		npx tsx packages/scripts/makeTypescriptIndex $${outdir} ; \
 	done
 
 .PHONY: install-gno
