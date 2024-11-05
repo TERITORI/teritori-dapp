@@ -254,13 +254,13 @@ export const ProposalActions: React.FC<{
           size="M"
           color={errorColor}
           onPress={() => vote("no")}
-        // loader
+          // loader
         />
         <TertiaryButton
           text="Abstain"
           size="M"
           onPress={() => vote("abstain")}
-        // loader
+          // loader
         />
       </View>
     );
