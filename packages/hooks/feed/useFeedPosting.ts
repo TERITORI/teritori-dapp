@@ -45,7 +45,7 @@ export const useFeedPosting = (
   );
 
   const selectedWallet = useSelectedWallet();
-  const { balances } = useBalances(networkId, selectedWallet?.address);
+  const { balances } = useBalances(networkId, userAddress);
   const { postFee } = useFeedPostFee(networkId, category);
   const { freePostCount } = useFreePostsCount(userId, category);
   const { isDAO } = useIsDAO(userId);
