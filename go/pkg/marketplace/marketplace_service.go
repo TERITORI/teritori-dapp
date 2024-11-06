@@ -157,6 +157,8 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 		orderSQL = "volume DESC"
 	}
 
+	fmt.Printf("========== s.conf.Whitelist", s.conf.Whitelist)
+
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`
     WITH count_by_collection AS (
       SELECT count(1), collection_id FROM nfts WHERE burnt = false GROUP BY nfts.collection_id
@@ -230,6 +232,8 @@ func (s *MarkteplaceService) Collections(req *marketplacepb.CollectionsRequest, 
 	}
 
 	for _, c := range collections {
+		fmt.Printf("========== c.ID", c.ID)
+
 		if err := srv.Send(&marketplacepb.CollectionsResponse{Collection: &marketplacepb.Collection{
 			Id:                  c.ID,
 			CollectionName:      c.Name,
@@ -1182,3 +1186,4 @@ func (s *MarkteplaceService) PopularCollections(req *marketplacepb.PopularCollec
 
 	return nil
 }
+
