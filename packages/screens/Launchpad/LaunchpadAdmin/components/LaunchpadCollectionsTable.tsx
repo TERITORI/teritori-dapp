@@ -1,4 +1,3 @@
-import moment from "moment";
 import React from "react";
 import { FlatList, View } from "react-native";
 

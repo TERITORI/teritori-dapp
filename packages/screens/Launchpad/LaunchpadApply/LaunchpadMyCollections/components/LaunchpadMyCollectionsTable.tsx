@@ -9,18 +9,13 @@ import {
 
 import { LaunchpadProject } from "@/api/launchpad/v1/launchpad";
 import { OmniLink } from "@/components/OmniLink";
-import { StateBadge } from "@/components/badges/StateBadge";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { TableCell } from "@/components/table/TableCell";
 import { TableHeader } from "@/components/table/TableHeader";
 import { TableRow } from "@/components/table/TableRow";
 import { TableWrapper } from "@/components/table/TableWrapper";
 import { TableColumns } from "@/components/table/utils";
-import {
-  launchpadProjectStatus,
-  launchpadProjectStatusColor,
-  parseCollectionData,
-} from "@/utils/launchpad";
+import { launchpadProjectStatus, parseCollectionData } from "@/utils/launchpad";
 import { useAppNavigation } from "@/utils/navigation";
 import { screenContentMaxWidthLarge } from "@/utils/style/layout";
 

@@ -6,7 +6,6 @@ import { SelectInputLaunchpad } from "../../../components/inputs/selectInputs/Se
 
 import { BrandText } from "@/components/BrandText";
 import { ErrorText } from "@/components/ErrorText";
-import { DateTimeInput } from "@/components/inputs/DateTimeInput";
 import { SpacerColumn } from "@/components/spacer";
 import { TextInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/TextInputLaunchpad";
 import { neutral55, neutral77 } from "@/utils/style/colors";

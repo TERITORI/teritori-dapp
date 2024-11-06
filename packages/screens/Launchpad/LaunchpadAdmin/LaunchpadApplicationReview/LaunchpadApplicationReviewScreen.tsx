@@ -23,7 +23,7 @@ import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
-import { launchpadProjectStatus, parseCollectionData } from "@/utils/launchpad";
+import { parseCollectionData } from "@/utils/launchpad";
 import { ScreenFC } from "@/utils/navigation";
 import { errorColor, neutral33 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
