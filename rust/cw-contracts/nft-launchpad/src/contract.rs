@@ -2,7 +2,7 @@
 
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    to_json_binary, Addr, Reply, Response,
+    attr, to_json_binary, Addr, Reply, Response,
     StdResult, SubMsg, WasmMsg,
 };
 use cw_storage_plus::{Item, Map};
@@ -59,23 +59,23 @@ impl NftLaunchpad {
         changes: ConfigChanges,
     ) -> Result<Response, ContractError> {
         let mut config = self.config.load(ctx.deps.storage)?;
+        let mut attributes = vec![attr("action", "update_config")];
 
         // Permission check
         if ctx.info.sender != config.owner {
             return Err(ContractError::Unauthorized);
         }
         // Save new config
+        config.launchpad_admin = changes.launchpad_admin;
         config.nft_code_id = changes.nft_code_id;
         config.supported_networks = changes.supported_networks;
-        if let Some(launchpad_admin) = changes.launchpad_admin {
-            config.launchpad_admin = ctx.deps.api.addr_validate(&launchpad_admin)?;
-        }
         if let Some(owner) = changes.owner {
             config.owner = ctx.deps.api.addr_validate(&owner)?;
+            attributes.push(attr("new_owner", owner))
         }
         self.config.save(ctx.deps.storage, &config)?;
 
-        Ok(Response::default())
+        Ok(Response::new().add_attributes(attributes))
     }
 
     #[msg(exec)]
@@ -169,8 +169,11 @@ impl NftLaunchpad {
         let config = self.config.load(ctx.deps.storage)?;
 
         // Only allow launchpad_admin to deploy
-        if sender != config.launchpad_admin {
-            return Err(ContractError::WrongAdmin);
+        if config.launchpad_admin.is_none() {
+            return Err(ContractError::DeployerMissing);
+        }
+        if sender != config.launchpad_admin.unwrap() {
+            return Err(ContractError::WrongDeployer);
         }
 
         let collection = self
@@ -279,7 +282,7 @@ pub struct Config {
     pub name: String,
     pub nft_code_id: Option<u64>,
     pub supported_networks: Vec<String>,
-    pub launchpad_admin: Addr,
+    pub launchpad_admin: Option<String>,
     pub owner: Addr,
 }
 
@@ -316,9 +319,6 @@ pub struct Collection {
     // Additional info ----------------------------
     pub artwork_desc: String,
     pub is_ready_for_mint: bool,
-    pub expected_supply: u64,
-    pub expected_public_mint_price: u64,
-    pub expected_mint_date: u64,
     pub escrow_mint_proceeds_period: u64,
     pub is_dox: bool,
     pub dao_whitelist_count: u32,
@@ -342,7 +342,3 @@ pub enum CollectionState {
     Pending,  // When user summit the collection but not deployed yet
     Deployed, // When collection has been deployed
 }
-
-
-
-

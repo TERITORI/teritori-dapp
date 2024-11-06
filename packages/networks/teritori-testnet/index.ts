@@ -33,10 +33,10 @@ const nftMarketplace: NFTMarketplace = {
 const cosmwasmLaunchpadFeature: CosmWasmLaunchpad = {
   type: NetworkFeature.NFTLaunchpad,
   launchpadContractAddress:
-    "tori1lp4qdzknyzwtsp45jn3vau4c9eedgafutkqq2j3lrc25u8jpftdqmsqxhu",
+    "tori1te7ku4de0k4rl8lhyuvpmhygaq7k7vy5zpsjq9y638efxsnx3aaqck2utf",
   launchpadEndpoint: "https://dapp-backend.testnet.teritori.com",
   nftTr721CodeId: 60,
-  codeId: 62,
+  codeId: 71,
   defaultMintDenom: "utori",
 };
 
