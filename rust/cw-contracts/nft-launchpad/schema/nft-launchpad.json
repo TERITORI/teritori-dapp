@@ -22,14 +22,16 @@
       "Config": {
         "type": "object",
         "required": [
-          "launchpad_admin",
           "name",
           "owner",
           "supported_networks"
         ],
         "properties": {
           "launchpad_admin": {
-            "$ref": "#/definitions/Addr"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "name": {
             "type": "string"
@@ -174,9 +176,6 @@
           "dao_whitelist_count",
           "desc",
           "escrow_mint_proceeds_period",
-          "expected_mint_date",
-          "expected_public_mint_price",
-          "expected_supply",
           "investment_desc",
           "investment_link",
           "is_applied_previously",
@@ -225,21 +224,6 @@
             "type": "string"
           },
           "escrow_mint_proceeds_period": {
-            "type": "integer",
-            "format": "uint64",
-            "minimum": 0.0
-          },
-          "expected_mint_date": {
-            "type": "integer",
-            "format": "uint64",
-            "minimum": 0.0
-          },
-          "expected_public_mint_price": {
-            "type": "integer",
-            "format": "uint64",
-            "minimum": 0.0
-          },
-          "expected_supply": {
             "type": "integer",
             "format": "uint64",
             "minimum": 0.0
@@ -515,9 +499,6 @@
         "dao_whitelist_count",
         "desc",
         "escrow_mint_proceeds_period",
-        "expected_mint_date",
-        "expected_public_mint_price",
-        "expected_supply",
         "investment_desc",
         "investment_link",
         "is_applied_previously",
@@ -566,21 +547,6 @@
           "type": "string"
         },
         "escrow_mint_proceeds_period": {
-          "type": "integer",
-          "format": "uint64",
-          "minimum": 0.0
-        },
-        "expected_mint_date": {
-          "type": "integer",
-          "format": "uint64",
-          "minimum": 0.0
-        },
-        "expected_public_mint_price": {
-          "type": "integer",
-          "format": "uint64",
-          "minimum": 0.0
-        },
-        "expected_supply": {
           "type": "integer",
           "format": "uint64",
           "minimum": 0.0
@@ -789,14 +755,16 @@
       "title": "Config",
       "type": "object",
       "required": [
-        "launchpad_admin",
         "name",
         "owner",
         "supported_networks"
       ],
       "properties": {
         "launchpad_admin": {
-          "$ref": "#/definitions/Addr"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "name": {
           "type": "string"

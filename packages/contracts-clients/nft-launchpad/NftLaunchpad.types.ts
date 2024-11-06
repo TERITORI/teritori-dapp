@@ -10,7 +10,7 @@ export interface InstantiateMsg {
   [k: string]: unknown;
 }
 export interface Config {
-  launchpad_admin: Addr;
+  launchpad_admin?: string | null;
   name: string;
   nft_code_id?: number | null;
   owner: Addr;
@@ -55,9 +55,6 @@ export interface Collection {
   deployed_address?: string | null;
   desc: string;
   escrow_mint_proceeds_period: number;
-  expected_mint_date: number;
-  expected_public_mint_price: number;
-  expected_supply: number;
   investment_desc: string;
   investment_link: string;
   is_applied_previously: boolean;
