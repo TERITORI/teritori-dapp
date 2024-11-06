@@ -3,6 +3,8 @@ import { MerkleTree } from "merkletreejs";
 import { useCallback } from "react";
 import { useSelector } from "react-redux";
 
+import { Coin } from "./../../contracts-clients/nft-launchpad/NftLaunchpad.types";
+
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
   MintPeriod,
@@ -18,8 +20,12 @@ import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { generateIpfsKey } from "@/utils/ipfs";
 import { LocalFileData } from "@/utils/types/files";
-import { Coin } from './../../contracts-clients/nft-launchpad/NftLaunchpad.types';
-import { CollectionAssetsMetadatasFormValues, CollectionFormValues, CollectionMintPeriodFormValues, CollectionToSubmit } from "@/utils/types/launchpad";
+import {
+  CollectionAssetsMetadatasFormValues,
+  CollectionFormValues,
+  CollectionMintPeriodFormValues,
+  CollectionToSubmit,
+} from "@/utils/types/launchpad";
 
 export const useCreateCollection = () => {
   // Since the Collection network is the selected network, we use useSelectedNetworkId (See LaunchpadBasic.tsx)
@@ -108,10 +114,12 @@ export const useCreateCollection = () => {
                 addresses_merkle_root: merkleRoot,
               };
             }
-            const price: Coin|null = mintPeriod.price ? {
-              amount: mintPeriod.price.amount || "0",
-              denom: mintPeriod.price.denom
-            } : null
+            const price: Coin | null = mintPeriod.price
+              ? {
+                  amount: mintPeriod.price.amount || "0",
+                  denom: mintPeriod.price.denom,
+                }
+              : null;
             return {
               price,
               end_time: mintPeriod.endTime,

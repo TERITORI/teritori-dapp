@@ -2,6 +2,8 @@ import React from "react";
 import { View, Linking } from "react-native";
 
 import { ApplicationCard } from "./ApplicationCard";
+import { Status } from "../../../../../api/launchpad/v1/launchpad";
+import { StatusBadge } from "../../../components/StatusBadge";
 
 import websiteSVG from "@/assets/icons/website.svg";
 import { BrandText } from "@/components/BrandText";
@@ -10,12 +12,7 @@ import { BoxStyle } from "@/components/boxes/Box";
 import { SocialButton } from "@/components/buttons/SocialButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
-import { neutral33 } from "@/utils/style/colors";
-import {
-  fontSemibold13,
-  fontSemibold14,
-  fontSemibold28,
-} from "@/utils/style/fonts";
+import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { CollectionDataResult } from "@/utils/types/launchpad";
 
@@ -23,7 +20,7 @@ const breakpointM = 900;
 
 export const ApplicationDetail: React.FC<{
   collectionData: CollectionDataResult;
-  projectStatus: string;
+  projectStatus: Status;
 }> = ({ collectionData, projectStatus }) => {
   const { width } = useMaxResolution();
 
@@ -42,18 +39,7 @@ export const ApplicationDetail: React.FC<{
           width: "100%",
         }}
       >
-        <View
-          style={{
-            alignSelf: "flex-start",
-            backgroundColor: neutral33,
-            height: 28,
-            paddingHorizontal: layout.spacing_x1_5,
-            borderRadius: 999,
-            justifyContent: "center",
-          }}
-        >
-          <BrandText style={fontSemibold13}>{projectStatus}</BrandText>
-        </View>
+        <StatusBadge projectStatus={projectStatus} />
         <BrandText style={[fontSemibold28, { marginTop: layout.spacing_x3 }]}>
           {collectionData.name}
         </BrandText>

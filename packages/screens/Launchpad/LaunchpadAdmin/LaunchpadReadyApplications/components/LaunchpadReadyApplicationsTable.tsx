@@ -5,16 +5,17 @@ import {
   commonColumns,
   LaunchpadTablesCommonColumns,
 } from "../../../LaunchpadApply/LaunchpadCreate/components/LaunchpadTablesCommonColumns";
+import { StatusBadge } from "../../../components/StatusBadge";
 
 import { LaunchpadProject } from "@/api/launchpad/v1/launchpad";
 import { OmniLink } from "@/components/OmniLink";
-import { StateBadge } from "@/components/badges/StateBadge";
 import { TableCell } from "@/components/table/TableCell";
 import { TableHeader } from "@/components/table/TableHeader";
 import { TableRow } from "@/components/table/TableRow";
+import { CellBrandText } from "@/components/table/TableTextCell";
 import { TableWrapper } from "@/components/table/TableWrapper";
 import { TableColumns } from "@/components/table/utils";
-import { launchpadProjectStatus, parseCollectionData } from "@/utils/launchpad";
+import { parseCollectionData } from "@/utils/launchpad";
 import { screenContentMaxWidthLarge } from "@/utils/style/layout";
 
 const columns: TableColumns = {
@@ -101,16 +102,7 @@ const LaunchpadReadyApplicationsTableRow: React.FC<{
           index={index}
         />
 
-        {/*TODO: "Project readiness for mint", "Whitelist quantity", "Premium marketing package", "Basic marketing package"*/}
-
-        <TableCell
-          style={{
-            minWidth: columns.projectReadinessForMint.minWidth,
-            flex: columns.projectReadinessForMint.flex,
-          }}
-        >
-          <StateBadge text="TODO" />
-        </TableCell>
+        <CellBrandText>TODO</CellBrandText>
 
         <TableCell
           style={{
@@ -118,26 +110,12 @@ const LaunchpadReadyApplicationsTableRow: React.FC<{
             flex: columns.whitelistQuantity.flex,
           }}
         >
-          <StateBadge text={launchpadProjectStatus(launchpadProject.status)} />
+          <StatusBadge projectStatus={launchpadProject.status} />
         </TableCell>
 
-        <TableCell
-          style={{
-            minWidth: columns.premiumMarketingPackage.minWidth,
-            flex: columns.premiumMarketingPackage.flex,
-          }}
-        >
-          <StateBadge text="TODO" />
-        </TableCell>
+        <CellBrandText>TODO</CellBrandText>
 
-        <TableCell
-          style={{
-            minWidth: columns.basicMarketingPackage.minWidth,
-            flex: columns.basicMarketingPackage.flex,
-          }}
-        >
-          <StateBadge text="TODO" />
-        </TableCell>
+        <CellBrandText>TODO</CellBrandText>
       </TableRow>
     </OmniLink>
   );

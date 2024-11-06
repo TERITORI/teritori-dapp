@@ -224,7 +224,7 @@ const navConfig: {
     LaunchpadMyCollections: "launchpad/my-collections",
     LaunchpadAdministrationOverview: "launchpad/admin",
     LaunchpadApplications: "launchpad/admin/applications",
-    LaunchpadApplicationReview: "launchpad/admin/review/:id",
+    LaunchpadApplicationReview: "launchpad/review/:id",
     LaunchpadReadyApplications: "launchpad/admin/ready-applications",
 
     // ==== Launchpad ERC20

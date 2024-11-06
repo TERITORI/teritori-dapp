@@ -1,12 +1,14 @@
 import React from "react";
 import { FlatList, View } from "react-native";
 
+import { StatusBadge } from "./../../../components/StatusBadge";
 import {
   commonColumns,
   LaunchpadTablesCommonColumns,
 } from "../../LaunchpadCreate/components/LaunchpadTablesCommonColumns";
 
 import { LaunchpadProject } from "@/api/launchpad/v1/launchpad";
+import { OmniLink } from "@/components/OmniLink";
 import { StateBadge } from "@/components/badges/StateBadge";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { TableCell } from "@/components/table/TableCell";
@@ -14,7 +16,11 @@ import { TableHeader } from "@/components/table/TableHeader";
 import { TableRow } from "@/components/table/TableRow";
 import { TableWrapper } from "@/components/table/TableWrapper";
 import { TableColumns } from "@/components/table/utils";
-import { launchpadProjectStatus, parseCollectionData } from "@/utils/launchpad";
+import {
+  launchpadProjectStatus,
+  launchpadProjectStatusColor,
+  parseCollectionData,
+} from "@/utils/launchpad";
 import { useAppNavigation } from "@/utils/navigation";
 import { screenContentMaxWidthLarge } from "@/utils/style/layout";
 
@@ -82,7 +88,12 @@ const LaunchpadReadyMyCollectionsTableRow: React.FC<{
 
   if (!collectionData) return null;
   return (
-    <View>
+    <OmniLink
+      to={{
+        screen: "LaunchpadApplicationReview",
+        params: { id: launchpadProject.id },
+      }}
+    >
       <TableRow>
         <LaunchpadTablesCommonColumns
           collectionData={collectionData}
@@ -95,7 +106,7 @@ const LaunchpadReadyMyCollectionsTableRow: React.FC<{
             flex: columns.status.flex,
           }}
         >
-          <StateBadge text={launchpadProjectStatus(launchpadProject.status)} />
+          <StatusBadge projectStatus={launchpadProject.status} />
         </TableCell>
 
         <TableCell
@@ -117,6 +128,6 @@ const LaunchpadReadyMyCollectionsTableRow: React.FC<{
           )}
         </TableCell>
       </TableRow>
-    </View>
+    </OmniLink>
   );
 };

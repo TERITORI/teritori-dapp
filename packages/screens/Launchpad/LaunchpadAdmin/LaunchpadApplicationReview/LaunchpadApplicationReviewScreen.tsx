@@ -29,17 +29,7 @@ import { errorColor, neutral33 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-
-
-
-
-
 // =====> TODO: SHOW ALL DATA, MINT PERIODS, ASSETS, ETC
-
-
-
-
-
 
 export const launchpadReviewBreakpointM = 800;
 
@@ -73,6 +63,8 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
     () => isUserAdminLoading || isProjectsLoading,
     [isUserAdminLoading, isProjectsLoading],
   );
+  const isUserOwner =
+    launchpadProject?.creatorId && launchpadProject.creatorId === userId;
 
   const onPressApprove = async () => {
     setApproveLoading(true);
@@ -89,7 +81,7 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
     }, 1000);
   };
 
-  if (!isUserLaunchpadAdmin) {
+  if (!isUserLaunchpadAdmin || !isUserOwner) {
     return (
       <ScreenContainer
         footerChildren={<></>}
@@ -166,30 +158,37 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
         <View style={{ marginTop: layout.spacing_x4 }}>
           <ApplicationDetail
             collectionData={collectionData}
-            projectStatus={launchpadProjectStatus(launchpadProject.status)}
+            projectStatus={launchpadProject.status}
           />
 
           <SpacerColumn size={3} />
           {daoProposal &&
+          isUserLaunchpadAdmin &&
           launchpadProject.status !== Status.STATUS_INCOMPLETE ? (
-            <ProposalRow
-              daoId={launchpadAdminId}
-              proposal={daoProposal}
-              style={{ borderBottomWidth: 0 }}
-            />
-          ) : launchpadProject.status !== Status.STATUS_INCOMPLETE ? (
-            <View style={{ flexDirection: "row" }}>
-              <PrimaryButton
-                text="Approve"
-                boxStyle={{ width: 146 }}
-                onPress={onPressApprove}
-                loader
-                isLoading={isApproveLoading}
-                disabled={isApproveLoading}
+            <>
+              <ProposalRow
+                daoId={launchpadAdminId}
+                proposal={daoProposal}
+                style={{ borderBottomWidth: 0 }}
               />
-            </View>
+              <SpacerColumn size={3} />
+            </>
+          ) : launchpadProject.status !== Status.STATUS_INCOMPLETE &&
+            isUserLaunchpadAdmin ? (
+            <>
+              <View style={{ flexDirection: "row" }}>
+                <PrimaryButton
+                  text="Approve"
+                  boxStyle={{ width: 146 }}
+                  onPress={onPressApprove}
+                  loader
+                  isLoading={isApproveLoading}
+                  disabled={isApproveLoading}
+                />
+              </View>
+              <SpacerColumn size={3} />
+            </>
           ) : null}
-          <SpacerColumn size={3} />
 
           <View style={{ borderTopColor: neutral33, borderTopWidth: 1 }}>
             <CreatorInformation

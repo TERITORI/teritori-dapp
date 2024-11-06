@@ -73,7 +73,7 @@ export const LaunchpadAdditional: FC = () => {
                   onChange(item === "Yes");
                 }}
                 label="Is your collection ready for the mint?"
-                style={{zIndex: 3}}
+                style={{ zIndex: 3 }}
               />
               <ErrorText>
                 {collectionForm.getFieldState("isReadyForMint").error?.message}

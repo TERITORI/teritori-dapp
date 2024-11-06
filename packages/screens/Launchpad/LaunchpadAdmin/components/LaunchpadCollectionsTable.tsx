@@ -151,7 +151,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
             minWidth: columns.expectedPublicMintPrice.minWidth,
           }}
         >
-          {`TODO REMOVE`}
+          TODO REMOVE
         </TableTextCell>
 
         <TableTextCell
@@ -160,7 +160,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
             minWidth: columns.expectedMintDate.minWidth,
           }}
         >
-           {`TODO REMOVE`}
+          TODO REMOVE
         </TableTextCell>
 
         {/*TODO: Three dots here with possible actions on the collection ?*/}

@@ -18,7 +18,8 @@ const ZodCoin = z.object({
     .refine(
       (value) => !value || NUMBERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyNumbers,
-    ).nullish(),
+    )
+    .nullish(),
   denom: z.string().trim(),
 });
 
@@ -33,14 +34,16 @@ const ZodCollectionMintPeriodFormValues = z.object({
     .refine(
       (value) => !value || NUMBERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyNumbers,
-    ).nullish(),
+    )
+    .nullish(),
   perAddressLimit: z
     .string()
     .trim()
     .refine(
       (value) => !value || NUMBERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyNumbers,
-    ).nullish(),
+    )
+    .nullish(),
   startTime: z.number().min(1, DEFAULT_FORM_ERRORS.required),
   endTime: z.number().nullish(),
   whitelistAddressesFile: ZodLocalFileData.nullish(),
@@ -91,10 +94,7 @@ export const ZodCollectionFormValues = z.object({
     .string()
     .trim()
     .min(1, DEFAULT_FORM_ERRORS.required)
-    .refine(
-      (value) => URL_REGEX.test(value),
-      DEFAULT_FORM_ERRORS.onlyUrl,
-    ),
+    .refine((value) => URL_REGEX.test(value), DEFAULT_FORM_ERRORS.onlyUrl),
   email: z
     .string()
     .trim()
@@ -127,10 +127,14 @@ export const ZodCollectionFormValues = z.object({
     ),
   mintPeriods: z.array(ZodCollectionMintPeriodFormValues).nonempty(),
   royaltyAddress: z.string().trim().nullish(),
-  royaltyPercentage: z.string().trim().refine(
-    (value) => !value || NUMBERS_REGEXP.test(value),
-    DEFAULT_FORM_ERRORS.onlyNumbers,
-  ).nullish(),
+  royaltyPercentage: z
+    .string()
+    .trim()
+    .refine(
+      (value) => !value || NUMBERS_REGEXP.test(value),
+      DEFAULT_FORM_ERRORS.onlyNumbers,
+    )
+    .nullish(),
   assetsMetadatas: ZodCollectionAssetsMetadatasFormValues.nullish(),
   baseTokenUri: z
     .string()
