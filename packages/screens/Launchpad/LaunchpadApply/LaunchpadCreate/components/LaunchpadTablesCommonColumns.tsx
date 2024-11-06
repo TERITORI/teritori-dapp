@@ -1,6 +1,6 @@
 import React from "react";
 
-import { NetworkIcon } from "./../../../components/NetworkIcon";
+import { NetworkIcon } from "./../../../../../components/NetworkIcon";
 
 import defaultCollectionImagePNG from "@/assets/default-images/ava.png";
 import checkBadgeSVG from "@/assets/icons/certified.svg";

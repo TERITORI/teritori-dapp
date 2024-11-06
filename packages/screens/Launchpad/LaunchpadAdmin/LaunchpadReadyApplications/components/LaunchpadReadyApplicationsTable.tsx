@@ -1,6 +1,11 @@
 import React from "react";
 import { FlatList, View } from "react-native";
 
+import {
+  commonColumns,
+  LaunchpadTablesCommonColumns,
+} from "../../../LaunchpadApply/LaunchpadCreate/components/LaunchpadTablesCommonColumns";
+
 import { LaunchpadProject } from "@/api/launchpad/v1/launchpad";
 import { OmniLink } from "@/components/OmniLink";
 import { StateBadge } from "@/components/badges/StateBadge";
@@ -9,10 +14,6 @@ import { TableHeader } from "@/components/table/TableHeader";
 import { TableRow } from "@/components/table/TableRow";
 import { TableWrapper } from "@/components/table/TableWrapper";
 import { TableColumns } from "@/components/table/utils";
-import {
-  commonColumns,
-  LaunchpadTablesCommonColumns,
-} from "@/screens/Launchpad/components/LaunchpadTablesCommonColumns";
 import { launchpadProjectStatus, parseCollectionData } from "@/utils/launchpad";
 import { screenContentMaxWidthLarge } from "@/utils/style/layout";
 

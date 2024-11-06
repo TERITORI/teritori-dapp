@@ -2,6 +2,11 @@ import moment from "moment";
 import React from "react";
 import { FlatList, View } from "react-native";
 
+import {
+  commonColumns,
+  LaunchpadTablesCommonColumns,
+} from "../../LaunchpadApply/LaunchpadCreate/components/LaunchpadTablesCommonColumns";
+
 import { LaunchpadProject } from "@/api/launchpad/v1/launchpad";
 import externalLinkSVG from "@/assets/icons/external-link.svg";
 import { Link } from "@/components/Link";
@@ -13,10 +18,6 @@ import { TableRow } from "@/components/table/TableRow";
 import { TableTextCell } from "@/components/table/TableTextCell";
 import { TableWrapper } from "@/components/table/TableWrapper";
 import { TableColumns } from "@/components/table/utils";
-import {
-  commonColumns,
-  LaunchpadTablesCommonColumns,
-} from "@/screens/Launchpad/components/LaunchpadTablesCommonColumns";
 import { parseCollectionData } from "@/utils/launchpad";
 import { secondaryColor } from "@/utils/style/colors";
 import { screenContentMaxWidthLarge } from "@/utils/style/layout";
