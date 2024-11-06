@@ -16,9 +16,9 @@ const ZodCoin = z.object({
     .trim()
     .min(1, DEFAULT_FORM_ERRORS.required)
     .refine(
-      (value) => NUMBERS_REGEXP.test(value),
+      (value) => !value || NUMBERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyNumbers,
-    ).optional(),
+    ).nullish(),
   denom: z.string().trim(),
 });
 
@@ -26,25 +26,25 @@ export type Coin = z.infer<typeof ZodCoin>;
 
 // ===== Shapes to build front objects
 const ZodCollectionMintPeriodFormValues = z.object({
-  price: ZodCoin.optional(),
+  price: ZodCoin.nullish(),
   maxTokens: z
     .string()
     .trim()
     .refine(
-      (value) => NUMBERS_REGEXP.test(value),
+      (value) => !value || NUMBERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyNumbers,
-    ).optional(),
+    ).nullish(),
   perAddressLimit: z
     .string()
     .trim()
     .refine(
-      (value) => NUMBERS_REGEXP.test(value),
+      (value) => !value || NUMBERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyNumbers,
-    ).optional(),
+    ).nullish(),
   startTime: z.number().min(1, DEFAULT_FORM_ERRORS.required),
-  endTime: z.number().optional(),
-  whitelistAddressesFile: ZodLocalFileData.optional(),
-  whitelistAddresses: z.array(z.string()).optional(),
+  endTime: z.number().nullish(),
+  whitelistAddressesFile: ZodLocalFileData.nullish(),
+  whitelistAddresses: z.array(z.string()).nullish(),
   isOpen: z.boolean(),
 });
 
@@ -58,20 +58,20 @@ export const ZodCollectionAssetsMetadataFormValues = z.object({
   externalUrl: z
     .string()
     .trim()
-    // We ignore the URL format control since externalUrl is optional
+    // We ignore the URL format control since externalUrl is nullish
     // .refine(
     //   (value) => !value || URL_REGEX.test(value),
     //   DEFAULT_FORM_ERRORS.onlyUrl,
     // )
-    .optional(),
-  description: z.string().trim().optional(),
+    .nullish(),
+  description: z.string().trim().nullish(),
   name: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
-  youtubeUrl: z.string().trim().optional(),
+  youtubeUrl: z.string().trim().nullish(),
   attributes: z.array(ZodCollectionAssetsAttributeFormValues),
 });
 
 export const ZodCollectionAssetsMetadatasFormValues = z.object({
-  assetsMetadatas: z.array(ZodCollectionAssetsMetadataFormValues).optional(),
+  assetsMetadatas: z.array(ZodCollectionAssetsMetadataFormValues).nullish(),
   nftApiKey: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
 });
 
@@ -92,7 +92,7 @@ export const ZodCollectionFormValues = z.object({
     .trim()
     .min(1, DEFAULT_FORM_ERRORS.required)
     .refine(
-      (value) => !value || URL_REGEX.test(value),
+      (value) => URL_REGEX.test(value),
       DEFAULT_FORM_ERRORS.onlyUrl,
     ),
   email: z
@@ -108,7 +108,6 @@ export const ZodCollectionFormValues = z.object({
   investDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   investLink: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   artworkDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
-  expectedMintDate: z.number().min(1, DEFAULT_FORM_ERRORS.required),
   coverImage: ZodLocalFileData,
   isPreviouslyApplied: z.boolean(),
   isDerivativeProject: z.boolean(),
@@ -127,9 +126,12 @@ export const ZodCollectionFormValues = z.object({
       DEFAULT_FORM_ERRORS.onlyNumbers,
     ),
   mintPeriods: z.array(ZodCollectionMintPeriodFormValues).nonempty(),
-  royaltyAddress: z.string().trim().optional(),
-  royaltyPercentage: z.string().trim().optional(),
-  assetsMetadatas: ZodCollectionAssetsMetadatasFormValues.optional(),
+  royaltyAddress: z.string().trim().nullish(),
+  royaltyPercentage: z.string().trim().refine(
+    (value) => !value || NUMBERS_REGEXP.test(value),
+    DEFAULT_FORM_ERRORS.onlyNumbers,
+  ).nullish(),
+  assetsMetadatas: ZodCollectionAssetsMetadatasFormValues.nullish(),
   baseTokenUri: z
     .string()
     .trim()
@@ -137,7 +139,7 @@ export const ZodCollectionFormValues = z.object({
       (value) => !value || isIpfsPathValid(value),
       DEFAULT_FORM_ERRORS.onlyIpfsUri,
     )
-    .optional(),
+    .nullish(),
   coverImageUri: z
     .string()
     .trim()
@@ -145,7 +147,7 @@ export const ZodCollectionFormValues = z.object({
       (value) => !value || isIpfsPathValid(value),
       DEFAULT_FORM_ERRORS.onlyIpfsUri,
     )
-    .optional(),
+    .nullish(),
 });
 
 export type CollectionFormValues = z.infer<typeof ZodCollectionFormValues>;
@@ -174,21 +176,21 @@ const ZodWhitelistInfoDataResult = z.object({
 });
 
 const ZodMintPeriodDataResult = z.object({
-  end_time: z.number().optional(),
-  limit_per_address: z.number().optional(),
-  max_tokens: z.number().optional(),
-  price: ZodCoin.optional(),
+  end_time: z.number().nullish(),
+  limit_per_address: z.number().nullish(),
+  max_tokens: z.number().nullish(),
+  price: ZodCoin.nullish(),
   start_time: z.number(),
-  whitelist_info: ZodWhitelistInfoDataResult.optional(),
+  whitelist_info: ZodWhitelistInfoDataResult.nullish(),
 });
 
 export const ZodCollectionDataResult = z.object({
   artwork_desc: z.string(),
-  base_token_uri: z.string().optional(),
+  base_token_uri: z.string().nullish(),
   contact_email: z.string(),
   cover_img_uri: z.string(),
   dao_whitelist_count: z.number(),
-  deployed_address: z.string().optional(),
+  deployed_address: z.string().nullish(),
   desc: z.string(),
   escrow_mint_proceeds_period: z.number(),
   investment_desc: z.string(),
@@ -197,15 +199,15 @@ export const ZodCollectionDataResult = z.object({
   is_dox: z.boolean(),
   is_project_derivative: z.boolean(),
   is_ready_for_mint: z.boolean(),
-  metadatas_merkle_root: z.string().optional(),
+  metadatas_merkle_root: z.string().nullish(),
   mint_periods: z.array(ZodMintPeriodDataResult),
   name: z.string(),
   partners: z.string(),
   project_desc: z.string(),
   project_type: z.string(),
-  reveal_time: z.number().optional(),
-  royalty_address: z.string().optional(),
-  royalty_percentage: z.number().nullable().optional(),
+  reveal_time: z.number().nullish(),
+  royalty_address: z.string().nullish(),
+  royalty_percentage: z.number().nullish(),
   symbol: z.string(),
   target_network: z.string(),
   team_desc: z.string(),

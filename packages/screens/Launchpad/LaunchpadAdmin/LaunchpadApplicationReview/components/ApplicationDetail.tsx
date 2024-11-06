@@ -68,12 +68,7 @@ export const ApplicationDetail: React.FC<{
         >
           <ApplicationCard
             title="Supply"
-            value={collectionData.expected_supply.toString()}
-            style={applicationCardCStyle}
-          />
-          <ApplicationCard
-            title="Price"
-            value={collectionData.expected_public_mint_price.toString()}
+            value={collectionData.tokens_count.toString()}
             style={applicationCardCStyle}
           />
           <ApplicationCard

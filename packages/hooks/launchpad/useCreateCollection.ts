@@ -18,12 +18,8 @@ import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { generateIpfsKey } from "@/utils/ipfs";
 import { LocalFileData } from "@/utils/types/files";
-import {
-  CollectionAssetsMetadatasFormValues,
-  CollectionFormValues,
-  CollectionMintPeriodFormValues,
-  CollectionToSubmit,
-} from "@/utils/types/launchpad";
+import { Coin } from './../../contracts-clients/nft-launchpad/NftLaunchpad.types';
+import { CollectionAssetsMetadatasFormValues, CollectionFormValues, CollectionMintPeriodFormValues, CollectionToSubmit } from "@/utils/types/launchpad";
 
 export const useCreateCollection = () => {
   // Since the Collection network is the selected network, we use useSelectedNetworkId (See LaunchpadBasic.tsx)
@@ -112,8 +108,12 @@ export const useCreateCollection = () => {
                 addresses_merkle_root: merkleRoot,
               };
             }
+            const price: Coin|null = mintPeriod.price ? {
+              amount: mintPeriod.price.amount || "0",
+              denom: mintPeriod.price.denom
+            } : null
             return {
-              price: mintPeriod.price,
+              price,
               end_time: mintPeriod.endTime,
               max_tokens: mintPeriod.maxTokens
                 ? parseInt(mintPeriod.maxTokens, 10)
@@ -147,8 +147,6 @@ export const useCreateCollection = () => {
           investment_desc: collectionFormValues.investDescription,
           investment_link: collectionFormValues.investLink,
           artwork_desc: collectionFormValues.artworkDescription,
-          expected_public_mint_price: 0,
-          expected_mint_date: collectionFormValues.expectedMintDate,
           cover_img_uri: "ipfs://" + fileIpfsHash,
           is_applied_previously: collectionFormValues.isPreviouslyApplied,
           is_project_derivative: collectionFormValues.isDerivativeProject,

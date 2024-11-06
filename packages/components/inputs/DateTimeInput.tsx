@@ -101,7 +101,7 @@ export const DateTimeInput: FC<{
   };
 
   useEffect(() => {
-    if (error || !date) return;
+    if (error || !date || date.toString() === "Invalid Date") return;
     onChange(date.getTime());
   }, [date, error, onChange]);
 

@@ -109,8 +109,7 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
         !!collectionForm.getFieldState("isReadyForMint").error ||
         !!collectionForm.getFieldState("isDox").error ||
         !!collectionForm.getFieldState("daoWhitelistCount").error ||
-        !!collectionForm.getFieldState("escrowMintProceedsPeriod").error ||
-        !!collectionForm.getFieldState("expectedMintDate").error)
+        !!collectionForm.getFieldState("escrowMintProceedsPeriod").error)
     ) {
       return true;
     }

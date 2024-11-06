@@ -113,6 +113,7 @@ export const useCompleteCollection = () => {
               },
             );
 
+            // Tr721Metadata
             metadatas.push({
               image: image.url,
               externalUrl: assetMetadata.externalUrl,
@@ -120,10 +121,13 @@ export const useCompleteCollection = () => {
               name: assetMetadata.name,
               youtubeUrl: assetMetadata.youtubeUrl,
               attributes,
-              backgroundColor: "",
-              animationUrl: "",
-              royaltyPercentage: 5,
-              royaltyPaymentAddress: "",
+              // TODO: Hanlde these ?
+              // imageData: "",
+              // backgroundColor: "",
+              // animationUrl: "",
+              // youtubeUrl: "",
+              // royaltyPercentage: 5,
+              // royaltyPaymentAddress: "",
             });
           },
         );

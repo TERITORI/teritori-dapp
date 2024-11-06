@@ -142,7 +142,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
             minWidth: columns.expectedTotalSupply.minWidth,
           }}
         >
-          {`${collectionData.expected_supply}`}
+          {`${collectionData.tokens_count}`}
         </TableTextCell>
 
         <TableTextCell
@@ -151,7 +151,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
             minWidth: columns.expectedPublicMintPrice.minWidth,
           }}
         >
-          {`${collectionData.expected_public_mint_price}`}
+          {`TODO REMOVE`}
         </TableTextCell>
 
         <TableTextCell
@@ -160,7 +160,7 @@ const LaunchpadCollectionsTableRow: React.FC<{
             minWidth: columns.expectedMintDate.minWidth,
           }}
         >
-          {moment(collectionData.expected_mint_date).format("MMM D YYYY")}
+           {`TODO REMOVE`}
         </TableTextCell>
 
         {/*TODO: Three dots here with possible actions on the collection ?*/}

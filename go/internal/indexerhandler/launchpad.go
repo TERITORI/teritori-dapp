@@ -160,8 +160,8 @@ func (h *Handler) handleExecuteDeployCollection(e *Message, execMsg *wasmtypes.M
 			return errors.Wrap(err, "failed to unmarshal cover_img_uri")
 		}
 	}
-	var tokensCount int
-	if raw, ok := collectionDataJSON["max_supply"]; ok {
+	var tokensCount uint64
+	if raw, ok := collectionDataJSON["tokens_count"]; ok {
 		if err := json.Unmarshal(raw, &tokensCount); err != nil {
 			return errors.Wrap(err, "failed to unmarshal tokens_count")
 		}
@@ -178,7 +178,7 @@ func (h *Handler) handleExecuteDeployCollection(e *Message, execMsg *wasmtypes.M
 		NetworkID:           h.config.Network.ID,
 		Name:                name,
 		ImageURI:            coverImgUri,
-		MaxSupply:           tokensCount,
+		MaxSupply:           int(tokensCount),
 		SecondaryDuringMint: true,
 		Time:                blockTime,
 		TeritoriCollection: &indexerdb.TeritoriCollection{

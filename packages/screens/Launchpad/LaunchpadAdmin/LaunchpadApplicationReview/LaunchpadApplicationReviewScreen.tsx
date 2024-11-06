@@ -29,6 +29,18 @@ import { errorColor, neutral33 } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
+
+
+
+
+
+// =====> TODO: SHOW ALL DATA, MINT PERIODS, ASSETS, ETC
+
+
+
+
+
+
 export const launchpadReviewBreakpointM = 800;
 
 export const LaunchpadApplicationReviewScreen: ScreenFC<

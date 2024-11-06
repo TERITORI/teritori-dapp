@@ -24,7 +24,6 @@ export const LaunchpadAdditional: FC = () => {
   );
   const isReadyForMint = collectionForm.watch("isReadyForMint");
   const isDox = collectionForm.watch("isDox");
-  const expectedMintDate = collectionForm.watch("expectedMintDate");
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
       <View style={{ maxWidth: 416, width: "100%" }}>
@@ -74,25 +73,12 @@ export const LaunchpadAdditional: FC = () => {
                   onChange(item === "Yes");
                 }}
                 label="Is your collection ready for the mint?"
+                style={{zIndex: 3}}
               />
               <ErrorText>
                 {collectionForm.getFieldState("isReadyForMint").error?.message}
               </ErrorText>
             </>
-          )}
-        />
-        <SpacerColumn size={2} />
-
-        <Controller<CollectionFormValues>
-          name="expectedMintDate"
-          control={collectionForm.control}
-          render={({ field: { onChange } }) => (
-            <DateTimeInput
-              label="What is your expected mint date?"
-              onChange={onChange}
-              timestamp={expectedMintDate}
-              isDirty={collectionForm.getFieldState("expectedMintDate").isDirty}
-            />
           )}
         />
         <SpacerColumn size={2} />
