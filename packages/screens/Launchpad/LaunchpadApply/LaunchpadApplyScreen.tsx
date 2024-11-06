@@ -2,9 +2,6 @@ import React from "react";
 import { Linking, TextStyle, View } from "react-native";
 
 import { LaunchpadBanner } from "./LaunchpadCreate/components/LaunchpadBanner";
-
-import { BrandText } from "@/components/BrandText";
-import { ScreenContainer } from "@/components/ScreenContainer";
 import {
   LargeBoxButton,
   LargeBoxButtonProps,

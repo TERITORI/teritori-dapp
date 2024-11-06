@@ -4,8 +4,6 @@ import { ValidationRule } from "react-hook-form";
 import { DEFAULT_FORM_ERRORS } from "@/utils/errors";
 import { LETTERS_REGEXP, NUMBERS_REGEXP } from "@/utils/regex";
 
-import { DEFAULT_FORM_ERRORS } from "@/utils/errors";
-
 // validator should return false or string to trigger error
 export const validateAddress = (value: string) => {
   try {
