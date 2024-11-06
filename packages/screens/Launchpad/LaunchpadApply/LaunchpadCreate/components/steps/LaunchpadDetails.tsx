@@ -48,29 +48,7 @@ export const LaunchpadDetails: FC = () => {
           placeHolder="https://website..."
           name="websiteLink"
           form={collectionForm}
-          required={false}
         />
-
-        {/*<TextInputLaunchpad<CollectionFormValues>*/}
-        {/*  label="Twitter Profile "*/}
-        {/*  placeHolder="https://twitter..."*/}
-        {/*  name="twitterProfileUrl"*/}
-        {/*  form={collectionForm}*/}
-        {/*/>*/}
-
-        {/*<TextInputLaunchpad<CollectionFormValues>*/}
-        {/*  label="How many Twitter followers does your project have? "*/}
-        {/*  placeHolder="10,000"*/}
-        {/*  name="nbTwitterFollowers"*/}
-        {/*  form={collectionForm}*/}
-        {/*/>*/}
-
-        {/*<TextInputLaunchpad<CollectionFormValues>*/}
-        {/*  label="Discord name of your main contact: "*/}
-        {/*  placeHolder="nickname#0000"*/}
-        {/*  name="discordName"*/}
-        {/*  form={collectionForm}*/}
-        {/*/>*/}
 
         <TextInputLaunchpad<CollectionFormValues>
           label="Main contact email address: "

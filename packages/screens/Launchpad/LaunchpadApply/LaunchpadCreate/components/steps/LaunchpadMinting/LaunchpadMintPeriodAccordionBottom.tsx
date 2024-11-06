@@ -80,6 +80,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
               onChangeAmountAtomics={(amountAtomics) => {
                 onChange(amountAtomics);
               }}
+              required={false}
             />
             <ErrorText>
               {collectionForm.getFieldState(amountPath).error?.message}
@@ -101,6 +102,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
           </View>
         }
         form={collectionForm}
+        required={false}
       />
 
       <TextInputLaunchpad<CollectionFormValues>
@@ -115,6 +117,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
           </View>
         }
         form={collectionForm}
+        required={false}
       />
 
       <Controller<CollectionFormValues>
@@ -140,6 +143,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
             onChange={onChange}
             timestamp={endTime}
             isDirty={collectionForm.getFieldState(endTimePath).isDirty}
+            required={false}
           />
         )}
       />

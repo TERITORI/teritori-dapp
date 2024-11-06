@@ -147,11 +147,7 @@ export const useCreateCollection = () => {
           investment_desc: collectionFormValues.investDescription,
           investment_link: collectionFormValues.investLink,
           artwork_desc: collectionFormValues.artworkDescription,
-          expected_supply: parseInt(collectionFormValues.expectedSupply, 10),
-          expected_public_mint_price: parseInt(
-            collectionFormValues.expectedPublicMintPrice,
-            10,
-          ),
+          expected_public_mint_price: 0,
           expected_mint_date: collectionFormValues.expectedMintDate,
           cover_img_uri: "ipfs://" + fileIpfsHash,
           is_applied_previously: collectionFormValues.isPreviouslyApplied,

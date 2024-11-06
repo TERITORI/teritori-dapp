@@ -39,7 +39,7 @@ fn get_default_collection() -> Collection {
         // external_link: None,
 
         // Collection details ----------------------------
-        website_link: None,
+        website_link: "aaa".to_string(),
 
         // twitter_profile: "twitter_profile".to_string(),
         // twitter_followers_count: 1,
@@ -70,10 +70,6 @@ fn get_default_collection() -> Collection {
         artwork_desc: "artwork_desc".to_string(),
 
         is_ready_for_mint: true,
-
-        expected_supply: 1000,
-        expected_public_mint_price: 100,
-        expected_mint_date: u64::default(),
 
         escrow_mint_proceeds_period: u64::default(),
         is_dox: true,
@@ -110,7 +106,7 @@ fn instantiate() {
         name: "teritori launchpad".to_string(),
         supported_networks: vec![],
         nft_code_id: None,
-        deployer: None,
+        launchpad_admin: Some("admin".to_string()),
         owner: Addr::unchecked(sender),
     };
 
@@ -144,7 +140,7 @@ fn full_flow() {
             name: "teritori launchpad".to_string(),
             supported_networks: vec![],
             nft_code_id: None,
-            deployer: None,
+            launchpad_admin: Some("admin".to_string()),
             owner: Addr::unchecked(sender),
         })
         .call(sender)
@@ -212,15 +208,6 @@ fn full_flow() {
         assert_eq!(err, ContractError::CollectionSymbolExists);
     }
 
-    // Deploy when deployer missing  ---------------------------------------------------------
-    {
-        let err = contract
-            .deploy_collection("SYMBOL_NOT_EXIST".to_string())
-            .call(sender)
-            .unwrap_err();
-        assert_eq!(err, ContractError::DeployerMissing)
-    }
-
     // Update config when sender is not contract owner 
     {
         let err = contract
@@ -228,7 +215,7 @@ fn full_flow() {
                 name: "test".to_string(),
                 nft_code_id: Some(deployed_nft_code_id),
                 supported_networks: vec![],
-                deployer: Some(sender.to_string()),
+                launchpad_admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
             })
             .call("wrong_owner")
@@ -243,7 +230,7 @@ fn full_flow() {
                 name: "test".to_string(),
                 supported_networks: vec![],
                 nft_code_id: None,
-                deployer: Some("deployer".to_string()),
+                launchpad_admin: Some("deployer".to_string()),
                 owner: Some(sender.to_string()),
             })
             .call(sender)
@@ -263,7 +250,7 @@ fn full_flow() {
                 name: "test".to_string(),
                 supported_networks: vec![],
                 nft_code_id: None,
-                deployer: Some(sender.to_string()),
+                launchpad_admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
             })
             .call(sender)
@@ -328,7 +315,7 @@ fn full_flow() {
                 name: "test".to_string(),
                 nft_code_id: Some(deployed_nft_code_id),
                 supported_networks: vec![],
-                deployer: Some(sender.to_string()),
+                launchpad_admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
             })
             .call(sender)

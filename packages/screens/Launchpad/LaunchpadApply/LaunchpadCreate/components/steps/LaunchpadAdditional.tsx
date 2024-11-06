@@ -83,27 +83,6 @@ export const LaunchpadAdditional: FC = () => {
         />
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpad<CollectionFormValues>
-          label="What is your expected collection supply?"
-          placeHolder="Type here..."
-          name="expectedSupply"
-          form={collectionForm}
-        />
-
-        <TextInputLaunchpad<CollectionFormValues>
-          label="What is your expected public sale mint price?"
-          sublabel={
-            <View>
-              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-                Just type the number in your Network currency:
-              </BrandText>
-            </View>
-          }
-          placeHolder="0"
-          name="expectedPublicMintPrice"
-          form={collectionForm}
-        />
-
         <Controller<CollectionFormValues>
           name="expectedMintDate"
           control={collectionForm.control}

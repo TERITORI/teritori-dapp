@@ -18,7 +18,7 @@ const ZodCoin = z.object({
     .refine(
       (value) => NUMBERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyNumbers,
-    ),
+    ).optional(),
   denom: z.string().trim(),
 });
 
@@ -26,25 +26,23 @@ export type Coin = z.infer<typeof ZodCoin>;
 
 // ===== Shapes to build front objects
 const ZodCollectionMintPeriodFormValues = z.object({
-  price: ZodCoin,
+  price: ZodCoin.optional(),
   maxTokens: z
     .string()
     .trim()
-    .min(1, DEFAULT_FORM_ERRORS.required)
     .refine(
       (value) => NUMBERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyNumbers,
-    ),
+    ).optional(),
   perAddressLimit: z
     .string()
     .trim()
-    .min(1, DEFAULT_FORM_ERRORS.required)
     .refine(
       (value) => NUMBERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyNumbers,
-    ),
+    ).optional(),
   startTime: z.number().min(1, DEFAULT_FORM_ERRORS.required),
-  endTime: z.number().min(1, DEFAULT_FORM_ERRORS.required),
+  endTime: z.number().optional(),
   whitelistAddressesFile: ZodLocalFileData.optional(),
   whitelistAddresses: z.array(z.string()).optional(),
   isOpen: z.boolean(),
@@ -104,36 +102,12 @@ export const ZodCollectionFormValues = z.object({
     .refine((value) => EMAIL_REGEXP.test(value), DEFAULT_FORM_ERRORS.onlyEmail),
   projectTypes: z.array(z.string().trim()).min(1, DEFAULT_FORM_ERRORS.required),
   projectDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
-  tokensCount: z
-    .string()
-    .trim()
-    .min(1, DEFAULT_FORM_ERRORS.required)
-    .refine(
-      (value) => NUMBERS_REGEXP.test(value),
-      DEFAULT_FORM_ERRORS.onlyNumbers,
-    ),
   revealTime: z.number().min(1, DEFAULT_FORM_ERRORS.required),
   teamDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   partnersDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   investDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   investLink: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   artworkDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
-  expectedSupply: z
-    .string()
-    .trim()
-    .min(1, DEFAULT_FORM_ERRORS.required)
-    .refine(
-      (value) => NUMBERS_REGEXP.test(value),
-      DEFAULT_FORM_ERRORS.onlyNumbers,
-    ),
-  expectedPublicMintPrice: z
-    .string()
-    .trim()
-    .min(1, DEFAULT_FORM_ERRORS.required)
-    .refine(
-      (value) => NUMBERS_REGEXP.test(value),
-      DEFAULT_FORM_ERRORS.onlyNumbers,
-    ),
   expectedMintDate: z.number().min(1, DEFAULT_FORM_ERRORS.required),
   coverImage: ZodLocalFileData,
   isPreviouslyApplied: z.boolean(),
@@ -217,9 +191,6 @@ export const ZodCollectionDataResult = z.object({
   deployed_address: z.string().optional(),
   desc: z.string(),
   escrow_mint_proceeds_period: z.number(),
-  expected_mint_date: z.number(),
-  expected_public_mint_price: z.number(),
-  expected_supply: z.number(),
   investment_desc: z.string(),
   investment_link: z.string(),
   is_applied_previously: z.boolean(),

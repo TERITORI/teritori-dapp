@@ -80,16 +80,12 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
           !!collectionForm.getFieldState("symbol").error)) ||
       !!collectionForm.getFieldState("coverImage").error ||
       !!collectionForm.getFieldState("assetsMetadatas.nftApiKey").error
-      // !!collectionForm.getFieldState("externalLink").error
     ) {
       return true;
     }
     if (
       stepKey === 2 &&
       (!!collectionForm.getFieldState("websiteLink").error ||
-        // !!collectionForm.getFieldState("twitterProfileUrl").error ||
-        // !!collectionForm.getFieldState("nbTwitterFollowers").error ||
-        // !!collectionForm.getFieldState("discordName").error ||
         !!collectionForm.getFieldState("isDerivativeProject").error ||
         !!collectionForm.getFieldState("projectTypes").error ||
         !!collectionForm.getFieldState("projectDescription").error ||
@@ -101,11 +97,9 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
     if (
       stepKey === 3 &&
       (!!collectionForm.getFieldState("teamDescription").error ||
-        // !!collectionForm.getFieldState("teamLink").error ||
         !!collectionForm.getFieldState("partnersDescription").error ||
         !!collectionForm.getFieldState("investDescription").error ||
         !!collectionForm.getFieldState("investLink").error)
-      // !!collectionForm.getFieldState("roadmapLink").error
     ) {
       return true;
     }
@@ -113,8 +107,6 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
       stepKey === 4 &&
       (!!collectionForm.getFieldState("artworkDescription").error ||
         !!collectionForm.getFieldState("isReadyForMint").error ||
-        !!collectionForm.getFieldState("expectedSupply").error ||
-        !!collectionForm.getFieldState("expectedPublicMintPrice").error ||
         !!collectionForm.getFieldState("isDox").error ||
         !!collectionForm.getFieldState("daoWhitelistCount").error ||
         !!collectionForm.getFieldState("escrowMintProceedsPeriod").error ||
@@ -124,8 +116,7 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
     }
     if (
       stepKey === 5 &&
-      (!!collectionForm.getFieldState("tokensCount").error ||
-        !!collectionForm.getFieldState("revealTime").error ||
+      (!!collectionForm.getFieldState("revealTime").error ||
         !!collectionForm.getFieldState("mintPeriods").error ||
         !!collectionForm.getFieldState("royaltyAddress").error ||
         !!collectionForm.getFieldState("royaltyPercentage").error)

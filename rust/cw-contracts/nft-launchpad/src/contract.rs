@@ -2,7 +2,7 @@
 
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{
-    attr, to_json_binary, Addr, Order, Reply, Response,
+    attr, to_json_binary, Addr, Reply, Response,
     StdResult, SubMsg, WasmMsg,
 };
 use cw_storage_plus::{Item, Map};
@@ -319,9 +319,6 @@ pub struct Collection {
     // Additional info ----------------------------
     pub artwork_desc: String,
     pub is_ready_for_mint: bool,
-    pub expected_supply: u64,
-    pub expected_public_mint_price: u64,
-    pub expected_mint_date: u64,
     pub escrow_mint_proceeds_period: u64,
     pub is_dox: bool,
     pub dao_whitelist_count: u32,
