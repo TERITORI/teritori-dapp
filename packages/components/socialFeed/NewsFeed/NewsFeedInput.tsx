@@ -41,7 +41,7 @@ import { useIpfs } from "@/hooks/useIpfs";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { NetworkFeature, getNetworkFeature } from "@/networks";
+import { NetworkFeature, getNetworkFeature, parseUserId } from "@/networks";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { FeedPostingStepId, feedPostingStep } from "@/utils/feed/posting";
 import { generatePostMetadata, getPostCategory } from "@/utils/feed/queries";
@@ -141,7 +141,8 @@ export const NewsFeedInput = React.forwardRef<
     const selectedNetwork = useSelectedNetworkInfo();
     const selectedNetworkId = selectedNetwork?.id || "teritori";
     const selectedWallet = useSelectedWallet();
-    const userId = daoId ? daoId : selectedWallet?.userId;
+    const posterId = daoId ? daoId : selectedWallet?.userId;
+    const posterAddress = parseUserId(posterId)[1];
     const inputRef = useRef<TextInput>(null);
     const { setToastError } = useFeedbacks();
     const [isUploadLoading, setIsUploadLoading] = useState(false);
@@ -182,7 +183,7 @@ export const NewsFeedInput = React.forwardRef<
       setStep,
     } = useFeedPosting(
       selectedNetwork?.id,
-      userId,
+      posterId,
       postCategory,
       onPostCreationSuccess,
     );
@@ -218,9 +219,11 @@ export const NewsFeedInput = React.forwardRef<
             amount: publishingFee.amount.toString(),
             denom: publishingFee.denom || "",
           },
+          address: posterAddress,
         });
         return;
       }
+
       setIsUploadLoading(true);
       setIsProgressBarShown(true);
       onSubmitInProgress && onSubmitInProgress();
@@ -259,7 +262,7 @@ export const NewsFeedInput = React.forwardRef<
           setStep(feedPostingStep(FeedPostingStepId.GENERATING_KEY));
 
           const pinataJWTKey =
-            userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
+            userIPFSKey || (await generateIpfsKey(selectedNetworkId, posterId));
 
           if (pinataJWTKey) {
             setStep(feedPostingStep(FeedPostingStepId.UPLOADING_FILES));
@@ -400,11 +403,9 @@ export const NewsFeedInput = React.forwardRef<
                     onSelectionChange={(event) =>
                       setSelection(event.nativeEvent.selection)
                     }
-                    placeholder={`Hey yo! ${
-                      type === "post" ? "Post something" : "Write your comment"
-                    } ${
-                      windowWidth < RESPONSIVE_BREAKPOINT_S ? "" : "here! _____"
-                    }`}
+                    placeholder={`Hey yo! ${type === "post" ? "Post something" : "Write your comment"
+                      } ${windowWidth < RESPONSIVE_BREAKPOINT_S ? "" : "here! _____"
+                      }`}
                     placeholderTextColor={neutral77}
                     onChangeText={handleTextChange}
                     multiline
@@ -438,13 +439,13 @@ export const NewsFeedInput = React.forwardRef<
                     color: !formValues?.message
                       ? neutral77
                       : formValues?.message?.length >
-                            SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
-                              CHARS_LIMIT_WARNING_MULTIPLIER &&
-                          formValues?.message?.length <
-                            SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
+                        CHARS_LIMIT_WARNING_MULTIPLIER &&
+                        formValues?.message?.length <
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                         ? yellowDefault
                         : formValues?.message?.length >=
-                            SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                           ? errorColor
                           : primaryColor,
                     marginTop: layout.spacing_x0_5,
@@ -617,8 +618,8 @@ export const NewsFeedInput = React.forwardRef<
                     (formValues.files?.[0] &&
                       formValues.files[0].fileType !== "image") ||
                     (formValues.files || []).length +
-                      (formValues.gifs || [])?.length >=
-                      MAX_IMAGES
+                    (formValues.gifs || [])?.length >=
+                    MAX_IMAGES
                   }
                 />
                 {appMode !== "mini" && (
@@ -678,8 +679,8 @@ export const NewsFeedInput = React.forwardRef<
                             (formValues.files?.[0] &&
                               formValues.files[0].fileType !== "image") ||
                             (formValues.files || []).length +
-                              (formValues.gifs || [])?.length >=
-                              MAX_IMAGES
+                            (formValues.gifs || [])?.length >=
+                            MAX_IMAGES
                           }
                           icon={cameraSVG}
                           onPress={onPress}
@@ -714,7 +715,7 @@ export const NewsFeedInput = React.forwardRef<
                       size="M"
                       color={
                         formValues?.message.length >
-                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                           ? primaryTextColor
                           : primaryColor
                       }
@@ -724,7 +725,7 @@ export const NewsFeedInput = React.forwardRef<
                       }}
                       backgroundColor={
                         formValues?.message.length >
-                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
                           ? primaryColor
                           : neutral17
                       }

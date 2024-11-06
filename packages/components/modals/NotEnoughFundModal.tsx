@@ -1,7 +1,6 @@
 import React, { FC, useState } from "react";
 import { Linking, View } from "react-native";
 
-import ModalBase from "./ModalBase";
 import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
 import { useBalances } from "../../hooks/useBalances";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
@@ -16,6 +15,7 @@ import { WalletStatusBox } from "../WalletStatusBox";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SeparatorGradient } from "../separators/SeparatorGradient";
 import { SpacerColumn } from "../spacer";
+import ModalBase from "./ModalBase";
 
 import { DepositWithdrawModal } from "@/components/modals/DepositWithdrawModal";
 
@@ -28,13 +28,14 @@ export const NotEnoughFundsModal: FC<{
   cost?: Coin;
   label?: string;
   visible?: boolean;
+  address?: string;
   onClose?: () => void;
-}> = ({ label = "Not enough funds", cost, visible, onClose }) => {
+}> = ({ label = "Not enough funds", cost, visible, onClose, address }) => {
   const selectedWallet = useSelectedWallet();
   const selectedNetwork = useSelectedNetworkInfo();
   const { balances } = useBalances(
     selectedNetwork?.id,
-    selectedWallet?.address,
+    address || selectedWallet?.address,
   );
   const costBalance = balances.find((bal) => bal.denom === cost?.denom);
   const currency = getCurrency(selectedNetwork?.id, cost?.denom);
@@ -75,7 +76,7 @@ export const NotEnoughFundsModal: FC<{
         <WalletStatusBox />
         <SpacerColumn size={2} />
         <View>
-          {cost && costBalance && selectedNetwork && (
+          {cost && selectedNetwork && (
             <>
               <View
                 style={{
@@ -105,8 +106,8 @@ export const NotEnoughFundsModal: FC<{
                 <BrandText style={fontSemibold14}>
                   {prettyPrice(
                     selectedNetwork.id,
-                    costBalance.amount,
-                    costBalance.denom,
+                    costBalance?.amount || "0",
+                    cost.denom,
                   )}
                 </BrandText>
               </View>
