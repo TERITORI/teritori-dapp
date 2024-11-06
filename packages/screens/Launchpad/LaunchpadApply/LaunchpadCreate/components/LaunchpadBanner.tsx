@@ -1,9 +1,8 @@
 import React from "react";
 import { Image, View } from "react-native";
 
-import LaunchpadBannerImage from "../../../../assets/banners/launchpad.jpg";
-import LogoSimpleSvg from "../../../../assets/icons/logo-simple.svg";
-
+import LaunchpadBannerImage from "@/assets/banners/launchpad.jpg";
+import LogoSimpleSvg from "@/assets/icons/logo-simple.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { SpacerColumn } from "@/components/spacer";
