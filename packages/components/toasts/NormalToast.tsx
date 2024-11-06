@@ -66,7 +66,7 @@ export const NormalToast: React.FC<NormalToastProps> = ({
           borderWidth: 1,
         }}
       >
-        {type === "error" && (
+        {(type === "error" || type === "warning") && (
           <>
             <SpacerRow size={3} />
             <SVG
@@ -76,6 +76,7 @@ export const NormalToast: React.FC<NormalToastProps> = ({
               style={{
                 flexShrink: 0,
               }}
+              color={type === "error" ? errorColor : warningColor}
             />
           </>
         )}
