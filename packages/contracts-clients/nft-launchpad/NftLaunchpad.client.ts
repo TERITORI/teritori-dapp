@@ -6,14 +6,14 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { Addr, InstantiateMsg, Config, ExecuteMsg, Uint128, ConfigChanges, Collection, MintPeriod, Coin, WhitelistInfo, QueryMsg } from "./NftLaunchpad.types";
+import { Addr, InstantiateMsg, Config, ExecuteMsg, Uint128, ConfigChanges, CollectionProject, MintPeriod, Coin, WhitelistInfo, QueryMsg } from "./NftLaunchpad.types";
 export interface NftLaunchpadReadOnlyInterface {
   contractAddress: string;
   getCollectionById: ({
     collectionId
   }: {
     collectionId: string;
-  }) => Promise<Collection>;
+  }) => Promise<CollectionProject>;
   getConfig: () => Promise<Config>;
 }
 export class NftLaunchpadQueryClient implements NftLaunchpadReadOnlyInterface {
@@ -31,7 +31,7 @@ export class NftLaunchpadQueryClient implements NftLaunchpadReadOnlyInterface {
     collectionId
   }: {
     collectionId: string;
-  }): Promise<Collection> => {
+  }): Promise<CollectionProject> => {
     return this.client.queryContractSmart(this.contractAddress, {
       get_collection_by_id: {
         collection_id: collectionId
@@ -55,7 +55,7 @@ export interface NftLaunchpadInterface extends NftLaunchpadReadOnlyInterface {
   submitCollection: ({
     collection
   }: {
-    collection: Collection;
+    collection: CollectionProject;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   updateMerkleRoot: ({
     collectionId,
@@ -100,7 +100,7 @@ export class NftLaunchpadClient extends NftLaunchpadQueryClient implements NftLa
   submitCollection = async ({
     collection
   }: {
-    collection: Collection;
+    collection: CollectionProject;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       submit_collection: {

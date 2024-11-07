@@ -4,14 +4,17 @@
   "type": "object",
   "required": [
     "name",
-    "owner",
-    "supported_networks"
+    "owner"
   ],
   "properties": {
-    "launchpad_admin": {
-      "type": [
-        "string",
-        "null"
+    "admin": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/Addr"
+        },
+        {
+          "type": "null"
+        }
       ]
     },
     "name": {
@@ -27,12 +30,6 @@
     },
     "owner": {
       "$ref": "#/definitions/Addr"
-    },
-    "supported_networks": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
     }
   },
   "additionalProperties": false,

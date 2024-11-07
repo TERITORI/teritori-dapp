@@ -23,14 +23,17 @@
         "type": "object",
         "required": [
           "name",
-          "owner",
-          "supported_networks"
+          "owner"
         ],
         "properties": {
-          "launchpad_admin": {
-            "type": [
-              "string",
-              "null"
+          "admin": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Addr"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "name": {
@@ -46,12 +49,6 @@
           },
           "owner": {
             "$ref": "#/definitions/Addr"
-          },
-          "supported_networks": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           }
         },
         "additionalProperties": false
@@ -95,7 +92,7 @@
             ],
             "properties": {
               "collection": {
-                "$ref": "#/definitions/Collection"
+                "$ref": "#/definitions/CollectionProject"
               }
             }
           }
@@ -167,7 +164,7 @@
           }
         }
       },
-      "Collection": {
+      "CollectionProject": {
         "type": "object",
         "required": [
           "artwork_desc",
@@ -324,19 +321,18 @@
       },
       "ConfigChanges": {
         "type": "object",
-        "required": [
-          "name",
-          "supported_networks"
-        ],
         "properties": {
-          "launchpad_admin": {
+          "admin": {
             "type": [
               "string",
               "null"
             ]
           },
           "name": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "nft_code_id": {
             "type": [
@@ -351,12 +347,6 @@
               "string",
               "null"
             ]
-          },
-          "supported_networks": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           }
         },
         "additionalProperties": false
@@ -490,7 +480,7 @@
   "responses": {
     "get_collection_by_id": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Collection",
+      "title": "CollectionProject",
       "type": "object",
       "required": [
         "artwork_desc",
@@ -756,14 +746,17 @@
       "type": "object",
       "required": [
         "name",
-        "owner",
-        "supported_networks"
+        "owner"
       ],
       "properties": {
-        "launchpad_admin": {
-          "type": [
-            "string",
-            "null"
+        "admin": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Addr"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "name": {
@@ -779,12 +772,6 @@
         },
         "owner": {
           "$ref": "#/definitions/Addr"
-        },
-        "supported_networks": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         }
       },
       "additionalProperties": false,

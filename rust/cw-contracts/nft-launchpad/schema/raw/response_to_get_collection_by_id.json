@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Collection",
+  "title": "CollectionProject",
   "type": "object",
   "required": [
     "artwork_desc",
