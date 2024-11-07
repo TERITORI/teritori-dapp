@@ -5,7 +5,6 @@ import path from "path";
 
 import { InstantiateMsg as NftLaunchpadInstantiateMsg } from "@/contracts-clients/nft-launchpad";
 import {
-  allNetworks,
   CosmosNetworkInfo,
   getNetworkFeature,
   NetworkFeature,
@@ -92,11 +91,8 @@ const instantiateNftLaunchpad = async (
   const instantiateMsg: NftLaunchpadInstantiateMsg = {
     config: {
       name: "Teritori NFT Launchpad",
-      supported_networks: allNetworks
-        .filter((n) => n.features.includes(NetworkFeature.CosmWasmNFTLaunchpad))
-        .map((n) => n.id),
       owner: deployerAddr,
-      launchpad_admin: launchpadAdmin,
+      admin: launchpadAdmin,
       nft_code_id: nftCodeId,
     },
   };
