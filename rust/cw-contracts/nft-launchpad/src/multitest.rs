@@ -2,7 +2,7 @@ use cosmwasm_std::{Addr, Attribute, Coin, Uint128};
 use sylvia::multitest::App;
 
 use crate::{
-    contract::{sv::multitest_utils::CodeId as LaunchpadCodeId, Collection, Config},
+    contract::{sv::multitest_utils::CodeId as LaunchpadCodeId, CollectionProject, Config},
     error::ContractError,
 };
 
@@ -11,7 +11,7 @@ use nft_tr721::contract::{
     sv::multitest_utils::CodeId as NftTr721CodeId, MintPeriod, WhitelistInfo,
 };
 
-fn get_default_collection() -> Collection {
+fn get_default_collection() -> CollectionProject {
     let mint_periods = vec![MintPeriod {
         price: Some(Coin {
             amount: Uint128::new(10),
@@ -29,64 +29,39 @@ fn get_default_collection() -> Collection {
         }),
     }];
 
-    Collection {
-        // Collection info ----------------------------
+    CollectionProject {
+        // Info ----------------------------
         name: "name".to_string(),
         desc: "desc".to_string(),
         symbol: "SYMBOL".to_string(),
         cover_img_uri: "img".to_string(),
         target_network: "network".to_string(),
-        // external_link: None,
-
-        // Collection details ----------------------------
+        // Details ----------------------------
         website_link: "aaa".to_string(),
-
-        // twitter_profile: "twitter_profile".to_string(),
-        // twitter_followers_count: 1,
-
-        // contact_discord_name: "contact_discord_name".to_string(),
         contact_email: "contact_email".to_string(),
-
         is_project_derivative: true,
-
         project_type: "project_type".to_string(),
         project_desc: "project_desc".to_string(),
-
         is_applied_previously: false,
-
         // Team info --------------------------------------
         team_desc: "team_desc".to_string(),
-        // team_link: "team_link".to_string(),
-
         partners: "partners".to_string(),
-
         investment_desc: "investment_desc".to_string(),
         investment_link: "investment_link".to_string(),
-
-        // whitepaper_link: "whitepaper_link".to_string(),
-        // roadmap_link: "roadmap_link".to_string(),
-
         // Additional info ----------------------------
         artwork_desc: "artwork_desc".to_string(),
-
         is_ready_for_mint: true,
-
         escrow_mint_proceeds_period: u64::default(),
         is_dox: true,
-
         dao_whitelist_count: 10,
-
         // Minting details ----------------------------
         tokens_count: 1000,
         reveal_time: Some(u64::default()),
-
         // Whitelist minting --------------------------
         mint_periods,
-
         // Royalty --------------------------
         royalty_address: Some(Addr::unchecked("royalty_address")),
         royalty_percentage: Some(50),
-
         // Extend info --------------------------
         base_token_uri: None,
         metadatas_merkle_root: None,
@@ -104,9 +79,8 @@ fn instantiate() {
     // Instantiate
     let config = Config {
         name: "teritori launchpad".to_string(),
-        supported_networks: vec![],
         nft_code_id: None,
-        launchpad_admin: Some("admin".to_string()),
+        admin: Some(Addr::unchecked("admin")),
         owner: Addr::unchecked(sender),
     };
 
@@ -138,9 +112,8 @@ fn full_flow() {
     let contract = LaunchpadCodeId::store_code(&app)
         .instantiate(Config {
             name: "teritori launchpad".to_string(),
-            supported_networks: vec![],
             nft_code_id: None,
-            launchpad_admin: Some("admin".to_string()),
+            admin: Some(Addr::unchecked("admin")),
             owner: Addr::unchecked(sender),
         })
         .call(sender)
@@ -153,9 +126,9 @@ fn full_flow() {
     // Create collection without period -----------------------------------------
     {
         let err = contract
-            .submit_collection(Collection {
+            .submit_collection(CollectionProject {
                 mint_periods: vec![],
-                ..Collection::default()
+                ..CollectionProject::default()
             })
             .call(sender)
             .unwrap_err();
@@ -166,7 +139,7 @@ fn full_flow() {
     // Create collection with invalid symbol ---------------------------------------------------------
     {
         let err = contract
-            .submit_collection(Collection {
+            .submit_collection(CollectionProject {
                 symbol: "a_123".to_string(),
                 ..default_collection.clone()
             })
@@ -212,10 +185,9 @@ fn full_flow() {
     {
         let err = contract
             .update_config(ConfigChanges {
-                name: "test".to_string(),
+                name: Some("test".to_string()),
                 nft_code_id: Some(deployed_nft_code_id),
-                supported_networks: vec![],
-                launchpad_admin: Some(sender.to_string()),
+                admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
             })
             .call("wrong_owner")
@@ -227,10 +199,9 @@ fn full_flow() {
     {
         contract
             .update_config(ConfigChanges {
-                name: "test".to_string(),
-                supported_networks: vec![],
+                name: Some("test".to_string()),
                 nft_code_id: None,
-                launchpad_admin: Some("deployer".to_string()),
+                admin: Some("deployer".to_string()),
                 owner: Some(sender.to_string()),
             })
             .call(sender)
@@ -247,10 +218,9 @@ fn full_flow() {
     {
         contract
             .update_config(ConfigChanges {
-                name: "test".to_string(),
-                supported_networks: vec![],
+                name: Some("test".to_string()),
                 nft_code_id: None,
-                launchpad_admin: Some(sender.to_string()),
+                admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
             })
             .call(sender)
@@ -312,10 +282,9 @@ fn full_flow() {
     {
         contract
             .update_config(ConfigChanges {
-                name: "test".to_string(),
+                name: Some("test".to_string()),
                 nft_code_id: Some(deployed_nft_code_id),
-                supported_networks: vec![],
-                launchpad_admin: Some(sender.to_string()),
+                admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
             })
             .call(sender)
