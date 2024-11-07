@@ -9,6 +9,7 @@ import (
 	proposal_single "gno.land/p/teritori/dao_proposal_single"
 	"gno.land/p/teritori/dao_utils"
 	voting_group "gno.land/p/teritori/dao_voting_group"
+	"gno.land/r/demo/profile"
 	"gno.land/r/teritori/dao_registry"
 	"gno.land/r/teritori/social_feeds"
 	"gno.land/r/teritori/tori"
@@ -73,6 +74,11 @@ func init() {
 	}
 
 	daoCore = dao_core.NewDAOCore(votingModuleFactory, proposalModulesFactories, messageHandlersFactories)
+
+	// Register the DAO profile
+	profile.SetStringField(profile.DisplayName, "DAO Realm")
+	profile.SetStringField(profile.Bio, "Default testing DAO")
+	profile.SetStringField(profile.Avatar, "")
 
 	// dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "DAO Realm", "Default testing DAO", "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1080&fit=max")
 }
