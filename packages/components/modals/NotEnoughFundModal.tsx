@@ -1,11 +1,17 @@
 import React, { FC, useState } from "react";
 import { Linking, View } from "react-native";
 
+import ModalBase from "./ModalBase";
 import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
 import { useBalances } from "../../hooks/useBalances";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getCurrency, getNativeCurrency, getNetwork } from "../../networks";
+import {
+  getCurrency,
+  getNativeCurrency,
+  getNetwork,
+  parseUserId,
+} from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
@@ -15,7 +21,6 @@ import { WalletStatusBox } from "../WalletStatusBox";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SeparatorGradient } from "../separators/SeparatorGradient";
 import { SpacerColumn } from "../spacer";
-import ModalBase from "./ModalBase";
 
 import { DepositWithdrawModal } from "@/components/modals/DepositWithdrawModal";
 
@@ -28,14 +33,15 @@ export const NotEnoughFundsModal: FC<{
   cost?: Coin;
   label?: string;
   visible?: boolean;
-  address?: string;
+  userId?: string;
   onClose?: () => void;
-}> = ({ label = "Not enough funds", cost, visible, onClose, address }) => {
+}> = ({ label = "Not enough funds", cost, visible, onClose, userId }) => {
   const selectedWallet = useSelectedWallet();
   const selectedNetwork = useSelectedNetworkInfo();
+  const [userNetwork, userAddress] = parseUserId(userId);
   const { balances } = useBalances(
-    selectedNetwork?.id,
-    address || selectedWallet?.address,
+    userNetwork?.id || selectedNetwork?.id,
+    userAddress || selectedWallet?.address,
   );
   const costBalance = balances.find((bal) => bal.denom === cost?.denom);
   const currency = getCurrency(selectedNetwork?.id, cost?.denom);
