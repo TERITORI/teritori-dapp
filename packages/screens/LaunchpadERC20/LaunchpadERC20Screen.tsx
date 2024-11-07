@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { LaunchpadERC20Banner } from "./component/LaunchpadERC20Banner";
-
+import LaunchpadERC20BannerImage from "@/assets/banners/launchpadERC20.jpg";
 import { BrandText } from "@/components/BrandText";
+import { ImageBackgroundLogoText } from "@/components/ImageBackgroundLogoText";
 import { OmniLink } from "@/components/OmniLink";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import {
@@ -43,7 +43,10 @@ export const LaunchpadERC20Screen: ScreenFC<"LaunchpadERC20"> = () => {
       forceNetworkFeatures={[NetworkFeature.LaunchpadERC20]}
       forceNetworkKind={NetworkKind.Gno}
     >
-      <LaunchpadERC20Banner />
+      <ImageBackgroundLogoText
+        backgroundImage={LaunchpadERC20BannerImage}
+        text="Launchpad ERC20 Platform"
+      />
 
       <SpacerColumn size={2} />
 
