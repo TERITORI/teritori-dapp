@@ -1,3 +1,4 @@
+import pluralize from "pluralize";
 import React, {
   forwardRef,
   SyntheticEvent,
@@ -27,7 +28,6 @@ import { DeleteButton } from "@/components/FilePreview/DeleteButton";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerRow } from "@/components/spacer";
-import { pluralOrNot } from "@/utils/text";
 import { LocalFileData } from "@/utils/types/files";
 
 export const FileUploaderSmall = forwardRef<
@@ -193,8 +193,7 @@ export const FileUploaderSmall = forwardRef<
                 : !multiple && !filesCount
                   ? "Select file"
                   : multiple && filesCount
-                    ? filesCount +
-                      ` ${pluralOrNot("file", filesCount)} selected`
+                    ? `${pluralize("file", filesCount, true)} selected`
                     : multiple && !filesCount
                       ? "Select files"
                       : ""}
