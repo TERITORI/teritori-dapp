@@ -68,10 +68,14 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
     setLoading(true);
     setLoadingFullScreen(true);
     try {
-      await completeCollection(symbol, assetsMetadatasForm.getValues());
-
+      const success = await completeCollection(
+        symbol,
+        assetsMetadatasForm.getValues(),
+      );
       setLoading(false);
       setLoadingFullScreen(false);
+      if (success)
+        navigation.navigate("LaunchpadApplicationReview", { id: symbol });
     } catch (e) {
       console.error("Error completing the NFT collection", e);
       setLoading(false);

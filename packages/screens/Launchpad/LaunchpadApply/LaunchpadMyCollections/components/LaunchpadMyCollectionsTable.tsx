@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { FlatList, View } from "react-native";
 
 import { StatusBadge } from "./../../../components/StatusBadge";
+import { CustomPressable } from "../../../../../components/buttons/CustomPressable";
 import {
   commonColumns,
   LaunchpadTablesCommonColumns,
 } from "../../LaunchpadCreate/components/LaunchpadTablesCommonColumns";
 
 import { LaunchpadProject } from "@/api/launchpad/v1/launchpad";
-import { OmniLink } from "@/components/OmniLink";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { TableCell } from "@/components/table/TableCell";
 import { TableHeader } from "@/components/table/TableHeader";
@@ -64,11 +64,7 @@ export const LaunchpadMyCollectionsTable: React.FC<{
     >
       <TableWrapper horizontalScrollBreakpoint={breakpointM}>
         <TableHeader columns={columns} />
-        <FlatList
-          data={rows}
-          renderItem={renderItem}
-          // keyExtractor={keyExtractor}
-        />
+        <FlatList data={rows} renderItem={renderItem} />
       </TableWrapper>
     </View>
   );
@@ -80,14 +76,19 @@ const LaunchpadReadyMyCollectionsTableRow: React.FC<{
 }> = ({ launchpadProject, index }) => {
   const navigation = useAppNavigation();
   const collectionData = parseCollectionData(launchpadProject);
+  const [isHovered, setHovered] = useState(false);
 
   if (!collectionData) return null;
   return (
-    <OmniLink
-      to={{
-        screen: "LaunchpadApplicationReview",
-        params: { id: launchpadProject.id },
-      }}
+    <CustomPressable
+      onPress={() =>
+        navigation.navigate("LaunchpadApplicationReview", {
+          id: launchpadProject.id,
+        })
+      }
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
+      style={isHovered && { opacity: 0.5 }}
     >
       <TableRow>
         <LaunchpadTablesCommonColumns
@@ -123,6 +124,6 @@ const LaunchpadReadyMyCollectionsTableRow: React.FC<{
           )}
         </TableCell>
       </TableRow>
-    </OmniLink>
+    </CustomPressable>
   );
 };

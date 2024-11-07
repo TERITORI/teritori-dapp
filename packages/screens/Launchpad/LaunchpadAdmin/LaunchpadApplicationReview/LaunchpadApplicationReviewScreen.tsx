@@ -92,9 +92,9 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
         }
         responsive
         onBackPress={() =>
-          navigation.canGoBack()
-            ? navigation.goBack()
-            : navigation.navigate("LaunchpadAdministrationOverview")
+          isUserLaunchpadAdmin
+            ? navigation.navigate("LaunchpadAdministrationOverview")
+            : navigation.navigate("LaunchpadMyCollections")
         }
         forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
       >
@@ -121,9 +121,9 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
         }
         responsive
         onBackPress={() =>
-          navigation.canGoBack()
-            ? navigation.goBack()
-            : navigation.navigate("LaunchpadAdministrationOverview")
+          isUserLaunchpadAdmin
+            ? navigation.navigate("LaunchpadAdministrationOverview")
+            : navigation.navigate("LaunchpadMyCollections")
         }
         forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
       >
@@ -146,9 +146,9 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
       }
       responsive
       onBackPress={() =>
-        navigation.canGoBack()
-          ? navigation.goBack()
-          : navigation.navigate("LaunchpadAdministrationOverview")
+        isUserLaunchpadAdmin
+          ? navigation.navigate("LaunchpadAdministrationOverview")
+          : navigation.navigate("LaunchpadMyCollections")
       }
       forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
     >

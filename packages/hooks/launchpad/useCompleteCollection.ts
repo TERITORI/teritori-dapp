@@ -27,7 +27,7 @@ export const useCompleteCollection = () => {
       collectionId: string,
       assetsMetadatasFormsValues: CollectionAssetsMetadatasFormValues,
     ) => {
-      if (!selectedWallet) return;
+      if (!selectedWallet) return false;
       const userId = selectedWallet.userId;
       const walletAddress = selectedWallet.address;
       const networkId = selectedWallet.networkId;
@@ -38,7 +38,7 @@ export const useCompleteCollection = () => {
         selectedNetworkId,
         NetworkFeature.NFTLaunchpad,
       );
-      if (!cosmwasmLaunchpadFeature) return;
+      if (!cosmwasmLaunchpadFeature) return false;
 
       const launchpadBackendClient = mustGetLaunchpadClient(networkId);
 
@@ -58,12 +58,12 @@ export const useCompleteCollection = () => {
           type: "error",
           title: "Files upload failed",
         });
-        return;
+        return false;
       }
 
       try {
         const metadatas: Metadata[] = [];
-        if (!assetsMetadatasFormsValues.assetsMetadatas?.length) return;
+        if (!assetsMetadatasFormsValues.assetsMetadatas?.length) return false;
 
         // IMPORTANT TODO:
         // For now, for simplicity, we upload images to ipfs from client side then this backend will
@@ -87,7 +87,7 @@ export const useCompleteCollection = () => {
             type: "error",
             mode: "normal",
           });
-          return;
+          return false;
         }
 
         assetsMetadatasFormsValues.assetsMetadatas.forEach(
@@ -152,6 +152,8 @@ export const useCompleteCollection = () => {
           type: "success",
           title: "Collection completed",
         });
+
+        return true;
       } catch (e: any) {
         console.error(
           "Error completing a NFT Collection in the Launchpad: ",
@@ -163,6 +165,7 @@ export const useCompleteCollection = () => {
           title: "Error completing a NFT Collection in the Launchpad",
           message: e.message,
         });
+        return false;
       }
     },
     [

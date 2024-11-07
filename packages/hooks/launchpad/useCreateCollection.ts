@@ -38,7 +38,7 @@ export const useCreateCollection = () => {
 
   const createCollection = useCallback(
     async (collectionFormValues: CollectionFormValues) => {
-      if (!selectedWallet) return;
+      if (!selectedWallet) return false;
       const userId = selectedWallet.userId;
       const walletAddress = selectedWallet.address;
 
@@ -48,7 +48,7 @@ export const useCreateCollection = () => {
         selectedNetworkId,
         NetworkFeature.NFTLaunchpad,
       );
-      if (!cosmwasmLaunchpadFeature) return;
+      if (!cosmwasmLaunchpadFeature) return false;
 
       const nftLaunchpadContractClient = new NftLaunchpadClient(
         signingComswasmClient,
@@ -66,7 +66,7 @@ export const useCreateCollection = () => {
           type: "error",
           title: "Project creation error: No Pinata JWT",
         });
-        return;
+        return false;
       }
 
       try {
@@ -82,7 +82,7 @@ export const useCreateCollection = () => {
             type: "error",
             title: "Project creation error: Pin to Pinata failed",
           });
-          return;
+          return false;
         }
 
         // ========== Whitelists
@@ -137,7 +137,8 @@ export const useCreateCollection = () => {
 
         const assetsMetadataFormsValues:
           | CollectionAssetsMetadatasFormValues
-          | undefined = collectionFormValues.assetsMetadatas;
+          | undefined
+          | null = collectionFormValues.assetsMetadatas;
 
         // ========== Final collection
         const collection: CollectionToSubmit = {
@@ -178,10 +179,9 @@ export const useCreateCollection = () => {
         const collectionId = collectionFormValues.symbol;
 
         // ========== Submit the collection through the contract
-        const submitCollectionResult =
-          await nftLaunchpadContractClient.submitCollection({
-            collection,
-          });
+        await nftLaunchpadContractClient.submitCollection({
+          collection,
+        });
 
         // ========== Handle assets metadata
         if (!assetsMetadataFormsValues?.assetsMetadatas?.length) {
@@ -189,19 +189,32 @@ export const useCreateCollection = () => {
             mode: "normal",
             type: "success",
             title: "Project submitted (Incomplete)",
-            message: "You will need to add Assets & Metadata",
+            message: "You will need to Complete the Project",
           });
         } else {
-          await completeCollection(collectionId, assetsMetadataFormsValues);
+          const isCompleteSuccess = await completeCollection(
+            collectionId,
+            assetsMetadataFormsValues,
+          );
 
-          setToast({
-            mode: "normal",
-            type: "success",
-            title: "Project submitted",
-          });
+          if (!isCompleteSuccess) {
+            setToast({
+              mode: "normal",
+              type: "warning",
+              title: "Project submitted (Incomplete)",
+              message:
+                "Error during uploading the Assets.\nYou will need to Complete the Project",
+            });
+          } else {
+            setToast({
+              mode: "normal",
+              type: "success",
+              title: "Project submitted",
+            });
+          }
         }
 
-        return { submitCollectionResult };
+        return true;
       } catch (e: any) {
         console.error("Error creating a NFT Collection in the Launchpad: ", e);
         setToast({
