@@ -110,13 +110,11 @@ export const useFeedPosting = (
             func: "ProposeJSON",
             args: ["0", JSON.stringify(propReq)],
           };
-          const txHash = await adenaDoContract(
+          await adenaDoContract(
             network.id,
             [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
             { gasWanted: 20_000_000 },
           );
-          const provider = new GnoJSONRPCProvider(network.endpoint);
-          await provider.waitForTransaction(txHash);
           setStep(feedPostingStep(FeedPostingStepId.DONE));
           onSuccess && onSuccess();
         } else {
