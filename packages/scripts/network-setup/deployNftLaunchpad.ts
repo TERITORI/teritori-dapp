@@ -10,7 +10,7 @@ import {
   getNetworkFeature,
   NetworkFeature,
 } from "@/networks";
-import { CosmWasmLaunchpad } from "@/networks/features";
+import { CosmWasmNFTLaunchpad } from "@/networks/features";
 import {
   DeployOpts,
   initDeploy,
@@ -36,7 +36,7 @@ const deployNftLaunchpad = async ({
   });
 
   const cosmwasmLaunchpadFeature = cloneDeep(
-    getNetworkFeature(networkId, NetworkFeature.NFTLaunchpad),
+    getNetworkFeature(networkId, NetworkFeature.CosmWasmNFTLaunchpad),
   );
   if (!cosmwasmLaunchpadFeature) {
     console.error(`Cosmwasm Launchpad feature not found on ${networkId}`);
@@ -62,7 +62,7 @@ const deployNftLaunchpad = async ({
       cosmwasmLaunchpadFeature,
     );
   network.featureObjects = network.featureObjects?.map((featureObject) => {
-    if (featureObject.type === NetworkFeature.NFTLaunchpad) {
+    if (featureObject.type === NetworkFeature.CosmWasmNFTLaunchpad) {
       return cosmwasmLaunchpadFeature;
     } else return featureObject;
   });
@@ -74,7 +74,7 @@ const instantiateNftLaunchpad = async (
   deployerAddr: string,
   launchpadAdmin: string,
   network: CosmosNetworkInfo,
-  featureObject: CosmWasmLaunchpad,
+  featureObject: CosmWasmNFTLaunchpad,
 ) => {
   const codeId = featureObject.codeId;
   if (!codeId) {
@@ -93,7 +93,7 @@ const instantiateNftLaunchpad = async (
     config: {
       name: "Teritori NFT Launchpad",
       supported_networks: allNetworks
-        .filter((n) => n.features.includes(NetworkFeature.NFTLaunchpad))
+        .filter((n) => n.features.includes(NetworkFeature.CosmWasmNFTLaunchpad))
         .map((n) => n.id),
       owner: deployerAddr,
       launchpad_admin: launchpadAdmin,
@@ -126,7 +126,7 @@ const deployNftTr721 = async ({
     wallet: deployerWallet,
   });
   const cosmwasmLaunchpadFeature = cloneDeep(
-    getNetworkFeature(networkId, NetworkFeature.NFTLaunchpad),
+    getNetworkFeature(networkId, NetworkFeature.CosmWasmNFTLaunchpad),
   );
   if (!cosmwasmLaunchpadFeature) {
     console.error(`Cosmwasm Launchpad feature not found on ${networkId}`);
