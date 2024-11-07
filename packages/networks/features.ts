@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export enum NetworkFeature {
   NFTMarketplace = "NFTMarketplace",
-  NFTLaunchpad = "NFTLaunchpad",
+  CosmWasmNFTLaunchpad = "CosmWasmNFTLaunchpad",
   NameService = "NameService",
   Swap = "Swap",
   BurnTokens = "BurnTokens",
@@ -57,8 +57,8 @@ type CosmWasmSocialFeed = {
 
 // CosmWasm Launchpad
 
-const zodCosmWasmLaunchpad = z.object({
-  type: z.literal(NetworkFeature.NFTLaunchpad),
+const zodCosmWasmNFTLaunchpad = z.object({
+  type: z.literal(NetworkFeature.CosmWasmNFTLaunchpad),
   launchpadContractAddress: z.string(),
   defaultMintDenom: z.string(),
   launchpadEndpoint: z.string(),
@@ -66,7 +66,7 @@ const zodCosmWasmLaunchpad = z.object({
   nftTr721CodeId: z.number(),
 });
 
-export type CosmWasmLaunchpad = z.infer<typeof zodCosmWasmLaunchpad>;
+export type CosmWasmNFTLaunchpad = z.infer<typeof zodCosmWasmNFTLaunchpad>;
 
 // Gno Project Manager
 
@@ -93,7 +93,7 @@ type LaunchpadERC20 = z.infer<typeof zodLaunchpadERC20>;
 export const allFeatureObjects = [
   zodCosmWasmPremiumFeed,
   zodCosmWasmNFTsBurner,
-  zodCosmWasmLaunchpad,
+  zodCosmWasmNFTLaunchpad,
   zodGnoProjectManager,
   zodLaunchpadERC20,
   zodNFTMarketplace,
@@ -102,7 +102,7 @@ export const allFeatureObjects = [
 export type NetworkFeatureObject =
   | CosmWasmPremiumFeed
   | CosmWasmSocialFeed
-  | CosmWasmLaunchpad
+  | CosmWasmNFTLaunchpad
   | CosmWasmNFTsBurner
   | GnoProjectManager
   | LaunchpadERC20
