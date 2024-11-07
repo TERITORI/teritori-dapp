@@ -84,21 +84,13 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
     setLoadingFullScreen(true);
     try {
       const success = await createCollection(collectionForm.getValues());
-      setLoading(false);
-      setLoadingFullScreen(false);
-      if (success)
-        navigation.navigate("LaunchpadApplicationReview", {
-          id: collectionForm.getValues().symbol,
-        });
+      if (success) navigation.navigate("LaunchpadMyCollections");
     } catch (e) {
       console.error("Error creating a NFT collection", e);
+    } finally {
       setLoading(false);
       setLoadingFullScreen(false);
     }
-    setTimeout(() => {
-      setLoading(false);
-      setLoadingFullScreen(false);
-    }, 1000);
   };
 
   const onInvalid = () => {

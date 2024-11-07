@@ -81,6 +81,23 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
     }, 1000);
   };
 
+  const onBackPress = () => {
+    const routes = navigation.getState().routes;
+    const previousScreen = routes[routes.length - 2];
+    if (
+      previousScreen &&
+      previousScreen.name !== "LaunchpadComplete" &&
+      previousScreen.name !== "LaunchpadCreate" &&
+      navigation.canGoBack()
+    ) {
+      navigation.goBack();
+    } else if (isUserLaunchpadAdmin) {
+      navigation.navigate("LaunchpadAdministrationOverview");
+    } else {
+      navigation.navigate("LaunchpadMyCollections");
+    }
+  };
+
   if (!isUserLaunchpadAdmin || !isUserOwner) {
     return (
       <ScreenContainer
@@ -91,11 +108,7 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
           </BrandText>
         }
         responsive
-        onBackPress={() =>
-          isUserLaunchpadAdmin
-            ? navigation.navigate("LaunchpadAdministrationOverview")
-            : navigation.navigate("LaunchpadMyCollections")
-        }
+        onBackPress={onBackPress}
         forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
       >
         <BrandText
@@ -120,11 +133,7 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
           </BrandText>
         }
         responsive
-        onBackPress={() =>
-          isUserLaunchpadAdmin
-            ? navigation.navigate("LaunchpadAdministrationOverview")
-            : navigation.navigate("LaunchpadMyCollections")
-        }
+        onBackPress={onBackPress}
         forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
       >
         {isLoading ? (
@@ -145,11 +154,7 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
         <BrandText style={fontSemibold20}>Application Review</BrandText>
       }
       responsive
-      onBackPress={() =>
-        isUserLaunchpadAdmin
-          ? navigation.navigate("LaunchpadAdministrationOverview")
-          : navigation.navigate("LaunchpadMyCollections")
-      }
+      onBackPress={onBackPress}
       forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
     >
       {selectedNetworkId !== launchpadProject.networkId ? (

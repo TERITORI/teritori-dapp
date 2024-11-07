@@ -3,8 +3,8 @@ import React, { FC, useEffect, useRef, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { SafeAreaView, TouchableOpacity, View } from "react-native";
 
+import { AssetModal } from "./AssetModal";
 import { AssetsAndMetadataIssue } from "./AssetsAndMetadataIssue";
-import { MetadataUpdateModal } from "./MetadataUpdateModal";
 
 import trashSVG from "@/assets/icons/trash.svg";
 import { BrandText } from "@/components/BrandText";
@@ -54,8 +54,7 @@ export const AssetsTab: React.FC = () => {
   const assetsUploaderRef = useRef<FileUploaderSmallHandle>(null);
   const imagesUploaderRef = useRef<FileUploaderSmallHandle>(null);
 
-  const [metadataUpdateModalVisible, setMedataUpdateModalVisible] =
-    useState(false);
+  const [assetModalVisible, setAssetModalVisible] = useState(false);
   const selectedElem = fields.find((_, index) => index === selectedElemIndex);
   const [attributesIssues, setAttributesIssues] = useState<
     {
@@ -699,7 +698,7 @@ export const AssetsTab: React.FC = () => {
               (metadata: CollectionAssetsMetadataFormValues) => metadata.image!,
             )}
             onPressItem={(file, itemIndex) => {
-              setMedataUpdateModalVisible(true);
+              setAssetModalVisible(true);
               setSelectedElemIndex(itemIndex);
             }}
             onPressDeleteItem={onRemoveImage}
@@ -707,9 +706,9 @@ export const AssetsTab: React.FC = () => {
         </View>
 
         {selectedElem && selectedElemIndex !== undefined && (
-          <MetadataUpdateModal
-            onClose={() => setMedataUpdateModalVisible(false)}
-            isVisible={metadataUpdateModalVisible}
+          <AssetModal
+            onClose={() => setAssetModalVisible(false)}
+            isVisible={assetModalVisible}
             elem={selectedElem}
             elemIndex={selectedElemIndex}
           />

@@ -29,7 +29,7 @@ import {
   CollectionAssetsMetadatasFormValues,
 } from "@/utils/types/launchpad";
 
-export const MetadataUpdateModal: React.FC<{
+export const AssetModal: React.FC<{
   onClose: () => void;
   isVisible: boolean;
   elem: CollectionAssetsMetadataFormValues;

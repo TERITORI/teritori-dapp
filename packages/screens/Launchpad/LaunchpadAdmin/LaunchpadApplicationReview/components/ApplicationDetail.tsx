@@ -1,6 +1,9 @@
 import React from "react";
 import { View, Linking } from "react-native";
 
+import { PrimaryButton } from "./../../../../../components/buttons/PrimaryButton";
+import { useAppNavigation } from "./../../../../../hooks/navigation/useAppNavigation";
+import { launchpadProjectStatus } from "./../../../../../utils/launchpad";
 import { ApplicationCard } from "./ApplicationCard";
 import { Status } from "../../../../../api/launchpad/v1/launchpad";
 import { StatusBadge } from "../../../components/StatusBadge";
@@ -23,6 +26,7 @@ export const ApplicationDetail: React.FC<{
   projectStatus: Status;
 }> = ({ collectionData, projectStatus }) => {
   const { width } = useMaxResolution();
+  const navigation = useAppNavigation();
 
   return (
     <View
@@ -39,7 +43,23 @@ export const ApplicationDetail: React.FC<{
           width: "100%",
         }}
       >
-        <StatusBadge projectStatus={projectStatus} />
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <StatusBadge projectStatus={projectStatus} />
+          {launchpadProjectStatus(projectStatus) === "INCOMPLETE" && (
+            <>
+              <SpacerRow size={2} />
+              <PrimaryButton
+                text="Complete collection"
+                size="XXS"
+                onPress={() =>
+                  navigation.navigate("LaunchpadComplete", {
+                    id: collectionData.symbol,
+                  })
+                }
+              />
+            </>
+          )}
+        </View>
         <BrandText style={[fontSemibold28, { marginTop: layout.spacing_x3 }]}>
           {collectionData.name}
         </BrandText>
