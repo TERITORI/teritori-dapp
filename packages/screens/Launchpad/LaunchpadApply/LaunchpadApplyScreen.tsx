@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { LaunchpadBanner } from "../components/LaunchpadBanner";
-
+import LaunchpadBannerImage from "@/assets/banners/launchpad.jpg";
 import { BrandText } from "@/components/BrandText";
+import { ImageBackgroundLogoText } from "@/components/ImageBackgroundLogoText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import {
   LargeBoxButton,
@@ -36,7 +36,10 @@ const BUTTONS: LargeBoxButtonProps[] = [
 export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
   return (
     <ScreenContainer>
-      <LaunchpadBanner />
+      <ImageBackgroundLogoText
+        backgroundImage={LaunchpadBannerImage}
+        text="Apply to Launchpad"
+      />
       <SpacerColumn size={2} />
       <BrandText style={fontSemibold28}>Welcome</BrandText>
       <SpacerColumn size={2} />

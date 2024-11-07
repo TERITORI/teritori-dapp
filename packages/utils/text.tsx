@@ -32,6 +32,3 @@ export const replaceBetweenString = (
   insertion: string,
 ) =>
   `${origin.substring(0, startIndex)}${insertion}${origin.substring(endIndex)}`;
-
-export const pluralOrNot = (word: string, quantity: number) =>
-  quantity > 1 ? word + "s" : word;
