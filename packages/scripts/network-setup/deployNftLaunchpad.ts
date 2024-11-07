@@ -18,7 +18,7 @@ import {
   storeWASM,
 } from "@/scripts/network-setup/deployLib";
 
-export const deployNftLaunchpad = async ({
+const deployNftLaunchpad = async ({
   opts,
   networkId,
   wallet: deployerWallet,
@@ -68,7 +68,7 @@ export const deployNftLaunchpad = async ({
   });
 };
 
-export const instantiateNftLaunchpad = async (
+const instantiateNftLaunchpad = async (
   opts: DeployOpts,
   deployerWallet: string,
   deployerAddr: string,
