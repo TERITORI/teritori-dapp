@@ -18,4 +18,5 @@ var (
 //----------------------------------------
 // Constants
 
+// Feed name must be 3-30 characters long, starting with a lowercase letter
 var reName = regexp.MustCompile(`^[a-z]+[_a-z0-9]{2,29}$`)

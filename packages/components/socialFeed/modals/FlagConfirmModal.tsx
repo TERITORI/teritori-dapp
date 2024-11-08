@@ -63,7 +63,7 @@ export const FlagConfirmModal: React.FC<FlagConfirmModalProps> = ({
       const moduleIndex = "0";
 
       const voteJSON: GnoDAOVoteRequest = {
-        vote: vote === "banPost" ? 0 : 1,
+        vote: vote === "banPost" ? "yes" : "no",
         rationale: "",
       };
 

@@ -10,6 +10,7 @@ import (
 	"gno.land/p/teritori/dao_utils"
 	voting_group "gno.land/p/teritori/dao_voting_group"
 	"gno.land/r/teritori/dao_registry"
+	"gno.land/r/teritori/social_feeds"
 	"gno.land/r/teritori/tori"
 )
 
@@ -65,6 +66,9 @@ func init() {
 		},
 		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
 			return tori.NewChangeAdminHandler()
+		},
+		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
+			return social_feeds.NewCreatePostHandler()
 		},
 	}
 

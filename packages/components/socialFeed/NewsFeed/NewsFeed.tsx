@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   LayoutChangeEvent,
-  View,
   useWindowDimensions,
+  View,
   ViewStyle,
 } from "react-native";
 import Animated, {

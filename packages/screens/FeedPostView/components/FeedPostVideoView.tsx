@@ -31,7 +31,7 @@ import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import { NetworkKind, getNetwork, parseUserId } from "@/networks";
+import { getNetwork, NetworkKind, parseUserId } from "@/networks";
 import { generatePostMetadata } from "@/utils/feed/queries";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {

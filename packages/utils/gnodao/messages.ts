@@ -7,7 +7,7 @@ export interface GnoSingleChoiceProposal {
 }
 
 export interface GnoDAOVoteRequest {
-  vote: number;
+  vote: string;
   rationale: string;
 }
 
@@ -58,6 +58,16 @@ export interface GnoBanPostMessage {
     feedId: number;
     postId: number;
     reason: string;
+  };
+}
+
+export interface GnoCreatePostMessage {
+  type: "gno.land/r/teritori/social_feeds.CreatePost";
+  payload: {
+    feedId: string;
+    parentId: string;
+    category: string;
+    metadata: string;
   };
 }
 
