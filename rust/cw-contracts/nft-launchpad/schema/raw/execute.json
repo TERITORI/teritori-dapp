@@ -125,7 +125,6 @@
         "mint_periods",
         "name",
         "partners",
-        "project_desc",
         "project_type",
         "symbol",
         "target_network",
@@ -208,9 +207,6 @@
           ]
         },
         "partners": {
-          "type": "string"
-        },
-        "project_desc": {
           "type": "string"
         },
         "project_type": {

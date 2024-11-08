@@ -22,28 +22,20 @@
       "Config": {
         "type": "object",
         "required": [
+          "admin",
           "name",
+          "nft_code_id",
           "owner"
         ],
         "properties": {
           "admin": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Addr"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/definitions/Addr"
           },
           "name": {
             "type": "string"
           },
           "nft_code_id": {
-            "type": [
-              "integer",
-              "null"
-            ],
+            "type": "integer",
             "format": "uint64",
             "minimum": 0.0
           },
@@ -182,7 +174,6 @@
           "mint_periods",
           "name",
           "partners",
-          "project_desc",
           "project_type",
           "symbol",
           "target_network",
@@ -265,9 +256,6 @@
             ]
           },
           "partners": {
-            "type": "string"
-          },
-          "project_desc": {
             "type": "string"
           },
           "project_type": {
@@ -498,7 +486,6 @@
         "mint_periods",
         "name",
         "partners",
-        "project_desc",
         "project_type",
         "symbol",
         "target_network",
@@ -581,9 +568,6 @@
           ]
         },
         "partners": {
-          "type": "string"
-        },
-        "project_desc": {
           "type": "string"
         },
         "project_type": {
@@ -745,28 +729,20 @@
       "title": "Config",
       "type": "object",
       "required": [
+        "admin",
         "name",
+        "nft_code_id",
         "owner"
       ],
       "properties": {
         "admin": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/Addr"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "$ref": "#/definitions/Addr"
         },
         "name": {
           "type": "string"
         },
         "nft_code_id": {
-          "type": [
-            "integer",
-            "null"
-          ],
+          "type": "integer",
           "format": "uint64",
           "minimum": 0.0
         },

@@ -10,9 +10,9 @@ export interface InstantiateMsg {
   [k: string]: unknown;
 }
 export interface Config {
-  admin?: Addr | null;
+  admin: Addr;
   name: string;
-  nft_code_id?: number | null;
+  nft_code_id: number;
   owner: Addr;
 }
 export type ExecuteMsg = {
@@ -64,7 +64,6 @@ export interface CollectionProject {
   name: string;
   owner?: string | null;
   partners: string;
-  project_desc: string;
   project_type: string;
   reveal_time?: number | null;
   royalty_address?: Addr | null;

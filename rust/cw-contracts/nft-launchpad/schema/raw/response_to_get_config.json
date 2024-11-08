@@ -3,28 +3,20 @@
   "title": "Config",
   "type": "object",
   "required": [
+    "admin",
     "name",
+    "nft_code_id",
     "owner"
   ],
   "properties": {
     "admin": {
-      "anyOf": [
-        {
-          "$ref": "#/definitions/Addr"
-        },
-        {
-          "type": "null"
-        }
-      ]
+      "$ref": "#/definitions/Addr"
     },
     "name": {
       "type": "string"
     },
     "nft_code_id": {
-      "type": [
-        "integer",
-        "null"
-      ],
+      "type": "integer",
       "format": "uint64",
       "minimum": 0.0
     },
