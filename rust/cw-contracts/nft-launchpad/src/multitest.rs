@@ -41,7 +41,6 @@ fn get_default_collection() -> CollectionProject {
         contact_email: "contact_email".to_string(),
         is_project_derivative: true,
         project_type: "project_type".to_string(),
-        project_desc: "project_desc".to_string(),
         is_applied_previously: false,
         // Team info --------------------------------------
         team_desc: "team_desc".to_string(),
@@ -75,12 +74,15 @@ fn instantiate() {
     let app = App::default();
     let code_id = LaunchpadCodeId::store_code(&app);
     let sender = "sender";
+    // Deploy NFT TR721 for sylvia contract
+    let nft_contract = NftTr721CodeId::store_code(&app);
+    let deployed_nft_code_id = nft_contract.code_id();
 
     // Instantiate
     let config = Config {
         name: "teritori launchpad".to_string(),
-        nft_code_id: None,
-        admin: Some(Addr::unchecked("admin")),
+        nft_code_id: deployed_nft_code_id,
+        admin: Addr::unchecked("admin"),
         owner: Addr::unchecked(sender),
     };
 
@@ -99,12 +101,7 @@ fn full_flow() {
     let app: App<sylvia::cw_multi_test::App> = App::default();
     let sender = "sender";
 
-    // Deploy NFT contract for non-sylvia contract
-    // let contract_wrapper = ContractWrapper::new(tr721_execute, tr721_instantiate, tr721_query);
-    // let launchpad_contract = Box::new(contract_wrapper);
-    // let deployed_nft_code_id = app.app_mut().store_code(launchpad_contract);
-
-    // Deploy NFT for sylvia contract
+    // Deploy NFT TR721 for sylvia contract
     let nft_contract = NftTr721CodeId::store_code(&app);
     let deployed_nft_code_id = nft_contract.code_id();
 
@@ -112,8 +109,8 @@ fn full_flow() {
     let contract = LaunchpadCodeId::store_code(&app)
         .instantiate(Config {
             name: "teritori launchpad".to_string(),
-            nft_code_id: None,
-            admin: Some(Addr::unchecked("admin")),
+            nft_code_id: deployed_nft_code_id,
+            admin: Addr::unchecked("admin"),
             owner: Addr::unchecked(sender),
         })
         .call(sender)
@@ -200,7 +197,7 @@ fn full_flow() {
         contract
             .update_config(ConfigChanges {
                 name: Some("test".to_string()),
-                nft_code_id: None,
+                nft_code_id: Some(deployed_nft_code_id),
                 admin: Some("deployer".to_string()),
                 owner: Some(sender.to_string()),
             })
@@ -219,7 +216,7 @@ fn full_flow() {
         contract
             .update_config(ConfigChanges {
                 name: Some("test".to_string()),
-                nft_code_id: None,
+                nft_code_id: Some(deployed_nft_code_id),
                 admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
             })
@@ -269,15 +266,6 @@ fn full_flow() {
         );
     }
 
-    // Deploy collection with merkle root but dont have nft code id  ---------------------------------------------------------
-    {
-        let err = contract
-            .deploy_collection("SYMBOL".to_string())
-            .call(sender)
-            .unwrap_err();
-        assert_eq!(err, ContractError::NftCodeIdMissing)
-    }
-
     // Update config to have deployed nft_code_id
     {
         contract
@@ -291,7 +279,7 @@ fn full_flow() {
             .unwrap();
 
         let resp = contract.get_config().unwrap();
-        assert_eq!(resp.nft_code_id, Some(deployed_nft_code_id))
+        assert_eq!(resp.nft_code_id, deployed_nft_code_id)
     }
 
     // Deploy completed collection after update merkle root + nft code id  ---------------------------------------------------------

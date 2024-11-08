@@ -68,11 +68,11 @@ impl NftLaunchpad {
 
         // Save new config
         if let Some(nft_code_id) = changes.nft_code_id {
-            config.nft_code_id = Some(nft_code_id);
+            config.nft_code_id = nft_code_id;
             attributes.push(attr("new_nft_code_id", nft_code_id.to_string()))
         }
         if let Some(admin) = &changes.admin {
-            config.admin = Some(ctx.deps.api.addr_validate(&admin)?);
+            config.admin = ctx.deps.api.addr_validate(&admin)?;
             attributes.push(attr("new_admin", admin))
         }
         if let Some(owner) = changes.owner {
@@ -175,10 +175,7 @@ impl NftLaunchpad {
         let config = self.config.load(ctx.deps.storage)?;
 
         // Only allow launchpad_admin to deploy
-        if config.admin.is_none() {
-            return Err(ContractError::DeployerMissing);
-        }
-        if sender != config.admin.unwrap() {
+        if sender != config.admin {
             return Err(ContractError::WrongDeployer);
         }
 
@@ -193,15 +190,11 @@ impl NftLaunchpad {
         }
 
         let nft_code_id = config.nft_code_id;
-        // Do not allow to deploy collection is nft_code_is is not set
-        if nft_code_id.is_none() {
-            return Err(ContractError::NftCodeIdMissing);
-        }
-        
+
         // NOTE: cannot use wasm_instantiate because we need to specify admin
         let instantiate_msg = WasmMsg::Instantiate {
             admin: Some(sender.clone()),
-            code_id: nft_code_id.unwrap(),
+            code_id: nft_code_id,
             msg: to_json_binary(&Tr721InstantiateMsg {
                 admin: sender.clone(),
                 name: collection.name.clone(),
@@ -219,7 +212,7 @@ impl NftLaunchpad {
             funds: vec![],
             label: format!(
                 "TR721 codeId:{} collectionId:{} symbol:{}",
-                nft_code_id.unwrap(),
+                nft_code_id,
                 collection_id,
                 collection.symbol
             ),
@@ -285,8 +278,8 @@ impl NftLaunchpad {
 #[cw_serde]
 pub struct Config {
     pub name: String,
-    pub nft_code_id: Option<u64>,
-    pub admin: Option<Addr>,
+    pub nft_code_id: u64,
+    pub admin: Addr,
     pub owner: Addr,
 }
 
@@ -312,7 +305,6 @@ pub struct CollectionProject {
     pub contact_email: String,
     pub is_project_derivative: bool,
     pub project_type: String,
-    pub project_desc: String,
     pub is_applied_previously: bool,
     // Team info --------------------------------------
     pub team_desc: String,
