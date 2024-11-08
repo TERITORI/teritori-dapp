@@ -39,7 +39,9 @@ export const MintingInformation: React.FC<{
         }
       />
 
-      {collectionData.royalty_address && collectionData.royalty_percentage && (
+      {!!(
+        collectionData.royalty_address && collectionData.royalty_percentage
+      ) && (
         <View
           style={{
             flexDirection:
@@ -49,31 +51,27 @@ export const MintingInformation: React.FC<{
             gap: layout.spacing_x1_5,
           }}
         >
-          {collectionData.royalty_address && (
+          {!!collectionData.royalty_address && (
             <ApplicationCard
               title="Payment Address"
               value={collectionData.royalty_address}
             />
           )}
-          {collectionData.royalty_percentage && (
+          {!!collectionData.royalty_percentage && (
             <ApplicationCard
               title="Shared Percentage"
-              value={collectionData.royalty_percentage}
+              value={collectionData.royalty_percentage.toString()}
             />
           )}
         </View>
       )}
 
-      {collectionData.mint_periods.map((mintPeriod, index) => {
-        return (
-          <>
-            <Fragment key={index}>
-              <SpacerColumn size={4} />
-              <MintPeriod index={index} mintPeriod={mintPeriod} />
-            </Fragment>
-          </>
-        );
-      })}
+      {collectionData.mint_periods.map((mintPeriod, index) => (
+        <Fragment key={index}>
+          <SpacerColumn size={4} />
+          <MintPeriod index={index} mintPeriod={mintPeriod} />
+        </Fragment>
+      ))}
     </View>
   );
 };
@@ -90,7 +88,7 @@ const MintPeriod: React.FC<{
         style={fontSemibold20}
       >{`Minting Period #${index + 1}`}</BrandText>
 
-      {mintPeriod.price && (
+      {!!mintPeriod.price && (
         <View
           style={{
             flexDirection:
@@ -108,28 +106,30 @@ const MintPeriod: React.FC<{
         </View>
       )}
 
-      <View
-        style={{
-          flexDirection:
-            width >= launchpadReviewBreakpointSM ? "row" : "column",
-          marginTop: layout.spacing_x2,
-          flexWrap: "wrap",
-          gap: layout.spacing_x1_5,
-        }}
-      >
-        {mintPeriod.max_tokens && (
-          <ApplicationCard
-            title="Max tokens"
-            value={mintPeriod.max_tokens.toString()}
-          />
-        )}
-        {mintPeriod.limit_per_address && (
-          <ApplicationCard
-            title="Per address Limit"
-            value={mintPeriod.limit_per_address.toString()}
-          />
-        )}
-      </View>
+      {!!(mintPeriod.max_tokens && mintPeriod.limit_per_address) && (
+        <View
+          style={{
+            flexDirection:
+              width >= launchpadReviewBreakpointSM ? "row" : "column",
+            marginTop: layout.spacing_x2,
+            flexWrap: "wrap",
+            gap: layout.spacing_x1_5,
+          }}
+        >
+          {!!mintPeriod.max_tokens && (
+            <ApplicationCard
+              title="Max tokens"
+              value={mintPeriod.max_tokens.toString()}
+            />
+          )}
+          {!!mintPeriod.limit_per_address && (
+            <ApplicationCard
+              title="Per address Limit"
+              value={mintPeriod.limit_per_address.toString()}
+            />
+          )}
+        </View>
+      )}
 
       <View
         style={{
@@ -144,7 +144,7 @@ const MintPeriod: React.FC<{
           title="Start Time"
           value={moment.utc(mintPeriod.start_time).format("DD/MM/YYYY")}
         />
-        {mintPeriod.end_time && (
+        {!!mintPeriod.end_time && (
           <ApplicationCard
             title="End Time"
             value={moment.utc(mintPeriod.end_time).format("DD/MM/YYYY")}

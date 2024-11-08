@@ -73,14 +73,14 @@ func (s *Launchpad) UploadMetadatas(ctx context.Context, req *launchpadpb.Upload
 	}
 
 	// Check pinning
-	pinningSrv, err := NewPinningService(Pinata, pinataJwt)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get pinning service")
-	}
+	// pinningSrv, err := NewPinningService(Pinata, pinataJwt)
+	// if err != nil {
+	// 	return nil, errors.Wrap(err, "failed to get pinning service")
+	// }
 
-	if _, err := pinningSrv.VerifyPinned(pinnedCIDs...); err != nil {
-		return nil, errors.Wrap(err, "failed to verify pinned images")
-	}
+	// if _, err := pinningSrv.VerifyPinned(pinnedCIDs...); err != nil {
+	// 	return nil, errors.Wrap(err, "failed to verify pinned images")
+	// }
 
 	// Check if all files have been pinned correctly
 	for _, metadataItem := range req.Metadatas {

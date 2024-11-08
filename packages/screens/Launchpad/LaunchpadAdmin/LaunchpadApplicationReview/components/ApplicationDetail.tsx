@@ -119,7 +119,7 @@ export const ApplicationDetail: React.FC<{
             onPress={() => Linking.openURL(collectionData.website_link)}
           />
 
-          {collectionData.deployed_address && (
+          {!!collectionData.deployed_address && (
             <SocialButton
               text="Collection"
               iconSvg={launchpadApplySVG}

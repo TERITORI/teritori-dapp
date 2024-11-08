@@ -164,7 +164,7 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
       {selectedNetworkId !== launchpadProject.networkId ? (
         <BrandText style={{ alignSelf: "center" }}>Wrong network</BrandText>
       ) : (
-        <View style={{ marginTop: layout.spacing_x4 }}>
+        <View style={{ marginVertical: layout.spacing_x4 }}>
           <ApplicationDetail
             collectionData={collectionData}
             projectStatus={launchpadProject.status}
