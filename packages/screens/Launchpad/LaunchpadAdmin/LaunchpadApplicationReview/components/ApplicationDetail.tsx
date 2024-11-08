@@ -124,7 +124,6 @@ export const ApplicationDetail: React.FC<{
               text="Collection"
               iconSvg={launchpadApplySVG}
               iconColor={neutralFF}
-              iconSize={24}
               onPress={onPressDeployedCollectionButton}
             />
           )}

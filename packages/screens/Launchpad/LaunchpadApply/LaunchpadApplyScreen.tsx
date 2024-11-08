@@ -1,27 +1,22 @@
 import React from "react";
 import { Linking, TextStyle, View } from "react-native";
 
-import LaunchpadBannerImage from "@/assets/banners/launchpad.jpg";
-import { BrandText } from "@/components/BrandText";
-import { ImageBackgroundLogoText } from "@/components/ImageBackgroundLogoText";
-import { ScreenContainer } from "@/components/ScreenContainer";
 import {
   LargeBoxButton,
   LargeBoxButtonProps,
 } from "../../../components/buttons/LargeBoxButton";
 
+import LaunchpadBannerImage from "@/assets/banners/launchpad.jpg";
+import { BrandText } from "@/components/BrandText";
+import { ImageBackgroundLogoText } from "@/components/ImageBackgroundLogoText";
 import { OmniLink } from "@/components/OmniLink";
+import { ScreenContainer } from "@/components/ScreenContainer";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerColumn } from "@/components/spacer";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
-import { NetworkFeature } from "@/networks";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral77 } from "@/utils/style/colors";
-import {
-  fontSemibold14,
-  fontSemibold20,
-  fontSemibold28,
-} from "@/utils/style/fonts";
+import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 const MD_BREAKPOINT = 720;

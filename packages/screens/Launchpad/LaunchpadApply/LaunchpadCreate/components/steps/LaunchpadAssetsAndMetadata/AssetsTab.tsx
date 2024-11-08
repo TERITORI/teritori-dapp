@@ -1,4 +1,5 @@
 import { parse } from "papaparse";
+import pluralize from "pluralize";
 import React, { FC, useEffect, useRef, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { SafeAreaView, TouchableOpacity, View } from "react-native";
@@ -25,7 +26,6 @@ import {
 import { errorColor, neutral33 } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { pluralOrNot } from "@/utils/text";
 import { LocalFileData } from "@/utils/types/files";
 import {
   CollectionAssetsAttributeFormValues,
@@ -225,8 +225,8 @@ export const AssetsTab: React.FC = () => {
 
           // Handling warnings
           if (missingIdRows.length) {
-            const title = `Incomplete ${pluralOrNot("attribute", missingIdRows.length)}`;
-            const message = `Missing "id" in ${missingIdRows.length} ${pluralOrNot("attribute", missingIdRows.length)} that ${pluralOrNot("is", missingIdRows.length)} ignored.\nPlease complete properly your attributes mapping file.\nCheck the description for more information.`;
+            const title = `Incomplete ${pluralize("attribute", missingIdRows.length)}`;
+            const message = `Missing "id" in ${pluralize("attribute", missingIdRows.length, true)} that ${pluralize("has", missingIdRows.length)} been ignored.\nPlease complete properly your attributes mapping file.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
             setAttributesIssues((issues) => [
               ...issues,
@@ -238,8 +238,8 @@ export const AssetsTab: React.FC = () => {
             ]);
           }
           if (missingTypeRows.length) {
-            const title = `Incomplete ${pluralOrNot("attribute", missingTypeRows.length)}`;
-            const message = `Missing "type" in ${missingTypeRows.length} ${pluralOrNot("attribute", missingTypeRows.length)} that ${pluralOrNot("is", missingTypeRows.length)} ignored.\nPlease complete properly your attributes mapping file.\nCheck the description for more information.`;
+            const title = `Incomplete ${pluralize("attribute", missingTypeRows.length)}`;
+            const message = `Missing "type" in ${pluralize("attribute", missingTypeRows.length, true)} that ${pluralize("has", missingTypeRows.length)} been ignored.\nPlease complete properly your attributes mapping file.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
             setAttributesIssues((issues) => [
               ...issues,
@@ -251,8 +251,8 @@ export const AssetsTab: React.FC = () => {
             ]);
           }
           if (missingValueRows.length) {
-            const title = `Incomplete ${pluralOrNot("attribute", missingValueRows.length)}`;
-            const message = `Missing "value" in ${missingValueRows.length} ${pluralOrNot("attribute", missingValueRows.length)} that ${pluralOrNot("is", missingValueRows.length)} ignored.\nPlease complete properly your attributes mapping file.\nCheck the description for more information.`;
+            const title = `Incomplete ${pluralize("attribute", missingValueRows.length)}`;
+            const message = `Missing "value" in ${pluralize("attribute", missingValueRows.length, true)} that ${pluralize("has", missingValueRows.length)} been ignored.\nPlease complete properly your attributes mapping file.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
             setAttributesIssues((issues) => [
               ...issues,
@@ -265,7 +265,7 @@ export const AssetsTab: React.FC = () => {
           }
           if (wrongIdRows.length) {
             const title = `Wrong id`;
-            const message = `${wrongIdRows.length} ${pluralOrNot("attribute", wrongIdRows.length)} contain a wrong "id" value and has beed ignored. Only a number is allwowed.\nCheck the description for more information.`;
+            const message = `${pluralize("attribute", wrongIdRows.length, true)} ${pluralize("has", wrongIdRows.length)} a wrong "id" value and ${pluralize("has", wrongIdRows.length)} beed ignored. Only a number is allowed.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
             setAttributesIssues((issues) => [
               ...issues,
@@ -401,8 +401,8 @@ export const AssetsTab: React.FC = () => {
 
           // Handling warnings
           if (missingNameRows.length) {
-            const title = `Incomplete ${pluralOrNot("asset", missingNameRows.length)}`;
-            const message = `Missing "name" in ${missingNameRows.length} ${pluralOrNot("asset", missingNameRows.length)} that ${pluralOrNot("is", missingNameRows.length)} ignored.\nPlease complete properly your assets mapping file.\nCheck the description for more information.`;
+            const title = `Incomplete ${pluralize("asset", missingNameRows.length)}`;
+            const message = `Missing "name" in ${pluralize("asset", missingNameRows.length, true)} that ${pluralize("has", missingNameRows.length)} been ignored.\nPlease complete properly your assets mapping file.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
             setAssetsIssues((issues) => [
               ...issues,
@@ -414,8 +414,8 @@ export const AssetsTab: React.FC = () => {
             ]);
           }
           if (missingAttributesRows.length) {
-            const title = `Incomplete ${pluralOrNot("asset", missingAttributesRows.length)}`;
-            const message = `Missing "attributes" in ${missingAttributesRows.length} ${pluralOrNot("asset", missingAttributesRows.length)} that ${pluralOrNot("is", missingAttributesRows.length)} ignored.\nPlease complete properly your assets mapping file.\nCheck the description for more information.`;
+            const title = `Incomplete ${pluralize("asset", missingAttributesRows.length)}`;
+            const message = `Missing "attributes" in ${pluralize("asset", missingAttributesRows.length, true)} that ${pluralize("has", missingAttributesRows.length)} been ignored.\nPlease complete properly your assets mapping file.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
             setAssetsIssues((issues) => [
               ...issues,
@@ -428,7 +428,7 @@ export const AssetsTab: React.FC = () => {
           }
           if (wrongAttributesRowsInAssets.length) {
             const title = `Wrong attributes`;
-            const message = `${wrongAttributesRowsInAssets.length} ${pluralOrNot("asset", wrongAttributesRowsInAssets.length)} contain a wrong "attributes" value and ${pluralOrNot("is", wrongAttributesRowsInAssets.length)} ignored. Only numbers with comma separator are allwowed.\nCheck the description for more information.`;
+            const message = `${pluralize("asset", wrongAttributesRowsInAssets.length, true)} ${pluralize("has", wrongAttributesRowsInAssets.length)} a wrong "attributes" value and ${pluralize("has", wrongAttributesRowsInAssets.length)} been ignored. Only numbers with comma separator are allwowed.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
             setAssetsIssues((issues) => [
               ...issues,
@@ -441,7 +441,7 @@ export const AssetsTab: React.FC = () => {
           }
           if (wrongUrlsRowsInAssets.length) {
             const title = `Wrong URLs`;
-            const message = `${wrongUrlsRowsInAssets.length} ${pluralOrNot("asset", wrongUrlsRowsInAssets.length)} contain a wrong "youtube_url" or "external_url" value (No incidence).\nCheck the description for more information.`;
+            const message = `${pluralize("asset", wrongUrlsRowsInAssets.length, true)} ${pluralize("has", wrongUrlsRowsInAssets.length)} a wrong "youtube_url" or "external_url" value (No incidence).\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
             setAssetsIssues((issues) => [
               ...issues,
@@ -454,7 +454,7 @@ export const AssetsTab: React.FC = () => {
           }
           if (unknownAttributesRowsInAssets.length) {
             const title = `Unknown attributes`;
-            const message = `${unknownAttributesRowsInAssets.length} ${pluralOrNot("asset", unknownAttributesRowsInAssets.length)} contain at least one "attributes" id that doesn't exist in your attributes mapping file. (No incidence)\nCheck the description for more information.`;
+            const message = `${pluralize("asset", unknownAttributesRowsInAssets.length, true)} ${pluralize("has", unknownAttributesRowsInAssets.length)} at least one "attributes" id that doesn't exist in your attributes mapping file. (No incidence)\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
             setAssetsIssues((issues) => [
               ...issues,
@@ -529,8 +529,8 @@ export const AssetsTab: React.FC = () => {
     if (collectionAssetsMetadatas.length < images.length) {
       const nbUnexpectedImages =
         images.length - collectionAssetsMetadatas.length;
-      const title = `Unexpected ${pluralOrNot("image", nbUnexpectedImages)}`;
-      const message = `${nbUnexpectedImages} ${pluralOrNot("image", nbUnexpectedImages)} ${pluralOrNot("is", nbUnexpectedImages)} not expected in your assets mapping file and ${pluralOrNot("is", nbUnexpectedImages)} ignored.\nCheck the description for more information.`;
+      const title = `Unexpected ${pluralize("image", nbUnexpectedImages)}`;
+      const message = `${pluralize("image", nbUnexpectedImages, true)} ${pluralize("is", nbUnexpectedImages)} not expected in your assets mapping file and ${pluralize("has", nbUnexpectedImages)} been ignored.\nCheck the description for more information.`;
       console.warn(title + ".\n" + message);
       setImagesIssues((issues) => [
         ...issues,
@@ -545,8 +545,8 @@ export const AssetsTab: React.FC = () => {
     if (assetsMappingDataRows.length > collectionAssetsMetadatas.length) {
       const nbMissingImages =
         assetsMappingDataRows.length - collectionAssetsMetadatas.length;
-      const title = `Missing ${pluralOrNot("image", nbMissingImages)}`;
-      const message = `${nbMissingImages} ${pluralOrNot("image", nbMissingImages)} expected in your assets mapping file ${pluralOrNot("is", nbMissingImages)} missing.\nCheck the description for more information.`;
+      const title = `Missing ${pluralize("image", nbMissingImages)}`;
+      const message = `${pluralize("image", nbMissingImages, true)} expected in your assets mapping file ${pluralize("is", nbMissingImages)} missing.\nCheck the description for more information.`;
       console.warn(title + ".\n" + message);
       setImagesIssues((issues) => [
         ...issues,
