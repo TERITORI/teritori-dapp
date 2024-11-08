@@ -141,7 +141,7 @@ export const NewsFeedInput = React.forwardRef<
     const selectedNetwork = useSelectedNetworkInfo();
     const selectedNetworkId = selectedNetwork?.id || "teritori";
     const selectedWallet = useSelectedWallet();
-    const posterId = daoId || selectedWallet?.userId;
+    const authorId = daoId || selectedWallet?.userId;
     const inputRef = useRef<TextInput>(null);
     const { setToastError } = useFeedbacks();
     const [isUploadLoading, setIsUploadLoading] = useState(false);
@@ -182,7 +182,7 @@ export const NewsFeedInput = React.forwardRef<
       setStep,
     } = useFeedPosting(
       selectedNetwork?.id,
-      posterId,
+      authorId,
       postCategory,
       onPostCreationSuccess,
     );
@@ -218,7 +218,7 @@ export const NewsFeedInput = React.forwardRef<
             amount: publishingFee.amount.toString(),
             denom: publishingFee.denom || "",
           },
-          userId: posterId,
+          userId: authorId,
         });
         return;
       }
@@ -261,7 +261,7 @@ export const NewsFeedInput = React.forwardRef<
           setStep(feedPostingStep(FeedPostingStepId.GENERATING_KEY));
 
           const pinataJWTKey =
-            userIPFSKey || (await generateIpfsKey(selectedNetworkId, posterId));
+            userIPFSKey || (await generateIpfsKey(selectedNetworkId, authorId));
 
           if (pinataJWTKey) {
             setStep(feedPostingStep(FeedPostingStepId.UPLOADING_FILES));
