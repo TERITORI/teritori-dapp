@@ -16,8 +16,9 @@ import { Box } from "@/components/boxes/Box";
 import { withAlpha, neutral22, neutral33 } from "@/utils/style/colors";
 import { fontMedium14 } from "@/utils/style/fonts";
 
-export const iconSize = 32;
-export const iconPadding = 12;
+//TODO: Simplify this componet
+
+export const iconDefaultSize = 20;
 export const outerPadding = 6;
 export const innerGap = 8;
 
@@ -26,23 +27,24 @@ const IconWithText: React.FC<{
   iconSvg: React.FC<SvgProps>;
   textColor?: ColorValue;
   iconColor?: ColorValue;
-}> = ({ text, iconSvg, textColor, iconColor }) => {
+  iconSize?: number;
+}> = ({ text, iconSvg, textColor, iconColor, iconSize = iconDefaultSize }) => {
   return (
     <View style={{ flexDirection: "row", alignItems: "center" }}>
       <Box
         style={{
           backgroundColor: neutral33,
           borderRadius: 6,
-          width: iconSize,
-          height: iconSize,
+          width: 32,
+          height: 32,
           justifyContent: "center",
           alignItems: "center",
         }}
       >
         <SVG
           source={iconSvg}
-          height={iconSize - iconPadding}
-          width={iconSize - iconPadding}
+          height={iconSize}
+          width={iconSize}
           color={iconColor || "white"}
         />
       </Box>
@@ -90,10 +92,20 @@ export const SocialButton: React.FC<{
   iconSvg: React.FC<SvgProps>;
   textColor?: ColorValue;
   iconColor?: ColorValue;
+  iconSize?: number;
   onPress?: () => void;
   link?: string;
   style?: StyleProp<ViewStyle>;
-}> = ({ text, onPress, link, iconSvg, style, textColor, iconColor }) => {
+}> = ({
+  text,
+  onPress,
+  link,
+  iconSvg,
+  style,
+  textColor,
+  iconColor,
+  iconSize,
+}) => {
   const content = (
     <Box
       style={{
@@ -109,6 +121,7 @@ export const SocialButton: React.FC<{
         text={text}
         textColor={textColor}
         iconColor={iconColor}
+        iconSize={iconSize}
         iconSvg={iconSvg}
       />
     </Box>

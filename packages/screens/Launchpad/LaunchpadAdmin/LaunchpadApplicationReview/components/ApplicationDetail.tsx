@@ -3,11 +3,13 @@ import { View, Linking } from "react-native";
 
 import { PrimaryButton } from "./../../../../../components/buttons/PrimaryButton";
 import { useAppNavigation } from "./../../../../../hooks/navigation/useAppNavigation";
+import { getCollectionId } from "./../../../../../networks/index";
 import { launchpadProjectStatus } from "./../../../../../utils/launchpad";
 import { ApplicationCard } from "./ApplicationCard";
 import { Status } from "../../../../../api/launchpad/v1/launchpad";
 import { StatusBadge } from "../../../components/StatusBadge";
 
+import launchpadApplySVG from "@/assets/icons/launchpad-apply.svg";
 import websiteSVG from "@/assets/icons/website.svg";
 import { BrandText } from "@/components/BrandText";
 import { OptimizedImage } from "@/components/OptimizedImage";
@@ -15,6 +17,7 @@ import { BoxStyle } from "@/components/boxes/Box";
 import { SocialButton } from "@/components/buttons/SocialButton";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { neutralFF } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { CollectionDataResult } from "@/utils/types/launchpad";
@@ -27,6 +30,16 @@ export const ApplicationDetail: React.FC<{
 }> = ({ collectionData, projectStatus }) => {
   const { width } = useMaxResolution();
   const navigation = useAppNavigation();
+
+  const onPressDeployedCollectionButton = () => {
+    if (collectionData.deployed_address) {
+      const id = getCollectionId(
+        collectionData.target_network,
+        collectionData.deployed_address,
+      );
+      navigation.navigate("MintCollection", { id });
+    }
+  };
 
   return (
     <View
@@ -82,6 +95,11 @@ export const ApplicationDetail: React.FC<{
             value={collectionData.symbol}
             style={applicationCardCStyle}
           />
+          <ApplicationCard
+            title="Network"
+            value={collectionData.target_network}
+            style={applicationCardCStyle}
+          />
         </View>
         <View style={{ marginTop: layout.spacing_x3 }}>
           <BrandText style={fontSemibold14}>{collectionData.desc}</BrandText>
@@ -100,6 +118,16 @@ export const ApplicationDetail: React.FC<{
             iconSvg={websiteSVG}
             onPress={() => Linking.openURL(collectionData.website_link)}
           />
+
+          {collectionData.deployed_address && (
+            <SocialButton
+              text="Collection"
+              iconSvg={launchpadApplySVG}
+              iconColor={neutralFF}
+              iconSize={24}
+              onPress={onPressDeployedCollectionButton}
+            />
+          )}
         </View>
       </View>
 
@@ -127,4 +155,4 @@ export const ApplicationDetail: React.FC<{
   );
 };
 
-const applicationCardCStyle: BoxStyle = { width: 132, maxWidth: 140 };
+const applicationCardCStyle: BoxStyle = { width: 100, maxWidth: 140 };

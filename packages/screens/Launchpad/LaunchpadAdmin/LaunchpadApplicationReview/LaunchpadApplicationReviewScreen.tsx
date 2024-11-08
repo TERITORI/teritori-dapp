@@ -1,9 +1,11 @@
 import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 
+import { Separator } from "./../../../../components/separators/Separator";
 import { ApplicationDetail } from "./components/ApplicationDetail";
 import { CreatorInformation } from "./components/CreatorInformation";
 import { InvestmentInformation } from "./components/InvestmentInformation";
+import { MintingInformation } from "./components/MintingInformation";
 import { ProjectInformation } from "./components/ProjectInformation";
 import { TeamInformation } from "./components/TeamInformation";
 import { Status } from "../../../../api/launchpad/v1/launchpad";
@@ -25,13 +27,15 @@ import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
 import { parseCollectionData } from "@/utils/launchpad";
 import { ScreenFC } from "@/utils/navigation";
-import { errorColor, neutral33 } from "@/utils/style/colors";
+import { errorColor } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 // =====> TODO: SHOW ALL DATA, MINT PERIODS, ASSETS, ETC
 
 export const launchpadReviewBreakpointM = 800;
+export const launchpadReviewBreakpointS = 600;
+export const launchpadReviewBreakpointSM = 400;
 
 export const LaunchpadApplicationReviewScreen: ScreenFC<
   "LaunchpadApplicationReview"
@@ -195,15 +199,16 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
             </>
           ) : null}
 
-          <View style={{ borderTopColor: neutral33, borderTopWidth: 1 }}>
-            <CreatorInformation
-              collectionData={collectionData}
-              creatorId={launchpadProject.creatorId}
-            />
-            <ProjectInformation collectionData={collectionData} />
-            <TeamInformation collectionData={collectionData} />
-            <InvestmentInformation collectionData={collectionData} />
-          </View>
+          <Separator />
+
+          <CreatorInformation
+            collectionData={collectionData}
+            creatorId={launchpadProject.creatorId}
+          />
+          <ProjectInformation collectionData={collectionData} />
+          <TeamInformation collectionData={collectionData} />
+          <InvestmentInformation collectionData={collectionData} />
+          <MintingInformation collectionData={collectionData} />
         </View>
       )}
     </ScreenContainer>

@@ -50,7 +50,6 @@ fn get_default_collection() -> Collection {
         is_project_derivative: true,
 
         project_type: "project_type".to_string(),
-        project_desc: "project_desc".to_string(),
 
         is_applied_previously: false,
 

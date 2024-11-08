@@ -148,7 +148,6 @@ export const useCreateCollection = () => {
           website_link: collectionFormValues.websiteLink,
           contact_email: collectionFormValues.email,
           project_type: collectionFormValues.projectTypes.join(),
-          project_desc: collectionFormValues.projectDescription,
           tokens_count: assetsMetadataFormsValues?.assetsMetadatas?.length || 0,
           reveal_time: collectionFormValues.revealTime,
           team_desc: collectionFormValues.teamDescription,

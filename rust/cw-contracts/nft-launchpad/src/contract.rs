@@ -309,7 +309,6 @@ pub struct Collection {
     pub contact_email: String,
     pub is_project_derivative: bool,
     pub project_type: String,
-    pub project_desc: String,
     pub is_applied_previously: bool,
     // Team info --------------------------------------
     pub team_desc: String,

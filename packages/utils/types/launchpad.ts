@@ -19,7 +19,7 @@ const ZodCoin = z.object({
       (value) => !value || NUMBERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyNumbers,
     )
-    .nullish(),
+    .optional(),
   denom: z.string().trim(),
 });
 
@@ -27,7 +27,7 @@ export type Coin = z.infer<typeof ZodCoin>;
 
 // ===== Shapes to build front objects
 const ZodCollectionMintPeriodFormValues = z.object({
-  price: ZodCoin.nullish(),
+  price: ZodCoin,
   maxTokens: z
     .string()
     .trim()
@@ -35,7 +35,7 @@ const ZodCollectionMintPeriodFormValues = z.object({
       (value) => !value || NUMBERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyNumbers,
     )
-    .nullish(),
+    .optional(),
   perAddressLimit: z
     .string()
     .trim()
@@ -43,11 +43,11 @@ const ZodCollectionMintPeriodFormValues = z.object({
       (value) => !value || NUMBERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyNumbers,
     )
-    .nullish(),
+    .optional(),
   startTime: z.number().min(1, DEFAULT_FORM_ERRORS.required),
-  endTime: z.number().nullish(),
-  whitelistAddressesFile: ZodLocalFileData.nullish(),
-  whitelistAddresses: z.array(z.string()).nullish(),
+  endTime: z.number().optional(),
+  whitelistAddressesFile: ZodLocalFileData.optional(),
+  whitelistAddresses: z.array(z.string()).optional(),
   isOpen: z.boolean(),
 });
 
@@ -61,20 +61,20 @@ export const ZodCollectionAssetsMetadataFormValues = z.object({
   externalUrl: z
     .string()
     .trim()
-    // We ignore the URL format control since externalUrl is nullish
+    // We ignore the URL format control since externalUrl is optional
     // .refine(
     //   (value) => !value || URL_REGEX.test(value),
     //   DEFAULT_FORM_ERRORS.onlyUrl,
     // )
-    .nullish(),
-  description: z.string().trim().nullish(),
+    .optional(),
+  description: z.string().trim().optional(),
   name: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
-  youtubeUrl: z.string().trim().nullish(),
+  youtubeUrl: z.string().trim().optional(),
   attributes: z.array(ZodCollectionAssetsAttributeFormValues),
 });
 
 export const ZodCollectionAssetsMetadatasFormValues = z.object({
-  assetsMetadatas: z.array(ZodCollectionAssetsMetadataFormValues).nullish(),
+  assetsMetadatas: z.array(ZodCollectionAssetsMetadataFormValues).optional(),
   nftApiKey: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
 });
 
@@ -101,8 +101,7 @@ export const ZodCollectionFormValues = z.object({
     .min(1, DEFAULT_FORM_ERRORS.required)
     .refine((value) => EMAIL_REGEXP.test(value), DEFAULT_FORM_ERRORS.onlyEmail),
   projectTypes: z.array(z.string().trim()).min(1, DEFAULT_FORM_ERRORS.required),
-  projectDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
-  revealTime: z.number().min(1, DEFAULT_FORM_ERRORS.required),
+  revealTime: z.number().optional(),
   teamDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   partnersDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   investDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
@@ -126,7 +125,7 @@ export const ZodCollectionFormValues = z.object({
       DEFAULT_FORM_ERRORS.onlyNumbers,
     ),
   mintPeriods: z.array(ZodCollectionMintPeriodFormValues).nonempty(),
-  royaltyAddress: z.string().trim().nullish(),
+  royaltyAddress: z.string().trim().optional(),
   royaltyPercentage: z
     .string()
     .trim()
@@ -134,8 +133,8 @@ export const ZodCollectionFormValues = z.object({
       (value) => !value || NUMBERS_REGEXP.test(value),
       DEFAULT_FORM_ERRORS.onlyNumbers,
     )
-    .nullish(),
-  assetsMetadatas: ZodCollectionAssetsMetadatasFormValues.nullish(),
+    .optional(),
+  assetsMetadatas: ZodCollectionAssetsMetadatasFormValues.optional(),
   baseTokenUri: z
     .string()
     .trim()
@@ -143,7 +142,7 @@ export const ZodCollectionFormValues = z.object({
       (value) => !value || isIpfsPathValid(value),
       DEFAULT_FORM_ERRORS.onlyIpfsUri,
     )
-    .nullish(),
+    .optional(),
   coverImageUri: z
     .string()
     .trim()
@@ -151,7 +150,7 @@ export const ZodCollectionFormValues = z.object({
       (value) => !value || isIpfsPathValid(value),
       DEFAULT_FORM_ERRORS.onlyIpfsUri,
     )
-    .nullish(),
+    .optional(),
 });
 
 export type CollectionFormValues = z.infer<typeof ZodCollectionFormValues>;
@@ -173,6 +172,11 @@ export type CollectionAssetsMetadatasFormValues = z.infer<
 >;
 
 // ===== Shapes to build objects from api
+const ZodCoinDataResult = z.object({
+  amount: z.string(),
+  denom: z.string(),
+});
+
 const ZodWhitelistInfoDataResult = z.object({
   addresses_count: z.number(),
   addresses_ipfs: z.string(),
@@ -183,14 +187,14 @@ const ZodMintPeriodDataResult = z.object({
   end_time: z.number().nullish(),
   limit_per_address: z.number().nullish(),
   max_tokens: z.number().nullish(),
-  price: ZodCoin.nullish(),
+  price: ZodCoinDataResult.nullish(),
   start_time: z.number(),
   whitelist_info: ZodWhitelistInfoDataResult.nullish(),
 });
 
 export const ZodCollectionDataResult = z.object({
   artwork_desc: z.string(),
-  base_token_uri: z.string().nullish(),
+  base_token_uri: z.string().nullish(), // TODO REMOVE
   contact_email: z.string(),
   cover_img_uri: z.string(),
   dao_whitelist_count: z.number(),
@@ -207,7 +211,6 @@ export const ZodCollectionDataResult = z.object({
   mint_periods: z.array(ZodMintPeriodDataResult),
   name: z.string(),
   partners: z.string(),
-  project_desc: z.string(),
   project_type: z.string(),
   reveal_time: z.number().nullish(),
   royalty_address: z.string().nullish(),
@@ -218,6 +221,8 @@ export const ZodCollectionDataResult = z.object({
   tokens_count: z.number(),
   website_link: z.string(),
 });
+
+export type MintPeriodDataResult = z.infer<typeof ZodMintPeriodDataResult>;
 
 export type CollectionDataResult = z.infer<typeof ZodCollectionDataResult>;
 

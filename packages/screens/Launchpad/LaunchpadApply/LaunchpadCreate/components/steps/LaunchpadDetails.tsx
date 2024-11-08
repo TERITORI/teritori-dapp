@@ -126,26 +126,6 @@ export const LaunchpadDetails: FC = () => {
         />
         <SpacerColumn size={2} />
 
-        <TextInputLaunchpad<CollectionFormValues>
-          label="Describe your project: "
-          sublabel={
-            <View>
-              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-                1. What's your concept?
-              </BrandText>
-              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-                2. How is it different?
-              </BrandText>
-              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-                3. What's your goal?
-              </BrandText>
-            </View>
-          }
-          placeHolder="Describe here..."
-          name="projectDescription"
-          form={collectionForm}
-        />
-
         <Controller<CollectionFormValues>
           name="isPreviouslyApplied"
           control={collectionForm.control}

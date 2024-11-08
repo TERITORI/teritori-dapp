@@ -42,6 +42,7 @@ export const LaunchpadMinting: FC = () => {
               onChange={onChange}
               timestamp={revealTime}
               isDirty={collectionForm.getFieldState("revealTime").isDirty}
+              required={false}
             />
           )}
         />

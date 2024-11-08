@@ -37,15 +37,11 @@ export const CreatorInformation: React.FC<{
           flexWrap: "wrap",
         }}
       >
-        <View
-          style={{ flex: 2, flexDirection: "row", gap: layout.spacing_x1_5 }}
-        >
-          <ApplicationCard title="Creator Name" value={creatorDisplayName} />
-          <ApplicationCard
-            title="Main Contact Email"
-            value={collectionData.contact_email}
-          />
-        </View>
+        <ApplicationCard title="Creator Name" value={creatorDisplayName} />
+        <ApplicationCard
+          title="Main Contact Email"
+          value={collectionData.contact_email}
+        />
       </View>
     </View>
   );

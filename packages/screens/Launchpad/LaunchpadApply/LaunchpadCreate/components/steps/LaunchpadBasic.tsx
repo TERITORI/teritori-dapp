@@ -63,9 +63,22 @@ export const LaunchpadBasic: FC = () => {
         />
 
         <TextInputLaunchpad<CollectionFormValues>
-          label="Description"
-          placeHolder="My Awesome Collection Description"
-          name="description"
+          label="Describe your project: "
+          sublabel={
+            <View>
+              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+                1. What's your concept?
+              </BrandText>
+              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+                2. How is it different?
+              </BrandText>
+              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+                3. What's your goal?
+              </BrandText>
+            </View>
+          }
+          placeHolder="Describe here..."
+          name="desc"
           form={collectionForm}
         />
 

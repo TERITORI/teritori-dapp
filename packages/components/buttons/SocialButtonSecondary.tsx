@@ -2,7 +2,7 @@ import React from "react";
 import { ViewStyle, StyleProp, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
 
-import { iconPadding, iconSize, innerGap, outerPadding } from "./SocialButton";
+import { iconDefaultSize, innerGap, outerPadding } from "./SocialButton";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { Box } from "../boxes/Box";
@@ -37,16 +37,16 @@ export const SocialButtonSecondary: React.FC<{
           style={{
             backgroundColor: primaryColor,
             borderRadius: 6,
-            width: iconSize,
-            height: iconSize,
+            width: iconDefaultSize,
+            height: iconDefaultSize,
             justifyContent: "center",
             alignItems: "center",
           }}
         >
           <SVG
             source={iconSvg}
-            height={iconSize - iconPadding}
-            width={iconSize - iconPadding}
+            height={iconDefaultSize}
+            width={iconDefaultSize}
             color={primaryTextColor}
           />
         </Box>

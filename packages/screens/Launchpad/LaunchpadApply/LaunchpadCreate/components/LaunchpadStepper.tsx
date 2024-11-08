@@ -88,7 +88,6 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
       (!!collectionForm.getFieldState("websiteLink").error ||
         !!collectionForm.getFieldState("isDerivativeProject").error ||
         !!collectionForm.getFieldState("projectTypes").error ||
-        !!collectionForm.getFieldState("projectDescription").error ||
         !!collectionForm.getFieldState("isPreviouslyApplied").error ||
         !!collectionForm.getFieldState("email").error)
     ) {
@@ -115,8 +114,7 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
     }
     if (
       stepKey === 5 &&
-      (!!collectionForm.getFieldState("revealTime").error ||
-        !!collectionForm.getFieldState("mintPeriods").error ||
+      (!!collectionForm.getFieldState("mintPeriods").error ||
         !!collectionForm.getFieldState("royaltyAddress").error ||
         !!collectionForm.getFieldState("royaltyPercentage").error)
     ) {
