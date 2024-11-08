@@ -1,3 +1,4 @@
+import pluralize from "pluralize";
 import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ScrollView, View } from "react-native";
@@ -44,7 +45,6 @@ import {
 } from "@/utils/style/colors";
 import { fontSemibold13, fontSemibold20 } from "@/utils/style/fonts";
 import { layout, screenContentMaxWidth } from "@/utils/style/layout";
-import { pluralOrNot } from "@/utils/text";
 import {
   CustomLatLngExpression,
   NewArticleFormValues,
@@ -290,7 +290,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
             ]}
           >
             {freePostCount
-              ? `You have ${freePostCount} free ${pluralOrNot(
+              ? `You have ${freePostCount} free ${pluralize(
                   "Article",
                   freePostCount,
                 )} left`

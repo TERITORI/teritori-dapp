@@ -1,15 +1,16 @@
 import React from "react";
 import { Linking, TextStyle, View } from "react-native";
 
-import { LaunchpadBanner } from "./LaunchpadCreate/components/LaunchpadBanner";
+import LaunchpadBannerImage from "@/assets/banners/launchpad.jpg";
+import { BrandText } from "@/components/BrandText";
+import { ImageBackgroundLogoText } from "@/components/ImageBackgroundLogoText";
+import { ScreenContainer } from "@/components/ScreenContainer";
 import {
   LargeBoxButton,
   LargeBoxButtonProps,
 } from "../../../components/buttons/LargeBoxButton";
 
-import { BrandText } from "@/components/BrandText";
 import { OmniLink } from "@/components/OmniLink";
-import { ScreenContainer } from "@/components/ScreenContainer";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerColumn } from "@/components/spacer";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
@@ -47,13 +48,11 @@ const BUTTONS: LargeBoxButtonProps[] = [
 export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
   const { width } = useMaxResolution();
   return (
-    <ScreenContainer
-      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
-      headerChildren={
-        <BrandText style={fontSemibold20}>Apply to Launchpad</BrandText>
-      }
-    >
-      <LaunchpadBanner />
+    <ScreenContainer>
+      <ImageBackgroundLogoText
+        backgroundImage={LaunchpadBannerImage}
+        text="Apply to Launchpad"
+      />
       <SpacerColumn size={2} />
       <BrandText style={fontSemibold28}>Welcome</BrandText>
       <SpacerColumn size={2} />

@@ -15,7 +15,7 @@ import registerSVG from "../../../assets/icons/register-neutral77.svg";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 
 import { BrandText } from "@/components/BrandText";
-import { IntroLogoText } from "@/components/IntroLogoText";
+import { ImageBackgroundLogoText } from "@/components/ImageBackgroundLogoText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { ActivityTable } from "@/components/activity/ActivityTable";
 import { FlowCard } from "@/components/cards/FlowCard";
@@ -139,8 +139,8 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
       responsive
     >
       <View>
-        <IntroLogoText
-          title={`${selectedNetwork?.displayName} Name Service`}
+        <ImageBackgroundLogoText
+          text={`${selectedNetwork?.displayName} Name Service`}
           backgroundImage={TNSBannerPNG}
         />
         <View

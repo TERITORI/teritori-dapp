@@ -1,14 +1,10 @@
 package social_feeds
 
 import (
-	"encoding/base64"
-	"fmt"
 	"std"
-	"strconv"
 	"strings"
 	"testing"
 
-	"gno.land/p/demo/avl"
 	"gno.land/p/demo/testutils"
 	ujson "gno.land/p/teritori/ujson"
 )

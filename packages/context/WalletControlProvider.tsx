@@ -8,6 +8,7 @@ import { NetworkFeature } from "../networks";
 interface ControlledWalletFundsParams {
   cost: Coin;
   action: string;
+  userId?: string;
 }
 
 interface ControlledWalletConnectedParams {
@@ -37,6 +38,7 @@ export const WalletControlContextProvider: React.FC<{
     useState(false);
   const [isConnectWalletVisible, setIsConnectWalletVisible] = useState(false);
   const [cost, setCost] = useState<Coin>();
+  const [userId, setUserId] = useState<string>();
 
   const showConnectWalletModal = ({
     forceNetworkFeature,
@@ -50,9 +52,11 @@ export const WalletControlContextProvider: React.FC<{
   const showNotEnoughFundsModal = ({
     cost,
     action,
+    userId,
   }: ControlledWalletFundsParams) => {
     setCost(cost);
     setAction(action);
+    setUserId(userId);
     setIsNotEnoughFundModalVisible(true);
     setIsConnectWalletVisible(false);
   };
@@ -69,6 +73,7 @@ export const WalletControlContextProvider: React.FC<{
         cost={cost}
         visible={isNotEnoughFundModalVisible}
         onClose={() => setIsNotEnoughFundModalVisible(false)}
+        userId={userId}
       />
       <ConnectWalletModal
         label={"Connect Wallet" + (action ? " to " + action : "")}
