@@ -1,10 +1,5 @@
-
-
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{
-    attr, to_json_binary, Addr, Reply, Response,
-    StdResult, SubMsg, WasmMsg,
-};
+use cosmwasm_std::{attr, to_json_binary, Addr, Reply, Response, StdResult, SubMsg, WasmMsg};
 use cw_storage_plus::{Item, Map};
 use cw_utils::parse_reply_instantiate_data;
 use sylvia::{
@@ -212,9 +207,7 @@ impl NftLaunchpad {
             funds: vec![],
             label: format!(
                 "TR721 codeId:{} collectionId:{} symbol:{}",
-                nft_code_id,
-                collection_id,
-                collection.symbol
+                nft_code_id, collection_id, collection.symbol
             ),
         };
 

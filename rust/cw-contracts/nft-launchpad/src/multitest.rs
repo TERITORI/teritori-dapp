@@ -178,7 +178,7 @@ fn full_flow() {
         assert_eq!(err, ContractError::CollectionSymbolExists);
     }
 
-    // Update config when sender is not contract owner 
+    // Update config when sender is not contract owner
     {
         let err = contract
             .update_config(ConfigChanges {
