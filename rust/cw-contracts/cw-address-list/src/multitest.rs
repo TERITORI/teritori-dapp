@@ -1,8 +1,8 @@
 use cosmwasm_std::Addr;
 use sylvia::multitest::App;
 
-use crate::error::ContractError;
 use crate::contract::sv::multitest_utils::CodeId;
+use crate::error::ContractError;
 
 #[test]
 fn instantiate() {

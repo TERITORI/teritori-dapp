@@ -11,7 +11,7 @@ func (h *Handler) handleExecuteAddWhitelistedCollection(e *Message, execMsg *was
 		return nil
 	}
 
-	collectionAddress, err := e.Events.First("wasm.collection_addr")
+	collectionAddress, err := e.Events.First("wasm.added_addr")
 	if err != nil {
 		return errors.Wrap(err, "failed to get collection address")
 	}
@@ -34,7 +34,7 @@ func (h *Handler) handleExecuteRemoveWhitelistedCollection(e *Message, execMsg *
 		return nil
 	}
 
-	collectionAddress, err := e.Events.First("wasm.collection_addr")
+	collectionAddress, err := e.Events.First("wasm.added_addr")
 	if err != nil {
 		return errors.Wrap(err, "failed to get collection address")
 	}

@@ -75,8 +75,8 @@ impl AddressListContract {
             })?;
 
         return Ok(Response::new()
-        .add_attribute("action", "add_whitelisted_collection")
-        .add_attribute("collection_addr", addr));
+            .add_attribute("action", "add")
+            .add_attribute("added_addr", addr));
     }
 
     #[msg(exec)]
@@ -92,8 +92,8 @@ impl AddressListContract {
         self.addresses.remove(ctx.deps.storage, addr.clone());
 
         return Ok(Response::new()
-        .add_attribute("action", "remove_whitelisted_collection")
-        .add_attribute("collection_addr", addr));
+            .add_attribute("action", "remove")
+            .add_attribute("added_addr", addr));
     }
 
     #[msg(exec)]
