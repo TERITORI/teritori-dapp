@@ -7,7 +7,7 @@ import (
 )
 
 func (h *Handler) handleExecuteAddWhitelistedCollection(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
-	if execMsg.Contract != h.config.Network.VaultContractAddress {
+	if execMsg.Contract != h.config.Network.CwAdminFactoryContractAddress {
 		return nil
 	}
 
@@ -30,7 +30,7 @@ func (h *Handler) handleExecuteAddWhitelistedCollection(e *Message, execMsg *was
 }
 
 func (h *Handler) handleExecuteRemoveWhitelistedCollection(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
-	if execMsg.Contract != h.config.Network.VaultContractAddress {
+	if execMsg.Contract != h.config.Network.CwAdminFactoryContractAddress {
 		return nil
 	}
 
