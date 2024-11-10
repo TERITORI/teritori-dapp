@@ -43,8 +43,12 @@ const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 pub struct Tr721 {
     pub(crate) contract_version: Item<'static, ContractVersion>,
     pub(crate) admin: Item<'static, String>,
-    pub(crate) tokens:
-        IndexedMap<'static, &'static str, TokenInfo<Tr721Metadata>, TokenIndexes<'static, Tr721Metadata>>,
+    pub(crate) tokens: IndexedMap<
+        'static,
+        &'static str,
+        TokenInfo<Tr721Metadata>,
+        TokenIndexes<'static, Tr721Metadata>,
+    >,
     pub(crate) requested_mints: Map<'static, String, Addr>, //  token id => User address
     pub(crate) launchpad_contract: Item<'static, String>,
 
@@ -814,4 +818,3 @@ pub struct MintInfo {
     pub royalty_address: Option<Addr>,
     pub royalty_percentage: Option<u8>,
 }
-
