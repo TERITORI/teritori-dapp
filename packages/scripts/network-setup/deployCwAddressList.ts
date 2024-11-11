@@ -1,8 +1,11 @@
+import { OfflineSigner } from "@cosmjs/proto-signing";
 import { bech32 } from "bech32";
 import { program } from "commander";
 import { cloneDeep } from "lodash";
 import os from "os";
 import path from "path";
+
+import { registerTNSHandle, testTeritoriEcosystem } from "./deployLib";
 import { InstantiateMsg as CwAddressListInstantiateMsg } from "../../contracts-clients/cw-address-list/CwAddressList.types";
 
 import {
@@ -16,8 +19,6 @@ import {
   instantiateContract,
   storeWASM,
 } from "@/scripts/network-setup/deployLib";
-import { registerTNSHandle, testTeritoriEcosystem } from "./deployLib";
-import { OfflineSigner } from "@cosmjs/proto-signing";
 
 const deployCwAddressList = async ({
   opts,
@@ -26,10 +27,14 @@ const deployCwAddressList = async ({
 }: {
   networkId: string;
   wallet: string;
-  opts: { home: string; binaryPath: string; keyringBackend?: string;     signer: OfflineSigner | undefined;
+  opts: {
+    home: string;
+    binaryPath: string;
+    keyringBackend?: string;
+    signer: OfflineSigner | undefined;
   };
 }) => {
-  const network = cloneDeep(getCosmosNetwork(networkId))
+  const network = cloneDeep(getCosmosNetwork(networkId));
   if (!network) {
     console.error(`Cosmos network ${networkId} not found`);
     process.exit(1);
@@ -70,9 +75,13 @@ const deployCwAddressList = async ({
   );
 
   console.log("Instantiating cw address list", codeId);
-  nftMarketplaceFeature.cwAddressListContractAddress = await instantiateCwAddressList(opts, wallet, walletAddr, network, codeId);
-  
-  console.log("Cw address list contract instantiated", nftMarketplaceFeature.cwAddressListContractAddress);
+  nftMarketplaceFeature.cwAddressListContractAddress =
+    await instantiateCwAddressList(opts, wallet, walletAddr, network, codeId);
+
+  console.log(
+    "Cw address list contract instantiated",
+    nftMarketplaceFeature.cwAddressListContractAddress,
+  );
 
   network.featureObjects = network.featureObjects?.map((featureObject) => {
     if (featureObject.type === NetworkFeature.NFTMarketplace) {
@@ -95,7 +104,7 @@ const instantiateCwAddressList = async (
   wallet: string,
   adminAddr: string,
   network: CosmosNetworkInfo,
-  codeId: string
+  codeId: string,
 ) => {
   const nftMarketplaceFeature = cloneDeep(
     getNetworkFeature(network.id, NetworkFeature.NFTMarketplace),
@@ -136,5 +145,3 @@ const main = async () => {
   });
 };
 main();
-
-
