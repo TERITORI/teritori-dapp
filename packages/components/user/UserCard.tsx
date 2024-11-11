@@ -1,12 +1,12 @@
 import { Buffer } from "buffer";
 import React, { ComponentProps, useCallback } from "react";
 import {
-  StyleProp,
-  ViewStyle,
-  View,
-  StyleSheet,
   Pressable,
   ScrollView,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
 } from "react-native";
 
 import { UserDisplayName } from "./UserDisplayName";
@@ -23,14 +23,14 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseUserId } from "../../networks";
 import {
-  neutral77,
-  neutral33,
-  neutralA3,
   neutral00,
+  neutral33,
+  neutral77,
+  neutralA3,
 } from "../../utils/style/colors";
 import {
-  fontSemibold12,
   fontSemibold10,
+  fontSemibold12,
   fontSemibold8,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
@@ -45,8 +45,9 @@ import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 export const UserCard: React.FC<{
   userId: string;
   style: StyleProp<BoxStyle>;
+  roles?: string[];
   daoId?: string;
-}> = ({ userId, style, daoId }) => {
+}> = ({ userId, style, daoId, roles }) => {
   const [, userAddress] = parseUserId(userId);
   const { metadata } = useNSUserInfo(userId);
   const selectedWallet = useSelectedWallet();
@@ -114,48 +115,48 @@ export const UserCard: React.FC<{
 
       <View>
         <FollowingFollowers style={{ marginBottom: 10 }} />
-        <BrandText
-          style={[fontSemibold12, { lineHeight: 14, marginBottom: 8 }]}
-        >
-          Roles
-        </BrandText>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{ width: width - 2 * padding }}
-        >
-          {fakeRoles.map((role, index) => {
-            return (
-              <View
-                style={[
-                  {
-                    marginLeft: index === 0 ? undefined : 4,
-                    justifyContent: "center",
-                    borderRadius: 4,
-                    backgroundColor: role.highlight ? "#9C4CEA" : "#1C1C1C",
-                    height: 18,
-                    paddingHorizontal: 4,
-                  },
-                  !role.highlight && {
-                    borderWidth: 0.5,
-                    borderColor: neutral33,
-                  },
-                ]}
-              >
-                <BrandText
-                  style={[
-                    fontSemibold8,
-                    {
-                      color: role.highlight ? "white" : neutralA3,
-                    },
-                  ]}
-                >
-                  {role.text}
-                </BrandText>
-              </View>
-            );
-          })}
-        </ScrollView>
+        {roles && (
+          <View>
+            <BrandText
+              style={[fontSemibold12, { lineHeight: 14, marginBottom: 8 }]}
+            >
+              Roles
+            </BrandText>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ width: width - 2 * padding }}
+            >
+              {roles.map((role, index) => {
+                return (
+                  <View
+                    style={[
+                      {
+                        marginLeft: index === 0 ? undefined : 4,
+                        justifyContent: "center",
+                        borderRadius: 4,
+                        backgroundColor: "#1C1C1C",
+                        height: 18,
+                        paddingHorizontal: 4,
+                      },
+                    ]}
+                  >
+                    <BrandText
+                      style={[
+                        fontSemibold8,
+                        {
+                          color: neutralA3,
+                        },
+                      ]}
+                    >
+                      {role}
+                    </BrandText>
+                  </View>
+                );
+              })}
+            </ScrollView>
+          </View>
+        )}
       </View>
 
       <View style={{ position: "absolute", top: padding, right: padding }}>

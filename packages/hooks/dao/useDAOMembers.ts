@@ -10,15 +10,12 @@ import {
   parseUserId,
 } from "@/networks";
 import { extractGnoJSONString } from "@/utils/gno";
-import { VotingGroupConfig } from "@/utils/gnodao/configs";
 
 // FIXME: pagination
 
 type GnoDAOMember = {
   address: string;
-  id: number;
-  metadata: string;
-  weight: number;
+  power: number;
 };
 
 export const useDAOMembers = (daoId: string | undefined) => {
@@ -50,22 +47,16 @@ export const useDAOMembers = (daoId: string | undefined) => {
             return [];
           }
           const provider = new GnoJSONRPCProvider(network.endpoint);
-          const moduleConfig: VotingGroupConfig = extractGnoJSONString(
-            await provider.evaluateExpression(
-              daoAddress,
-              "daoCore.VotingModule().ConfigJSON()",
-            ),
-          );
-          const { groupId } = moduleConfig;
           const res: GnoDAOMember[] = extractGnoJSONString(
             await provider.evaluateExpression(
-              network.groupsPkgPath,
-              `GetMembersJSON(${groupId})`,
+              daoAddress,
+              `daoCore.VotingModule().GetMembersJSON("", "", 0, 0)`,
             ),
           );
+          console.log("ZEBI", res);
           return res.map((member) => ({
             addr: member.address,
-            weight: member.weight,
+            weight: member.power,
           }));
         }
       }
