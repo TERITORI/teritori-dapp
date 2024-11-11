@@ -92,4 +92,3 @@ export type NetworkFeatureObject =
   | GnoProjectManager
   | LaunchpadERC20
   | NFTMarketplace;
-

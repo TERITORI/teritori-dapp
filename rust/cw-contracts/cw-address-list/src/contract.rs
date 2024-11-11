@@ -182,4 +182,3 @@ impl AddressListContract {
         Ok(addrs?)
     }
 }
-

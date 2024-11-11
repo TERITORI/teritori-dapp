@@ -109,4 +109,3 @@ export const teritoriTestnetNetwork: CosmosNetworkInfo = {
   cwAdminFactoryContractAddress:
     "tori1du6yg34tljg54s5qhsqv2ay23nx7cqjmku2yuv0fs4namz7yn9yqep8rde",
 };
-
