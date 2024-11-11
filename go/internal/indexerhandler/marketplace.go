@@ -1,26 +1,12 @@
 package indexerhandler
 
 import (
-	"encoding/json"
-
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
-
-type AddMsg struct {
-	Add struct {
-		AddedAddr string `json:"added_addr"`
-	} `json:"add"`
-}
-
-type RemoveMsg struct {
-	Remove struct {
-		RemovedAddr string `json:"removed_addr"`
-	} `json:"add"`
-}
 
 func (h *Handler) handleExecuteAddWhitelistedCollection(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	nftMarketplaceFeature, err := h.config.Network.GetFeatureNFTMarketplace()
@@ -38,12 +24,7 @@ func (h *Handler) handleExecuteAddWhitelistedCollection(e *Message, execMsg *was
 		return nil
 	}
 
-	var addMsg AddMsg
-	if err := json.Unmarshal([]byte(execMsg.Msg), &addMsg); err != nil {
-		return errors.Wrap(err, "failed to unmarshal execMsg.Msg")
-	}
-
-	collectionAddress := addMsg.Add.AddedAddr
+	collectionAddress, err := e.Events.First("wasm.added_addr")
 	if err != nil {
 		return errors.Wrap(err, "failed to get collection address")
 	}
@@ -80,12 +61,7 @@ func (h *Handler) handleExecuteRemoveWhitelistedCollection(e *Message, execMsg *
 		return nil
 	}
 
-	var removeMsg RemoveMsg
-	if err := json.Unmarshal([]byte(execMsg.Msg), &removeMsg); err != nil {
-		return errors.Wrap(err, "failed to unmarshal execMsg.Msg")
-	}
-
-	collectionAddress := removeMsg.Remove.RemovedAddr
+	collectionAddress, err := e.Events.First("wasm.removed_addr")
 	if err != nil {
 		return errors.Wrap(err, "failed to get collection address")
 	}
@@ -105,4 +81,3 @@ func (h *Handler) handleExecuteRemoveWhitelistedCollection(e *Message, execMsg *
 
 	return nil
 }
-
