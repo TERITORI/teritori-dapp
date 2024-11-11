@@ -9,6 +9,8 @@ import {
   ViewStyle,
 } from "react-native";
 
+import { UserDisplayName } from "./UserDisplayName";
+import { Username } from "./Username";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import trashSVG from "../../../assets/icons/trash.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -39,8 +41,6 @@ import { SVG } from "../SVG";
 import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
-import { UserDisplayName } from "./UserDisplayName";
-import { Username } from "./Username";
 
 export const UserCard: React.FC<{
   userId: string;
