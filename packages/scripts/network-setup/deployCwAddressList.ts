@@ -112,7 +112,7 @@ const instantiateCwAddressList = async (
   opts: { home: string; binaryPath: string; keyringBackend?: string },
   wallet: string,
   adminAddr: string,
-  codeId: string,
+  codeId: number,
   network: CosmosNetworkInfo,
 ) => {
   const instantiateMsg: CwAddressListInstantiateMsg = { admin: adminAddr };
