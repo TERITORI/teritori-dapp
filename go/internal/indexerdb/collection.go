@@ -18,6 +18,7 @@ type Collection struct {
 	SecondaryDuringMint bool
 	Paused              bool `gorm:"index"`
 	Time                time.Time
+	Whitelisted         bool `gorm:"index"`
 
 	// "has one" relations
 	TeritoriCollection *TeritoriCollection
@@ -36,3 +37,4 @@ type TeritoriCollection struct {
 
 	NetworkID string `gorm:"index"`
 }
+

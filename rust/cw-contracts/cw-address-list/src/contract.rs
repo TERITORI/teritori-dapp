@@ -93,7 +93,7 @@ impl AddressListContract {
 
         return Ok(Response::new()
             .add_attribute("action", "remove")
-            .add_attribute("added_addr", addr));
+            .add_attribute("removed_addr", addr));
     }
 
     #[msg(exec)]
@@ -182,3 +182,4 @@ impl AddressListContract {
         Ok(addrs?)
     }
 }
+

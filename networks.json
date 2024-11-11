@@ -11677,8 +11677,7 @@
       },
       {
         "type": "NFTMarketplace",
-        "cwAddressListCodeId": 70,
-        "cwAddressListContractAddress": "tori1qy83plv887wwqu6tepr93q8guat28hytg92cclaj5gsad4r5260qlhewer"
+        "cwAddressListContractAddress": "tori1pxdcfkzwwaxmr7eavrwxxl6jedfums6ducgyem8a8cfv77azfd3qstfxhp"
       }
     ],
     "currencies": [
@@ -11708,7 +11707,7 @@
     "contractExplorer": "https://explorer.teritori.com/teritori-testnet/account/$address",
     "idPrefix": "testori",
     "testnet": true,
-    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "backendEndpoint": "http://192.168.1.78:9090",
     "addressPrefix": "tori",
     "restEndpoint": "https://rest.testnet.teritori.com",
     "rpcEndpoint": "https://rpc.testnet.teritori.com",

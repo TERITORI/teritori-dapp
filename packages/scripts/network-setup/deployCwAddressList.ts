@@ -16,6 +16,8 @@ import {
   instantiateContract,
   storeWASM,
 } from "@/scripts/network-setup/deployLib";
+import { registerTNSHandle, testTeritoriEcosystem } from "./deployLib";
+import { OfflineSigner } from "@cosmjs/proto-signing";
 
 const deployCwAddressList = async ({
   opts,
@@ -24,9 +26,10 @@ const deployCwAddressList = async ({
 }: {
   networkId: string;
   wallet: string;
-  opts: { home: string; binaryPath: string; keyringBackend?: string };
+  opts: { home: string; binaryPath: string; keyringBackend?: string;     signer: OfflineSigner | undefined;
+  };
 }) => {
-  const network = cloneDeep(getCosmosNetwork(networkId));
+  const network = cloneDeep(getCosmosNetwork(networkId))
   if (!network) {
     console.error(`Cosmos network ${networkId} not found`);
     process.exit(1);
@@ -59,17 +62,16 @@ const deployCwAddressList = async ({
     "artifacts",
     "cw_address_list.wasm",
   );
-  nftMarketplaceFeature.cwAddressListCodeId = await storeWASM(
+  const codeId = await storeWASM(
     opts,
     wallet,
     network,
     cwAddressListWasmFilePath,
   );
 
-  console.log("Instantiating cw address list", nftMarketplaceFeature.cwAddressListCodeId);
-  nftMarketplaceFeature.cwAddressListContractAddress =
-    await instantiateCwAddressList(opts, wallet, walletAddr, network);
-
+  console.log("Instantiating cw address list", codeId);
+  nftMarketplaceFeature.cwAddressListContractAddress = await instantiateCwAddressList(opts, wallet, walletAddr, network, codeId);
+  
   console.log("Cw address list contract instantiated", nftMarketplaceFeature.cwAddressListContractAddress);
 
   network.featureObjects = network.featureObjects?.map((featureObject) => {
@@ -77,6 +79,15 @@ const deployCwAddressList = async ({
       return nftMarketplaceFeature;
     } else return featureObject;
   });
+
+  console.log(JSON.stringify(network, null, 2));
+
+  if (opts.signer) {
+    await registerTNSHandle(network, opts.signer);
+    await testTeritoriEcosystem(network);
+  }
+
+  return network;
 };
 
 const instantiateCwAddressList = async (
@@ -84,6 +95,7 @@ const instantiateCwAddressList = async (
   wallet: string,
   adminAddr: string,
   network: CosmosNetworkInfo,
+  codeId: string
 ) => {
   const nftMarketplaceFeature = cloneDeep(
     getNetworkFeature(network.id, NetworkFeature.NFTMarketplace),
@@ -91,10 +103,6 @@ const instantiateCwAddressList = async (
   if (!nftMarketplaceFeature) {
     console.error(`NFT Marketplace feature not found on ${network.id}`);
     process.exit(1);
-  }
-  const codeId = nftMarketplaceFeature.cwAddressListCodeId;
-  if (!codeId) {
-    throw new Error("CW Address List code ID not found");
   }
   const instantiateMsg: CwAddressListInstantiateMsg = { admin: adminAddr };
   return await instantiateContract(
@@ -121,10 +129,12 @@ const main = async () => {
       home: path.join(os.homedir(), ".teritorid"),
       binaryPath: "teritorid",
       keyringBackend,
+      signer: undefined,
     },
     networkId,
     wallet,
   });
 };
 main();
+
 

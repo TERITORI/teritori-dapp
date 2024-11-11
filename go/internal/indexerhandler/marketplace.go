@@ -1,24 +1,59 @@
 package indexerhandler
 
 import (
+	"encoding/json"
+
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
+type AddMsg struct {
+	Add struct {
+		AddedAddr string `json:"added_addr"`
+	} `json:"add"`
+}
+
+type RemoveMsg struct {
+	Remove struct {
+		RemovedAddr string `json:"removed_addr"`
+	} `json:"add"`
+}
+
 func (h *Handler) handleExecuteAddWhitelistedCollection(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
-	if execMsg.Contract != h.config.Network.CwAdminFactoryContractAddress {
+	nftMarketplaceFeature, err := h.config.Network.GetFeatureNFTMarketplace()
+	if err != nil {
+		if errors.Is(err, networks.ErrFeatureNotFound) {
+			return nil
+		}
+		return errors.Wrap(err, "failed to get FT Marketplace feature")
+	}
+
+	contractAddress := execMsg.Contract
+
+	if contractAddress != nftMarketplaceFeature.CwAddressListContractAddress {
+		h.logger.Debug("ignored add whitelisted collection for non-matching contract")
 		return nil
 	}
 
-	collectionAddress, err := e.Events.First("wasm.added_addr")
+	var addMsg AddMsg
+	if err := json.Unmarshal([]byte(execMsg.Msg), &addMsg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal execMsg.Msg")
+	}
+
+	collectionAddress := addMsg.Add.AddedAddr
 	if err != nil {
 		return errors.Wrap(err, "failed to get collection address")
 	}
 
 	if err := h.db.
-		Joins("JOIN teritori_collections ON teritori_collections.collection_id = collections.id").
-		Where("teritori_collections.nft_contract_address = ?", collectionAddress).
+		Model(&indexerdb.Collection{}).
+		Where("id IN (?)", h.db.Table("teritori_collections").
+			Select("collection_id").
+			Where("nft_contract_address = ?", collectionAddress),
+		).
 		UpdateColumn("whitelisted", true).
 		Error; err != nil {
 		return errors.Wrap(err, "failed to update whitelisted to true for collection")
@@ -30,24 +65,44 @@ func (h *Handler) handleExecuteAddWhitelistedCollection(e *Message, execMsg *was
 }
 
 func (h *Handler) handleExecuteRemoveWhitelistedCollection(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
-	if execMsg.Contract != h.config.Network.CwAdminFactoryContractAddress {
+	nftMarketplaceFeature, err := h.config.Network.GetFeatureNFTMarketplace()
+	if err != nil {
+		if errors.Is(err, networks.ErrFeatureNotFound) {
+			return nil
+		}
+		return errors.Wrap(err, "failed to get FT Marketplace feature")
+	}
+
+	contractAddress := execMsg.Contract
+
+	if contractAddress != nftMarketplaceFeature.CwAddressListContractAddress {
+		h.logger.Debug("ignored remove whitelisted collection for non-matching contract")
 		return nil
 	}
 
-	collectionAddress, err := e.Events.First("wasm.added_addr")
+	var removeMsg RemoveMsg
+	if err := json.Unmarshal([]byte(execMsg.Msg), &removeMsg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal execMsg.Msg")
+	}
+
+	collectionAddress := removeMsg.Remove.RemovedAddr
 	if err != nil {
 		return errors.Wrap(err, "failed to get collection address")
 	}
 
 	if err := h.db.
-		Joins("JOIN teritori_collections ON teritori_collections.collection_id = collections.id").
-		Where("teritori_collections.nft_contract_address = ?", collectionAddress).
+		Model(&indexerdb.Collection{}).
+		Where("id IN (?)", h.db.Table("teritori_collections").
+			Select("collection_id").
+			Where("nft_contract_address = ?", collectionAddress),
+		).
 		UpdateColumn("whitelisted", false).
 		Error; err != nil {
 		return errors.Wrap(err, "failed to update whitelisted to false for collection")
 	}
 
-	h.logger.Info("collection unwhitelisted", zap.String("address", collectionAddress))
+	h.logger.Info("collection whitelisted", zap.String("address", collectionAddress))
 
 	return nil
 }
+
