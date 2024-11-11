@@ -9,8 +9,6 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { UserDisplayName } from "./UserDisplayName";
-import { Username } from "./Username";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import trashSVG from "../../../assets/icons/trash.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -41,6 +39,8 @@ import { SVG } from "../SVG";
 import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
+import { UserDisplayName } from "./UserDisplayName";
+import { Username } from "./Username";
 
 export const UserCard: React.FC<{
   userId: string;
@@ -251,20 +251,6 @@ const FollowingFollowers: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
     </View>
   );
 };
-
-const fakeRoles: { highlight?: boolean; text: string }[] = [
-  {
-    text: "Hiring",
-    highlight: true,
-  },
-  { text: "Teritorian" },
-  { text: "Torishark" },
-  { text: "OG" },
-  { text: "Ripper" },
-  { text: "Squad leader" },
-  { text: "NFT Enjoyoor" },
-  { text: "Tester" },
-];
 
 const useProposeToRemoveMember = (daoId: string | undefined) => {
   const makeProposal = useDAOMakeProposal(daoId);
