@@ -24,6 +24,7 @@ export enum NetworkFeature {
 const zodNFTMarketplace = z.object({
   type: z.literal(NetworkFeature.NFTMarketplace),
   cwAddressListContractAddress: z.string(),
+  cwAddressListCodeId: z.number(),
 });
 
 export type NFTMarketplace = z.infer<typeof zodNFTMarketplace>;
@@ -91,3 +92,4 @@ export type NetworkFeatureObject =
   | GnoProjectManager
   | LaunchpadERC20
   | NFTMarketplace;
+

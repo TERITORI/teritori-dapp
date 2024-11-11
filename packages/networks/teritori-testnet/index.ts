@@ -26,6 +26,7 @@ const nftMarketplace: NFTMarketplace = {
   type: NetworkFeature.NFTMarketplace,
   cwAddressListContractAddress:
     "tori1pxdcfkzwwaxmr7eavrwxxl6jedfums6ducgyem8a8cfv77azfd3qstfxhp",
+  cwAddressListCodeId: 78,
 };
 
 const riotContractAddressGen0 =
@@ -61,7 +62,7 @@ export const teritoriTestnetNetwork: CosmosNetworkInfo = {
     "https://explorer.teritori.com/teritori-testnet/account/$address",
   idPrefix: "testori",
   testnet: true,
-  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
+  backendEndpoint: "http://192.168.1.78:9090",
   addressPrefix: "tori",
   restEndpoint: "https://rest.testnet.teritori.com",
   rpcEndpoint: "https://rpc.testnet.teritori.com",
@@ -108,3 +109,4 @@ export const teritoriTestnetNetwork: CosmosNetworkInfo = {
   cwAdminFactoryContractAddress:
     "tori1du6yg34tljg54s5qhsqv2ay23nx7cqjmku2yuv0fs4namz7yn9yqep8rde",
 };
+

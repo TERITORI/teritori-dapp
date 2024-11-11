@@ -11677,7 +11677,8 @@
       },
       {
         "type": "NFTMarketplace",
-        "cwAddressListContractAddress": "tori1pxdcfkzwwaxmr7eavrwxxl6jedfums6ducgyem8a8cfv77azfd3qstfxhp"
+        "cwAddressListContractAddress": "tori1pxdcfkzwwaxmr7eavrwxxl6jedfums6ducgyem8a8cfv77azfd3qstfxhp",
+        "cwAddressListCodeId": 78
       }
     ],
     "currencies": [

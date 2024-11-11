@@ -105,7 +105,8 @@ func (nb *NetworkBase) GetFeatureLaunchpadERC20() (*FeatureLaunchpadERC20, error
 
 type FeatureNFTMarketplace struct {
 	*FeatureBase
-	CwAddressListContractAddress string `json:"cwAddressListContractAddress"`
+	CwAddressListContractAddress string  `json:"cwAddressListContractAddress"`
+	CwAddressListCodeId          float64 `json:"cwAddressListCodeId"`
 }
 
 var _ Feature = &FeatureNFTMarketplace{}
