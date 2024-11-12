@@ -157,6 +157,15 @@ func TestDAOCore(t *testing.T) {
 		t.Fatal("voting module has wrong kind")
 	}
 
+	rolesMod := core.RolesModule()
+	if rolesMod == nil {
+		t.Fatal("roles module is nil")
+	}
+
+	if rolesMod.Info().Kind != "TestRoles" {
+		t.Fatal("roles module has wrong kind")
+	}
+
 	propMods := core.ProposalModules()
 	if len(propMods) != 1 {
 		t.Fatal("expected 1 proposal module")

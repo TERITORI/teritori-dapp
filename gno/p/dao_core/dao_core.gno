@@ -128,6 +128,10 @@ func (d *daoCore) VotingModule() dao_interfaces.IVotingModule {
 	return d.votingModule
 }
 
+func (d *daoCore) RolesModule() dao_interfaces.IRolesModule {
+	return d.rolesModule
+}
+
 func (d *daoCore) VotingPowerAtHeight(address std.Address, height int64) uint64 {
 	return d.VotingModule().VotingPowerAtHeight(address, height)
 }
@@ -144,6 +148,11 @@ func (d *daoCore) Render(path string) string {
 	sb.WriteString(votingInfo.String())
 	sb.WriteRune('\n')
 	sb.WriteString(d.votingModule.Render(""))
+	rolesInfo := d.rolesModule.Info()
+	sb.WriteString("# Roles Module: ")
+	sb.WriteString(rolesInfo.String())
+	sb.WriteRune('\n')
+	sb.WriteString(d.rolesModule.Render(""))
 	sb.WriteString("## Supported Messages:\n")
 	sb.WriteString(d.registry.Render())
 
