@@ -27,6 +27,7 @@ const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
     dao_core "${network.daoCorePkgPath}"
     dao_interfaces "${network.daoInterfacesPkgPath}"
     proposal_single "${network.daoProposalSinglePkgPath}"
+    "${network.rolesGroupPkgPath}"
     "${network.daoUtilsPkgPath}"
     "${network.profilePkgPath}"
     voting_group "${network.votingGroupPkgPath}"
@@ -37,6 +38,7 @@ const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
 var (
 	daoCore    dao_interfaces.IDAOCore
 	group      *voting_group.VotingGroup
+  roles      *dao_roles_group.RolesGroup
 	registered bool
 )
 
@@ -44,24 +46,30 @@ func init() {
 	votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
 		group = voting_group.NewVotingGroup()
       ${conf.initialMembers
-        .map(
-          (member) =>
-            `group.SetMemberPower("${member.address}", ${member.weight});`,
-        )
-        .join("\n\t")}
+      .map(
+        (member) =>
+          `group.SetMemberPower("${member.address}", ${member.weight});`,
+      )
+      .join("\n\t")}
 		return group
 	}
+
+  rolesModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IRolesModule {
+		roles = dao_roles_group.NewRolesGroup()
+		return roles
+	}
+
 
     // TODO: consider using factories that return multiple modules and handlers
   
     proposalModulesFactories := []dao_interfaces.ProposalModuleFactory{
       func(core dao_interfaces.IDAOCore) dao_interfaces.IProposalModule {
         tt := proposal_single.PercentageThresholdPercent(${Math.ceil(
-          conf.thresholdPercent * 100,
-        )}) // ${Math.ceil(conf.thresholdPercent * 100) / 100}%
+        conf.thresholdPercent * 100,
+      )}) // ${Math.ceil(conf.thresholdPercent * 100) / 100}%
         tq := proposal_single.PercentageThresholdPercent(${Math.ceil(
-          conf.quorumPercent * 100,
-        )}) // ${Math.ceil(conf.quorumPercent * 100) / 100}%
+        conf.quorumPercent * 100,
+      )}) // ${Math.ceil(conf.quorumPercent * 100) / 100}%
         return proposal_single.NewDAOProposalSingle(core, &proposal_single.DAOProposalSingleOpts{
           MaxVotingPeriod: dao_utils.DurationTime(time.Second * ${conf.maxVotingPeriodSeconds}),
           Threshold: &proposal_single.ThresholdThresholdQuorum{
@@ -86,7 +94,7 @@ func init() {
 		},
 	}
 
-	daoCore = dao_core.NewDAOCore(votingModuleFactory, proposalModulesFactories, messageHandlersFactories)
+	daoCore = dao_core.NewDAOCore(votingModuleFactory, rolesModuleFactory, proposalModulesFactories, messageHandlersFactories)
 
   // Register the DAO profile
 	profile.SetStringField(profile.DisplayName, "${conf.displayName}")
