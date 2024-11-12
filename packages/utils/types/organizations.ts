@@ -32,6 +32,10 @@ export type MemberSettingFormType = {
   members: { addr: string; weight: string }[];
 };
 
+export type RolesSettingFormType = {
+  roles: { name: string; color: string }[];
+};
+
 export type LaunchingProcessStepType = {
   title: string;
   completeText: string;
@@ -41,6 +45,7 @@ export type LaunchingProcessStepType = {
 export const ORGANIZATION_DEPLOYER_STEPS = [
   "Create a DAO",
   "Configure voting",
+  "Define Roles & Permissions",
   "Set tokens or members",
   "Review information",
   "Launch organization",

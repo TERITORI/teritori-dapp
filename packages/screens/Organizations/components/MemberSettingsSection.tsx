@@ -110,7 +110,7 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
       <View style={styles.footer}>
         <PrimaryButton
           size="M"
-          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[3]}`}
+          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[4]}`}
           onPress={handleSubmit(onSubmit)}
           testID="member-settings-next"
         />

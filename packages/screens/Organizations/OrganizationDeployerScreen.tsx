@@ -7,6 +7,7 @@ import { LaunchingOrganizationSection } from "./components/LaunchingOrganization
 import { MemberSettingsSection } from "./components/MemberSettingsSection";
 import { ReviewInformationSection } from "./components/ReviewInformationSection";
 import { RightSection } from "./components/RightSection";
+import { RolesSettingsSection } from "./components/RolesSettingsSection";
 import { TokenSettingsSection } from "./components/TokenSettingsSection";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 
@@ -35,6 +36,7 @@ import {
   LAUNCHING_PROCESS_STEPS,
   MemberSettingFormType,
   ORGANIZATION_DEPLOYER_STEPS,
+  RolesSettingFormType,
   TokenSettingFormType,
 } from "@/utils/types/organizations";
 
@@ -47,9 +49,11 @@ export const OrganizationDeployerScreen = () => {
     useState<CreateDaoFormType>();
   const [step2ConfigureVotingFormData, setStep2ConfigureVotingFormData] =
     useState<ConfigureVotingFormType>();
-  const [step3TokenSettingFormData, setStep3TokenSettingFormData] =
+  const [step3RoleSettingFormData, setStep3RoleSettingFormData] =
+    useState<RolesSettingFormType>();
+  const [step4TokenSettingFormData, setStep4TokenSettingFormData] =
     useState<TokenSettingFormType>();
-  const [step3MemberSettingFormData, setStep3MemberSettingFormData] =
+  const [step4MemberSettingFormData, setStep4MemberSettingFormData] =
     useState<MemberSettingFormType>();
   const queryClient = useQueryClient();
   const [launchingStep, setLaunchingStep] = useState(0);
@@ -88,7 +92,7 @@ export const OrganizationDeployerScreen = () => {
                 24 *
                 60 *
                 60,
-              initialMembers: (step3MemberSettingFormData?.members || []).map(
+              initialMembers: (step4MemberSettingFormData?.members || []).map(
                 (member) => ({
                   address: member.addr,
                   weight: parseInt(member.weight, 10),
@@ -124,7 +128,7 @@ export const OrganizationDeployerScreen = () => {
 
           let createDaoRes = null;
           if (step1DaoInfoFormData.structure === DaoType.TOKEN_BASED) {
-            if (!step3TokenSettingFormData) return false;
+            if (!step4TokenSettingFormData) return false;
             createDaoRes = await createDaoTokenBased(
               {
                 client: signingClient,
@@ -140,9 +144,9 @@ export const OrganizationDeployerScreen = () => {
                 description: step1DaoInfoFormData.organizationDescription,
                 tns: step1DaoInfoFormData.associatedHandle,
                 imageUrl: step1DaoInfoFormData.imageUrl,
-                tokenName: step3TokenSettingFormData.tokenName,
-                tokenSymbol: step3TokenSettingFormData.tokenSymbol,
-                tokenHolders: step3TokenSettingFormData.tokenHolders.map(
+                tokenName: step4TokenSettingFormData.tokenName,
+                tokenSymbol: step4TokenSettingFormData.tokenSymbol,
+                tokenHolders: step4TokenSettingFormData.tokenHolders.map(
                   (item) => {
                     return { address: item.address, amount: item.balance };
                   },
@@ -160,7 +164,7 @@ export const OrganizationDeployerScreen = () => {
               "auto",
             );
           } else if (step1DaoInfoFormData.structure === DaoType.MEMBER_BASED) {
-            if (!step3MemberSettingFormData) return false;
+            if (!step4MemberSettingFormData) return false;
             const params: CreateDaoMemberBasedParams = {
               networkId,
               sender: walletAddress,
@@ -174,7 +178,7 @@ export const OrganizationDeployerScreen = () => {
               description: step1DaoInfoFormData.organizationDescription,
               tns: step1DaoInfoFormData.associatedHandle,
               imageUrl: step1DaoInfoFormData.imageUrl,
-              members: step3MemberSettingFormData.members.map((value) => ({
+              members: step4MemberSettingFormData.members.map((value) => ({
                 addr: value.addr,
                 weight: parseInt(value.weight, 10),
               })),
@@ -240,22 +244,27 @@ export const OrganizationDeployerScreen = () => {
     setCurrentStep(2);
   };
 
-  const onSubmitTokenSettings = (data: TokenSettingFormType) => {
-    setStep3TokenSettingFormData(data);
+  const onSubmitRolesSettings = (data: RolesSettingFormType) => {
+    setStep3RoleSettingFormData(data);
     setCurrentStep(3);
+  };
+
+  const onSubmitTokenSettings = (data: TokenSettingFormType) => {
+    setStep4TokenSettingFormData(data);
+    setCurrentStep(4);
   };
 
   const onSubmitMemberSettings = (data: MemberSettingFormType) => {
     const temp = data.members.filter((member) => member.addr !== undefined);
     const processedData: MemberSettingFormType = { members: temp };
-    setStep3MemberSettingFormData(processedData);
-    setCurrentStep(3);
+    setStep4MemberSettingFormData(processedData);
+    setCurrentStep(4);
   };
 
   const onStartLaunchingProcess = async () => {
-    setCurrentStep(4);
+    setCurrentStep(5);
     if (!(await createDaoContract())) {
-      setCurrentStep(3);
+      setCurrentStep(4);
     }
   };
 
@@ -277,9 +286,13 @@ export const OrganizationDeployerScreen = () => {
             <ConfigureVotingSection onSubmit={onSubmitConfigureVoting} />
           </View>
 
+          <View style={currentStep === 2 ? styles.show : styles.hidden}>
+            <RolesSettingsSection onSubmit={onSubmitRolesSettings} />
+          </View>
+
           <View
             style={
-              currentStep === 2 &&
+              currentStep === 3 &&
               step1DaoInfoFormData &&
               step1DaoInfoFormData.structure === DaoType.TOKEN_BASED
                 ? styles.show
@@ -290,7 +303,7 @@ export const OrganizationDeployerScreen = () => {
           </View>
           <View
             style={
-              currentStep === 2 &&
+              currentStep === 3 &&
               step1DaoInfoFormData &&
               step1DaoInfoFormData.structure === DaoType.MEMBER_BASED
                 ? styles.show
@@ -300,17 +313,17 @@ export const OrganizationDeployerScreen = () => {
             <MemberSettingsSection onSubmit={onSubmitMemberSettings} />
           </View>
 
-          <View style={currentStep === 3 ? styles.show : styles.hidden}>
+          <View style={currentStep === 4 ? styles.show : styles.hidden}>
             <ReviewInformationSection
               organizationData={step1DaoInfoFormData}
               votingSettingData={step2ConfigureVotingFormData}
-              tokenSettingData={step3TokenSettingFormData}
-              memberSettingData={step3MemberSettingFormData}
+              tokenSettingData={step4TokenSettingFormData}
+              memberSettingData={step4MemberSettingFormData}
               onSubmit={onStartLaunchingProcess}
             />
           </View>
 
-          <View style={currentStep === 4 ? styles.show : styles.hidden}>
+          <View style={currentStep === 5 ? styles.show : styles.hidden}>
             <LaunchingOrganizationSection
               id={getUserId(selectedWallet?.networkId, daoAddress)}
               isLaunched={launchingStep === LAUNCHING_PROCESS_STEPS.length}
@@ -327,8 +340,9 @@ export const OrganizationDeployerScreen = () => {
                 );
                 setStep1DaoInfoFormData(undefined);
                 setStep2ConfigureVotingFormData(undefined);
-                setStep3MemberSettingFormData(undefined);
-                setStep3TokenSettingFormData(undefined);
+                setStep3RoleSettingFormData(undefined);
+                setStep4MemberSettingFormData(undefined);
+                setStep4TokenSettingFormData(undefined);
                 setCurrentStep(0);
                 setDAOAddress("");
                 setLaunchingStep(0);
