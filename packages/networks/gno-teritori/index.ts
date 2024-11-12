@@ -40,7 +40,7 @@ export const gnoTeritoriNetwork: GnoNetworkInfo = {
   modboardsPkgPath: "gno.land/r/teritori/modboards_v4",
   groupsPkgPath: "gno.land/r/teritori/groups_v4",
   votingGroupPkgPath: "gno.land/p/teritori/dao_voting_group_v2",
-  rolesGroupPkgPath: "gno.land/r/teritori/dao_roles_group",
+  rolesGroupPkgPath: "gno.land/p/teritori/dao_roles_group",
   daoProposalSinglePkgPath: "gno.land/p/teritori/dao_proposal_single_v4",
   daoInterfacesPkgPath: "gno.land/p/teritori/dao_interfaces_v5",
   daoUtilsPkgPath: "", //TODO: fill with the correct path
