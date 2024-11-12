@@ -1,5 +1,5 @@
-import { gnoCurrencies } from "./currencies";
 import { GnoNetworkInfo, NetworkFeature, NetworkKind } from "../types";
+import { gnoCurrencies } from "./currencies";
 
 export const gnoDevNetwork: GnoNetworkInfo = {
   id: "gno-dev",
@@ -45,6 +45,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   modboardsPkgPath: "gno.land/r/teritori/modboards",
   groupsPkgPath: "gno.land/r/teritori/groups",
   votingGroupPkgPath: "gno.land/p/teritori/dao_voting_group",
+  rolesGroupPkgPath: "gno.land/r/teritori/dao_roles_group",
   daoProposalSinglePkgPath: "gno.land/p/teritori/dao_proposal_single",
   profilePkgPath: "gno.land/r/demo/profile",
   daoInterfacesPkgPath: "gno.land/p/teritori/dao_interfaces",
