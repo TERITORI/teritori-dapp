@@ -1,19 +1,23 @@
 package dao_roles_group
 
 import (
+	"std"
+
+	"gno.land/p/demo/json"
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
+	"gno.land/p/teritori/jsonutil"
 	"gno.land/p/teritori/role_manager"
 )
 
 type RolesGroup struct {
-	dao_interfaces.IRoleModule
+	dao_interfaces.IRolesModule
 
 	rm *role_manager.RoleManager
 }
 
 func NewRolesGroup() *RolesGroup {
 	return &RolesGroup{
-		rm: role_manager.NewRoleManager(),
+		rm: role_manager.NewWithAddress(std.PrevRealm().Addr()),
 	}
 }
 
@@ -26,8 +30,7 @@ func (r *RolesGroup) Info() dao_interfaces.ModuleInfo {
 
 func (r *RolesGroup) ConfigJSON() string {
 	return json.ObjectNode("", map[string]*json.Node{
-		"totalRoles":  jsonutil.Uint64Node(r.rm.CountRoles()),
-		"defaultRole": jsonutil.StringNode(r.defaultRole),
+		"totalRoles": jsonutil.IntNode(r.rm.CountRoles()),
 	}).String()
 }
 
@@ -39,8 +42,8 @@ func (r *RolesGroup) HasRole(address std.Address, role string) bool {
 	return r.rm.HasRole(address, role)
 }
 
-func (r *RolesGroup) NewRole(roleName string, permissions []string) {
-	r.rm.CreateNewRole(roleName, permissions)
+func (r *RolesGroup) NewRole(roleName string) {
+	r.rm.CreateNewRole(roleName, []string{})
 }
 
 func (r *RolesGroup) DeleteRole(roleName string) {

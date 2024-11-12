@@ -163,7 +163,7 @@ func (rm *RoleManager) HasRole(user std.Address, roleName string) bool {
 	return userRoles.Has(roleName)
 }
 
-func (rm *RoleManeger) IsRoleExist(roleName string) bool {
+func (rm *RoleManager) IsRoleExist(roleName string) bool {
 	return rm.roles.Has(roleName)
 }
 

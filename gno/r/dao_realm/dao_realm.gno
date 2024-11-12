@@ -7,6 +7,7 @@ import (
 	dao_core "gno.land/p/teritori/dao_core"
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
 	proposal_single "gno.land/p/teritori/dao_proposal_single"
+	"gno.land/p/teritori/dao_roles_group"
 	"gno.land/p/teritori/dao_utils"
 	voting_group "gno.land/p/teritori/dao_voting_group"
 	"gno.land/r/demo/profile"
@@ -20,6 +21,7 @@ import (
 var (
 	daoCore    dao_interfaces.IDAOCore
 	group      *voting_group.VotingGroup
+	roles      *dao_roles_group.RolesGroup
 	registered bool
 )
 
@@ -32,6 +34,11 @@ func init() {
 		group.SetMemberPower("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", 1)
 		group.SetMemberPower(std.GetOrigCaller(), 1)
 		return group
+	}
+
+	rolesModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IRolesModule {
+		roles = dao_roles_group.NewRolesGroup()
+		return roles
 	}
 
 	// TODO: consider using factories that return multiple modules and handlers
@@ -73,7 +80,7 @@ func init() {
 		},
 	}
 
-	daoCore = dao_core.NewDAOCore(votingModuleFactory, proposalModulesFactories, messageHandlersFactories)
+	daoCore = dao_core.NewDAOCore(votingModuleFactory, rolesModuleFactory, proposalModulesFactories, messageHandlersFactories)
 
 	// Register the DAO profile
 	profile.SetStringField(profile.DisplayName, "DAO Realm")

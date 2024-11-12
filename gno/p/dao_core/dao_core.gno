@@ -14,6 +14,7 @@ type daoCore struct {
 	dao_interfaces.IDAOCore
 
 	votingModule              dao_interfaces.IVotingModule
+	rolesModule               dao_interfaces.IRolesModule
 	proposalModules           []dao_interfaces.ActivableProposalModule
 	activeProposalModuleCount int
 	realm                     std.Realm
@@ -22,11 +23,16 @@ type daoCore struct {
 
 func NewDAOCore(
 	votingModuleFactory dao_interfaces.VotingModuleFactory,
+	rolesModuleFactory dao_interfaces.RolesModuleFactory,
 	proposalModulesFactories []dao_interfaces.ProposalModuleFactory,
 	messageHandlersFactories []dao_interfaces.MessageHandlerFactory,
 ) dao_interfaces.IDAOCore {
 	if votingModuleFactory == nil {
 		panic("Missing voting module factory")
+	}
+
+	if rolesModuleFactory == nil {
+		panic("Missing roles module factory")
 	}
 
 	if len(proposalModulesFactories) == 0 {
@@ -43,6 +49,11 @@ func NewDAOCore(
 	core.votingModule = votingModuleFactory(core)
 	if core.votingModule == nil {
 		panic("voting module factory returned nil")
+	}
+
+	core.rolesModule = rolesModuleFactory(core)
+	if core.rolesModule == nil {
+		panic("roles module factory returned nil")
 	}
 
 	for i, modFactory := range proposalModulesFactories {
