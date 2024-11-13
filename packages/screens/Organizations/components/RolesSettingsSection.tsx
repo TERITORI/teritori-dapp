@@ -26,11 +26,13 @@ interface RolesSettingsSectionProps {
 export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
   onSubmit,
 }) => {
-  const { handleSubmit, control } = useForm<RolesSettingFormType>();
+  const { handleSubmit, control, unregister } = useForm<RolesSettingFormType>();
 
   const [rolesIndexes, setRolesIndexes] = useState<number[]>([]);
 
-  const removeRoleField = (id: number) => {
+  const removeRoleField = (id: number, index: number) => {
+    unregister(`roles.${index}.name`);
+    unregister(`roles.${index}.color`);
     if (rolesIndexes.length > 0) {
       const copyIndex = [...rolesIndexes].filter((i) => i !== id);
       setRolesIndexes(copyIndex);
@@ -86,7 +88,7 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
             <View style={{ flex: 1, alignSelf: "center" }}>
               <Pressable
                 onPress={() => {
-                  removeRoleField(id);
+                  removeRoleField(id, index);
                 }}
               >
                 <SVG source={trashSVG} width={32} height={32} style={{}} />

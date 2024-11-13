@@ -188,7 +188,7 @@ export const ReviewInformationSection: React.FC<
             </ReviewCollapsable>
           )}
         <ReviewCollapsable title="Roles settings">
-          {rolesSettingData?.roles.map((role, index) => (
+          {rolesSettingData?.roles?.map((role, index) => (
             <View key={role.name} style={fillCStyle}>
               <ReviewCollapsableItem
                 title={`ROLE #${index + 1}`}

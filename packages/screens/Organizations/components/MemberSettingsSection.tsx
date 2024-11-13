@@ -28,7 +28,7 @@ interface MemberSettingsSectionProps {
 export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
   onSubmit,
 }) => {
-  const { handleSubmit, control, resetField } =
+  const { handleSubmit, control, resetField, unregister } =
     useForm<MemberSettingFormType>();
 
   // this effect put the selected wallet address in the first field only on initial load
@@ -50,7 +50,9 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
   const [addressIndexes, setAddressIndexes] = useState<number[]>([0]);
 
   // functions
-  const removeAddressField = (id: number) => {
+  const removeAddressField = (id: number, index: number) => {
+    unregister(`members.${index}.addr`);
+    unregister(`members.${index}.weight`);
     if (addressIndexes.length > 1) {
       const copyIndex = [...addressIndexes].filter((i) => i !== id);
       setAddressIndexes(copyIndex);
@@ -82,7 +84,7 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
               >
                 <Pressable
                   style={styles.trashContainer}
-                  onPress={() => removeAddressField(id)}
+                  onPress={() => removeAddressField(id, index)}
                 >
                   <SVG source={trashSVG} width={12} height={12} />
                 </Pressable>
