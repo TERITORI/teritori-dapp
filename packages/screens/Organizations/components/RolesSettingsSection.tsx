@@ -28,10 +28,10 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
 }) => {
   const { handleSubmit, control } = useForm<RolesSettingFormType>();
 
-  const [rolesIndexes, setRolesIndexes] = useState<number[]>([0]);
+  const [rolesIndexes, setRolesIndexes] = useState<number[]>([]);
 
   const removeRoleField = (id: number) => {
-    if (rolesIndexes.length > 1) {
+    if (rolesIndexes.length > 0) {
       const copyIndex = [...rolesIndexes].filter((i) => i !== id);
       setRolesIndexes(copyIndex);
     }
@@ -94,7 +94,7 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
             </View>
           </View>
         ))}
-        <SecondaryButton size="SM" text="Add More" onPress={addRoleField} />
+        <SecondaryButton size="SM" text="Add New Role" onPress={addRoleField} />
       </ScrollView>
       <View
         style={{
