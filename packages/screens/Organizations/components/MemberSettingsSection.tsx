@@ -103,6 +103,17 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
                 placeHolder="1"
               />
             </View>
+            <SpacerRow size={2.5} />
+            <View style={styles.rightInput}>
+              <TextInputCustom<MemberSettingFormType>
+                name={`members.${index}.roles`}
+                noBrokenCorners
+                label="Roles - separate with a comma"
+                hideLabel={index > 0}
+                control={control}
+                placeHolder="administrator, moderator"
+              />
+            </View>
           </View>
         ))}
 

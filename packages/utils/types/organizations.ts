@@ -29,7 +29,7 @@ export type TokenSettingFormType = {
 };
 
 export type MemberSettingFormType = {
-  members: { addr: string; weight: string }[];
+  members: { addr: string; weight: string, roles: string }[];
 };
 
 export type RolesSettingFormType = {

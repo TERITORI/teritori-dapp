@@ -64,14 +64,26 @@ export const ReviewInformationSection: React.FC<
       [],
     );
 
-    const AddressWeightValue = useCallback(
-      ({ address, weight }: { address: string; weight: string }) => (
+    const MemberReviewValue = useCallback(
+      ({ address, weight, roles }: { address: string; weight: string, roles: string[] }) => (
         <View style={rowCStyle}>
           <BrandText style={addressTextCStyle}>
             {tinyAddress(address, 16)}
           </BrandText>
           <SpacerRow size={1.5} />
           <BrandText style={fontSemibold14}>{weight}</BrandText>
+          <SpacerRow size={1.5} />
+          {roles.map((role, index) => (
+            <View key={role} style={rowCStyle}>
+              <BrandText style={{
+                ...fontSemibold14,
+                backgroundColor: neutral00,
+                borderRadius: 5,
+                padding: 5,
+              }}>{role}</BrandText>
+              {roles.length !== index + 1 && <SpacerRow size={1.5} />}
+            </View>
+          ))}
         </View>
       ),
       [],
@@ -211,9 +223,11 @@ export const ReviewInformationSection: React.FC<
                   <ReviewCollapsableItem
                     title={`MEMBER #${index + 1}`}
                     value={() => (
-                      <AddressWeightValue
+                      <MemberReviewValue
                         address={member.addr}
                         weight={`${member.weight}`}
+                        roles={member.roles.split(",")}
+
                       />
                     )}
                   />
