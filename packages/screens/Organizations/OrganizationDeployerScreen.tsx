@@ -82,6 +82,9 @@ export const OrganizationDeployerScreen = () => {
       switch (network?.kind) {
         case NetworkKind.Gno: {
           const name = step1DaoInfoFormData?.associatedHandle!;
+          const roles = step3RoleSettingFormData?.roles.map((role) =>
+            role.name.trim(),
+          ) || [];
           const pkgPath = await adenaDeployGnoDAO(
             network.id,
             selectedWallet?.address!,
@@ -92,10 +95,12 @@ export const OrganizationDeployerScreen = () => {
                 24 *
                 60 *
                 60,
+              roles,
               initialMembers: (step4MemberSettingFormData?.members || []).map(
                 (member) => ({
                   address: member.addr,
                   weight: parseInt(member.weight, 10),
+                  roles: member.roles.split(",").map((role) => role.trim()),
                 }),
               ),
               thresholdPercent:
