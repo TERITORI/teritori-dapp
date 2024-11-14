@@ -15,7 +15,7 @@ import { extractGnoJSONString } from "@/utils/gno";
 
 type GnoDAOMember = {
   address: string;
-  power: number;
+  weight: number;
 };
 
 export const useDAOMembers = (daoId: string | undefined) => {
@@ -53,10 +53,9 @@ export const useDAOMembers = (daoId: string | undefined) => {
               `daoCore.VotingModule().GetMembersJSON("", "", 0, 0)`,
             ),
           );
-          console.log("ZEBI", res);
           return res.map((member) => ({
             addr: member.address,
-            weight: member.power,
+            weight: member.weight,
           }));
         }
       }
