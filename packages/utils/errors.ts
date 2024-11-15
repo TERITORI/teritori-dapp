@@ -1,6 +1,7 @@
 export const DEFAULT_FORM_ERRORS = {
   required: "This field is required",
   datetime: "Invalid",
+  address: "Invalid address",
   onlyLetters: "Only letters are allowed",
   onlyNumbers: "Only numbers are allowed",
   onlyUrl: "Only URL is allowed",

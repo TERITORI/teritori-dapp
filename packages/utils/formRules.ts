@@ -12,7 +12,7 @@ export const validateAddress = (value: string) => {
     return true;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
-    return "The address is invalid";
+    return DEFAULT_FORM_ERRORS.address;
   }
 };
 
