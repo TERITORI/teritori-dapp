@@ -4,6 +4,7 @@ import { GasPrice, StargateClient } from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 import { bech32 } from "bech32";
 
+import { irisNetwork } from "./IRISnet";
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { networksFromCosmosRegistry } from "./cosmos-registry";
@@ -39,6 +40,7 @@ export * from "./types";
 const packageNetworks = [
   teritoriNetwork,
   cosmosNetwork,
+  irisNetwork,
   teritoriTestnetNetwork,
   teritoriLocalnetNetwork,
   cosmosThetaNetwork,
