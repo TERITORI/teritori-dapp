@@ -1,8 +1,10 @@
 import { createMultisigThresholdPubkey } from "@cosmjs/amino";
-import React, { useEffect, useMemo, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
+import { z } from "zod";
 
 import { MultisigSection } from "./components/MultisigSection";
 import trashSVG from "../../../assets/icons/trash.svg";
@@ -46,33 +48,51 @@ import {
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-type CreateMultisigWalletFormType = {
-  addresses: { address: string }[];
-  signatureRequired: string;
-  maxSignature: string;
-  name: string;
-};
+const ZodCreateMultisigWalletFormType = z.object({
+  addresses: z
+    .array(
+      z
+        .string()
+        .trim()
+        .min(1, DEFAULT_FORM_ERRORS.required)
+        // Error if the address is not bech32
+        .refine(
+          (value) => validateAddress(value) === true,
+          DEFAULT_FORM_ERRORS.address,
+        ),
+    )
+    .min(1, DEFAULT_FORM_ERRORS.emptyArray),
+  signatureRequired: z
+    .string()
+    .trim()
+    // Error if empty address input
+    .min(1, DEFAULT_FORM_ERRORS.required),
+  maxSignature: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
+  name: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
+});
 
-const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
+type CreateMultisigWalletFormType = z.infer<
+  typeof ZodCreateMultisigWalletFormType
+>;
+
+interface PubKey {
+  type: string;
+  value: string;
+}
 
 export const MultisigCreateScreen = () => {
   const selectedWallet = useSelectedWallet();
   const authToken = useMultisigAuthToken(selectedWallet?.userId);
   const { wrapWithFeedback } = useFeedbacks();
-  const {
-    control,
-    handleSubmit,
-    watch,
-    setValue,
-    setError,
-    clearErrors,
-    getFieldState,
-    formState,
-  } = useForm<CreateMultisigWalletFormType>();
-  const [addressIndexes, setAddressIndexes] = useState([
-    emptyPubKeyGroup(),
-    emptyPubKeyGroup(),
-  ]);
+  const { control, handleSubmit, watch, setValue, setError } =
+    useForm<CreateMultisigWalletFormType>({
+      defaultValues: {
+        addresses: ["", ""],
+      },
+      resolver: zodResolver(ZodCreateMultisigWalletFormType),
+      mode: "onSubmit",
+    });
+
   const navigation = useAppNavigation();
   const signatureRequiredValue = watch("signatureRequired");
   const addresses = watch("addresses");
@@ -85,8 +105,8 @@ export const MultisigCreateScreen = () => {
     }
   }, [authToken, navigation]);
   const defaultNbSignaturesRequired = useMemo(
-    () => addressIndexes.length.toString(),
-    [addressIndexes.length],
+    () => addresses.length.toString(),
+    [addresses.length],
   );
   const selectedNetwork = useSelectedNetworkInfo();
   const multisigClient = useMultisigClient(selectedNetwork?.id);
@@ -99,14 +119,14 @@ export const MultisigCreateScreen = () => {
     setAddressIndexesLoading((indexes) => indexes.filter((i) => i !== index));
 
   const removeAddressField = (index: number) => {
-    const copyIndexes = [...addressIndexes];
+    const copyIndexes = [...addresses];
     copyIndexes.splice(index, 1);
-    setAddressIndexes(copyIndexes);
+    setValue("addresses", copyIndexes);
     disableAddressLoading(index);
   };
 
   const addAddressField = () => {
-    setAddressIndexes([...addressIndexes, emptyPubKeyGroup()]);
+    setValue("addresses", [...addresses, ""]);
   };
 
   const onSubmit = async ({
@@ -121,15 +141,62 @@ export const MultisigCreateScreen = () => {
       throw new Error("Only Cosmos networks are supported");
     }
 
-    const compressedPubkeys = addressIndexes.map(
-      (item) => item.compressedPubkey,
-    );
-    const pubkeys = compressedPubkeys.map((compressedPubkey) => {
-      return {
-        type: "tendermint/PubKeySecp256k1",
-        value: compressedPubkey,
-      };
+    // Errors if there are duplicated addresses
+    const seen = new Map();
+    const duplicatesIndexes: number[] = [];
+    addresses.forEach((item, index) => {
+      if (seen.has(item)) {
+        duplicatesIndexes.push(index);
+      } else {
+        seen.set(item, index);
+      }
     });
+    if (duplicatesIndexes.length) {
+      duplicatesIndexes.forEach((index) => {
+        console.log("aaaaaa");
+        setError(`addresses.${index}`, {
+          message: "This address is already used in this form",
+        });
+      });
+      throw new Error("The form is invalid");
+    }
+
+    // Getting public keys
+    const pubkeys: PubKey[] = await Promise.all(
+      addresses.map(async (address, index) => {
+        enableAddressLoading(index);
+        const pubkey = {
+          type: "tendermint/PubKeySecp256k1",
+          value: "",
+        };
+        try {
+          const account = await getCosmosAccount(
+            getUserId(selectedNetwork.id, address),
+          );
+          // Error if no pubKey found in the Cosmos account
+          if (!account?.pubkey) {
+            setError(`addresses.${index}`, {
+              message:
+                "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig",
+            });
+            return pubkey;
+          }
+          pubkey.value = account.pubkey.value;
+        } catch {
+          // Error if getCosmosAccount fails
+          setError(`addresses.${index}`, {
+            message: "Failed to get Cosmos account",
+          });
+        } finally {
+          disableAddressLoading(index);
+          return pubkey;
+        }
+      }),
+    );
+    // Error if there are addresses without public key
+    if (pubkeys.find((pubKey) => !pubKey.value)) {
+      throw new Error("The form is invalid");
+    }
 
     const multisigPubkey = createMultisigThresholdPubkey(
       pubkeys,
@@ -147,77 +214,6 @@ export const MultisigCreateScreen = () => {
     navigation.navigate("MultisigWalletDashboard", {
       id: getUserId(selectedNetwork?.id, res.multisigAddress),
     });
-  };
-
-  // Triggers some controls on the given address and handle errors and loading
-  const onAddressChange = async (index: number, address: string) => {
-    if (!selectedNetwork) return;
-    const fieldName =
-      `addresses.${index}.address` as `addresses.${number}.address`;
-
-    if (getFieldState(fieldName).isDirty && !address) {
-      setError(fieldName, {
-        message: DEFAULT_FORM_ERRORS.required,
-      });
-      disableAddressLoading(index);
-      return;
-    }
-
-    if (validateAddress(address) !== true) {
-      setError(fieldName, {
-        message: DEFAULT_FORM_ERRORS.address,
-      });
-      disableAddressLoading(index);
-      return;
-    }
-
-    if (addresses.find((a, i) => a.address === address && i !== index)) {
-      setError(fieldName, {
-        message: "This address is already used in this form",
-      });
-      disableAddressLoading(index);
-      return;
-    }
-
-    if (
-      selectedNetwork.kind === NetworkKind.Cosmos &&
-      !address.includes(selectedNetwork.addressPrefix)
-    ) {
-      setError(fieldName, {
-        message: `Only ${selectedNetwork.displayName} address is allowed`,
-      });
-      disableAddressLoading(index);
-      return;
-    }
-
-    try {
-      enableAddressLoading(index);
-      const account = await getCosmosAccount(
-        getUserId(selectedNetwork.id, address),
-      );
-
-      if (!account?.pubkey) {
-        setError(fieldName, {
-          message:
-            "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig",
-        });
-        disableAddressLoading(index);
-        return;
-      }
-      const tempPubkeys = [...addressIndexes];
-      tempPubkeys[index].address = address;
-      tempPubkeys[index].compressedPubkey = account.pubkey.value;
-      setAddressIndexes(tempPubkeys);
-    } catch {
-      setError(fieldName, {
-        message: "Failed to get Cosmos account",
-      });
-      disableAddressLoading(index);
-      return;
-    } finally {
-      clearErrors(fieldName);
-      disableAddressLoading(index);
-    }
   };
 
   return (
@@ -277,58 +273,54 @@ export const MultisigCreateScreen = () => {
           />
           <SpacerColumn size={3} />
 
-          {addressIndexes.map((_, index) => (
-            <>
-              <View key={index.toString()}>
-                <SearchNSInputContainer
-                  searchText={watch(`addresses.${index}.address`)}
-                  onPressName={(userId) => {
-                    const [, address] = parseUserId(userId);
-                    if (!address) {
-                      return;
-                    }
-                    setValue(`addresses.${index}.address`, address);
-                    clearErrors(`addresses.${index}.address`);
+          {addresses.map((_, index) => (
+            <Fragment key={index}>
+              <SearchNSInputContainer
+                searchText={watch(`addresses.${index}`)}
+                onPressName={(userId) => {
+                  const [, address] = parseUserId(userId);
+                  if (!address) {
+                    return;
+                  }
+                  setValue(`addresses.${index}`, address);
+                }}
+              >
+                <TextInputCustom<CreateMultisigWalletFormType>
+                  defaultValue={index === 0 ? selectedWallet?.address : ""}
+                  control={control}
+                  name={`addresses.${index}`}
+                  variant="labelOutside"
+                  noBrokenCorners
+                  label={"Address #" + (index + 1)}
+                  rules={{
+                    required: true,
                   }}
+                  placeHolder="Account address"
+                  iconSVG={walletInputSVG}
                 >
-                  <TextInputCustom<CreateMultisigWalletFormType>
-                    defaultValue={index === 0 ? selectedWallet?.address : ""}
-                    control={control}
-                    name={`addresses.${index}.address`}
-                    variant="labelOutside"
-                    noBrokenCorners
-                    label={"Address #" + (index + 1)}
-                    onChange={(e) => onAddressChange(index, e.nativeEvent.text)}
-                    rules={{
-                      required: true,
-                    }}
-                    placeHolder="Account address"
-                    iconSVG={walletInputSVG}
-                  >
-                    {addressIndexesLoading.find(
-                      (indexLoading) => indexLoading === index,
-                    ) && <ActivityIndicator color={neutralFF} size={20} />}
-                    {addressIndexes.length > 2 && (
-                      <Pressable
-                        style={{
-                          height: 32,
-                          width: 32,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: 10,
-                          backgroundColor: trashBackground,
-                          marginLeft: layout.spacing_x2,
-                        }}
-                        onPress={() => removeAddressField(index)}
-                      >
-                        <SVG source={trashSVG} width={12} height={12} />
-                      </Pressable>
-                    )}
-                  </TextInputCustom>
-                </SearchNSInputContainer>
-              </View>
+                  {addressIndexesLoading.find(
+                    (indexLoading) => indexLoading === index,
+                  ) && <ActivityIndicator color={neutralFF} size={20} />}
+                  {addresses.length > 2 && (
+                    <Pressable
+                      style={{
+                        height: 32,
+                        width: 32,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: 10,
+                        backgroundColor: trashBackground,
+                        marginLeft: layout.spacing_x2,
+                      }}
+                      onPress={() => removeAddressField(index)}
+                    >
+                      <SVG source={trashSVG} width={12} height={12} />
+                    </Pressable>
+                  )}
+                </TextInputCustom>
+              </SearchNSInputContainer>
               <SpacerColumn size={2.5} />
-            </>
+            </Fragment>
           ))}
           <View style={{ flexDirection: "row" }}>
             <SecondaryButton
@@ -371,7 +363,7 @@ export const MultisigCreateScreen = () => {
                   required: true,
                   pattern: patternOnlyNumbers,
                   validate: (value) =>
-                    validateMaxNumber(value, addressIndexes.length),
+                    validateMaxNumber(value, addresses.length),
                 }}
                 errorStyle={{ paddingLeft: layout.spacing_x1_5 }}
               />
@@ -420,11 +412,8 @@ export const MultisigCreateScreen = () => {
                 wrapWithFeedback(() => onSubmit(arg))(),
               )}
               loader
-              disabled={
-                !formState.isValid ||
-                !!Object.values(formState.errors).length ||
-                !!addressIndexesLoading.length
-              }
+              isLoading={!!addressIndexesLoading.length}
+              disabled={!!addressIndexesLoading.length}
             />
           </View>
         </View>
