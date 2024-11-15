@@ -5,7 +5,9 @@ import (
 	"strconv"
 	"strings"
 
+	"gno.land/p/demo/json"
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
+	"gno.land/p/teritori/jsonutil"
 )
 
 // TODO: add wrapper message handler to handle multiple proposal modules messages
@@ -130,6 +132,28 @@ func (d *daoCore) VotingModule() dao_interfaces.IVotingModule {
 
 func (d *daoCore) RolesModule() dao_interfaces.IRolesModule {
 	return d.rolesModule
+}
+
+func (d *daoCore) GetMembersJSON(start, end string, limit uint64, height int64) string {
+	vMembers := d.votingModule.GetMembersJSON(start, end, limit, height)
+	nodes, err := json.Unmarshal([]byte(vMembers))
+	if err != nil {
+		panic("failed to unmarshal voting module members")
+	}
+	vals := nodes.MustArray()
+	for i, val := range vals {
+		obj := val.MustObject()
+		addr := jsonutil.MustAddress(obj["address"])
+		roles := d.rolesModule.GetMemberRoles(addr)
+		rolesJSON := make([]*json.Node, len(roles))
+		for j, role := range roles {
+			rolesJSON[j] = json.StringNode("", role)
+		}
+		obj["roles"] = json.ArrayNode("", rolesJSON)
+		vals[i] = json.ObjectNode("", obj)
+
+	}
+	return json.ArrayNode("", vals).String()
 }
 
 func (d *daoCore) VotingPowerAtHeight(address std.Address, height int64) uint64 {

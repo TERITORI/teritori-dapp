@@ -57,3 +57,7 @@ func (r *RolesGroup) GrantRole(address std.Address, role string) {
 func (r *RolesGroup) RevokeRole(address std.Address, role string) {
 	r.rm.RemoveRoleFromUser(address, role)
 }
+
+func (r *RolesGroup) GetMemberRoles(address std.Address) []string {
+	return r.rm.GetUserRoles(address)
+}

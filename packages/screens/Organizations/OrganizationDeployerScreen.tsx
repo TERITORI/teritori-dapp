@@ -2,7 +2,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { CreateDAOSection } from "./components/CreateDAOSection";
 import { LaunchingOrganizationSection } from "./components/LaunchingOrganizationSection";
 import { MemberSettingsSection } from "./components/MemberSettingsSection";
@@ -10,6 +9,7 @@ import { ReviewInformationSection } from "./components/ReviewInformationSection"
 import { RightSection } from "./components/RightSection";
 import { RolesSettingsSection } from "./components/RolesSettingsSection";
 import { TokenSettingsSection } from "./components/TokenSettingsSection";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
@@ -82,9 +82,9 @@ export const OrganizationDeployerScreen = () => {
       switch (network?.kind) {
         case NetworkKind.Gno: {
           const name = step1DaoInfoFormData?.associatedHandle!;
-          const roles = step3RoleSettingFormData?.roles.map((role) =>
-            role.name.trim(),
-          ) || [];
+          const roles =
+            step3RoleSettingFormData?.roles.map((role) => role.name.trim()) ||
+            [];
           const pkgPath = await adenaDeployGnoDAO(
             network.id,
             selectedWallet?.address!,
@@ -298,8 +298,8 @@ export const OrganizationDeployerScreen = () => {
           <View
             style={
               currentStep === 3 &&
-                step1DaoInfoFormData &&
-                step1DaoInfoFormData.structure === DaoType.TOKEN_BASED
+              step1DaoInfoFormData &&
+              step1DaoInfoFormData.structure === DaoType.TOKEN_BASED
                 ? styles.show
                 : styles.hidden
             }
@@ -309,8 +309,8 @@ export const OrganizationDeployerScreen = () => {
           <View
             style={
               currentStep === 3 &&
-                step1DaoInfoFormData &&
-                step1DaoInfoFormData.structure === DaoType.MEMBER_BASED
+              step1DaoInfoFormData &&
+              step1DaoInfoFormData.structure === DaoType.MEMBER_BASED
                 ? styles.show
                 : styles.hidden
             }

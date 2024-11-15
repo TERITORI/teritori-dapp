@@ -132,36 +132,36 @@ export const RightSection: React.FC<RightSectionProps> = ({
         </BrandText>
         {isLaunching && launchingCompleteStep !== undefined
           ? LAUNCHING_PROCESS_STEPS.slice(0, launchingCompleteStep + 1).map(
-            (launchStep, index) => (
-              <SignatureProcess
-                key={`step-${index}`}
-                {...launchStep}
-                isComplete={index < launchingCompleteStep}
-              />
-            ),
-          )
+              (launchStep, index) => (
+                <SignatureProcess
+                  key={`step-${index}`}
+                  {...launchStep}
+                  isComplete={index < launchingCompleteStep}
+                />
+              ),
+            )
           : steps.map((step, index) => (
-            <Pressable
-              key={step}
-              style={styles.step}
-              disabled={index === steps.length - 1}
-              onPress={
-                unlockedSteps.includes(index)
-                  ? () => onStepChange(index)
-                  : undefined
-              }
-            >
-              <BrandText
-                style={[
-                  styles.stepText,
-                  unlockedSteps.includes(index) && { color: secondaryColor },
-                  currentStep === index && { color: primaryColor },
-                ]}
+              <Pressable
+                key={step}
+                style={styles.step}
+                disabled={index === steps.length - 1}
+                onPress={
+                  unlockedSteps.includes(index)
+                    ? () => onStepChange(index)
+                    : undefined
+                }
               >
-                {index + 1}. {step}
-              </BrandText>
-            </Pressable>
-          ))}
+                <BrandText
+                  style={[
+                    styles.stepText,
+                    unlockedSteps.includes(index) && { color: secondaryColor },
+                    currentStep === index && { color: primaryColor },
+                  ]}
+                >
+                  {index + 1}. {step}
+                </BrandText>
+              </Pressable>
+            ))}
       </View>
     </View>
   );

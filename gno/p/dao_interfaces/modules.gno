@@ -42,6 +42,7 @@ type IRolesModule interface {
 	Info() ModuleInfo
 	ConfigJSON() string
 	Render(path string) string
+	GetMemberRoles(address std.Address) []string
 	HasRole(address std.Address, role string) bool
 	NewRole(roleName string)
 	DeleteRole(roleName string)

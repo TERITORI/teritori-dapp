@@ -33,3 +33,7 @@ func (d *dummyCore) UpdateVotingModule(newVotingModule IVotingModule) {
 func (d *dummyCore) UpdateProposalModules(toAdd []IProposalModule, toDisable []int) {
 	panic("not implemented")
 }
+
+func (d *dummyCore) GetMembersJSON(start, end string, limit uint64, height int64) string {
+	panic("not implemented")
+}

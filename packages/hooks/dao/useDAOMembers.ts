@@ -50,7 +50,7 @@ export const useDAOMembers = (daoId: string | undefined) => {
           const res: GnoDAOMember[] = extractGnoJSONString(
             await provider.evaluateExpression(
               daoAddress,
-              `daoCore.VotingModule().GetMembersJSON("", "", 0, 0)`,
+              `daoCore.GetMembersJSON("", "", 0, 0)`,
             ),
           );
           console.log("ZEBI", res);

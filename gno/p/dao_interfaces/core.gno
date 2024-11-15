@@ -17,4 +17,6 @@ type IDAOCore interface {
 
 	UpdateVotingModule(newVotingModule IVotingModule)
 	UpdateProposalModules(toAdd []IProposalModule, toDisable []int)
+
+	GetMembersJSON(start, end string, limit uint64, height int64) string
 }
