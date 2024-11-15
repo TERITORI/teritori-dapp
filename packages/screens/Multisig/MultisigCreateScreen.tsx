@@ -142,18 +142,17 @@ export const MultisigCreateScreen = () => {
     }
 
     // Errors if there are duplicated addresses
-    const seen = new Map();
+    const controledAddresses = new Map();
     const duplicatesIndexes: number[] = [];
-    addresses.forEach((item, index) => {
-      if (seen.has(item)) {
+    addresses.forEach((address, index) => {
+      if (controledAddresses.has(address)) {
         duplicatesIndexes.push(index);
       } else {
-        seen.set(item, index);
+        controledAddresses.set(address, index);
       }
     });
     if (duplicatesIndexes.length) {
       duplicatesIndexes.forEach((index) => {
-        console.log("aaaaaa");
         setError(`addresses.${index}`, {
           message: "This address is already used in this form",
         });
@@ -164,11 +163,22 @@ export const MultisigCreateScreen = () => {
     // Getting public keys
     const pubkeys: PubKey[] = await Promise.all(
       addresses.map(async (address, index) => {
-        enableAddressLoading(index);
         const pubkey = {
           type: "tendermint/PubKeySecp256k1",
           value: "",
         };
+
+        // Errors if the address doesn't correspond to the selected network
+        if (!address.includes(selectedNetwork.addressPrefix)) {
+          setError(`addresses.${index}`, {
+            message: `Only ${selectedNetwork.displayName} address is allowed`,
+          });
+          disableAddressLoading(index);
+          return pubkey;
+        }
+
+        // Getting Cosmos account
+        enableAddressLoading(index);
         try {
           const account = await getCosmosAccount(
             getUserId(selectedNetwork.id, address),
