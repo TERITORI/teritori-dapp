@@ -3,7 +3,7 @@
   <img src="https://i.postimg.cc/C1zJ8fmM/Twitter-Original-Header-Dots-curvemode.png" alt="Teritori" title="Teritori" height="300px" />
 </h1>
 
-<h3 align="center"> Teritori is a decentralized application, with a dedicated Cosmos SDK Blockchain, providing tools for decentralized organizations & Web3 adventurers.</h3> 
+<h3 align="center"> Teritoti is a decentralized application, with a dedicated Cosmos SDK Blockchain, providing tools for decentralized organizations & Web3 adventurers.</h3> 
 
 In 2024, team target is to be one of the first dApp using [Gnolang](https://www.gnoland.space/docs/what-is-gno) smartcontracts, allowing to build smartcontracts in Go, with a robust and radically transparent approach.
 
