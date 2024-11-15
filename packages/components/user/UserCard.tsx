@@ -31,7 +31,7 @@ import {
 import {
   fontSemibold10,
   fontSemibold12,
-  fontSemibold8,
+  fontSemibold9,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
@@ -136,14 +136,14 @@ export const UserCard: React.FC<{
                         justifyContent: "center",
                         borderRadius: 4,
                         backgroundColor: "#1C1C1C",
-                        height: 18,
+                        height: 24,
                         paddingHorizontal: 4,
                       },
                     ]}
                   >
                     <BrandText
                       style={[
-                        fontSemibold8,
+                        fontSemibold9,
                         {
                           color: neutralA3,
                         },

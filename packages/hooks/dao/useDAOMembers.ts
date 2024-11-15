@@ -16,6 +16,7 @@ import { extractGnoJSONString } from "@/utils/gno";
 type GnoDAOMember = {
   address: string;
   power: number;
+  roles: string[];
 };
 
 export const useDAOMembers = (daoId: string | undefined) => {
@@ -40,7 +41,11 @@ export const useDAOMembers = (daoId: string | undefined) => {
             daoGroupAddress,
           );
           const { members } = await cw4Client.listMembers({ limit: 100 });
-          return members;
+          return members.map((member) => ({
+            addr: member.addr,
+            weight: member.weight,
+            roles: [],
+          }));
         }
         case NetworkKind.Gno: {
           if (!network.groupsPkgPath) {
@@ -53,10 +58,10 @@ export const useDAOMembers = (daoId: string | undefined) => {
               `daoCore.GetMembersJSON("", "", 0, 0)`,
             ),
           );
-          console.log("ZEBI", res);
           return res.map((member) => ({
             addr: member.address,
             weight: member.power,
+            roles: member.roles,
           }));
         }
       }

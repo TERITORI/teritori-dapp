@@ -90,6 +90,7 @@ export const DAOMembers: React.FC<{
                 margin: halfGap,
               }}
               daoId={daoId}
+              roles={member.roles}
             />
           );
         })}
