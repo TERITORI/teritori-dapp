@@ -436,7 +436,9 @@ export const RichText: React.FC<RichTextProps> = ({
       <ScrollView
         contentContainerStyle={isTruncateNeeded && { overflow: "hidden" }}
       >
-        <TouchableWithoutFeedback onPress={handlePressEditor}>
+        <TouchableWithoutFeedback
+          onPress={!isPostConsultation ? handlePressEditor : undefined}
+        >
           <View>
             <Editor
               editorState={editorState}
