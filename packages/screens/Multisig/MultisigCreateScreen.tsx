@@ -48,7 +48,7 @@ import {
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-const ZodCreateMultisigWalletFormType = z.object({
+const zodCreateMultisigWalletFormType = z.object({
   addresses: z
     .array(
       z
@@ -72,7 +72,7 @@ const ZodCreateMultisigWalletFormType = z.object({
 });
 
 type CreateMultisigWalletFormType = z.infer<
-  typeof ZodCreateMultisigWalletFormType
+  typeof zodCreateMultisigWalletFormType
 >;
 
 interface PubKey {
@@ -89,7 +89,7 @@ export const MultisigCreateScreen = () => {
       defaultValues: {
         addresses: ["", ""],
       },
-      resolver: zodResolver(ZodCreateMultisigWalletFormType),
+      resolver: zodResolver(zodCreateMultisigWalletFormType),
       mode: "onSubmit",
     });
 
