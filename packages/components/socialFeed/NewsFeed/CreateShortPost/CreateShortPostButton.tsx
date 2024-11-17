@@ -13,34 +13,29 @@ export const CreateShortPostButton: React.FC<{
   onPress?: () => void;
 }> = ({ label, onPress }) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity
+      style={{
+        alignSelf: "center",
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: neutral17,
+        borderWidth: 1,
+        borderColor: neutral33,
+        borderRadius: 999,
+        paddingLeft: layout.spacing_x1_5,
+        paddingRight: layout.spacing_x2,
+        height: 42,
+      }}
+      onPress={onPress}
+    >
       <SVG source={penSVG} width={24} height={24} color={secondaryColor} />
-      <View style={styles.textContainer}>
+      <View
+        style={{
+          marginLeft: layout.spacing_x1,
+        }}
+      >
         <BrandText style={fontSemibold14}>{label}</BrandText>
       </View>
     </TouchableOpacity>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  selfCenter: {
-    alignSelf: "center",
-  },
-  container: {
-    alignSelf: "center",
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: neutral17,
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: 999,
-    paddingLeft: layout.spacing_x1_5,
-    paddingRight: layout.spacing_x2,
-    height: 42,
-  },
-  textContainer: {
-    marginLeft: layout.spacing_x1,
-  },
-});

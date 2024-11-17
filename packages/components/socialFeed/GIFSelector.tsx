@@ -112,12 +112,35 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
 
       <MenuOptions
         customStyles={{
-          optionsContainer: StyleSheet.flatten([styles.optionsContainer]),
+          optionsContainer: {
+            width: WIDTH,
+            height: HEIGHT,
+            left: 0,
+            backgroundColor: "transparent",
+          },
         }}
       >
-        <View style={styles.modalContainer}>
+        <View
+          style={{
+            backgroundColor: neutral67,
+            borderWidth: 1,
+            borderColor: neutral33,
+            paddingHorizontal: layout.spacing_x1,
+            paddingVertical: layout.spacing_x1_5,
+            width: WIDTH,
+            height: HEIGHT,
+            borderRadius: 10,
+          }}
+        >
           <TextInput
-            style={styles.input}
+            style={{
+              backgroundColor: neutral33,
+              width: "100%",
+              paddingVertical: layout.spacing_x0_5,
+              paddingLeft: layout.spacing_x1_5,
+              color: secondaryColor,
+              borderRadius: 3,
+            }}
             onChangeText={handleSearchTextChange}
           />
 
@@ -141,7 +164,11 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
               <CustomPressable onPress={() => onPressItem(item)}>
                 <Image
                   source={{ uri: item.media_formats["gif"].url }}
-                  style={styles.gif}
+                  style={{
+                    width: 65,
+                    height: 65,
+                    margin: layout.spacing_x0_5,
+                  }}
                 />
               </CustomPressable>
             )}
@@ -158,37 +185,3 @@ export const GIFSelector: React.FC<GIFSelectorProps> = ({
     </Menu>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  modalContainer: {
-    backgroundColor: neutral67,
-    borderWidth: 1,
-    borderColor: neutral33,
-    paddingHorizontal: layout.spacing_x1,
-    paddingVertical: layout.spacing_x1_5,
-    width: WIDTH,
-    height: HEIGHT,
-    borderRadius: 10,
-  },
-  optionsContainer: {
-    width: WIDTH,
-    height: HEIGHT,
-    left: 0,
-    backgroundColor: "transparent",
-  },
-  input: {
-    backgroundColor: neutral33,
-    width: "100%",
-    paddingVertical: layout.spacing_x0_5,
-    paddingLeft: layout.spacing_x1_5,
-    color: secondaryColor,
-    borderRadius: 3,
-  },
-  gif: {
-    width: 65,
-    height: 65,
-    margin: layout.spacing_x0_5,
-  },
-});
