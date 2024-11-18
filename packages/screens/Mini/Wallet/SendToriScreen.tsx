@@ -47,7 +47,7 @@ const SendToriScreen: ScreenFC<"MiniSendTori"> = ({ navigation, route }) => {
   }
   const amountInAtomics = Decimal.fromUserInput(
     amount,
-    getExponentByDenom(selectedToken.denom),
+    getExponentByDenom(selectedToken.denom) || 0,
   ).atomics;
 
   return (

@@ -1,9 +1,5 @@
 import { AssetList } from "@chain-registry/types";
-import {
-  CoinDenom,
-  Exponent,
-  getExponentByDenom as _getExponentByDenom,
-} from "@chain-registry/utils";
+import { getExponentByDenom as _getExponentByDenom } from "@chain-registry/utils";
 import { assets } from "chain-registry";
 
 export const findByBaseDenom: (token: string) => AssetList | undefined = (
@@ -17,6 +13,6 @@ export const findByBaseDenom: (token: string) => AssetList | undefined = (
   });
 };
 
-export const getExponentByDenom = (denom: CoinDenom): Exponent => {
+export const getExponentByDenom = (denom: string): number | undefined => {
   return _getExponentByDenom(assets, denom, "teritori");
 };
