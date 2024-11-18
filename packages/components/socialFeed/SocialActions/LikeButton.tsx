@@ -17,16 +17,16 @@ export const LikeButton: FC<{
   post: Post;
   setPost: Dispatch<SetStateAction<Post>>;
 }> = ({ post, setPost }) => {
-  const { handleReaction, isPostMutationLoading } = useSocialReactions({
+  const { handleReact, isReactLoading } = useSocialReactions({
     post,
     setPost,
   });
 
-  if (isPostMutationLoading)
+  if (isReactLoading)
     return <ActivityIndicator animating color={secondaryColor} size={32} />;
   return (
     <TouchableOpacity
-      onPress={() => handleReaction(LIKE_EMOJI)}
+      onPress={() => handleReact(LIKE_EMOJI)}
       style={{
         flexDirection: "row",
         alignItems: "center",

@@ -1,11 +1,12 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import { useFeedPosting } from "./useFeedPosting";
 import useSelectedWallet from "../useSelectedWallet";
 
 import { Post } from "@/api/feed/v1/feed";
 import { signingSocialFeedClient } from "@/client-creators/socialFeedClient";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useTeritoriSocialFeedReactPostMutation } from "@/contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import {
@@ -31,6 +32,7 @@ export const useSocialReactions = ({
   setPost: Dispatch<SetStateAction<Post>>;
 }) => {
   const selectedWallet = useSelectedWallet();
+  const { setToast } = useFeedbacks();
   const userId = selectedWallet?.userId;
   const { showNotEnoughFundsModal, showConnectWalletModal } =
     useWalletControl();
@@ -40,18 +42,32 @@ export const useSocialReactions = ({
     userId,
     postCategory,
   );
-  const { mutate: postMutate, isLoading: isPostMutationLoading } =
+  const { mutate: postMutate, isLoading: isReactLoading } =
     useTeritoriSocialFeedReactPostMutation({
       onSuccess(_data, variables) {
         const reactions = getUpdatedReactions(
           post.reactions,
           variables.msg.icon,
         );
-
         setPost({ ...post, reactions });
       },
+      onError(err) {
+        console.error(err);
+        setToast({
+          mode: "normal",
+          type: "error",
+          title: "Failed to react on Cosmos network",
+          message: err.message,
+        });
+      },
     });
-  const cosmosReaction = async (emoji: string, walletAddress: string) => {
+  const [isLoading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(isReactLoading);
+  }, [isReactLoading]);
+
+  const reactOnCosmos = async (emoji: string, walletAddress: string) => {
     const client = await signingSocialFeedClient({
       networkId: post.networkId,
       walletAddress,
@@ -61,12 +77,13 @@ export const useSocialReactions = ({
       client,
       msg: {
         icon: emoji,
-        identifier: post.localIdentifier,
+        identifier: "post.localIdentifier",
         up: true,
       },
     });
   };
-  const gnoReaction = async (emoji: string, rpcEndpoint: string) => {
+
+  const reactOnGno = async (emoji: string, rpcEndpoint: string) => {
     const gnoNetwork = mustGetGnoNetwork(post.networkId);
     const vmCall = {
       caller: selectedWallet?.address || "",
@@ -75,31 +92,48 @@ export const useSocialReactions = ({
       func: "ReactPost",
       args: [TERITORI_FEED_ID, post.id.split("-")[1], emoji, "true"],
     };
-    const txHash = await adenaDoContract(
-      post.networkId,
-      [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
-      {
-        gasWanted: 2_000_000,
-      },
-    );
-    const provider = new GnoJSONRPCProvider(rpcEndpoint);
-    // Wait for tx done
-    await provider.waitForTransaction(txHash);
-    const reactions = [...post.reactions];
-    const currentReactionIdx = reactions.findIndex((r) => r.icon === emoji);
 
-    if (currentReactionIdx > -1) {
-      reactions[currentReactionIdx].count++;
-    } else {
-      reactions.push({
-        icon: emoji,
-        count: 1,
-        ownState: true,
-      });
+    try {
+      setLoading(true);
+      const txHash = await adenaDoContract(
+        post.networkId,
+        [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
+        {
+          gasWanted: 2_000_000,
+        },
+      );
+      const provider = new GnoJSONRPCProvider(rpcEndpoint);
+      // Wait for tx done
+      await provider.waitForTransaction(txHash);
+      const reactions = [...post.reactions];
+      const currentReactionIdx = reactions.findIndex((r) => r.icon === emoji);
+
+      if (currentReactionIdx > -1) {
+        reactions[currentReactionIdx].count++;
+      } else {
+        reactions.push({
+          icon: emoji,
+          count: 1,
+          ownState: true,
+        });
+      }
+      setPost({ ...post, reactions });
+    } catch (err) {
+      console.error(err);
+      if (err instanceof Error) {
+        setToast({
+          mode: "normal",
+          type: "error",
+          title: "Failed to react on Gno network",
+          message: err.message,
+        });
+      }
+    } finally {
+      setLoading(false);
     }
-    setPost({ ...post, reactions });
   };
-  const handleReaction = async (emoji: string) => {
+
+  const handleReact = async (emoji: string) => {
     const action =
       emoji === LIKE_EMOJI
         ? "Like"
@@ -126,11 +160,11 @@ export const useSocialReactions = ({
     }
     const network = getNetwork(post.networkId);
     if (network?.kind === NetworkKind.Gno) {
-      gnoReaction(emoji, network?.endpoint || "");
+      reactOnGno(emoji, network?.endpoint || "");
     } else {
-      cosmosReaction(emoji, selectedWallet.address);
+      reactOnCosmos(emoji, selectedWallet.address);
     }
   };
 
-  return { handleReaction, isPostMutationLoading };
+  return { handleReact, isReactLoading: isLoading };
 };

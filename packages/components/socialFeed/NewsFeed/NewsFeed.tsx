@@ -171,6 +171,11 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     );
   }, [mobileMode]);
 
+  console.log(
+    "==============",
+    posts.find((p) => p.id === "testori-caecb9c3-1a35-429b-be30-54c0578c8ec4"),
+  );
+
   const RenderItem = useCallback(
     (post: Post) => {
       // NOTE: if you edit this, make sure that this is not too CPU expensive
