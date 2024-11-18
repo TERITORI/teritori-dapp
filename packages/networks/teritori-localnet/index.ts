@@ -56,7 +56,6 @@ export const teritoriLocalnetNetwork: NetworkInfo = {
   riotSquadStakingContractAddressV1: "",
   riotSquadStakingContractAddressV2: "",
   distributorContractAddress: "",
-  riotersFooterContractAddress: "",
   secondaryDuringMintList: [
     nameServiceContractAddress,
     riotContractAddressGen1,

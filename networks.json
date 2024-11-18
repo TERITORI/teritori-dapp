@@ -11550,7 +11550,6 @@
     "riotSquadStakingContractAddressV1": "tori1zwkmdfsc6h96jm4yqdykaw5y7ndwsvqvgh5ryxp9nxs3hccml0xqfyrm37",
     "riotSquadStakingContractAddressV2": "tori1kvjk9m7dk0es35y6ah0k28llllvle3n7xgvh0gh568ta0paf8awsml2xev",
     "distributorContractAddress": "tori1mnem0rhjaxcsghe0xw692xysra63xwwdee2wth9s0rkfwh4dxpaq76qqre",
-    "riotersFooterContractAddress": "tori1m6g3l3j5t988zwmp965hrhsxvm8jrkf2ulw4gmwj8hx8pd84tvcqeearsd",
     "secondaryDuringMintList": [
       "tori1wkwy0xh89ksdgj9hr347dyd2dw7zesmtrue6kfzyml4vdtz6e5wscs7038",
       "tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37",
@@ -11629,7 +11628,6 @@
     "riotSquadStakingContractAddressV1": "",
     "riotSquadStakingContractAddressV2": "",
     "distributorContractAddress": "",
-    "riotersFooterContractAddress": "",
     "secondaryDuringMintList": [
       "",
       ""
@@ -11735,7 +11733,6 @@
     "riotSquadStakingContractAddressV1": "",
     "riotSquadStakingContractAddressV2": "",
     "distributorContractAddress": "",
-    "riotersFooterContractAddress": "",
     "secondaryDuringMintList": [
       "",
       "tori1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgsjscd88",

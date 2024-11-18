@@ -29,7 +29,6 @@ export type RootStackParamList = {
   GovernanceProposal: {
     id: string;
   };
-  RiotersFooter: undefined;
 
   Launchpad: undefined;
   LaunchpadApply: undefined;
@@ -196,7 +195,6 @@ const navConfig: {
     Governance: "governance",
     GovernanceProposal: "governance/:id",
     UserPublicProfile: "user/:id/:tab?",
-    RiotersFooter: "rioters-footer",
 
     // === RiotGame
     RiotGame: "riot-game",
