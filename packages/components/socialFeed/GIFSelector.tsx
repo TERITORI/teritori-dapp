@@ -4,7 +4,6 @@ import {
   FlatList,
   Image,
   StyleProp,
-  StyleSheet,
   TextInput,
   View,
   ViewStyle,

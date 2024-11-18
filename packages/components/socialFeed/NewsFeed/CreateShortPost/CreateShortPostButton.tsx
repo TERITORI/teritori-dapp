@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import penSVG from "@/assets/icons/pen.svg";
 import { BrandText } from "@/components/BrandText";
