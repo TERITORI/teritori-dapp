@@ -116,7 +116,7 @@ export const TipModal: React.FC<{
         send: `${amount}ugnot`,
         pkg_path: selectedNetworkInfo.socialFeedsPkgPath,
         func: "TipPost",
-        args: [TERITORI_FEED_ID, postId],
+        args: [TERITORI_FEED_ID, parseNetworkObjectId(postId)[1]],
       };
 
       try {
