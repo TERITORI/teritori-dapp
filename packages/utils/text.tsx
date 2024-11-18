@@ -32,3 +32,10 @@ export const replaceBetweenString = (
   insertion: string,
 ) =>
   `${origin.substring(0, startIndex)}${insertion}${origin.substring(endIndex)}`;
+
+export const sanitizeFloatAmount = (amount: string) => {
+  if (amount.endsWith(".")) {
+    return amount.slice(0, -1);
+  }
+  return amount;
+};
