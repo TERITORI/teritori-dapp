@@ -1,5 +1,5 @@
 export const DEFAULT_FORM_ERRORS = {
-  required: "Required",
+  required: "This field is required",
   datetime: "Invalid",
   address: "Invalid address",
   emptyArray: "At least one item is required",
