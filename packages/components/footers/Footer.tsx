@@ -20,12 +20,12 @@ import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
 const FooterSocialNetworks: React.FC = () => {
   return (
-    <LegacyTertiaryBox
-      mainContainerStyle={{ padding: layout.spacing_x1, flexDirection: "row" }}
-      style={{ marginBottom: layout.contentSpacing }}
-    >
+    <View style={{ padding: layout.spacing_x1, flexDirection: "row" }}>
       <TouchableOpacity
-        style={{ marginRight: layout.spacing_x1 }}
+        style={{
+          marginRight: layout.spacing_x1,
+          marginBottom: layout.contentSpacing,
+        }}
         onPress={() =>
           Linking.openURL("https://www.coingecko.com/en/coins/teritori")
         }
@@ -84,7 +84,7 @@ const FooterSocialNetworks: React.FC = () => {
           <SVG source={mediumSVG} width={20} height={20} />
         </LegacyTertiaryBox>
       </TouchableOpacity>
-    </LegacyTertiaryBox>
+    </View>
   );
 };
 
