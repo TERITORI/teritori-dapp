@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  TouchableOpacity,
-  useWindowDimensions,
-} from "react-native";
+import { TouchableOpacity, useWindowDimensions } from "react-native";
 import Animated, {
   Easing,
   SharedValue,
