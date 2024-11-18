@@ -57,7 +57,6 @@ In the future (v3) it will also be a privacy first messaging application built o
     - Staking $TORI Tokens 
     - Teritori Chain Governance (& Bounty Program)
     - Teritori Name Service
-    - Rioters footer v0.1
     - Social Feed v0.1
     - The R!OT Play2Earn Experience: "Genesis Collection" v0.1
     - Org Deployer v0.1
