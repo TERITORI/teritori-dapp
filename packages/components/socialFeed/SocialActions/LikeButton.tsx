@@ -4,7 +4,7 @@ import { ActivityIndicator } from "react-native-paper";
 
 import thumbUpSVG from "../../../../assets/icons/thumb-up.svg";
 import { Post } from "../../../api/feed/v1/feed";
-import { useSocialReactions } from "../../../hooks/feed/useSocialReactions";
+import { useReactToPost } from "../../../hooks/feed/useReactToPost";
 import { LIKE_EMOJI } from "../../../utils/social-feed";
 import { neutral22, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
@@ -17,7 +17,7 @@ export const LikeButton: FC<{
   post: Post;
   setPost: Dispatch<SetStateAction<Post>>;
 }> = ({ post, setPost }) => {
-  const { handleReact, isReactLoading } = useSocialReactions({
+  const { handleReact, isReactLoading } = useReactToPost({
     post,
     setPost,
   });

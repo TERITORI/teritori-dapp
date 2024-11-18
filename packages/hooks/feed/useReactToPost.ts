@@ -24,7 +24,7 @@ import {
 } from "@/utils/social-feed";
 import { PostCategory } from "@/utils/types/feed";
 
-export const useSocialReactions = ({
+export const useReactToPost = ({
   post,
   setPost,
 }: {
