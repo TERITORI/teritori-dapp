@@ -4,7 +4,7 @@ import { ActivityIndicator } from "react-native-paper";
 
 import thumbDownSVG from "../../../../assets/icons/thumb-down.svg";
 import { Post } from "../../../api/feed/v1/feed";
-import { useReactToPost } from "../../../hooks/feed/useReactToPost";
+import { useSocialReactions } from "../../../hooks/feed/useSocialReactions";
 import { DISLIKE_EMOJI } from "../../../utils/social-feed";
 import { neutral22, secondaryColor } from "../../../utils/style/colors";
 import { fontSemibold13 } from "../../../utils/style/fonts";
@@ -17,7 +17,7 @@ export const DislikeButton: FC<{
   post: Post;
   setPost: Dispatch<SetStateAction<Post>>;
 }> = ({ post, setPost }) => {
-  const { handleReact, isReactLoading } = useReactToPost({
+  const { handleReact, isReactLoading } = useSocialReactions({
     post,
     setPost,
   });

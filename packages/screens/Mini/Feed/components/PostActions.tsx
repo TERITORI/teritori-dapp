@@ -10,7 +10,7 @@ import { Spinner } from "@/components/Spinner";
 import { EmojiSelector } from "@/components/socialFeed/EmojiSelector";
 import { TipButton } from "@/components/socialFeed/SocialActions/TipButton";
 import { SpacerRow } from "@/components/spacer";
-import { useReactToPost } from "@/hooks/feed/useReactToPost";
+import { useSocialReactions } from "@/hooks/feed/useSocialReactions";
 import { layout } from "@/utils/style/layout";
 
 type CardFooterProps = {
@@ -20,7 +20,7 @@ type CardFooterProps = {
 
 export function PostActions({ post, setPost }: CardFooterProps) {
   const wallet = useSelectedWallet();
-  const { handleReact, isReactLoading } = useReactToPost({
+  const { handleReact, isReactLoading } = useSocialReactions({
     post,
     setPost,
   });

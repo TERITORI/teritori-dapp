@@ -12,7 +12,7 @@ import { ShareButton } from "../SocialActions/ShareButton";
 import { TipButton } from "../SocialActions/TipButton";
 
 import { Post } from "@/api/feed/v1/feed";
-import { useReactToPost } from "@/hooks/feed/useReactToPost";
+import { useSocialReactions } from "@/hooks/feed/useSocialReactions";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkKind, getNetwork } from "@/networks";
 
@@ -34,7 +34,7 @@ export const SocialCardFooter: FC<{
 }) => {
   const wallet = useSelectedWallet();
   const postNetwork = getNetwork(post.networkId);
-  const { handleReact, isReactLoading } = useReactToPost({
+  const { handleReact, isReactLoading } = useSocialReactions({
     post,
     setPost,
   });
