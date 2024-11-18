@@ -113,7 +113,7 @@ export const TipButton: React.FC<{
               amount={tipAmountLocal}
             />
           ) : (
-            <TeritoriTipAmount amount={amount} />
+            <TeritoriTipAmount amount={tipAmountLocal} />
           )}
         </BrandText>
       </TouchableOpacity>
@@ -121,9 +121,13 @@ export const TipButton: React.FC<{
       <TipModal
         authorId={authorId}
         postId={postId}
-        onClose={(newTipAmount: number | undefined) => {
+        onClose={(addedTipAmount: number | undefined) => {
           setTipModalVisible(false);
-          newTipAmount && setTipAmountLocal(amount + newTipAmount);
+          addedTipAmount &&
+            setTipAmountLocal(
+              (typeof amount !== "number" ? parseInt(amount, 10) : amount) +
+                addedTipAmount,
+            );
         }}
         isVisible={tipModalVisible}
       />

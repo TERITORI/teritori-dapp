@@ -1,6 +1,6 @@
 import { coin } from "@cosmjs/amino";
 import { Decimal } from "@cosmjs/math";
-import React from "react";
+import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { View } from "react-native";
 
@@ -8,12 +8,16 @@ import { signingSocialFeedClient } from "../../../client-creators/socialFeedClie
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useTeritoriSocialFeedTipPostMutation } from "../../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import { useBalances } from "../../../hooks/useBalances";
-import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
+import {
+  useSelectedNetworkId,
+  useSelectedNetworkInfo,
+} from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
   getStakingCurrency,
   keplrCurrencyFromNativeCurrencyInfo,
   NetworkKind,
+  parseNetworkObjectId,
 } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
@@ -40,38 +44,63 @@ type TipFormType = {
 export const TipModal: React.FC<{
   authorId: string;
   postId: string;
-  onClose: (newTipAmount?: number) => void;
+  onClose: (addedTipAmount?: number) => void;
   isVisible: boolean;
 }> = ({ authorId, postId, onClose, isVisible }) => {
+  const selectedNetworkId = useSelectedNetworkId();
+  const nativeCurrency = getStakingCurrency(selectedNetworkId);
   const {
     control,
     handleSubmit: formHandleSubmit,
     setValue,
     watch,
-  } = useForm<TipFormType>();
+  } = useForm<TipFormType>({
+    defaultValues: {
+      amount: "",
+    },
+  });
+  const formValues = watch();
+  const amount = nativeCurrency
+    ? Decimal.fromUserInput(formValues.amount, nativeCurrency.decimals).atomics
+    : "0";
   const { mutate: postMutate, isLoading } =
     useTeritoriSocialFeedTipPostMutation({
+      onMutate() {
+        setLocalLoading(true);
+      },
       onSuccess() {
-        onClose();
-        setToastSuccess({ title: "Tip success", message: "" });
+        setToast({
+          mode: "normal",
+          type: "success",
+          title: "Tip success",
+          message: "",
+        });
       },
       onError(error) {
         console.error(error);
-        setToastError({ title: "Tip failed", message: error.message });
+        setToast({
+          mode: "normal",
+          type: "error",
+          title: "Tip failed",
+          message: error.message,
+        });
+      },
+
+      onSettled() {
+        onClose(+amount);
+        setLocalLoading(false);
       },
     });
+  const [islocalLoading, setLocalLoading] = useState(isLoading);
   const selectedWallet = useSelectedWallet();
   const selectedNetworkInfo = useSelectedNetworkInfo();
-  const selectedNetworkId = selectedNetworkInfo?.id || "";
-  const nativeCurrency = getStakingCurrency(selectedNetworkId);
-  const { setToastError, setToastSuccess } = useFeedbacks();
+  const { setToast } = useFeedbacks();
   const { balances } = useBalances(selectedNetworkId, selectedWallet?.address);
   const currencyBalance = balances.find(
     (bal) => bal.denom === nativeCurrency?.denom,
   );
-  const formValues = watch();
 
-  const handleSubmit: SubmitHandler<TipFormType> = async (fieldValues) => {
+  const handleSubmit: SubmitHandler<TipFormType> = async () => {
     if (
       !selectedWallet?.connected ||
       !selectedWallet.address ||
@@ -79,11 +108,6 @@ export const TipModal: React.FC<{
     ) {
       return;
     }
-
-    const amount = Decimal.fromUserInput(
-      fieldValues.amount,
-      nativeCurrency.decimals,
-    ).atomics;
 
     if (selectedNetworkInfo?.kind === NetworkKind.Gno) {
       // We use Tip function from Social_feed contract to keep track of tip amount
@@ -96,6 +120,7 @@ export const TipModal: React.FC<{
       };
 
       try {
+        setLocalLoading(true);
         await adenaDoContract(
           selectedNetworkId || "",
           [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
@@ -104,11 +129,23 @@ export const TipModal: React.FC<{
           },
         );
 
-        onClose(+amount);
-        setToastSuccess({ title: "Tip success", message: "" });
+        setToast({
+          mode: "normal",
+          type: "success",
+          title: "Tip success",
+          message: "",
+        });
       } catch (err: any) {
         console.error(err);
-        setToastError({ title: "Tip failed", message: err.message });
+        setToast({
+          mode: "normal",
+          type: "error",
+          title: "Tip failed",
+          message: err.message,
+        });
+      } finally {
+        onClose(+amount);
+        setLocalLoading(false);
       }
     } else {
       const client = await signingSocialFeedClient({
@@ -119,7 +156,7 @@ export const TipModal: React.FC<{
       postMutate({
         client,
         msg: {
-          identifier: postId,
+          identifier: parseNetworkObjectId(postId)[1],
         },
         args: {
           fee: defaultSocialFeedFee,
@@ -186,7 +223,7 @@ export const TipModal: React.FC<{
           text="Send"
           fullWidth
           loader
-          isLoading={isLoading}
+          isLoading={islocalLoading}
           onPress={formHandleSubmit(handleSubmit)}
           disabled={
             max === "0" || !formValues.amount || formValues.amount === "0"
