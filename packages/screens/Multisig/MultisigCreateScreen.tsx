@@ -133,15 +133,15 @@ export const MultisigCreateScreen = () => {
         id: getUserId(selectedNetwork?.id, res.multisigAddress),
       });
     } catch (err) {
-      console.error(err);
-      if (err instanceof Error) {
-        setToast({
-          type: "error",
-          mode: "normal",
-          title: "Failed to create multisig",
-          message: err.message,
-        });
-      }
+      console.error("Failed to create multisig", err);
+      const message = err instanceof Error ? err.message : "";
+      setToast({
+        type: "error",
+        mode: "normal",
+        title: "Failed to create multisig",
+        message,
+      });
+      throw new Error("Failed to create multisig: " + message);
     } finally {
       setLoading(false);
     }
