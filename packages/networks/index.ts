@@ -13,7 +13,6 @@ import { ethereumGoerliNetwork } from "./ethereum-goerli";
 import { NetworkFeature, NetworkFeatureObject } from "./features";
 import { gnoDevNetwork } from "./gno-dev";
 import { gnoPortalNetwork } from "./gno-portal";
-import { gnoTeritoriNetwork } from "./gno-teritori";
 import { gnoTest3Network } from "./gno-test3";
 import { gnoTest4Network } from "./gno-test4";
 import { osmosisNetwork } from "./osmosis";
@@ -49,7 +48,6 @@ const packageNetworks = [
   osmosisNetwork,
   osmosisTestnetNetwork,
   gnoPortalNetwork,
-  gnoTeritoriNetwork,
   gnoTest3Network,
   gnoTest4Network,
   gnoDevNetwork,
