@@ -36,7 +36,7 @@ import ModalBase from "../../modals/ModalBase";
 import { SpacerColumn } from "../../spacer";
 
 import { Username } from "@/components/user/Username";
-import { sanitizeFloatAmount } from "@/utils/text";
+import { sanitizeFloatText } from "@/utils/text";
 
 type TipFormType = {
   amount: string;
@@ -63,7 +63,7 @@ export const TipModal: React.FC<{
   const formValues = watch();
   const amount = nativeCurrency
     ? Decimal.fromUserInput(
-        sanitizeFloatAmount(formValues.amount),
+        sanitizeFloatText(formValues.amount),
         nativeCurrency.decimals,
       ).atomics
     : "0";
