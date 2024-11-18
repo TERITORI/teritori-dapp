@@ -38,7 +38,7 @@ jobs:
           path: electron/web-build
           if-no-files-found: error
   build-desktop:
-    needs: prepare
+    needs: prepare-desktop-build
     strategy:
       matrix:
         include:
