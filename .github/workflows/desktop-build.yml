@@ -8,7 +8,7 @@ on:
   merge_group:
 
 jobs:
-  prepare:
+  prepare-desktop-build:
     runs-on: ubuntu-latest
     steps:
       - name: Cancel Previous Runs
@@ -37,8 +37,8 @@ jobs:
           name: electron-web-build
           path: electron/web-build
           if-no-files-found: error
-  build:
-    needs: prepare
+  build-desktop:
+    needs: prepare-desktop-build
     strategy:
       matrix:
         include:
