@@ -123,11 +123,7 @@ export const TipButton: React.FC<{
         postId={postId}
         onClose={(addedTipAmount: number | undefined) => {
           setTipModalVisible(false);
-          addedTipAmount &&
-            setTipAmountLocal(
-              (typeof amount !== "number" ? parseInt(amount, 10) : amount) +
-                addedTipAmount,
-            );
+          addedTipAmount && setTipAmountLocal(amount + addedTipAmount);
         }}
         isVisible={tipModalVisible}
       />
