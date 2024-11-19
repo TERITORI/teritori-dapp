@@ -53,7 +53,6 @@ type CreateMultisigWalletFormType = {
 const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
 
 export const MultisigCreateScreen = () => {
-  const { setToast } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
   const authToken = useMultisigAuthToken(selectedWallet?.userId);
   const { wrapWithFeedback } = useFeedbacks();
@@ -122,7 +121,7 @@ export const MultisigCreateScreen = () => {
 
     try {
       const res = await multisigClient.CreateOrJoinMultisig({
-        authToken,
+        authToken: { ...authToken, userAddress: "aeae" },
         chainId: selectedNetwork.chainId,
         bech32Prefix: selectedNetwork.addressPrefix,
         multisigPubkeyJson: JSON.stringify(multisigPubkey),
@@ -133,15 +132,7 @@ export const MultisigCreateScreen = () => {
         id: getUserId(selectedNetwork?.id, res.multisigAddress),
       });
     } catch (err) {
-      console.error("Failed to create multisig", err);
-      const message = err instanceof Error ? err.message : "";
-      setToast({
-        type: "error",
-        mode: "normal",
-        title: "Failed to create multisig",
-        message,
-      });
-      throw new Error("Failed to create multisig: " + message);
+      throw new Error(`Failed to create multisig: ${err}`);
     } finally {
       setLoading(false);
     }
