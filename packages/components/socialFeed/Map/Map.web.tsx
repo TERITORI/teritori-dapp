@@ -206,9 +206,9 @@ export const Map: FC<MapProps> = ({
         center={
           consultedPostLocation || creatingPostLocation || DEFAULT_MAP_POSITION
         }
-        zoom={!consultedPostLocation && !creatingPostLocation ? 3 : 12}
+        zoom={!consultedPostLocation && !creatingPostLocation ? 2 : 12}
         attributionControl={false}
-        minZoom={3}
+        minZoom={2}
       >
         {/*----Loads and displays tiles on the map*/}
         <TileLayer noWrap attribution="" url={MAP_LAYER_URL} />
