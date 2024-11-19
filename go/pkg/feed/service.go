@@ -178,7 +178,6 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 			continue
 		}
 
-		dbPost.UserReactions.Scan(&reactionsMap)
 		for icon, users := range reactionsMap {
 			ownState := false
 			if queryUserID != "" {

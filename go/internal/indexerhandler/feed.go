@@ -103,7 +103,10 @@ func (h *Handler) handleExecuteReactPost(_ *Message, execMsg *wasmtypes.MsgExecu
 	}
 
 	userReactions := make(map[string]interface{})
-	post.UserReactions.Scan(&userReactions)
+	if err := json.Unmarshal(post.UserReactions, &userReactions); err != nil {
+		h.logger.Error("failed to unmarshal UserReactions", zap.String("data", string(post.UserReactions)), zap.Error(err))
+	}
+
 	var users []networks.UserID
 	reactedUsers, found := userReactions[reactPost.Icon]
 	if found {
