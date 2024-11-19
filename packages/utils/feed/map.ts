@@ -6,14 +6,22 @@ import musicPostSvg from "@/assets/icons/social-feed-map/music-post.svg";
 import normalPostSvg from "@/assets/icons/social-feed-map/normal-post.svg";
 import picturePostSvg from "@/assets/icons/social-feed-map/picture-post.svg";
 import videoPostSvg from "@/assets/icons/social-feed-map/video-post.svg";
-import { CustomLatLngExpression, PostCategory } from "@/utils/types/feed";
+import {
+  CustomLatLngExpression,
+  LatLngBoundExpression,
+  PostCategory,
+} from "@/utils/types/feed";
 
 //TODO: Get <svg/> as string from svg files (These svg strings are used in FeedMapList.web.tsx)
 
 export const MAP_LAYER_URL = `https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=${process.env.EXPO_PUBLIC_LEAFLET_MAP_TOKEN}`;
 
 // Paris baguette
-export const DEFAULT_MAP_POSITION: CustomLatLngExpression = [48.8566, 2.3522];
+export const DEFAULT_MAP_POSITION: CustomLatLngExpression = [20, 0];
+export const MAP_MAX_BOUND: LatLngBoundExpression = [
+  [-90, -180],
+  [90, 180],
+];
 
 const musicPostSvgString = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <g filter="url(#filter0_di_22136_173395)">

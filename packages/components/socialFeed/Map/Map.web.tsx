@@ -30,6 +30,7 @@ import {
   getMapPostIconColorRgba,
   getMapPostIconSVGString,
   MAP_LAYER_URL,
+  MAP_MAX_BOUND,
 } from "@/utils/feed/map";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {
@@ -207,6 +208,10 @@ export const Map: FC<MapProps> = ({
         }
         zoom={12}
         attributionControl={false}
+        minZoom={3}
+        maxZoom={18}
+        maxBounds={MAP_MAX_BOUND}
+        maxBoundsViscosity={1.0}
       >
         {/*----Loads and displays tiles on the map*/}
         <TileLayer noWrap attribution="" url={MAP_LAYER_URL} />
