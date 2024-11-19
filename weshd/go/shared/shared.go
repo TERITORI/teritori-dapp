@@ -14,11 +14,11 @@ import (
 	"runtime"
 	"strconv"
 
-	"berty.tech/weshnet"
-	"berty.tech/weshnet/pkg/ipfsutil"
-	ipfs_mobile "berty.tech/weshnet/pkg/ipfsutil/mobile"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/tinder"
+	"berty.tech/weshnet/v2"
+	"berty.tech/weshnet/v2/pkg/ipfsutil"
+	ipfs_mobile "berty.tech/weshnet/v2/pkg/ipfsutil/mobile"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/tinder"
 	"google.golang.org/grpc"
 	"moul.io/srand"
 
