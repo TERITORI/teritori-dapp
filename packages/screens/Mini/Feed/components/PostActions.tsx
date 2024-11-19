@@ -20,7 +20,7 @@ type CardFooterProps = {
 
 export function PostActions({ post, setPost }: CardFooterProps) {
   const wallet = useSelectedWallet();
-  const { handleReact, isReactLoading } = useSocialReactions({
+  const { handleReaction, isReactLoading } = useSocialReactions({
     post,
     setPost,
   });
@@ -28,7 +28,7 @@ export function PostActions({ post, setPost }: CardFooterProps) {
 
   const handleEmojiReactions = async (emoji: string) => {
     setLoading(true);
-    await handleReact(emoji);
+    await handleReaction(emoji);
     setLoading(false);
   };
 
@@ -53,7 +53,7 @@ export function PostActions({ post, setPost }: CardFooterProps) {
       >
         <PostReactions
           reactions={post.reactions}
-          onPressReaction={handleReact}
+          onPressReaction={handleReaction}
         />
         <SpacerRow size={0.75} />
         {loading || isReactLoading ? (

@@ -17,7 +17,7 @@ export const DislikeButton: FC<{
   post: Post;
   setPost: Dispatch<SetStateAction<Post>>;
 }> = ({ post, setPost }) => {
-  const { handleReact, isReactLoading } = useSocialReactions({
+  const { handleReaction, isReactLoading } = useSocialReactions({
     post,
     setPost,
   });
@@ -26,7 +26,7 @@ export const DislikeButton: FC<{
     return <ActivityIndicator animating color={secondaryColor} size={32} />;
   return (
     <TouchableOpacity
-      onPress={() => handleReact(DISLIKE_EMOJI)}
+      onPress={() => handleReaction(DISLIKE_EMOJI)}
       style={{
         flexDirection: "row",
         alignItems: "center",

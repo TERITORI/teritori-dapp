@@ -133,7 +133,7 @@ export const useSocialReactions = ({
     }
   };
 
-  const handleReact = async (emoji: string) => {
+  const handleReaction = async (emoji: string) => {
     const action =
       emoji === LIKE_EMOJI
         ? "Like"
@@ -166,5 +166,5 @@ export const useSocialReactions = ({
     }
   };
 
-  return { handleReact, isReactLoading: isLoading };
+  return { handleReaction, isReactLoading: isLoading };
 };

@@ -34,7 +34,7 @@ export const SocialCardFooter: FC<{
 }) => {
   const wallet = useSelectedWallet();
   const postNetwork = getNetwork(post.networkId);
-  const { handleReact, isReactLoading } = useSocialReactions({
+  const { handleReaction, isReactLoading } = useSocialReactions({
     post,
     setPost,
   });
@@ -44,7 +44,7 @@ export const SocialCardFooter: FC<{
       <Reactions
         nbShown={nbReactionsShown(cardWidth)}
         reactions={post.reactions}
-        onPressReaction={handleReact}
+        onPressReaction={handleReaction}
         isLoading={isReactLoading}
       />
 
@@ -58,7 +58,7 @@ export const SocialCardFooter: FC<{
         }}
       >
         <EmojiSelector
-          onEmojiSelected={handleReact}
+          onEmojiSelected={handleReaction}
           isLoading={isReactLoading}
         />
         {isPostConsultation && handleReply && (
