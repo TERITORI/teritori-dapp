@@ -42,7 +42,7 @@ export const useSocialReactions = ({
     userId,
     postCategory,
   );
-  const { mutate: postMutate, isLoading: isReactLoading } =
+  const { mutate: postMutate, isLoading: isPostMutationLoading } =
     useTeritoriSocialFeedReactPostMutation({
       onSuccess(_data, variables) {
         const reactions = getUpdatedReactions(
@@ -64,8 +64,8 @@ export const useSocialReactions = ({
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(isReactLoading);
-  }, [isReactLoading]);
+    setLoading(isPostMutationLoading);
+  }, [isPostMutationLoading]);
 
   const reactOnCosmos = async (emoji: string, walletAddress: string) => {
     const client = await signingSocialFeedClient({
@@ -166,5 +166,5 @@ export const useSocialReactions = ({
     }
   };
 
-  return { handleReaction, isReactLoading: isLoading };
+  return { handleReaction, isPostMutationLoading: isLoading };
 };

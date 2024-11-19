@@ -20,7 +20,7 @@ type CardFooterProps = {
 
 export function PostActions({ post, setPost }: CardFooterProps) {
   const wallet = useSelectedWallet();
-  const { handleReaction, isReactLoading } = useSocialReactions({
+  const { handleReaction, isPostMutationLoading } = useSocialReactions({
     post,
     setPost,
   });
@@ -56,7 +56,7 @@ export function PostActions({ post, setPost }: CardFooterProps) {
           onPressReaction={handleReaction}
         />
         <SpacerRow size={0.75} />
-        {loading || isReactLoading ? (
+        {loading || isPostMutationLoading ? (
           <Spinner size={14} />
         ) : (
           <EmojiSelector
