@@ -7,7 +7,6 @@ on:
       - edited
       - synchronize
       - reopened
-  merge_group:
 
 permissions:
   pull-requests: read
