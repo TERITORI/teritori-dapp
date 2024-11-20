@@ -1,6 +1,12 @@
 import "./styles.css";
 import "leaflet/dist/leaflet.css";
-import { DivIcon, LatLngBounds, point, PointExpression } from "leaflet";
+import {
+  DivIcon,
+  LatLngBounds,
+  LatLngBoundsLiteral,
+  point,
+  PointExpression,
+} from "leaflet";
 import {
   Dispatch,
   FC,
@@ -104,6 +110,43 @@ const MapManager = ({
   return null;
 };
 
+const DynamicMinZoom = ({
+  setMinZoom,
+}: {
+  setMinZoom: Dispatch<SetStateAction<number>>;
+}) => {
+  const map = useMap();
+
+  useEffect(() => {
+    const lat = 45;
+    const lng = 90;
+
+    const adjustedWorldMapBounds: LatLngBoundsLiteral = [
+      [-lat, -lng],
+      [lat, lng],
+    ];
+
+    const updateMinZoom = () => {
+      if (map) {
+        const calculatedZoom = map.getBoundsZoom(adjustedWorldMapBounds, false);
+        setMinZoom(calculatedZoom);
+        map.setMinZoom(calculatedZoom);
+        map.setZoom(calculatedZoom);
+      }
+    };
+
+    updateMinZoom();
+
+    window.addEventListener("resize", updateMinZoom);
+
+    return () => {
+      window.removeEventListener("resize", updateMinZoom);
+    };
+  }, [map, setMinZoom]);
+
+  return null;
+};
+
 export const Map: FC<MapProps> = ({
   consultedPostId,
   style,
@@ -112,6 +155,7 @@ export const Map: FC<MapProps> = ({
 }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const [bounds, setBounds] = useState<LatLngBounds | null>(null);
+  const [minZoom, setMinZoom] = useState(2);
 
   // Fetch the consulted post
   const { post: consultedPost } = usePost(consultedPostId);
@@ -198,6 +242,7 @@ export const Map: FC<MapProps> = ({
           width: "100%",
           height: "100%",
           alignSelf: "center",
+          maxHeight: 1000,
         },
         style,
       ]}
@@ -206,12 +251,12 @@ export const Map: FC<MapProps> = ({
         center={
           consultedPostLocation || creatingPostLocation || DEFAULT_MAP_POSITION
         }
-        zoom={12}
+        zoom={minZoom}
+        minZoom={minZoom}
         attributionControl={false}
-        minZoom={3}
-        maxZoom={18}
         maxBounds={MAP_MAX_BOUND}
         maxBoundsViscosity={1.0}
+        style={{ width: "100%", height: "100%" }}
       >
         {/*----Loads and displays tiles on the map*/}
         <TileLayer noWrap attribution="" url={MAP_LAYER_URL} />
@@ -285,6 +330,7 @@ export const Map: FC<MapProps> = ({
           creatingPostLocation={creatingPostLocation}
           consultedPostLocation={consultedPostLocation}
         />
+        <DynamicMinZoom setMinZoom={setMinZoom} />
       </MapContainer>
     </View>
   );
