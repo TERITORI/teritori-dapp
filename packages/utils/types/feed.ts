@@ -74,7 +74,6 @@ export const ZodLatLngTuple = z.tuple([
 
 export const ZodLatLngExpression = z.union([ZodLatLngLiteral, ZodLatLngTuple]);
 export type CustomLatLngExpression = z.infer<typeof ZodLatLngExpression>;
-export type LatLngBoundExpression = [number, number][];
 
 export const zodSocialFeedCommonMetadata = z.object({
   title: z.string(),
