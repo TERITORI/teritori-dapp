@@ -138,7 +138,7 @@ export const MultisigCreateScreen = () => {
     }
   };
 
-  const onValidate = async (index: number, value: string) => {
+  const handleAddressChange = async (index: number, value: string) => {
     if (!selectedNetwork) {
       throw new Error("No network selected");
     }
@@ -259,7 +259,7 @@ export const MultisigCreateScreen = () => {
                     label={"Address #" + (index + 1)}
                     rules={{
                       required: true,
-                      validate: (value) => onValidate(index, value),
+                      validate: (value) => handleAddressChange(index, value),
                     }}
                     placeHolder="Account address"
                     iconSVG={walletInputSVG}
