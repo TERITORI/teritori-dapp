@@ -6,7 +6,6 @@ import useSelectedWallet from "../useSelectedWallet";
 
 import { Post } from "@/api/feed/v1/feed";
 import { signingSocialFeedClient } from "@/client-creators/socialFeedClient";
-import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useTeritoriSocialFeedReactPostMutation } from "@/contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import {
@@ -32,7 +31,6 @@ export const useSocialReactions = ({
   setPost: Dispatch<SetStateAction<Post>>;
 }) => {
   const selectedWallet = useSelectedWallet();
-  const { setToast } = useFeedbacks();
   const userId = selectedWallet?.userId;
   const { showNotEnoughFundsModal, showConnectWalletModal } =
     useWalletControl();
@@ -51,15 +49,6 @@ export const useSocialReactions = ({
         );
         setPost({ ...post, reactions });
       },
-      onError(err) {
-        console.error(err);
-        setToast({
-          mode: "normal",
-          type: "error",
-          title: "Failed to react on Cosmos network",
-          message: err.message,
-        });
-      },
     });
   const [isLoading, setLoading] = useState(false);
 
@@ -77,7 +66,7 @@ export const useSocialReactions = ({
       client,
       msg: {
         icon: emoji,
-        identifier: "post.localIdentifier",
+        identifier: post.localIdentifier,
         up: true,
       },
     });
@@ -93,44 +82,32 @@ export const useSocialReactions = ({
       args: [TERITORI_FEED_ID, post.id.split("-")[1], emoji, "true"],
     };
 
-    try {
-      setLoading(true);
-      const txHash = await adenaDoContract(
-        post.networkId,
-        [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
-        {
-          gasWanted: 2_000_000,
-        },
-      );
-      const provider = new GnoJSONRPCProvider(rpcEndpoint);
-      // Wait for tx done
-      await provider.waitForTransaction(txHash);
-      const reactions = [...post.reactions];
-      const currentReactionIdx = reactions.findIndex((r) => r.icon === emoji);
+    setLoading(true);
+    const txHash = await adenaDoContract(
+      post.networkId,
+      [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
+      {
+        gasWanted: 2_000_000,
+      },
+    );
+    const provider = new GnoJSONRPCProvider(rpcEndpoint);
+    // Wait for tx done
+    await provider.waitForTransaction(txHash);
+    const reactions = [...post.reactions];
+    const currentReactionIdx = reactions.findIndex((r) => r.icon === emoji);
 
-      if (currentReactionIdx > -1) {
-        reactions[currentReactionIdx].count++;
-      } else {
-        reactions.push({
-          icon: emoji,
-          count: 1,
-          ownState: true,
-        });
-      }
-      setPost({ ...post, reactions });
-    } catch (err) {
-      console.error(err);
-      if (err instanceof Error) {
-        setToast({
-          mode: "normal",
-          type: "error",
-          title: "Failed to react on Gno network",
-          message: err.message,
-        });
-      }
-    } finally {
-      setLoading(false);
+    if (currentReactionIdx > -1) {
+      reactions[currentReactionIdx].count++;
+    } else {
+      reactions.push({
+        icon: emoji,
+        count: 1,
+        ownState: true,
+      });
     }
+    setPost({ ...post, reactions });
+
+    setLoading(false);
   };
 
   const handleReaction = async (emoji: string) => {
