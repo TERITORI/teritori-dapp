@@ -197,7 +197,6 @@ export const Map: FC<MapProps> = ({
           width: "100%",
           height: "100%",
           alignSelf: "center",
-          borderRadius: 20,
         },
         style,
       ]}
