@@ -20,6 +20,8 @@ import { BrandText } from "../BrandText";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 
+import defaultThumbnailImage from "@/assets/default-images/default-video-thumbnail.webp";
+
 const THUMBNAIL_SIZE = 140;
 
 export const AudioView: React.FC<{
@@ -35,7 +37,7 @@ export const AudioView: React.FC<{
   duration,
   waveform,
   postId,
-  fallbackImageURI: fallbackImageSource,
+  fallbackImageURI: fallbackImageSource = defaultThumbnailImage,
 }) => {
   const { media, handlePlayPause, loadAndPlaySoundsQueue, playbackStatus } =
     useMediaPlayer();
@@ -49,6 +51,7 @@ export const AudioView: React.FC<{
         fileUrl,
         duration,
         postId,
+        thumbnailURI: imageURI || fallbackImageSource,
       };
       // TODO: Play songs of social feed: Add songs of next posts in queue
       await loadAndPlaySoundsQueue([songToPlay]);

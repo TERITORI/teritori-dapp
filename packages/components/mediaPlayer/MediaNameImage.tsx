@@ -8,18 +8,11 @@ import { OptimizedImage } from "../OptimizedImage";
 import { SpacerRow } from "../spacer";
 import { Username } from "../user/Username";
 
-import defaultThumbnailImage from "@/assets/default-images/default-track-thumbnail.png";
-import defaultVideoThumbnail from "@/assets/default-images/default-video-thumbnail.webp";
 import { usePost } from "@/hooks/feed/usePost";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import { neutral77 } from "@/utils/style/colors";
 import { fontSemibold12 } from "@/utils/style/fonts";
-import {
-  PostCategory,
-  ZodSocialFeedTrackMetadata,
-  ZodSocialFeedVideoMetadata,
-  zodSocialFeedCommonMetadata,
-} from "@/utils/types/feed";
+import { zodSocialFeedCommonMetadata } from "@/utils/types/feed";
 import { Media } from "@/utils/types/mediaPlayer";
 
 const IMAGE_SIZE = 32;
@@ -37,29 +30,7 @@ export const MediaNameImage: FC<{
   const title =
     baseMetadata?.title ||
     `${media.isVideo ? "Video" : "Audio"} from Social Feed`;
-  let imageURI = media.isVideo ? defaultVideoThumbnail : defaultThumbnailImage;
-  switch (post.category) {
-    case PostCategory.MusicAudio: {
-      const metadata = zodTryParseJSON(
-        ZodSocialFeedTrackMetadata,
-        post.metadata,
-      );
-      if (metadata?.audioFile.thumbnailFileData?.url) {
-        imageURI = metadata.audioFile.thumbnailFileData.url;
-      }
-      break;
-    }
-    case PostCategory.Video: {
-      const metadata = zodTryParseJSON(
-        ZodSocialFeedVideoMetadata,
-        post.metadata,
-      );
-      if (metadata?.videoFile.thumbnailFileData?.url) {
-        imageURI = metadata.videoFile.thumbnailFileData.url;
-      }
-      break;
-    }
-  }
+
   return (
     <OmniLink
       style={[{ alignSelf: "flex-start" }, style]}
@@ -77,7 +48,7 @@ export const MediaNameImage: FC<{
         }}
       >
         <OptimizedImage
-          sourceURI={imageURI}
+          sourceURI={media.thumbnailURI}
           style={imageCStyle}
           height={IMAGE_SIZE}
           width={IMAGE_SIZE}
