@@ -134,9 +134,11 @@ export const Map: FC<MapProps> = ({
   const markers: MarkerPopup[] = useMemo(() => {
     if (!posts) return [];
     const results: MarkerPopup[] = [];
-    posts.forEach((post, index) => {
+    posts.forEach((post) => {
       const metadata = zodTryParseJSON(
-        ZodSocialFeedPostMetadata,
+        ZodSocialFeedPostMetadata.partial().merge(
+          ZodSocialFeedPostMetadata.pick({ title: true }),
+        ),
         post.metadata,
       );
       if (!metadata?.location) return;
