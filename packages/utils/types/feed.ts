@@ -137,37 +137,18 @@ export type ReplyToType = {
   parentId?: string;
 };
 
-type GroupPostCategoryType = Omit<
-  PostCategory,
-  PostCategory.Video | PostCategory.Article | PostCategory.MusicAudio
->;
-
-const postCategoriesGrouped: GroupPostCategoryType[] = [
-  PostCategory.Reaction,
-  PostCategory.Comment,
-  PostCategory.Normal,
-  PostCategory.Picture,
-  PostCategory.Question,
-  PostCategory.BriefForStableDiffusion,
-  PostCategory.Flagged,
-  PostCategory.VideoNote,
-  PostCategory.Audio,
-];
-
-const socialFeedSchemaMap: Record<PostCategory, z.ZodTypeAny> = {
-  [PostCategory.Video]: ZodSocialFeedVideoMetadata,
-  [PostCategory.Article]: ZodSocialFeedArticleMetadata,
-  [PostCategory.MusicAudio]: ZodSocialFeedTrackMetadata,
-  ...Object.fromEntries(
-    postCategoriesGrouped.map((cat) => [cat, ZodSocialFeedPostMetadata]),
-  ),
-};
-
 export const parseSocialFeedMetadata = (
   category: PostCategory,
   metadata: string,
 ) => {
-  const zodType = socialFeedSchemaMap[category];
-
-  return zodTryParseJSON(zodType, metadata);
+  switch (category) {
+    case PostCategory.Video:
+      return zodTryParseJSON(ZodSocialFeedVideoMetadata, metadata);
+    case PostCategory.Article:
+      return zodTryParseJSON(ZodSocialFeedPostMetadata, metadata);
+    case PostCategory.MusicAudio:
+      return zodTryParseJSON(ZodSocialFeedTrackMetadata, metadata);
+    default:
+      return zodTryParseJSON(ZodSocialFeedPostMetadata, metadata);
+  }
 };
