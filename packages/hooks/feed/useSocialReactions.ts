@@ -82,32 +82,36 @@ export const useSocialReactions = ({
       args: [TERITORI_FEED_ID, post.id.split("-")[1], emoji, "true"],
     };
 
-    setLoading(true);
-    const txHash = await adenaDoContract(
-      post.networkId,
-      [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
-      {
-        gasWanted: 2_000_000,
-      },
-    );
-    const provider = new GnoJSONRPCProvider(rpcEndpoint);
-    // Wait for tx done
-    await provider.waitForTransaction(txHash);
-    const reactions = [...post.reactions];
-    const currentReactionIdx = reactions.findIndex((r) => r.icon === emoji);
+    try {
+      setLoading(true);
+      const txHash = await adenaDoContract(
+        post.networkId,
+        [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
+        {
+          gasWanted: 2_000_000,
+        },
+      );
+      const provider = new GnoJSONRPCProvider(rpcEndpoint);
+      // Wait for tx done
+      await provider.waitForTransaction(txHash);
+      const reactions = [...post.reactions];
+      const currentReactionIdx = reactions.findIndex((r) => r.icon === emoji);
 
-    if (currentReactionIdx > -1) {
-      reactions[currentReactionIdx].count++;
-    } else {
-      reactions.push({
-        icon: emoji,
-        count: 1,
-        ownState: true,
-      });
+      if (currentReactionIdx > -1) {
+        reactions[currentReactionIdx].count++;
+      } else {
+        reactions.push({
+          icon: emoji,
+          count: 1,
+          ownState: true,
+        });
+      }
+      setPost({ ...post, reactions });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-    setPost({ ...post, reactions });
-
-    setLoading(false);
   };
 
   const handleReaction = async (emoji: string) => {
