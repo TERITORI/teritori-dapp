@@ -7,6 +7,7 @@ import keplrSVG from "../../assets/icons/keplr.svg";
 import leapSVG from "../../assets/icons/leap-cosmos-logo.svg";
 import metamaskSVG from "../../assets/icons/metamask.svg";
 import warningSVG from "../../assets/icons/warning.svg";
+import { errorColor } from "../utils/style/colors";
 import { WalletProvider } from "../utils/walletProvider";
 
 export const WalletProviderIcon: React.FC<{
@@ -23,7 +24,14 @@ export const WalletProviderIcon: React.FC<{
     case WalletProvider.Adena:
       return <SVG width={size} height={size} source={adenaSVG} />;
     case WalletProvider.Gnotest:
-      return <SVG width={size} height={size} source={warningSVG} />;
+      return (
+        <SVG
+          width={size}
+          height={size}
+          source={warningSVG}
+          color={errorColor}
+        />
+      );
     default:
       return <View style={{ width: size, height: size }} />;
   }

@@ -6,7 +6,12 @@ import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
 import { useBalances } from "../../hooks/useBalances";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getCurrency, getNativeCurrency, getNetwork } from "../../networks";
+import {
+  getCurrency,
+  getNativeCurrency,
+  getNetwork,
+  parseUserId,
+} from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
@@ -28,13 +33,15 @@ export const NotEnoughFundsModal: FC<{
   cost?: Coin;
   label?: string;
   visible?: boolean;
+  userId?: string;
   onClose?: () => void;
-}> = ({ label = "Not enough funds", cost, visible, onClose }) => {
+}> = ({ label = "Not enough funds", cost, visible, onClose, userId }) => {
   const selectedWallet = useSelectedWallet();
   const selectedNetwork = useSelectedNetworkInfo();
+  const [userNetwork, userAddress] = parseUserId(userId);
   const { balances } = useBalances(
-    selectedNetwork?.id,
-    selectedWallet?.address,
+    userNetwork?.id || selectedNetwork?.id,
+    userAddress || selectedWallet?.address,
   );
   const costBalance = balances.find((bal) => bal.denom === cost?.denom);
   const currency = getCurrency(selectedNetwork?.id, cost?.denom);
@@ -75,7 +82,7 @@ export const NotEnoughFundsModal: FC<{
         <WalletStatusBox />
         <SpacerColumn size={2} />
         <View>
-          {cost && costBalance && selectedNetwork && (
+          {cost && selectedNetwork && (
             <>
               <View
                 style={{
@@ -105,8 +112,8 @@ export const NotEnoughFundsModal: FC<{
                 <BrandText style={fontSemibold14}>
                   {prettyPrice(
                     selectedNetwork.id,
-                    costBalance.amount,
-                    costBalance.denom,
+                    costBalance?.amount || "0",
+                    cost.denom,
                   )}
                 </BrandText>
               </View>
