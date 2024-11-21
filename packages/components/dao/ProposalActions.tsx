@@ -1,3 +1,4 @@
+import { upperFirst } from "lodash";
 import { View } from "react-native";
 
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -10,15 +11,15 @@ import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
 import { useDAOFirstProposalModule } from "../../hooks/dao/useDAOProposalModules";
 import { useInvalidateDAOProposals } from "../../hooks/dao/useDAOProposals";
 import {
-  useInvalidateDAOVoteInfo,
   useDAOVoteInfo,
+  useInvalidateDAOVoteInfo,
 } from "../../hooks/dao/useDAOVoteInfo";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, getNetwork, parseUserId } from "../../networks";
 import { adenaVMCall } from "../../utils/gno";
 import { GnoDAOVoteRequest } from "../../utils/gnodao/messages";
-import { neutral77, primaryColor, errorColor } from "../../utils/style/colors";
+import { errorColor, neutral77, primaryColor } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { PrimaryButton } from "../buttons/PrimaryButton";
@@ -80,34 +81,24 @@ export const ProposalActions: React.FC<{
         case NetworkKind.Gno: {
           const walletAddress = selectedWallet.address;
           const [, pkgPath] = parseUserId(daoId);
-          let gnoVote;
-          switch (v) {
-            case "yes": {
-              gnoVote = 0;
-              break;
-            }
-            case "no": {
-              gnoVote = 1;
-              break;
-            }
-            case "abstain": {
-              gnoVote = 2;
-              break;
-            }
-            default:
-              throw new Error("invalid vote");
+          if (["yes", "no", "abstain"].indexOf(v) === -1) {
+            throw new Error("invalid vote");
           }
           const msg: GnoDAOVoteRequest = {
-            vote: gnoVote,
+            vote: upperFirst(v),
             rationale: "Me like it",
           };
-          await adenaVMCall(networkId, {
-            caller: walletAddress,
-            send: "",
-            pkg_path: pkgPath,
-            func: "VoteJSON",
-            args: ["0", proposal.id.toString(), JSON.stringify(msg)],
-          });
+          await adenaVMCall(
+            networkId,
+            {
+              caller: walletAddress,
+              send: "",
+              pkg_path: pkgPath,
+              func: "VoteJSON",
+              args: ["0", proposal.id.toString(), JSON.stringify(msg)],
+            },
+            { gasWanted: 10000000 },
+          );
           break;
         }
         default:

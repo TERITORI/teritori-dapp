@@ -32,3 +32,11 @@ export const replaceBetweenString = (
   insertion: string,
 ) =>
   `${origin.substring(0, startIndex)}${insertion}${origin.substring(endIndex)}`;
+
+// Fix amount when missing the fractional part like "2." by removing the "."
+export const sanitizeFloatText = (amount: string) => {
+  if (isFloatText(amount) && amount.endsWith(".")) {
+    return amount.slice(0, -1);
+  }
+  return amount;
+};

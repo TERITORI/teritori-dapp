@@ -4582,63 +4582,6 @@
     "txIndexerURL": "https://indexer.portal-loop.gno.testnet.teritori.com"
   },
   {
-    "id": "gno-teritori",
-    "kind": "Gno",
-    "displayName": "Gno Teritori",
-    "icon": "gno.svg",
-    "features": [
-      "Organizations",
-      "SocialFeed",
-      "UPP",
-      "GnoProjectManager",
-      "NameService"
-    ],
-    "featureObjects": [
-      {
-        "type": "GnoProjectManager",
-        "projectsManagerPkgPath": "gno.land/r/teritori/escrow",
-        "paymentsDenom": "ugnot"
-      }
-    ],
-    "currencies": [
-      {
-        "denom": "ugnot",
-        "displayName": "GNOT",
-        "decimals": 6,
-        "variant": "gno",
-        "coingeckoId": "gno",
-        "icon": "gno.svg",
-        "kind": "native",
-        "color": "#232800"
-      }
-    ],
-    "stakeCurrency": "ugnot",
-    "idPrefix": "gnotori",
-    "chainId": "teritori-1",
-    "endpoint": "https://testnet.gno.teritori.com:26658",
-    "txExplorer": "https://gnoscan.io/transactions/details?txhash=$hash",
-    "accountExplorer": "https://gnoscan.io/accounts/$address",
-    "contractExplorer": "https://gnoscan.io/realms/details?path=$address",
-    "testnet": true,
-    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
-    "vaultContractAddress": "",
-    "nameServiceContractAddress": "gno.land/r/demo/users",
-    "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
-    "daoRegistryPkgPath": "gno.land/r/teritori/dao_registry_v4",
-    "socialFeedsPkgPath": "gno.land/r/teritori/social_feeds_v4",
-    "socialFeedsDAOPkgPath": "gno.land/r/teritori/social_feeds_dao_v2",
-    "modboardsPkgPath": "gno.land/r/teritori/modboards_v4",
-    "groupsPkgPath": "gno.land/r/teritori/groups_v4",
-    "votingGroupPkgPath": "gno.land/p/teritori/dao_voting_group_v2",
-    "daoProposalSinglePkgPath": "gno.land/p/teritori/dao_proposal_single_v4",
-    "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces_v5",
-    "daoUtilsPkgPath": "",
-    "daoCorePkgPath": "gno.land/p/teritori/dao_core_v4",
-    "toriPkgPath": "",
-    "gnowebURL": "https://testnet.gno.teritori.com",
-    "faucetURL": "https://testnet.gno.teritori.com:5050/?toaddr=$addr"
-  },
-  {
     "id": "gno-test3",
     "kind": "Gno",
     "displayName": "Gno Test3",
@@ -5297,10 +5240,10 @@
   },
   {
     "id": "cosmos-registry:irisnet",
-    "displayName": "IRISnet",
-    "chainId": "irishub-1",
-    "registryName": "irisnet",
     "kind": "Cosmos",
+    "chainId": "irishub-1",
+    "displayName": "IRISnet",
+    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/irisnet/images/iris.svg",
     "currencies": [
       {
         "kind": "native",
@@ -5315,16 +5258,17 @@
     ],
     "features": [],
     "featureObjects": [],
+    "overrides": "cosmos-registry:irisnet",
+    "registryName": "irisnet",
+    "txExplorer": "https://www.mintscan.io/iris/txs/$hash",
+    "accountExplorer": "https://www.mintscan.io/iris/account/$address",
+    "contractExplorer": "https://www.mintscan.io/iris/account/$address",
     "idPrefix": "irisnet",
-    "addressPrefix": "iaa",
-    "txExplorer": "https://app.ezstaking.io/irisnet/txs/$hash",
-    "accountExplorer": "https://app.ezstaking.io/irisnet/account/$address",
-    "contractExplorer": "https://app.ezstaking.io/irisnet/account/$address",
-    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/irisnet/images/iris.svg",
     "testnet": false,
     "backendEndpoint": "",
-    "restEndpoint": "https://api-irisnet-ia.cosmosia.notional.ventures/",
-    "rpcEndpoint": "https://rpc-irisnet-ia.cosmosia.notional.ventures/",
+    "addressPrefix": "iaa",
+    "restEndpoint": "https://iris-rest.publicnode.com/",
+    "rpcEndpoint": "https://rpc-irisnet-01.stakeflow.io/",
     "stakeCurrency": "uiris",
     "gasPriceStep": {
       "low": 0.2,
@@ -11549,7 +11493,6 @@
     "riotSquadStakingContractAddressV1": "tori1zwkmdfsc6h96jm4yqdykaw5y7ndwsvqvgh5ryxp9nxs3hccml0xqfyrm37",
     "riotSquadStakingContractAddressV2": "tori1kvjk9m7dk0es35y6ah0k28llllvle3n7xgvh0gh568ta0paf8awsml2xev",
     "distributorContractAddress": "tori1mnem0rhjaxcsghe0xw692xysra63xwwdee2wth9s0rkfwh4dxpaq76qqre",
-    "riotersFooterContractAddress": "tori1m6g3l3j5t988zwmp965hrhsxvm8jrkf2ulw4gmwj8hx8pd84tvcqeearsd",
     "secondaryDuringMintList": [
       "tori1wkwy0xh89ksdgj9hr347dyd2dw7zesmtrue6kfzyml4vdtz6e5wscs7038",
       "tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37",
@@ -11628,7 +11571,6 @@
     "riotSquadStakingContractAddressV1": "",
     "riotSquadStakingContractAddressV2": "",
     "distributorContractAddress": "",
-    "riotersFooterContractAddress": "",
     "secondaryDuringMintList": [
       "",
       ""
@@ -11742,7 +11684,6 @@
     "riotSquadStakingContractAddressV1": "",
     "riotSquadStakingContractAddressV2": "",
     "distributorContractAddress": "",
-    "riotersFooterContractAddress": "",
     "secondaryDuringMintList": [
       "",
       "tori1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgsjscd88",

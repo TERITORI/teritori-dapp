@@ -28,8 +28,10 @@ const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
     dao_interfaces "${network.daoInterfacesPkgPath}"
     proposal_single "${network.daoProposalSinglePkgPath}"
     "${network.daoUtilsPkgPath}"
+    "${network.profilePkgPath}"
     voting_group "${network.votingGroupPkgPath}"
     "${network.daoRegistryPkgPath}"
+    "${network.socialFeedsPkgPath}"
   )
   
 var (
@@ -79,9 +81,17 @@ func init() {
 			propMod := core.ProposalModules()[0]
 			return proposal_single.NewUpdateSettingsHandler(propMod.Module.(*proposal_single.DAOProposalSingle))
 		},
+    func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
+			return social_feeds.NewCreatePostHandler()
+		},
 	}
 
 	daoCore = dao_core.NewDAOCore(votingModuleFactory, proposalModulesFactories, messageHandlersFactories)
+
+  // Register the DAO profile
+	profile.SetStringField(profile.DisplayName, "${conf.displayName}")
+	profile.SetStringField(profile.Bio, "${conf.description}")
+	profile.SetStringField(profile.Avatar, "${conf.imageURI}")
 
   dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "${conf.displayName}", "${conf.description}", "${conf.imageURI}")
   }

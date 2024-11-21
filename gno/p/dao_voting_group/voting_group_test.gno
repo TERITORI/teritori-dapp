@@ -1,7 +1,6 @@
 package dao_voting_group
 
 import (
-	"std"
 	"testing"
 
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"

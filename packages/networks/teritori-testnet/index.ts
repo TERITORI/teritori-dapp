@@ -106,7 +106,6 @@ export const teritoriTestnetNetwork: CosmosNetworkInfo = {
   riotSquadStakingContractAddressV1: "",
   riotSquadStakingContractAddressV2: "",
   distributorContractAddress: "",
-  riotersFooterContractAddress: "",
   secondaryDuringMintList: [
     premiumFeedFeature.membershipContractAddress,
     nameServiceContractAddress,
