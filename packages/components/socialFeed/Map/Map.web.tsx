@@ -34,9 +34,9 @@ import {
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {
   CustomLatLngExpression,
+  parseSocialFeedMetadata,
   PostCategory,
   zodSocialFeedCommonMetadata,
-  ZodSocialFeedPostMetadata,
 } from "@/utils/types/feed";
 
 interface MarkerPopup {
@@ -135,12 +135,8 @@ export const Map: FC<MapProps> = ({
     if (!posts) return [];
     const results: MarkerPopup[] = [];
     posts.forEach((post) => {
-      const metadata = zodTryParseJSON(
-        ZodSocialFeedPostMetadata.partial().merge(
-          ZodSocialFeedPostMetadata.pick({ title: true }),
-        ),
-        post.metadata,
-      );
+      const metadata = parseSocialFeedMetadata(post.category, post.metadata);
+
       if (!metadata?.location) return;
       results.push({
         position: metadata.location,
