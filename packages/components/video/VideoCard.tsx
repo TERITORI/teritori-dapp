@@ -1,3 +1,4 @@
+import { AVPlaybackStatus, Video } from "expo-av";
 import { isEqual } from "lodash";
 import React, { memo, useState } from "react";
 import {
@@ -41,6 +42,7 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 
 import { LocationButton } from "@/components/socialFeed/NewsFeed/LocationButton";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { web3ToWeb2URI } from "@/utils/ipfs";
 
 const IMAGE_HEIGHT = 173;
 const VIDEO_CARD_WIDTH = 261;
@@ -56,6 +58,7 @@ export const VideoCard: React.FC<{
   const authorNSInfo = useNSUserInfo(post.authorId);
   const [, userAddress] = parseUserId(post.authorId);
   const [isHovered, setIsHovered] = useState(false);
+  const [duration, setDuration] = useState(0);
 
   let cardWidth = StyleSheet.flatten(style)?.width;
   if (typeof cardWidth !== "number") {
@@ -72,12 +75,19 @@ export const VideoCard: React.FC<{
       : "ipfs://" + video.videoFile.thumbnailFileData?.url // we need this hack because ipfs "urls" in feed are raw CIDs
     : defaultThumbnailImage;
 
+  const getVideoDuration = (status: AVPlaybackStatus) => {
+    if (status.isLoaded && status?.durationMillis) {
+      setDuration(status.durationMillis);
+    }
+  };
+
   if (!video)
     return (
       <BrandText style={[fontSemibold13, { color: errorColor }]}>
         Video not found
       </BrandText>
     );
+
   return (
     <View
       style={[
@@ -115,10 +125,17 @@ export const VideoCard: React.FC<{
               },
             ]}
           />
-
+          <Video
+            source={{ uri: web3ToWeb2URI(video.videoFile.url) }}
+            onPlaybackStatusUpdate={getVideoDuration}
+            videoStyle={{
+              height: 0,
+              width: 0,
+            }}
+          />
           <View style={imgDurationBoxStyle}>
             <BrandText style={fontSemibold13}>
-              {prettyMediaDuration(video.videoFile.videoMetadata?.duration)}
+              {prettyMediaDuration(duration)}
             </BrandText>
           </View>
 
