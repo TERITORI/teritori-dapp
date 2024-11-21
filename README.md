@@ -100,7 +100,7 @@ Please feel free to use PR & Issues, and to join us on Discord for any question!
 - Visit the dApp: https://app.teritori.com/
 - Official website: https://www.teritori.com
 - Discord: https://discord.gg/teritori
-- Twitter: https://twitter.com/TeritoriNetwork
+- X (formerly Twitter): https://x.com/TeritoriNetwork
 
 ___
 
