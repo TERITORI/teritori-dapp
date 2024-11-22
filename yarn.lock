@@ -15881,6 +15881,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mp4box@npm:^0.5.3":
+  version: 0.5.3
+  resolution: "mp4box@npm:0.5.3"
+  checksum: 6d38b47beebd71d00151f2df6fdc5a3bcafd3163c42783a432a05d9c0dae97120afa14c7a30adeb7480833bde7f75374f4ce546f77180903e7e93052ecad7419
+  languageName: node
+  linkType: hard
+
 "ms@npm:2.0.0":
   version: 2.0.0
   resolution: "ms@npm:2.0.0"
@@ -20243,6 +20250,7 @@ __metadata:
     merkletreejs: ^0.4.0
     metamask-react: ^2.4.1
     moment: ^2.29.4
+    mp4box: ^0.5.3
     multiformats: ^12.1.3
     osmojs: 16.9.0
     papaparse: ^5.4.1

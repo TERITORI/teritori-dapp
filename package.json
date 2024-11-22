@@ -123,6 +123,7 @@
     "merkletreejs": "^0.4.0",
     "metamask-react": "^2.4.1",
     "moment": "^2.29.4",
+    "mp4box": "^0.5.3",
     "multiformats": "^12.1.3",
     "osmojs": "16.9.0",
     "papaparse": "^5.4.1",
