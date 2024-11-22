@@ -149,6 +149,6 @@ export const parseSocialFeedMetadata = (
     case PostCategory.MusicAudio:
       return zodTryParseJSON(ZodSocialFeedTrackMetadata, metadata);
     default:
-      return zodTryParseJSON(ZodSocialFeedPostMetadata, metadata);
+      return zodTryParseJSON(ZodSocialFeedCommonMetadata, metadata);
   }
 };
