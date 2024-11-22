@@ -145,7 +145,7 @@ export const parseSocialFeedMetadata = (
     case PostCategory.Video:
       return zodTryParseJSON(ZodSocialFeedVideoMetadata, metadata);
     case PostCategory.Article:
-      return zodTryParseJSON(ZodSocialFeedPostMetadata, metadata);
+      return zodTryParseJSON(ZodSocialFeedArticleMetadata, metadata);
     case PostCategory.MusicAudio:
       return zodTryParseJSON(ZodSocialFeedTrackMetadata, metadata);
     default:
