@@ -23,7 +23,7 @@ export const gnoTest5Network: GnoNetworkInfo = {
   stakeCurrency: "ugnot",
   idPrefix: "gnotest5",
   chainId: "test5",
-  endpoint: "https://test5.onbloc.xyz:443",
+  endpoint: "https://rpc.test5.gno.land",
   txExplorer:
     "https://gnoscan.io/transactions/details?txhash=$hash&chainId=test5",
   accountExplorer: "https://gnoscan.io/accounts/$address?chainId=test5",
