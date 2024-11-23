@@ -39,6 +39,6 @@ export const gnoTest5Network: GnoNetworkInfo = {
   socialFeedsPkgPath: "gno.land/r/teritori/social_feeds",
   socialFeedsDAOPkgPath: "gno.land/r/teritori/social_feeds_dao",
   daoInterfacesPkgPath: "gno.land/p/teritori/dao_interfaces",
-  profilePkgPath: "gno.land/r/teritori/profile",
+  profilePkgPath: "gno.land/r/demo/profile",
   txIndexerURL: "https://indexer.test5.gno.testnet.teritori.com",
 };
