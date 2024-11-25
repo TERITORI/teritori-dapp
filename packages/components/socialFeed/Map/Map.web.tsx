@@ -1,12 +1,6 @@
 import "./styles.css";
 import "leaflet/dist/leaflet.css";
-import {
-  DivIcon,
-  LatLngBounds,
-  LatLngBoundsLiteral,
-  point,
-  PointExpression,
-} from "leaflet";
+import { DivIcon, LatLngBounds, point, PointExpression } from "leaflet";
 import {
   Dispatch,
   FC,
@@ -36,7 +30,6 @@ import {
   DEFAULT_MAP_POSITION,
   getMapPostIconColorRgba,
   getMapPostIconSVGString,
-  MAP_HALF_BOUND,
   MAP_LAYER_URL,
   MAP_MAX_BOUND,
 } from "@/utils/feed/map";
