@@ -1,6 +1,12 @@
 import { useLinkTo } from "@react-navigation/native";
 import React, { useCallback } from "react";
-import { Image, Linking, useWindowDimensions, View } from "react-native";
+import {
+  Image,
+  Linking,
+  TextStyle,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
 import { News } from "../../api/marketplace/v1/marketplace";
 import { web3ToWeb2URI } from "../../utils/ipfs";
@@ -19,8 +25,16 @@ const breakPoint = 768;
 
 export const NewsBox: React.FC<{
   news: News;
-}> = ({ news }) => {
-  const { width } = useWindowDimensions();
+  imageHeight?: number;
+  imageWidth?: number;
+  titleTextStyle?: TextStyle;
+  subtitleTextStyle?: TextStyle;
+  boxWidth?: number;
+}> = ({ news, imageHeight, imageWidth, titleTextStyle, boxWidth }) => {
+  let { width } = useWindowDimensions();
+  if (boxWidth) {
+    width = boxWidth;
+  }
   const linkTo = useLinkTo();
   const navigateTo = useCallback(
     (to: string | undefined) => {
@@ -44,6 +58,7 @@ export const NewsBox: React.FC<{
         borderBottomColor: neutral33,
         paddingHorizontal: 10,
         paddingVertical: 20,
+        display: "flex",
       }}
     >
       <View
@@ -64,7 +79,10 @@ export const NewsBox: React.FC<{
           ]}
         >
           <View>
-            <GradientText gradientType="blueExtended" style={fontSemibold28}>
+            <GradientText
+              gradientType="blueExtended"
+              style={titleTextStyle || fontSemibold28}
+            >
               {news.title}
             </GradientText>
             <BrandText style={fontSemibold20}>{news.subtitle}</BrandText>
@@ -114,8 +132,8 @@ export const NewsBox: React.FC<{
           <Image
             source={{ uri: web3ToWeb2URI(news.image) }}
             style={{
-              height: 342,
-              width: 342,
+              height: imageHeight || 342,
+              width: imageWidth || 342,
               aspectRatio: 1,
               borderRadius: 10,
             }}
