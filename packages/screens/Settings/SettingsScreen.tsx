@@ -88,7 +88,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
   return (
     <ScreenContainer>
       <View style={commonStyles.pageContainer}>
-        {!appConfig.alwaysEnableTestnets && (
+        {!appConfig.forceNetworkList && (
           <>
             <View style={commonStyles.cardContainer}>
               <SettingItem
@@ -105,25 +105,25 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
             </View>
 
             <SpacerColumn size={3} />
+
+            <TertiaryButton
+              text="Manage Networks"
+              size="M"
+              onPress={() => {
+                setNetworksModalVisible(true);
+              }}
+              fullWidth
+            />
+            <NetworksListModal
+              isVisible={networksModalVisible}
+              onClose={() => {
+                setNetworksModalVisible(false);
+              }}
+            />
+
+            <SpacerColumn size={3} />
           </>
         )}
-
-        <TertiaryButton
-          text="Manage Networks"
-          size="M"
-          onPress={() => {
-            setNetworksModalVisible(true);
-          }}
-          fullWidth
-        />
-        <NetworksListModal
-          isVisible={networksModalVisible}
-          onClose={() => {
-            setNetworksModalVisible(false);
-          }}
-        />
-
-        <SpacerColumn size={3} />
 
         <NFTAPIKeyInput />
 

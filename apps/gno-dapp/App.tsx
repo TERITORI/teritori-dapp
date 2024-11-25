@@ -4,7 +4,8 @@ import AppRoot from "@/dapp-root/App";
 const config: AppConfig = {
   disableBuyTokensButton: true,
   disableDAppStore: true,
-  alwaysEnableTestnets: true,
+  forceNetworkList: ["gno-test5", "gno-portal"],
+  forceDAppsList: ["feed", "organizations"],
 };
 
 export const App: React.FC = () => {

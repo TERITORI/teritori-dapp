@@ -3,7 +3,8 @@ import { createContext, useContext } from "react";
 export interface AppConfig {
   disableBuyTokensButton?: boolean;
   disableDAppStore?: boolean;
-  alwaysEnableTestnets?: boolean;
+  forceNetworkList?: string[];
+  forceDAppsList?: string[];
 }
 const defaultValue: AppConfig = {};
 
