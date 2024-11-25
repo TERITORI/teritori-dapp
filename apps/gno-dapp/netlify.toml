@@ -1,0 +1,9 @@
+[build]
+command = 'sed -i "s/teriori-dapp/gno-dapp" && npm i -g sharp-cli && npx expo-optimize && npx expo export -p web'
+publish = '/dist'
+[build.environment]
+NODE_OPTIONS = "--max_old_space_size=4096"
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
