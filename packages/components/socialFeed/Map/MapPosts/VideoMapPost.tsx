@@ -59,7 +59,7 @@ export const VideoMapPost: FC<{
     zodSocialFeedCommonMetadata,
     post.metadata,
   );
-  const title = baseMetadata?.title || "Music from Social Feed";
+  const title = baseMetadata?.title || "Video from Social Feed";
 
   // Video and VideoNote have different metadata but have the same render on the map, so we handle these 2 cases
   const mediaToPlay: Media | undefined = videoPostMetadata
