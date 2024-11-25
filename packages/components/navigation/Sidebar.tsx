@@ -33,6 +33,7 @@ import ToggleButton from "../buttons/ToggleButton";
 import { Separator } from "../separators/Separator";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
+import { useAppConfig } from "@/context/AppConfigProvider";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useAppMode } from "@/hooks/useAppMode";
 
@@ -66,6 +67,7 @@ export const Sidebar: React.FC = () => {
   const { name: currentRouteName } = useRoute();
   const { isSidebarExpanded, dynamicSidebar } = useSidebar();
   const [appMode, handleSet] = useAppMode();
+  const { disableDAppStore, disableBuyTokensButton } = useAppConfig();
 
   const layoutStyle = useAnimatedStyle(
     () => ({
@@ -156,26 +158,32 @@ export const Sidebar: React.FC = () => {
                   />
                 </View>
               )}
-              <SidebarButton
-                icon={addSVG}
-                iconSize={36}
-                route="DAppStore"
-                key="ComingSoon2"
-                id="ComingSoon2"
-                title=""
-                onPress={() => navigation.navigate("DAppStore")}
-              />
+              {!disableDAppStore && (
+                <SidebarButton
+                  icon={addSVG}
+                  iconSize={36}
+                  route="DAppStore"
+                  key="ComingSoon2"
+                  id="ComingSoon2"
+                  title=""
+                  onPress={() => navigation.navigate("DAppStore")}
+                />
+              )}
               <SpacerColumn size={1} />
             </>
           }
         />
         <View>
           <SidebarSeparator />
-          <BuyTokens
-            flexDirection={isSidebarExpanded ? "row" : "column"}
-            textStyle={isSidebarExpanded ? fontBold16 : fontBold9}
-          />
-          <SidebarSeparator />
+          {!disableBuyTokensButton && (
+            <>
+              <BuyTokens
+                flexDirection={isSidebarExpanded ? "row" : "column"}
+                textStyle={isSidebarExpanded ? fontBold16 : fontBold9}
+              />
+              <SidebarSeparator />
+            </>
+          )}
 
           {selectedNetworkInfo?.features.includes(NetworkFeature.UPP) &&
             connected &&
