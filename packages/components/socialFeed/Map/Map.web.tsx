@@ -30,11 +30,13 @@ import { PictureMapPost } from "@/components/socialFeed/Map/MapPosts/PictureMapP
 import { VideoMapPost } from "@/components/socialFeed/Map/MapPosts/VideoMapPost";
 import { useFetchFeedLocation } from "@/hooks/feed/useFetchFeed";
 import { usePost } from "@/hooks/feed/usePost";
+import { useUpdateMinZoom } from "@/hooks/feed/useUpdateMinZoom";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   DEFAULT_MAP_POSITION,
   getMapPostIconColorRgba,
   getMapPostIconSVGString,
+  MAP_HALF_BOUND,
   MAP_LAYER_URL,
   MAP_MAX_BOUND,
 } from "@/utils/feed/map";
@@ -116,33 +118,7 @@ const DynamicMinZoom = ({
   setMinZoom: Dispatch<SetStateAction<number>>;
 }) => {
   const map = useMap();
-
-  useEffect(() => {
-    const lat = 45;
-    const lng = 90;
-
-    const adjustedWorldMapBounds: LatLngBoundsLiteral = [
-      [-lat, -lng],
-      [lat, lng],
-    ];
-
-    const updateMinZoom = () => {
-      if (map) {
-        const calculatedZoom = map.getBoundsZoom(adjustedWorldMapBounds, false);
-        setMinZoom(calculatedZoom);
-        map.setMinZoom(calculatedZoom);
-        map.setZoom(calculatedZoom);
-      }
-    };
-
-    updateMinZoom();
-
-    window.addEventListener("resize", updateMinZoom);
-
-    return () => {
-      window.removeEventListener("resize", updateMinZoom);
-    };
-  }, [map, setMinZoom]);
+  useUpdateMinZoom(map, setMinZoom);
 
   return null;
 };
