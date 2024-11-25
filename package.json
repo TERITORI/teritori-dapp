@@ -1,7 +1,7 @@
 {
   "name": "teritori-dapp",
   "version": "1.0.0",
-  "main": "apps/gno-dapp/index.js",
+  "main": "apps/teritori-dapp/index.js",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
