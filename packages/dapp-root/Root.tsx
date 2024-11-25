@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { MetaMaskProvider } from "metamask-react";
 import Plausible from "plausible-tracker";
-import React, { memo, ReactNode, useEffect } from "react";
+import React, { memo, ReactNode, useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Platform, Text, TextStyle, View } from "react-native";
 import { ClickOutsideProvider as DropdownsProvider } from "react-native-click-outside";
@@ -24,7 +24,11 @@ import { PersistGate } from "redux-persist/integration/react";
 
 import { MultisigDeauth } from "@/components/multisig/MultisigDeauth";
 import { Navigator } from "@/components/navigation/Navigator";
-import { AppConfig, AppConfigProvider } from "@/context/AppConfigProvider";
+import {
+  AppConfig,
+  AppConfigProvider,
+  useAppConfig,
+} from "@/context/AppConfigProvider";
 import { FeedbacksContextProvider } from "@/context/FeedbacksProvider";
 import { MediaPlayerContextProvider } from "@/context/MediaPlayerProvider";
 import { MessageContextProvider } from "@/context/MessageProvider";
@@ -41,7 +45,7 @@ import { setAvailableApps } from "@/store/slices/dapps-store";
 import { setSelectedWalletId } from "@/store/slices/settings";
 import { persistor, store, useAppDispatch } from "@/store/store";
 import { isElectron } from "@/utils/isElectron";
-import { linking } from "@/utils/navigation";
+import { getLinking } from "@/utils/navigation";
 
 if (!globalThis.Buffer) {
   globalThis.Buffer = require("buffer").Buffer;
@@ -97,7 +101,7 @@ const App: React.FC<{ config: AppConfig }> = ({ config }) => {
               <QueryClientProvider client={queryClient}>
                 <FormProvider<DefaultForm> {...methods}>
                   <MetaMaskProvider>
-                    <NavigationContainer linking={linking}>
+                    <AppNavigationContainer>
                       <SafeAreaProvider>
                         <FeedbacksContextProvider>
                           <DropdownsProvider>
@@ -133,7 +137,7 @@ const App: React.FC<{ config: AppConfig }> = ({ config }) => {
                           </DropdownsProvider>
                         </FeedbacksContextProvider>
                       </SafeAreaProvider>
-                    </NavigationContainer>
+                    </AppNavigationContainer>
                   </MetaMaskProvider>
                 </FormProvider>
               </QueryClientProvider>
@@ -142,6 +146,18 @@ const App: React.FC<{ config: AppConfig }> = ({ config }) => {
         </ReduxProvider>
       </AppConfigProvider>
     </ErrorBoundary>
+  );
+};
+
+const AppNavigationContainer: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const { homeScreen } = useAppConfig();
+  const linking = useMemo(() => {
+    return getLinking(homeScreen);
+  }, [homeScreen]);
+  return (
+    <NavigationContainer linking={linking}>{children}</NavigationContainer>
   );
 };
 

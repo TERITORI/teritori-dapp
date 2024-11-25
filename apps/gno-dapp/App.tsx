@@ -7,6 +7,7 @@ const config: AppConfig = {
   forceNetworkList: ["gno-test5", "gno-portal"],
   forceDAppsList: ["feed", "organizations"],
   defaultNetworkId: "gno-test5",
+  homeScreen: "Feed",
 };
 
 export const App: React.FC = () => {
