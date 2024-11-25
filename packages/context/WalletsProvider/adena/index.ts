@@ -1,15 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
-import { NetworkKind, allNetworks, getUserId } from "../../../networks";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { NetworkKind, allNetworks, getUserId } from "@/networks";
 import {
   selectIsAdenaConnected,
   setIsAdenaConnected,
   setSelectedWalletId,
-} from "../../../store/slices/settings";
+} from "@/store/slices/settings";
 import { useAppDispatch } from "../../../store/store";
-import { WalletProvider } from "../../../utils/walletProvider";
+import { WalletProvider } from "@/utils/walletProvider";
 import { Wallet } from "../wallet";
 
 type UseAdenaResult = [true, boolean, Wallet[]] | [false, boolean, undefined];
@@ -19,11 +21,35 @@ export const useAdena: () => UseAdenaResult = () => {
   const [hasAdena, setHasAdena] = useState(false);
   const dispatch = useAppDispatch();
   const selectedNetworkInfo = useSelectedNetworkInfo();
+  const { setToast } = useFeedbacks();
 
   const [state, setState] = useState<{ addresses: string[]; chainId?: string }>(
     { addresses: [] },
   );
   const [ready, setReady] = useState(false);
+
+  const switchNetwork = async () => {
+    const adena = (window as any).adena;
+
+    const network = await adena.GetNetwork();
+    const currentChainId = network.data.chainId;
+
+    if (currentChainId === selectedNetworkInfo?.chainId) {
+      return;
+    }
+
+    const res = await adena.SwitchNetwork(selectedNetworkInfo?.chainId);
+
+    if (res.status === "failure") {
+      console.log(res.message);
+      setToast({
+        type: "error",
+        message: res.message,
+        mode: "normal",
+        title: "Error",
+      });
+    }
+  };
 
   useEffect(() => {
     if (!hasAdena) {
@@ -32,7 +58,8 @@ export const useAdena: () => UseAdenaResult = () => {
     if (selectedNetworkInfo?.kind !== NetworkKind.Gno) {
       return;
     }
-    (window as any).adena.SwitchNetwork(selectedNetworkInfo.chainId);
+
+    switchNetwork();
   }, [hasAdena, selectedNetworkInfo]);
 
   useEffect(() => {
