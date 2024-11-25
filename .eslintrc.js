@@ -177,5 +177,16 @@ module.exports = {
       },
       files: ["packages/components/navigation/**"],
     },
+    {
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [],
+          },
+        ],
+      },
+      files: ["packages/dapp-root/**"],
+    },
   ],
 };

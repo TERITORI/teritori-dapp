@@ -22,28 +22,25 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as ReduxProvider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
-import { MultisigDeauth } from "./packages/components/multisig/MultisigDeauth";
-import { Navigator } from "./packages/components/navigation/Navigator";
-import { FeedbacksContextProvider } from "./packages/context/FeedbacksProvider";
-import { MediaPlayerContextProvider } from "./packages/context/MediaPlayerProvider";
-import { MessageContextProvider } from "./packages/context/MessageProvider";
-import { SearchBarContextProvider } from "./packages/context/SearchBarProvider";
-import { TNSMetaDataListContextProvider } from "./packages/context/TNSMetaDataListProvider";
-import { TNSContextProvider } from "./packages/context/TNSProvider";
-import { TransactionModalsProvider } from "./packages/context/TransactionModalsProvider";
-import { WalletControlContextProvider } from "./packages/context/WalletControlProvider";
-import {
-  useWallets,
-  WalletsProvider,
-} from "./packages/context/WalletsProvider";
-import { useSelectedNetworkId } from "./packages/hooks/useSelectedNetwork";
-import useSelectedWallet from "./packages/hooks/useSelectedWallet";
-import { getAvailableApps } from "./packages/screens/DAppStore/query/getFromFile";
-import { setAvailableApps } from "./packages/store/slices/dapps-store";
-import { setSelectedWalletId } from "./packages/store/slices/settings";
-import { persistor, store, useAppDispatch } from "./packages/store/store";
-import { isElectron } from "./packages/utils/isElectron";
-import { linking } from "./packages/utils/navigation";
+import { MultisigDeauth } from "@/components/multisig/MultisigDeauth";
+import { Navigator } from "@/components/navigation/Navigator";
+import { FeedbacksContextProvider } from "@/context/FeedbacksProvider";
+import { MediaPlayerContextProvider } from "@/context/MediaPlayerProvider";
+import { MessageContextProvider } from "@/context/MessageProvider";
+import { SearchBarContextProvider } from "@/context/SearchBarProvider";
+import { TNSMetaDataListContextProvider } from "@/context/TNSMetaDataListProvider";
+import { TNSContextProvider } from "@/context/TNSProvider";
+import { TransactionModalsProvider } from "@/context/TransactionModalsProvider";
+import { WalletControlContextProvider } from "@/context/WalletControlProvider";
+import { useWallets, WalletsProvider } from "@/context/WalletsProvider";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { getAvailableApps } from "@/screens/DAppStore/query/getFromFile";
+import { setAvailableApps } from "@/store/slices/dapps-store";
+import { setSelectedWalletId } from "@/store/slices/settings";
+import { persistor, store, useAppDispatch } from "@/store/store";
+import { isElectron } from "@/utils/isElectron";
+import { linking } from "@/utils/navigation";
 
 if (!globalThis.Buffer) {
   globalThis.Buffer = require("buffer").Buffer;
