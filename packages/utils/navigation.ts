@@ -340,7 +340,9 @@ const getNavConfig: (homeScreen: keyof RootStackParamList) => NavConfig = (
       BurnCapital: "burn-capital",
     },
   };
-  navConfig.screens[homeScreen !== "Home" ? "RedirectHome" : "Home"] = "";
+  if (homeScreen === "Home") {
+    navConfig.screens["Home"] = "";
+  }
   return navConfig;
 };
 
