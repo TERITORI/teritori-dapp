@@ -143,15 +143,9 @@ export const parseSocialFeedMetadata = (
 ) => {
   switch (category) {
     case PostCategory.Video:
-      return (
-        zodTryParseJSON(ZodSocialFeedPostMetadata, metadata) ||
-        zodTryParseJSON(ZodSocialFeedVideoMetadata, metadata)
-      );
+      return zodTryParseJSON(ZodSocialFeedVideoMetadata, metadata);
     case PostCategory.Article:
-      return (
-        zodTryParseJSON(ZodSocialFeedPostMetadata, metadata) ||
-        zodTryParseJSON(ZodSocialFeedArticleMetadata, metadata)
-      );
+      return zodTryParseJSON(ZodSocialFeedArticleMetadata, metadata);
     case PostCategory.MusicAudio:
       return zodTryParseJSON(ZodSocialFeedTrackMetadata, metadata);
     case PostCategory.Normal:
