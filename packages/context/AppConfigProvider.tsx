@@ -5,8 +5,11 @@ export interface AppConfig {
   disableDAppStore?: boolean;
   forceNetworkList?: string[];
   forceDAppsList?: string[];
+  defaultNetworkId: string;
 }
-const defaultValue: AppConfig = {};
+const defaultValue: AppConfig = {
+  defaultNetworkId: "teritori",
+};
 
 const AppConfigContext = createContext(defaultValue);
 

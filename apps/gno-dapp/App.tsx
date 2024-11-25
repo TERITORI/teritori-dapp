@@ -6,6 +6,7 @@ const config: AppConfig = {
   disableDAppStore: true,
   forceNetworkList: ["gno-test5", "gno-portal"],
   forceDAppsList: ["feed", "organizations"],
+  defaultNetworkId: "gno-test5",
 };
 
 export const App: React.FC = () => {
