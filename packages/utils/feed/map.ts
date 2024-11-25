@@ -19,6 +19,10 @@ export const MAP_MAX_BOUND: LatLngBoundsLiteral = [
   [-90, -180], // South-West corner
   [90, 180], // North-East corner
 ];
+export const MAP_HALF_BOUND: LatLngBoundsLiteral = [
+  [-45, -90], // South-West corner
+  [45, 90], // North-East corner
+];
 
 const musicPostSvgString = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <g filter="url(#filter0_di_22136_173395)">
