@@ -11,7 +11,6 @@ import { useSelector } from "react-redux";
 import ModalBase from "./ModalBase";
 import { allNetworks, getNetwork } from "../../networks";
 import {
-  selectAreTestnetsEnabled,
   selectNetworkEnabled,
   toggleNetwork,
 } from "../../store/slices/settings";
@@ -32,6 +31,7 @@ import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
+import { useAreTestnetsEnabled } from "@/hooks/useAreTestnetsEnabled";
 import { joinElements } from "@/utils/react";
 
 export const NetworksListModal: FC<{
@@ -53,7 +53,7 @@ export const NetworksListModal: FC<{
 
 const NetworksSettings: FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
+  const areTestnetsEnabled = useAreTestnetsEnabled();
   const results = useMemo(() => {
     const searchTerms = searchTerm
       .split(" ")
