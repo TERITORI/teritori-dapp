@@ -1,15 +1,14 @@
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
+import { useAreTestnetsEnabled } from "./useAreTestnetsEnabled";
+
 import { getNetwork, NetworkInfo } from "@/networks";
-import {
-  selectAreTestnetsEnabled,
-  selectNetworksSettings,
-} from "@/store/slices/settings";
+import { selectNetworksSettings } from "@/store/slices/settings";
 
 export const useEnabledNetworks = () => {
   const networksSettings = useSelector(selectNetworksSettings);
-  const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
+  const areTestnetsEnabled = useAreTestnetsEnabled();
 
   const enabledNetworks = useMemo(() => {
     return Object.values(networksSettings)

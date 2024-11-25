@@ -19,10 +19,11 @@ import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { TertiaryButton } from "@/components/buttons/TertiaryButton";
 import { NetworksListModal } from "@/components/modals/NetworksListModal";
 import { SpacerColumn } from "@/components/spacer";
+import { useAppConfig } from "@/context/AppConfigProvider";
+import { useAreTestnetsEnabled } from "@/hooks/useAreTestnetsEnabled";
 import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { useIsKeplrConnected } from "@/hooks/useIsKeplrConnected";
 import {
-  selectAreTestnetsEnabled,
   selectIsLightTheme,
   selectNFTStorageAPI,
   setAreTestnetsEnabled,
@@ -77,30 +78,35 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
   const navigation = useAppNavigation();
   const commonStyles = useCommonStyles();
   const isKeplrConnected = useIsKeplrConnected();
-  const testnetEnabled = useSelector(selectAreTestnetsEnabled);
+  const testnetEnabled = useAreTestnetsEnabled();
   const dispatch = useAppDispatch();
   const [networksModalVisible, setNetworksModalVisible] = React.useState(false);
   const isLightTheme = useSelector(selectIsLightTheme);
   const [developerMode, setDeveloperMode] = useDeveloperMode();
+  const appConfig = useAppConfig();
 
   return (
     <ScreenContainer>
       <View style={commonStyles.pageContainer}>
-        <View style={commonStyles.cardContainer}>
-          <SettingItem
-            onPress={(item: SettingItemType) => {
-              dispatch(setAreTestnetsEnabled(!item.state));
-            }}
-            item={{
-              title: "Display all Testnet Networks",
-              description: "",
-              state: testnetEnabled,
-            }}
-            testID="testnet-switch"
-          />
-        </View>
+        {!appConfig.alwaysEnableTestnets && (
+          <>
+            <View style={commonStyles.cardContainer}>
+              <SettingItem
+                onPress={(item: SettingItemType) => {
+                  dispatch(setAreTestnetsEnabled(!item.state));
+                }}
+                item={{
+                  title: "Display all Testnet Networks",
+                  description: "",
+                  state: testnetEnabled,
+                }}
+                testID="testnet-switch"
+              />
+            </View>
 
-        <SpacerColumn size={3} />
+            <SpacerColumn size={3} />
+          </>
+        )}
 
         <TertiaryButton
           text="Manage Networks"

@@ -24,6 +24,7 @@ import { PersistGate } from "redux-persist/integration/react";
 
 import { MultisigDeauth } from "@/components/multisig/MultisigDeauth";
 import { Navigator } from "@/components/navigation/Navigator";
+import { AppConfig, AppConfigProvider } from "@/context/AppConfigProvider";
 import { FeedbacksContextProvider } from "@/context/FeedbacksProvider";
 import { MediaPlayerContextProvider } from "@/context/MediaPlayerProvider";
 import { MessageContextProvider } from "@/context/MessageProvider";
@@ -63,7 +64,7 @@ type DefaultForm = {
 enableLegacyWebImplementation(true);
 // ^ required for drog and drop on the dAppStore
 
-export default function App() {
+const App: React.FC<{ config: AppConfig }> = ({ config }) => {
   const methods = useForm<DefaultForm>();
   const [fontsLoaded] = useFonts({
     Exo_500Medium,
@@ -78,69 +79,71 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <ReduxProvider store={store}>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <PersistGate
-            loading={
-              <View
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  backgroundColor: "black",
-                }}
-              />
-            }
-            persistor={persistor}
-          >
-            <QueryClientProvider client={queryClient}>
-              <FormProvider<DefaultForm> {...methods}>
-                <MetaMaskProvider>
-                  <NavigationContainer linking={linking}>
-                    <SafeAreaProvider>
-                      <FeedbacksContextProvider>
-                        <DropdownsProvider>
-                          <WalletsProvider>
-                            <WalletSyncer />
-                            <DappStoreApps />
-                            <MultisigDeauth />
-                            <WalletControlContextProvider>
-                              <SearchBarContextProvider>
-                                <TransactionModalsProvider>
-                                  <TNSContextProvider>
-                                    <TNSMetaDataListContextProvider>
-                                      <MenuProvider>
-                                        <MessageContextProvider>
-                                          <MediaPlayerContextProvider>
-                                            <StatusBar
-                                              style={
-                                                Platform.OS === "android"
-                                                  ? "light"
-                                                  : "inverted"
-                                              }
-                                            />
-                                            <Navigator />
-                                          </MediaPlayerContextProvider>
-                                        </MessageContextProvider>
-                                      </MenuProvider>
-                                    </TNSMetaDataListContextProvider>
-                                  </TNSContextProvider>
-                                </TransactionModalsProvider>
-                              </SearchBarContextProvider>
-                            </WalletControlContextProvider>
-                          </WalletsProvider>
-                        </DropdownsProvider>
-                      </FeedbacksContextProvider>
-                    </SafeAreaProvider>
-                  </NavigationContainer>
-                </MetaMaskProvider>
-              </FormProvider>
-            </QueryClientProvider>
-          </PersistGate>
-        </GestureHandlerRootView>
-      </ReduxProvider>
+      <AppConfigProvider value={config}>
+        <ReduxProvider store={store}>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <PersistGate
+              loading={
+                <View
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "black",
+                  }}
+                />
+              }
+              persistor={persistor}
+            >
+              <QueryClientProvider client={queryClient}>
+                <FormProvider<DefaultForm> {...methods}>
+                  <MetaMaskProvider>
+                    <NavigationContainer linking={linking}>
+                      <SafeAreaProvider>
+                        <FeedbacksContextProvider>
+                          <DropdownsProvider>
+                            <WalletsProvider>
+                              <WalletSyncer />
+                              <DappStoreApps />
+                              <MultisigDeauth />
+                              <WalletControlContextProvider>
+                                <SearchBarContextProvider>
+                                  <TransactionModalsProvider>
+                                    <TNSContextProvider>
+                                      <TNSMetaDataListContextProvider>
+                                        <MenuProvider>
+                                          <MessageContextProvider>
+                                            <MediaPlayerContextProvider>
+                                              <StatusBar
+                                                style={
+                                                  Platform.OS === "android"
+                                                    ? "light"
+                                                    : "inverted"
+                                                }
+                                              />
+                                              <Navigator />
+                                            </MediaPlayerContextProvider>
+                                          </MessageContextProvider>
+                                        </MenuProvider>
+                                      </TNSMetaDataListContextProvider>
+                                    </TNSContextProvider>
+                                  </TransactionModalsProvider>
+                                </SearchBarContextProvider>
+                              </WalletControlContextProvider>
+                            </WalletsProvider>
+                          </DropdownsProvider>
+                        </FeedbacksContextProvider>
+                      </SafeAreaProvider>
+                    </NavigationContainer>
+                  </MetaMaskProvider>
+                </FormProvider>
+              </QueryClientProvider>
+            </PersistGate>
+          </GestureHandlerRootView>
+        </ReduxProvider>
+      </AppConfigProvider>
     </ErrorBoundary>
   );
-}
+};
 
 class ErrorBoundary extends React.Component<{ children: ReactNode }> {
   state: {
@@ -242,3 +245,5 @@ const DappStoreApps: React.FC = () => {
 
   return null;
 };
+
+export default App;

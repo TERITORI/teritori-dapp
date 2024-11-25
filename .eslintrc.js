@@ -182,11 +182,11 @@ module.exports = {
         "no-restricted-imports": [
           "error",
           {
-            patterns: [],
+            patterns: [disallowScriptsImports],
           },
         ],
       },
-      files: ["packages/dapp-root/**"],
+      files: ["packages/dapp-root/**", "apps/**"],
     },
   ],
 };
