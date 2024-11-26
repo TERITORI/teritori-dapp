@@ -44,7 +44,6 @@ export const useAdena: () => UseAdenaResult = () => {
       isAdenaConnected: boolean,
       targetChainId: string | undefined,
     ) => {
-      console.log({ adena, isAdenaConnected });
       if (!adena || !isAdenaConnected) {
         setReady(true);
         return;
@@ -57,9 +56,14 @@ export const useAdena: () => UseAdenaResult = () => {
           throw new Error("no address");
         }
 
+        if (selectedNetworkInfo?.chainId !== account.data.chainId) {
+          setReady(true);
+          return;
+        }
+
         // adena does not return chain id currently
         const chainId = targetChainId || account.data.chainId || "dev";
-        console.log({ chainId, account });
+
         setState({
           addresses: [account.data.address],
           chainId, // chain id is empty for local nodes
@@ -72,7 +76,7 @@ export const useAdena: () => UseAdenaResult = () => {
 
       setReady(true);
     },
-    [],
+    [selectedNetworkInfo?.chainId],
   );
 
   const addNetwork = useCallback(
