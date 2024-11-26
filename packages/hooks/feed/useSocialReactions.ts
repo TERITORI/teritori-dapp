@@ -1,5 +1,5 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import { useFeedPosting } from "./useFeedPosting";
 import useSelectedWallet from "../useSelectedWallet";
@@ -47,11 +47,16 @@ export const useSocialReactions = ({
           post.reactions,
           variables.msg.icon,
         );
-
         setPost({ ...post, reactions });
       },
     });
-  const cosmosReaction = async (emoji: string, walletAddress: string) => {
+  const [isLoading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(isPostMutationLoading);
+  }, [isPostMutationLoading]);
+
+  const reactOnCosmos = async (emoji: string, walletAddress: string) => {
     const client = await signingSocialFeedClient({
       networkId: post.networkId,
       walletAddress,
@@ -66,7 +71,8 @@ export const useSocialReactions = ({
       },
     });
   };
-  const gnoReaction = async (emoji: string, rpcEndpoint: string) => {
+
+  const reactOnGno = async (emoji: string, rpcEndpoint: string) => {
     const gnoNetwork = mustGetGnoNetwork(post.networkId);
     const vmCall = {
       caller: selectedWallet?.address || "",
@@ -75,30 +81,39 @@ export const useSocialReactions = ({
       func: "ReactPost",
       args: [TERITORI_FEED_ID, post.id.split("-")[1], emoji, "true"],
     };
-    const txHash = await adenaDoContract(
-      post.networkId,
-      [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
-      {
-        gasWanted: 2_000_000,
-      },
-    );
-    const provider = new GnoJSONRPCProvider(rpcEndpoint);
-    // Wait for tx done
-    await provider.waitForTransaction(txHash);
-    const reactions = [...post.reactions];
-    const currentReactionIdx = reactions.findIndex((r) => r.icon === emoji);
 
-    if (currentReactionIdx > -1) {
-      reactions[currentReactionIdx].count++;
-    } else {
-      reactions.push({
-        icon: emoji,
-        count: 1,
-        ownState: true,
-      });
+    try {
+      setLoading(true);
+      const txHash = await adenaDoContract(
+        post.networkId,
+        [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
+        {
+          gasWanted: 2_000_000,
+        },
+      );
+      const provider = new GnoJSONRPCProvider(rpcEndpoint);
+      // Wait for tx done
+      await provider.waitForTransaction(txHash);
+      const reactions = [...post.reactions];
+      const currentReactionIdx = reactions.findIndex((r) => r.icon === emoji);
+
+      if (currentReactionIdx > -1) {
+        reactions[currentReactionIdx].count++;
+      } else {
+        reactions.push({
+          icon: emoji,
+          count: 1,
+          ownState: true,
+        });
+      }
+      setPost({ ...post, reactions });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-    setPost({ ...post, reactions });
   };
+
   const handleReaction = async (emoji: string) => {
     const action =
       emoji === LIKE_EMOJI
@@ -126,11 +141,11 @@ export const useSocialReactions = ({
     }
     const network = getNetwork(post.networkId);
     if (network?.kind === NetworkKind.Gno) {
-      gnoReaction(emoji, network?.endpoint || "");
+      reactOnGno(emoji, network?.endpoint || "");
     } else {
-      cosmosReaction(emoji, selectedWallet.address);
+      reactOnCosmos(emoji, selectedWallet.address);
     }
   };
 
-  return { handleReaction, isPostMutationLoading };
+  return { handleReaction, isPostMutationLoading: isLoading };
 };
