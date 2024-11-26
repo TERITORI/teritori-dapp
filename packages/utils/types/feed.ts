@@ -19,6 +19,7 @@ export enum PostCategory {
   Flagged,
   MusicAudio,
   Video,
+  MarkdownArticle,
 }
 
 export interface NewArticleFormValues {
