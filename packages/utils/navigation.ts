@@ -15,6 +15,7 @@ type MiniTabsScreen = {
 
 export type RootStackParamList = {
   Home?: { network?: string };
+  RedirectHome?: undefined;
   MyCollection: undefined;
   Activity: undefined;
   Guardians: undefined;
@@ -181,162 +182,171 @@ export type AppRouteType<T extends keyof RootStackParamList> = RouteProp<
 
 export const useAppNavigation = () => useNavigation<AppNavigationProp>();
 
-const navConfig: {
+type NavConfig = {
   screens: { [Name in keyof RootStackParamList]: string };
-} = {
-  screens: {
-    Home: "",
-    MyCollection: "my-collection",
-    Activity: "activity",
-    Guardians: "guardians",
-    WalletManager: "wallet-manager",
-    WalletManagerWallets: "wallet-manager/wallets",
-    WalletManagerChains: "wallet-manager/chains",
-    Governance: "governance",
-    GovernanceProposal: "governance/:id",
-    UserPublicProfile: "user/:id/:tab?",
-
-    // === RiotGame
-    RiotGame: "riot-game",
-    RiotGameEnroll: "riot-game/enroll",
-    RiotGameFight: "riot-game/fight",
-    RiotGameBreeding: "riot-game/breeding",
-    RiotGameMemories: "riot-game/memories",
-    RiotGameBridge: "riot-game/bridge",
-    RiotGameMarketplace: "riot-game/marketplace",
-    RiotGameLeaderboard: "riot-game/leaderboard",
-    RiotGameInventory: "riot-game/inventory",
-
-    // ==== Launchpad
-    Launchpad: "launchpad",
-    LaunchpadApply: "launchpad/apply",
-
-    // ==== Launchpad ERC20
-    LaunchpadERC20: "launchpad-erc20",
-    LaunchpadERC20Tokens: "launchpad-erc20/tokens",
-    LaunchpadERC20CreateToken: "launchpad-erc20/create-token",
-    LaunchpadERC20Airdrops: "launchpad-erc20/airdrops",
-    LaunchpadERC20CreateAirdrop: "launchpad-erc20/create-airdrop",
-    LaunchpadERC20Sales: "launchpad-erc20/sales",
-    LaunchpadERC20CreateSale: "launchpad-erc20/create-sale",
-
-    // Mint NFT collection
-    MintCollection: "collection/:id/mint",
-    // ==== Teritori Name Service
-    TNSHome: "tns/:modal?",
-
-    // ==== Marketplace
-    Marketplace: "marketplace",
-    MarketplaceLeaderboard: "marketplace/leaderboard",
-    Collection: "collection/:id",
-    CollectionTools: "collection/:id/tools",
-    NFTDetail: "nft/:id",
-    Feed: "feed/:tab?",
-    FeedNewArticle: "feed/new",
-    FeedPostView: "feed/post/:id",
-    HashtagFeed: "feed/tag/:hashtag",
-
-    // ==== Staking
-    Staking: "staking",
-
-    // === Organizations
-    OrganizationDeployer: "create-org",
-    Organizations: "orgs",
-    CoreDAO: "core-dao",
-
-    // === Projects Program
-    Projects: "projects",
-    ProjectsPayment: "projects/payment",
-    ProjectsCompleteMilestone:
-      "projects/completeMilestone/:projectId/:milestoneId",
-    ProjectsManager: "projects/manager/:view",
-    ProjectsMakeRequest: "projects/make-request",
-    ProjectsDetail: "projects/:id",
-    ProjectsConflictSolving: "projects/:projectId/conflicts",
-    // === Organization
-
-    OrganizationGetStarted: "organization-get-started",
-
-    // === Multisig
-    Multisig: "multisig",
-    MultisigCreate: "multisig/create",
-    MultisigWalletDashboard: "multisig/:id",
-
-    // ==== Swap
-    Swap: "swap",
-    // ==== ComingSoon
-    ComingSoon: "coming-soon",
-    Settings: "settings",
-    // ==== DAppStore
-    DAppStore: "dapp-store",
-    // === DApps
-    ToriPunks: "dapp/tori-punks/:route?",
-    // === Metrics
-    Metrics: "stats",
-
-    // ==== Message
-    Message: "message/:view?",
-    ChatSection: "message/chat",
-    FriendshipManager: "/friends",
-
-    // ==== Native Wallet
-    NativeWallet: "native-wallet",
-    ViewSeed: "native-wallet/view-seed",
-    ImportWallet: "native-wallet/import",
-    CreatePassword: "native-wallet/create-password",
-    CreatePasswordWallet: "native-wallet/create-password-wallet",
-    SuccessScreen: "native-wallet/success",
-
-    // ==== Mini nav
-    MiniTabs: "mini-tabs",
-    MiniChats: "mini-chat",
-    MiniWallets: "mini-wallet",
-    MiniFeeds: "mini-feed",
-    MiniCreatePost: "mini-create-post",
-    Conversation: "mini-conversation",
-    MiniProfile: "mini-profile",
-    MiniProfileDetail: "mini-profile-detail",
-    MiniDAppStore: "mini-dApp-store",
-    MiniNewConversation: "mini-new-conversation",
-    MiniFriend: "mini-friend",
-    MiniAddFriend: "mini-add-friend",
-    MiniNewGroup: "mini-new-group",
-    MiniChatSetting: "mini-chat-setting",
-    MiniPreferencesSetting: "mini-preferences-setting",
-    MiniChatCreateAccount: "mini-chat-create-account",
-    MiniSettings: "mini-settings",
-    MiniAccountDetails: "mini-account-details",
-    MiniAddAccount: "mini-add-account",
-    Notifications: "notifications",
-    AddressBook: "address-book",
-    AddAddressBook: "add-address-book",
-    EditAddressBook: "edit-address-book/:addressId",
-    MiniSecurityAndPrivacy: "mini-security-and-privacy",
-    MiniChangePassword: "mini-change-password",
-    MiniFaceLogin: "mini-face-login",
-    MiniRevealSeedPhrase: "mini-reveal-seed-phrase",
-    MiniExportPrivateKey: "mini-export-private-key",
-    MiniResetWallet: "mini-reset-wallet",
-    ChangeNetwork: "change-network",
-    About: "about",
-    MiniManageTokens: "mini-manage-tokens",
-    MiniAddCustomToken: "mini-add-custom-token",
-    MiniSelectToken: "mini-select-token",
-    MiniDepositTORI: "mini-deposit-tori",
-    ModeSelection: "mode-selection",
-    ChatActivation: "chat-activation",
-    MiniSendTori: "mini-send-tori",
-    MiniSendingTori: "mini-sending-tori",
-    MiniTransactionDetail: "mini-transaction-detail",
-    ConnectLedger: "connect-ledger",
-    CreateWallet: "create-wallet",
-    MiniChatProfile: "mini-chat-profile",
-    MiniGroupActions: "mini-group-actions",
-    BurnCapital: "burn-capital",
-  },
 };
 
-export const linking = {
+const getNavConfig: (homeScreen: keyof RootStackParamList) => NavConfig = (
+  homeScreen,
+) => {
+  const navConfig: NavConfig = {
+    screens: {
+      MyCollection: "my-collection",
+      Activity: "activity",
+      Guardians: "guardians",
+      WalletManager: "wallet-manager",
+      WalletManagerWallets: "wallet-manager/wallets",
+      WalletManagerChains: "wallet-manager/chains",
+      Governance: "governance",
+      GovernanceProposal: "governance/:id",
+      UserPublicProfile: "user/:id/:tab?",
+
+      // === RiotGame
+      RiotGame: "riot-game",
+      RiotGameEnroll: "riot-game/enroll",
+      RiotGameFight: "riot-game/fight",
+      RiotGameBreeding: "riot-game/breeding",
+      RiotGameMemories: "riot-game/memories",
+      RiotGameBridge: "riot-game/bridge",
+      RiotGameMarketplace: "riot-game/marketplace",
+      RiotGameLeaderboard: "riot-game/leaderboard",
+      RiotGameInventory: "riot-game/inventory",
+
+      // ==== Launchpad
+      Launchpad: "launchpad",
+      LaunchpadApply: "launchpad/apply",
+
+      // ==== Launchpad ERC20
+      LaunchpadERC20: "launchpad-erc20",
+      LaunchpadERC20Tokens: "launchpad-erc20/tokens",
+      LaunchpadERC20CreateToken: "launchpad-erc20/create-token",
+      LaunchpadERC20Airdrops: "launchpad-erc20/airdrops",
+      LaunchpadERC20CreateAirdrop: "launchpad-erc20/create-airdrop",
+      LaunchpadERC20Sales: "launchpad-erc20/sales",
+      LaunchpadERC20CreateSale: "launchpad-erc20/create-sale",
+
+      // Mint NFT collection
+      MintCollection: "collection/:id/mint",
+      // ==== Teritori Name Service
+      TNSHome: "tns/:modal?",
+
+      // ==== Marketplace
+      Marketplace: "marketplace",
+      MarketplaceLeaderboard: "marketplace/leaderboard",
+      Collection: "collection/:id",
+      CollectionTools: "collection/:id/tools",
+      NFTDetail: "nft/:id",
+      Feed: "feed/:tab?",
+      FeedNewArticle: "feed/new",
+      FeedPostView: "feed/post/:id",
+      HashtagFeed: "feed/tag/:hashtag",
+
+      // ==== Staking
+      Staking: "staking",
+
+      // === Organizations
+      OrganizationDeployer: "create-org",
+      Organizations: "orgs",
+      CoreDAO: "core-dao",
+
+      // === Projects Program
+      Projects: "projects",
+      ProjectsPayment: "projects/payment",
+      ProjectsCompleteMilestone:
+        "projects/completeMilestone/:projectId/:milestoneId",
+      ProjectsManager: "projects/manager/:view",
+      ProjectsMakeRequest: "projects/make-request",
+      ProjectsDetail: "projects/:id",
+      ProjectsConflictSolving: "projects/:projectId/conflicts",
+      // === Organization
+
+      OrganizationGetStarted: "organization-get-started",
+
+      // === Multisig
+      Multisig: "multisig",
+      MultisigCreate: "multisig/create",
+      MultisigWalletDashboard: "multisig/:id",
+
+      // ==== Swap
+      Swap: "swap",
+      // ==== ComingSoon
+      ComingSoon: "coming-soon",
+      Settings: "settings",
+      // ==== DAppStore
+      DAppStore: "dapp-store",
+      // === DApps
+      ToriPunks: "dapp/tori-punks/:route?",
+      // === Metrics
+      Metrics: "stats",
+
+      // ==== Message
+      Message: "message/:view?",
+      ChatSection: "message/chat",
+      FriendshipManager: "/friends",
+
+      // ==== Native Wallet
+      NativeWallet: "native-wallet",
+      ViewSeed: "native-wallet/view-seed",
+      ImportWallet: "native-wallet/import",
+      CreatePassword: "native-wallet/create-password",
+      CreatePasswordWallet: "native-wallet/create-password-wallet",
+      SuccessScreen: "native-wallet/success",
+
+      // ==== Mini nav
+      MiniTabs: "mini-tabs",
+      MiniChats: "mini-chat",
+      MiniWallets: "mini-wallet",
+      MiniFeeds: "mini-feed",
+      MiniCreatePost: "mini-create-post",
+      Conversation: "mini-conversation",
+      MiniProfile: "mini-profile",
+      MiniProfileDetail: "mini-profile-detail",
+      MiniDAppStore: "mini-dApp-store",
+      MiniNewConversation: "mini-new-conversation",
+      MiniFriend: "mini-friend",
+      MiniAddFriend: "mini-add-friend",
+      MiniNewGroup: "mini-new-group",
+      MiniChatSetting: "mini-chat-setting",
+      MiniPreferencesSetting: "mini-preferences-setting",
+      MiniChatCreateAccount: "mini-chat-create-account",
+      MiniSettings: "mini-settings",
+      MiniAccountDetails: "mini-account-details",
+      MiniAddAccount: "mini-add-account",
+      Notifications: "notifications",
+      AddressBook: "address-book",
+      AddAddressBook: "add-address-book",
+      EditAddressBook: "edit-address-book/:addressId",
+      MiniSecurityAndPrivacy: "mini-security-and-privacy",
+      MiniChangePassword: "mini-change-password",
+      MiniFaceLogin: "mini-face-login",
+      MiniRevealSeedPhrase: "mini-reveal-seed-phrase",
+      MiniExportPrivateKey: "mini-export-private-key",
+      MiniResetWallet: "mini-reset-wallet",
+      ChangeNetwork: "change-network",
+      About: "about",
+      MiniManageTokens: "mini-manage-tokens",
+      MiniAddCustomToken: "mini-add-custom-token",
+      MiniSelectToken: "mini-select-token",
+      MiniDepositTORI: "mini-deposit-tori",
+      ModeSelection: "mode-selection",
+      ChatActivation: "chat-activation",
+      MiniSendTori: "mini-send-tori",
+      MiniSendingTori: "mini-sending-tori",
+      MiniTransactionDetail: "mini-transaction-detail",
+      ConnectLedger: "connect-ledger",
+      CreateWallet: "create-wallet",
+      MiniChatProfile: "mini-chat-profile",
+      MiniGroupActions: "mini-group-actions",
+      BurnCapital: "burn-capital",
+    },
+  };
+  if (homeScreen === "Home") {
+    navConfig.screens["Home"] = "";
+  }
+  return navConfig;
+};
+
+export const getLinking = (homeScreen: keyof RootStackParamList) => ({
   prefixes: [],
-  config: navConfig,
-};
+  config: getNavConfig(homeScreen),
+});

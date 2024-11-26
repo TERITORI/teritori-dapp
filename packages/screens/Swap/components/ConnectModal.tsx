@@ -1,6 +1,5 @@
 import React, { Suspense } from "react";
 import { Image, StyleSheet, View } from "react-native";
-import { useSelector } from "react-redux";
 
 import osmosisIllustration from "../../../../assets/osmosis-illustration.png";
 import ModalBase from "../../../components/modals/ModalBase";
@@ -8,7 +7,7 @@ import ModalBase from "../../../components/modals/ModalBase";
 import { BrandText } from "@/components/BrandText";
 import { SecondaryButton } from "@/components/buttons/SecondaryButton";
 import { SpacerColumn } from "@/components/spacer";
-import { selectAreTestnetsEnabled } from "@/store/slices/settings";
+import { useAreTestnetsEnabled } from "@/hooks/useAreTestnetsEnabled";
 import { neutral00, neutral77, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -26,7 +25,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
   onPressConnectTestnet,
   onClose,
 }) => {
-  const testnetsEnabled = useSelector(selectAreTestnetsEnabled);
+  const testnetsEnabled = useAreTestnetsEnabled();
   const ModalHeader = React.lazy(() =>
     import("./SwapView/SwapHeader").then((module) => ({
       default: module.SwapHeader,
