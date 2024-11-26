@@ -1,18 +1,24 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useAppDispatch } from "../../../store/store";
+import { Wallet } from "../wallet";
 
+import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
-import { NetworkKind, allNetworks, getUserId } from "@/networks";
+import {
+  GnoNetworkInfo,
+  NetworkKind,
+  allNetworks,
+  getUserId,
+} from "@/networks";
 import {
   selectIsAdenaConnected,
   setIsAdenaConnected,
+  setSelectedNetworkId,
   setSelectedWalletId,
 } from "@/store/slices/settings";
-import { useAppDispatch } from "../../../store/store";
 import { WalletProvider } from "@/utils/walletProvider";
-import { Wallet } from "../wallet";
 
 type UseAdenaResult = [true, boolean, Wallet[]] | [false, boolean, undefined];
 
@@ -21,58 +27,133 @@ export const useAdena: () => UseAdenaResult = () => {
   const [hasAdena, setHasAdena] = useState(false);
   const dispatch = useAppDispatch();
   const selectedNetworkInfo = useSelectedNetworkInfo();
+
   const { setToast } = useFeedbacks();
+
+  const adena = hasAdena ? (window as any).adena : null;
 
   const [state, setState] = useState<{ addresses: string[]; chainId?: string }>(
     { addresses: [] },
   );
   const [ready, setReady] = useState(false);
 
-  const switchNetwork = async () => {
-    const adena = (window as any).adena;
+  const fetchAccount = useCallback(
+    async (
+      dispatch: any,
+      adena: any,
+      isAdenaConnected: boolean,
+      targetChainId: string | undefined,
+    ) => {
+      console.log({ adena, isAdenaConnected });
+      if (!adena || !isAdenaConnected) {
+        setReady(true);
+        return;
+      }
 
-    const network = await adena.GetNetwork();
-    const currentChainId = network.data.chainId;
+      try {
+        const account = await adena.GetAccount();
+        console.log("adena account", account);
+        if (!account.data.address) {
+          throw new Error("no address");
+        }
 
-    if (currentChainId === selectedNetworkInfo?.chainId) {
-      return;
-    }
+        // adena does not return chain id currently
+        const chainId = targetChainId || account.data.chainId || "dev";
+        console.log({ chainId, account });
+        setState({
+          addresses: [account.data.address],
+          chainId, // chain id is empty for local nodes
+        });
+        setSelectedNetworkId(chainId);
+      } catch (err) {
+        console.warn("failed to connect to adena", err);
+        dispatch(setIsAdenaConnected(false));
+      }
 
-    const res = await adena.SwitchNetwork(selectedNetworkInfo?.chainId);
+      setReady(true);
+    },
+    [],
+  );
 
-    if (res.status === "failure") {
-      console.log(res.message);
+  const addNetwork = useCallback(
+    async (selectedNetworkInfo: GnoNetworkInfo) => {
+      const res = await adena.AddNetwork({
+        chainId: selectedNetworkInfo.chainId,
+        rpcUrl: selectedNetworkInfo.endpoint,
+        chainName: selectedNetworkInfo.displayName,
+      });
+
+      if (res.status === "failure") {
+        setToast({
+          type: "error",
+          message: res.message,
+          mode: "normal",
+          title: "Error",
+        });
+        return;
+      }
+
+      fetchAccount(
+        dispatch,
+        adena,
+        isAdenaConnected,
+        selectedNetworkInfo.chainId,
+      );
+    },
+    [setToast, adena, dispatch, fetchAccount, isAdenaConnected],
+  );
+
+  const switchNetwork = useCallback(
+    async (selectedNetworkInfo: GnoNetworkInfo) => {
+      const network = await adena.GetNetwork();
+      const currentChainId = network.data.chainId;
+
+      if (currentChainId === selectedNetworkInfo?.chainId) {
+        return;
+      }
+
+      const res = await adena.SwitchNetwork(selectedNetworkInfo?.chainId);
+
+      if (res.status === "success") {
+        setState((state) => ({ ...state, chainId: res.data.chainId }));
+        return;
+      }
+
+      console.warn(res);
+
+      if (res.type === "UNADDED_NETWORK") {
+        addNetwork(selectedNetworkInfo);
+        return;
+      }
+
       setToast({
         type: "error",
         message: res.message,
         mode: "normal",
         title: "Error",
       });
-    }
-  };
+    },
+    [adena, setToast, addNetwork],
+  );
 
   useEffect(() => {
-    if (!hasAdena) {
-      return;
-    }
-    if (selectedNetworkInfo?.kind !== NetworkKind.Gno) {
-      return;
-    }
+    if (!adena) return;
 
-    switchNetwork();
-  }, [hasAdena, selectedNetworkInfo]);
+    if (selectedNetworkInfo?.kind !== NetworkKind.Gno) return;
+
+    switchNetwork(selectedNetworkInfo);
+  }, [adena, selectedNetworkInfo, setToast, addNetwork, switchNetwork]);
 
   useEffect(() => {
-    if (!hasAdena) {
-      return;
-    }
-    (window as any).adena.On("changedAccount", (address: string) => {
+    if (!adena) return;
+
+    adena.On("changedAccount", (address: string) => {
       setState((state) => ({ ...state, addresses: [address] }));
     });
-    (window as any).adena.On("changedNetwork", (network: string) => {
+    adena.On("changedNetwork", (network: string) => {
       setState((state) => ({ ...state, chainId: network }));
     });
-  }, [hasAdena]);
+  }, [adena]);
 
   useEffect(() => {
     const handleLoad = () => {
@@ -91,46 +172,8 @@ export const useAdena: () => UseAdenaResult = () => {
   }, []);
 
   useEffect(() => {
-    const effect = async () => {
-      if (!hasAdena || !isAdenaConnected) {
-        setReady(true);
-        return;
-      }
-      try {
-        const adena = (window as any)?.adena;
-        if (!adena) {
-          console.error("no adena");
-          setReady(true);
-          return;
-        }
-        const account = await adena.GetAccount();
-        console.log("adena account", account);
-        if (!account.data.address) {
-          throw new Error("no address");
-        }
-
-        // adena does not return chain id currently
-        let chainId = account.data.chainId;
-        if (!chainId && selectedNetworkInfo?.kind === NetworkKind.Gno) {
-          chainId = selectedNetworkInfo.chainId;
-        }
-        if (!chainId) {
-          chainId = "dev";
-        }
-
-        setState({
-          addresses: [account.data.address],
-          chainId, // chain id is empty for local nodes
-        });
-      } catch (err) {
-        console.warn("failed to connect to adena", err);
-        dispatch(setIsAdenaConnected(false));
-      }
-
-      setReady(true);
-    };
-    effect();
-  }, [dispatch, hasAdena, isAdenaConnected, selectedNetworkInfo]);
+    fetchAccount(dispatch, adena, isAdenaConnected, state.chainId);
+  }, [dispatch, adena, isAdenaConnected, state.chainId, fetchAccount]);
 
   const wallets = useMemo(() => {
     const network = allNetworks.find(
@@ -174,5 +217,5 @@ export const useAdena: () => UseAdenaResult = () => {
     }
   }, [dispatch, selectedNetworkInfo?.kind, wallets]);
 
-  return hasAdena ? [true, ready, wallets] : [false, ready, undefined];
+  return adena ? [true, ready, wallets] : [false, ready, undefined];
 };
