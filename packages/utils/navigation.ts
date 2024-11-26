@@ -61,6 +61,12 @@ export type RootStackParamList = {
         additionalHashtag?: string;
       })
     | undefined;
+  FeedNewArticleMarkdown:
+    | (NewPostFormValues & {
+        additionalMention?: string;
+        additionalHashtag?: string;
+      })
+    | undefined;
   FeedPostView: { id: string };
   HashtagFeed: { hashtag: string };
 
@@ -239,6 +245,7 @@ const getNavConfig: (homeScreen: keyof RootStackParamList) => NavConfig = (
       NFTDetail: "nft/:id",
       Feed: "feed/:tab?",
       FeedNewArticle: "feed/new",
+      FeedNewArticleMarkdown: "feed/new-md",
       FeedPostView: "feed/post/:id",
       HashtagFeed: "feed/tag/:hashtag",
 
