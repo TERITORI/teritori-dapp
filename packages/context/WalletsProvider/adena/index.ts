@@ -68,7 +68,7 @@ export const useAdena: () => UseAdenaResult = () => {
           addresses: [account.data.address],
           chainId, // chain id is empty for local nodes
         });
-        setSelectedNetworkId(chainId);
+        dispatch(setSelectedNetworkId(selectedNetworkInfo.id));
       } catch (err) {
         console.warn("failed to connect to adena", err);
         dispatch(setIsAdenaConnected(false));

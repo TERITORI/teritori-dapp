@@ -2,11 +2,16 @@ import React from "react";
 import { Linking } from "react-native";
 
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
-import adenaSVG from "../../../assets/icons/adena.svg";
+import adenaSVG from "@/assets/icons/adena.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { setIsAdenaConnected } from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
+import {
+  setIsAdenaConnected,
+  setSelectedNetworkId,
+} from "@/store/slices/settings";
+import { useAppDispatch } from "@/store/store";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { NetworkKind } from "@/networks/types";
+import { getGnoNetworkFromChainId } from "@/networks/index";
 
 export const ConnectAdenaButton: React.FC<{
   onDone?: (err?: unknown) => void;
@@ -27,6 +32,13 @@ export const ConnectAdenaButton: React.FC<{
       const establishResult = await adena.AddEstablish("Teritori dApp");
       console.log("established", establishResult);
       dispatch(setIsAdenaConnected(true));
+
+      // If we are not in Gno then try to switch to gno
+      if (selectedNetworkInfo.kind !== NetworkKind.Gno) {
+        const account = await adena.GetAccount();
+        const gnoNetwork = getGnoNetworkFromChainId(account.data.chainId);
+        dispatch(setSelectedNetworkId(gnoNetwork.id));
+      }
 
       onDone && onDone();
     } catch (err) {
