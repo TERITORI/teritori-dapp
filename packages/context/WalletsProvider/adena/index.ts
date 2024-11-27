@@ -44,7 +44,7 @@ export const useAdena: () => UseAdenaResult = () => {
       isAdenaConnected: boolean,
       targetChainId: string | undefined,
     ) => {
-      if (!adena || !isAdenaConnected) {
+      if (!adena || !isAdenaConnected || !selectedNetworkInfo) {
         setReady(true);
         return;
       }
@@ -56,7 +56,7 @@ export const useAdena: () => UseAdenaResult = () => {
           throw new Error("no address");
         }
 
-        if (selectedNetworkInfo?.chainId !== account.data.chainId) {
+        if (selectedNetworkInfo.chainId !== account.data.chainId) {
           setReady(true);
           return;
         }
@@ -76,7 +76,7 @@ export const useAdena: () => UseAdenaResult = () => {
 
       setReady(true);
     },
-    [selectedNetworkInfo?.chainId],
+    [selectedNetworkInfo],
   );
 
   const addNetwork = useCallback(
