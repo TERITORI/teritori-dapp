@@ -4,19 +4,17 @@ import { Linking } from "react-native";
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import adenaSVG from "../../../assets/icons/adena.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { getGnoNetworkFromChainId } from "../../networks";
-import {
-  setIsAdenaConnected,
-  setSelectedNetworkId,
-  setSelectedWalletId,
-} from "../../store/slices/settings";
+import { setIsAdenaConnected } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 
 export const ConnectAdenaButton: React.FC<{
   onDone?: (err?: unknown) => void;
 }> = ({ onDone }) => {
-  const { setToastError } = useFeedbacks();
+  const { setToast } = useFeedbacks();
   const dispatch = useAppDispatch();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+
   const handlePress = async () => {
     try {
       const adena = (window as any)?.adena;
@@ -24,26 +22,21 @@ export const ConnectAdenaButton: React.FC<{
         Linking.openURL("https://adena.app/");
         return;
       }
+
+      // NOTE: we just show the connection popup, all the processing logic is already handled in useAdena
       const establishResult = await adena.AddEstablish("Teritori dApp");
       console.log("established", establishResult);
       dispatch(setIsAdenaConnected(true));
-      const account = await adena.GetAccount();
-      const address = account.data.address;
-      const chainId = account.data.chainId;
-      const network = getGnoNetworkFromChainId(chainId);
 
-      if (!network) {
-        throw new Error(`Unsupported chainId ${chainId}`);
-      }
-      dispatch(setSelectedNetworkId(network.id));
-      dispatch(setSelectedWalletId(`adena-${network.id}-${address}`));
       onDone && onDone();
     } catch (err) {
       console.error(err);
       if (err instanceof Error) {
-        setToastError({
-          title: "Failed to connect Adena",
+        setToast({
+          type: "error",
           message: err.message,
+          mode: "normal",
+          title: "Failed to connect to Adena",
         });
       }
       onDone && onDone(err);
