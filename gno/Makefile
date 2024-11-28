@@ -1,7 +1,7 @@
-KEY = teritori-test4-seed
+KEY = teritori
 BASE = teritori
-REMOTE = https://rpc.gno.land:443
-CHAIN_ID = portal-loop
+REMOTE = https://rpc.test5.gno.land
+CHAIN_ID = test5
 
 .PHONY: add_social_feeds_realm add_utf16_pkg add_ujson_pkg add_flags_index_pkg add_dao_interfaces_pkg add_social_feed all
 
@@ -21,7 +21,7 @@ add_social_feed:
 		-pkgpath "gno.land/r/${BASE}/social_feeds" \
 		-func="CreateFeed" \
 		-gas-fee="1000000ugnot" \
-		-gas-wanted="3000000" \
+		-gas-wanted="5000000" \
 		-remote="${REMOTE}" \
 		-chainid="${CHAIN_ID}" \
 		-broadcast \

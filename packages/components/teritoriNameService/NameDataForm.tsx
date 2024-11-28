@@ -139,7 +139,7 @@ export const NameDataForm: React.FC<{
         squaresBackgroundColor={neutral17}
       />
       <MediaPreview
-        style={inputStyle}
+        textInputsStyle={inputStyle}
         avatarImageUrl={avatarImageUrl}
         bannerImageUrl={bannerImageUrl}
         setAvatarImageUrl={setAvatarImageUrl}

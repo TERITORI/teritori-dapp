@@ -217,7 +217,7 @@ export const EditProfileForm: React.FC<{
         render={({ field: { onChange } }) => (
           <MediaPreview
             hasPadding={false}
-            style={{ marginBottom: 12, width: "100%" }}
+            textInputsStyle={{ marginBottom: 12, width: "100%" }}
             variant="regular"
             avatarImageUrl={getValues("avatarURL") || ""}
             bannerImageUrl={getValues("bannerURL") || ""}

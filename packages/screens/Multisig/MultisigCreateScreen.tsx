@@ -62,6 +62,7 @@ export const MultisigCreateScreen = () => {
     emptyPubKeyGroup(),
     emptyPubKeyGroup(),
   ]);
+  const [isLoading, setLoading] = useState(false);
   const navigation = useAppNavigation();
   const signatureRequiredValue = watch("signatureRequired");
   useEffect(() => {
@@ -118,23 +119,40 @@ export const MultisigCreateScreen = () => {
       parseInt(signatureRequired, 10),
     );
 
-    const res = await multisigClient.CreateOrJoinMultisig({
-      authToken,
-      chainId: selectedNetwork.chainId,
-      bech32Prefix: selectedNetwork.addressPrefix,
-      multisigPubkeyJson: JSON.stringify(multisigPubkey),
-      name,
-    });
+    try {
+      const res = await multisigClient.CreateOrJoinMultisig({
+        authToken: { ...authToken, userAddress: "aeae" },
+        chainId: selectedNetwork.chainId,
+        bech32Prefix: selectedNetwork.addressPrefix,
+        multisigPubkeyJson: JSON.stringify(multisigPubkey),
+        name,
+      });
 
-    navigation.navigate("MultisigWalletDashboard", {
-      id: getUserId(selectedNetwork?.id, res.multisigAddress),
-    });
+      navigation.navigate("MultisigWalletDashboard", {
+        id: getUserId(selectedNetwork?.id, res.multisigAddress),
+      });
+    } catch (err) {
+      throw new Error(`Failed to create multisig: ${err}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const onAddressChange = async (index: number, value: string) => {
+  const handleAddressChange = async (index: number, value: string) => {
+    if (!selectedNetwork) {
+      throw new Error("No network selected");
+    }
+    if (selectedNetwork.kind !== NetworkKind.Cosmos) {
+      throw new Error("Only Cosmos networks are supported");
+    }
+
     const resValAddress = validateAddress(value);
 
     if (resValAddress !== true) return "Invalid address";
+
+    if (!value.includes(selectedNetwork.addressPrefix)) {
+      return `Only ${selectedNetwork.displayName} address is allowed`;
+    }
 
     const address = value;
 
@@ -142,15 +160,24 @@ export const MultisigCreateScreen = () => {
       return "This address is already used in this form.";
 
     const tempPubkeys = [...addressIndexes];
-    const account = await getCosmosAccount(
-      getUserId(selectedNetwork?.id, address),
-    );
-    if (!account?.pubkey) {
-      return "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig.";
+
+    try {
+      setLoading(true);
+      const account = await getCosmosAccount(
+        getUserId(selectedNetwork?.id, address),
+      );
+
+      if (!account?.pubkey) {
+        return "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig.";
+      }
+      tempPubkeys[index].address = address;
+      tempPubkeys[index].compressedPubkey = account.pubkey.value;
+      setAddressIndexes(tempPubkeys);
+    } catch {
+      return "Failed to get Cosmos account";
+    } finally {
+      setLoading(false);
     }
-    tempPubkeys[index].address = address;
-    tempPubkeys[index].compressedPubkey = account.pubkey.value;
-    setAddressIndexes(tempPubkeys);
   };
 
   return (
@@ -232,7 +259,7 @@ export const MultisigCreateScreen = () => {
                     label={"Address #" + (index + 1)}
                     rules={{
                       required: true,
-                      validate: (value) => onAddressChange(index, value),
+                      validate: (value) => handleAddressChange(index, value),
                     }}
                     placeHolder="Account address"
                     iconSVG={walletInputSVG}
@@ -350,6 +377,7 @@ export const MultisigCreateScreen = () => {
                 wrapWithFeedback(() => onSubmit(arg))(),
               )}
               loader
+              isLoading={isLoading}
             />
           </View>
         </View>
