@@ -5,12 +5,11 @@ import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 
 import adenaSVG from "@/assets/icons/adena.svg";
-import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { getGnoNetworkFromChainId } from "@/networks/index";
-import { NetworkKind } from "@/networks/types";
 import {
   setIsAdenaConnected,
   setSelectedNetworkId,
+  setSelectedWalletId,
 } from "@/store/slices/settings";
 import { useAppDispatch } from "@/store/store";
 
@@ -19,7 +18,6 @@ export const ConnectAdenaButton: React.FC<{
 }> = ({ onDone }) => {
   const { setToast } = useFeedbacks();
   const dispatch = useAppDispatch();
-  const selectedNetworkInfo = useSelectedNetworkInfo();
 
   const handlePress = async () => {
     try {
@@ -29,22 +27,25 @@ export const ConnectAdenaButton: React.FC<{
         return;
       }
 
-      // NOTE: we just show the connection popup, all the processing logic is already handled in useAdena
       const establishResult = await adena.AddEstablish("Teritori dApp");
-      console.log("established", establishResult);
-      dispatch(setIsAdenaConnected(true));
-
-      // If we are not in Gno then try to switch to gno
-      if (selectedNetworkInfo?.kind !== NetworkKind.Gno) {
-        const account = await adena.GetAccount();
-        const gnoNetwork = getGnoNetworkFromChainId(account.data.chainId);
-
-        if (!gnoNetwork) {
-          throw Error(`Not supported network: ${account.data.chainId}`);
-        }
-
-        dispatch(setSelectedNetworkId(gnoNetwork.id));
+      if (establishResult.status === "failure") {
+        throw Error(establishResult.message);
       }
+
+      console.log("established", establishResult);
+
+      const account = await adena.GetAccount();
+      const address = account.data.address;
+      const chainId = account.data.chainId;
+      const gnoNetwork = getGnoNetworkFromChainId(chainId);
+
+      if (!gnoNetwork) {
+        throw new Error(`Unsupported chainId ${chainId}`);
+      }
+
+      dispatch(setSelectedNetworkId(gnoNetwork.id));
+      dispatch(setSelectedWalletId(`adena-${gnoNetwork.id}-${address}`));
+      dispatch(setIsAdenaConnected(true));
 
       onDone && onDone();
     } catch (err) {
@@ -54,7 +55,7 @@ export const ConnectAdenaButton: React.FC<{
           type: "error",
           message: err.message,
           mode: "normal",
-          title: "Failed to connect to Adena",
+          title: "Failed to connect to Adena (1)",
         });
       }
       onDone && onDone(err);

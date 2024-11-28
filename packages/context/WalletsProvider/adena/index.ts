@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
+import { useAdenaUtils } from "./useAdenaUtils";
 import { useAppDispatch } from "../../../store/store";
 import { Wallet } from "../wallet";
 
@@ -109,33 +110,48 @@ export const useAdena: () => UseAdenaResult = () => {
 
   const switchNetwork = useCallback(
     async (selectedNetworkInfo: GnoNetworkInfo) => {
-      const network = await adena.GetNetwork();
-      const currentChainId = network.data.chainId;
+      try {
+        const network = await adena.GetNetwork();
+        if (network.status === "failure") {
+          throw Error(
+            network.type === "NOT_CONNECTED"
+              ? "Please connect to your wallet first"
+              : network.message,
+          );
+        }
 
-      if (currentChainId === selectedNetworkInfo?.chainId) {
-        return;
+        const currentChainId = network.data.chainId;
+
+        if (currentChainId === selectedNetworkInfo?.chainId) {
+          return;
+        }
+
+        const res = await adena.SwitchNetwork(selectedNetworkInfo?.chainId);
+
+        if (res.status === "success") {
+          setState((state) => ({ ...state, chainId: res.data.chainId }));
+          return;
+        }
+
+        console.warn(res);
+
+        if (res.type === "UNADDED_NETWORK") {
+          addNetwork(selectedNetworkInfo);
+          return;
+        }
+
+        throw Error(res.message);
+      } catch (err) {
+        console.error(err);
+        if (err instanceof Error) {
+          setToast({
+            type: "error",
+            message: err.message,
+            mode: "normal",
+            title: "Failed to connect to Adena (2)",
+          });
+        }
       }
-
-      const res = await adena.SwitchNetwork(selectedNetworkInfo?.chainId);
-
-      if (res.status === "success") {
-        setState((state) => ({ ...state, chainId: res.data.chainId }));
-        return;
-      }
-
-      console.warn(res);
-
-      if (res.type === "UNADDED_NETWORK") {
-        addNetwork(selectedNetworkInfo);
-        return;
-      }
-
-      setToast({
-        type: "error",
-        message: res.message,
-        mode: "normal",
-        title: "Error",
-      });
     },
     [adena, setToast, addNetwork],
   );
