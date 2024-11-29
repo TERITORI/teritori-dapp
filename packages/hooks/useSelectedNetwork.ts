@@ -1,11 +1,13 @@
 import { useSelector } from "react-redux";
 
+import { useAppConfig } from "@/context/AppConfigProvider";
 import { getNetwork } from "@/networks";
 import { selectSelectedNetworkId } from "@/store/slices/settings";
 
 export const useSelectedNetworkId = () => {
+  const { defaultNetworkId } = useAppConfig();
   const currentNetworkId = useSelector(selectSelectedNetworkId);
-  const networkId = currentNetworkId || "teritori";
+  const networkId = currentNetworkId || defaultNetworkId;
   return networkId;
 };
 

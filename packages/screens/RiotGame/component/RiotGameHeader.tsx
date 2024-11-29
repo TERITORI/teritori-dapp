@@ -5,7 +5,6 @@ import { SvgProps } from "react-native-svg";
 
 import bridgeSVG from "../../../../assets/icons/bridge.svg";
 import cartSVG from "../../../../assets/icons/cart.svg";
-import diamondSVG from "../../../../assets/icons/diamond.svg";
 import fightSVG from "../../../../assets/icons/fight.svg";
 import filmSVG from "../../../../assets/icons/film.svg";
 import gameBoxSVG from "../../../../assets/icons/game-box.svg";
@@ -63,13 +62,6 @@ const MENU_ITEMS: MenuItem[] = [
     name: "Leaderboard",
     route: "RiotGameLeaderboard",
     iconSVG: trophiesSVG,
-  },
-  {
-    id: "rarity",
-    name: "Rarity",
-    externalRoute:
-      "https://tori-live.io/allnfts.php?collid=tori1j08452mqwadp8xu25kn9rleyl2gufgfjnv0sn8dvynynakkjukcq3vtuv2",
-    iconSVG: diamondSVG,
   },
   {
     id: "marketplace",

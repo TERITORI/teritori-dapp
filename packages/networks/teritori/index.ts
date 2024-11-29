@@ -27,7 +27,7 @@ export const teritoriNetwork: CosmosNetworkInfo = {
     NetworkFeature.UPP,
     NetworkFeature.NameService,
     NetworkFeature.BurnTokens,
-    NetworkFeature.NFTLaunchpad,
+    NetworkFeature.CosmWasmNFTLaunchpad,
     NetworkFeature.NFTMarketplaceLeaderboard,
     NetworkFeature.CosmWasmNFTsBurner,
   ],
@@ -73,8 +73,6 @@ export const teritoriNetwork: CosmosNetworkInfo = {
     "tori1kvjk9m7dk0es35y6ah0k28llllvle3n7xgvh0gh568ta0paf8awsml2xev",
   distributorContractAddress:
     "tori1mnem0rhjaxcsghe0xw692xysra63xwwdee2wth9s0rkfwh4dxpaq76qqre",
-  riotersFooterContractAddress:
-    "tori1m6g3l3j5t988zwmp965hrhsxvm8jrkf2ulw4gmwj8hx8pd84tvcqeearsd",
   secondaryDuringMintList: [
     nameServiceContractAddress,
     riotContractAddressGen1,

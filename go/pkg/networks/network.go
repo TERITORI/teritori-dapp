@@ -68,7 +68,6 @@ type CosmosNetwork struct {
 	RiotContractAddressGen1           string `json:"riotContractAddressGen1"`
 	RiotSquadStakingContractAddressV1 string `json:"riotSquadStakingContractAddressV1"`
 	RiotSquadStakingContractAddressV2 string `json:"riotSquadStakingContractAddressV2"`
-	RiotersFooterContractAddress      string `json:"riotersFooterContractAddress"`
 	SocialFeedContractAddress         string `json:"socialFeedContractAddress"`
 	CwAdminFactoryContractAddress     string `json:"cwAdminFactoryContractAddress"`
 }
