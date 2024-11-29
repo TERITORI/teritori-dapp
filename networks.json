@@ -3880,7 +3880,7 @@
     "features": [
       "NFTMarketplace",
       "RiotP2E",
-      "NFTLaunchpad",
+      "CosmWasmNFTLaunchpad",
       "NFTBridge"
     ],
     "currencies": [
@@ -3926,7 +3926,7 @@
     "features": [
       "NFTMarketplace",
       "RiotP2E",
-      "NFTLaunchpad",
+      "CosmWasmNFTLaunchpad",
       "NFTBridge"
     ],
     "currencies": [
@@ -4675,9 +4675,9 @@
     "txIndexerURL": "https://indexer.test3.gno.testnet.teritori.com"
   },
   {
-    "id": "gno-test4",
+    "id": "gno-test5",
     "kind": "Gno",
-    "displayName": "Gno Test4",
+    "displayName": "Gno Test5",
     "icon": "gno.svg",
     "features": [
       "SocialFeed",
@@ -4705,12 +4705,12 @@
       }
     ],
     "stakeCurrency": "ugnot",
-    "idPrefix": "gnotest4",
-    "chainId": "test4",
-    "endpoint": "https://rpc.test4.gno.land:443",
-    "txExplorer": "https://gnoscan.io/transactions/details?txhash=$hash&chainId=test4",
-    "accountExplorer": "https://gnoscan.io/accounts/$address?chainId=test4",
-    "contractExplorer": "https://gnoscan.io/realms/details?path=$address&chainId=test4",
+    "idPrefix": "gnotest5",
+    "chainId": "test5",
+    "endpoint": "https://rpc.test5.gno.land",
+    "txExplorer": "https://gnoscan.io/transactions/details?txhash=$hash&chainId=test5",
+    "accountExplorer": "https://gnoscan.io/accounts/$address?chainId=test5",
+    "contractExplorer": "https://gnoscan.io/realms/details?path=$address&chainId=test5",
     "testnet": true,
     "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
     "gnowebURL": "https://gno.land",
@@ -4720,8 +4720,8 @@
     "socialFeedsPkgPath": "gno.land/r/teritori/social_feeds",
     "socialFeedsDAOPkgPath": "gno.land/r/teritori/social_feeds_dao",
     "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
-    "profilePkgPath": "gno.land/r/teritori/profile",
-    "txIndexerURL": "https://indexer.test4.gno.testnet.teritori.com"
+    "profilePkgPath": "gno.land/r/demo/profile",
+    "txIndexerURL": "https://indexer.test5.gno.testnet.teritori.com"
   },
   {
     "id": "cosmos-registry:gravitybridge",
@@ -5300,10 +5300,10 @@
   },
   {
     "id": "cosmos-registry:irisnet",
-    "displayName": "IRISnet",
-    "chainId": "irishub-1",
-    "registryName": "irisnet",
     "kind": "Cosmos",
+    "chainId": "irishub-1",
+    "displayName": "IRISnet",
+    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/irisnet/images/iris.svg",
     "currencies": [
       {
         "kind": "native",
@@ -5318,16 +5318,17 @@
     ],
     "features": [],
     "featureObjects": [],
+    "overrides": "cosmos-registry:irisnet",
+    "registryName": "irisnet",
+    "txExplorer": "https://www.mintscan.io/iris/txs/$hash",
+    "accountExplorer": "https://www.mintscan.io/iris/account/$address",
+    "contractExplorer": "https://www.mintscan.io/iris/account/$address",
     "idPrefix": "irisnet",
-    "addressPrefix": "iaa",
-    "txExplorer": "https://app.ezstaking.io/irisnet/txs/$hash",
-    "accountExplorer": "https://app.ezstaking.io/irisnet/account/$address",
-    "contractExplorer": "https://app.ezstaking.io/irisnet/account/$address",
-    "icon": "https://raw.githubusercontent.com/cosmos/chain-registry/master/irisnet/images/iris.svg",
     "testnet": false,
     "backendEndpoint": "",
-    "restEndpoint": "https://api-irisnet-ia.cosmosia.notional.ventures/",
-    "rpcEndpoint": "https://rpc-irisnet-ia.cosmosia.notional.ventures/",
+    "addressPrefix": "iaa",
+    "restEndpoint": "https://iris-rest.publicnode.com/",
+    "rpcEndpoint": "https://rpc-irisnet-01.stakeflow.io/",
     "stakeCurrency": "uiris",
     "gasPriceStep": {
       "low": 0.2,
@@ -11486,7 +11487,7 @@
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad",
+      "CosmWasmNFTLaunchpad",
       "NFTMarketplaceLeaderboard",
       "CosmWasmNFTsBurner"
     ],
@@ -11552,7 +11553,6 @@
     "riotSquadStakingContractAddressV1": "tori1zwkmdfsc6h96jm4yqdykaw5y7ndwsvqvgh5ryxp9nxs3hccml0xqfyrm37",
     "riotSquadStakingContractAddressV2": "tori1kvjk9m7dk0es35y6ah0k28llllvle3n7xgvh0gh568ta0paf8awsml2xev",
     "distributorContractAddress": "tori1mnem0rhjaxcsghe0xw692xysra63xwwdee2wth9s0rkfwh4dxpaq76qqre",
-    "riotersFooterContractAddress": "tori1m6g3l3j5t988zwmp965hrhsxvm8jrkf2ulw4gmwj8hx8pd84tvcqeearsd",
     "secondaryDuringMintList": [
       "tori1wkwy0xh89ksdgj9hr347dyd2dw7zesmtrue6kfzyml4vdtz6e5wscs7038",
       "tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37",
@@ -11584,7 +11584,7 @@
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad",
+      "CosmWasmNFTLaunchpad",
       "RiotP2E",
       "NFTMarketplaceLeaderboard"
     ],
@@ -11631,7 +11631,6 @@
     "riotSquadStakingContractAddressV1": "",
     "riotSquadStakingContractAddressV2": "",
     "distributorContractAddress": "",
-    "riotersFooterContractAddress": "",
     "secondaryDuringMintList": [
       "",
       ""
@@ -11663,7 +11662,7 @@
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad",
+      "CosmWasmNFTLaunchpad",
       "CosmWasmPremiumFeed",
       "NFTMarketplaceLeaderboard",
       "CosmWasmNFTsBurner"
@@ -11682,6 +11681,14 @@
         "type": "NFTMarketplace",
         "cwAddressListCodeId": 63,
         "cwAddressListContractAddress": "tori1x72plnprsjnmszylmdm3cnvu5h6u55fyf0pe02lye9p6q2ws05ps33qmft"
+      },
+      {
+        "type": "CosmWasmNFTLaunchpad",
+        "launchpadContractAddress": "tori1te7ku4de0k4rl8lhyuvpmhygaq7k7vy5zpsjq9y638efxsnx3aaqck2utf",
+        "launchpadEndpoint": "https://dapp-backend.testnet.teritori.com",
+        "nftTr721CodeId": 60,
+        "codeId": 71,
+        "defaultMintDenom": "utori"
       }
     ],
     "currencies": [
@@ -11737,7 +11744,6 @@
     "riotSquadStakingContractAddressV1": "",
     "riotSquadStakingContractAddressV2": "",
     "distributorContractAddress": "",
-    "riotersFooterContractAddress": "",
     "secondaryDuringMintList": [
       "",
       "tori1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgsjscd88",

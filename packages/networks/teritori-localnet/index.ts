@@ -19,7 +19,7 @@ export const teritoriLocalnetNetwork: NetworkInfo = {
     NetworkFeature.UPP,
     NetworkFeature.NameService,
     NetworkFeature.BurnTokens,
-    NetworkFeature.NFTLaunchpad,
+    NetworkFeature.CosmWasmNFTLaunchpad,
     NetworkFeature.RiotP2E,
     NetworkFeature.NFTMarketplaceLeaderboard,
   ],
@@ -56,7 +56,6 @@ export const teritoriLocalnetNetwork: NetworkInfo = {
   riotSquadStakingContractAddressV1: "",
   riotSquadStakingContractAddressV2: "",
   distributorContractAddress: "",
-  riotersFooterContractAddress: "",
   secondaryDuringMintList: [
     nameServiceContractAddress,
     riotContractAddressGen1,

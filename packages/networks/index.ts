@@ -4,6 +4,7 @@ import { GasPrice, StargateClient } from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 import { bech32 } from "bech32";
 
+import { irisNetwork } from "./IRISnet";
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { networksFromCosmosRegistry } from "./cosmos-registry";
@@ -12,9 +13,8 @@ import { ethereumGoerliNetwork } from "./ethereum-goerli";
 import { NetworkFeature, NetworkFeatureObject } from "./features";
 import { gnoDevNetwork } from "./gno-dev";
 import { gnoPortalNetwork } from "./gno-portal";
-import { gnoTeritoriNetwork } from "./gno-teritori";
 import { gnoTest3Network } from "./gno-test3";
-import { gnoTest4Network } from "./gno-test4";
+import { gnoTest5Network } from "./gno-test5";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
 // import { solanaNetwork } from "./solana";
@@ -39,6 +39,7 @@ export * from "./types";
 const packageNetworks = [
   teritoriNetwork,
   cosmosNetwork,
+  irisNetwork,
   teritoriTestnetNetwork,
   teritoriLocalnetNetwork,
   cosmosThetaNetwork,
@@ -47,9 +48,8 @@ const packageNetworks = [
   osmosisNetwork,
   osmosisTestnetNetwork,
   gnoPortalNetwork,
-  gnoTeritoriNetwork,
   gnoTest3Network,
-  gnoTest4Network,
+  gnoTest5Network,
   gnoDevNetwork,
   polygonMumbaiNetwork,
   polygonNetwork,
@@ -67,7 +67,7 @@ export const defaultEnabledNetworks = [
   "cosmos-hub",
   "osmosis",
   "gno-portal",
-  "gno-test4",
+  "gno-test5",
   "cosmos-registry:juno",
   "cosmos-registry:kujira",
   "cosmos-registry:axelar",

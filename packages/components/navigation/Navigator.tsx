@@ -5,6 +5,7 @@ import { getMiniModeScreens } from "./getMiniModeScreens";
 import { getNormalModeScreens } from "./getNormalModeScreens";
 import { getNav } from "./util";
 
+import { useAppConfig } from "@/context/AppConfigProvider";
 import { useAppMode } from "@/hooks/useAppMode";
 import { useOnboardedStatus } from "@/hooks/useOnboardStatus";
 import { AppMode } from "@/utils/types/app-mode";
@@ -12,6 +13,7 @@ import { AppMode } from "@/utils/types/app-mode";
 export const Navigator: React.FC = () => {
   const [appMode] = useAppMode();
   const [isLoading] = useOnboardedStatus();
+  const { homeScreen } = useAppConfig();
 
   const { Nav, navigatorScreenOptions } = getNav(appMode as AppMode);
 
@@ -21,7 +23,7 @@ export const Navigator: React.FC = () => {
 
   return (
     <Nav.Navigator
-      initialRouteName={appMode === "mini" ? "MiniTabs" : "Home"}
+      initialRouteName={appMode === "mini" ? "MiniTabs" : homeScreen}
       drawerContent={() =>
         Platform.OS === "web" || appMode === "mini" ? null : <Sidebar />
       }

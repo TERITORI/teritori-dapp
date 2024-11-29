@@ -13,10 +13,12 @@ import { useBalances } from "../useBalances";
 import useSelectedWallet from "../useSelectedWallet";
 
 import { signingSocialFeedClient } from "@/client-creators/socialFeedClient";
+import { TeritoriSocialFeedCreatePostMutation } from "@/contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
 import {
   getStakingCurrency,
   mustGetCosmosNetwork,
   NetworkKind,
+  parseNetworkObjectId,
   parseUserId,
 } from "@/networks";
 import { prettyPrice } from "@/utils/coins";
@@ -62,7 +64,7 @@ export const useFeedPosting = (
     freePostCount > 0 || postFee <= Number(feeBalance?.amount || "0");
 
   const makePost = useCallback(
-    async (metadata: string, parentPostIdentifier?: string) => {
+    async (metadata: string, parentPostId?: string) => {
       if (!canPayForPost) {
         throw new Error("Not enough funds");
       }
@@ -72,8 +74,17 @@ export const useFeedPosting = (
         throw new Error("Invalid network");
       }
 
+      const [parentPostNetwork, parentPostLocalIdentifier] =
+        parseNetworkObjectId(parentPostId);
+      if (parentPostId && (!parentPostNetwork || !parentPostLocalIdentifier)) {
+        throw new Error("Invalid parent post ID");
+      }
+
+      // FIXME: use id generated on-chain
       const identifier = uuidv4();
-      const msg = {
+
+      const parentPostIdentifier = parentPostLocalIdentifier || undefined;
+      const msg: TeritoriSocialFeedCreatePostMutation["msg"] = {
         category,
         identifier,
         metadata,
@@ -149,10 +160,6 @@ export const useFeedPosting = (
         }
       } else {
         if (network?.kind === NetworkKind.Gno) {
-          parentPostIdentifier = !parentPostIdentifier
-            ? "0"
-            : parentPostIdentifier.split("-")[1];
-
           const vmCall = {
             caller: userAddress,
             send: "",
@@ -160,7 +167,7 @@ export const useFeedPosting = (
             func: "CreatePost",
             args: [
               TERITORI_FEED_ID,
-              parentPostIdentifier,
+              parentPostLocalIdentifier || "0",
               msg.category.toString(),
               msg.metadata,
             ],

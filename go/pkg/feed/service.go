@@ -171,8 +171,13 @@ func (s *FeedService) Posts(ctx context.Context, req *feedpb.PostsRequest) (*fee
 	posts := make([]*feedpb.Post, len(dbPostWithExtras))
 	for idx, dbPost := range dbPostWithExtras {
 		var reactions []*feedpb.Reaction
-		reactionsMap := map[string]interface{}{}
-		dbPost.UserReactions.Scan(&reactionsMap)
+
+		reactionsMap := make(map[string]interface{})
+		if err := json.Unmarshal(dbPost.UserReactions, &reactionsMap); err != nil {
+			s.conf.Logger.Error("failed to unmarshal UserReactions", zap.String("data", string(dbPost.UserReactions)), zap.Error(err))
+			continue
+		}
+
 		for icon, users := range reactionsMap {
 			ownState := false
 			if queryUserID != "" {

@@ -105,6 +105,11 @@ func init() {
 	profile.SetStringField(profile.Bio, "${conf.description}")
 	profile.SetStringField(profile.Avatar, "${conf.imageURI}")
 
+  // Register the DAO profile
+	profile.SetStringField(profile.DisplayName, "${conf.displayName}")
+	profile.SetStringField(profile.Bio, "${conf.description}")
+	profile.SetStringField(profile.Avatar, "${conf.imageURI}")
+
   dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "${conf.displayName}", "${conf.description}", "${conf.imageURI}")
   }
   

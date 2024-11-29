@@ -104,6 +104,7 @@ temp/
 # rust
 /target/
 artifacts
+rust/cw-contracts/*/target
 
 # cypress
 cypress/screenshots

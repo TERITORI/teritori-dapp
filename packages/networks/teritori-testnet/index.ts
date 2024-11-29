@@ -1,5 +1,6 @@
 import { teritoriTestnetCurrencies } from "./currencies";
 import {
+  CosmWasmNFTLaunchpad,
   CosmWasmNFTsBurner,
   CosmWasmPremiumFeed,
   NetworkFeature,
@@ -29,6 +30,16 @@ const nftMarketplace: NFTMarketplace = {
     "tori1x72plnprsjnmszylmdm3cnvu5h6u55fyf0pe02lye9p6q2ws05ps33qmft",
 };
 
+const cosmwasmNftLaunchpadFeature: CosmWasmNFTLaunchpad = {
+  type: NetworkFeature.CosmWasmNFTLaunchpad,
+  launchpadContractAddress:
+    "tori1te7ku4de0k4rl8lhyuvpmhygaq7k7vy5zpsjq9y638efxsnx3aaqck2utf",
+  launchpadEndpoint: "https://dapp-backend.testnet.teritori.com",
+  nftTr721CodeId: 60,
+  codeId: 71,
+  defaultMintDenom: "utori",
+};
+
 const riotContractAddressGen0 =
   "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0";
 const riotContractAddressGen1 = "";
@@ -48,12 +59,17 @@ export const teritoriTestnetNetwork: CosmosNetworkInfo = {
     NetworkFeature.UPP,
     NetworkFeature.NameService,
     NetworkFeature.BurnTokens,
-    NetworkFeature.NFTLaunchpad,
+    NetworkFeature.CosmWasmNFTLaunchpad,
     NetworkFeature.CosmWasmPremiumFeed,
     NetworkFeature.NFTMarketplaceLeaderboard,
     NetworkFeature.CosmWasmNFTsBurner,
   ],
-  featureObjects: [premiumFeedFeature, nftsBurnerFeature, nftMarketplace],
+  featureObjects: [
+    premiumFeedFeature,
+    nftsBurnerFeature,
+    nftMarketplace,
+    cosmwasmNftLaunchpadFeature,
+  ],
   currencies: teritoriTestnetCurrencies,
   txExplorer: "https://explorer.teritori.com/teritori-testnet/tx/$hash",
   accountExplorer:
@@ -90,7 +106,6 @@ export const teritoriTestnetNetwork: CosmosNetworkInfo = {
   riotSquadStakingContractAddressV1: "",
   riotSquadStakingContractAddressV2: "",
   distributorContractAddress: "",
-  riotersFooterContractAddress: "",
   secondaryDuringMintList: [
     premiumFeedFeature.membershipContractAddress,
     nameServiceContractAddress,

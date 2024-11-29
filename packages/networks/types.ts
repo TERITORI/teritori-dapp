@@ -58,7 +58,6 @@ export type CosmosNetworkInfo = NetworkInfoBase & {
   vaultContractAddress?: string;
   riotSquadStakingContractAddressV1?: string;
   riotSquadStakingContractAddressV2?: string;
-  riotersFooterContractAddress?: string;
   socialFeedCodeId?: number;
   socialFeedContractAddress?: string;
   daoCw20CodeId?: number;

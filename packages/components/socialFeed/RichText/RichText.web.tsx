@@ -38,7 +38,13 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { ScrollView, useWindowDimensions, View, ViewStyle } from "react-native";
+import {
+  ScrollView,
+  TouchableWithoutFeedback,
+  useWindowDimensions,
+  View,
+  ViewStyle,
+} from "react-native";
 
 import { RichHashtagRenderer } from "./RichRenderer/RichHashtagRenderer";
 import { RichHashtagRendererConsultation } from "./RichRenderer/RichHashtagRendererConsultation";
@@ -313,6 +319,13 @@ export const RichText: React.FC<RichTextProps> = ({
     onPublish?.(publishValues);
   };
 
+  // Focuses Editor
+  const handlePressEditor = () => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+  };
+
   /////////////// TOOLBAR BUTTONS ////////////////
   const Buttons: React.FC<{ externalProps: any }> = ({ externalProps }) => (
     <View style={toolbarButtonsWrapperCStyle}>
@@ -423,18 +436,24 @@ export const RichText: React.FC<RichTextProps> = ({
       <ScrollView
         contentContainerStyle={isTruncateNeeded && { overflow: "hidden" }}
       >
-        <Editor
-          editorState={editorState}
-          handleKeyCommand={handleKeyCommand}
-          keyBindingFn={keyBindingFn}
-          onChange={handleChange}
-          plugins={plugins}
-          placeholder={isPostConsultation ? "" : "Type message here"}
-          readOnly={isPostConsultation}
-          onBlur={onBlur}
-          ref={editorRef}
-          decorators={compositeDecorator.decorators}
-        />
+        <TouchableWithoutFeedback
+          onPress={!isPostConsultation ? handlePressEditor : undefined}
+        >
+          <View>
+            <Editor
+              editorState={editorState}
+              handleKeyCommand={handleKeyCommand}
+              keyBindingFn={keyBindingFn}
+              onChange={handleChange}
+              plugins={plugins}
+              placeholder={isPostConsultation ? "" : "Type message here"}
+              readOnly={isPostConsultation}
+              onBlur={onBlur}
+              ref={editorRef}
+              decorators={compositeDecorator.decorators}
+            />
+          </View>
+        </TouchableWithoutFeedback>
         {isTruncateNeeded && (
           <BrandText style={[fontSemibold14, { color: neutral77 }]}>
             {"\n...see more"}

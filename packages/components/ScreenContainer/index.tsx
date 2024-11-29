@@ -2,7 +2,6 @@ import React, { ReactNode, useCallback, useMemo } from "react";
 import {
   SafeAreaView,
   ScrollView,
-  StyleSheet,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -126,7 +125,14 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
     <SafeAreaView style={{ width: "100%", flex: 1 }}>
       {/*FIXME: Too many containers levels*/}
 
-      <View style={styles.container}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#000000",
+          flexDirection: "row",
+          zIndex: 999,
+        }}
+      >
         {!hideSidebar ? <Sidebar /> : null}
 
         <View style={{ flex: 1 }}>
@@ -150,9 +156,8 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
                   >
                     <View
                       style={[
-                        styles.childrenContainer,
                         marginStyle,
-                        { width, flex: 1 },
+                        { width, flex: 1, height: "100%", alignSelf: "center" },
                       ]}
                     >
                       {children}
@@ -161,7 +166,10 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
                   </ScrollView>
                 ) : (
                   <View
-                    style={[styles.childrenContainer, marginStyle, { width }]}
+                    style={[
+                      marginStyle,
+                      { width, height: "100%", alignSelf: "center" },
+                    ]}
                   >
                     {children}
                     {footerChildren ? footerChildren : <Footer />}
@@ -220,18 +228,3 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
     </SafeAreaView>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000000",
-    flexDirection: "row",
-    zIndex: 999,
-  },
-  childrenContainer: {
-    height: "100%",
-    alignSelf: "center",
-  },
-});
