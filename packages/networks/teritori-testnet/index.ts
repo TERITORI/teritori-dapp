@@ -10,7 +10,7 @@ const riotContractAddressGen1 =
 export const teritoriTestnetNetwork: NetworkInfo = {
   id: "teritori-testnet",
   kind: NetworkKind.Cosmos,
-  chainId: "teritori-testnet-v3",
+  chainId: "teritori-test-7",
   displayName: "Teritori Testnet",
   icon: "icons/networks/teritori.svg",
   features: [
@@ -88,9 +88,9 @@ export const teritoriTestnetNetwork: NetworkInfo = {
   featureObjects: [
     {
       kind: NetworkFeature.CosmWasmRakki,
-      codeId: 198,
+      codeId: 79,
       contractAddress:
-        "tori1uln9hjsx4km3hlewy9wgs0yac40de9fz5gsy85dfk7mlxs33eyjsez9s0m",
+        "tori1smdl4c0mc4kqsrg42rhrx5czqwxtp2gml0v8yrzhclesf5n47wzqds7dx3",
     },
   ],
 };
