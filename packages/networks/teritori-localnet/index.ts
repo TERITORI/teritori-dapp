@@ -19,7 +19,7 @@ export const teritoriLocalnetNetwork: NetworkInfo = {
     NetworkFeature.UPP,
     NetworkFeature.NameService,
     NetworkFeature.BurnTokens,
-    NetworkFeature.NFTLaunchpad,
+    NetworkFeature.CosmWasmNFTLaunchpad,
     NetworkFeature.RiotP2E,
     NetworkFeature.NFTMarketplaceLeaderboard,
   ],

@@ -19,7 +19,9 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
   const selectedNetworkId = useSelectedNetworkId();
 
   return (
-    <ScreenContainer forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}>
+    <ScreenContainer
+      forceNetworkFeatures={[NetworkFeature.CosmWasmNFTLaunchpad]}
+    >
       <View
         style={{
           paddingBottom: layout.contentSpacing,

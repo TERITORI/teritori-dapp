@@ -11,7 +11,7 @@ export const ethereumGoerliNetwork: EthereumNetworkInfo = {
   features: [
     NetworkFeature.NFTMarketplace,
     NetworkFeature.RiotP2E,
-    NetworkFeature.NFTLaunchpad,
+    NetworkFeature.CosmWasmNFTLaunchpad,
     NetworkFeature.NFTBridge,
   ],
   currencies: ethereumGoerliCurrencies,
