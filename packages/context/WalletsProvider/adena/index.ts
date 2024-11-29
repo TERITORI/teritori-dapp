@@ -113,11 +113,8 @@ export const useAdena: () => UseAdenaResult = () => {
       try {
         const network = await adena.GetNetwork();
         if (network.status === "failure") {
-          throw Error(
-            network.type === "NOT_CONNECTED"
-              ? "Please connect to your wallet first"
-              : network.message,
-          );
+          if (network.type === "NOT_CONNECTED") return;
+          throw Error(network.message);
         }
 
         const currentChainId = network.data.chainId;
