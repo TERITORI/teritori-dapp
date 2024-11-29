@@ -3880,7 +3880,7 @@
     "features": [
       "NFTMarketplace",
       "RiotP2E",
-      "NFTLaunchpad",
+      "CosmWasmNFTLaunchpad",
       "NFTBridge"
     ],
     "currencies": [
@@ -3926,7 +3926,7 @@
     "features": [
       "NFTMarketplace",
       "RiotP2E",
-      "NFTLaunchpad",
+      "CosmWasmNFTLaunchpad",
       "NFTBridge"
     ],
     "currencies": [
@@ -11427,7 +11427,7 @@
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad",
+      "CosmWasmNFTLaunchpad",
       "NFTMarketplaceLeaderboard",
       "CosmWasmNFTsBurner"
     ],
@@ -11524,7 +11524,7 @@
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad",
+      "CosmWasmNFTLaunchpad",
       "RiotP2E",
       "NFTMarketplaceLeaderboard"
     ],
@@ -11602,7 +11602,7 @@
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad",
+      "CosmWasmNFTLaunchpad",
       "CosmWasmPremiumFeed",
       "NFTMarketplaceLeaderboard",
       "CosmWasmNFTsBurner"
@@ -11621,6 +11621,14 @@
         "type": "NFTMarketplace",
         "cwAddressListCodeId": 63,
         "cwAddressListContractAddress": "tori1x72plnprsjnmszylmdm3cnvu5h6u55fyf0pe02lye9p6q2ws05ps33qmft"
+      },
+      {
+        "type": "CosmWasmNFTLaunchpad",
+        "launchpadContractAddress": "tori1te7ku4de0k4rl8lhyuvpmhygaq7k7vy5zpsjq9y638efxsnx3aaqck2utf",
+        "launchpadEndpoint": "https://dapp-backend.testnet.teritori.com",
+        "nftTr721CodeId": 60,
+        "codeId": 71,
+        "defaultMintDenom": "utori"
       }
     ],
     "currencies": [
