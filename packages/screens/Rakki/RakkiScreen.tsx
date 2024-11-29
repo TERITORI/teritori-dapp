@@ -29,11 +29,7 @@ import { useBalances } from "../../hooks/useBalances";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  NetworkFeature,
-  getKeplrSigningCosmWasmClient,
-  getNetwork,
-} from "../../networks";
+import { NetworkFeature, getNetworkFeature } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { ScreenFC } from "../../utils/navigation";
 import { errorColor } from "../../utils/style/colors";
@@ -46,6 +42,8 @@ import {
 } from "../../utils/style/fonts";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { joinElements } from "../Multisig/components/MultisigRightSection";
+
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 
 // TODO: replace all placeholders text with real values
 // TODO: remove fake history data
@@ -130,7 +128,7 @@ const BuyTicketsButton: React.FC<{ networkId: string; info: Info }> = ({
   const totalPrice = ticketAmountNumber.mul(
     Long.fromString(info.config.ticket_price.amount),
   );
-  const balances = useBalances(networkId, selectedWallet?.address);
+  const { balances } = useBalances(networkId, selectedWallet?.address);
   const ticketDenomBalance =
     balances.find((b) => b.denom === info.config.ticket_price.denom)?.amount ||
     "0";
@@ -339,11 +337,11 @@ const BuyTicketsButton: React.FC<{ networkId: string; info: Info }> = ({
                   }
                   const cosmWasmClient =
                     await getKeplrSigningCosmWasmClient(networkId);
-                  const network = getNetwork(networkId);
-                  const feature = network?.featureObjects?.find(
-                    (o) => o.kind === NetworkFeature.CosmWasmRakki,
+                  const feature = getNetworkFeature(
+                    networkId,
+                    NetworkFeature.CosmWasmRakki,
                   );
-                  if (feature?.kind !== NetworkFeature.CosmWasmRakki) {
+                  if (feature?.type !== NetworkFeature.CosmWasmRakki) {
                     throw new Error("Rakki not supported on this network");
                   }
                   const msgs: MsgExecuteContractEncodeObject[] = [];

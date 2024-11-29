@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { RakkiQueryClient } from "../../contracts-clients/rakki/Rakki.client";
 import {
   NetworkFeature,
-  getNetwork,
+  getNetworkFeature,
   getNonSigningCosmWasmClient,
   getUserId,
 } from "../../networks";
@@ -12,15 +12,11 @@ export const useRakkiHistory = (networkId: string) => {
   const { data: rakkiHistory, ...other } = useQuery(
     ["rakkiHistory", networkId],
     async () => {
-      const network = getNetwork(networkId);
-      if (!network) {
-        return null;
-      }
-      const rakkiFeature = network.featureObjects?.find(
-        (fo) => fo.kind === NetworkFeature.CosmWasmRakki,
+      const rakkiFeature = getNetworkFeature(
+        networkId,
+        NetworkFeature.CosmWasmRakki,
       );
-      if (rakkiFeature?.kind !== NetworkFeature.CosmWasmRakki) {
-        // TODO: find a better way to get feature typing
+      if (!rakkiFeature) {
         return null;
       }
       const cosmWasmClient = await getNonSigningCosmWasmClient(networkId);
