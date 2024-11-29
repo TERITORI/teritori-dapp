@@ -28,11 +28,22 @@ import {
 } from "@/networks";
 import { zodTryParseJSON } from "@/utils/sanitize";
 
-export const deployTeritoriEcosystem = async (
-  opts: { home: string; binaryPath: string; signer: OfflineSigner | undefined },
-  networkId: string,
-  wallet: string,
-) => {
+export interface DeployOpts {
+  home: string;
+  binaryPath: string;
+  signer?: OfflineSigner;
+  keyringBackend?: string;
+}
+
+export const initDeploy = async ({
+  opts,
+  networkId,
+  wallet,
+}: {
+  opts: DeployOpts;
+  networkId: string;
+  wallet: string;
+}) => {
   const network = cloneDeep(getCosmosNetwork(networkId));
   if (!network) {
     console.error(`Cosmos network ${networkId} not found`);
@@ -51,6 +62,17 @@ export const deployTeritoriEcosystem = async (
   }
   bech32.decode(walletAddr);
 
+  console.log("Wallet address:", walletAddr);
+
+  return { network, walletAddr };
+};
+
+export const deployTeritoriEcosystem = async (
+  opts: DeployOpts,
+  networkId: string,
+  wallet: string,
+) => {
+  const { network, walletAddr } = await initDeploy({ opts, networkId, wallet });
   console.log("Wallet address:", walletAddr);
 
   console.log("Storing name service");
@@ -188,7 +210,7 @@ export const testTeritoriEcosystem = async (network: CosmosNetworkInfo) => {
 };
 
 const instantiateMarketplaceVault = (
-  opts: { home: string; binaryPath: string },
+  opts: DeployOpts,
   wallet: string,
   adminAddr: string,
   network: CosmosNetworkInfo,
@@ -210,7 +232,7 @@ const instantiateMarketplaceVault = (
 };
 
 const instantiateSocialFeed = async (
-  opts: { home: string; binaryPath: string },
+  opts: DeployOpts,
   wallet: string,
   adminAddr: string,
   network: CosmosNetworkInfo,
@@ -232,7 +254,7 @@ const instantiateSocialFeed = async (
 };
 
 export const instantiateNameService = async (
-  opts: { home: string; binaryPath: string },
+  opts: DeployOpts,
   wallet: string,
   adminAddr: string,
   network: CosmosNetworkInfo,
@@ -290,7 +312,7 @@ export const instantiateNameService = async (
 };
 
 export const instantiateContract = async (
-  opts: { home: string; binaryPath: string; keyringBackend?: string },
+  opts: DeployOpts,
   wallet: string,
   network: CosmosNetworkInfo,
   codeId: number,
@@ -327,7 +349,7 @@ export const instantiateContract = async (
 };
 
 export const storeWASM = async (
-  opts: { home: string; binaryPath: string; keyringBackend?: string },
+  opts: DeployOpts,
   wallet: string,
   network: CosmosNetworkInfo,
   wasmFilePath: string,

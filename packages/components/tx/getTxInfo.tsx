@@ -26,6 +26,7 @@ import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { SocialMessageContent } from "../socialFeed/SocialCard/SocialMessageContent";
 import { SpacerColumn } from "../spacer";
+import { MediaPreview } from "../teritoriNameService/MediaPreview";
 import { Username } from "../user/Username";
 
 import { cosmosTypesRegistry } from "@/networks/cosmos-types";
@@ -393,6 +394,45 @@ export const getTxInfo = (
                 <BrandText>Post on social feed</BrandText>
                 <SpacerColumn size={2.5} />
                 <SocialMessageContent post={execMsg.create_post} isPreview />
+              </View>
+            );
+          };
+        } else if (
+          network?.kind === NetworkKind.Cosmos &&
+          contractAddress === network.nameServiceContractAddress &&
+          method === "update_metadata"
+        ) {
+          icon = feedWhiteSVG;
+          name = "Update profile";
+          preview = () => {
+            return (
+              <View>
+                <BrandText>Update {execMsg[method].token_id}</BrandText>
+                <SpacerColumn size={2.5} />
+                <BrandText style={brandTextNormalStyle}>
+                  Display name:{" "}
+                  <Text style={{ color: "white" }}>
+                    {execMsg[method].metadata.public_name}
+                  </Text>
+                </BrandText>
+                <SpacerColumn size={1} />
+                <BrandText style={brandTextNormalStyle}>
+                  Bio:{" "}
+                  <Text style={{ color: "white" }}>
+                    {execMsg[method].metadata.public_bio}
+                  </Text>
+                </BrandText>
+                <SpacerColumn size={1} />
+                <MediaPreview
+                  hasPadding={false}
+                  textInputsStyle={{ marginBottom: 12 }}
+                  style={{ width: 410, backgroundColor: "black" }}
+                  variant="regular"
+                  avatarImageUrl={execMsg[method].metadata.image}
+                  bannerImageUrl={
+                    execMsg[method].metadata.public_profile_header
+                  }
+                />
               </View>
             );
           };

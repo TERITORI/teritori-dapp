@@ -27,7 +27,7 @@ export const teritoriNetwork: CosmosNetworkInfo = {
     NetworkFeature.UPP,
     NetworkFeature.NameService,
     NetworkFeature.BurnTokens,
-    NetworkFeature.NFTLaunchpad,
+    NetworkFeature.CosmWasmNFTLaunchpad,
     NetworkFeature.NFTMarketplaceLeaderboard,
     NetworkFeature.CosmWasmNFTsBurner,
   ],
