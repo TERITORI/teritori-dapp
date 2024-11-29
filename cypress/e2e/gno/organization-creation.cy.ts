@@ -15,6 +15,7 @@ describe("Create an organization flow", () => {
     const url =
       "https://images.unsplash.com/photo-1492571350019-22de08371fd3?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
     const description = "Test Dao description";
+    const role = "administrator";
 
     cy.contains("Create Dao").click();
 
@@ -26,8 +27,13 @@ describe("Create an organization flow", () => {
     cy.get('[data-testid="organization-description"]').type(description);
 
     cy.contains("Next: Configure voting").click();
+    cy.get('[data-testid="roles-permissions-next"]').click();
+    cy.contains('Add New Role').click();
+    cy.get("input[placeholder='Role name']").type(role);
     cy.contains("Next: Set tokens or members").click();
+    cy.get("input[placeholder='administrator, moderator']").type(role);
     cy.get('[data-testid="member-settings-next"]').click();
+
     cy.contains("Confirm & Launch the Organization").click();
 
     cy.contains("Get Started", { timeout: 10000 }).should("exist");
