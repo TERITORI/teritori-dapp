@@ -1,7 +1,6 @@
 import React, { FC, useState } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
-import { useDropdowns } from "../../context/DropdownsProvider";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
 import { useWallets } from "../../context/WalletsProvider";
@@ -24,13 +23,23 @@ import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { TertiaryButton } from "../buttons/TertiaryButton";
 import { NetworksListModal } from "../modals/NetworksListModal";
 
+import { useAppConfig } from "@/context/AppConfigProvider";
+
 export const NetworkSelectorMenu: FC<{
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
   forceNetworkFeatures?: NetworkFeature[];
   style?: StyleProp<ViewStyle>;
-}> = ({ forceNetworkId, forceNetworkKind, forceNetworkFeatures, style }) => {
-  const { closeOpenedDropdown } = useDropdowns();
+  onSelect: () => void;
+  optionsMenuwidth?: number;
+}> = ({
+  forceNetworkId,
+  forceNetworkKind,
+  forceNetworkFeatures,
+  style,
+  onSelect,
+  optionsMenuwidth = 172,
+}) => {
   const { resetMediaPlayer } = useMediaPlayer();
   const dispatch = useAppDispatch();
   const { wallets } = useWallets();
@@ -39,8 +48,10 @@ export const NetworkSelectorMenu: FC<{
   const [networksModalVisible, setNetworksModalVisible] = useState(false);
   const enabledNetworks = useEnabledNetworks();
   const isMobile = useIsMobile();
+  const { forceNetworkList } = useAppConfig();
 
   const onPressNetwork = (networkId: string) => {
+    onSelect();
     let walletProvider: WalletProvider | null = null;
 
     const network = getNetwork(networkId);
@@ -70,13 +81,12 @@ export const NetworkSelectorMenu: FC<{
 
     dispatch(setSelectedWalletId(selectedWallet?.id || ""));
 
-    closeOpenedDropdown();
     resetMediaPlayer();
   };
 
   return (
     <LegacyTertiaryBox
-      width={172}
+      width={optionsMenuwidth}
       noBrokenCorners
       style={style}
       mainContainerStyle={[
@@ -129,22 +139,27 @@ export const NetworkSelectorMenu: FC<{
             </TouchableOpacity>
           );
         })}
-      <TertiaryButton
-        text="Manage"
-        size="XS"
-        squaresBackgroundColor={neutral17}
-        style={{ marginBottom: layout.spacing_x2 }}
-        onPress={() => {
-          setNetworksModalVisible(true);
-        }}
-        fullWidth
-      />
-      <NetworksListModal
-        isVisible={networksModalVisible}
-        onClose={() => {
-          setNetworksModalVisible(false);
-        }}
-      />
+      {!forceNetworkList && (
+        <>
+          {" "}
+          <TertiaryButton
+            text="Manage"
+            size="XS"
+            squaresBackgroundColor={neutral17}
+            style={{ marginBottom: layout.spacing_x2 }}
+            onPress={() => {
+              setNetworksModalVisible(true);
+            }}
+            fullWidth
+          />
+          <NetworksListModal
+            isVisible={networksModalVisible}
+            onClose={() => {
+              setNetworksModalVisible(false);
+            }}
+          />
+        </>
+      )}
     </LegacyTertiaryBox>
   );
 };

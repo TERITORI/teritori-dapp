@@ -1,25 +1,31 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   LayoutRectangle,
-  StyleProp,
   View,
   ViewStyle,
 } from "react-native";
 
-import { SOCIAl_CARD_BORDER_RADIUS } from "./SocialThreadCard";
+import { AnimationFadeIn } from "../../../animations/AnimationFadeIn";
+import { AnimationFadeInOut } from "../../../animations/AnimationFadeInOut";
+import { CustomPressable } from "../../../buttons/CustomPressable";
+import { PrimaryButtonOutline } from "../../../buttons/PrimaryButtonOutline";
+import { SpacerColumn } from "../../../spacer";
+import { SocialCardFooter } from "../SocialCardFooter";
+import { SocialCardHeader } from "../SocialCardHeader";
+import { SocialMessageContent } from "../SocialMessageContent";
+
+import { SocialCommentCardProps } from "@/components/cards/comments-props";
+import { useFetchComments } from "@/hooks/feed/useFetchComments";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { usePrevious } from "@/hooks/usePrevious";
 import {
-  combineFetchCommentPages,
-  useFetchComments,
-} from "../../../../hooks/feed/useFetchComments";
-import { useIsMobile } from "../../../../hooks/useIsMobile";
-import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
-import { usePrevious } from "../../../../hooks/usePrevious";
-import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
-import { getNetworkObjectId, parseUserId } from "../../../../networks";
-import { OnPressReplyType } from "../../../../screens/FeedPostView/FeedPostViewScreen";
-import { useAppNavigation } from "../../../../utils/navigation";
-import { DEFAULT_USERNAME } from "../../../../utils/social-feed";
+  DEFAULT_USERNAME,
+  LINES_HORIZONTAL_SPACE,
+  SOCIAl_CARD_BORDER_RADIUS,
+} from "@/utils/social-feed";
 import {
   neutral00,
   neutral22,
@@ -27,36 +33,10 @@ import {
   primaryColor,
   secondaryColor,
   withAlpha,
-} from "../../../../utils/style/colors";
-import { layout } from "../../../../utils/style/layout";
-import { tinyAddress } from "../../../../utils/text";
-import { AnimationFadeIn } from "../../../animations/AnimationFadeIn";
-import { AnimationFadeInOut } from "../../../animations/AnimationFadeInOut";
-import { CustomPressable } from "../../../buttons/CustomPressable";
-import { PrimaryButtonOutline } from "../../../buttons/PrimaryButtonOutline";
-import {
-  CommentsContainer,
-  LINES_HORIZONTAL_SPACE,
-} from "../../../cards/CommentsContainer";
-import { SpacerColumn } from "../../../spacer";
-import { PostExtra } from "../../NewsFeed/NewsFeed.type";
-import { SocialCardFooter } from "../SocialCardFooter";
-import { SocialCardHeader } from "../SocialCardHeader";
-import { SocialMessageContent } from "../SocialMessageContent";
-
-export interface SocialCommentCardProps {
-  // We use the cardWidth provided from CommentsContainer.
-  // The width of the CommentCard depends on its parent's width. The comments are a tree
-  cardWidth: number;
-  comment: PostExtra;
-  style?: StyleProp<ViewStyle>;
-  isLast?: boolean;
-  onPressReply: OnPressReplyType;
-  overrideParentId?: string;
-  onScrollTo?: (y: number) => void;
-  parentOffsetValue?: number;
-  refetchFeed?: () => Promise<any>;
-}
+} from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
+import { tinyAddress } from "@/utils/text";
+import { PostExtra } from "@/utils/types/feed";
 
 export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   style,
@@ -68,6 +48,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   parentOffsetValue = 0,
   cardWidth,
   refetchFeed,
+  CommentsContainer, // we take the sub comments container as a prop to avoid circular dependencies
 }) => {
   const [localComment, setLocalComment] = useState<PostExtra>({ ...comment });
   const [viewWidth, setViewWidth] = useState(0);
@@ -76,22 +57,20 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   const [replyShown, setReplyShown] = useState(false);
   const [replyListYOffset, setReplyListYOffset] = useState<number[]>([]);
   const [replyListLayout, setReplyListLayout] = useState<LayoutRectangle>();
-  const selectedNetwork = useSelectedNetworkInfo();
-  const selectedNetworkId = selectedNetwork?.id || "";
-  const [, authorAddress] = parseUserId(localComment.authorId);
 
-  const { data, refetch, fetchNextPage, hasNextPage, isFetching } =
-    useFetchComments({
-      parentId: localComment.identifier,
-      totalCount: localComment.subPostLength,
-      enabled: replyShown,
-    });
+  const {
+    data: comments,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+  } = useFetchComments({
+    parentId: localComment.id,
+    totalCount: localComment.subPostLength,
+    enabled: replyShown,
+  });
   const oldIsFetching = usePrevious(isFetching);
 
-  const comments = useMemo(
-    () => (data ? combineFetchCommentPages(data.pages) : []),
-    [data],
-  );
   const moreCommentsCount = localComment.subPostLength - comments.length;
   const authorNSInfo = useNSUserInfo(localComment.authorId);
   const username = authorNSInfo?.metadata?.tokenId
@@ -138,18 +117,18 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
   const handleReply = () =>
     onPressReply?.({
       username,
-      parentId: overrideParentId || localComment.identifier,
+      parentId: overrideParentId || localComment.id,
       yOffsetValue:
         parentOffsetValue + (replyListLayout ? replyListLayout.y : 0),
     });
 
   return (
     <CustomPressable
-      onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
+      onLayout={(e) => setViewWidth(e.nativeEvent?.layout?.width)}
       disabled={!!localComment.isInLocal}
       onPress={() =>
         navigation.navigate("FeedPostView", {
-          id: getNetworkObjectId(selectedNetworkId, localComment.identifier),
+          id: localComment.id,
         })
       }
       style={{ width: cardWidth }}
@@ -157,7 +136,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
       <AnimationFadeIn
         onLayout={(e) =>
           setReplyListYOffset((prev) => {
-            prev[0] = e.nativeEvent.layout.y;
+            prev[0] = e.nativeEvent?.layout?.y;
             return prev;
           })
         }
@@ -182,10 +161,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
             <View style={commentContainerInsideCStyle}>
               {/*====== Card Header */}
               <SocialCardHeader
-                authorAddress={authorAddress}
                 authorId={localComment.authorId}
                 createdAt={localComment.createdAt}
-                authorMetadata={authorNSInfo?.metadata}
               />
 
               <SpacerColumn size={1.5} />
@@ -212,8 +189,8 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
             style={{ marginLeft: isMobile ? 0 : LINES_HORIZONTAL_SPACE }}
             onLayout={(e) =>
               setReplyListYOffset((prev) => {
-                prev[2] = e.nativeEvent.layout.height;
-                setReplyListLayout(e.nativeEvent.layout);
+                prev[2] = e.nativeEvent?.layout?.height;
+                setReplyListLayout(e.nativeEvent?.layout);
                 return prev;
               })
             }
@@ -230,7 +207,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
               refetchFeed={refetchFeed}
               comments={comments}
               onPressReply={onPressReply}
-              overrideParentId={localComment.identifier}
+              overrideParentId={localComment.id}
             />
           </View>
         )}
@@ -241,7 +218,7 @@ export const SocialCommentCard: React.FC<SocialCommentCardProps> = ({
           style={repliesButtonContainerCStyle}
           onLayout={(e) =>
             setReplyListYOffset((prev) => {
-              prev[1] = e.nativeEvent.layout.y;
+              prev[1] = e.nativeEvent?.layout?.y;
               return prev;
             })
           }

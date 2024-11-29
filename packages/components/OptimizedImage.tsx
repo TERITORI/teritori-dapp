@@ -1,11 +1,13 @@
 import { CID } from "multiformats";
-import React, { memo } from "react";
-import { Image, ImageProps, View, StyleSheet, PixelRatio } from "react-native";
+import React, { memo, useEffect } from "react";
+import { Image, ImageProps, View, PixelRatio } from "react-native";
 
 import { neutral33 } from "../utils/style/colors";
 
-// This only supports uri images since the proxy is only for external images
-
+/**
+ * This only supports uri images since the proxy is only for external images
+ * The width and height props are the source image dimensions, they should not be dynamic, otherwise it will overwelm the resizing proxy
+ */
 export const OptimizedImage: React.FC<
   Omit<ImageProps, "source"> & {
     width: number;
@@ -14,7 +16,13 @@ export const OptimizedImage: React.FC<
     fallbackURI?: string | null;
   }
 > = memo(
-  ({ sourceURI: baseSourceURI, width, height, fallbackURI, ...other }) => {
+  ({
+    sourceURI: baseSourceURI,
+    width,
+    height,
+    fallbackURI,
+    ...passthrough
+  }) => {
     const [isError, setIsError] = React.useState(false);
     const [isFallbackError, setIsFallbackError] = React.useState(false);
     const shouldUseFallback = !baseSourceURI || isError;
@@ -22,22 +30,26 @@ export const OptimizedImage: React.FC<
     const sourceWidth = PixelRatio.getPixelSizeForLayoutSize(width);
     const sourceHeight = PixelRatio.getPixelSizeForLayoutSize(height);
 
+    useEffect(() => {
+      setIsError(false);
+    }, [baseSourceURI]);
+
+    useEffect(() => {
+      setIsFallbackError(false);
+    }, [fallbackURI]);
+
     if ((shouldUseFallback && !fallbackURI) || isFallbackError) {
       return (
-        <View
-          style={{
-            width,
-            height,
-            borderRadius: StyleSheet.flatten(other.style).borderRadius,
-            borderTopLeftRadius: StyleSheet.flatten(other.style)
-              .borderTopLeftRadius,
-            borderBottomLeftRadius: StyleSheet.flatten(other.style)
-              .borderBottomLeftRadius,
-            backgroundColor: neutral33,
-          }}
-        />
+        <View style={[{ backgroundColor: neutral33 }, passthrough.style]} />
       );
     }
+
+    // imported images are already a valid source object
+    const source =
+      (typeof sourceURI === "string"
+        ? { uri: transformURI(sourceURI, sourceWidth, sourceHeight) }
+        : sourceURI) || {};
+
     return (
       <Image
         onError={() => {
@@ -47,10 +59,8 @@ export const OptimizedImage: React.FC<
           }
           setIsError(true);
         }}
-        source={{
-          uri: transformURI(sourceURI || undefined, sourceWidth, sourceHeight),
-        }}
-        {...other}
+        source={source}
+        {...passthrough}
       />
     );
   },
@@ -61,7 +71,7 @@ const transformURI = (
   width: number,
   height: number,
 ) => {
-  if (!uri) {
+  if (typeof uri !== "string" || !uri) {
     return "";
   }
 
@@ -76,8 +86,8 @@ const transformURI = (
     uri = "ipfs://" + uri;
   } catch {}
 
-  const knownScheme = ["https://", "http://", "ipfs://"].find(
-    (scheme) => uri?.startsWith(scheme),
+  const knownScheme = ["https://", "http://", "ipfs://"].find((scheme) =>
+    uri?.startsWith(scheme),
   );
   if (!knownScheme) {
     return uri;
@@ -85,7 +95,7 @@ const transformURI = (
 
   const params = resolveParams(width, height);
 
-  return `${process.env.IMG_PROXY_URL}${params}/plain/${encodeURIComponent(
+  return `${process.env.EXPO_PUBLIC_IMG_PROXY_URL}${params}/plain/${encodeURIComponent(
     uri,
   )}`;
 };

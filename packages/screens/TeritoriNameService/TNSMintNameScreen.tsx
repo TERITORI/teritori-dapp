@@ -2,58 +2,68 @@ import { MsgExecuteContractEncodeObject } from "@cosmjs/cosmwasm-stargate";
 import { toUtf8 } from "@cosmjs/encoding";
 import { useFocusEffect } from "@react-navigation/native";
 import { useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
-import { View } from "react-native";
+import Long from "long";
+import React, { useMemo, useState } from "react";
+import { Platform, ScrollView, useWindowDimensions, View } from "react-native";
 
-import { TNSModalCommonProps } from "./TNSHomeScreen";
 import { TNSRegisterSuccess } from "./TNSRegisterSuccess";
 import longCardSVG from "../../../assets/cards/long-card.svg";
 import coinSVG from "../../../assets/icons/coin.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
 import ModalBase from "../../components/modals/ModalBase";
-import { NameDataForm } from "../../components/teritoriNameService/NameDataForm";
-import { NameNFT } from "../../components/teritoriNameService/NameNFT";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useTNS } from "../../context/TNSProvider";
-import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
 import {
   ExecuteMsg as TNSExecuteMsg,
   Metadata,
 } from "../../contracts-clients/teritori-name-service/TeritoriNameService.types";
-import { useAreThereWallets } from "../../hooks/useAreThereWallets";
-import { useBalances } from "../../hooks/useBalances";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { useIsLeapConnected } from "../../hooks/useIsLeapConnected";
-import { useNSMintPrice } from "../../hooks/useNSMintPrice";
-import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
-import { useRunOrProposeTransaction } from "../../hooks/useRunOrProposeTransaction";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { Coin } from "@/api/teritori-chain/cosmos/base/v1beta1/coin";
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { NameDataForm } from "@/components/teritoriNameService/NameDataForm";
+import { NameNFT } from "@/components/teritoriNameService/NameNFT";
+import { TNSModalCommonProps } from "@/components/user/types";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useTNS } from "@/context/TNSProvider";
+import { TeritoriNameServiceQueryClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useAreThereWallets } from "@/hooks/useAreThereWallets";
+import { useBalances } from "@/hooks/useBalances";
+import { useCanPay } from "@/hooks/useCanPay";
+import { useIsKeplrConnected } from "@/hooks/useIsKeplrConnected";
+import { useIsLeapConnected } from "@/hooks/useIsLeapConnected";
+import { useNSMintPrice } from "@/hooks/useNSMintPrice";
+import { nsNameInfoQueryKey } from "@/hooks/useNSNameInfo";
+import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
+import { useRunOrProposeTransaction } from "@/hooks/useRunOrProposeTransaction";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
-  mustGetNonSigningCosmWasmClient,
-  mustGetCosmosNetwork,
   getCosmosNetwork,
+  mustGetCosmosNetwork,
+  mustGetNonSigningCosmWasmClient,
   parseUserId,
   UserKind,
-} from "../../networks";
-import { prettyPrice } from "../../utils/coins";
-import { useAppNavigation } from "../../utils/navigation";
-import { neutral00, neutral17, neutral33 } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { defaultMetaData } from "../../utils/types/tns";
+} from "@/networks";
+import { prettyPrice } from "@/utils/coins";
+import { neutral00, neutral17, neutral33 } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { defaultMetaData } from "@/utils/types/tns";
 
 const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
   price,
 }) => {
-  const networkId = useSelectedNetworkId();
-
-  const width = 417;
+  const { width: windowWidth } = useWindowDimensions();
+  const width =
+    windowWidth < 417
+      ? windowWidth - 40
+      : Platform.OS === "web"
+        ? 417
+        : 417 - 40;
   const height = 80;
 
+  const networkId = useSelectedNetworkId();
+
   return (
-    <View>
+    <View style={{ alignSelf: "center" }}>
       <SVG
         width={width}
         height={height}
@@ -62,7 +72,6 @@ const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
       />
       <View
         style={{
-          flex: 1,
           flexDirection: "row",
           alignItems: "center",
           height,
@@ -174,6 +183,8 @@ export const TNSMintNameModal: React.FC<
     userKind: UserKind;
   }
 > = ({ onClose, initialData, userId, userKind, navigateBackTo }) => {
+  const { width: windowWidth } = useWindowDimensions();
+
   const [network, userAddress] = parseUserId(userId);
   const networkId = network?.id;
   const cosmosNetwork = getCosmosNetwork(networkId);
@@ -182,14 +193,20 @@ export const TNSMintNameModal: React.FC<
     name + cosmosNetwork?.nameServiceTLD || ""
   ).toLowerCase();
   const [isSuccessModal, setSuccessModal] = useState(false);
-  const balances = useBalances(networkId, userAddress);
+  const { balances } = useBalances(networkId, userAddress);
   const isKeplrConnected = useIsKeplrConnected();
   const isLeapConnected = useIsLeapConnected();
 
   const { setToastError, setToastSuccess } = useFeedbacks();
   const { nsMintPrice: price } = useNSMintPrice(networkId, normalizedTokenId);
   const balance = balances.find((bal) => bal.denom === price?.denom);
-
+  const cost: Coin = useMemo(() => {
+    return {
+      amount: price?.amount || "0",
+      denom: price?.denom || "",
+    };
+  }, [price?.amount, price?.denom]);
+  const canPayForMintName = useCanPay({ userId, cost });
   const runOrProposeTransaction = useRunOrProposeTransaction(userId, userKind);
   const queryClient = useQueryClient();
 
@@ -221,7 +238,7 @@ export const TNSMintNameModal: React.FC<
           sender: userAddress,
           contract: cosmosNetwork.nameServiceContractAddress,
           msg: toUtf8(JSON.stringify(payload)),
-          funds: [price],
+          funds: Long.fromString(price.amount).isZero() ? undefined : [price],
         },
       };
 
@@ -263,20 +280,27 @@ export const TNSMintNameModal: React.FC<
     onClose();
     setSuccessModal(false);
   };
+  const width = windowWidth < 480 ? windowWidth : 480;
 
   return (
     <ModalBase
       onClose={() => onClose()}
       onBackPress={() => onClose(navigateBackTo)}
-      width={480}
+      width={width}
       scrollable
       label={name}
       hideMainSeparator
       boxStyle={{
         backgroundColor: neutral17,
+        paddingBottom: 80,
       }}
     >
-      <View style={{ flex: 1, alignItems: "center", paddingBottom: 20 }}>
+      <ScrollView
+        contentContainerStyle={{
+          alignItems: "center",
+          paddingBottom: 20,
+        }}
+      >
         {!!price && <CostContainer price={price} />}
         <BrandText
           style={{
@@ -305,18 +329,17 @@ export const TNSMintNameModal: React.FC<
         />
         <NameDataForm
           btnLabel={
-            userKind === UserKind.Single
-              ? "Register your username"
-              : "Propose to register"
+            !canPayForMintName
+              ? "Not enough funds"
+              : userKind === UserKind.Single
+                ? "Register your username"
+                : "Propose to register"
           }
           onPressBtn={handleSubmit}
           initialData={initialData}
-          disabled={
-            !price ||
-            parseInt(balance?.amount || "0", 10) < parseInt(price.amount, 10)
-          }
+          disabled={!canPayForMintName}
         />
-      </View>
+      </ScrollView>
       <TNSRegisterSuccess visible={isSuccessModal} onClose={handleModalClose} />
     </ModalBase>
   );

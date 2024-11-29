@@ -29,8 +29,7 @@ export const ConnectLeapButton: React.FC<{
   const enabledNetworks = useEnabledNetworks();
   const handlePress = async () => {
     try {
-      // @ts-ignore
-      const leap = window.leap;
+      const leap = (window as any).leap;
       if (!leap) {
         Linking.openURL(
           "https://chrome.google.com/webstore/detail/leap-cosmos-wallet/fcfcfllfndlomdhbehjjcoimbgofdncg",

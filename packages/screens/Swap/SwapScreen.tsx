@@ -4,20 +4,21 @@ import { StyleSheet, View } from "react-native";
 
 import { ConnectModal } from "./components/ConnectModal";
 import { HowToBuy } from "./components/HowToBuy/HowToBuy";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { MainConnectWalletButton } from "../../components/connectWallet/MainConnectWalletButton";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkFeature } from "../../networks";
-import { osmosisNetwork } from "../../networks/osmosis";
-import { osmosisTestnetNetwork } from "../../networks/osmosis-testnet";
-import { setSelectedNetworkId } from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
-import { ScreenFC } from "../../utils/navigation";
-import { layout } from "../../utils/style/layout";
 import { Assets } from "../WalletManager/Assets";
+
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { MainConnectWalletButton } from "@/components/connectWallet/MainConnectWalletButton";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { NetworkFeature } from "@/networks";
+import { osmosisNetwork } from "@/networks/osmosis";
+import { osmosisTestnetNetwork } from "@/networks/osmosis-testnet";
+import { setSelectedNetworkId } from "@/store/slices/settings";
+import { useAppDispatch } from "@/store/store";
+import { ScreenFC } from "@/utils/navigation";
+import { layout } from "@/utils/style/layout";
 
 export const SwapScreen: ScreenFC<"Swap"> = () => {
   const selectedWallet = useSelectedWallet();
@@ -49,10 +50,16 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
   }, [swapNetworkConnected, isScreenFocused]);
 
   return (
-    <ScreenContainer headerChildren={<BrandText>Swap</BrandText>}>
+    <ScreenContainer
+      headerChildren={<BrandText>Swap</BrandText>}
+      forceNetworkFeatures={[NetworkFeature.Swap]}
+    >
       <View style={styles.mainContainer}>
         {!selectedWallet?.address ? (
-          <MainConnectWalletButton style={{ alignSelf: "center" }} />
+          <MainConnectWalletButton
+            style={{ alignSelf: "center" }}
+            forceNetworkFeature={NetworkFeature.Swap}
+          />
         ) : swapNetworkConnected && isScreenFocused ? (
           <>
             <Suspense fallback={<BrandText>Loading...</BrandText>}>

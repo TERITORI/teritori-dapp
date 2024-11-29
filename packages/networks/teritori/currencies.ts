@@ -5,9 +5,10 @@ export const teritoriCurrencies: CurrencyInfo[] = [
   {
     denom: "utori",
     displayName: "TORI",
+    variant: "cosmos",
     decimals: 6,
     coingeckoId: "teritori",
-    icon: "icons/networks/teritori-circle.svg",
+    icon: "teritori-circle.svg",
     kind: "native",
     color: currencyTORIcolor,
   },

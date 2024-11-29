@@ -1,18 +1,19 @@
-import Clipboard from "@react-native-clipboard/clipboard";
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import copy from "../../../../assets/icons/copy.svg";
 import reply from "../../../../assets/icons/reply.svg";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SVG } from "../../../components/SVG";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useFeedbacks } from "../../../context/FeedbacksProvider";
-import { neutralA3 } from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import Clipboard from "@/modules/Clipboard";
+import { neutralA3 } from "@/utils/style/colors";
+import { fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface MessagePopupProps {
   message: string;
@@ -59,7 +60,7 @@ export const MessagePopup = ({
       <SpacerColumn size={1} />
       <TouchableOpacity
         onPress={() => {
-          Clipboard.setString(message);
+          Clipboard.setStringAsync(message);
           setToastSuccess({
             title: "Copied",
             message: "",

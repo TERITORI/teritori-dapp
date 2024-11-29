@@ -38,7 +38,7 @@ export const TransactionPaymentModal: React.FC<{
   const selectedWallet = useSelectedWallet();
   const [nftNetwork] = parseNetworkObjectId(nftId);
   const nftNetworkId = nftNetwork?.id;
-  const balances = useBalances(nftNetworkId, selectedWallet?.address);
+  const { balances } = useBalances(nftNetworkId, selectedWallet?.address);
   const balance =
     balances.find((bal) => bal.denom === priceDenom)?.amount || "0";
   const isWalletConnected = !!selectedWallet?.connected;
@@ -121,7 +121,7 @@ export const TransactionPaymentModal: React.FC<{
           ) ? (
             <View style={{ alignItems: "center", width: "100%" }}>
               <BrandText style={[fontSemibold14, { color: neutral77 }]}>
-                Insufficient funds
+                Not enough funds
               </BrandText>
             </View>
           ) : (

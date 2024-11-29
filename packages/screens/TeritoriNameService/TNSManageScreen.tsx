@@ -1,21 +1,28 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
-import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
+import {
+  Platform,
+  StyleProp,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 
-import { TNSModalCommonProps } from "./TNSHomeScreen";
 import logoSVG from "../../../assets/logos/logo.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { PrimaryBadge } from "../../components/badges/PrimaryBadge";
-import { DAOSelector } from "../../components/dao/DAOSelector";
 import ModalBase from "../../components/modals/ModalBase";
-import { useTNS } from "../../context/TNSProvider";
-import { useNSPrimaryAlias } from "../../hooks/useNSPrimaryAlias";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { neutral17, neutral33, neutral77 } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { nsTokenWithoutTLD } from "../../utils/tns";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { PrimaryBadge } from "@/components/badges/PrimaryBadge";
+import { DAOSelector } from "@/components/dao/DAOSelector";
+import { TNSModalCommonProps } from "@/components/user/types";
+import { useTNS } from "@/context/TNSProvider";
+import { useNSPrimaryAlias } from "@/hooks/useNSPrimaryAlias";
+import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
+import { neutral17, neutral33, neutral77 } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { nsTokenWithoutTLD } from "@/utils/tns";
 
 interface TNSManageScreenProps extends TNSModalCommonProps {}
 
@@ -51,7 +58,9 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
       label={` Welcome back, ${primaryAlias} !`}
       width={457}
     >
-      <View style={{ flex: 1, alignItems: "center" }}>
+      <View
+        style={{ flex: Platform.OS === "web" ? 1 : 0, alignItems: "center" }}
+      >
         {!tokens.length ? (
           <BrandText style={{ marginVertical: 40 }}>No token</BrandText>
         ) : (
@@ -118,6 +127,7 @@ const NameCard: React.FC<{
           borderWidth: 1,
           borderColor: neutral33,
           borderRadius: 8,
+          height: 90,
         },
         style,
       ]}

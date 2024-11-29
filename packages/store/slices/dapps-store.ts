@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { dAppGroup } from "../../screens/DAppStore/types";
 import { RootState } from "../store";
+
+import { dAppGroup } from "@/utils/types/dapp-store";
 
 type pinnedAppsCollection = string[];
 

@@ -4,27 +4,23 @@ import { ScrollView, TextStyle, View, ViewStyle } from "react-native";
 
 import { ImagePreviewer } from "./ImagePreviewer";
 import { RadioDescriptionSelector } from "./RadioDescriptionSelector";
-import { BrandText } from "../../../components/BrandText";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { TextInputCustom } from "../../../components/inputs/TextInputCustom";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { useNSAvailability } from "../../../hooks/useNSAvailability";
-import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
-import { NetworkKind, getCosmosNetwork } from "../../../networks";
+
+import { BrandText } from "@/components/BrandText";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { AvailableNamesInput } from "@/components/inputs/AvailableNamesInput";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useNSAvailability } from "@/hooks/useNSAvailability";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { NetworkKind } from "@/networks";
+import { neutral33, neutral77 } from "@/utils/style/colors";
+import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 import {
-  neutral33,
-  neutral77,
-  primaryColor,
-  redDefault,
-} from "../../../utils/style/colors";
-import {
-  fontSemibold14,
-  fontSemibold20,
-  fontSemibold28,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { ORGANIZATION_DEPLOYER_STEPS } from "../OrganizationDeployerScreen";
-import { CreateDaoFormType, DaoType } from "../types";
+  CreateDaoFormType,
+  DaoType,
+  ORGANIZATION_DEPLOYER_STEPS,
+} from "@/utils/types/organizations";
 
 //const RADIO_DESCRIPTION_TYPES = ["Membership", "Governance", "Decentralized"];
 
@@ -50,66 +46,19 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   });
 
   const selectedNetwork = useSelectedNetworkInfo();
-  const cosmosNetwork = getCosmosNetwork(selectedNetwork?.id);
   const selectedRadioStructure = watch("structure");
   const uri = watch("imageUrl");
   const name = watch("associatedHandle");
+
   const nameAvailability = useNSAvailability(selectedNetwork?.id, name);
 
   useEffect(() => {
     setValue("nameAvailability", nameAvailability);
   }, [setValue, nameAvailability]);
 
-  let availabilityInfo = <></>;
-  if (name && selectedNetwork?.kind === NetworkKind.Cosmos) {
-    switch (nameAvailability.availability) {
-      case "invalid": {
-        availabilityInfo = (
-          <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
-            Invalid
-          </BrandText>
-        );
-        break;
-      }
-      case "mint": {
-        availabilityInfo = (
-          <View style={{ flexDirection: "row" }}>
-            {!!nameAvailability?.usdPrice && (
-              <>
-                <BrandText style={{ color: neutral77, ...fontSemibold14 }}>
-                  ${nameAvailability.usdPrice?.toFixed(2)}
-                </BrandText>
-                <BrandText style={{ color: neutral33, ...fontSemibold14 }}>
-                  {" - "}
-                </BrandText>
-              </>
-            )}
-            <BrandText style={{ color: primaryColor, ...fontSemibold14 }}>
-              {nameAvailability.prettyPrice}
-            </BrandText>
-          </View>
-        );
-        break;
-      }
-      case "none":
-      case "market": {
-        // TODO: handle market case
-        availabilityInfo = (
-          <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
-            Taken
-          </BrandText>
-        );
-        break;
-      }
-    }
-  }
-
   // functions
   const onErrorImageLoading = () =>
-    setError("imageUrl", {
-      type: "pattern",
-      message: "This image is invalid",
-    });
+    setError("imageUrl", { type: "pattern", message: "This image is invalid" });
 
   return (
     <View style={fillCStyle}>
@@ -138,30 +87,25 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
               </View>
               <SpacerRow size={2.5} />
               <View style={fillCStyle}>
-                <TextInputCustom<CreateDaoFormType>
-                  noBrokenCorners
-                  isLoading={nameAvailability.availability === "loading"}
-                  variant="labelOutside"
+                <AvailableNamesInput
+                  nameValue={name}
+                  onChangeText={(val: string) => {
+                    setValue("associatedHandle", val, {
+                      shouldDirty: true,
+                      shouldTouch: true,
+                      shouldValidate: true,
+                    });
+                  }}
+                  label="Associated Handle"
+                  name="associatedHandle"
                   control={control}
-                  label={`Associated Handle${
-                    name
-                      ? `: ${
-                          selectedNetwork?.kind === NetworkKind.Gno
-                            ? "gno.land/r/demo/" + name
-                            : name + cosmosNetwork?.nameServiceTLD
-                        }`
-                      : ""
-                  }`}
                   placeHolder={
                     selectedNetwork?.kind === NetworkKind.Gno
                       ? "your_organization"
                       : "your-organization"
                   }
-                  name="associatedHandle"
-                  rules={{ required: true }}
-                >
-                  {availabilityInfo}
-                </TextInputCustom>
+                  value={name}
+                />
               </View>
             </View>
 
@@ -187,6 +131,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
               // isAsterickSign
               multiline
               numberOfLines={3}
+              testID="organization-description"
             />
           </View>
         </View>

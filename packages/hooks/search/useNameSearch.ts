@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { SearchNamesRequest } from "../../api/marketplace/v1/marketplace";
-import { getMarketplaceClient } from "../../utils/backend";
+import { SearchNamesRequest } from "@/api/marketplace/v1/marketplace";
+import { getMarketplaceClient } from "@/utils/backend";
 
 export const useNameSearch = (req: Partial<SearchNamesRequest>) => {
   const { data: names = [], ...other } = useQuery(

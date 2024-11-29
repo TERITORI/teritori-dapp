@@ -2,43 +2,10 @@ import { ResizeMode } from "expo-av";
 import React, { FC, memo, useEffect, useState } from "react";
 import { StyleProp, useWindowDimensions, View, ViewStyle } from "react-native";
 
-import { SOCIAl_CARD_BORDER_RADIUS } from "./SocialThreadCard";
-import { Post } from "../../../../api/feed/v1/feed";
-import { useNSUserInfo } from "../../../../hooks/useNSUserInfo";
-import { useSelectedNetworkInfo } from "../../../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../../../hooks/useSelectedWallet";
-import {
-  getNetworkObjectId,
-  NetworkKind,
-  parseUserId,
-} from "../../../../networks";
-import { useAppNavigation } from "../../../../utils/navigation";
-import { zodTryParseJSON } from "../../../../utils/sanitize";
-import { DEFAULT_USERNAME } from "../../../../utils/social-feed";
-import {
-  errorColor,
-  neutral00,
-  neutral33,
-  neutralA3,
-} from "../../../../utils/style/colors";
-import {
-  fontSemibold13,
-  fontSemibold14,
-  fontSemibold16,
-  fontSemibold20,
-} from "../../../../utils/style/fonts";
-import {
-  layout,
-  SOCIAL_FEED_BREAKPOINT_M,
-} from "../../../../utils/style/layout";
 import { BrandText } from "../../../BrandText";
 import { CustomPressable } from "../../../buttons/CustomPressable";
 import { MediaPlayerVideo } from "../../../mediaPlayer/MediaPlayerVideo";
 import { SpacerColumn, SpacerRow } from "../../../spacer";
-import {
-  ZodSocialFeedPostMetadata,
-  ZodSocialFeedVideoMetadata,
-} from "../../NewsFeed/NewsFeed.type";
 import { DislikeButton } from "../../SocialActions/DislikeButton";
 import { LikeButton } from "../../SocialActions/LikeButton";
 import { ReportButton } from "../../SocialActions/ReportButton";
@@ -47,6 +14,30 @@ import { TipButton } from "../../SocialActions/TipButton";
 import { FlaggedCardFooter } from "../FlaggedCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";
 import { SocialCardWrapper } from "../SocialCardWrapper";
+
+import { Post } from "@/api/feed/v1/feed";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
+import { NetworkKind, getNetwork } from "@/networks";
+import { zodTryParseJSON } from "@/utils/sanitize";
+import { SOCIAl_CARD_BORDER_RADIUS } from "@/utils/social-feed";
+import {
+  errorColor,
+  neutral00,
+  neutral33,
+  neutralA3,
+} from "@/utils/style/colors";
+import {
+  fontSemibold13,
+  fontSemibold14,
+  fontSemibold16,
+  fontSemibold20,
+} from "@/utils/style/fonts";
+import { layout, SOCIAL_FEED_BREAKPOINT_M } from "@/utils/style/layout";
+import {
+  ZodSocialFeedPostMetadata,
+  ZodSocialFeedVideoMetadata,
+} from "@/utils/types/feed";
 
 const VIDEO_CARD_PADDING_VERTICAL = layout.spacing_x2;
 const VIDEO_CARD_PADDING_HORIZONTAL = layout.spacing_x2_5;
@@ -57,16 +48,12 @@ export const SocialVideoCard: FC<{
   refetchFeed?: () => Promise<any>;
   isFlagged?: boolean;
 }> = memo(({ post, refetchFeed, style, isFlagged }) => {
+  const postNetwork = getNetwork(post.networkId);
   const navigation = useAppNavigation();
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-  const wallet = useSelectedWallet();
+  const selectedWallet = useSelectedWallet();
   const [localPost, setLocalPost] = useState<Post>(post);
   const [viewWidth, setViewWidth] = useState(0);
   const { width: windowWidth } = useWindowDimensions();
-  const [, authorAddress] = parseUserId(localPost.authorId);
-  const authorNSInfo = useNSUserInfo(localPost.authorId);
-  const username =
-    authorNSInfo?.metadata?.tokenId || authorAddress || DEFAULT_USERNAME;
 
   const metadata = zodTryParseJSON(
     ZodSocialFeedVideoMetadata,
@@ -118,18 +105,14 @@ export const SocialVideoCard: FC<{
             borderTopLeftRadius: SOCIAl_CARD_BORDER_RADIUS,
           }}
           resizeMode={ResizeMode.CONTAIN}
-          authorId={localPost.authorId}
-          postId={localPost.identifier}
+          postId={localPost.id}
         />
 
         <SpacerColumn size={1} />
         <CustomPressable
           onPress={() =>
             navigation.navigate("FeedPostView", {
-              id: getNetworkObjectId(
-                selectedNetworkInfo?.id,
-                localPost.identifier,
-              ),
+              id: localPost.id,
             })
           }
           style={{
@@ -162,9 +145,8 @@ export const SocialVideoCard: FC<{
           >
             <SocialCardHeader
               authorId={localPost.authorId}
-              authorAddress={authorAddress}
               createdAt={localPost.createdAt}
-              authorMetadata={authorNSInfo?.metadata}
+              postWithLocationId={metadata?.location && localPost.id}
             />
             {windowWidth < SOCIAL_FEED_BREAKPOINT_M && (
               <SpacerColumn size={0.5} />
@@ -176,22 +158,22 @@ export const SocialVideoCard: FC<{
 
               <SpacerRow size={1.5} />
               <TipButton
-                disabled={localPost.authorId === wallet?.userId}
+                disabled={localPost.authorId === selectedWallet?.userId}
                 amount={localPost.tipAmount}
-                author={username}
-                postId={localPost.identifier}
+                authorId={localPost.authorId}
+                postId={localPost.id}
                 useAltStyle
               />
 
               <SpacerRow size={1.5} />
-              <ShareButton postId={localPost.identifier} useAltStyle />
+              <ShareButton postId={localPost.id} useAltStyle />
 
-              {selectedNetworkInfo?.kind === NetworkKind.Gno && (
+              {postNetwork?.kind === NetworkKind.Gno && (
                 <>
                   <SpacerRow size={1.5} />
                   <ReportButton
                     refetchFeed={refetchFeed}
-                    postId={localPost.identifier}
+                    postId={localPost.id}
                     useAltStyle
                   />
                 </>

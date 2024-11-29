@@ -1,14 +1,15 @@
 import React, { useMemo } from "react";
 import {
-  View,
-  TouchableOpacity,
-  ScrollView,
   ActivityIndicator,
-  useWindowDimensions,
   Platform,
+  ScrollView,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
 } from "react-native";
 import { useSelector } from "react-redux";
 
+import { Avatar } from "./components/Avatar";
 import { ChatSection } from "./components/ChatSection";
 import { CreateConversation } from "./components/CreateConversation";
 import { CreateGroup } from "./components/CreateGroup";
@@ -17,27 +18,45 @@ import { JoinGroup } from "./components/JoinGroup";
 import { MessageBlankFiller } from "./components/MessageBlankFiller";
 import MessageCard from "./components/MessageCard";
 import { MessageHeader } from "./components/MessageHeader";
+import { MessageOnboarding } from "./components/MessageOnboarding";
+import { Profile } from "./components/Profile";
 import { SideBarChats } from "./components/SideBarChats";
 import chat from "../../../assets/icons/add-chat.svg";
 import friend from "../../../assets/icons/friend.svg";
 import group from "../../../assets/icons/group.svg";
 import space from "../../../assets/icons/space.svg";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { Separator } from "../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useMessage } from "../../context/MessageProvider";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { selectIsWeshConnected } from "../../store/slices/message";
-import { useAppNavigation, ScreenFC } from "../../utils/navigation";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useMessage } from "@/context/MessageProvider";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import {
+  selectIsWeshConnected,
+  selectIsOnboardingCompleted,
+  selectContactInfo,
+} from "@/store/slices/message";
+import { useAppNavigation, ScreenFC } from "@/utils/navigation";
+import {
+  neutral00,
+  neutral33,
+  neutralA3,
+  secondaryColor,
+} from "@/utils/style/colors";
+import {
+  fontSemibold14,
+  fontMedium10,
+  fontSemibold13,
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
   const activeView = route?.params?.view;
   const activeTab = route?.params?.tab;
   const isWeshConnected = useSelector(selectIsWeshConnected);
-
+  const isOnboardingCompleted = useSelector(selectIsOnboardingCompleted);
+  const contactInfo = useSelector(selectContactInfo);
   const { activeConversation, setActiveConversation } = useMessage();
 
   const navigation = useAppNavigation();
@@ -131,6 +150,11 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
       </ScreenContainer>
     );
   }
+
+  if (!isOnboardingCompleted) {
+    return <MessageOnboarding />;
+  }
+
   return (
     <ScreenContainer
       headerChildren={<MessageHeader />}
@@ -149,8 +173,46 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
                 ? layout.spacing_x0_5
                 : layout.spacing_x1_5,
               maxWidth: width,
+              maxHeight: 78,
+            }}
+            contentContainerStyle={{
+              paddingBottom: layout.spacing_x2,
             }}
           >
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("Message", { view: "MyProfile" })
+              }
+              activeOpacity={0.9}
+              style={{
+                paddingHorizontal: layout.spacing_x1,
+                borderRadius: layout.spacing_x1_5,
+                backgroundColor: neutral00,
+                borderColor: neutral33,
+                borderWidth: 1,
+                height: 56,
+                width: 140,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Avatar source={contactInfo?.avatar} size={30} />
+              <SpacerRow size={1} />
+              <View>
+                <BrandText
+                  style={[fontSemibold13, { color: secondaryColor, width: 80 }]}
+                  numberOfLines={1}
+                >
+                  {contactInfo?.name}
+                </BrandText>
+                <SpacerColumn size={0.5} />
+                <BrandText style={[fontMedium10, { color: neutralA3 }]}>
+                  My Profile
+                </BrandText>
+              </View>
+            </TouchableOpacity>
+            <SpacerRow size={2} />
             {HEADER_CONFIG.map((item) => (
               <React.Fragment key={item.title}>
                 <TouchableOpacity onPress={item.onPress}>
@@ -165,7 +227,6 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
               </React.Fragment>
             ))}
           </ScrollView>
-          <SpacerColumn size={3} />
           <Separator />
         </View>
       )}
@@ -190,7 +251,7 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
             ) : (
               <>
                 {activeConversation ? (
-                  <ChatSection conversation={activeConversation} />
+                  <ChatSection conversationId={activeConversation.id} />
                 ) : (
                   <MessageBlankFiller />
                 )}
@@ -207,6 +268,9 @@ export const MessageScreen: ScreenFC<"Message"> = ({ route }) => {
       )}
       {activeView === "JoinGroup" && (
         <JoinGroup onClose={() => navigation.navigate("Message")} />
+      )}
+      {activeView === "MyProfile" && (
+        <Profile onClose={() => navigation.navigate("Message")} />
       )}
     </ScreenContainer>
   );

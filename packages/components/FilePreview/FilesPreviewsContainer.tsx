@@ -5,9 +5,6 @@ import { v4 as uuidv4 } from "uuid";
 import { EditableAudioPreview } from "./EditableAudioPreview";
 import { ImagesViews } from "./ImagesViews";
 import { VideoView } from "./VideoView";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getUserId } from "../../networks";
 import { GIF_MIME_TYPE } from "../../utils/mime";
 import { convertGIFToLocalFileType } from "../../utils/social-feed";
 import { layout } from "../../utils/style/layout";
@@ -19,6 +16,7 @@ interface FilePreviewContainerProps {
   onDelete: (file: LocalFileData | RemoteFileData) => void;
   onDeleteGIF: (url: string) => void;
   onAudioUpdate: (updatedFile: LocalFileData) => void;
+  showSmallPreview?: boolean;
 }
 
 export const FilesPreviewsContainer: React.FC<FilePreviewContainerProps> = ({
@@ -27,11 +25,8 @@ export const FilesPreviewsContainer: React.FC<FilePreviewContainerProps> = ({
   onDelete,
   onDeleteGIF,
   onAudioUpdate,
+  showSmallPreview = false,
 }) => {
-  const selectedWallet = useSelectedWallet();
-  const selectedNetworkId = useSelectedNetworkId();
-  const userId = getUserId(selectedNetworkId, selectedWallet?.address);
-
   const audioFiles = useMemo(
     () => files?.filter((file) => file.fileType === "audio"),
     [files],
@@ -70,6 +65,7 @@ export const FilesPreviewsContainer: React.FC<FilePreviewContainerProps> = ({
             else onDelete(file);
           }}
           isEditable
+          showSmallPreview={showSmallPreview}
         />
       ) : null}
 
@@ -79,7 +75,7 @@ export const FilesPreviewsContainer: React.FC<FilePreviewContainerProps> = ({
           file={file}
           onDelete={onDelete}
           isEditable
-          authorId={userId}
+          showSmallPreview={showSmallPreview}
         />
       ))}
 

@@ -1,29 +1,51 @@
-import React, { useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useCallback, useMemo } from "react";
 
 import { ArticlesFeed } from "./components/ArticlesFeed";
 import { FeedHeader } from "./components/FeedHeader";
+import { MapFeed } from "./components/MapFeed";
 import { ModerationFeed } from "./components/ModerationFeed";
 import { MusicFeed } from "./components/MusicFeed";
 import { PicsFeed } from "./components/PicsFeed";
 import { VideosFeed } from "./components/VideosFeed";
-import { PostsRequest } from "../../api/feed/v1/feed";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { MobileTitle } from "../../components/ScreenContainer/ScreenContainerMobile";
-import { NewsFeed } from "../../components/socialFeed/NewsFeed/NewsFeed";
-import { useForceNetworkSelection } from "../../hooks/useForceNetworkSelection";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { NetworkFeature } from "../../networks";
-import { ScreenFC } from "../../utils/navigation";
 
-export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
+import { PostsRequest } from "@/api/feed/v1/feed";
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
+import { NewsFeed } from "@/components/socialFeed/NewsFeed/NewsFeed";
+import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { NetworkFeature } from "@/networks";
+import { ScreenFC } from "@/utils/navigation";
+
+export const FeedScreen: ScreenFC<"Feed"> = ({
+  route: { params },
+  navigation: { setParams },
+}) => {
   useForceNetworkSelection(params?.network);
   const isMobile = useIsMobile();
+  const selectedNetworkId = useSelectedNetworkId();
 
-  const FeedContent = useCallback(() => {
+  const updateParams = useCallback(() => {
+    setParams({ network: selectedNetworkId });
+  }, [setParams, selectedNetworkId]);
+
+  useFocusEffect(updateParams);
+
+  const defaultFeedRequest = useMemo(() => {
+    return getDefaultFeedRequest(selectedNetworkId);
+  }, [selectedNetworkId]);
+
+  const feedContent = useMemo(() => {
     switch (params?.tab) {
       case "music":
         return <MusicFeed />;
+      case "map":
+        return (
+          <MapFeed consultedPostId={params?.post ? params.post : undefined} />
+        );
       case "pics":
         return <PicsFeed />;
       case "videos":
@@ -48,7 +70,7 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
           />
         );
     }
-  }, [params?.tab, isMobile]);
+  }, [params?.tab, params?.post, isMobile, defaultFeedRequest]);
 
   return (
     <ScreenContainer
@@ -60,18 +82,23 @@ export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
       forceNetworkFeatures={[NetworkFeature.SocialFeed]}
       headerChildren={<BrandText>Social Feed</BrandText>}
     >
-      <FeedContent />
+      {feedContent}
     </ScreenContainer>
   );
 };
 
-const defaultFeedRequest: Partial<PostsRequest> = {
+const getDefaultFeedRequest: (networkId: string) => Partial<PostsRequest> = (
+  networkId,
+) => ({
   filter: {
+    networkId,
     categories: [],
     user: "",
     mentions: [],
     hashtags: [],
+    premiumLevelMin: 0,
+    premiumLevelMax: -1,
   },
   limit: 10,
   offset: 0,
-};
+});

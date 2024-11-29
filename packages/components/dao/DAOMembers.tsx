@@ -1,4 +1,5 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
+import { Buffer } from "buffer";
 import React, { useCallback, useState } from "react";
 import { StyleProp, View, ViewStyle, useWindowDimensions } from "react-native";
 
@@ -272,7 +273,7 @@ const useProposeToAddMembers = (daoId: string | undefined) => {
           const msgs: GnoAddMemberMessage[] = [];
           for (const member of membersToAdd) {
             msgs.push({
-              type: "gno.land/r/demo/teritori/groups.AddMember",
+              type: "gno.land/r/teritori/groups.AddMember",
               payload: {
                 groupId,
                 address: member,

@@ -1,16 +1,18 @@
 import React, { FC } from "react";
 
-import { PostsRequest } from "../../../api/feed/v1/feed";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { FeedVideosList } from "../../../components/video/FeedVideosList";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { parseUserId } from "../../../networks";
-import { UppTabKeys } from "../../../utils/upp";
 import { UppTabScreenProps } from "../UserPublicProfileScreen";
 import { UPPHeader } from "../components/UPPHeader";
 import { UPPScreenContentWrapper } from "../components/UPPScreenContentWrapper";
+
+import { PostsRequest } from "@/api/feed/v1/feed";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { FeedVideosList } from "@/components/video/FeedVideosList";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { parseUserId } from "@/networks";
+import { PostCategory } from "@/utils/types/feed";
+import { DeepPartial } from "@/utils/typescript";
+import { UppTabKeys } from "@/utils/upp";
 
 export const VideosUPPScreen: FC<UppTabScreenProps> = ({
   userId,
@@ -23,15 +25,13 @@ export const VideosUPPScreen: FC<UppTabScreenProps> = ({
     userInfo?.metadata.public_name || userInfo?.metadata.tokenId || userAddress;
   const isCurrentUser = userId === selectedWallet?.userId;
 
-  const feedRequestUserVideos: Partial<PostsRequest> = {
+  const feedRequestUserVideos: DeepPartial<PostsRequest> = {
     filter: {
       categories: [PostCategory.Video],
       user: userId,
-      mentions: [],
-      hashtags: [],
+      premiumLevelMax: -1,
     },
     limit: 10,
-    offset: 0,
     queryUserId: selectedWallet?.userId,
   };
 

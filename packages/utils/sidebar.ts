@@ -1,7 +1,7 @@
+import { SidebarRecordType } from "./types/sidebar";
 import daoSVG from "../../assets/icons/dao.svg";
 import dappStoreSVG from "../../assets/icons/dapp-store.svg";
 import feedSVG from "../../assets/icons/feed.svg";
-import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
 import governanceSVG from "../../assets/icons/governance.svg";
 import gridSVG from "../../assets/icons/grid.svg";
 import launchpadApplySVG from "../../assets/icons/launchpad-apply.svg";
@@ -11,12 +11,12 @@ import messagesSVG from "../../assets/icons/messages.svg";
 import multisigSVG from "../../assets/icons/multisig.svg";
 import osmosisCircleSVG from "../../assets/icons/networks/osmosis-circle.svg";
 import pathwarSVG from "../../assets/icons/pathwar.svg";
+import projectsProgramSVG from "../../assets/icons/projects-program.svg";
 import riotersGameSVG from "../../assets/icons/rioters-game.svg";
 import stakingSVG from "../../assets/icons/staking.svg";
 import tnsServiceSVG from "../../assets/icons/tns-service.svg";
 import walletRegSVG from "../../assets/icons/wallet-regular.svg";
 import walletSVG from "../../assets/icons/wallet-sidebar.svg";
-import { SidebarRecordType } from "../components/navigation/types";
 import { NetworkKind } from "../networks";
 
 export const SIDEBAR_LIST: SidebarRecordType = {
@@ -31,6 +31,12 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     id: "Messages",
     route: "Message",
     icon: messagesSVG,
+  },
+  launchpadERC20: {
+    title: "Launchpad ERC20",
+    id: "Launchpad ERC20",
+    route: "LaunchpadERC20",
+    icon: launchpadSVG,
   },
   launchpad: {
     title: "Launchpad",
@@ -122,13 +128,12 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     id: "Join The R!ot",
     route: "RiotGame",
     icon: riotersGameSVG,
-    disabledOn: [NetworkKind.Ethereum],
   },
-  riotersFooter: {
-    title: "Rioters Footer",
-    id: "Rioters Footer",
-    route: "ComingSoon",
-    icon: rioterFooterSVG,
+  projectsProgram: {
+    title: "Projects Program",
+    id: "Projects Program",
+    route: "Projects",
+    icon: projectsProgramSVG,
   },
   DAppsStore: {
     title: "dApp Store",

@@ -2,10 +2,14 @@ import React, { useMemo, useState } from "react";
 import { TouchableOpacity } from "react-native";
 
 import { TipModal } from "./TipModal";
+import tipSolidSVG from "../../../../assets/icons/social/transfer-gray.svg";
 import tipSVG from "../../../../assets/icons/tip.svg";
+import { useWalletControl } from "../../../context/WalletControlProvider";
+import { useAppMode } from "../../../hooks/useAppMode";
 import { useCoingeckoPrices } from "../../../hooks/useCoingeckoPrices";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
-import { NetworkKind } from "../../../networks";
+import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import { NetworkFeature, NetworkKind } from "../../../networks";
 import { CoingeckoCoin, getCoingeckoPrice } from "../../../utils/coingecko";
 import { prettyPrice } from "../../../utils/coins";
 import {
@@ -54,14 +58,30 @@ const TeritoriTipAmount: React.FC<TipAmountProps> = ({ amount }) => {
 
 export const TipButton: React.FC<{
   postId: string;
-  author: string;
+  authorId: string;
   amount: number;
   disabled?: boolean;
   useAltStyle?: boolean;
-}> = ({ postId, author, amount, disabled, useAltStyle }) => {
+}> = ({ postId, authorId, amount, disabled, useAltStyle }) => {
+  const selectedWallet = useSelectedWallet();
   const selectedNetworkInfo = useSelectedNetworkInfo();
+  const { showConnectWalletModal } = useWalletControl();
   const [tipModalVisible, setTipModalVisible] = useState(false);
   const [tipAmountLocal, setTipAmountLocal] = useState(amount);
+  const [appMode] = useAppMode();
+
+  const onPress = async () => {
+    if (!selectedWallet?.address || !selectedWallet.connected) {
+      showConnectWalletModal({
+        forceNetworkFeature: NetworkFeature.SocialFeed,
+        action: "Tip",
+      });
+
+      return;
+    }
+
+    setTipModalVisible(true);
+  };
 
   return (
     <>
@@ -76,10 +96,15 @@ export const TipButton: React.FC<{
             backgroundColor: neutral22,
           },
         ]}
-        onPress={() => setTipModalVisible(true)}
+        onPress={onPress}
         disabled={disabled}
       >
-        <SVG source={tipSVG} width={20} height={20} color={secondaryColor} />
+        <SVG
+          source={appMode === "mini" ? tipSolidSVG : tipSVG}
+          width={20}
+          height={20}
+          color={secondaryColor}
+        />
         <SpacerRow size={0.75} />
         <BrandText style={[fontSemibold13, disabled && { color: neutral77 }]}>
           {selectedNetworkInfo?.kind === NetworkKind.Gno ? (
@@ -88,17 +113,17 @@ export const TipButton: React.FC<{
               amount={tipAmountLocal}
             />
           ) : (
-            <TeritoriTipAmount amount={amount} />
+            <TeritoriTipAmount amount={tipAmountLocal} />
           )}
         </BrandText>
       </TouchableOpacity>
 
       <TipModal
-        author={author}
+        authorId={authorId}
         postId={postId}
-        onClose={(newTipAmount: number | undefined) => {
+        onClose={(addedTipAmount: number | undefined) => {
           setTipModalVisible(false);
-          newTipAmount && setTipAmountLocal(amount + newTipAmount);
+          addedTipAmount && setTipAmountLocal(amount + addedTipAmount);
         }}
         isVisible={tipModalVisible}
       />

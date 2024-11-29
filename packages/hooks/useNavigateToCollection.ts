@@ -1,8 +1,9 @@
 import { useCallback } from "react";
 
-import { useMintEnded } from "./useMintEnded";
-import { parseNetworkObjectId } from "../networks";
-import { useAppNavigation } from "../utils/navigation";
+import { useMintEnded } from "./collection/useMintEnded";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { parseNetworkObjectId } from "@/networks";
 
 interface NavigateToCollectionOpts {
   forceSecondaryDuringMint?: boolean;
@@ -11,12 +12,10 @@ interface NavigateToCollectionOpts {
 
 const noop = () => {};
 
-export const useNavigateToCollection = (
+export const useCollectionNavigationTarget = (
   id: string,
   opts?: NavigateToCollectionOpts,
 ) => {
-  const navigation = useAppNavigation();
-
   const [network, contractAddress] = parseNetworkObjectId(id);
 
   const secondaryDuringMint = (network?.secondaryDuringMintList || []).includes(
@@ -27,14 +26,8 @@ export const useNavigateToCollection = (
 
   const mintEnded = useMintEnded(id, !noFetch);
 
-  const navToMint = useCallback(
-    () => navigation.navigate("MintCollection", { id }),
-    [navigation, id],
-  );
-  const navToMarketplace = useCallback(
-    () => navigation.navigate("Collection", { id }),
-    [navigation, id],
-  );
+  const navToMint = "MintCollection";
+  const navToMarketplace = "Collection";
 
   if (opts?.forceLinkToMint) {
     return navToMint;
@@ -45,7 +38,7 @@ export const useNavigateToCollection = (
   }
 
   if (mintEnded === undefined) {
-    return noop;
+    return undefined;
   }
 
   if (mintEnded) {
@@ -53,4 +46,31 @@ export const useNavigateToCollection = (
   }
 
   return navToMint;
+};
+
+export const useNavigateToCollection = (
+  id: string,
+  opts?: NavigateToCollectionOpts,
+) => {
+  const { navigate } = useAppNavigation();
+
+  const info = useCollectionNavigationTarget(id, opts);
+
+  const navToMint = useCallback(
+    () => navigate("MintCollection", { id }),
+    [navigate, id],
+  );
+  const navToMarketplace = useCallback(
+    () => navigate("Collection", { id }),
+    [navigate, id],
+  );
+
+  switch (info) {
+    case "MintCollection":
+      return navToMint;
+    case "Collection":
+      return navToMarketplace;
+    default:
+      return noop;
+  }
 };

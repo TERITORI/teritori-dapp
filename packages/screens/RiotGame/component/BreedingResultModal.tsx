@@ -3,15 +3,16 @@ import { Image, Linking, StyleSheet, View } from "react-native";
 
 import firePNG from "../../../../assets/game/fire.png";
 import twitterSVG from "../../../../assets/icons/twitter.svg";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { OptimizedImage } from "../../../components/OptimizedImage";
-import { SocialButton } from "../../../components/buttons/SocialButton";
 import ModalBase from "../../../components/modals/ModalBase";
-import { SpacerColumn } from "../../../components/spacer";
-import { mineShaftColor, neutral77 } from "../../../utils/style/colors";
-import { fontSemibold20, fontSemibold16 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { OptimizedImage } from "@/components/OptimizedImage";
+import { SocialButton } from "@/components/buttons/SocialButton";
+import { SpacerColumn } from "@/components/spacer";
+import { mineShaftColor, neutral77 } from "@/utils/style/colors";
+import { fontSemibold20, fontSemibold16 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export type TokenInfo = {
   id: string;

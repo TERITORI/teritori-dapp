@@ -2,24 +2,24 @@ import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { View } from "react-native";
 
-import { TNSModalCommonProps } from "./TNSHomeScreen";
 import burnSVG from "../../../assets/icons/burn.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
-import { NameNFT } from "../../components/teritoriNameService/NameNFT";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useTNS } from "../../context/TNSProvider";
-import { TeritoriNameServiceClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { nsNameInfoQueryKey } from "../../hooks/useNSNameInfo";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  getKeplrSigningCosmWasmClient,
-  mustGetCosmosNetwork,
-} from "../../networks";
-import { neutral17 } from "../../utils/style/colors";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { NameNFT } from "@/components/teritoriNameService/NameNFT";
+import { TNSModalCommonProps } from "@/components/user/types";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useTNS } from "@/context/TNSProvider";
+import { TeritoriNameServiceClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { nsNameInfoQueryKey } from "@/hooks/useNSNameInfo";
+import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
+import { getCosmosNetwork, mustGetCosmosNetwork } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
+import { neutral17, neutralA3 } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 
 interface TNSBurnNameScreenProps extends TNSModalCommonProps {}
 
@@ -29,10 +29,12 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
   const { name } = useTNS();
   const { setToastError, setToastSuccess } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
-  const network = mustGetCosmosNetwork(selectedWallet?.networkId);
+  const network = getCosmosNetwork(selectedWallet?.networkId);
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
   const walletAddress = selectedWallet?.address;
-  const normalizedTokenId = (name + network.nameServiceTLD || "").toLowerCase();
+  const normalizedTokenId = (
+    name + network?.nameServiceTLD || ""
+  ).toLowerCase();
 
   const queryClient = useQueryClient();
 
@@ -53,6 +55,7 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
     }
 
     try {
+      const network = mustGetCosmosNetwork(selectedWallet?.networkId);
       if (!network.nameServiceContractAddress) {
         throw new Error("network not supported");
       }
@@ -93,16 +96,13 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
     <ModalBase
       hideMainSeparator
       onClose={() => onClose()}
+      label="Burn Name NFT"
       width={457}
       boxStyle={{
         backgroundColor: neutral17,
       }}
     >
-      <View
-        style={{
-          flex: 1,
-        }}
-      >
+      <View>
         <NameNFT name={name} />
 
         <View
@@ -114,9 +114,7 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
           }}
         >
           <View>
-            <View
-              style={{ flex: 1, alignItems: "center", flexDirection: "row" }}
-            >
+            <View style={{ alignItems: "center", flexDirection: "row" }}>
               <SVG
                 width={32}
                 height={32}
@@ -131,7 +129,7 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
               style={{
                 fontSize: 16,
                 lineHeight: 20,
-                color: "#A3A3A3",
+                color: neutralA3,
                 marginTop: 16,
                 marginBottom: 20,
               }}
@@ -140,12 +138,13 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
               be visible from the name service and another token with the same
               name will be mintable.
             </BrandText>
+
             <SecondaryButton
               fullWidth
               size="XS"
               text="I understand, burn it"
               onPress={onSubmit}
-              style={{ marginBottom: 80 }}
+              style={{ marginBottom: layout.spacing_x4 }}
               loader
             />
           </View>

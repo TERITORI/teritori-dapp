@@ -7,7 +7,10 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useSelectedNetworkId } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { mustGetGnoNetwork } from "../../../networks";
-import { adenaDoContract } from "../../../utils/gno";
+import {
+  adenaDoContract,
+  AdenaDoContractMessageType,
+} from "../../../utils/gno";
 import { GnoDAOVoteRequest } from "../../../utils/gnodao/messages";
 import { neutral77 } from "../../../utils/style/colors";
 import {
@@ -60,7 +63,7 @@ export const FlagConfirmModal: React.FC<FlagConfirmModalProps> = ({
       const moduleIndex = "0";
 
       const voteJSON: GnoDAOVoteRequest = {
-        vote: vote === "banPost" ? 0 : 1,
+        vote: vote === "banPost" ? "yes" : "no",
         rationale: "",
       };
 
@@ -74,7 +77,7 @@ export const FlagConfirmModal: React.FC<FlagConfirmModalProps> = ({
 
       const txHash = await adenaDoContract(
         selectedNetworkId,
-        [{ type: "/vm.m_call", value: vmCall }],
+        [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
         {
           gasWanted: 2_000_000,
         },

@@ -1,12 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 // import { getCodeError } from "./codeError";
-import { Wallet } from "../../../../../context/WalletsProvider/wallet";
-import {
-  getKeplrSigningCosmWasmClient,
-  getNetworkByIdPrefix,
-} from "../../../../../networks";
 import { getCodeError } from "../query/codeError";
+
+import { Wallet } from "@/context/WalletsProvider";
+import { getNetworkByIdPrefix } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 
 export const useList = ({ selectedWallet }: { selectedWallet?: Wallet }) => {
   const addr = selectedWallet?.address || "";

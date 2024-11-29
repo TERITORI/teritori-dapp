@@ -3,9 +3,10 @@ import { TouchableOpacity, View } from "react-native";
 
 import osmosisLogo from "../../../../../assets/icons/networks/osmosis.svg";
 import settingsSVG from "../../../../../assets/icons/settings.svg";
-import { BrandText } from "../../../../components/BrandText";
-import { SVG } from "../../../../components/SVG";
-import { layout } from "../../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { layout } from "@/utils/style/layout";
 
 export const SwapHeader: React.FC<{
   setSettingsOpened?: Dispatch<SetStateAction<boolean>>;

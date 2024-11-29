@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { StyleProp, TextStyle } from "react-native";
 
 import { HashtagRenderer } from "./HashtagRenderer";
 import { MentionRenderer } from "./MentionRenderer";
@@ -43,9 +44,13 @@ const Component = ({ type, text }: MatchText) => {
 export const TextRenderer = ({
   text,
   isPreview,
+  style,
+  seeMoreStyle,
 }: {
   text: string;
   isPreview?: boolean;
+  style?: StyleProp<TextStyle>;
+  seeMoreStyle?: StyleProp<TextStyle>;
 }) => {
   const refText = useMemo(
     () => text.replace("/generate", "🖼️").replace("/question", "❓"),
@@ -97,7 +102,7 @@ export const TextRenderer = ({
       // Then, display each text part with its associated matchText if exists
       return (
         <React.Fragment key={index}>
-          {itemMatch.matchText && <Component {...itemMatch.matchText} />}
+          {!!itemMatch.matchText && <Component {...itemMatch.matchText} />}
           {itemMatch.item}
         </React.Fragment>
       );
@@ -105,10 +110,10 @@ export const TextRenderer = ({
   }, [refText, isTruncateNeeded]);
 
   return (
-    <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
+    <BrandText style={[fontSemibold14, { color: neutralA3 }, style]}>
       {formattedText}
       {isTruncateNeeded && (
-        <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+        <BrandText style={[fontSemibold14, { color: neutral77 }, seeMoreStyle]}>
           {"\n...see more"}
         </BrandText>
       )}

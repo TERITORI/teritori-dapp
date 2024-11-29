@@ -1,0 +1,100 @@
+name: Build Android App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  merge_group:
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.12.1
+
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          android: false
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.22.8"
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: "yarn"
+          node-version-file: ".nvmrc"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: "zulu" # See 'Supported distributions' for available options
+          java-version: "17"
+
+      - name: Fix package.json
+        run: yarn remove @lottiefiles/react-lottie-player
+
+      - name: Install node modules
+        run: yarn install
+
+      - name: Bump android versionNumber
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: make bump-app-build-number
+
+      - name: Download service account from env
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: echo ${{ secrets.GOOGLE_SERVICES_JSON }} | base64 --decode > ./service-account-android-submit.json
+
+      - name: Fix gitignore
+        run: npx tsx ./packages/scripts/app-build/fixGitignore.ts
+
+      - name: Restore wesh framework from cache if possible
+        uses: actions/cache@v4
+        with:
+          path: weshd/android/libs/WeshFramework.aar
+          key: cache_wesh-framework_android_go1.19_linux_${{ hashFiles('weshd/**/*.go', 'weshd/go.mod', 'weshd/go.sum') }}
+
+      - name: Build android weshframework
+        run: make check-android-weshframework
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build android
+        run: eas build --local --non-interactive --platform=android
+
+      - name: Update aab File path
+        run: |
+          AAB_FILE=$(find ./ -name 'build-*.aab' -type f)
+          if [ -z "$AAB_FILE" ]; then
+            echo "Error: apk file not found."
+            exit 1
+          fi
+
+          echo "AAB_FILE=$AAB_FILE" >> $GITHUB_ENV
+
+      - name: EAS Submit Android aab
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: eas submit --platform=android --path=${{ env.AAB_FILE }} --profile=production
+
+      - name: Upload aab
+        uses: actions/upload-artifact@v3
+        with:
+          name: teritori-${{ github.sha }}.aab
+          path: ${{ env.AAB_FILE }}
+          if-no-files-found: error

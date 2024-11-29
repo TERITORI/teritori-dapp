@@ -6,39 +6,49 @@ import { UploadMusicButton } from "./UploadMusicButton";
 import { UploadMusicModal } from "./UploadMusicModal";
 import { Post, PostsRequest } from "../../api/feed/v1/feed";
 import { BrandText } from "../../components/BrandText";
-import {
-  PostCategory,
-  ZodSocialFeedTrackMetadata,
-} from "../../components/socialFeed/NewsFeed/NewsFeed.type";
+import { useWalletControl } from "../../context/WalletControlProvider";
 import {
   combineFetchFeedPages,
   useFetchFeed,
 } from "../../hooks/feed/useFetchFeed";
+import { useAppMode } from "../../hooks/useAppMode";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkFeature } from "../../networks";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import {
+  PostCategory,
+  ZodSocialFeedTrackMetadata,
+} from "../../utils/types/feed";
 import { GridList } from "../layout/GridList";
+
+import { Spinner } from "@/components/Spinner";
 
 const minCardWidth = 250;
 const gap = layout.spacing_x2;
 
 export const FeedMusicList: React.FC<{
   title?: string;
+  networkId?: string;
   authorId?: string;
   allowUpload?: boolean;
   style?: StyleProp<ViewStyle>;
-}> = ({ title, authorId, allowUpload, style }) => {
+}> = ({ title, networkId, authorId, allowUpload, style }) => {
+  const [appMode] = useAppMode();
   const selectedWallet = useSelectedWallet();
-
+  const { showConnectWalletModal } = useWalletControl();
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
 
   const musicFeedRequest: Partial<PostsRequest> = {
     filter: {
+      networkId: networkId || "",
       categories: [PostCategory.MusicAudio],
       user: authorId || "",
       mentions: [],
       hashtags: [],
+      premiumLevelMin: 0,
+      premiumLevelMax: -1,
     },
     limit: 10,
     offset: 0,
@@ -68,31 +78,58 @@ export const FeedMusicList: React.FC<{
     }
   };
 
+  const onPressUploadMusic = async () => {
+    if (!selectedWallet?.address || !selectedWallet.connected) {
+      showConnectWalletModal({
+        forceNetworkFeature: NetworkFeature.SocialFeed,
+        action: "Publish Music",
+      });
+      return;
+    }
+    setOpenUploadModal(true);
+  };
+
   if (!data && (isLoading || isFetching))
-    return <View style={[{ minWidth: minCardWidth }, style]} />;
+    return (
+      <View style={[{ minWidth: minCardWidth }, style]}>
+        {appMode === "mini" && (
+          <View
+            style={{
+              alignItems: "center",
+              marginVertical: layout.spacing_x1_5,
+            }}
+          >
+            <Spinner />
+          </View>
+        )}
+      </View>
+    );
+
   return (
     <View style={[containerCStyle, style]}>
       <View style={oneLineCStyle}>
         <BrandText style={fontSemibold20}>{title}</BrandText>
         <View style={buttonGroupCStyle}>
-          {allowUpload && (
-            <UploadMusicButton
-              disabled={!selectedWallet?.connected}
-              onPress={() => setOpenUploadModal(true)}
-            />
-          )}
+          {allowUpload && <UploadMusicButton onPress={onPressUploadMusic} />}
         </View>
       </View>
-      <View style={[contentGroupCStyle]}>
+      <View
+        style={
+          appMode === "mini"
+            ? { marginTop: layout.spacing_x2, paddingBottom: 100 } //paddingBottom :100 to make last card visible completely, otherwise gets hidden behind bottom tabs
+            : [contentGroupCStyle]
+        }
+      >
         <GridList<Post>
           data={tracks}
           minElemWidth={minCardWidth}
           gap={gap}
-          keyExtractor={(item) => `track-${item.identifier}`}
+          keyExtractor={(item) => item.id}
           renderItem={({ item }, elemSize) => (
             <TrackCard post={item} style={{ width: elemSize }} />
           )}
           onEndReached={onEndReached}
+          noFixedHeight //FIXME: adding noFixedHeight breaks pagination ie.infinite pagination, without it scroll won't work
         />
       </View>
 
@@ -122,6 +159,7 @@ const contentGroupCStyle: ViewStyle = {
   justifyContent: "center",
   flexWrap: "wrap",
   marginTop: layout.spacing_x2,
+  paddingBottom: layout.spacing_x4,
 };
 
 const buttonGroupCStyle: ViewStyle = {

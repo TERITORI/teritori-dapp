@@ -1,17 +1,21 @@
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
-import { getNetwork, NetworkInfo } from "../networks";
-import {
-  selectAreTestnetsEnabled,
-  selectNetworksSettings,
-} from "../store/slices/settings";
+import { useAreTestnetsEnabled } from "./useAreTestnetsEnabled";
+
+import { useAppConfig } from "@/context/AppConfigProvider";
+import { allNetworks, getNetwork, NetworkInfo } from "@/networks";
+import { selectNetworksSettings } from "@/store/slices/settings";
 
 export const useEnabledNetworks = () => {
   const networksSettings = useSelector(selectNetworksSettings);
-  const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
+  const areTestnetsEnabled = useAreTestnetsEnabled();
+  const { forceNetworkList } = useAppConfig();
 
   const enabledNetworks = useMemo(() => {
+    if (forceNetworkList) {
+      return allNetworks.filter((n) => forceNetworkList?.includes(n.id));
+    }
     return Object.values(networksSettings)
       .map((ns) => {
         if (!ns?.enabled) {
@@ -24,7 +28,7 @@ export const useEnabledNetworks = () => {
         return undefined;
       })
       .filter((n): n is NetworkInfo => !!n);
-  }, [areTestnetsEnabled, networksSettings]);
+  }, [forceNetworkList, areTestnetsEnabled, networksSettings]);
 
   return enabledNetworks;
 };

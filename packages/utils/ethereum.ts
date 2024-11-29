@@ -10,14 +10,17 @@ import {
   parseNetworkObjectId,
   parseNftId,
   NetworkKind,
+  NativeCurrencyInfo,
 } from "../networks";
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 // this is used to block all calls to the provider getter while we wait for network switch auth
 const proms: {
   [key: string]: Promise<ethers.providers.Web3Provider | null> | undefined;
 } = {};
 
-const getMetaMaskEthereumProvider = async (
+export const getMetaMaskEthereumProvider = async (
   network: ethers.providers.Networkish,
 ) => {
   let provider;
@@ -75,14 +78,21 @@ const getMetaMaskEthereumProvider = async (
 const alchemyProviders: { [key: string]: ethers.providers.AlchemyProvider } =
   {};
 
-export const getEthereumProvider = async (network: EthereumNetworkInfo) => {
-  try {
-    const metamaskProvider = await getMetaMaskEthereumProvider(network.chainId);
-    if (metamaskProvider) {
-      return metamaskProvider;
+export const getEthereumProvider = async (
+  network: EthereumNetworkInfo,
+  forceAlchemyProvider: boolean = false,
+) => {
+  if (!forceAlchemyProvider) {
+    try {
+      const metamaskProvider = await getMetaMaskEthereumProvider(
+        network.chainId,
+      );
+      if (metamaskProvider) {
+        return metamaskProvider;
+      }
+    } catch (err) {
+      console.warn("failed to get metamask ethereum provider:", err);
     }
-  } catch (err) {
-    console.warn("failed to get metamask ethereum provider:", err);
   }
 
   const cacheKey = `${network.chainId}-${network.alchemyApiKey}`;
@@ -96,6 +106,39 @@ export const getEthereumProvider = async (network: EthereumNetworkInfo) => {
   return alchemyProviders[cacheKey];
 };
 
+const addEthereumChain = async (network: EthereumNetworkInfo) => {
+  try {
+    const ethereum = (window as any).ethereum;
+    if (!ethereum) {
+      return null;
+    }
+
+    const currency = network.currencies[0] as NativeCurrencyInfo;
+
+    await ethereum.request({
+      method: "wallet_addEthereumChain",
+      params: [
+        {
+          chainId: "0x" + network.chainId.toString(16),
+          chainName: network.displayName,
+          rpcUrls: [network.endpoint],
+          nativeCurrency: {
+            name: currency.displayName,
+            symbol: currency.displayName,
+            decimals: currency.decimals,
+          },
+          blockExplorerUrls: [network.txExplorer],
+        },
+      ],
+    });
+
+    return true;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
+
 export const getMetaMaskEthereumSigner = async (
   network: EthereumNetworkInfo | undefined,
   address: string | undefined,
@@ -104,8 +147,19 @@ export const getMetaMaskEthereumSigner = async (
     return null;
   }
 
-  const provider = await getMetaMaskEthereumProvider(network.chainId);
-  if (!provider) return null;
+  let provider = await getMetaMaskEthereumProvider(network.chainId);
+
+  // If unable to switch to expected chain then try to
+  // add that chain to metamask then retry to get provider again
+  if (!provider) {
+    const isOk = await addEthereumChain(network);
+    if (!isOk) return null;
+
+    await sleep(1000);
+    provider = await getMetaMaskEthereumProvider(network.chainId);
+
+    if (!provider) return null;
+  }
 
   return provider.getSigner(address);
 };
@@ -120,16 +174,15 @@ export const addCollectionMetadata = async (collection: Collection) => {
 
 const addNftMetadata = async (nft: NFT) => {
   const [network, , nftTokenId] = parseNftId(nft.id);
+
   if (network?.kind !== NetworkKind.Ethereum) {
     return nft;
   }
 
   const provider = await getEthereumProvider(network);
 
-  const nftClient = TeritoriNft__factory.connect(
-    nft.nftContractAddress,
-    provider,
-  );
+  const nftContractAddress = nft.nftContractAddress;
+  const nftClient = TeritoriNft__factory.connect(nftContractAddress, provider);
 
   const tokenURI = await nftClient.callStatic.tokenURI(nftTokenId);
   const metadataURL = web3ToWeb2URI(tokenURI);

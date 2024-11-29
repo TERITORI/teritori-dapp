@@ -5,10 +5,15 @@ import { useMemo } from "react";
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
 import { useErrorHandler } from "./useErrorHandler";
 import { useRunOrProposeTransaction } from "./useRunOrProposeTransaction";
-import { useFeedbacks } from "../context/FeedbacksProvider";
-import { getNetwork, NetworkKind, UserKind, parseUserId } from "../networks";
-import { CoingeckoCoin, getCoingeckoPrice } from "../utils/coingecko";
-import { CosmosRewardsResponse } from "../utils/teritori";
+
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { getNetwork, NetworkKind, UserKind, parseUserId } from "@/networks";
+import { CoingeckoCoin, getCoingeckoPrice } from "@/utils/coingecko";
+import { zodTryParseJSON } from "@/utils/sanitize";
+import {
+  CosmosRewardsResponse,
+  zodCosmosRewardsResponse,
+} from "@/utils/teritori";
 
 export type Reward = {
   validator: string;
@@ -139,7 +144,14 @@ export const useRewards = (userId: string | undefined, userKind: UserKind) => {
     const memoRewards: Reward[] = [];
     networkRewards.rewards?.forEach((rew) => {
       rew.reward.forEach((r) => {
-        const price = getCoingeckoPrice(networkId, r.denom, r.amount, prices);
+        // the rewards endpoint returns a float in a string instead of atomics
+        const integerAmount = r.amount.split(".")[0] || "0";
+        const price = getCoingeckoPrice(
+          networkId,
+          r.denom,
+          integerAmount,
+          prices,
+        );
         if (price) {
           const finalReward: Reward = {
             validator: rew.validator_address,
@@ -158,7 +170,14 @@ export const useRewards = (userId: string | undefined, userKind: UserKind) => {
   const totalsRewards: TotalRewards[] = useMemo(() => {
     const memoTotalsRewards: TotalRewards[] = [];
     networkRewards.total?.forEach((t) => {
-      const price = getCoingeckoPrice(networkId, t.denom, t.amount, prices);
+      // the rewards endpoint returns a float in a string instead of atomics
+      const integerAmount = t.amount.split(".")[0] || "0";
+      const price = getCoingeckoPrice(
+        networkId,
+        t.denom,
+        integerAmount,
+        prices,
+      );
       if (price) {
         const finalTotal: TotalRewards = {
           denom: t.denom,
@@ -192,7 +211,12 @@ const getNetworkRewards = async (
   const response = await fetch(
     `${network.restEndpoint}/cosmos/distribution/v1beta1/delegators/${address}/rewards`,
   );
-  return await response.json();
+
+  const rewardsString = await response.text();
+
+  const rewards = zodTryParseJSON(zodCosmosRewardsResponse, rewardsString);
+
+  return rewards || initialData;
 };
 
 // Rewards total price for all denoms

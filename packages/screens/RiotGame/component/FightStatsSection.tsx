@@ -1,14 +1,19 @@
+import { useMemo } from "react";
 import { View, ViewStyle } from "react-native";
 
 import { InfoBox } from "./InfoBox";
-import { PrimaryButtonOutline } from "../../../components/buttons/PrimaryButtonOutline";
-import { useGameRewards } from "../../../hooks/riotGame/useGameRewards";
-import { useSeasonRank } from "../../../hooks/riotGame/useSeasonRank";
-import { useIsMobile } from "../../../hooks/useIsMobile";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { decimalFromAtomics } from "../../../utils/coins";
-import { yellowDefault } from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
+
+import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
+import { useGameRewards } from "@/hooks/riotGame/useGameRewards";
+import { useSeasonRank } from "@/hooks/riotGame/useSeasonRank";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { teritoriNetwork } from "@/networks/teritori";
+import { teritoriCurrencies } from "@/networks/teritori/currencies";
+import { decimalFromAtomics } from "@/utils/coins";
+import { yellowDefault } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 
 type FightStatsSectionProps = {
   containerStyle?: ViewStyle;
@@ -21,6 +26,27 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
   const selectedWallet = useSelectedWallet();
   const { userRank, prettyUserRank, currentSeason } = useSeasonRank();
   const { isClaiming, claimableAmount, claimRewards } = useGameRewards();
+  const selectedNetwork = useSelectedNetworkInfo();
+
+  const formattedClaimable = useMemo(() => {
+    if (
+      !selectedNetwork?.kind ||
+      !selectedWallet?.networkId ||
+      !claimableAmount
+    ) {
+      return "0";
+    }
+
+    const res = decimalFromAtomics(
+      // NOTICE: Force to teritori network becase in bridge case, token is the same as Teritori
+      teritoriNetwork.id,
+      "" + claimableAmount,
+      // NOTICE: In bridged case, we used bridged token from teritori so decimal = 6 instead of selectedNetwork.currencies[0].denom
+      teritoriCurrencies[0].denom,
+    );
+
+    return res;
+  }, [claimableAmount, selectedNetwork?.kind, selectedWallet?.networkId]);
 
   return (
     <View
@@ -64,11 +90,7 @@ export const FightStatsSection: React.FC<FightStatsSectionProps> = ({
           text={
             isClaiming
               ? "Claiming..."
-              : `Claim available rewards: ${decimalFromAtomics(
-                  selectedWallet?.networkId,
-                  "" + claimableAmount,
-                  "utori", // FIXME: don't hardcode denom and use prettyPrice
-                )} TORI`
+              : `Claim available rewards: ${formattedClaimable} TORI`
           }
           touchableStyle={{ marginLeft: layout.spacing_x1 }}
           onPress={claimRewards}

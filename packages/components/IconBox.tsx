@@ -12,8 +12,8 @@ interface IconBoxProps {
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
   iconProps?: {
-    height: number;
-    width: number;
+    height?: number;
+    width?: number;
     color?: string;
   };
 }

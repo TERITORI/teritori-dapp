@@ -5,93 +5,86 @@ import Long from "long";
 import React, { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
-  TouchableOpacity,
   StyleProp,
-  TextStyle,
+  TextInput,
+  TouchableOpacity,
+  useWindowDimensions,
   View,
   ViewStyle,
-  useWindowDimensions,
-  TextInput,
 } from "react-native";
 import ConfettiCannon from "react-native-confetti-cannon";
 import CountDown from "react-native-countdown-component";
 
+import { NUMBERS_REGEXP } from "./../../utils/regex";
 import balanceSVG from "../../../assets/icons/balance.svg";
 import minusSVG from "../../../assets/icons/minus.svg";
 import plusSVG from "../../../assets/icons/plus.svg";
 import sigmaSVG from "../../../assets/icons/sigma.svg";
-import { BrandText } from "../../components/BrandText";
-import { ExternalLink } from "../../components/ExternalLink";
 import FlexRow from "../../components/FlexRow";
-import { OptimizedImage } from "../../components/OptimizedImage";
-import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { TertiaryBadge } from "../../components/badges/TertiaryBadge";
-import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-import { ProgressionCard } from "../../components/cards/ProgressionCard";
-import { CollectionSocialButtons } from "../../components/collections/CollectionSocialButtons";
-import { GradientText } from "../../components/gradientText";
-import { SpacerRow } from "../../components/spacer";
-import {
-  initialToastError,
-  useFeedbacks,
-} from "../../context/FeedbacksProvider";
-import { Wallet } from "../../context/WalletsProvider";
-import { TeritoriMinter__factory } from "../../evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
-import { useBalances } from "../../hooks/useBalances";
-import { useCollectionInfo } from "../../hooks/useCollectionInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { Coin } from "@/api/teritori-chain/cosmos/base/v1beta1/coin";
+import { BrandText } from "@/components/BrandText";
+import { ExternalLink } from "@/components/ExternalLink";
+import { OptimizedImage } from "@/components/OptimizedImage";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { ProgressionCard } from "@/components/cards/ProgressionCard";
+import { CollectionSocialButtons } from "@/components/collections/CollectionSocialButtons";
+import { GradientText } from "@/components/gradientText";
+import { DepositWithdrawModal } from "@/components/modals/DepositWithdrawModal";
+import { SpacerRow } from "@/components/spacer";
+import { initialToastError, useFeedbacks } from "@/context/FeedbacksProvider";
+import { useWalletControl } from "@/context/WalletControlProvider";
+import { Wallet } from "@/context/WalletsProvider";
+import { TeritoriMinter__factory } from "@/evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
+import { useBalances } from "@/hooks/useBalances";
+import { useCanPay } from "@/hooks/useCanPay";
+import { useCollectionInfo } from "@/hooks/useCollectionInfo";
 import {
-  NetworkKind,
   CosmosNetworkInfo,
   EthereumNetworkInfo,
   getCosmosNetwork,
   getCurrency,
-  getKeplrSigningCosmWasmClient,
-  getNativeCurrency,
-  parseNetworkObjectId,
   getEthereumNetwork,
-} from "../../networks";
-import { prettyPrice } from "../../utils/coins";
-import { MintPhase } from "../../utils/collection";
-import { getMetaMaskEthereumSigner } from "../../utils/ethereum";
-import { ScreenFC } from "../../utils/navigation";
+  getNativeCurrency,
+  NetworkFeature,
+  NetworkKind,
+  parseNetworkObjectId,
+} from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
+import { prettyPrice } from "@/utils/coins";
+import { MintPhase } from "@/utils/collection";
+import { getMetaMaskEthereumSigner } from "@/utils/ethereum";
+import { ScreenFC } from "@/utils/navigation";
 import {
   neutral17,
+  neutral22,
   neutral30,
   neutral33,
   neutral67,
   neutral77,
-  neutral22,
   neutralA3,
   pinkDefault,
   primaryColor,
-  yellowDefault,
   secondaryColor,
-} from "../../utils/style/colors";
+  yellowDefault,
+} from "@/utils/style/colors";
 import {
   fontMedium14,
   fontSemibold12,
   fontSemibold14,
   fontSemibold16,
   fontSemibold20,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { DepositWithdrawModal } from "../WalletManager/components/DepositWithdrawModal";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const maxImageSize = 532;
-const cardsHalfGap = 6;
-
-const countDownTxtStyleStarts: StyleProp<TextStyle> = {
-  fontSize: 16,
-  letterSpacing: 0,
-  lineHeight: 20,
-  fontFamily: "Exo_600SemiBold",
-  fontWeight: "600",
-  color: pinkDefault,
-};
+const cardsHalfGap = layout.spacing_x0_75;
 
 const sleep = (duration: number) =>
   new Promise((resolve) => setTimeout(resolve, duration));
@@ -102,8 +95,8 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
   },
 }) => {
   const { width: currentWidth } = useWindowDimensions();
-
   const wallet = useSelectedWallet();
+  const userId = wallet?.userId;
   const [minted, setMinted] = useState(false);
   const [isDepositVisible, setDepositVisible] = useState(false);
   const {
@@ -112,18 +105,34 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     refetch: refetchCollectionInfo,
   } = useCollectionInfo(id);
   const { setToastError } = useFeedbacks();
+  const { showConnectWalletModal, showNotEnoughFundsModal } =
+    useWalletControl();
   const [viewWidth, setViewWidth] = useState(0);
   const [network, mintAddress] = parseNetworkObjectId(id);
-  const balances = useBalances(network?.id, wallet?.address);
+  const { balances } = useBalances(network?.id, wallet?.address);
   const balance = balances.find((bal) => bal.denom === info?.priceDenom);
-
   const [totalBulkMint, setTotalBulkMint] = useState(1);
-
+  const {
+    discord: discordLink,
+    twitter: twitterLink,
+    website: websiteLink,
+  } = info;
+  const hasLinks = discordLink || twitterLink || websiteLink;
+  const priceCurrency = getCurrency(network?.id, info.priceDenom);
+  const priceNativeCurrency = getNativeCurrency(network?.id, info.priceDenom);
+  const cost: Coin = useMemo(() => {
+    return {
+      amount: info.unitPrice || "0",
+      denom: info?.priceDenom || "",
+    };
+  }, [info.unitPrice, info?.priceDenom]);
+  const canPayForMint = useCanPay({ userId, cost });
+  const forceNetworkFeature = NetworkFeature.CosmWasmNFTLaunchpad;
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
-  const mintButtonDisabled = minted || !wallet?.connected;
+  const mintButtonDisabled = minted;
 
   const updateTotalBulkMint = (newTotalBulkMint: number | string) => {
-    const numOnlyRegexp = new RegExp(/^\d+$/);
+    const numOnlyRegexp = new RegExp(NUMBERS_REGEXP);
     if (!numOnlyRegexp.test("" + newTotalBulkMint)) {
       return;
     }
@@ -140,6 +149,17 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     }
 
     setTotalBulkMint(totalBulkMint);
+  };
+
+  const onPressDeposit = async () => {
+    if (!wallet?.address || !wallet.connected) {
+      showConnectWalletModal({
+        forceNetworkFeature,
+        action: "Mint this Collection",
+      });
+      return;
+    }
+    setDepositVisible(true);
   };
 
   const prettyError = (err: any) => {
@@ -249,6 +269,20 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
 
   const mint = useCallback(async () => {
     try {
+      if (!wallet?.address || !wallet.connected) {
+        showConnectWalletModal({
+          action: "Mint this Collection",
+          forceNetworkFeature,
+        });
+        return;
+      }
+      if (!canPayForMint) {
+        showNotEnoughFundsModal({
+          action: "Mint this Collection",
+          cost,
+        });
+        return;
+      }
       setToastError(initialToastError);
       if (!wallet) {
         setToastError({
@@ -284,13 +318,24 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
       }
       console.error(e);
     }
-  }, [cosmosMint, ethereumMint, network, setToastError, wallet]);
+  }, [
+    cost,
+    showConnectWalletModal,
+    forceNetworkFeature,
+    canPayForMint,
+    cosmosMint,
+    ethereumMint,
+    network,
+    setToastError,
+    wallet,
+    showNotEnoughFundsModal,
+  ]);
 
   const mintTermsConditionsURL = useMemo(() => {
     switch (mintAddress) {
       case getCosmosNetwork(network?.id)?.riotContractAddressGen0:
         return "https://teritori.notion.site/The-R-ot-Terms-Conditions-0ea730897c964b04ab563e0648cc2f5b";
-      case getEthereumNetwork(network?.id)?.riotContractAddress:
+      case getEthereumNetwork(network?.id)?.riotContractAddressGen0:
         return "https://teritori.notion.site/The-Riot-Terms-Conditions-ETH-92328fb2d4494b6fb073b38929b28883";
       default:
         return null;
@@ -301,20 +346,16 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     return <ScreenContainer noMargin />;
   }
 
-  const {
-    discord: discordLink,
-    twitter: twitterLink,
-    website: websiteLink,
-  } = info;
-  const hasLinks = discordLink || twitterLink || websiteLink;
-
-  const priceCurrency = getCurrency(network?.id, info.priceDenom);
-  const priceNativeCurrency = getNativeCurrency(network?.id, info.priceDenom);
-
   if (notFound) {
     return (
       <ScreenContainer noMargin>
-        <View style={{ alignItems: "center", width: "100%", marginTop: 40 }}>
+        <View
+          style={{
+            alignItems: "center",
+            width: "100%",
+            marginTop: layout.spacing_x5,
+          }}
+        >
           <BrandText>Collection not found</BrandText>
         </View>
       </ScreenContainer>
@@ -342,9 +383,11 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 margin: layout.spacing_x2,
               }}
             >
-              <BrandText style={{ marginBottom: 12 }}>{info.name}</BrandText>
+              <BrandText style={{ marginBottom: layout.spacing_x1_5 }}>
+                {info.name}
+              </BrandText>
 
-              <View style={{ marginBottom: 20 }}>
+              <View style={{ marginBottom: layout.spacing_x2_5 }}>
                 <View
                   style={{
                     flexDirection: "row",
@@ -475,9 +518,9 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                       </BrandText>
                       <BrandText style={fontSemibold16}>
                         {prettyPrice(
-                          network?.id || "",
+                          network?.id,
                           balance?.amount || "0",
-                          balance?.denom || "",
+                          info.priceDenom,
                         )}
                       </BrandText>
                     </View>
@@ -570,7 +613,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                         width={150}
                         disabled={mintButtonDisabled}
                         loader
-                        onPress={() => setDepositVisible(true)}
+                        onPress={onPressDeposit}
                       />
                     )}
 
@@ -581,11 +624,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                         size="XL"
                         text="Mint"
                         width={priceCurrency?.kind === "ibc" ? 100 : 200}
-                        disabled={
-                          mintButtonDisabled ||
-                          parseInt(balance?.amount || "0", 10) <
-                            parseInt(info.unitPrice || "0", 10)
-                        }
+                        disabled={mintButtonDisabled}
                         loader
                         onPress={mint}
                       />
@@ -663,7 +702,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 margin: layout.spacing_x2,
               }}
             >
-              <LegacyTertiaryBox style={{ marginBottom: 40 }}>
+              <LegacyTertiaryBox style={{ marginBottom: layout.spacing_x5 }}>
                 {info.image ? (
                   <OptimizedImage
                     sourceURI={info.image}
@@ -684,12 +723,17 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                       justifyContent: "center",
                     }}
                   >
-                    <ActivityIndicator size="large" style={{ margin: 40 }} />
+                    <ActivityIndicator
+                      size="large"
+                      style={{ margin: layout.spacing_x5 }}
+                    />
                   </View>
                 )}
               </LegacyTertiaryBox>
 
-              <BrandText style={[fontSemibold20, { marginBottom: 24 }]}>
+              <BrandText
+                style={[fontSemibold20, { marginBottom: layout.spacing_x3 }]}
+              >
                 Activity
               </BrandText>
               {info.mintStarted ? (
@@ -737,12 +781,15 @@ const AttributesCard: React.FC<{
       height={62}
       mainContainerStyle={{
         alignItems: "flex-start",
-        paddingHorizontal: 12,
-        paddingVertical: 14,
+        paddingHorizontal: layout.spacing_x1_5,
+        paddingVertical: layout.spacing_x1_75,
       }}
     >
       <BrandText
-        style={[fontSemibold12, { color: neutral77, marginBottom: 6 }]}
+        style={[
+          fontSemibold12,
+          { color: neutral77, marginBottom: layout.spacing_x0_75 },
+        ]}
       >
         {label}
       </BrandText>
@@ -784,7 +831,7 @@ const PresaleActivy: React.FC<{
       <View
         style={[
           {
-            marginBottom: 24,
+            marginBottom: layout.spacing_x3,
           },
           !running && {
             borderBottomColor: neutral33,
@@ -796,11 +843,14 @@ const PresaleActivy: React.FC<{
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginVertical: 16,
+            marginVertical: layout.spacing_x2,
           }}
         >
           <BrandText
-            style={[fontSemibold16, { color: neutral77, marginRight: 5 }]}
+            style={[
+              fontSemibold16,
+              { color: neutral77, marginRight: layout.spacing_x0_5 },
+            ]}
           >
             Whitelist
           </BrandText>
@@ -811,7 +861,7 @@ const PresaleActivy: React.FC<{
               borderRadius: 999,
               width: 2,
               height: 2,
-              marginHorizontal: 12,
+              marginHorizontal: layout.spacing_x1_5,
               backgroundColor: neutral77,
             }}
           />
@@ -819,20 +869,29 @@ const PresaleActivy: React.FC<{
           {maxPerAddress && maxPerAddress !== "0" ? (
             <>
               <BrandText
-                style={[fontSemibold16, { color: neutral77, marginRight: 5 }]}
+                style={[
+                  fontSemibold16,
+                  { color: neutral77, marginRight: layout.spacing_x0_5 },
+                ]}
               >
                 Max
               </BrandText>
               <BrandText style={fontSemibold16}>{maxPerAddress}</BrandText>
               <BrandText
-                style={[fontSemibold16, { color: neutral77, marginLeft: 5 }]}
+                style={[
+                  fontSemibold16,
+                  { color: neutral77, marginLeft: layout.spacing_x0_5 },
+                ]}
               >
                 Token
               </BrandText>
             </>
           ) : (
             <BrandText
-              style={[fontSemibold16, { color: neutral77, marginRight: 5 }]}
+              style={[
+                fontSemibold16,
+                { color: neutral77, marginRight: layout.spacing_x0_5 },
+              ]}
             >
               Unlimited
             </BrandText>
@@ -855,9 +914,23 @@ const PhaseCountdown: React.FC<{
         until={(startsAt || now) - now}
         onFinish={onCountdownEnd}
         size={8}
+        digitTxtStyle={{
+          fontSize: 16,
+          letterSpacing: 0,
+          lineHeight: 20,
+          fontFamily: "Exo_600SemiBold",
+          fontWeight: "600",
+          color: pinkDefault,
+        }}
+        separatorStyle={{
+          fontSize: 16,
+          letterSpacing: 0,
+          lineHeight: 20,
+          fontFamily: "Exo_600SemiBold",
+          fontWeight: "600",
+          color: pinkDefault,
+        }}
         style={{ marginLeft: layout.spacing_x1 }}
-        digitTxtStyle={countDownTxtStyleStarts}
-        separatorStyle={countDownTxtStyleStarts}
         digitStyle={{ backgroundColor: "none" }}
         showSeparator
         timeLabels={{ d: "", h: "", m: "", s: "" }}

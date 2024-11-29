@@ -1,15 +1,19 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 
 import { UPPIntro } from "./UPPIntro";
-import { Tabs } from "../../../components/tabs/Tabs";
-import { useIsDAO } from "../../../hooks/cosmwasm/useCosmWasmContractInfo";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { parseUserId, UserKind } from "../../../networks";
-import { useAppNavigation } from "../../../utils/navigation";
-import { primaryColor } from "../../../utils/style/colors";
-import { layout } from "../../../utils/style/layout";
-import { uppTabItems } from "../../../utils/upp";
+
+import { Tabs } from "@/components/tabs/Tabs";
+import { EditProfileModal } from "@/components/user/modals/EditProfileModal";
+import { useTNS } from "@/context/TNSProvider";
+import { useIsDAO } from "@/hooks/cosmwasm/useCosmWasmContractInfo";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { NetworkKind, parseUserId, UserKind } from "@/networks";
+import { TNSUpdateNameScreen } from "@/screens/TeritoriNameService/TNSUpdateNameScreen";
+import { primaryColor } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
+import { uppTabItems } from "@/utils/upp";
 
 interface UserPublicProfileScreenHeaderProps {
   userId: string;
@@ -26,6 +30,13 @@ export const UPPHeader = memo(
     const { width } = useMaxResolution();
     const { isDAO } = useIsDAO(userId);
     const [network] = parseUserId(userId);
+    const [isEditProfileModal, setIsEditProfileModal] = useState<boolean>();
+    const { setName } = useTNS();
+
+    const onCloseModalHandler = () => {
+      setIsEditProfileModal(false);
+      setName("");
+    };
 
     const items: typeof uppTabItems = Object.entries(uppTabItems).reduce(
       (o, [key, item]) => {
@@ -58,6 +69,7 @@ export const UPPHeader = memo(
         <UPPIntro
           userId={userId}
           isUserOwner={selectedWallet?.userId === userId}
+          setIsEditProfileModal={(val: boolean) => setIsEditProfileModal(val)}
         />
         <Tabs
           items={items}
@@ -73,6 +85,13 @@ export const UPPHeader = memo(
           }}
           borderColorTabSelected={primaryColor}
         />
+
+        {isEditProfileModal &&
+          (network?.kind === NetworkKind.Cosmos ? (
+            <TNSUpdateNameScreen onClose={() => onCloseModalHandler()} />
+          ) : (
+            <EditProfileModal onClose={() => onCloseModalHandler()} />
+          ))}
       </>
     );
   },

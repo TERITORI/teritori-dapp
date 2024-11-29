@@ -6,8 +6,10 @@ import { nameServiceDefaultImage } from "./tns";
 import { ConfigResponse } from "../contracts-clients/teritori-bunker-minter/TeritoriBunkerMinter.types";
 import {
   CosmosNetworkInfo,
+  NetworkFeature,
   NetworkKind,
-  WEI_TOKEN_ADDRESS,
+  getEthereumNetwork,
+  getNetworkFeature,
   parseNetworkObjectId,
 } from "../networks";
 
@@ -58,6 +60,7 @@ export enum CollectionContractKind {
   CosmwasmNameServiceV0 = "CosmwasmNameServiceV0",
   CosmwasmBunkerV0 = "CosmwasmBunkerV0",
   EthereumBunkerV0 = "EthereumBunkerV0",
+  PremiumMembershipsV0 = "PremiumMembershipsV0",
 }
 
 export const collectionContractKindFromID = (id: string | undefined) => {
@@ -66,25 +69,32 @@ export const collectionContractKindFromID = (id: string | undefined) => {
     return CollectionContractKind.Unknown;
   }
   switch (network.kind) {
-    case NetworkKind.Ethereum:
+    case NetworkKind.Ethereum: {
       return CollectionContractKind.EthereumBunkerV0;
-    case NetworkKind.Cosmos:
+    }
+    case NetworkKind.Cosmos: {
       if (rootAddress === network.riotContractAddressGen1) {
         return CollectionContractKind.CosmwasmBreedingV0;
       }
       if (rootAddress === network.nameServiceContractAddress) {
         return CollectionContractKind.CosmwasmNameServiceV0;
       }
+      const pmFeature = getNetworkFeature(
+        network.id,
+        NetworkFeature.CosmWasmPremiumFeed,
+      );
+      if (pmFeature && rootAddress === pmFeature?.membershipContractAddress) {
+        return CollectionContractKind.PremiumMembershipsV0;
+      }
+
       return CollectionContractKind.CosmwasmBunkerV0;
+    }
   }
   return CollectionContractKind.Unknown;
 };
 
-export const getCollectionMetadata = (umetadata: unknown): CollectionInfo => {
+export const getCollectionMetadata = (metadata: unknown): CollectionInfo => {
   const info: CollectionInfo = { mintPhases: [] };
-
-  // FIXME: remove any cast
-  const metadata = umetadata as any; // current ts version does not support logical casts for 'in' keyword
 
   if (typeof metadata !== "object" || !metadata) {
     return info;
@@ -182,8 +192,7 @@ export const expandEthereumBunkerConfig = (
   currentSupply: BigNumber,
 ) => {
   const secondsSinceEpoch = Long.fromNumber(Date.now() / 1000);
-
-  const priceDenom = WEI_TOKEN_ADDRESS;
+  const priceDenom = getEthereumNetwork(networkId)?.currencies[0].denom;
 
   const mintStartedAt = Long.fromString(
     minterConfig.mintStartTime.toString() || "0",

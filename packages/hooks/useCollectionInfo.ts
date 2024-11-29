@@ -1,3 +1,5 @@
+import { useQuery } from "@tanstack/react-query";
+import { cloneDeep } from "lodash";
 import Long from "long";
 import { useCallback, useMemo } from "react";
 
@@ -14,7 +16,8 @@ import { useEthNFTContractURI } from "./collection/useEthNFTContractURI";
 import { useBreedingConfig } from "./useBreedingConfig";
 import { useCW721ContractInfo } from "./useNFTContractInfo";
 import { useRemoteJSON } from "./useRemoteJSON";
-import { parseNetworkObjectId, NetworkKind } from "../networks";
+
+import { parseNetworkObjectId, NetworkKind } from "@/networks";
 import {
   CollectionContractKind,
   CollectionInfo,
@@ -24,7 +27,9 @@ import {
   expandEthereumBunkerConfig,
   getCollectionMetadata,
   getTnsCollectionInfo,
-} from "../utils/collection";
+} from "@/utils/collection";
+import { mustGetCw721MembershipQueryClient } from "@/utils/feed/client";
+import { isLinkBanned } from "@/utils/link-ban";
 
 // NOTE: consider using the indexer for this
 export const useCollectionInfo = (
@@ -65,7 +70,16 @@ export const useCollectionInfo = (
     contractKind === CollectionContractKind.EthereumBunkerV0,
   );
 
-  return useMemo(() => {
+  const {
+    info: premiumFeedCollectionInfo,
+    notFound: premiumNotFound,
+    refetch: premiumRefetch,
+  } = usePremiumFeedCollectionInfo(
+    network?.id,
+    contractKind === CollectionContractKind.PremiumMembershipsV0,
+  );
+
+  const { collectionInfo, ...other } = useMemo(() => {
     switch (contractKind) {
       case CollectionContractKind.CosmwasmNameServiceV0:
         if (network?.kind === NetworkKind.Cosmos) {
@@ -99,6 +113,12 @@ export const useCollectionInfo = (
           notFound: ethNotFound,
           refetch: ethRefetch,
         };
+      case CollectionContractKind.PremiumMembershipsV0:
+        return {
+          collectionInfo: premiumFeedCollectionInfo,
+          notFound: premiumNotFound,
+          refetch: premiumRefetch,
+        };
       default:
         return {
           collectionInfo: { mintPhases: [] },
@@ -118,7 +138,31 @@ export const useCollectionInfo = (
     ethRefetch,
     ethereumCollectionInfo,
     network,
+    premiumFeedCollectionInfo,
+    premiumNotFound,
+    premiumRefetch,
   ]);
+
+  const clean = useMemo(() => {
+    if (!collectionInfo) {
+      return collectionInfo;
+    }
+
+    const r = cloneDeep(collectionInfo);
+
+    if (isLinkBanned(r.discord)) {
+      delete r.discord;
+    }
+    if (isLinkBanned(r.twitter)) {
+      delete r.twitter;
+    }
+    if (isLinkBanned(r.website)) {
+      delete r.website;
+    }
+    return r;
+  }, [collectionInfo]);
+
+  return { collectionInfo: clean, ...other };
 };
 
 const useTeritoriBreedingCollectionInfo = (
@@ -322,4 +366,28 @@ const useEthereumTeritoriBunkerCollectionInfo = (
   }, [refetchConf, refetchCurrentSupply, refetchIsPaused, refetchWhitelists]);
 
   return { info, notFound: isError, refetch };
+};
+
+const usePremiumFeedCollectionInfo = (
+  networkId: string | undefined,
+  enabled?: boolean,
+) => {
+  const { data: config, refetch } = useQuery(
+    ["premium-feed-config", networkId],
+    async () => {
+      const client = await mustGetCw721MembershipQueryClient(networkId);
+      const config = await client.config();
+      return config;
+    },
+    { enabled },
+  );
+
+  const info: CollectionInfo = {
+    name: config?.name,
+    description: config?.description,
+    image: config?.image_uri,
+    mintPhases: [],
+  };
+
+  return { info, notFound: false, refetch };
 };

@@ -1,43 +1,29 @@
-import {
-  CosmWasmClient,
-  SigningCosmWasmClient,
-} from "@cosmjs/cosmwasm-stargate";
-import {
-  createWasmAminoConverters,
-  wasmTypes,
-} from "@cosmjs/cosmwasm-stargate/build/modules";
+import { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { Decimal } from "@cosmjs/math";
-import { Registry } from "@cosmjs/proto-signing";
-import {
-  SigningStargateClient,
-  GasPrice,
-  defaultRegistryTypes,
-  AminoTypes,
-  AminoConverters,
-  createAuthzAminoConverters,
-  createBankAminoConverters,
-  createDistributionAminoConverters,
-  createFeegrantAminoConverters,
-  createGovAminoConverters,
-  createIbcAminoConverters,
-  createStakingAminoConverters,
-  createVestingAminoConverters,
-  StargateClient,
-} from "@cosmjs/stargate";
+import { GasPrice, StargateClient } from "@cosmjs/stargate";
 import { ChainInfo, Currency as KeplrCurrency } from "@keplr-wallet/types";
 import { bech32 } from "bech32";
 
+import { irisNetwork } from "./IRISnet";
 import { cosmosNetwork } from "./cosmos-hub";
 import { cosmosThetaNetwork } from "./cosmos-hub-theta";
 import { networksFromCosmosRegistry } from "./cosmos-registry";
 import { ethereumNetwork } from "./ethereum";
 import { ethereumGoerliNetwork } from "./ethereum-goerli";
+import { NetworkFeature, NetworkFeatureObject } from "./features";
 import { gnoDevNetwork } from "./gno-dev";
-import { gnoTeritoriNetwork } from "./gno-teritori";
+import { gnoPortalNetwork } from "./gno-portal";
 import { gnoTest3Network } from "./gno-test3";
+import { gnoTest5Network } from "./gno-test5";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
+// import { solanaNetwork } from "./solana";
+import { polygonNetwork } from "./polygon";
+import { polygonMumbaiNetwork } from "./polygon-mumbai";
+import { sagaNetwork } from "./saga";
+import { sagaTest2 } from "./saga-test2";
 import { teritoriNetwork } from "./teritori";
+import { teritoriLocalnetNetwork } from "./teritori-localnet";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
 import {
   CosmosNetworkInfo,
@@ -47,28 +33,28 @@ import {
   NetworkInfo,
   NetworkKind,
 } from "./types";
-import {
-  teritoriAminoConverters,
-  teritoriProtoRegistry,
-} from "../api/teritori-chain";
-import { getKeplr } from "../utils/keplr";
 
 export * from "./types";
-
-export const WEI_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 const packageNetworks = [
   teritoriNetwork,
   cosmosNetwork,
+  irisNetwork,
   teritoriTestnetNetwork,
+  teritoriLocalnetNetwork,
   cosmosThetaNetwork,
   ethereumGoerliNetwork,
   ethereumNetwork,
   osmosisNetwork,
   osmosisTestnetNetwork,
+  gnoPortalNetwork,
   gnoTest3Network,
+  gnoTest5Network,
   gnoDevNetwork,
-  gnoTeritoriNetwork,
+  polygonMumbaiNetwork,
+  polygonNetwork,
+  sagaTest2,
+  sagaNetwork,
 ];
 
 export const defaultEnabledNetworks = [
@@ -76,9 +62,12 @@ export const defaultEnabledNetworks = [
   "teritori-testnet",
   "ethereum",
   "ethereum-goerli",
+  "polygon",
+  "polygon-mumbai",
   "cosmos-hub",
   "osmosis",
-  "gno-teritori",
+  "gno-portal",
+  "gno-test5",
   "cosmos-registry:juno",
   "cosmos-registry:kujira",
   "cosmos-registry:axelar",
@@ -92,32 +81,6 @@ export const allNetworks = [
     (rn) => !packageNetworks.some((pn) => pn.overrides === rn.id),
   ),
 ].sort((a, b) => a.displayName.localeCompare(b.displayName));
-
-export const cosmosTypesRegistry = new Registry([
-  ...defaultRegistryTypes,
-  ...wasmTypes,
-  ...teritoriProtoRegistry,
-]);
-
-// FIXME: upgrade stargate since it exposes this function in new versions
-function createDefaultAminoConverters(): AminoConverters {
-  return {
-    ...createAuthzAminoConverters(),
-    ...createBankAminoConverters(),
-    ...createDistributionAminoConverters(),
-    ...createGovAminoConverters(),
-    ...createStakingAminoConverters(""),
-    ...createIbcAminoConverters(),
-    ...createFeegrantAminoConverters(),
-    ...createVestingAminoConverters(),
-  };
-}
-
-const cosmosAminoTypes = new AminoTypes({
-  ...createDefaultAminoConverters(),
-  ...createWasmAminoConverters(),
-  ...teritoriAminoConverters,
-});
 
 export const getCurrency = (
   networkId: string | undefined,
@@ -437,7 +400,6 @@ export const keplrChainInfoFromNetworkInfo = (
     },
     currencies: [stakeCurrency],
     feeCurrencies: [stakeCurrency],
-    gasPriceStep: network.gasPriceStep,
     features: network.cosmosFeatures,
   };
 };
@@ -458,94 +420,24 @@ export const cosmosNetworkGasPrice = (
   return new GasPrice(decimalGasPrice, feeCurrency.denom);
 };
 
-export const getKeplrSigner = async (networkId: string) => {
-  const network = mustGetCosmosNetwork(networkId);
-
-  const keplr = getKeplr();
-
-  await keplr.experimentalSuggestChain(keplrChainInfoFromNetworkInfo(network));
-
-  await keplr.enable(network.chainId);
-
-  return keplr.getOfflineSignerAuto(network.chainId);
-};
-
-const getKeplrOnlyAminoSigner = async (networkId: string) => {
-  const network = mustGetCosmosNetwork(networkId);
-
-  const keplr = getKeplr();
-
-  await keplr.experimentalSuggestChain(keplrChainInfoFromNetworkInfo(network));
-
-  await keplr.enable(network.chainId);
-
-  return keplr.getOfflineSignerOnlyAmino(network.chainId);
-};
-
-export const getKeplrSigningStargateClient = async (
-  networkId: string,
-  gasPriceKind: "low" | "average" | "high" = "average",
+export const getNetworkFeature = <
+  F extends NetworkFeature,
+  FO extends NetworkFeatureObject,
+  R = FO extends { type: F } ? FO : never,
+>(
+  networkId: string | undefined,
+  feature: F,
 ) => {
-  const network = mustGetCosmosNetwork(networkId);
-
-  const gasPrice = cosmosNetworkGasPrice(network, gasPriceKind);
-  if (!gasPrice) {
-    throw new Error("gas price not found");
+  if (!networkId) {
+    return undefined;
   }
-
-  const signer = await getKeplrSigner(networkId);
-
-  return await SigningStargateClient.connectWithSigner(
-    network.rpcEndpoint,
-    signer,
-    {
-      gasPrice,
-      registry: cosmosTypesRegistry,
-      aminoTypes: cosmosAminoTypes,
-    },
-  );
-};
-
-export const getKeplrOnlyAminoStargateClient = async (
-  networkId: string,
-  gasPriceKind: "low" | "average" | "high" = "average",
-) => {
-  const network = mustGetCosmosNetwork(networkId);
-
-  const gasPrice = cosmosNetworkGasPrice(network, gasPriceKind);
-  if (!gasPrice) {
-    throw new Error("gas price not found");
+  const network = getNetwork(networkId);
+  if (!network?.featureObjects) {
+    return undefined;
   }
-
-  const signer = await getKeplrOnlyAminoSigner(networkId);
-
-  return await SigningStargateClient.connectWithSigner(
-    network.rpcEndpoint,
-    signer,
-    {
-      gasPrice,
-      registry: cosmosTypesRegistry,
-      aminoTypes: cosmosAminoTypes,
-    },
-  );
-};
-
-export const getKeplrSigningCosmWasmClient = async (
-  networkId: string,
-  gasPriceKind: "low" | "average" | "high" = "average",
-) => {
-  const network = mustGetCosmosNetwork(networkId);
-
-  const signer = await getKeplrSigner(networkId);
-
-  const gasPrice = cosmosNetworkGasPrice(network, gasPriceKind);
-  if (!gasPrice) {
-    throw new Error("gas price not found");
-  }
-
-  return SigningCosmWasmClient.connectWithSigner(network.rpcEndpoint, signer, {
-    gasPrice,
-  });
+  return network.featureObjects.find((f) => f.type === feature) as
+    | R
+    | undefined;
 };
 
 export const getNonSigningCosmWasmClient = async (networkId: string) => {

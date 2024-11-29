@@ -30,12 +30,14 @@ export const CopyToClipboardSecondary: React.FC<{
           flexDirection: "row",
         }}
       >
-        {networkIcon && <NetworkIcon size={16} networkId={networkIcon} />}
-        {iconSVG && <SVG width={16} height={16} source={iconSVG} />}
+        {!!networkIcon && <NetworkIcon size={16} networkId={networkIcon} />}
+        {!!iconSVG && <SVG width={16} height={16} source={iconSVG} />}
         <BrandText
           style={[
             fontMedium14,
-            { width: "100%", marginHorizontal: layout.spacing_x1_5 },
+            {
+              marginHorizontal: layout.spacing_x1_5,
+            },
           ]}
           numberOfLines={1}
         >

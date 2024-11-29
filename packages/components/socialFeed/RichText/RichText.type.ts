@@ -1,4 +1,5 @@
 import { EntityInstance } from "draft-js";
+import { Dispatch, SetStateAction } from "react";
 
 import { LocalFileData, RemoteFileData } from "../../../utils/types/files";
 
@@ -32,4 +33,6 @@ export interface RichTextProps {
   loading?: boolean;
   authorId: string;
   postId: string;
+  setIsMapShown?: Dispatch<SetStateAction<boolean>>;
+  hasLocation?: boolean;
 }

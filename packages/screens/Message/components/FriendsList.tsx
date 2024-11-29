@@ -5,15 +5,16 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { MessageAvatar } from "./MessageAvatar";
 import chatRoundSVG from "../../../../assets/icons/chat-round.svg";
 import dots from "../../../../assets/icons/dots.svg";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SVG } from "../../../components/SVG";
-import { Separator } from "../../../components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { neutral22, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
-import { Conversation } from "../../../utils/types/message";
-import { getConversationName } from "../../../weshnet/messageHelpers";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { Separator } from "@/components/separators/Separator";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { neutral22, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold13 } from "@/utils/style/fonts";
+import { Conversation } from "@/utils/types/message";
+import { getConversationName } from "@/weshnet/messageHelpers";
 
 type FriendListProps = {
   item: Conversation;

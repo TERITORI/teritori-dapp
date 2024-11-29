@@ -12,31 +12,28 @@ import { InfoBox } from "./component/InfoBox";
 import { RipperSelectorModal } from "./component/RipperSelectorModal";
 import breedSVG from "../../../assets/game/breed.svg";
 import chevronDownLineSVG from "../../../assets/game/chevron-down-line.svg";
-import { NFT } from "../../api/marketplace/v1/marketplace";
-import { BrandText } from "../../components/BrandText";
-import { ExternalLink } from "../../components/ExternalLink";
 import FlexRow from "../../components/FlexRow";
-import { SVG } from "../../components/SVG";
-import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import { LoaderFullScreen } from "../../components/loaders/LoaderFullScreen";
-import { SpacerRow } from "../../components/spacer";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { ConfigResponse } from "../../contracts-clients/teritori-breeding/TeritoriBreeding.types";
-import { useBreeding } from "../../hooks/riotGame/useBreeding";
-import { useRippers } from "../../hooks/riotGame/useRippers";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind, getCollectionId, parseNftId } from "../../networks";
-import { prettyPrice } from "../../utils/coins";
-import { getRipperTokenId } from "../../utils/game";
-import { neutral33, neutralA3, yellowDefault } from "../../utils/style/colors";
-import {
-  fontMedium14,
-  fontMedium32,
-  fontMedium48,
-} from "../../utils/style/fonts";
-import { layout, MOBILE_MAX_WIDTH } from "../../utils/style/layout";
+
+import { NFT } from "@/api/marketplace/v1/marketplace";
+import { BrandText } from "@/components/BrandText";
+import { ExternalLink } from "@/components/ExternalLink";
+import { SVG } from "@/components/SVG";
+import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
+import { LoaderFullScreen } from "@/components/loaders/LoaderFullScreen";
+import { SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { ConfigResponse } from "@/contracts-clients/teritori-breeding/TeritoriBreeding.types";
+import { useBreeding } from "@/hooks/riotGame/useBreeding";
+import { useRippers } from "@/hooks/riotGame/useRippers";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getCollectionId, NetworkKind, parseNftId } from "@/networks";
+import { prettyPrice } from "@/utils/coins";
+import { getRipperTokenId } from "@/utils/game";
+import { neutral33, neutralA3, yellowDefault } from "@/utils/style/colors";
+import { fontMedium14, fontMedium32, fontMedium48 } from "@/utils/style/fonts";
+import { layout, MOBILE_MAX_WIDTH } from "@/utils/style/layout";
 
 export const RiotGameBreedingScreen = () => {
   const { myAvailableRippers } = useRippers();

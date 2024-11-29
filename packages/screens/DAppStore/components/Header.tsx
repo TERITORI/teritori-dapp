@@ -3,10 +3,11 @@ import { Linking, Pressable, useWindowDimensions, View } from "react-native";
 import { SparklesIcon } from "react-native-heroicons/outline";
 
 import { DropdownDappsStoreFilter } from "./Dropdown";
-import { BrandText } from "../../../components/BrandText";
-import { SearchInput } from "../../../components/sorts/SearchInput";
-import { fontSemibold11, fontSemibold28 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { SearchInput } from "@/components/sorts/SearchInput";
+import { fontSemibold11, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export function Header({
   setSearchInput,

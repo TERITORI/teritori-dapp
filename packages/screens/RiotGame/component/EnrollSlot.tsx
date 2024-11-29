@@ -3,22 +3,23 @@ import { StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 import addSVG from "../../../../assets/icons/add.svg";
-import { NFT } from "../../../api/marketplace/v1/marketplace";
-import { BrandText } from "../../../components/BrandText";
-import { OptimizedImage } from "../../../components/OptimizedImage";
-import { SVG } from "../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
-import { isNFTStaked } from "../../../utils/game";
+
+import { NFT } from "@/api/marketplace/v1/marketplace";
+import { BrandText } from "@/components/BrandText";
+import { OptimizedImage } from "@/components/OptimizedImage";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { isNFTStaked } from "@/utils/game";
 import {
-  yellowDefault,
   neutral33,
-  secondaryColor,
   orangeLight,
-  withAlpha,
   redDefault,
-} from "../../../utils/style/colors";
-import { fontSemibold12 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+  secondaryColor,
+  withAlpha,
+  yellowDefault,
+} from "@/utils/style/colors";
+import { fontSemibold12 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 interface EnrollSlotProps {
   isLeader?: boolean;

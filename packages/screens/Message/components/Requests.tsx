@@ -3,11 +3,12 @@ import { ScrollView, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { MessageBlankFiller } from "./MessageBlankFiller";
-import RequestList from "./Request";
-import { TextInputCustomBorder } from "../../../components/inputs/TextInputCustomBorder";
-import { SpacerColumn } from "../../../components/spacer";
-import { selectContactRequestList } from "../../../store/slices/message";
-import { ContactRequest } from "../../../utils/types/message";
+import { Request } from "./Request";
+
+import { TextInputCustomBorder } from "@/components/inputs/TextInputCustomBorder";
+import { SpacerColumn } from "@/components/spacer";
+import { selectContactRequestList } from "@/store/slices/message";
+import { ContactRequest } from "@/utils/types/message";
 
 interface RequestProps {
   items: ContactRequest[];
@@ -32,12 +33,7 @@ export const Requests = ({ items }: RequestProps) => {
         contactRequestList?.map((item) => (
           <View key={item.id}>
             <ScrollView>
-              <RequestList
-                data={item}
-                name=""
-                isOnline={false}
-                avatar={undefined}
-              />
+              <Request data={item} name="" avatar={undefined} />
             </ScrollView>
           </View>
         ))

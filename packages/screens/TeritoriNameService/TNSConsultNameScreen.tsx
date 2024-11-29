@@ -1,38 +1,34 @@
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useMemo, useState } from "react";
-import { View } from "react-native";
+import { Platform, View, useWindowDimensions } from "react-native";
 
-import { TNSModalCommonProps } from "./TNSHomeScreen";
-import { BrandText } from "../../components/BrandText";
-import { CopyToClipboard } from "../../components/CopyToClipboard";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
 import ModalBase from "../../components/modals/ModalBase";
-import { TNSSendFundsModal } from "../../components/modals/teritoriNameService/TNSSendFundsModal";
-import { NameData } from "../../components/teritoriNameService/NameData";
-import { NameNFT } from "../../components/teritoriNameService/NameNFT";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useTNS } from "../../context/TNSProvider";
-import { TeritoriNameServiceClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { useDAOs } from "../../hooks/dao/useDAOs";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { useIsLeapConnected } from "../../hooks/useIsLeapConnected";
-import { useNSNameInfo } from "../../hooks/useNSNameInfo";
-import { useNSNameOwner } from "../../hooks/useNSNameOwner";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { BrandText } from "@/components/BrandText";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { TNSSendFundsModal } from "@/components/modals/teritoriNameService/TNSSendFundsModal";
+import { NameNFT } from "@/components/teritoriNameService/NameNFT";
+import { TNSModalCommonProps } from "@/components/user/types";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useTNS } from "@/context/TNSProvider";
+import { TeritoriNameServiceClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { useDAOs } from "@/hooks/dao/useDAOs";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useIsKeplrConnected } from "@/hooks/useIsKeplrConnected";
+import { useIsLeapConnected } from "@/hooks/useIsLeapConnected";
+import { useNSNameInfo } from "@/hooks/useNSNameInfo";
+import { useNSNameOwner } from "@/hooks/useNSNameOwner";
 import {
   nsPrimaryAliasQueryKey,
   useNSPrimaryAlias,
-} from "../../hooks/useNSPrimaryAlias";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-import {
-  getCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
-  getUserId,
-  mustGetCosmosNetwork,
-} from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
-import { neutral17, neutral33 } from "../../utils/style/colors";
+} from "@/hooks/useNSPrimaryAlias";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getCosmosNetwork, getUserId, mustGetCosmosNetwork } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
+import { neutral17, neutral33 } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
 
 const NotOwnerActions: React.FC<{
   tokenId: string;
@@ -57,8 +53,8 @@ const NotOwnerActions: React.FC<{
       {isPrimary && (
         <PrimaryButton
           size="XL"
-          text="Profile"
-          boxStyle={{ marginRight: 24 }}
+          text="View Profile"
+          boxStyle={{ marginRight: layout.spacing_x3 }}
           onPress={() => {
             onClose();
             navigation.navigate("UserPublicProfile", { id: ownerId });
@@ -68,7 +64,7 @@ const NotOwnerActions: React.FC<{
       <PrimaryButton
         size="XL"
         disabled={!isKeplrConnected && !isLeapConnected}
-        text="Send funds"
+        text="Send Funds"
         // TODO: if no signed, connectKeplr, then, open modal
         onPress={() => setSendFundsModalVisible(true)}
       />
@@ -93,26 +89,28 @@ const OwnerActions: React.FC<{
   return (
     <View
       style={{
-        flexDirection: "row",
+        flexDirection: Platform.OS === "web" ? "row" : "column",
         alignItems: "center",
-        marginBottom: 42,
+        justifyContent: "center",
+        marginBottom: layout.spacing_x3,
         alignSelf: "center",
+        gap: Platform.OS === "web" ? 0 : 20,
       }}
     >
       {isPrimary && (
         <SecondaryButton
           size="M"
-          text="Profile"
-          style={{ marginRight: 24 }}
-          // TODO: if no signed, connectKeplr, then, open modal
+          text="View Profile"
+          style={{ marginRight: Platform.OS === "web" ? layout.spacing_x3 : 0 }}
           onPress={() => {
+            onClose();
             navigation.navigate("UserPublicProfile", { id: ownerId });
           }}
         />
       )}
       <SecondaryButton
         size="M"
-        text="Update metadata"
+        text="Update"
         onPress={() => {
           onClose("TNSUpdateName");
         }}
@@ -120,7 +118,7 @@ const OwnerActions: React.FC<{
       <SecondaryButton
         size="M"
         text="Burn"
-        style={{ marginLeft: 24 }}
+        style={{ marginLeft: Platform.OS === "web" ? layout.spacing_x3 : 0 }}
         onPress={() => {
           onClose("TNSBurnName");
         }}
@@ -130,7 +128,7 @@ const OwnerActions: React.FC<{
           size="M"
           text="Set as Primary"
           loader
-          style={{ marginLeft: 24 }}
+          style={{ marginLeft: layout.spacing_x3 }}
           onPress={async () => {
             try {
               const network = mustGetCosmosNetwork(wallet?.networkId);
@@ -173,16 +171,19 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
   onClose,
   navigateBackTo,
 }) => {
+  const { width: windowWidth } = useWindowDimensions();
+
   const { name } = useTNS();
   const wallet = useSelectedWallet();
   const networkId = useSelectedNetworkId();
   const network = getCosmosNetwork(networkId);
   const tokenId = (name + network?.nameServiceTLD || "").toLowerCase();
-  const { nsInfo: token, notFound } = useNSNameInfo(
+  const { notFound } = useNSNameInfo(
     networkId,
     tokenId,
     !!network?.nameServiceTLD,
   );
+
   const { nameOwner } = useNSNameOwner(networkId, tokenId);
   const ownerId = getUserId(networkId, nameOwner);
   const { daos } = useDAOs({ networkId, memberAddress: wallet?.address });
@@ -195,6 +196,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
 
   const { primaryAlias } = useNSPrimaryAlias(ownerId);
   const isPrimary = primaryAlias === tokenId;
+  const width = windowWidth < 457 ? windowWidth : 457;
 
   return (
     <ModalBase
@@ -202,7 +204,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
       onBackPress={() => onClose(navigateBackTo)}
       hideMainSeparator
       label={name}
-      width={457}
+      width={width}
       boxStyle={{
         backgroundColor: neutral17,
         borderWidth: 1,
@@ -213,14 +215,17 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
       <View
         style={{
           justifyContent: "center",
-          paddingBottom: 20,
         }}
       >
         {notFound ? (
           <BrandText>Not found</BrandText>
         ) : (
           <>
-            <NameNFT style={{ marginBottom: 20, width: "100%" }} name={name} />
+            <NameNFT
+              style={{ marginBottom: layout.spacing_x3, width: "100%" }}
+              name={name}
+            />
+
             {!notFound &&
               (isOwnedByUser ? (
                 <OwnerActions
@@ -237,30 +242,6 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
                   onClose={onClose}
                 />
               ))}
-            {!!token && !!name && (
-              <View
-                style={{
-                  alignItems: "center",
-                }}
-              >
-                {isOwnedByUser ? (
-                  <CopyToClipboard
-                    text={`https://${window.location.host}/tns/token/${name}`}
-                    squaresBackgroundColor={neutral17}
-                  />
-                ) : (
-                  <>
-                    {!!token.extension.contract_address && (
-                      <CopyToClipboard
-                        text={token.extension.contract_address}
-                        squaresBackgroundColor={neutral17}
-                      />
-                    )}
-                  </>
-                )}
-                <NameData token={token} name={name} style={{ marginTop: 20 }} />
-              </View>
-            )}
           </>
         )}
       </View>

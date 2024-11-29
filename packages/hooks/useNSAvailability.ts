@@ -1,50 +1,67 @@
 import { Decimal } from "@cosmjs/math";
 
 import { useCoingeckoPrices } from "./useCoingeckoPrices";
+import { useDebounce } from "./useDebounce";
 import { useNSMintAvailability } from "./useNSMintAvailability";
 import { useNSMintPrice } from "./useNSMintPrice";
 import { useVaultNFTInfo } from "./useVaultNFTInfo";
-import { getCosmosNetwork, getNativeCurrency, getNftId } from "../networks";
-import { CoingeckoCoin } from "../utils/coingecko";
-import { prettyPrice } from "../utils/coins";
 
-export type NSAvailability =
-  | {
-      availability: "loading";
-    }
-  | {
-      availability: "invalid";
-    }
-  | {
-      availability: "mint" | "market";
-      price: {
-        denom: string;
-        amount: string;
-      };
-      usdPrice?: number;
-      prettyPrice: string;
-    }
-  | {
-      availability: "none";
-    };
+import {
+  getNativeCurrency,
+  getNetwork,
+  getNftId,
+  NetworkInfo,
+  NetworkKind,
+} from "@/networks";
+import { CoingeckoCoin } from "@/utils/coingecko";
+import { prettyPrice } from "@/utils/coins";
+import { NSAvailability } from "@/utils/types/tns";
 
-// TODO: support gno
+const getNameOrTokenIdByNetwork = (
+  network: NetworkInfo | undefined,
+  name: string,
+) => {
+  if (!name) return "";
+
+  switch (network?.kind) {
+    case NetworkKind.Cosmos:
+      return name + network?.nameServiceTLD;
+    case NetworkKind.Gno:
+      return name + ".gno";
+    default:
+      return name;
+  }
+};
+
+const getNftIdByNetwork = (
+  network: NetworkInfo | undefined,
+  tokenId: string,
+) => {
+  return network?.kind === NetworkKind.Cosmos
+    ? getNftId(network.id, network?.nameServiceContractAddress, tokenId)
+    : ""; // NOTE: username on Gno is not tokenID
+};
 
 export const useNSAvailability = (
   networkId: string | undefined,
   name: string,
 ): NSAvailability => {
-  const cosmosNetwork = getCosmosNetwork(networkId);
-  const tokenId = name + cosmosNetwork?.nameServiceTLD;
+  const network = getNetwork(networkId);
+  const _tokenId = getNameOrTokenIdByNetwork(network, name);
+  const tokenId = useDebounce(_tokenId, 500);
+
   const { nsMintPrice, isLoading: isLoadingNSMintPrice } = useNSMintPrice(
     networkId,
     tokenId,
   );
+
   const { nameAvailable, loading: isLoadingNameAvailability } =
     useNSMintAvailability(networkId, tokenId);
+
   const { vaultNFTInfo, isLoading: isLoadingVaultNFTInfo } = useVaultNFTInfo(
-    getNftId(networkId, cosmosNetwork?.nameServiceContractAddress, tokenId),
+    getNftIdByNetwork(network, tokenId),
   );
+
   const requestedPrices: CoingeckoCoin[] = [];
   if (nsMintPrice) {
     requestedPrices.push({ networkId, denom: nsMintPrice.denom });
@@ -86,7 +103,7 @@ export const useNSAvailability = (
       availability: "mint",
       price: nsMintPrice,
       prettyPrice: prettyPrice(
-        cosmosNetwork?.id,
+        network?.id,
         nsMintPrice.amount,
         nsMintPrice.denom,
       ),
@@ -111,7 +128,7 @@ export const useNSAvailability = (
         amount: vaultNFTInfo.amount,
       },
       prettyPrice: prettyPrice(
-        cosmosNetwork?.id,
+        network?.id,
         vaultNFTInfo.amount,
         vaultNFTInfo.denom,
       ),

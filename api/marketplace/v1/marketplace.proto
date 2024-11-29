@@ -15,6 +15,8 @@ service MarketplaceService {
   rpc News(NewsRequest) returns (NewsResponse);
   rpc SearchNames(SearchNamesRequest) returns (SearchNamesResponse);
   rpc SearchCollections(SearchCollectionsRequest) returns (SearchCollectionsResponse);
+  rpc Leaderboard(LeaderboardRequest) returns (stream LeaderboardResponse);
+  rpc PopularCollections(PopularCollectionsRequest) returns (stream PopularCollectionsResponse);
 }
 
 enum Sort {
@@ -83,10 +85,10 @@ message Collection {
   bool secondary_during_mint = 12;
   string website_url = 13;
   string twitter_url = 14;
-  uint64 floor_price = 15;
+  string floor_price = 15;
   int64 max_supply = 16;
   string mint_price = 17;
-  float total_volume = 18;
+  string total_volume = 18;
   int64 num_trades = 19;
   int32 num_owners = 20;
   string denom = 21;
@@ -130,6 +132,7 @@ message Activity {
   string buyer_id = 10;
   string seller_id = 11;
   double usd_price = 12;
+  string target_id = 13;
 }
 
 message Quest {
@@ -153,6 +156,7 @@ message CollectionsRequest {
   bool upcoming = 6;
   string network_id = 7;
   MintState mint_state = 8;
+  optional int32 period_in_minutes = 9;
 }
 
 message CollectionStatsRequest {
@@ -281,4 +285,60 @@ message SearchCollectionsRequest {
 
 message SearchCollectionsResponse {
   repeated Collection collections = 1;
+}
+
+message LeaderboardEntry {
+  uint32 rank = 1;
+  string user_id = 2;
+  double total_xp = 3;
+  double mint_xp = 4;
+  double buy_xp = 5;
+  double sell_xp = 6;
+  double boost = 7;
+}
+
+message LeaderboardRequest {
+  string network_id = 1;
+  uint32 period_hours = 2;
+  uint32 limit = 3;
+  uint32 offset = 4;
+}
+
+message LeaderboardResponse {
+  LeaderboardEntry entry = 1;
+}
+
+message Coin {
+  string amount = 1;
+  string denom = 2;
+}
+
+message PopularCollection {
+  string id = 1;
+  string name = 2;
+  string image_uri = 3;
+  repeated Coin floor_prices = 4;
+  repeated Coin trade_volumes_by_denom = 5;
+  repeated Coin mint_volumes_by_denom = 15;
+  double trade_usd_volume = 6;
+  double trade_usd_volume_prev = 7;
+  double mint_usd_volume = 8;
+  double mint_usd_volume_prev = 9;
+  uint64 trades_count = 10;
+  uint64 mints_count = 16;
+  uint64 owners_count = 11;
+  uint32 rank = 12;
+  int64 max_supply = 13;
+  uint64 current_supply = 14;
+}
+
+message PopularCollectionsRequest {
+  string network_id = 1;
+  uint32 period_hours = 2;
+  uint32 limit = 3;
+  uint32 offset = 4;
+}
+
+message PopularCollectionsResponse {
+  PopularCollection collection = 1;
 }

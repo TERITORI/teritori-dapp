@@ -1,14 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getNativeCurrency } from "../networks";
-import { CoingeckoCoin, CoingeckoPrices } from "../utils/coingecko";
-import { isDefined } from "../utils/filter";
+import { getNativeCurrency } from "@/networks";
+import { CoingeckoCoin, CoingeckoPrices } from "@/utils/coingecko";
+import { isDefined } from "@/utils/filter";
 
 export const useCoingeckoPrices = (coins: CoingeckoCoin[]) => {
-  const ids = coins
-    .map((coin) => getNativeCurrency(coin.networkId, coin.denom)?.coingeckoId)
-    .filter(isDefined)
-    .sort((a, b) => a.localeCompare(b));
+  const ids = [
+    ...new Set(
+      coins
+        .map(
+          (coin) => getNativeCurrency(coin.networkId, coin.denom)?.coingeckoId,
+        )
+        .filter(isDefined),
+    ),
+  ].sort((a, b) => a.localeCompare(b));
 
   const { data } = useQuery(
     ["coingeckoPrices", ids],

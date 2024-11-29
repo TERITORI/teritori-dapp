@@ -1,73 +1,58 @@
 import React, { FC, useEffect, useMemo, useRef, useState } from "react";
 import { useWindowDimensions, View, ViewStyle } from "react-native";
 import Animated, {
+  runOnJS,
   useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
 
-import { Post } from "../../../api/feed/v1/feed";
-import { BrandText } from "../../../components/BrandText";
-import { ScreenContainer } from "../../../components/ScreenContainer";
-import { MobileTitle } from "../../../components/ScreenContainer/ScreenContainerMobile";
-import {
-  CommentsContainer,
-  LINES_HORIZONTAL_SPACE,
-} from "../../../components/cards/CommentsContainer";
-import { CreateShortPostButton } from "../../../components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostButton";
-import { CreateShortPostModal } from "../../../components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostModal";
-import {
-  PostCategory,
-  ReplyToType,
-} from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
+import { Post } from "@/api/feed/v1/feed";
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
+import { CommentsContainer } from "@/components/cards/CommentsContainer";
+import { CreateShortPostButton } from "@/components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostButton";
+import { CreateShortPostModal } from "@/components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostModal";
 import {
   NewsFeedInput,
   NewsFeedInputHandle,
-} from "../../../components/socialFeed/NewsFeed/NewsFeedInput";
-import { RefreshButton } from "../../../components/socialFeed/NewsFeed/RefreshButton/RefreshButton";
-import { RefreshButtonRound } from "../../../components/socialFeed/NewsFeed/RefreshButton/RefreshButtonRound";
-import { SocialThreadCard } from "../../../components/socialFeed/SocialCard/cards/SocialThreadCard";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import {
-  combineFetchCommentPages,
-  useFetchComments,
-} from "../../../hooks/feed/useFetchComments";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { getNetworkObjectId, parseUserId } from "../../../networks";
-import { useAppNavigation } from "../../../utils/navigation";
-import { DEFAULT_USERNAME } from "../../../utils/social-feed";
-import { fontSemibold20 } from "../../../utils/style/fonts";
+} from "@/components/socialFeed/NewsFeed/NewsFeedInput";
+import { RefreshButton } from "@/components/socialFeed/NewsFeed/RefreshButton/RefreshButton";
+import { RefreshButtonRound } from "@/components/socialFeed/NewsFeed/RefreshButton/RefreshButtonRound";
+import { SocialThreadCard } from "@/components/socialFeed/SocialCard/cards/SocialThreadCard";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useFetchComments } from "@/hooks/feed/useFetchComments";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { parseUserId } from "@/networks";
+import { DEFAULT_USERNAME, LINES_HORIZONTAL_SPACE } from "@/utils/social-feed";
+import { fontSemibold20 } from "@/utils/style/fonts";
 import {
   layout,
   RESPONSIVE_BREAKPOINT_S,
   screenContentMaxWidth,
-} from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
-import { OnPressReplyType } from "../FeedPostViewScreen";
+} from "@/utils/style/layout";
+import { tinyAddress } from "@/utils/text";
+import {
+  OnPressReplyType,
+  PostCategory,
+  ReplyToType,
+} from "@/utils/types/feed";
 
 export const FeedPostDefaultView: FC<{
-  networkId: string;
   post: Post;
   refetchPost: () => Promise<any>;
   isLoadingPost?: boolean;
-}> = ({ post, networkId, refetchPost, isLoadingPost }) => {
+}> = ({ post, refetchPost, isLoadingPost }) => {
   const navigation = useAppNavigation();
 
   const { width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
   const isMobile = useIsMobile();
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
-
-  const postId = post.identifier;
-
-  useEffect(() => {
-    if (post?.category === PostCategory.Video)
-      navigation.replace("FeedPostView", {
-        id: postId,
-      });
-  }, [post?.category, postId, navigation]);
 
   const authorId = post?.authorId;
   const authorNSInfo = useNSUserInfo(authorId);
@@ -83,21 +68,18 @@ export const FeedPostDefaultView: FC<{
   const isGoingUp = useSharedValue(false);
   const [isCreateModalVisible, setCreateModalVisible] = useState(false);
   const {
-    data,
+    data: comments,
     refetch: refetchComments,
     hasNextPage,
     fetchNextPage,
     isLoading: isLoadingComments,
   } = useFetchComments({
-    parentId: post?.identifier,
-    totalCount: post?.subPostLength,
+    parentId: post.id,
+    totalCount: post.subPostLength,
     enabled: true,
   });
   const isNextPageAvailable = useSharedValue(hasNextPage);
-  const comments = useMemo(
-    () => (data ? combineFetchCommentPages(data.pages) : []),
-    [data],
-  );
+
   const isLoadingSharedValue = useSharedValue(true);
   useEffect(() => {
     isLoadingSharedValue.value = isLoadingPost || isLoadingComments;
@@ -132,10 +114,10 @@ export const FeedPostDefaultView: FC<{
         } else if (flatListContentOffsetY < event.contentOffset.y) {
           isGoingUp.value = false;
         }
-        setFlatListContentOffsetY(event.contentOffset.y);
+        runOnJS(setFlatListContentOffsetY)(event.contentOffset.y);
       },
     },
-    [post?.identifier],
+    [post.id],
   );
 
   const handleSubmitInProgress = () => {
@@ -163,20 +145,19 @@ export const FeedPostDefaultView: FC<{
 
   return (
     <ScreenContainer
-      forceNetworkId={networkId}
+      forceNetworkId={post.networkId}
       fullWidth
       responsive
       noMargin
       headerChildren={
-        <BrandText style={fontSemibold20}>{headerLabel}</BrandText>
+        <BrandText style={[fontSemibold20, { width: "18%" }]} numberOfLines={1}>
+          {headerLabel}
+        </BrandText>
       }
       onBackPress={() =>
         post?.parentPostIdentifier
           ? navigation.navigate("FeedPostView", {
-              id: getNetworkObjectId(
-                networkId,
-                post?.parentPostIdentifier || "",
-              ),
+              id: post.id,
             })
           : navigation.canGoBack()
             ? navigation.goBack()
@@ -310,7 +291,7 @@ export const FeedPostDefaultView: FC<{
           ref={feedInputRef}
           type="comment"
           replyTo={replyTo}
-          parentId={post.identifier}
+          parentId={post.id}
           onSubmitInProgress={handleSubmitInProgress}
           onSubmitSuccess={() => {
             setReplyTo(undefined);
@@ -328,7 +309,7 @@ export const FeedPostDefaultView: FC<{
           refetchComments();
         }}
         replyTo={replyTo}
-        parentId={post.identifier}
+        parentId={post.id}
       />
     </ScreenContainer>
   );

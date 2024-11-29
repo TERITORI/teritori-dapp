@@ -13,34 +13,31 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { RipperAvatar } from "./RipperAvatar";
 import { RipperStatsSection } from "./RipperStatsSection";
-import { SimpleButton } from "./SimpleButton";
 import controllerSVG from "../../../../assets/game/controller.svg";
 import dashedBorderPNG from "../../../../assets/game/dashed-border.png";
 import closeSVG from "../../../../assets/icons/close.svg";
-import { NFT } from "../../../api/marketplace/v1/marketplace";
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SVG } from "../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
-import { SpacerRow } from "../../../components/spacer";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { getRipperRarity, isNFTStaked } from "../../../utils/game";
+
+import { NFT } from "@/api/marketplace/v1/marketplace";
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { SimpleButton } from "@/components/buttons/SimpleButton";
+import { SpacerRow } from "@/components/spacer";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { getRipperRarity, isNFTStaked } from "@/utils/game";
 import {
   neutral00,
   secondaryColor,
   withAlpha,
   yellowDefault,
-} from "../../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontMedium32,
   fontMedium48,
   fontSemibold11,
-} from "../../../utils/style/fonts";
-import {
-  headerHeight,
-  layout,
-  MOBILE_MAX_WIDTH,
-} from "../../../utils/style/layout";
+} from "@/utils/style/fonts";
+import { headerHeight, layout, MOBILE_MAX_WIDTH } from "@/utils/style/layout";
 
 type RipperSelectorModalProps = ModalProps & {
   slotId: number | undefined;

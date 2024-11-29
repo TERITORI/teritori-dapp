@@ -11,13 +11,12 @@ import {
   ViewStyle,
   useWindowDimensions,
   StyleProp,
+  TouchableOpacity,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../assets/icons/hamburger-button-cross.svg";
-import { useAppNavigation } from "../../utils/navigation";
 import { neutral77, neutral22 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
@@ -29,9 +28,11 @@ import { TertiaryBox } from "../boxes/TertiaryBox";
 import { SeparatorGradient } from "../separators/SeparatorGradient";
 import { SpacerColumn } from "../spacer";
 
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
-type ModalBaseProps = {
+export type ModalBaseProps = {
   label?: string;
   labelComponent?: ReactNode;
   onClose?: () => void;
@@ -39,6 +40,7 @@ type ModalBaseProps = {
   width?: number;
   visible?: boolean;
   Header?: ComponentType;
+  hideHeader?: boolean;
   childrenBottom?: JSX.Element | JSX.Element[];
   hideMainSeparator?: boolean;
   description?: string;
@@ -77,6 +79,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
   childrenBottom,
   children,
   Header,
+  hideHeader = false,
   hideMainSeparator,
   description,
   scrollable,
@@ -159,82 +162,84 @@ const ModalBase: React.FC<ModalBaseProps> = ({
           ]}
         >
           {/*------ Modal header */}
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "100%",
-              paddingHorizontal: modalMarginPadding,
-              paddingVertical: layout.spacing_x2,
-            }}
-          >
-            {(label || labelComponent || description) && (
-              <View
-                style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
-              >
-                {onBackPress && (
-                  <TouchableOpacity
-                    activeOpacity={0.9}
-                    style={{
-                      height: 32,
-                      width: 32,
-                      backgroundColor: neutral22,
-                      borderRadius: 20,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginRight: 12,
-                    }}
-                    onPress={onBackPress}
-                  >
-                    <SVG source={chevronLeft} height={12} width={12} />
-                  </TouchableOpacity>
-                )}
-
-                <View style={{ flex: 1, width: "100%" }}>
-                  {label && (
-                    <BrandText style={{ color: "white", lineHeight: 24 }}>
-                      {label}
-                    </BrandText>
-                  )}
-
-                  {labelComponent}
-
-                  {description && (
-                    <>
-                      <SpacerColumn size={1} />
-                      <BrandText
-                        style={[
-                          fontSemibold14,
-                          {
-                            color: neutral77,
-                            width: "100%",
-                            lineHeight: 20,
-                            flexWrap: "wrap",
-                          },
-                        ]}
-                      >
-                        {description}
-                      </BrandText>
-                    </>
-                  )}
-                </View>
-              </View>
-            )}
-
-            {Header && <Header />}
-
-            <TouchableOpacity
-              containerStyle={[
-                { marginLeft: modalMarginPadding },
-                closeButtonStyle,
-              ]}
-              style={{ justifyContent: "center" }}
-              onPress={onClose}
+          {!hideHeader && (
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: "100%",
+                paddingHorizontal: modalMarginPadding,
+                paddingVertical: layout.spacing_x1_5,
+              }}
             >
-              <SVG width={32} height={32} source={closeSVG} />
-            </TouchableOpacity>
-          </View>
-          {children && (
+              {!!(label || labelComponent || description) && (
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  {onBackPress && (
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={{
+                        height: 32,
+                        width: 32,
+                        backgroundColor: neutral22,
+                        borderRadius: 20,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginRight: layout.spacing_x1_5,
+                      }}
+                      onPress={onBackPress}
+                    >
+                      <SVG source={chevronLeft} height={12} width={12} />
+                    </TouchableOpacity>
+                  )}
+
+                  <View style={{ flex: 1, width: "100%" }}>
+                    {!!label && (
+                      <BrandText style={{ color: "white", lineHeight: 24 }}>
+                        {label}
+                      </BrandText>
+                    )}
+
+                    {labelComponent}
+
+                    {!!description && (
+                      <>
+                        <SpacerColumn size={1} />
+                        <BrandText
+                          style={[
+                            fontSemibold14,
+                            {
+                              color: neutral77,
+                              width: "100%",
+                              lineHeight: 20,
+                              flexWrap: "wrap",
+                            },
+                          ]}
+                        >
+                          {description}
+                        </BrandText>
+                      </>
+                    )}
+                  </View>
+                </View>
+              )}
+
+              {!!Header && <Header />}
+
+              <TouchableOpacity
+                style={{ justifyContent: "center" }}
+                onPress={onClose}
+              >
+                <SVG width={32} height={32} source={closeSVG} />
+              </TouchableOpacity>
+            </View>
+          )}
+          {!!children && (
             <View
               style={[
                 { width: "100%", paddingHorizontal: modalMarginPadding },

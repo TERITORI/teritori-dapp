@@ -2,14 +2,15 @@ import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 
 import { useDAOGroup } from "./useDAOGroup";
-import { Cw4GroupQueryClient } from "../../contracts-clients/cw4-group/Cw4Group.client";
+
+import { Cw4GroupQueryClient } from "@/contracts-clients/cw4-group/Cw4Group.client";
 import {
   mustGetNonSigningCosmWasmClient,
   NetworkKind,
   parseUserId,
-} from "../../networks";
-import { extractGnoJSONString } from "../../utils/gno";
-import { VotingGroupConfig } from "../../utils/gnodao/configs";
+} from "@/networks";
+import { extractGnoJSONString } from "@/utils/gno";
+import { VotingGroupConfig } from "@/utils/gnodao/configs";
 
 // FIXME: pagination
 

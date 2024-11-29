@@ -1,36 +1,39 @@
 import { isEqual } from "lodash";
 import React, { memo, useMemo, useState } from "react";
 import {
-  View,
-  TouchableOpacity,
-  ViewStyle,
-  TextStyle,
   StyleProp,
   StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
 } from "react-native";
 
-import defaultThumbnailImage from "../../../assets/default-images/default-track-thumbnail.png";
-import NormalPlay from "../../../assets/icons/music/normal-play.svg";
-import ThreeDotsCircleWhite from "../../../assets/icons/music/three-dot-circle-white.svg";
-import { Post } from "../../api/feed/v1/feed";
-import { useMediaPlayer } from "../../context/MediaPlayerProvider";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getNetworkObjectId, parseUserId } from "../../networks";
-import { useAppNavigation } from "../../utils/navigation";
-import { zodTryParseJSON } from "../../utils/sanitize";
-import { neutral17, neutral77, primaryColor } from "../../utils/style/colors";
-import { fontSemibold14, fontMedium13 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { tinyAddress } from "../../utils/text";
-import { Media } from "../../utils/types/mediaPlayer";
+import { TrackOptionsButton } from "./TrackOptionsButton";
 import { BrandText } from "../BrandText";
-import { OmniLink } from "../OmniLink";
 import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { CustomPressable } from "../buttons/CustomPressable";
-import { ZodSocialFeedTrackMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
 import { SpacerColumn } from "../spacer";
+import { Username } from "../user/Username";
+
+import { Post } from "@/api/feed/v1/feed";
+import defaultThumbnailImage from "@/assets/default-images/default-track-thumbnail.png";
+import NormalPlay from "@/assets/icons/music/normal-play.svg";
+import { LocationButton } from "@/components/socialFeed/NewsFeed/LocationButton";
+import { useMediaPlayer } from "@/context/MediaPlayerProvider";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { zodTryParseJSON } from "@/utils/sanitize";
+import {
+  neutral17,
+  neutral77,
+  neutralFF,
+  primaryColor,
+} from "@/utils/style/colors";
+import { fontMedium13, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { ZodSocialFeedTrackMetadata } from "@/utils/types/feed";
+import { Media } from "@/utils/types/mediaPlayer";
 
 const BUTTONS_HEIGHT = 28;
 export const TRACK_CARD_WIDTH = 242;
@@ -40,11 +43,8 @@ export const TrackCard: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = memo(({ post, hideAuthor, style }) => {
   const track = zodTryParseJSON(ZodSocialFeedTrackMetadata, post.metadata);
-  const authorNSInfo = useNSUserInfo(post.authorId);
-  const [, userAddress] = parseUserId(post.authorId);
   const [isHovered, setIsHovered] = useState(false);
   const navigation = useAppNavigation();
-  const selectedNetworkId = useSelectedNetworkId();
   let cardWidth = StyleSheet.flatten(style)?.width;
   if (typeof cardWidth !== "number") {
     cardWidth = TRACK_CARD_WIDTH;
@@ -52,19 +52,13 @@ export const TrackCard: React.FC<{
   const imageSize = cardWidth - layout.spacing_x1_5 * 2;
 
   const { loadAndPlaySoundsQueue } = useMediaPlayer();
-  const username = authorNSInfo?.metadata?.tokenId
-    ? authorNSInfo?.metadata?.tokenId
-    : tinyAddress(userAddress, 16);
 
   const onPressPlayTrack = async () => {
     if (!track) return;
     const mediaToPlay: Media = {
-      imageUrl: track.audioFile.thumbnailFileData?.url,
-      name: track.title,
-      createdBy: post.authorId,
       fileUrl: track.audioFile.url,
       duration: track.audioFile.audioMetadata?.duration,
-      postId: post.identifier,
+      postId: post.id,
     };
     await loadAndPlaySoundsQueue([mediaToPlay]);
   };
@@ -82,7 +76,7 @@ export const TrackCard: React.FC<{
           style={imgBoxStyle}
           onPress={() => {
             navigation.navigate("FeedPostView", {
-              id: getNetworkObjectId(selectedNetworkId, post.identifier),
+              id: post.id,
             });
           }}
         >
@@ -107,14 +101,28 @@ export const TrackCard: React.FC<{
               />
             </TouchableOpacity>
 
-            <TouchableOpacity>
-              <SVG
-                source={ThreeDotsCircleWhite}
-                width={BUTTONS_HEIGHT}
-                height={BUTTONS_HEIGHT}
+            <CustomPressable onPress={(e) => e.stopPropagation()}>
+              <TrackOptionsButton
+                trackName={track?.title || "Track"}
+                post={post}
               />
-            </TouchableOpacity>
+            </CustomPressable>
           </View>
+
+          {track?.location && (
+            <View style={positionButtonBoxStyle}>
+              <LocationButton
+                onPress={() =>
+                  track.location &&
+                  navigation.navigate("Feed", {
+                    tab: "map",
+                    post: post.id,
+                  })
+                }
+                stroke={neutralFF}
+              />
+            </View>
+          )}
         </CustomPressable>
         <BrandText style={[fontSemibold14, { height: 40 }]} numberOfLines={2}>
           {track?.title || ""}
@@ -127,14 +135,12 @@ export const TrackCard: React.FC<{
       {!hideAuthor && (
         <>
           <SpacerColumn size={1} />
-          <OmniLink
-            to={{
-              screen: "UserPublicProfile",
-              params: { id: post.authorId },
-            }}
-          >
-            <BrandText style={contentNameStyle}>@{username}</BrandText>
-          </OmniLink>
+          <Username
+            userId={post.authorId}
+            textStyle={contentNameStyle}
+            namedColor={contentNameStyle.color}
+            anonColor={contentNameStyle.color}
+          />
         </>
       )}
     </View>
@@ -161,6 +167,12 @@ const imgButtonsBoxStyle: ViewStyle = {
   bottom: layout.spacing_x1_5 * 2,
   right: 0,
   justifyContent: "space-between",
+};
+
+const positionButtonBoxStyle: ViewStyle = {
+  position: "absolute",
+  top: layout.spacing_x1_5,
+  right: layout.spacing_x1_5,
 };
 
 const contentDescriptionStyle: TextStyle = {

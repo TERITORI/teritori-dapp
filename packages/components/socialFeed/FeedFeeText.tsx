@@ -1,10 +1,10 @@
 import { StyleProp, TextStyle, View, ViewStyle } from "react-native";
 
-import { PostCategory } from "./NewsFeed/NewsFeed.type";
 import { useFeedPosting } from "../../hooks/feed/useFeedPosting";
 import { useTheme } from "../../hooks/useTheme";
 import { errorColor, neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
+import { PostCategory } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 
 export const FeedFeeText: React.FC<{

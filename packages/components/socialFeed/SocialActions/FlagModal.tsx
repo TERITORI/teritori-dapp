@@ -5,8 +5,12 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { mustGetGnoNetwork } from "../../../networks";
-import { adenaDoContract } from "../../../utils/gno";
-import { neutral77, neutral33 } from "../../../utils/style/colors";
+import { TERITORI_FEED_ID } from "../../../utils/feed/constants";
+import {
+  adenaDoContract,
+  AdenaDoContractMessageType,
+} from "../../../utils/gno";
+import { neutral33, neutral77 } from "../../../utils/style/colors";
 import { fontSemibold14, fontSemibold16 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
@@ -14,7 +18,6 @@ import { RadioButton } from "../../RadioButton";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import ModalBase from "../../modals/ModalBase";
 import { SpacerColumn, SpacerRow } from "../../spacer";
-import { TERITORI_FEED_ID } from "../const";
 
 type FlagModalProps = {
   postId: string;
@@ -53,7 +56,7 @@ export const FlagModal: React.FC<FlagModalProps> = ({
     try {
       await adenaDoContract(
         selectedNetworkId || "",
-        [{ type: "/vm.m_call", value: vmCall }],
+        [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
         {
           gasWanted: 2_000_000,
         },

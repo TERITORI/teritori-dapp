@@ -3,23 +3,26 @@ import { useWindowDimensions, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import { DAppBox } from "./DAppBox";
-import { BrandText } from "../../../components/BrandText";
-import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
-import { selectAvailableApps } from "../../../store/slices/dapps-store";
-import { layout } from "../../../utils/style/layout";
-import { dAppType } from "../types";
+
+import { BrandText } from "@/components/BrandText";
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { GridList } from "@/components/layout/GridList";
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
+import { selectAvailableApps } from "@/store/slices/dapps-store";
+import { layout } from "@/utils/style/layout";
+import { dAppType } from "@/utils/types/dapp-store";
 
 export const RightRail = ({ searchInput }: { searchInput: string }) => {
   const availableApps = useSelector(selectAvailableApps);
   const { width } = useWindowDimensions();
+  const [developerMode] = useDeveloperMode();
   const isMobile = width < 760;
   return (
     <View
       style={{
         flex: 1,
         minHeight: 250,
-        maxWidth: isMobile ? "100%" : 1024,
-        paddingLeft: isMobile ? 0 : layout.spacing_x3,
+        paddingHorizontal: isMobile ? 0 : layout.spacing_x3,
         paddingTop: layout.spacing_x4,
         justifyContent: isMobile ? "flex-end" : "flex-start",
       }}
@@ -27,12 +30,15 @@ export const RightRail = ({ searchInput }: { searchInput: string }) => {
       {availableApps
         ? Object.values(availableApps).map((element, index) => {
             return element.active ? (
-              <View key={element.id}>
+              <View
+                key={element.id}
+                style={{ marginBottom: layout.spacing_x4 }}
+              >
                 <View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    marginLeft: isMobile ? layout.spacing_x1_5 : 0,
+                    marginHorizontal: isMobile ? layout.spacing_x1_5 : 0,
                     marginBottom: layout.spacing_x2_5,
                   }}
                 >
@@ -45,34 +51,30 @@ export const RightRail = ({ searchInput }: { searchInput: string }) => {
                   />
                   <BrandText>{element.groupName}</BrandText>
                 </View>
-                <View
-                  style={{
-                    flex: 1,
-                    marginBottom: layout.spacing_x2_5,
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    justifyContent: isMobile ? "center" : "flex-start",
-                  }}
-                >
-                  {Object.values(element.options)
-                    .filter((option: dAppType) =>
-                      option.title
+                <GridList<dAppType>
+                  noFixedHeight
+                  keyExtractor={(item) => item.id}
+                  data={Object.values(element.options).filter(
+                    (option: dAppType) => {
+                      if (option.devOnly && !developerMode) {
+                        return false;
+                      }
+                      return option.title
                         .toLowerCase()
-                        .includes(searchInput.toLowerCase()),
-                    )
-                    .map((option: dAppType, index: React.Key) => {
-                      return (
-                        <DAppBox
-                          key={index}
-                          option={option}
-                          style={{
-                            marginRight: layout.spacing_x2_5,
-                            marginBottom: layout.spacing_x2_5,
-                          }}
-                        />
-                      );
-                    })}
-                </View>
+                        .includes(searchInput.toLowerCase());
+                    },
+                  )}
+                  minElemWidth={300}
+                  renderItem={({ item: option }, elemWidth) => {
+                    return (
+                      <DAppBox
+                        key={index}
+                        option={option}
+                        style={{ width: elemWidth }}
+                      />
+                    );
+                  }}
+                />
               </View>
             ) : (
               <></>

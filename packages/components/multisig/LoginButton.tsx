@@ -1,10 +1,6 @@
 import { Keplr } from "@keplr-wallet/types";
 import { FC } from "react";
 
-import {
-  GetTokenRequest,
-  TokenRequestInfo,
-} from "../../api/multisig/v1/multisig";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useMultisigAuthToken } from "../../hooks/multisig/useMultisigAuthToken";
 import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
@@ -13,6 +9,8 @@ import { setMultisigToken } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { keplrSignArbitrary } from "../../utils/keplr";
 import { PrimaryButton } from "../buttons/PrimaryButton";
+
+import { multisigLogin } from "@/utils/multisig";
 
 export const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
   const [network, userAddress] = parseUserId(userId);
@@ -55,35 +53,12 @@ export const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
           throw new Error("Unsupported key algorithm");
         }
 
-        const challengeResponse = await client.GetChallenge({});
-
-        if (!challengeResponse.challenge) {
-          throw new Error("No challenge returned from server");
-        }
-
-        const info = TokenRequestInfo.toJSON({
-          kind: "Login to Teritori Multisig Service",
-          challenge: challengeResponse.challenge,
-          userBech32Prefix: network.addressPrefix,
-          userPubkeyJson: JSON.stringify({
-            type: "tendermint/PubKeySecp256k1",
-            value: Buffer.from(pubKey).toString("base64"),
-          }),
-        });
-        const infoJSON = JSON.stringify(info);
-
-        const stdsig = await keplrSignArbitrary(userId, infoJSON);
-
-        const req: GetTokenRequest = {
-          infoJson: infoJSON,
-          userSignature: stdsig.signature,
-        };
-
-        const { authToken } = await client.GetToken(req);
-
-        if (!authToken) {
-          throw new Error("No auth token returned from server");
-        }
+        const authToken = await multisigLogin(
+          network,
+          client,
+          pubKey,
+          (infoJSON) => keplrSignArbitrary(userId, infoJSON),
+        );
 
         dispatch(setMultisigToken({ userAddress, token: authToken }));
       })}

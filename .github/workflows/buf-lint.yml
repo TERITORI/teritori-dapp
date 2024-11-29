@@ -5,16 +5,17 @@ on:
     branches:
       - main
   pull_request:
+  merge_group:
 
 jobs:
-  check-codegen:
+  lint-buf:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: bufbuild/buf-setup-action@v1.28.0
+      - uses: bufbuild/buf-setup-action@v1.31.0
         with:
-          version: 1.28.0
+          version: 1.31.0
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Buf lint

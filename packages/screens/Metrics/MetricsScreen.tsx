@@ -1,27 +1,30 @@
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import React from "react";
-import { Linking, Pressable, View, useWindowDimensions } from "react-native";
+import { Linking, Pressable, useWindowDimensions, View } from "react-native";
 
-import statsLogo from "../../../assets/logos/stats.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { GradientText } from "../../components/gradientText";
-import { SpacerColumn } from "../../components/spacer";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { getNonSigningStargateClient } from "../../networks";
-import { teritoriNetwork } from "../../networks/teritori";
-import { ScreenFC } from "../../utils/navigation";
-import { errorColor, secondaryColor } from "../../utils/style/colors";
-import { fontBold16, fontSemibold28 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { AnimatedFiller } from "@/components/animations/AnimatedFiller";
+import { GradientText } from "@/components/gradientText";
+import { SpacerColumn } from "@/components/spacer";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { getCosmosNetwork, getNonSigningStargateClient } from "@/networks";
+import { teritoriNetwork } from "@/networks/teritori";
+import { prettyPrice } from "@/utils/coins";
+import { ScreenFC } from "@/utils/navigation";
+import { errorColor, secondaryColor } from "@/utils/style/colors";
+import { fontBold16, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const targetBlock = 12614400;
 
 export const MetricsScreen: ScreenFC<"Metrics"> = () => {
-  const { data: currentHeight } = useCosmosHeight(teritoriNetwork.id);
+  const networkId = teritoriNetwork.id;
+  const { data: currentHeight } = useCosmosHeight(networkId);
   const { width: windowWidth } = useWindowDimensions();
   const mobileMode = useIsMobile();
+  const { data: burnTotal } = useBurnTotal(networkId);
 
   const blocksValues = [
     {
@@ -46,8 +49,8 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
   return (
     <ScreenContainer
       fullWidth
-      footerChildren={<div />}
-      forceNetworkId="teritori"
+      footerChildren={<></>}
+      forceNetworkId={teritoriNetwork.id}
     >
       <View
         style={{
@@ -58,12 +61,15 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
         }}
       >
         {mobileMode && <SpacerColumn size={3} />}
-        <SVG
-          source={statsLogo}
-          width={imageSize}
-          height={imageSize}
-          style={{ margin: -(imageSize / 4) }}
-        />
+        <View
+          style={{
+            width: imageSize,
+            height: imageSize,
+            margin: -(imageSize / 4),
+          }}
+        >
+          <AnimatedFiller />
+        </View>
         {mobileMode && <SpacerColumn size={3} />}
         <View
           style={{
@@ -82,16 +88,20 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
               { textTransform: "uppercase", color: errorColor },
             ]}
           >
-            🔥 118.55K $TORI 🔥
+            🔥{" "}
+            {burnTotal
+              ? prettyPrice(networkId, burnTotal.amount, burnTotal.denom, true)
+              : "..."}{" "}
+            $Tori 🔥
           </BrandText>
-          {mobileMode && <SpacerColumn size={2} />}
+          <SpacerColumn size={mobileMode ? 2 : 4} />
           <BrandText
             style={[
               fontSemibold28,
               { textTransform: "uppercase", color: secondaryColor },
             ]}
           >
-            ESTIMATED HALVING DATE:
+            ESTIMATED Thirdening DATE:
           </BrandText>
           {mobileMode && <SpacerColumn size={2} />}
           <BrandText style={fontSemibold28}>
@@ -159,6 +169,32 @@ export const MetricsScreen: ScreenFC<"Metrics"> = () => {
   );
 };
 
+const useBurnTotal = (networkId: string | undefined) => {
+  const { data: mintParams, ...other } = useMintParams(networkId);
+  try {
+    return { data: mintParams.params.total_burnt_amount[0], ...other };
+  } catch {
+    return { data: null, ...other };
+  }
+};
+
+const useMintParams = (networkId: string | undefined) => {
+  return useQuery(
+    ["mintParams", networkId],
+    async () => {
+      const network = getCosmosNetwork(networkId);
+      if (!network) {
+        return null;
+      }
+      const res = await axios.get(
+        `${network.restEndpoint}/teritori/mint/v1beta1/params`,
+      );
+      return res.data;
+    },
+    { staleTime: Infinity },
+  );
+};
+
 function useCosmosHeight(networkId: string) {
   return useQuery(
     ["cosmosStatus", networkId],
@@ -166,6 +202,6 @@ function useCosmosHeight(networkId: string) {
       const client = await getNonSigningStargateClient(networkId);
       return await client.getHeight();
     },
-    { staleTime: Infinity, refetchInterval: 7000 },
+    { staleTime: Infinity },
   );
 }

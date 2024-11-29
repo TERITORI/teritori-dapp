@@ -2,10 +2,11 @@ import React from "react";
 import { TouchableOpacity } from "react-native";
 
 import { useMention } from "../../../../hooks/feed/useMention";
-import { useAppNavigation } from "../../../../utils/navigation";
 import { neutralA3, primaryColor } from "../../../../utils/style/colors";
 import { fontSemibold13 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export const MentionRenderer: React.FC<{ text: string }> = ({ text }) => {
   const navigation = useAppNavigation();

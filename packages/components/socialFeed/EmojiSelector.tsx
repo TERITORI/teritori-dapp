@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { StyleProp, StyleSheet, ViewStyle } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { Menu, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
 import emojiSVG from "../../../assets/icons/emoji.svg";
+import emojiSolidSVG from "../../../assets/icons/social/happy-gray.svg";
+import { useAppMode } from "../../hooks/useAppMode";
 import { neutral33, neutral67, secondaryColor } from "../../utils/style/colors";
 import { layout } from "../../utils/style/layout";
 import EmojiModal from "../EmojiModal";
@@ -27,6 +29,8 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
   iconStyle,
   disabled,
 }) => {
+  const [appMode] = useAppMode();
+
   const [isEmojiModalVisible, setIsEmojiModalVisible] = useState(false);
 
   const toggleEmojiModal = () =>
@@ -43,7 +47,7 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
           <ActivityIndicator animating color={secondaryColor} size={32} />
         ) : (
           <IconBox
-            icon={emojiSVG}
+            icon={appMode === "mini" ? emojiSolidSVG : emojiSVG}
             onPress={toggleEmojiModal}
             disabled={disabled}
             style={iconStyle}
@@ -53,7 +57,12 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
 
       <MenuOptions
         customStyles={{
-          optionsContainer: StyleSheet.flatten([styles.optionsContainer]),
+          optionsContainer: {
+            width: WIDTH,
+            height: HEIGHT,
+            left: 0,
+            backgroundColor: "transparent",
+          },
         }}
       >
         <EmojiModal
@@ -63,10 +72,18 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
             }
             toggleEmojiModal();
           }}
-          containerStyle={styles.modalContainer}
+          containerStyle={{
+            paddingHorizontal: layout.spacing_x1,
+            paddingVertical: layout.spacing_x1_5,
+            backgroundColor: neutral67,
+            borderWidth: 1,
+            borderColor: neutral33,
+            width: WIDTH,
+            height: HEIGHT,
+          }}
           searchStyle={{
             backgroundColor: neutral33,
-            // @ts-ignore
+            // @ts-expect-error: description todo
             color: secondaryColor,
           }}
           headerStyle={{
@@ -78,23 +95,3 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
     </Menu>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  modalContainer: {
-    paddingHorizontal: layout.spacing_x1,
-    paddingVertical: layout.spacing_x1_5,
-    backgroundColor: neutral67,
-    borderWidth: 1,
-    borderColor: neutral33,
-    width: WIDTH,
-    height: HEIGHT,
-  },
-  optionsContainer: {
-    width: WIDTH,
-    height: HEIGHT,
-    left: 0,
-    backgroundColor: "transparent",
-  },
-});

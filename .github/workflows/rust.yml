@@ -1,0 +1,40 @@
+name: Rust
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  merge_group:
+
+jobs:
+  check-rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Format
+        run: make fmt.rust
+
+      - name: Lint
+        run: make lint.rust
+
+      - name: Test
+        run: make test.rust
+
+      - name: Build
+        run: make build.rust
+
+      - name: Check that there is no diff
+        run: |
+          mrdiff=$(git status --porcelain)
+          if [[ $mrdiff ]]; then
+              echo 'ERROR: Diff found!'
+              echo $mrdiff
+              git diff
+              exit 1
+          fi

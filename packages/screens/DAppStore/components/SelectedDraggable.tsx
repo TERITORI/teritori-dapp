@@ -1,24 +1,23 @@
 import React, { useState } from "react";
-import { Platform, TouchableOpacity, View } from "react-native";
-import { TrashIcon, Bars3Icon } from "react-native-heroicons/solid";
-import { Hoverable } from "react-native-hoverable";
+import { Platform, Pressable, TouchableOpacity, View } from "react-native";
+import { Bars3Icon, TrashIcon } from "react-native-heroicons/solid";
 
-import { BrandText } from "../../../components/BrandText";
-import { SVGorImageIcon } from "../../../components/SVG/SVGorImageIcon";
-import { Box } from "../../../components/boxes/Box";
-import { setCheckedApp } from "../../../store/slices/dapps-store";
-import { useAppDispatch } from "../../../store/store";
+import { BrandText } from "@/components/BrandText";
+import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
+import { Box } from "@/components/boxes/Box";
+import { setCheckedApp } from "@/store/slices/dapps-store";
+import { useAppDispatch } from "@/store/store";
+import { SEPARATOR } from "@/utils/dapp-store";
 import {
   errorColor,
   neutral33,
   neutral44,
   neutral67,
   withAlpha,
-} from "../../../utils/style/colors";
-import { fontBold12 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { SEPARATOR } from "../query/util";
-import { dAppType } from "../types";
+} from "@/utils/style/colors";
+import { fontBold12 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { dAppType } from "@/utils/types/dapp-store";
 
 export const SelectedDraggable: React.FC<{
   option?: dAppType;
@@ -39,9 +38,9 @@ export const SelectedDraggable: React.FC<{
   };
 
   return (
-    <Hoverable
-      onMouseEnter={() => setShowTrashIcon(true)}
-      onMouseLeave={() => setShowTrashIcon(false)}
+    <Pressable
+      onHoverIn={() => setShowTrashIcon(true)}
+      onHoverOut={() => setShowTrashIcon(false)}
       style={{
         display: "flex",
         flexDirection: "row",
@@ -49,14 +48,14 @@ export const SelectedDraggable: React.FC<{
         marginBottom: layout.spacing_x1,
       }}
     >
-      <Hoverable
-        onMouseEnter={() => {
+      <Pressable
+        onHoverIn={() => {
           if (!alwaysOn) {
             setShowTrashIcon(true);
           }
           dragHandler(false);
         }}
-        onMouseLeave={() => {
+        onHoverOut={() => {
           dragHandler(true);
         }}
       >
@@ -80,7 +79,7 @@ export const SelectedDraggable: React.FC<{
             </BrandText>
           </Box>
         </TouchableOpacity>
-      </Hoverable>
+      </Pressable>
 
       <Box
         style={{
@@ -100,6 +99,7 @@ export const SelectedDraggable: React.FC<{
               cursor: "grab",
             },
           }),
+          paddingHorizontal: layout.spacing_x1_5,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -115,6 +115,6 @@ export const SelectedDraggable: React.FC<{
 
         <Bars3Icon size={24} fill={neutral44} />
       </Box>
-    </Hoverable>
+    </Pressable>
   );
 };

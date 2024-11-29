@@ -6,41 +6,42 @@ import { Pressable, ScrollView, View } from "react-native";
 import { MultisigSection } from "./components/MultisigSection";
 import trashSVG from "../../../assets/icons/trash.svg";
 import walletInputSVG from "../../../assets/icons/wallet-input.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SecondaryButton } from "../../components/buttons/SecondaryButton";
-import { SearchNSInputContainer } from "../../components/inputs/SearchNSInputContainer";
-import { TextInputCustom } from "../../components/inputs/TextInputCustom";
-import { TextInputOutsideLabel } from "../../components/inputs/TextInputOutsideLabel";
-import { SpacerColumn, SpacerRow } from "../../components/spacer";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useMultisigAuthToken } from "../../hooks/multisig/useMultisigAuthToken";
-import { useMultisigClient } from "../../hooks/multisig/useMultisigClient";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { NetworkKind, getUserId, parseUserId } from "../../networks";
-import { getCosmosAccount } from "../../utils/cosmos";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { SearchNSInputContainer } from "@/components/inputs/SearchNSInputContainer";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
+import { TextInputOutsideLabel } from "@/components/inputs/TextInputOutsideLabel";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useMultisigAuthToken } from "@/hooks/multisig/useMultisigAuthToken";
+import { useMultisigClient } from "@/hooks/multisig/useMultisigClient";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { getUserId, NetworkKind, parseUserId } from "@/networks";
+import { getCosmosAccount } from "@/utils/cosmos";
 import {
   patternOnlyNumbers,
   validateAddress,
   validateMaxNumber,
-} from "../../utils/formRules";
-import { useAppNavigation } from "../../utils/navigation";
+} from "@/utils/formRules";
 import {
   neutral33,
   neutral77,
   neutralA3,
   trashBackground,
-} from "../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold20,
   fontSemibold28,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type CreateMultisigWalletFormType = {
   addresses: { address: string }[];
@@ -61,6 +62,7 @@ export const MultisigCreateScreen = () => {
     emptyPubKeyGroup(),
     emptyPubKeyGroup(),
   ]);
+  const [isLoading, setLoading] = useState(false);
   const navigation = useAppNavigation();
   const signatureRequiredValue = watch("signatureRequired");
   useEffect(() => {
@@ -117,23 +119,40 @@ export const MultisigCreateScreen = () => {
       parseInt(signatureRequired, 10),
     );
 
-    const res = await multisigClient.CreateOrJoinMultisig({
-      authToken,
-      chainId: selectedNetwork.chainId,
-      bech32Prefix: selectedNetwork.addressPrefix,
-      multisigPubkeyJson: JSON.stringify(multisigPubkey),
-      name,
-    });
+    try {
+      const res = await multisigClient.CreateOrJoinMultisig({
+        authToken: { ...authToken, userAddress: "aeae" },
+        chainId: selectedNetwork.chainId,
+        bech32Prefix: selectedNetwork.addressPrefix,
+        multisigPubkeyJson: JSON.stringify(multisigPubkey),
+        name,
+      });
 
-    navigation.navigate("MultisigWalletDashboard", {
-      id: getUserId(selectedNetwork?.id, res.multisigAddress),
-    });
+      navigation.navigate("MultisigWalletDashboard", {
+        id: getUserId(selectedNetwork?.id, res.multisigAddress),
+      });
+    } catch (err) {
+      throw new Error(`Failed to create multisig: ${err}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const onAddressChange = async (index: number, value: string) => {
+  const handleAddressChange = async (index: number, value: string) => {
+    if (!selectedNetwork) {
+      throw new Error("No network selected");
+    }
+    if (selectedNetwork.kind !== NetworkKind.Cosmos) {
+      throw new Error("Only Cosmos networks are supported");
+    }
+
     const resValAddress = validateAddress(value);
 
     if (resValAddress !== true) return "Invalid address";
+
+    if (!value.includes(selectedNetwork.addressPrefix)) {
+      return `Only ${selectedNetwork.displayName} address is allowed`;
+    }
 
     const address = value;
 
@@ -141,15 +160,24 @@ export const MultisigCreateScreen = () => {
       return "This address is already used in this form.";
 
     const tempPubkeys = [...addressIndexes];
-    const account = await getCosmosAccount(
-      getUserId(selectedNetwork?.id, address),
-    );
-    if (!account?.pubkey) {
-      return "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig.";
+
+    try {
+      setLoading(true);
+      const account = await getCosmosAccount(
+        getUserId(selectedNetwork?.id, address),
+      );
+
+      if (!account?.pubkey) {
+        return "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig.";
+      }
+      tempPubkeys[index].address = address;
+      tempPubkeys[index].compressedPubkey = account.pubkey.value;
+      setAddressIndexes(tempPubkeys);
+    } catch {
+      return "Failed to get Cosmos account";
+    } finally {
+      setLoading(false);
     }
-    tempPubkeys[index].address = address;
-    tempPubkeys[index].compressedPubkey = account.pubkey.value;
-    setAddressIndexes(tempPubkeys);
   };
 
   return (
@@ -231,7 +259,7 @@ export const MultisigCreateScreen = () => {
                     label={"Address #" + (index + 1)}
                     rules={{
                       required: true,
-                      validate: (value) => onAddressChange(index, value),
+                      validate: (value) => handleAddressChange(index, value),
                     }}
                     placeHolder="Account address"
                     iconSVG={walletInputSVG}
@@ -349,6 +377,7 @@ export const MultisigCreateScreen = () => {
                 wrapWithFeedback(() => onSubmit(arg))(),
               )}
               loader
+              isLoading={isLoading}
             />
           </View>
         </View>

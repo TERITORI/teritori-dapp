@@ -1,7 +1,6 @@
 import React from "react";
-import { View, Image, Linking } from "react-native";
+import { View, Linking } from "react-native";
 
-import defaultNewsBanner from "../../../assets/default-images/default-news-banner.png";
 import airdropSVG from "../../../assets/icons/airdrop.svg";
 import labsSVG from "../../../assets/icons/labs.svg";
 import launchpadSVG from "../../../assets/icons/launchpad.svg";
@@ -12,13 +11,11 @@ import {
   Sort,
   SortDirection,
 } from "../../api/marketplace/v1/marketplace";
-import { useBanners } from "../../hooks/useBanners";
-import { useImageResizer } from "../../hooks/useImageResizer";
+import { useBanners } from "../../hooks/marketing/useBanners";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { web3ToWeb2URI } from "../../utils/ipfs";
-import { useAppNavigation } from "../../utils/navigation";
 import { Link } from "../Link";
+import { OptimizedImage } from "../OptimizedImage";
 import { Section } from "../Section";
 import { DAppCard } from "../cards/DAppCard";
 import { LabelCard } from "../cards/LabelCard";
@@ -26,35 +23,34 @@ import { MyWalletsCard } from "../cards/MyWalletsCard";
 import { CollectionsCarouselSection } from "../carousels/CollectionsCarouselSection";
 import { NewsCarouselSection } from "../carousels/NewsCarouselSection";
 
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+
 const gridHalfGutter = 12;
 
 export const HubLanding: React.FC = () => {
   const navigation = useAppNavigation();
-  const { width: maxWidth } = useMaxResolution();
-  const { width, height } = useImageResizer({
-    image: defaultNewsBanner,
-    maxSize: { width: maxWidth },
-  });
+  const { width } = useMaxResolution();
   const networkId = useSelectedNetworkId();
   const banners = useBanners(networkId);
   const banner = banners?.length ? banners[0] : undefined;
-
   return (
     <View style={{ alignItems: "center", width: "100%" }}>
       <View style={{ flex: 1 }}>
-        <Link to={banner?.url || ""}>
-          <Image
-            source={{
-              uri: web3ToWeb2URI(banner?.image),
-            }}
-            style={{
-              height,
-              width,
-              borderRadius: 20,
-              marginTop: 56,
-            }}
-          />
-        </Link>
+        {!!banner && (
+          <Link to={banner?.url} style={{ width: "100%", maxHeight: 500 }}>
+            <OptimizedImage
+              sourceURI={banner?.image}
+              width={width}
+              height={350}
+              style={{
+                height: 350,
+                width,
+                borderRadius: 20,
+                marginTop: 56,
+              }}
+            />
+          </Link>
+        )}
 
         <NewsCarouselSection />
 
@@ -95,7 +91,7 @@ export const HubLanding: React.FC = () => {
               description="Get funds to develop, contribute and build new feature for Communities"
               info="Apply here"
               iconSVG={labsSVG}
-              onPress={() => Linking.openURL("https://teritori.com/grants")}
+              onPress={() => Linking.openURL("https://teritori.com/projects")}
             />
           </View>
         </Section>

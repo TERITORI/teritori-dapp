@@ -1,32 +1,36 @@
 import { useQuery } from "@tanstack/react-query";
+import { Buffer } from "buffer";
 import React from "react";
 import { View } from "react-native";
 
-import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
-import { MsgBurnTokens } from "../../api/teritori-chain/teritori/mint/v1beta1/tx";
-import { BrandText } from "../../components/BrandText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { SpacerColumn } from "../../components/spacer";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { TeritoriNameServiceQueryClient } from "../../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import { TeritoriNftVaultClient } from "../../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
-import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
-import { useFeedConfig } from "../../hooks/feed/useFeedConfig";
-import { useBalances } from "../../hooks/useBalances";
-import { useBreedingConfig } from "../../hooks/useBreedingConfig";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useVaultConfig } from "../../hooks/vault/useVaultConfig";
+
+import { Coin } from "@/api/teritori-chain/cosmos/base/v1beta1/coin";
+import { MsgBurnTokens } from "@/api/teritori-chain/teritori/mint/v1beta1/tx";
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SpacerColumn } from "@/components/spacer";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { NftMarketplaceClient } from "@/contracts-clients/nft-marketplace/NftMarketplace.client";
+import { TeritoriNameServiceQueryClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { useDAOMakeProposal } from "@/hooks/dao/useDAOMakeProposal";
+import { useFeedConfig } from "@/hooks/feed/useFeedConfig";
+import { useMarketplaceConfig } from "@/hooks/marketplace/useMarketplaceConfig";
+import { useBalances } from "@/hooks/useBalances";
+import { useBreedingConfig } from "@/hooks/useBreedingConfig";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   getCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
-  getKeplrSigningStargateClient,
   getUserId,
   mustGetNonSigningCosmWasmClient,
-} from "../../networks";
-import { prettyPrice } from "../../utils/coins";
-import { ScreenFC } from "../../utils/navigation";
+} from "@/networks";
+import {
+  getKeplrSigningCosmWasmClient,
+  getKeplrSigningStargateClient,
+} from "@/networks/signer";
+import { prettyPrice } from "@/utils/coins";
+import { ScreenFC } from "@/utils/navigation";
 
 // This is a dev tool for now
 
@@ -50,7 +54,7 @@ export const CoreDAOScreen: ScreenFC<"CoreDAO"> = () => {
 const DAOManager: React.FC = () => {
   const networkId = useSelectedNetworkId();
   const network = getCosmosNetwork(networkId);
-  const balances = useBalances(networkId, network?.coreDAOAddress);
+  const { balances } = useBalances(networkId, network?.coreDAOAddress);
   const selectedWallet = useSelectedWallet();
   const makeProposal = useDAOMakeProposal(
     getUserId(networkId, network?.coreDAOAddress),
@@ -139,8 +143,11 @@ const DAOManager: React.FC = () => {
 
 const VaultManager: React.FC<{ networkId: string }> = ({ networkId }) => {
   const network = getCosmosNetwork(networkId);
-  const { vaultConfig } = useVaultConfig(networkId);
-  const vaultBalances = useBalances(networkId, network?.vaultContractAddress);
+  const { marketplaceConfig: vaultConfig } = useMarketplaceConfig(networkId);
+  const { balances: vaultBalances } = useBalances(
+    networkId,
+    network?.vaultContractAddress,
+  );
   const { wrapWithFeedback } = useFeedbacks();
   const selectedWallet = useSelectedWallet();
 
@@ -175,7 +182,7 @@ const VaultManager: React.FC<{ networkId: string }> = ({ networkId }) => {
           const cosmWasmClient = await getKeplrSigningCosmWasmClient(
             selectedWallet.networkId,
           );
-          const vaultClient = new TeritoriNftVaultClient(
+          const vaultClient = new NftMarketplaceClient(
             cosmWasmClient,
             selectedWallet.address,
             network.vaultContractAddress,
@@ -226,7 +233,7 @@ const NameServiceManager: React.FC<{ networkId: string }> = ({ networkId }) => {
 const SocialFeedManager: React.FC<{ networkId: string }> = ({ networkId }) => {
   const network = getCosmosNetwork(networkId);
   const { feedConfig } = useFeedConfig(networkId);
-  const feedBalances = useBalances(
+  const { balances: feedBalances } = useBalances(
     networkId,
     network?.socialFeedContractAddress,
   );
@@ -260,7 +267,7 @@ const SocialFeedManager: React.FC<{ networkId: string }> = ({ networkId }) => {
 const BreedingManager: React.FC<{ networkId: string }> = ({ networkId }) => {
   const network = getCosmosNetwork(networkId);
   const { breedingConfig } = useBreedingConfig(networkId);
-  const breedingBalances = useBalances(
+  const { balances: breedingBalances } = useBalances(
     networkId,
     network?.riotContractAddressGen1,
   );

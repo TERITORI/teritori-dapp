@@ -1,38 +1,38 @@
-import React, { useRef } from "react";
+import React from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { LegacyTertiaryBox } from "../../../components/boxes/LegacyTertiaryBox";
-import { SpacerRow } from "../../../components/spacer";
-import { useDropdowns } from "../../../context/DropdownsProvider";
-import { useMessage } from "../../../context/MessageProvider";
-import { neutral17, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold12 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { CONVERSATION_TYPES } from "../../../utils/types/message";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { SpacerRow } from "@/components/spacer";
+import { useMessage } from "@/context/MessageProvider";
+import { useDropdowns } from "@/hooks/useDropdowns";
+import { neutral17, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold12 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { CONVERSATION_TYPES } from "@/utils/types/message";
 
 export const ConversationSelector: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = ({ style }) => {
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
+
   const { activeConversationType, setActiveConversationType } = useMessage();
 
   const onPressItem = (conversationType: CONVERSATION_TYPES) => {
     setActiveConversationType(conversationType);
-    closeOpenedDropdown();
+    setDropdownState(false);
   };
 
   const fontSize = 14;
 
   return (
-    <View style={[{}, style]} ref={dropdownRef}>
+    <View style={[{}, style]} ref={dropdownRef} collapsable={false}>
       <TouchableOpacity
-        onPress={() => onPressDropdownButton(dropdownRef)}
+        onPress={() => setDropdownState(!isDropdownOpen)}
         style={{
           flexDirection: "row",
           paddingHorizontal: 12,
@@ -51,14 +51,14 @@ export const ConversationSelector: React.FC<{
         </BrandText>
         <SpacerRow size={1} />
         <SVG
-          source={isDropdownOpen(dropdownRef) ? chevronUpSVG : chevronDownSVG}
+          source={isDropdownOpen ? chevronUpSVG : chevronDownSVG}
           width={16}
           height={16}
           color={secondaryColor}
         />
       </TouchableOpacity>
 
-      {isDropdownOpen(dropdownRef) && (
+      {isDropdownOpen && (
         <LegacyTertiaryBox
           width={172}
           style={{ position: "absolute", top: 30 }}

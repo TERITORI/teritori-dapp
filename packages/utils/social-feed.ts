@@ -4,36 +4,34 @@ import { GIF_MIME_TYPE } from "./mime";
 import { HASHTAG_REGEX, MENTION_REGEX, URL_REGEX } from "./regex";
 import { zodTryParseJSON } from "./sanitize";
 import { redDefault } from "./style/colors";
-import { LocalFileData } from "./types/files";
-import flagSVG from "../../assets/icons/notification.svg";
-import { Post, Reaction } from "../api/feed/v1/feed";
 import {
   PostExtra,
   PostResultExtra,
-} from "../components/socialFeed/NewsFeed/NewsFeed.type";
-import { TabDefinition } from "../components/tabs/Tabs";
-import { PostResult } from "../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
-import { getUserId } from "../networks";
+  zodSocialFeedCommonMetadata,
+} from "./types/feed";
+import { LocalFileData } from "./types/files";
+import { TabDefinition } from "./types/tabs";
+
+import { Post, Reaction } from "@/api/feed/v1/feed";
+import flagSVG from "@/assets/icons/notification.svg";
+import { PostResult } from "@/contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import { getNetworkObjectId, getUserId } from "@/networks";
 
 export const DEFAULT_NAME = "Anon";
 export const DEFAULT_USERNAME = "anonymous";
 export const SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT = 2500;
 export const NB_ROWS_SHOWN_IN_PREVIEW = 5;
 export const ARTICLE_MAX_WIDTH = 1046;
-export const ARTICLE_COVER_IMAGE_HEIGHT = 300;
-export const ARTICLE_THUMBNAIL_IMAGE_HEIGHT = 252;
-export const BASE_POST: Post = {
-  identifier: "",
-  category: 0,
-  authorId: "",
-  metadata: "",
-  isDeleted: false,
-  parentPostIdentifier: "",
-  subPostLength: 0,
-  createdAt: 0,
-  tipAmount: 0,
-  reactions: [],
-};
+export const ARTICLE_COVER_IMAGE_MAX_HEIGHT = 460;
+export const ARTICLE_COVER_IMAGE_RATIO = 2.274;
+export const ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH = 364;
+export const ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT = 252;
+export const LIKE_EMOJI = "👍";
+export const DISLIKE_EMOJI = "👎";
+export const LINES_HORIZONTAL_SPACE = 40;
+export const ROUND_BUTTON_WIDTH_L = 60;
+export const ROUND_BUTTON_WIDTH_S = 42;
+export const SOCIAl_CARD_BORDER_RADIUS = 12;
 
 export const getUpdatedReactions = (reactions: Reaction[], icon: string) => {
   const hasIcon = reactions.find((r) => r.icon === icon);
@@ -55,11 +53,14 @@ export const feedsTabItems: { [key: string]: TabDefinition } = {
   "": {
     name: "Jungle News Feed",
   },
-  music: {
-    name: "Music Feed",
+  map: {
+    name: "Map Feed",
   },
   pics: {
     name: "Pics Feed",
+  },
+  music: {
+    name: "Music Feed",
   },
   videos: {
     name: "Videos Feed",
@@ -94,6 +95,11 @@ export const postResultToPost = (
     postResult.metadata,
   );
 
+  const commonMetadata = zodTryParseJSON(
+    zodSocialFeedCommonMetadata,
+    postResult.metadata,
+  );
+
   const chainReactions = postResult.reactions;
   const postReactions: Reaction[] = chainReactions.map((reaction) => ({
     icon: reaction.icon,
@@ -104,7 +110,10 @@ export const postResultToPost = (
   const post: Post = {
     category: postResult.category,
     isDeleted: postResult.deleted,
+    id: getNetworkObjectId(networkId, postResult.identifier),
     identifier: postResult.identifier,
+    localIdentifier: postResult.identifier,
+    networkId,
     metadata: postResult.metadata,
     parentPostIdentifier: postResult.parent_post_identifier || "",
     subPostLength: postResult.sub_post_length,
@@ -112,6 +121,7 @@ export const postResultToPost = (
     authorId: getUserId(networkId, postResult.post_by),
     createdAt: metadata ? Date.parse(metadata.createdAt) / 1000 : 0,
     tipAmount: parseFloat(postResult.tip_amount),
+    premiumLevel: commonMetadata?.premium || 0,
   };
   if ("isInLocal" in postResult) {
     return { ...post, isInLocal: postResult.isInLocal } as PostExtra;

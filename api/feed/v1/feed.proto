@@ -5,6 +5,7 @@ option go_package = "./feedpb";
 
 service FeedService {
   rpc Posts(PostsRequest) returns (PostsResponse);
+  rpc PostsWithLocation(PostsWithLocationRequest) returns (PostsWithLocationResponse);
   rpc IPFSKey(IPFSKeyRequest) returns (IPFSKeyResponse);
 }
 
@@ -24,14 +25,18 @@ message Reaction {
 message Post {
   uint32 category = 1;
   bool is_deleted = 2;
-  string identifier = 3;
+  string identifier = 3 [deprecated=true]; // use local_identifier
   string metadata = 4;
   string parent_post_identifier = 5;
   uint32 sub_post_length = 6;
   string author_id = 7;
   int64 created_at = 8;
-  int64 tip_amount = 10;
   repeated Reaction reactions = 9;
+  int64 tip_amount = 10;
+  uint32 premium_level = 11;
+  string id = 12;
+  string local_identifier = 13;
+  string network_id = 14;
 }
 
 message PostFilter {
@@ -39,6 +44,9 @@ message PostFilter {
   repeated string mentions = 2;
   repeated uint32 categories = 3;
   repeated string hashtags = 4;
+  int32 premium_level_min = 5; // inclusive
+  int32 premium_level_max = 6; // inclusive, -1 means infinity
+  string network_id = 7;
 }
 
 message PostsRequest {
@@ -48,7 +56,28 @@ message PostsRequest {
     string query_user_id = 4;
 }
 
+message PostsWithLocationRequest {
+    float north = 1;
+    float south = 2;
+    float west = 3;
+    float east = 4;
+    repeated string hashtags = 5;
+    uint32 limit = 6;
+    string network_id = 7;
+}
+
+message AggregatedPost {
+  float lat = 1;
+  float long = 2;
+  int64 total_points = 3;
+}
 
 message PostsResponse {
     repeated Post posts = 1;
+}
+
+message PostsWithLocationResponse {
+    repeated Post posts = 1;
+    repeated AggregatedPost aggregated_posts = 2;
+    bool is_aggregated = 3;
 }

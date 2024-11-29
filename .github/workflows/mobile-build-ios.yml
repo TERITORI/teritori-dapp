@@ -1,0 +1,89 @@
+name: Build iOS App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  merge_group:
+
+jobs:
+  build-ios:
+    runs-on: macos-14
+    continue-on-error: true
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.12.1
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.22.8"
+
+      - name: Select xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.2.app
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: "yarn"
+          node-version-file: ".nvmrc"
+
+      - name: Fix package.json
+        run: yarn remove @lottiefiles/react-lottie-player
+
+      - name: Install node modules
+        run: yarn install
+
+      - name: Bump ios buildNumber
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: make bump-app-build-number
+
+      - name: Fix gitignore
+        run: npx tsx ./packages/scripts/app-build/fixGitignore.ts
+
+      - name: Restore wesh framework from cache if possible
+        uses: actions/cache@v4
+        with:
+          path: weshd/ios/Frameworks/WeshFramework.xcframework
+          key: cache_wesh-framework_ios_go1.19_macos-14_${{ hashFiles('weshd/**/*.go', 'weshd/go.mod', 'weshd/go.sum') }}
+
+      - name: Build ios weshframework
+        run: make check-ios-weshframework
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Expo prebuild
+        run: npx expo prebuild
+
+      - name: Fix privacy
+        run: npx tsx ./packages/scripts/app-build/createPrivacyInfo.ts
+
+      - name: Build ios
+        run: eas build --local --non-interactive --platform=ios
+
+      - name: Update IPA File path
+        run: |
+          IPA_FILE=$(find ./ -name 'build-*.ipa' -type f)
+          if [ -z "$IPA_FILE" ]; then
+            echo "Error: IPA file not found."
+            exit 1
+          fi
+          echo "IPA_FILE=$IPA_FILE" >> $GITHUB_ENV
+
+      - name: EAS Submit iOS IPA
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: eas submit --platform=ios --path=${{ env.IPA_FILE }}  --profile=production
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v3
+        with:
+          name: teritori-${{ github.sha }}.ipa
+          path: ${{ env.IPA_FILE }}
+          if-no-files-found: error

@@ -1,6 +1,7 @@
-import Lottie from "lottie-react";
 import * as React from "react";
 import { View, Modal } from "react-native";
+
+import { AnimatedLoader } from "./AnimatedLoader";
 
 export const LoaderFullScreen: React.FC<{ visible: boolean }> = ({
   visible,
@@ -23,20 +24,7 @@ export const LoaderFullSize: React.FC = () => {
         position: "absolute",
       }}
     >
-      <View
-        style={{
-          height: 80,
-          width: 80,
-          borderRadius: 999,
-          margin: "auto",
-        }}
-      >
-        <Lottie
-          animationData={require("./animation-full-screen.json")}
-          autoPlay
-          loop
-        />
-      </View>
+      <AnimatedLoader />
     </View>
   );
 };

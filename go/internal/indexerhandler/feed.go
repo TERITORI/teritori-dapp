@@ -8,6 +8,7 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+	"gorm.io/datatypes"
 )
 
 type Reaction struct {
@@ -66,7 +67,7 @@ func removeUserFromList(users []networks.UserID, user networks.UserID) []network
 	return res
 }
 
-func (h *Handler) handleExecuteDeletePost(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+func (h *Handler) handleExecuteDeletePost(_ *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	var execDeletePostMsg ExecDeletePostMsg
 	if err := json.Unmarshal(execMsg.Msg, &execDeletePostMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal execute delete post msg")
@@ -75,7 +76,7 @@ func (h *Handler) handleExecuteDeletePost(e *Message, execMsg *wasmtypes.MsgExec
 	deletePost := execDeletePostMsg.DeletePost
 
 	post := indexerdb.Post{}
-	if err := h.db.Where("identifier = ?", deletePost.Identifier).First(&post).Error; err != nil {
+	if err := h.db.Where("network_id = ? AND local_identifier = ?", h.config.Network.ID, deletePost.Identifier).First(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to get post to delete")
 	}
 
@@ -88,7 +89,7 @@ func (h *Handler) handleExecuteDeletePost(e *Message, execMsg *wasmtypes.MsgExec
 	return nil
 }
 
-func (h *Handler) handleExecuteReactPost(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+func (h *Handler) handleExecuteReactPost(_ *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	var execReactPostMsg ExecReactPostMsg
 	if err := json.Unmarshal(execMsg.Msg, &execReactPostMsg); err != nil {
 		return errors.Wrap(err, "failed to unmarshal execute react post msg")
@@ -97,11 +98,15 @@ func (h *Handler) handleExecuteReactPost(e *Message, execMsg *wasmtypes.MsgExecu
 	reactPost := execReactPostMsg.ReactPost
 
 	post := indexerdb.Post{}
-	if err := h.db.Where("identifier = ?", reactPost.Identifier).First(&post).Error; err != nil {
+	if err := h.db.Where("network_id = ? AND local_identifier = ?", h.config.Network.ID, reactPost.Identifier).First(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to get post to react")
 	}
 
-	userReactions := post.UserReactions
+	userReactions := make(map[string]interface{})
+	if err := json.Unmarshal(post.UserReactions, &userReactions); err != nil {
+		h.logger.Error("failed to unmarshal UserReactions", zap.String("data", string(post.UserReactions)), zap.Error(err))
+	}
+
 	var users []networks.UserID
 	reactedUsers, found := userReactions[reactPost.Icon]
 	if found {
@@ -127,7 +132,12 @@ func (h *Handler) handleExecuteReactPost(e *Message, execMsg *wasmtypes.MsgExecu
 		userReactions[reactPost.Icon] = users
 	}
 
-	post.UserReactions = userReactions
+	data, err := json.Marshal(userReactions)
+	if err != nil {
+		return errors.Wrap(err, "failed to marshal user reactions")
+	}
+
+	post.UserReactions = data
 
 	if err := h.db.Save(&post).Error; err != nil {
 		return errors.Wrap(err, "failed to update reactions")
@@ -165,9 +175,21 @@ func (h *Handler) createPost(
 	createPostMsg *CreatePostMsg,
 	isBot bool,
 ) error {
-	var metadataJSON map[string]interface{}
+	var metadataJSON map[string]json.RawMessage
 	if err := json.Unmarshal([]byte(createPostMsg.Metadata), &metadataJSON); err != nil {
-		return errors.Wrap(err, "failed to unmarshal metadata")
+		// We ignore this case because there's no validation for the data on the blockchain, and wrong data would stall the indexer if we returned an error.
+		h.logger.Info("ignored post with malformed metadada", zap.String("tx", e.TxHash), zap.String("contract", execMsg.Contract), zap.Error(err))
+		return nil
+	}
+
+	premium := uint32(0)
+	_ = json.Unmarshal(metadataJSON["premium"], &premium)
+
+	var lat, lng float64
+	location := []float64{}
+	if err := json.Unmarshal(metadataJSON["location"], &location); err == nil && len(location) >= 2 {
+		lat = location[0]
+		lng = location[1]
 	}
 
 	createdAt, err := e.GetBlockTime()
@@ -176,14 +198,20 @@ func (h *Handler) createPost(
 	}
 
 	post := indexerdb.Post{
-		Identifier:           createPostMsg.Identifier,
+		NetworkID:            h.config.Network.ID,
+		LocalIdentifier:      createPostMsg.Identifier,
 		ParentPostIdentifier: createPostMsg.ParentPostIdentifier,
 		Category:             createPostMsg.Category,
-		Metadata:             metadataJSON,
-		UserReactions:        map[string]interface{}{},
+		Metadata:             datatypes.JSON(createPostMsg.Metadata),
+		UserReactions:        datatypes.JSON([]byte("{}")),
 		AuthorId:             h.config.Network.UserID(execMsg.Sender),
 		CreatedAt:            createdAt.Unix(),
 		IsBot:                isBot,
+		PremiumLevel:         premium,
+		Lat:                  lat,
+		Lng:                  lng,
+		LatInt:               int(lat),
+		LngInt:               int(lng),
 	}
 
 	if err := h.db.Create(&post).Error; err != nil {
@@ -203,7 +231,8 @@ func (h *Handler) handleExecuteTipPost(e *Message, execMsg *wasmtypes.MsgExecute
 	}
 
 	post := indexerdb.Post{
-		Identifier: execTipPostMsg.TipPost.Identifier,
+		NetworkID:       h.config.Network.ID,
+		LocalIdentifier: execTipPostMsg.TipPost.Identifier,
 	}
 
 	if err := h.db.First(&post).Error; err != nil {
@@ -219,9 +248,10 @@ func (h *Handler) handleExecuteTipPost(e *Message, execMsg *wasmtypes.MsgExecute
 
 	// complete social_feed_tip_content_creator quest
 	if err := h.db.Save(&indexerdb.QuestCompletion{
-		UserID:    h.config.Network.UserID(execMsg.Sender),
-		QuestID:   "social_feed_tip_content_creator",
-		Completed: true,
+		UserID:         h.config.Network.UserID(execMsg.Sender),
+		QuestID:        "social_feed_tip_content_creator",
+		Completed:      true,
+		QuestNetworkID: h.config.Network.ID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save social_feed_tip_content_creator quest completion")
 	}
@@ -232,7 +262,7 @@ func (h *Handler) handleQuests(
 	execMsg *wasmtypes.MsgExecuteContract,
 	createPostMsg *CreatePostMsg,
 ) error {
-	questId := "unknown"
+	var questId string
 	switch createPostMsg.Category {
 	case 1:
 		questId = "social_feed_first_comment"
@@ -254,9 +284,10 @@ func (h *Handler) handleQuests(
 
 	if questId != "unknown" {
 		if err := h.db.Save(&indexerdb.QuestCompletion{
-			UserID:    h.config.Network.UserID(execMsg.Sender),
-			QuestID:   questId,
-			Completed: true,
+			UserID:         h.config.Network.UserID(execMsg.Sender),
+			QuestID:        questId,
+			Completed:      true,
+			QuestNetworkID: h.config.Network.ID,
 		}).Error; err != nil {
 			return errors.Wrap(err, "failed to save quest completion")
 		}

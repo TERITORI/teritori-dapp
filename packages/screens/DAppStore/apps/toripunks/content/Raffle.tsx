@@ -7,7 +7,7 @@ export const Raffle = () => {
   const { isMinimunWindowWidth } = useContentContext();
   return (
     <View
-      // @ts-expect-error
+      // @ts-expect-error: description todo
       style={{
         height: isMinimunWindowWidth ? "56vh" : "40vh",
         justifyContent: "center",

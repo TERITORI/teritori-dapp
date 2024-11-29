@@ -2,12 +2,17 @@ import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 
 import { mustGetGnoNetwork } from "../networks";
 
-interface AdenaDoContractMessage {
+export enum AdenaDoContractMessageType {
+  CALL = "/vm.m_call",
+  ADD_PKG = "/vm.m_addpkg",
+}
+
+export interface AdenaDoContractMessage {
   type: string;
   value: { [key in string]: any };
 }
 
-interface RequestDocontractMessage {
+export interface RequestDocontractMessage {
   messages: AdenaDoContractMessage[];
   gasFee: number;
   gasWanted: number;
@@ -72,20 +77,20 @@ export const adenaVMCall = async (
 ) => {
   await adenaDoContract(
     networkId,
-    [{ type: "/vm.m_call", value: vmCall }],
+    [{ type: AdenaDoContractMessageType.CALL, value: vmCall }],
     opts,
   );
 };
 
 interface Package {
-  Name: string;
-  Path: string;
-  Files: PackageFile[];
+  name: string;
+  path: string;
+  files: PackageFile[];
 }
 
 interface PackageFile {
-  Name: string;
-  Body: string;
+  name: string;
+  body: string;
 }
 
 interface VmAddPackage {
@@ -101,7 +106,7 @@ export const adenaAddPkg = async (
 ) => {
   await adenaDoContract(
     networkId,
-    [{ type: "/vm.m_addpkg", value: vmAddPackage }],
+    [{ type: AdenaDoContractMessageType.ADD_PKG, value: vmAddPackage }],
     {
       ...opts,
     },

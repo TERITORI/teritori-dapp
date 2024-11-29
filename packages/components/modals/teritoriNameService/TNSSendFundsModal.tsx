@@ -10,7 +10,6 @@ import { TeritoriNameServiceQueryClient } from "../../../contracts-clients/terit
 import { useBalances } from "../../../hooks/useBalances";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import {
-  getKeplrSigningStargateClient,
   mustGetNonSigningCosmWasmClient,
   mustGetCosmosNetwork,
   getStakingCurrency,
@@ -23,6 +22,8 @@ import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { TextInputCustom } from "../../inputs/TextInputCustom";
 import ModalBase from "../ModalBase";
 
+import { getKeplrSigningStargateClient } from "@/networks/signer";
+
 export const TNSSendFundsModal: React.FC<{
   onClose: () => void;
   isVisible: boolean;
@@ -34,7 +35,7 @@ export const TNSSendFundsModal: React.FC<{
   const networkId = selectedWallet?.networkId;
   const nativeCurrency = getStakingCurrency(networkId);
   const { setToastError, setToastSuccess } = useFeedbacks();
-  const balances = useBalances(networkId, selectedWallet?.address);
+  const { balances } = useBalances(networkId, selectedWallet?.address);
   const currencyBalance = balances.find(
     (bal) => bal.denom === nativeCurrency?.denom,
   );

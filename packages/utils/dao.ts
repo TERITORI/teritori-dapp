@@ -2,14 +2,12 @@ import {
   ExecuteResult,
   SigningCosmWasmClient,
 } from "@cosmjs/cosmwasm-stargate";
-import { StdFee, Coin } from "@cosmjs/stargate";
+import { Coin, StdFee } from "@cosmjs/stargate";
+import { Buffer } from "buffer";
 
-import { TeritoriNameServiceClient } from "../contracts-clients/teritori-name-service/TeritoriNameService.client";
-import {
-  mustGetCosmosNetwork,
-  getKeplrSigningCosmWasmClient,
-  getStakingCurrency,
-} from "../networks";
+import { TeritoriNameServiceClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
+import { getStakingCurrency, mustGetCosmosNetwork } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 
 interface TokenHolder {
   address: string;
@@ -18,6 +16,26 @@ interface TokenHolder {
 interface DaoMember {
   addr: string;
   weight: number;
+}
+
+export interface CreateDaoMemberBasedParams {
+  networkId: string;
+  sender: string;
+  contractAddress: string;
+  daoCoreCodeId: number;
+  daoPreProposeSingleCodeId: number;
+  daoProposalSingleCodeId: number;
+  cw4GroupCodeId: number;
+  daoVotingCw4CodeId: number;
+  name: string;
+  description: string;
+  tns: string;
+  imageUrl: string;
+  members: DaoMember[];
+  quorum: string;
+  maxVotingPeriod: number;
+  threshold: string;
+  onStepChange?: (step: number) => Promise<void> | void;
 }
 
 export const createDaoTokenBased = async (
@@ -175,7 +193,7 @@ export const createDaoMemberBased = async (
     daoCoreCodeId,
     daoPreProposeSingleCodeId,
     daoProposalSingleCodeId,
-    daoCw4GroupCodeId,
+    cw4GroupCodeId,
     daoVotingCw4CodeId,
     name,
     description,
@@ -186,25 +204,7 @@ export const createDaoMemberBased = async (
     threshold,
     maxVotingPeriod,
     onStepChange,
-  }: {
-    networkId: string;
-    sender: string;
-    contractAddress: string;
-    daoCoreCodeId: number;
-    daoPreProposeSingleCodeId: number;
-    daoProposalSingleCodeId: number;
-    daoCw4GroupCodeId: number;
-    daoVotingCw4CodeId: number;
-    name: string;
-    description: string;
-    tns: string;
-    imageUrl: string;
-    members: DaoMember[];
-    quorum: string;
-    maxVotingPeriod: number;
-    threshold: string;
-    onStepChange?: (step: number) => Promise<void> | void;
-  },
+  }: CreateDaoMemberBasedParams,
   fee: number | StdFee | "auto" = "auto",
   memo?: string,
   funds?: Coin[],
@@ -257,7 +257,7 @@ export const createDaoMemberBased = async (
   ];
 
   const dao_voting_cw4_msg = {
-    cw4_group_code_id: daoCw4GroupCodeId,
+    cw4_group_code_id: cw4GroupCodeId,
     initial_members: members,
   };
 

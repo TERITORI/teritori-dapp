@@ -1,14 +1,16 @@
 import React, { useMemo, useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { Avatar } from "react-native-paper";
 
-import { BrandText } from "../../../components/BrandText";
 import FlexRow from "../../../components/FlexRow";
-import { SpacerColumn, SpacerRow } from "../../../components/spacer";
-import { neutral77, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { CheckboxDappStore } from "../../DAppStore/components/CheckboxDappStore";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { neutral77, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+
 export interface CheckboxItem {
   id: string;
   name: string;
@@ -53,19 +55,19 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
   searchText,
 }) => {
   const [checkboxItems, setCheckboxItems] = useState<CheckboxItem[]>(items);
-  const handleCheckboxPress = (index: number) => {
-    const newItems = [...checkboxItems];
-    newItems[index].checked = !newItems[index].checked;
+  const handleCheckboxPress = (id: string) => {
+    const newItems = checkboxItems;
+    const itemIndex = newItems.findIndex((item) => item.id === id);
+
+    newItems[itemIndex].checked = !newItems[itemIndex].checked;
     setCheckboxItems(newItems);
     onChange(newItems);
   };
 
   const searchItems = useMemo(() => {
-    return checkboxItems
-      .filter((item) =>
-        item.name.toLowerCase().includes(searchText.toLowerCase()),
-      )
-      .filter((item) => !item.checked);
+    return checkboxItems.filter((item) =>
+      item.name.toLowerCase().includes(searchText.toLowerCase()),
+    );
   }, [searchText, checkboxItems]);
 
   return (
@@ -82,22 +84,22 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
           </BrandText>
         </View>
       )}
-      {checkboxItems
-        .filter((item) => item.checked)
-        .map((item, index) => (
+      {!searchText.length &&
+        checkboxItems.map((item, index) => (
           <Checkbox
-            key={index}
+            key={item.id}
             item={item}
-            onPress={() => handleCheckboxPress(index)}
+            onPress={() => handleCheckboxPress(item.id)}
           />
         ))}
-      {searchItems.map((item, index) => (
-        <Checkbox
-          key={index}
-          item={item}
-          onPress={() => handleCheckboxPress(index)}
-        />
-      ))}
+      {!!searchText.length &&
+        searchItems.map((item, index) => (
+          <Checkbox
+            key={item.id}
+            item={item}
+            onPress={() => handleCheckboxPress(item.id)}
+          />
+        ))}
     </View>
   );
 };

@@ -1,26 +1,27 @@
 import React from "react";
-import { Switch, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import { useCommonStyles } from "./commonStyles";
-import { BrandText } from "../../../components/BrandText";
-import {
-  neutral55,
-  neutralA3,
-  primaryColor,
-  secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
 import { SettingItemType } from "../types";
+
+import { BrandText } from "@/components/BrandText";
+import ToggleButton from "@/components/buttons/ToggleButton";
+import { fontSemibold14 } from "@/utils/style/fonts";
 
 export const SettingItem: React.FC<{
   item: SettingItemType;
   onPress: (item: SettingItemType) => void;
   disabled?: boolean;
-}> = ({ item, onPress, disabled }) => {
+  testID?: string;
+}> = ({ item, onPress, disabled, testID }) => {
   const commonStyles = useCommonStyles();
 
   return (
-    <TouchableOpacity onPress={() => onPress(item)} disabled={disabled}>
+    <TouchableOpacity
+      onPress={() => onPress(item)}
+      disabled={disabled}
+      testID={testID}
+    >
       <View style={commonStyles.switchBox}>
         <View>
           <BrandText style={[fontSemibold14]}>{item.title}</BrandText>
@@ -30,13 +31,7 @@ export const SettingItem: React.FC<{
             </BrandText>
           ) : null}
         </View>
-        <Switch
-          // @ts-expect-error
-          activeThumbColor={primaryColor}
-          thumbColor={item.state ? primaryColor : neutral55}
-          trackColor={{ true: secondaryColor, false: neutralA3 }}
-          value={item.state}
-        />
+        <ToggleButton value={item.state} />
       </View>
     </TouchableOpacity>
   );

@@ -1,27 +1,30 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
+  ActivityIndicator,
+  Animated,
   Pressable,
   StyleSheet,
   View,
-  ActivityIndicator,
-  Animated,
 } from "react-native";
 
 import checkCircleSVG from "../../../../assets/icons/check-circle.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { SpacerColumn } from "../../../components/spacer";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SpacerColumn } from "@/components/spacer";
 import {
   neutral33,
   neutral77,
   neutralA3,
   primaryColor,
   secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold12, fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { LAUNCHING_PROCESS_STEPS } from "../OrganizationDeployerScreen";
-import { LaunchingProcessStepType } from "../types";
+} from "@/utils/style/colors";
+import { fontSemibold12, fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import {
+  LAUNCHING_PROCESS_STEPS,
+  LaunchingProcessStepType,
+} from "@/utils/types/organizations";
 
 interface RightSectionProps {
   steps: string[];

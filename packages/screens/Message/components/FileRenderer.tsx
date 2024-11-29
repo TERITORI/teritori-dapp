@@ -2,9 +2,9 @@ import React, { useMemo } from "react";
 import { View } from "react-native";
 import { z } from "zod";
 
-import { ImagesViews } from "../../../components/FilePreview/ImagesViews";
-import { VideoView } from "../../../components/FilePreview/VideoView";
-import { ZodRemoteFileData } from "../../../utils/types/files";
+import { ImagesViews } from "@/components/FilePreview/ImagesViews";
+import { VideoView } from "@/components/FilePreview/VideoView";
+import { ZodRemoteFileData } from "@/utils/types/files";
 
 interface Props {
   files: z.infer<typeof ZodRemoteFileData>[];
@@ -33,9 +33,7 @@ export const FileRenderer = ({ files, maxWidth, waveFormMaxWidth }: Props) => {
     <View style={{ width: maxWidth || "100%" }}>
       {!!imageFiles?.length && <ImagesViews files={imageFiles || []} />}
 
-      {videoFiles?.map((file, index) => (
-        <VideoView key={index} file={file} authorId="" />
-      ))}
+      {videoFiles?.map((file, index) => <VideoView key={index} file={file} />)}
     </View>
   );
 };

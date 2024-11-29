@@ -31,7 +31,7 @@ const main = async () => {
       all["interfaceQueryError"] = new Error(
         "query should have failed",
       ).toString();
-    } catch (err) {
+    } catch (err: any) {
       if (err instanceof Error) {
         const message = err.message;
         let match = message.match(/expected one of (.+?):/);
@@ -70,12 +70,12 @@ const main = async () => {
           [test]: {},
         });
         all.results[test] = res;
-      } catch (err) {
-        all.queriesErrors.push(`${err}`);
+      } catch (err: any) {
+        all.queriesErrors.push(err.toString());
       }
     }
-  } catch (err) {
-    all["error"] = `${err}`;
+  } catch (err: any) {
+    all["error"] = err.toString();
   }
   console.log(JSON.stringify(all, null, 4));
 };

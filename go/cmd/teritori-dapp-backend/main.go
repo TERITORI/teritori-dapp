@@ -112,14 +112,16 @@ func main() {
 	}
 
 	p2eSvc := p2e.NewP2eService(context.Background(), &p2e.Config{
-		Logger:    logger,
-		IndexerDB: indexerDB,
+		Logger:       logger,
+		IndexerDB:    indexerDB,
+		NetworkStore: netstore,
 	})
 
 	feedSvc := feed.NewFeedService(context.Background(), &feed.Config{
 		Logger:    logger,
 		IndexerDB: indexerDB,
 		PinataJWT: *pinataJWT,
+		Networks:  netstore,
 	})
 
 	daoSvc := dao.NewDAOService(context.Background(), &dao.Config{

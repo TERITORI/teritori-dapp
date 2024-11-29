@@ -4,10 +4,9 @@ import { View } from "react-native";
 import { Post } from "../../../api/feed/v1/feed";
 import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useGetBanPostProposals } from "../../../hooks/feed/useBanPostProposals";
-import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
-import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { NetworkKind, parseUserId } from "../../../networks";
+import { NetworkKind, getNetwork } from "../../../networks";
+import { TERITORI_FEED_ID } from "../../../utils/feed/constants";
 import { adenaVMCall } from "../../../utils/gno";
 import {
   GnoBanPostMessage,
@@ -20,18 +19,17 @@ import {
 } from "../../../utils/style/colors";
 import { fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
-import { tinyAddress } from "../../../utils/text";
 import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
-import { OmniLink } from "../../OmniLink";
 import { AnimationFadeIn } from "../../animations/AnimationFadeIn";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import { SecondaryButton } from "../../buttons/SecondaryButton";
 import { SpacerColumn, SpacerRow } from "../../spacer";
-import { TERITORI_FEED_ID } from "../const";
 import { FlagConfirmModal } from "../modals/FlagConfirmModal";
 import { FlagConfirmedModal } from "../modals/FlagConfirmedModal";
 import { FlagDetailsModal } from "../modals/FlagDetailsModal";
+
+import { Username } from "@/components/user/Username";
 
 // ====== Handle moderation, proposals, governance
 export const SocialCardWrapper: FC<{
@@ -55,21 +53,19 @@ export const SocialCardWrapper: FC<{
 
   const { setToastError, setToastSuccess } = useFeedbacks();
   const wallet = useSelectedWallet();
-  const selectedNetworkInfo = useSelectedNetworkInfo();
-  const selectedNetworkId = selectedNetworkInfo?.id || "";
-  const authorNSInfo = useNSUserInfo(localPost.authorId);
-  const [, authorAddress] = parseUserId(localPost.authorId);
+  const networkId = post.networkId;
+  const postNetwork = getNetwork(networkId);
   const {
     banPostProposals,
     isLoading: isLoadingProposals,
     refetch: refetchProposals,
-  } = useGetBanPostProposals(selectedNetworkId);
+  } = useGetBanPostProposals(networkId);
   const [isSendingProposal, setIsSendingProposal] = useState(false);
   const [isExecutingProposal, setIsExecutingProposal] = useState(false);
 
   const banPostProposalTitle = useMemo(() => {
-    return `Ban Post: ${post.identifier}`;
-  }, [post.identifier]);
+    return `Ban Post: ${post.localIdentifier}`;
+  }, [post.localIdentifier]);
 
   const proposal = useMemo(() => {
     return banPostProposals.find((p: any) => p.title === banPostProposalTitle); // FIXME: this is not secure, people can create proposals with arbitrary titles
@@ -79,15 +75,10 @@ export const SocialCardWrapper: FC<{
     return proposal?.id !== undefined ? String(proposal.id) : "";
   }, [proposal]);
 
-  //TODO: Handle this later
-  // const communityHashtag = useMemo(() => {
-  //   return getCommunityHashtag(metadata?.hashtags || []);
-  // }, [metadata]);
-
   const executeProposal = async () => {
     if (
-      selectedNetworkInfo?.kind !== NetworkKind.Gno ||
-      !selectedNetworkInfo.socialFeedsDAOPkgPath
+      postNetwork?.kind !== NetworkKind.Gno ||
+      !postNetwork.socialFeedsDAOPkgPath
     ) {
       throw new Error("invalid network");
     }
@@ -102,9 +93,9 @@ export const SocialCardWrapper: FC<{
       const moduleIndex = "0";
 
       await adenaVMCall(
-        selectedNetworkInfo.id,
+        postNetwork.id,
         {
-          pkg_path: selectedNetworkInfo.socialFeedsDAOPkgPath,
+          pkg_path: postNetwork.socialFeedsDAOPkgPath,
           func: "Execute",
           caller: wallet.address,
           send: "",
@@ -132,8 +123,8 @@ export const SocialCardWrapper: FC<{
 
   const proposeToBan = async () => {
     if (
-      selectedNetworkInfo?.kind !== NetworkKind.Gno ||
-      !selectedNetworkInfo.socialFeedsDAOPkgPath
+      postNetwork?.kind !== NetworkKind.Gno ||
+      !postNetwork.socialFeedsDAOPkgPath
     ) {
       throw new Error("invalid network");
     }
@@ -146,11 +137,11 @@ export const SocialCardWrapper: FC<{
 
     try {
       const msg: GnoBanPostMessage = {
-        type: "gno.land/r/demo/teritori/social_feeds.BanPost",
+        type: "gno.land/r/teritori/social_feeds.BanPost",
         payload: {
           feedId: +TERITORI_FEED_ID,
-          postId: +localPost.identifier,
-          reason: `Flag the post: ${localPost.identifier}`,
+          postId: +localPost.localIdentifier,
+          reason: `Flag the post: ${localPost.localIdentifier}`,
         },
       };
       const propReq: GnoSingleChoiceProposal = {
@@ -159,9 +150,9 @@ export const SocialCardWrapper: FC<{
         messages: [msg],
       };
       await adenaVMCall(
-        selectedNetworkInfo.id,
+        postNetwork.id,
         {
-          pkg_path: selectedNetworkInfo.socialFeedsDAOPkgPath,
+          pkg_path: postNetwork.socialFeedsDAOPkgPath,
           func: "ProposeJSON",
           caller: wallet.address,
           send: "",
@@ -206,22 +197,12 @@ export const SocialCardWrapper: FC<{
 
           <SpacerRow size={1} />
 
-          <OmniLink
-            to={{
-              screen: "UserPublicProfile",
-              params: { id: localPost.authorId },
-            }}
-          >
-            <BrandText
-              style={[fontSemibold14, { color: secondaryColor }]}
-              numberOfLines={1}
-            >
-              @
-              {authorNSInfo?.metadata?.tokenId
-                ? authorNSInfo?.metadata.tokenId
-                : tinyAddress(authorAddress, 19)}
-            </BrandText>
-          </OmniLink>
+          <Username
+            userId={post.authorId}
+            textStyle={fontSemibold14}
+            namedColor={secondaryColor}
+            anonColor={secondaryColor}
+          />
         </FlexRow>
       )}
 
@@ -297,7 +278,7 @@ export const SocialCardWrapper: FC<{
       />
 
       <FlagDetailsModal
-        networkId={selectedNetworkId}
+        networkId={networkId}
         proposalId={proposalId}
         onClose={() => {
           setIsShowFlagDetailsModal(false);

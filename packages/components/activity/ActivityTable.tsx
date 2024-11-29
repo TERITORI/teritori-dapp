@@ -10,51 +10,63 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseActivityId, parseUserId, txExplorerLink } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import {
-  mineShaftColor,
   primaryColor,
   reefColor,
   neutral77,
+  errorColor,
 } from "../../utils/style/colors";
-import { fontMedium14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
-import { BrandText } from "../BrandText";
+import { layout, screenContentMaxWidthLarge } from "../../utils/style/layout";
 import { ExternalLink } from "../ExternalLink";
-import { Pagination } from "../Pagination";
-import { SpacerColumn } from "../spacer";
-import { TableRowHeading, TableRow } from "../table/TableRow";
+import { SpacerRow } from "../spacer";
 
-const TABLE_ROWS: { [key: string]: TableRowHeading } = {
+import { TableCell } from "@/components/table/TableCell";
+import { TableHeader } from "@/components/table/TableHeader";
+import { TableRow } from "@/components/table/TableRow";
+import { CellBrandText, TableTextCell } from "@/components/table/TableTextCell";
+import { TableWrapper } from "@/components/table/TableWrapper";
+import { tableCellTextStyle, TableColumns } from "@/components/table/utils";
+import { prettyNumber } from "@/utils/numbers";
+import { tinyAddress } from "@/utils/text";
+
+const columns: TableColumns = {
   transactionId: {
     label: "Transaction ID",
-    flex: 3,
+    flex: 0.65,
+    minWidth: 110,
   },
   transactionType: {
-    label: "Transaction type",
-    flex: 3,
+    label: "Type",
+    flex: 0.65,
+    minWidth: 140,
   },
   time: {
     label: "Time",
-    flex: 3,
+    flex: 0.65,
+    minWidth: 100,
   },
   totalAmount: {
     label: "Total amount",
-    flex: 3,
+    flex: 1.5,
+    minWidth: 180,
   },
   buyer: {
     label: "Buyer",
-    flex: 3,
+    flex: 1.25,
+    minWidth: 140,
   },
   seller: {
     label: "Seller",
-    flex: 3,
+    flex: 1.25,
+    minWidth: 140,
   },
 };
+
+const breakpointM = 800;
 
 export const ActivityTable: React.FC<{
   nftId?: string;
   collectionId?: string;
 }> = ({ nftId, collectionId }) => {
-  const isMobile = useIsMobile();
   const [itemsPerPage, setItemsPerPage] = useState(50);
   const [pageIndex, setPageIndex] = useState(0);
   const { total, activities } = useActivity({
@@ -63,136 +75,142 @@ export const ActivityTable: React.FC<{
     offset: pageIndex * itemsPerPage,
     limit: itemsPerPage,
   });
-  if (isMobile) {
-    return null;
-  }
   const maxPage = Math.max(Math.ceil(total / itemsPerPage), 1);
+
   return (
     <View
       style={{
-        justifyContent: "space-between",
         width: "100%",
+        maxWidth: screenContentMaxWidthLarge,
       }}
     >
-      <TableRow headings={Object.values(TABLE_ROWS)} />
-      <FlatList
-        data={activities}
-        renderItem={({ item }) => <ActivityRow activity={item} />}
-        keyExtractor={(item) => item.id}
-        style={{
-          minHeight: 248,
-          borderTopColor: mineShaftColor,
-          borderTopWidth: 1,
+      <TableWrapper
+        showPagination
+        paginationProps={{
+          currentPage: pageIndex,
+          maxPage,
+          itemsPerPage,
+          nbItemsOptions: [50, 100, 200],
+          setItemsPerPage,
+          onChangePage: setPageIndex,
         }}
-      />
-      <SpacerColumn size={2} />
-      <Pagination
-        currentPage={pageIndex}
-        maxPage={maxPage}
-        itemsPerPage={itemsPerPage}
-        dropdownOptions={[50, 100, 200]}
-        setItemsPerPage={setItemsPerPage}
-        onChangePage={setPageIndex}
-      />
-      <SpacerColumn size={2} />
+        horizontalScrollBreakpoint={breakpointM}
+      >
+        <TableHeader columns={columns} />
+        <FlatList
+          data={activities}
+          renderItem={({ item }) => <ActivityTableRow activity={item} />}
+          keyExtractor={(item) => item.id}
+        />
+      </TableWrapper>
     </View>
   );
 };
 
-const ActivityRow: React.FC<{ activity: Activity }> = ({ activity }) => {
+const ActivityTableRow: React.FC<{
+  activity: Activity;
+}> = ({ activity }) => {
+  const isMobile = useIsMobile();
   const [network, txHash] = parseActivityId(activity.id);
   const [, buyerAddress] = parseUserId(activity.buyerId);
   const [, sellerAddress] = parseUserId(activity.sellerId);
   const buyerInfo = useNSUserInfo(activity.buyerId);
   const sellerInfo = useNSUserInfo(activity.sellerId);
+  const hasAmount = !!(activity.amount && activity.amount !== "0");
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        width: "100%",
-        borderColor: mineShaftColor,
-        borderBottomWidth: 1,
-        paddingVertical: layout.spacing_x2,
-        paddingHorizontal: layout.spacing_x2_5,
-      }}
-    >
-      <View
+    <TableRow>
+      <TableCell
         style={{
-          flex: TABLE_ROWS.transactionId.flex,
-          paddingRight: layout.spacing_x1,
+          minWidth: columns.transactionId.minWidth,
+          flex: columns.transactionId.flex,
         }}
       >
         <ExternalLink
           externalUrl={txExplorerLink(network?.id, txHash)}
-          style={[fontMedium14, { width: "100%" }]}
+          style={[tableCellTextStyle, { width: "100%" }]}
           ellipsizeMode="middle"
           numberOfLines={1}
         >
-          {txHash}
+          {tinyAddress(txHash, 12)}
         </ExternalLink>
-      </View>
-      <BrandText
+      </TableCell>
+
+      <TableTextCell
         style={[
-          fontMedium14,
           {
-            flex: TABLE_ROWS.transactionType.flex,
-            paddingRight: layout.spacing_x1,
+            minWidth: columns.transactionType.minWidth,
+            flex: columns.transactionType.flex,
           },
-          activityNameStyle(activity.transactionKind),
         ]}
+        textStyle={activityNameStyle(activity.transactionKind)}
       >
         {prettyActivityName(activity.transactionKind)}
-      </BrandText>
-      <BrandText
+      </TableTextCell>
+
+      <TableTextCell
         style={[
-          fontMedium14,
-          { flex: TABLE_ROWS.time.flex, paddingRight: layout.spacing_x1 },
+          {
+            minWidth: columns.time.minWidth,
+            flex: columns.time.flex,
+          },
         ]}
       >
         {moment(activity.time).fromNow()}
-      </BrandText>
-      <BrandText
-        style={[
-          fontMedium14,
-          {
-            flex: TABLE_ROWS.totalAmount.flex,
-            paddingRight: layout.spacing_x1,
-          },
-        ]}
+      </TableTextCell>
+
+      <TableCell
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          minWidth: columns.totalAmount.minWidth,
+          flex: columns.totalAmount.flex,
+          marginRight: isMobile ? layout.spacing_x1 : layout.spacing_x1_5,
+        }}
       >
-        {!!activity.amount &&
-          prettyPrice(network?.id || "", activity.amount, activity.denom)}
-      </BrandText>
-      <View
-        style={{ flex: TABLE_ROWS.buyer.flex, paddingRight: layout.spacing_x1 }}
+        <CellBrandText>
+          {hasAmount
+            ? `${prettyPrice(network?.id || "", activity.amount, activity.denom)}`
+            : ""}
+        </CellBrandText>
+        <SpacerRow size={1} />
+        <CellBrandText style={{ color: neutral77 }}>
+          {hasAmount ? "$" + prettyNumber(activity.usdPrice, 2) : ""}
+        </CellBrandText>
+      </TableCell>
+
+      <TableCell
+        style={{
+          minWidth: columns.buyer.minWidth,
+          flex: columns.buyer.flex,
+        }}
       >
         <Link
           to={`/user/${activity.buyerId}`}
-          style={[fontMedium14, { color: primaryColor }]}
+          style={[tableCellTextStyle, { color: primaryColor }]}
           numberOfLines={1}
           ellipsizeMode="middle"
         >
-          {buyerInfo.metadata?.tokenId || buyerAddress}
+          {buyerInfo.metadata?.tokenId || tinyAddress(buyerAddress, 18)}
         </Link>
-      </View>
-      <View
+      </TableCell>
+
+      <TableCell
         style={{
-          flex: TABLE_ROWS.seller.flex,
+          minWidth: columns.seller.minWidth,
+          flex: columns.seller.flex,
         }}
       >
         <Link
           to={`/user/${activity.sellerId}`}
-          style={[fontMedium14, { color: primaryColor }]}
+          style={[tableCellTextStyle, { color: primaryColor }]}
           numberOfLines={1}
           ellipsizeMode="middle"
         >
-          {sellerInfo.metadata?.tokenId || sellerAddress}
+          {sellerInfo.metadata?.tokenId || tinyAddress(sellerAddress, 18)}
         </Link>
-      </View>
-    </View>
+      </TableCell>
+    </TableRow>
   );
 };
 
@@ -221,6 +239,14 @@ const prettyActivityName = (kind: string) => {
 
 const activityNameStyle = (kind: string): TextStyle => {
   switch (kind) {
+    case "burn":
+      return {
+        color: errorColor,
+      };
+    case "mint":
+      return {
+        color: primaryColor,
+      };
     case "trade":
       return {
         color: reefColor,

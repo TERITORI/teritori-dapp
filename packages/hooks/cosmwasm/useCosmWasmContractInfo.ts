@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { bech32 } from "bech32";
 
-import { ContractVersion } from "../../contracts-clients/dao-core/DaoCore.types";
+import { ContractVersion } from "@/contracts-clients/dao-core/DaoCore.types";
 import {
   getNetwork,
   mustGetNonSigningCosmWasmClient,
   NetworkKind,
   parseUserId,
-} from "../../networks";
+} from "@/networks";
 
 const useCosmWasmContractVersion = (
   networkId: string | undefined,
@@ -26,8 +26,18 @@ const useCosmWasmContractVersion = (
       }
 
       const client = await mustGetNonSigningCosmWasmClient(networkId);
-      const { info } = await client.queryContractSmart(address, { info: {} });
-      return info as ContractVersion;
+      try {
+        const { info } = await client.queryContractSmart(address, { info: {} });
+        return info as ContractVersion;
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error.message.includes("no such contract")
+        ) {
+          return null;
+        }
+        throw error;
+      }
     },
     { staleTime: Infinity },
   );

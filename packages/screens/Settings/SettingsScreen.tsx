@@ -9,28 +9,31 @@ import { SettingItem } from "./components/SettingItem";
 import { useCommonStyles } from "./components/commonStyles";
 import { SettingItemType } from "./types";
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { CustomPressable } from "../../components/buttons/CustomPressable";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
-import { TertiaryButton } from "../../components/buttons/TertiaryButton";
 import ModalBase from "../../components/modals/ModalBase";
-import { NetworksListModal } from "../../components/modals/NetworksListModal";
-import { SpacerColumn } from "../../components/spacer";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { TertiaryButton } from "@/components/buttons/TertiaryButton";
+import { NetworksListModal } from "@/components/modals/NetworksListModal";
+import { SpacerColumn } from "@/components/spacer";
+import { useAppConfig } from "@/context/AppConfigProvider";
+import { useAreTestnetsEnabled } from "@/hooks/useAreTestnetsEnabled";
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
+import { useIsKeplrConnected } from "@/hooks/useIsKeplrConnected";
 import {
-  selectAreTestnetsEnabled,
   selectIsLightTheme,
   selectNFTStorageAPI,
   setAreTestnetsEnabled,
   setIsLightTheme,
   setNFTStorageAPI,
-} from "../../store/slices/settings";
-import { RootState, useAppDispatch } from "../../store/store";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-import { neutralA3, primaryColor } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
+} from "@/store/slices/settings";
+import { RootState, useAppDispatch } from "@/store/store";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
+import { neutralA3, primaryColor } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
 
 const NFTAPIKeyInput: React.FC = () => {
   const userIPFSKey = useSelector(selectNFTStorageAPI);
@@ -75,51 +78,58 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
   const navigation = useAppNavigation();
   const commonStyles = useCommonStyles();
   const isKeplrConnected = useIsKeplrConnected();
-  const testnetEnabled = useSelector(selectAreTestnetsEnabled);
+  const testnetEnabled = useAreTestnetsEnabled();
   const dispatch = useAppDispatch();
   const [networksModalVisible, setNetworksModalVisible] = React.useState(false);
   const isLightTheme = useSelector(selectIsLightTheme);
+  const [developerMode, setDeveloperMode] = useDeveloperMode();
+  const appConfig = useAppConfig();
 
   return (
     <ScreenContainer>
       <View style={commonStyles.pageContainer}>
-        <View style={commonStyles.cardContainer}>
-          <SettingItem
-            onPress={(item: SettingItemType) => {
-              dispatch(setAreTestnetsEnabled(!item.state));
-            }}
-            item={{
-              title: "Display all Testnet Networks",
-              description: "",
-              state: testnetEnabled,
-            }}
-          />
-        </View>
+        {!appConfig.forceNetworkList && (
+          <>
+            <View style={commonStyles.cardContainer}>
+              <SettingItem
+                onPress={(item: SettingItemType) => {
+                  dispatch(setAreTestnetsEnabled(!item.state));
+                }}
+                item={{
+                  title: "Display all Testnet Networks",
+                  description: "",
+                  state: testnetEnabled,
+                }}
+                testID="testnet-switch"
+              />
+            </View>
 
-        <SpacerColumn size={3} />
+            <SpacerColumn size={3} />
 
-        <TertiaryButton
-          text="Manage Networks"
-          size="M"
-          onPress={() => {
-            setNetworksModalVisible(true);
-          }}
-          fullWidth
-        />
-        <NetworksListModal
-          isVisible={networksModalVisible}
-          onClose={() => {
-            setNetworksModalVisible(false);
-          }}
-        />
+            <TertiaryButton
+              text="Manage Networks"
+              size="M"
+              onPress={() => {
+                setNetworksModalVisible(true);
+              }}
+              fullWidth
+            />
+            <NetworksListModal
+              isVisible={networksModalVisible}
+              onClose={() => {
+                setNetworksModalVisible(false);
+              }}
+            />
 
-        <SpacerColumn size={3} />
+            <SpacerColumn size={3} />
+          </>
+        )}
 
         <NFTAPIKeyInput />
 
         <Notifications />
 
-        <SpacerColumn size={4} />
+        <SpacerColumn size={3} />
 
         <View style={commonStyles.cardContainer}>
           <TouchableOpacity
@@ -141,7 +151,7 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
           </TouchableOpacity>
         </View>
 
-        <SpacerColumn size={4} />
+        <SpacerColumn size={3} />
 
         <View style={commonStyles.cardContainer}>
           <SettingItem
@@ -156,9 +166,24 @@ export const SettingsScreen: ScreenFC<"Settings"> = () => {
           />
         </View>
 
-        <SpacerColumn size={4} />
+        <SpacerColumn size={3} />
 
         <WeshnetStateButton />
+
+        <SpacerColumn size={3} />
+
+        <View style={commonStyles.cardContainer}>
+          <SettingItem
+            onPress={(item: SettingItemType) => {
+              setDeveloperMode(!item.state);
+            }}
+            item={{
+              title: "Developer Mode, use at your own risk!",
+              description: "",
+              state: developerMode,
+            }}
+          />
+        </View>
 
         {/*Please note that the "user profile customization" part of this task was changed to navigate to the TNS manage page.*/}
         {/*I left the files ( committed to the repo UserProfileModal.tsx) as by the previous developer.*/}

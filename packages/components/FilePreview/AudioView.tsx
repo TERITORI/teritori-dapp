@@ -6,9 +6,6 @@ import { AUDIO_WAVEFORM_MAX_WIDTH } from "./AudioWaveform/AudioWaveform.web";
 import pauseSVG from "../../../assets/icons/pause.svg";
 import playSVG from "../../../assets/icons/play.svg";
 import { useMediaPlayer } from "../../context/MediaPlayerProvider";
-import { useIsDAO } from "../../hooks/cosmwasm/useCosmWasmContractInfo";
-import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { prettyMediaDuration } from "../../utils/mediaPlayer";
 import {
   errorColor,
@@ -18,7 +15,6 @@ import {
 } from "../../utils/style/colors";
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import { nameServiceDefaultImage } from "../../utils/tns";
 import { Media } from "../../utils/types/mediaPlayer";
 import { BrandText } from "../BrandText";
 import { OptimizedImage } from "../OptimizedImage";
@@ -31,7 +27,6 @@ export const AudioView: React.FC<{
   imageURI?: string;
   duration: number;
   waveform: number[];
-  authorId: string;
   postId: string;
   fallbackImageURI?: string;
 }> = ({
@@ -39,35 +34,21 @@ export const AudioView: React.FC<{
   imageURI,
   duration,
   waveform,
-  authorId,
   postId,
   fallbackImageURI: fallbackImageSource,
 }) => {
-  const selectedNetwork = useSelectedNetworkInfo();
-  const userInfo = useNSUserInfo(authorId);
-  const { isDAO } = useIsDAO(authorId);
   const { media, handlePlayPause, loadAndPlaySoundsQueue, playbackStatus } =
     useMediaPlayer();
-  const isInMediaPlayer = useMemo(
-    () => media?.postId === postId,
-    [media?.postId, postId],
-  );
+  const isInMediaPlayer = !!media && postId === media.postId;
 
   const onPressPlayPause = async () => {
     if (isInMediaPlayer) {
       await handlePlayPause();
     } else {
       const songToPlay: Media = {
-        imageUrl:
-          imageURI ||
-          userInfo.metadata.image ||
-          nameServiceDefaultImage(isDAO, selectedNetwork),
-        name: "Song from Social Feed",
-        createdBy: authorId,
         fileUrl,
         duration,
-        // postId is used to difference audios from Social Feed (News feed or Article consultation)
-        postId: postId || Math.floor(Math.random() * 200000).toString(),
+        postId,
       };
       // TODO: Play songs of social feed: Add songs of next posts in queue
       await loadAndPlaySoundsQueue([songToPlay]);

@@ -1,0 +1,1234 @@
+schema {
+  query: Query
+  subscription: Subscription
+}
+"""
+Field representing a point on time. It is following the RFC3339Nano format ("2006-01-02T15:04:05.999999999Z07:00")
+"""
+scalar Time
+"""
+`BankMsgSend` is a message with a message router of `bank` and a message type of `send`.
+`BankMsgSend` is the fund transfer tx message.
+"""
+type BankMsgSend {
+  """
+  the bech32 address of the fund sender.
+  ex) `g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5`
+  """
+  from_address: String!
+  """
+  the bech32 address of the fund receiver.
+  ex) `g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5`
+  """
+  to_address: String!
+  """
+  the denomination and amount of fund sent ("<amount><denomination>").
+  ex) `1000000ugnot`
+  """
+  amount: String!
+}
+"Represents a blockchain block with various attributes detailing its creation and content."
+type Block {
+  """
+  A unique identifier for the block, determined by the blockchain's header.
+  It is computed as a Merkle tree from the header.
+  """
+  hash: String!
+  """
+  A unique identifier for the Block determined by its position in the blockchain.
+  This integer is strictly increasing with each new Block.
+  """
+  height: Int!
+  """
+  The software version of the node that created this Block, indicating the specific
+  implementation and versioning of the blockchain protocol used.
+  """
+  version: String!
+  """
+  An identifier for the specific blockchain network this Block belongs to. Helps in
+  distinguishing between different networks like mainnet, testnet, etc.
+  """
+  chain_id: String!
+  "The timestamp at which this Block was proposed and finalized in the blockchain. Represented in UTC."
+  time: Time!
+  "The number of transactions this Block belongs to."
+  num_txs: Int!
+  """
+  The total number of transactions that have occurred up to this block.
+  Indicates the total number of transactions that have occurred up to this point, even if there are no transactions in this block.
+  """
+  total_txs: Int!
+  "The application's version."
+  app_version: String!
+  "The last committed block hash."
+  last_block_hash: String!
+  "Commit hash from validators from the last block."
+  last_commit_hash: String!
+  "Validators for the current block."
+  validators_hash: String!
+  "Validators for the next block."
+  next_validators_hash: String!
+  "Consensus params for current block."
+  consensus_hash: String!
+  "State after txs from the previous block."
+  app_hash: String!
+  "Root hash of all results from the txs from the previous block."
+  last_results_hash: String!
+  """
+  Encoded data representing the blockchain address of the proposer who submitted this Block.
+  It is raw and requires decoding to be human-readable.
+  """
+  proposer_address_raw: String!
+  "txs contains transactions included in the block."
+  txs: [BlockTransaction]!
+}
+"Defines a transaction within a block, its execution specifics and content."
+type BlockTransaction {
+  "Hash computes the TMHASH hash of the wire encoded transaction."
+  hash: String!
+  "Fee information for the transaction."
+  fee: TxFee!
+  """
+  `memo` are string information stored within a transaction.
+  `memo` can be utilized to find or distinguish transactions.
+  For example, when trading a specific exchange, you would utilize the memo field of the transaction.
+  """
+  memo: String!
+  "The payload of the Transaction in a raw format, typically containing the instructions and any data necessary for execution."
+  content_raw: String!
+}
+"Define the quantity and denomination of a coin."
+type Coin {
+  "The amount of coins."
+  amount: Int!
+  "The denomination of the coin."
+  denom: String!
+}
+"""
+`GnoEvent` is the event information exported by the Gno VM.
+It has `type`, `pkg_path`, `func`, and `attrs`.
+"""
+type GnoEvent {
+  "`type` is the type of transaction event emitted."
+  type: String!
+  "`pkg_path` is the path to the package that emitted the event."
+  pkg_path: String!
+  "`func` is the name of the function that emitted the event."
+  func: String!
+  "`attrs` is the event's attribute information."
+  attrs: [GnoEventAttribute!]
+}
+"""
+`GnoEventAttribute` is the attributes that the event has.
+It has `key` and `value`.
+"""
+type GnoEventAttribute {
+  "The key of the event attribute."
+  key: String!
+  "The value of the event attribute."
+  value: String!
+}
+"`MemFile` is the metadata information tied to a single gno package / realm file"
+type MemFile {
+  "the name of the source file."
+  name: String!
+  "the content of the source file."
+  body: String!
+}
+"`MemPackage` is the metadata information tied to package / realm deployment."
+type MemPackage {
+  "the name of the package."
+  name: String!
+  "the gno path of the package."
+  path: String!
+  "the associated package gno source."
+  files: [MemFile!]
+}
+"""
+`MsgAddPackage` is a message with a message router of `vm` and a message type of `add_package`.
+`MsgAddPackage` is the package deployment tx message.
+"""
+type MsgAddPackage {
+  """
+  the bech32 address of the package deployer.
+  ex) `g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5`
+  """
+  creator: String!
+  "the package being deployed."
+  package: MemPackage!
+  """
+  the amount of funds to be deposited at deployment, if any ("<amount><denomination>").
+  ex) `1000000ugnot`
+  """
+  deposit: String!
+}
+"""
+`MsgCall` is a message with a message router of `vm` and a message type of `exec`.
+`MsgCall` is the method invocation tx message.
+"""
+type MsgCall {
+  """
+  the bech32 address of the function caller.
+  ex) `g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5`
+  """
+  caller: String!
+  """
+  the amount of funds to be deposited to the package, if any ("<amount><denomination>").
+  ex) `1000000ugnot`
+  """
+  send: String!
+  "the gno package path."
+  pkg_path: String!
+  "the function name being invoked."
+  func: String!
+  "`args` are the arguments passed to the executed function."
+  args: [String!]
+}
+"""
+`MsgRun` is a message with a message router of `vm` and a message type of `run`.
+`MsgRun is the execute arbitrary Gno code tx message`.
+"""
+type MsgRun {
+  """
+  the bech32 address of the function caller.
+  ex) `g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5`
+  """
+  caller: String!
+  """
+  the amount of funds to be deposited to the package, if any ("<amount><denomination>").
+  ex) `1000000ugnot`
+  """
+  send: String!
+  "the package being executed."
+  package: MemPackage!
+}
+"Root Query type to fetch data about Blocks and Transactions based on filters or retrieve the latest block height."
+type Query {
+  "Retrieves a list of Transactions that match the given filter criteria. If the result is incomplete due to errors, both partial results and errors are returned."
+  transactions(filter: TransactionFilter!): [Transaction!]
+  "Fetches Blocks matching the specified filter criteria. Incomplete results due to errors return both the partial Blocks and the associated errors."
+  blocks(filter: BlockFilter!): [Block!]
+  "Returns the height of the most recently processed Block by the blockchain indexer, indicating the current length of the blockchain."
+  latestBlockHeight: Int!
+  """
+  EXPERIMENTAL: Fetches Blocks matching the specified where criteria. 
+  Incomplete results due to errors return both the partial Blocks and 
+  the associated errors.
+  """
+  getBlocks(where: FilterBlock!): [Block!]
+  """
+  EXPERIMENTAL: Retrieves a list of Transactions that match the given 
+  where criteria. If the result is incomplete due to errors, both partial
+  results and errors are returned.
+  """
+  getTransactions(where: FilterTransaction!): [Transaction!]
+}
+"""
+Subscriptions provide a way for clients to receive real-time updates about Transactions and Blocks based on specified filter criteria.
+Subscribers will only receive updates for events occurring after the subscription is established.
+"""
+type Subscription {
+  """
+  Subscribes to real-time updates of Transactions that match the provided filter criteria.
+  This subscription starts immediately and only includes Transactions added to the blockchain after the subscription is active.
+  
+  This is useful for applications needing to track Transactions in real-time, such as wallets tracking incoming transactions
+  or analytics platforms monitoring blockchain activity.
+  
+  Returns:
+  - Transaction: Each received update is a Transaction object that matches the filter criteria.
+  """
+  transactions(filter: TransactionFilter!): Transaction!
+  """
+  Subscribes to real-time updates of Blocks that match the provided filter criteria. Similar to the Transactions subscription,
+  this subscription is active immediately upon creation and only includes Blocks added after the subscription begins.
+  
+  This subscription is ideal for services that need to be notified of new Blocks for processing or analysis, such as block explorers,
+  data aggregators, or security monitoring tools.
+  
+  Returns:
+  - Block: Each update consists of a Block object that satisfies the filter criteria, allowing subscribers to process or analyze new Blocks in real time.
+  """
+  blocks(filter: BlockFilter!): Block!
+  """
+  EXPERIMENTAL: Subscribes to real-time updates of Transactions that 
+  match the provided filter criteria. This subscription starts immediately
+  and only includes Transactions added to the blockchain after the subscription
+  is active.
+  
+  This is useful for applications needing to track Transactions in real-time, 
+  such as wallets tracking incoming transactions or analytics platforms 
+  monitoring blockchain activity.
+  
+  Returns:
+  - Transaction: Each received update is a Transaction object that matches 
+  the where criteria.
+  """
+  getTransactions(where: FilterTransaction!): Transaction!
+  """
+  EXPERIMENTAL: Subscribes to real-time updates of Blocks that match the provided
+  filter criteria. Similar to the Transactions subscription,
+  this subscription is active immediately upon creation and only includes Blocks
+  added after the subscription begins.
+  
+  This subscription is ideal for services that need to be notified of new Blocks
+  for processing or analysis, such as block explorers, data aggregators, or security
+  monitoring tools.
+  
+  Returns:
+  - Block: Each update consists of a Block object that satisfies the filter criteria,
+  allowing subscribers to process or analyze new Blocks in real time.
+  """
+  getBlocks(where: FilterBlock!): Block!
+}
+"Defines a transaction within a block, detailing its execution specifics and content."
+type Transaction {
+  "A sequential index representing the order of this Transaction within its Block. Unique within the context of its Block."
+  index: Int!
+  "Hash from Transaction content in base64 encoding."
+  hash: String!
+  "The success can determine whether the transaction succeeded or failed."
+  success: Boolean!
+  "The height of the Block in which this Transaction is included. Links the Transaction to its containing Block."
+  block_height: Int!
+  "The declared amount of computational effort the sender is willing to pay for executing this Transaction."
+  gas_wanted: Int!
+  "The actual amount of computational effort consumed to execute this Transaction. It could be less or equal to `gas_wanted`."
+  gas_used: Int!
+  """
+  Fee includes the amount of coins paid in fees and the maximum
+  gas to be used by the transaction.
+  """
+  gas_fee: Coin
+  "The payload of the Transaction in a raw format, typically containing the instructions and any data necessary for execution."
+  content_raw: String!
+  """
+  The payload of a message shows the contents of the messages in a transaction.
+  A message consists of `router`, `type`, and `value` (whose form depends on the `router` and `type`).
+  """
+  messages: [TransactionMessage]!
+  """
+  `memo` are string information stored within a transaction.
+  `memo` can be utilized to find or distinguish transactions.
+  For example, when trading a specific exchange, you would utilize the memo field of the transaction.
+  """
+  memo: String!
+  """
+  `response` is the processing result of the transaction.
+  It has `log`, `info`, `error`, and `data`.
+  """
+  response: TransactionResponse!
+}
+type TransactionMessage {
+  """
+  The type of transaction message.
+  The value of `typeUrl` can be `send`, `exec`, `add_package`, `run`.
+  """
+  typeUrl: String!
+  """
+  The route of transaction message.
+  The value of `route` can be `bank`, `vm`.
+  """
+  route: String!
+  """
+  MessageValue is the content of the transaction.
+  `value` can be of type `BankMsgSend`, `MsgCall`, `MsgAddPackage`, `MsgRun`, `UnexpectedMessage`.
+  """
+  value: MessageValue!
+}
+"""
+`TransactionResponse` is the processing result of the transaction.
+It has `log`, `info`, `error`, and `data`.
+"""
+type TransactionResponse {
+  "The log value associated with the Transaction execution, if any."
+  log: String!
+  "The Info associated with the Transaction execution, if any."
+  info: String!
+  "The error value associated with the Transaction execution, if any."
+  error: String!
+  "The response data associated with the Transaction execution, if any."
+  data: String!
+  "The emitted events associated with the transaction execution, if any."
+  events: [Event]
+}
+"The `TxFee` has information about the fee used in the transaction and the maximum gas fee specified by the user."
+type TxFee {
+  "gas limit"
+  gas_wanted: Int!
+  "The gas fee in the transaction."
+  gas_fee: Coin!
+}
+"`UnexpectedMessage` is an Undefined Message, which is a message that decoding failed."
+type UnexpectedMessage {
+  raw: String!
+}
+"""
+`UnknownEvent` is an unknown event type.
+It has `value`.
+"""
+type UnknownEvent {
+  "`value` is a raw event string."
+  value: String!
+}
+union Event = GnoEvent | UnknownEvent
+union MessageValue = BankMsgSend | MsgCall | MsgAddPackage | MsgRun | UnexpectedMessage
+enum FilterableExtra {
+  """
+  Get minimum and maximum value used on all the filters for this field.
+  Useful when you need to do a range query for performance reasons.
+  """
+  MINMAX
+}
+"""
+`MessageRoute` is route type of the transactional message.
+`MessageRoute` has the values of vm and bank.
+"""
+enum MessageRoute {
+  vm
+  bank
+}
+"""
+`MessageType` is message type of the transaction.
+`MessageType` has the values `send`, `exec`, `add_package`, and `run`.
+"""
+enum MessageType {
+  """
+  The route value for this message type is `bank`, and the value for transactional messages is `BankMsgSend`.
+  This is a transaction message used when sending native tokens.
+  """
+  send
+  """
+  The route value for this message type is `vm`, and the value for transactional messages is `MsgCall`.
+  This is a transaction message that executes a function in realm or package that is deployed in the GNO chain.
+  """
+  exec
+  """
+  The route value for this message type is `vm`, and the value for transactional messages is `MsgAddPackage`.
+  This is a transactional message that adds a package to the GNO chain.
+  """
+  add_package
+  """
+  The route value for this message type is `vm`, and the value for transactional messages is `MsgRun`.
+  This is a transactional message that executes an arbitrary Gno-coded TX message.
+  """
+  run
+}
+"`AmountInput` is a range of token quantities to filter by."
+input AmountInput {
+  "The minimum quantity of tokens to check for."
+  from: Int
+  "The maximum quantity of tokens to check for."
+  to: Int
+  """
+  Filter by token's denomination.
+  If set to an empty string, it will get an empty value.
+  """
+  denomination: String
+}
+"`BankMsgSendInput` represents input parameters required when the message type is `send`."
+input BankMsgSendInput {
+  """
+  the bech32 address of the fund sender.
+  You can filter by the fund sender address.
+  ex) `g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5`
+  """
+  from_address: String
+  """
+  the bech32 address of the fund receiver.
+  You can filter by the fund receiver address.
+  ex) `g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5`
+  """
+  to_address: String
+  """
+  the denomination and amount of fund sent ("<amount><denomination>").
+  ex) `1000000ugnot`
+  """
+  amount: AmountInput
+}
+"Filters for querying Blocks within specified criteria related to their attributes."
+input BlockFilter {
+  "Minimum block height from which to start fetching Blocks, inclusive. If unspecified, there is no lower bound."
+  from_height: Int
+  "Maximum block height up to which Blocks should be fetched, exclusive. If unspecified, there is no upper bound."
+  to_height: Int
+  "Minimum timestamp from which to start fetching Blocks, inclusive. Blocks created at or after this time will be included."
+  from_time: Time
+  "Maximum timestamp up to which to fetch Blocks, exclusive. Only Blocks created before this time are included."
+  to_time: Time
+}
+"""
+Transaction event's attribute to filter transaction.
+"EventAttributeInput" can be configured as a filter with a event attribute's `key` and `value`.
+"""
+input EventAttributeInput {
+  "`key` is the key of the event attribute."
+  key: String
+  "`value` is the value of the event attribute."
+  value: String
+}
+"""
+Transaction's event to filter transactions.
+"EventInput" can be configured as a filter with a transaction event's `type` and `pkg_path` and `func`, and `attrs`.
+"""
+input EventInput {
+  "`type` is the type of transaction event emitted."
+  type: String
+  "`pkg_path` is the path to the package that emitted the event."
+  pkg_path: String
+  "`func` is the name of the function that emitted the event."
+  func: String
+  """
+  `attrs` filters transactions whose events contain attributes.
+  `attrs` is entered as an array and works exclusively.
+  ex) `attrs[0] || attrs[1] || attrs[2]`
+  """
+  attrs: [EventAttributeInput!]
+}
+"filter for BankMsgSend objects"
+input FilterBankMsgSend {
+  "logical operator for BankMsgSend that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterBankMsgSend]
+  "logical operator for BankMsgSend that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterBankMsgSend]
+  "logical operator for BankMsgSend that will reverse conditions."
+  _not: FilterBankMsgSend
+  "filter for from_address field."
+  from_address: FilterString
+  "filter for to_address field."
+  to_address: FilterString
+  "filter for amount field."
+  amount: FilterString
+}
+"filter for Block objects"
+input FilterBlock {
+  "logical operator for Block that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterBlock]
+  "logical operator for Block that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterBlock]
+  "logical operator for Block that will reverse conditions."
+  _not: FilterBlock
+  "filter for hash field."
+  hash: FilterString
+  "filter for height field."
+  height: FilterInt
+  "filter for version field."
+  version: FilterString
+  "filter for chain_id field."
+  chain_id: FilterString
+  "filter for time field."
+  time: FilterTime
+  "filter for num_txs field."
+  num_txs: FilterInt
+  "filter for total_txs field."
+  total_txs: FilterInt
+  "filter for app_version field."
+  app_version: FilterString
+  "filter for last_block_hash field."
+  last_block_hash: FilterString
+  "filter for last_commit_hash field."
+  last_commit_hash: FilterString
+  "filter for validators_hash field."
+  validators_hash: FilterString
+  "filter for next_validators_hash field."
+  next_validators_hash: FilterString
+  "filter for consensus_hash field."
+  consensus_hash: FilterString
+  "filter for app_hash field."
+  app_hash: FilterString
+  "filter for last_results_hash field."
+  last_results_hash: FilterString
+  "filter for proposer_address_raw field."
+  proposer_address_raw: FilterString
+  "filter for txs field."
+  txs: NestedFilterBlockTransaction
+}
+"filter for BlockTransaction objects"
+input FilterBlockTransaction {
+  "logical operator for BlockTransaction that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterBlockTransaction]
+  "logical operator for BlockTransaction that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterBlockTransaction]
+  "logical operator for BlockTransaction that will reverse conditions."
+  _not: FilterBlockTransaction
+  "filter for hash field."
+  hash: FilterString
+  "filter for fee field."
+  fee: NestedFilterTxFee
+  "filter for memo field."
+  memo: FilterString
+}
+"Filter type for boolean fields. All added filters here are processed as AND operators."
+input FilterBoolean {
+  "Filter a boolean field checking if it exists or not."
+  exists: Boolean
+  "Filter a boolean field checking if it is equals to the specified value."
+  eq: Boolean
+}
+"filter for Coin objects"
+input FilterCoin {
+  "logical operator for Coin that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterCoin]
+  "logical operator for Coin that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterCoin]
+  "logical operator for Coin that will reverse conditions."
+  _not: FilterCoin
+  "filter for amount field."
+  amount: FilterInt
+  "filter for denom field."
+  denom: FilterString
+}
+"filter for Event objects"
+input FilterEvent {
+  "logical operator for Event that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterEvent]
+  "logical operator for Event that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterEvent]
+  "logical operator for Event that will reverse conditions."
+  _not: FilterEvent
+  "filter for GnoEvent union type."
+  GnoEvent: NestedFilterGnoEvent
+  "filter for UnknownEvent union type."
+  UnknownEvent: NestedFilterUnknownEvent
+}
+"filter for GnoEvent objects"
+input FilterGnoEvent {
+  "logical operator for GnoEvent that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterGnoEvent]
+  "logical operator for GnoEvent that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterGnoEvent]
+  "logical operator for GnoEvent that will reverse conditions."
+  _not: FilterGnoEvent
+  "filter for type field."
+  type: FilterString
+  "filter for pkg_path field."
+  pkg_path: FilterString
+  "filter for func field."
+  func: FilterString
+  "filter for attrs field."
+  attrs: NestedFilterGnoEventAttribute
+}
+"filter for GnoEventAttribute objects"
+input FilterGnoEventAttribute {
+  "logical operator for GnoEventAttribute that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterGnoEventAttribute]
+  "logical operator for GnoEventAttribute that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterGnoEventAttribute]
+  "logical operator for GnoEventAttribute that will reverse conditions."
+  _not: FilterGnoEventAttribute
+  "filter for key field."
+  key: FilterString
+  "filter for value field."
+  value: FilterString
+}
+"Filter type for number fields. All added filters here are processed as AND operators."
+input FilterInt {
+  "Filter a number field checking if it exists or not."
+  exists: Boolean
+  "Filter a number field checking if it is equals to the specified value."
+  eq: Int
+  "Filter a number field checking if it is greater than the specified value."
+  gt: Int
+  "Filter a number field checking if it is less than the specified value."
+  lt: Int
+}
+"filter for MemFile objects"
+input FilterMemFile {
+  "logical operator for MemFile that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterMemFile]
+  "logical operator for MemFile that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterMemFile]
+  "logical operator for MemFile that will reverse conditions."
+  _not: FilterMemFile
+  "filter for name field."
+  name: FilterString
+  "filter for body field."
+  body: FilterString
+}
+"filter for MemPackage objects"
+input FilterMemPackage {
+  "logical operator for MemPackage that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterMemPackage]
+  "logical operator for MemPackage that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterMemPackage]
+  "logical operator for MemPackage that will reverse conditions."
+  _not: FilterMemPackage
+  "filter for name field."
+  name: FilterString
+  "filter for path field."
+  path: FilterString
+  "filter for files field."
+  files: NestedFilterMemFile
+}
+"filter for MessageValue objects"
+input FilterMessageValue {
+  "logical operator for MessageValue that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterMessageValue]
+  "logical operator for MessageValue that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterMessageValue]
+  "logical operator for MessageValue that will reverse conditions."
+  _not: FilterMessageValue
+  "filter for BankMsgSend union type."
+  BankMsgSend: NestedFilterBankMsgSend
+  "filter for MsgCall union type."
+  MsgCall: NestedFilterMsgCall
+  "filter for MsgAddPackage union type."
+  MsgAddPackage: NestedFilterMsgAddPackage
+  "filter for MsgRun union type."
+  MsgRun: NestedFilterMsgRun
+}
+"filter for MsgAddPackage objects"
+input FilterMsgAddPackage {
+  "logical operator for MsgAddPackage that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterMsgAddPackage]
+  "logical operator for MsgAddPackage that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterMsgAddPackage]
+  "logical operator for MsgAddPackage that will reverse conditions."
+  _not: FilterMsgAddPackage
+  "filter for creator field."
+  creator: FilterString
+  "filter for package field."
+  package: NestedFilterMemPackage
+  "filter for deposit field."
+  deposit: FilterString
+}
+"filter for MsgCall objects"
+input FilterMsgCall {
+  "logical operator for MsgCall that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterMsgCall]
+  "logical operator for MsgCall that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterMsgCall]
+  "logical operator for MsgCall that will reverse conditions."
+  _not: FilterMsgCall
+  "filter for caller field."
+  caller: FilterString
+  "filter for send field."
+  send: FilterString
+  "filter for pkg_path field."
+  pkg_path: FilterString
+  "filter for func field."
+  func: FilterString
+  "filter for args field."
+  args: FilterString
+}
+"filter for MsgRun objects"
+input FilterMsgRun {
+  "logical operator for MsgRun that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterMsgRun]
+  "logical operator for MsgRun that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterMsgRun]
+  "logical operator for MsgRun that will reverse conditions."
+  _not: FilterMsgRun
+  "filter for caller field."
+  caller: FilterString
+  "filter for send field."
+  send: FilterString
+  "filter for package field."
+  package: NestedFilterMemPackage
+}
+"Filter type for string fields. It contains a variety of filter types for string types. All added filters here are processed as AND operators."
+input FilterString {
+  "Filter a string field checking if it exists or not."
+  exists: Boolean
+  "Filter a string field checking if it is equals to the specified value."
+  eq: String
+  "Filter a string field checking if it is like the specified value. You can use standard Go RegEx expressions here."
+  like: String
+}
+"Filter type for time fields. All added filters here are processed as AND operators."
+input FilterTime {
+  "Filter a time field checking if it exists or not."
+  exists: Boolean
+  "Filter a time field checking if it is equals to the specified value."
+  eq: Time
+  "Filter a time field checking if it is before than the specified value."
+  before: Time
+  "Filter a time field checking if it is after the specified value."
+  after: Time
+}
+"filter for Transaction objects"
+input FilterTransaction {
+  "logical operator for Transaction that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterTransaction]
+  "logical operator for Transaction that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterTransaction]
+  "logical operator for Transaction that will reverse conditions."
+  _not: FilterTransaction
+  "filter for index field."
+  index: FilterInt
+  "filter for hash field."
+  hash: FilterString
+  "filter for success field."
+  success: FilterBoolean
+  "filter for block_height field."
+  block_height: FilterInt
+  "filter for gas_wanted field."
+  gas_wanted: FilterInt
+  "filter for gas_used field."
+  gas_used: FilterInt
+  "filter for gas_fee field."
+  gas_fee: NestedFilterCoin
+  "filter for messages field."
+  messages: NestedFilterTransactionMessage
+  "filter for memo field."
+  memo: FilterString
+  "filter for response field."
+  response: NestedFilterTransactionResponse
+}
+"filter for TransactionMessage objects"
+input FilterTransactionMessage {
+  "logical operator for TransactionMessage that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterTransactionMessage]
+  "logical operator for TransactionMessage that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterTransactionMessage]
+  "logical operator for TransactionMessage that will reverse conditions."
+  _not: FilterTransactionMessage
+  "filter for typeUrl field."
+  typeUrl: FilterString
+  "filter for route field."
+  route: FilterString
+  "filter for value field."
+  value: NestedFilterMessageValue
+}
+"filter for TransactionResponse objects"
+input FilterTransactionResponse {
+  "logical operator for TransactionResponse that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterTransactionResponse]
+  "logical operator for TransactionResponse that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterTransactionResponse]
+  "logical operator for TransactionResponse that will reverse conditions."
+  _not: FilterTransactionResponse
+  "filter for log field."
+  log: FilterString
+  "filter for info field."
+  info: FilterString
+  "filter for error field."
+  error: FilterString
+  "filter for data field."
+  data: FilterString
+  "filter for events field."
+  events: NestedFilterEvent
+}
+"filter for TxFee objects"
+input FilterTxFee {
+  "logical operator for TxFee that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterTxFee]
+  "logical operator for TxFee that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterTxFee]
+  "logical operator for TxFee that will reverse conditions."
+  _not: FilterTxFee
+  "filter for gas_wanted field."
+  gas_wanted: FilterInt
+  "filter for gas_fee field."
+  gas_fee: NestedFilterCoin
+}
+"filter for UnknownEvent objects"
+input FilterUnknownEvent {
+  "logical operator for UnknownEvent that will combine two or more conditions, returning true if all of them are true."
+  _and: [FilterUnknownEvent]
+  "logical operator for UnknownEvent that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [FilterUnknownEvent]
+  "logical operator for UnknownEvent that will reverse conditions."
+  _not: FilterUnknownEvent
+  "filter for value field."
+  value: FilterString
+}
+"`MemFileInput` is the metadata information tied to a single gno package / realm file."
+input MemFileInput {
+  "the name of the source file."
+  name: String
+  "the content of the source file."
+  body: String
+}
+"`MemPackageInput` represents a package stored in memory."
+input MemPackageInput {
+  "the name of the package."
+  name: String
+  "the gno path of the package."
+  path: String
+  "the associated package gno source."
+  files: [MemFileInput]
+}
+"`MsgAddPackageInput` represents input parameters required when the message type is `add_package`."
+input MsgAddPackageInput {
+  """
+  the bech32 address of the package deployer.
+  You can filter by the package deployer's address.
+  ex) `g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5`
+  """
+  creator: String
+  "the package being deployed."
+  package: MemPackageInput
+  """
+  the amount of funds to be deposited at deployment, if any ("<amount><denomination>").
+  ex) `1000000ugnot`
+  """
+  deposit: AmountInput
+}
+"`MsgCallInput` represents input parameters required when the message type is `exec`."
+input MsgCallInput {
+  """
+  the bech32 address of the function caller.
+  You can filter by the function caller's address.
+  ex) `g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5`
+  """
+  caller: String
+  """
+  the amount of funds to be deposited to the package, if any ("<amount><denomination>").
+  ex) `1000000ugnot`
+  """
+  send: AmountInput
+  "the gno package path."
+  pkg_path: String
+  "the function name being invoked."
+  func: String
+  """
+  `args` are the arguments passed to the executed function.
+  The arguments are checked in the order of the argument array and
+  if they are empty strings, they are excluded from the filtering criteria.
+  ex) `["", "", "1"]` <- Empty strings skip the condition.
+  """
+  args: [String!]
+}
+"`MsgRunInput` represents input parameters required when the message type is `run`."
+input MsgRunInput {
+  """
+  the bech32 address of the function caller.
+  You can filter by the function caller's address.
+  ex) `g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5`
+  """
+  caller: String
+  """
+  the amount of funds to be deposited to the package, if any ("<amount><denomination>").
+  ex) `1000000ugnot`
+  """
+  send: AmountInput
+  "the package being executed."
+  package: MemPackageInput
+}
+"filter for BankMsgSend objects"
+input NestedFilterBankMsgSend {
+  "logical operator for BankMsgSend that will combine two or more conditions, returning true if all of them are true."
+  _and: [NestedFilterBankMsgSend]
+  "logical operator for BankMsgSend that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [NestedFilterBankMsgSend]
+  "logical operator for BankMsgSend that will reverse conditions."
+  _not: NestedFilterBankMsgSend
+  "filter for from_address field."
+  from_address: FilterString
+  "filter for to_address field."
+  to_address: FilterString
+  "filter for amount field."
+  amount: FilterString
+}
+"filter for BlockTransaction objects"
+input NestedFilterBlockTransaction {
+  "logical operator for BlockTransaction that will combine two or more conditions, returning true if all of them are true."
+  _and: [NestedFilterBlockTransaction]
+  "logical operator for BlockTransaction that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [NestedFilterBlockTransaction]
+  "logical operator for BlockTransaction that will reverse conditions."
+  _not: NestedFilterBlockTransaction
+  "filter for hash field."
+  hash: FilterString
+  "filter for fee field."
+  fee: NestedFilterTxFee
+  "filter for memo field."
+  memo: FilterString
+}
+"filter for Coin objects"
+input NestedFilterCoin {
+  "logical operator for Coin that will combine two or more conditions, returning true if all of them are true."
+  _and: [NestedFilterCoin]
+  "logical operator for Coin that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [NestedFilterCoin]
+  "logical operator for Coin that will reverse conditions."
+  _not: NestedFilterCoin
+  "filter for amount field."
+  amount: FilterInt
+  "filter for denom field."
+  denom: FilterString
+}
+"filter for Event objects"
+input NestedFilterEvent {
+  "logical operator for Event that will combine two or more conditions, returning true if all of them are true."
+  _and: [NestedFilterEvent]
+  "logical operator for Event that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [NestedFilterEvent]
+  "logical operator for Event that will reverse conditions."
+  _not: NestedFilterEvent
+  "filter for GnoEvent union type."
+  GnoEvent: NestedFilterGnoEvent
+  "filter for UnknownEvent union type."
+  UnknownEvent: NestedFilterUnknownEvent
+}
+"filter for GnoEvent objects"
+input NestedFilterGnoEvent {
+  "logical operator for GnoEvent that will combine two or more conditions, returning true if all of them are true."
+  _and: [NestedFilterGnoEvent]
+  "logical operator for GnoEvent that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [NestedFilterGnoEvent]
+  "logical operator for GnoEvent that will reverse conditions."
+  _not: NestedFilterGnoEvent
+  "filter for type field."
+  type: FilterString
+  "filter for pkg_path field."
+  pkg_path: FilterString
+  "filter for func field."
+  func: FilterString
+  "filter for attrs field."
+  attrs: NestedFilterGnoEventAttribute
+}
+"filter for GnoEventAttribute objects"
+input NestedFilterGnoEventAttribute {
+  "logical operator for GnoEventAttribute that will combine two or more conditions, returning true if all of them are true."
+  _and: [NestedFilterGnoEventAttribute]
+  "logical operator for GnoEventAttribute that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [NestedFilterGnoEventAttribute]
+  "logical operator for GnoEventAttribute that will reverse conditions."
+  _not: NestedFilterGnoEventAttribute
+  "filter for key field."
+  key: FilterString
+  "filter for value field."
+  value: FilterString
+}
+"filter for MemFile objects"
+input NestedFilterMemFile {
+  "logical operator for MemFile that will combine two or more conditions, returning true if all of them are true."
+  _and: [NestedFilterMemFile]
+  "logical operator for MemFile that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [NestedFilterMemFile]
+  "logical operator for MemFile that will reverse conditions."
+  _not: NestedFilterMemFile
+  "filter for name field."
+  name: FilterString
+  "filter for body field."
+  body: FilterString
+}
+"filter for MemPackage objects"
+input NestedFilterMemPackage {
+  "logical operator for MemPackage that will combine two or more conditions, returning true if all of them are true."
+  _and: [NestedFilterMemPackage]
+  "logical operator for MemPackage that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [NestedFilterMemPackage]
+  "logical operator for MemPackage that will reverse conditions."
+  _not: NestedFilterMemPackage
+  "filter for name field."
+  name: FilterString
+  "filter for path field."
+  path: FilterString
+  "filter for files field."
+  files: NestedFilterMemFile
+}
+"filter for MessageValue objects"
+input NestedFilterMessageValue {
+  "logical operator for MessageValue that will combine two or more conditions, returning true if all of them are true."
+  _and: [NestedFilterMessageValue]
+  "logical operator for MessageValue that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [NestedFilterMessageValue]
+  "logical operator for MessageValue that will reverse conditions."
+  _not: NestedFilterMessageValue
+  "filter for BankMsgSend union type."
+  BankMsgSend: NestedFilterBankMsgSend
+  "filter for MsgCall union type."
+  MsgCall: NestedFilterMsgCall
+  "filter for MsgAddPackage union type."
+  MsgAddPackage: NestedFilterMsgAddPackage
+  "filter for MsgRun union type."
+  MsgRun: NestedFilterMsgRun
+}
+"filter for MsgAddPackage objects"
+input NestedFilterMsgAddPackage {
+  "logical operator for MsgAddPackage that will combine two or more conditions, returning true if all of them are true."
+  _and: [NestedFilterMsgAddPackage]
+  "logical operator for MsgAddPackage that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [NestedFilterMsgAddPackage]
+  "logical operator for MsgAddPackage that will reverse conditions."
+  _not: NestedFilterMsgAddPackage
+  "filter for creator field."
+  creator: FilterString
+  "filter for package field."
+  package: NestedFilterMemPackage
+  "filter for deposit field."
+  deposit: FilterString
+}
+"filter for MsgCall objects"
+input NestedFilterMsgCall {
+  "logical operator for MsgCall that will combine two or more conditions, returning true if all of them are true."
+  _and: [NestedFilterMsgCall]
+  "logical operator for MsgCall that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [NestedFilterMsgCall]
+  "logical operator for MsgCall that will reverse conditions."
+  _not: NestedFilterMsgCall
+  "filter for caller field."
+  caller: FilterString
+  "filter for send field."
+  send: FilterString
+  "filter for pkg_path field."
+  pkg_path: FilterString
+  "filter for func field."
+  func: FilterString
+  "filter for args field."
+  args: FilterString
+}
+"filter for MsgRun objects"
+input NestedFilterMsgRun {
+  "logical operator for MsgRun that will combine two or more conditions, returning true if all of them are true."
+  _and: [NestedFilterMsgRun]
+  "logical operator for MsgRun that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [NestedFilterMsgRun]
+  "logical operator for MsgRun that will reverse conditions."
+  _not: NestedFilterMsgRun
+  "filter for caller field."
+  caller: FilterString
+  "filter for send field."
+  send: FilterString
+  "filter for package field."
+  package: NestedFilterMemPackage
+}
+"filter for TransactionMessage objects"
+input NestedFilterTransactionMessage {
+  "logical operator for TransactionMessage that will combine two or more conditions, returning true if all of them are true."
+  _and: [NestedFilterTransactionMessage]
+  "logical operator for TransactionMessage that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [NestedFilterTransactionMessage]
+  "logical operator for TransactionMessage that will reverse conditions."
+  _not: NestedFilterTransactionMessage
+  "filter for typeUrl field."
+  typeUrl: FilterString
+  "filter for route field."
+  route: FilterString
+  "filter for value field."
+  value: NestedFilterMessageValue
+}
+"filter for TransactionResponse objects"
+input NestedFilterTransactionResponse {
+  "logical operator for TransactionResponse that will combine two or more conditions, returning true if all of them are true."
+  _and: [NestedFilterTransactionResponse]
+  "logical operator for TransactionResponse that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [NestedFilterTransactionResponse]
+  "logical operator for TransactionResponse that will reverse conditions."
+  _not: NestedFilterTransactionResponse
+  "filter for log field."
+  log: FilterString
+  "filter for info field."
+  info: FilterString
+  "filter for error field."
+  error: FilterString
+  "filter for data field."
+  data: FilterString
+  "filter for events field."
+  events: NestedFilterEvent
+}
+"filter for TxFee objects"
+input NestedFilterTxFee {
+  "logical operator for TxFee that will combine two or more conditions, returning true if all of them are true."
+  _and: [NestedFilterTxFee]
+  "logical operator for TxFee that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [NestedFilterTxFee]
+  "logical operator for TxFee that will reverse conditions."
+  _not: NestedFilterTxFee
+  "filter for gas_wanted field."
+  gas_wanted: FilterInt
+  "filter for gas_fee field."
+  gas_fee: NestedFilterCoin
+}
+"filter for UnknownEvent objects"
+input NestedFilterUnknownEvent {
+  "logical operator for UnknownEvent that will combine two or more conditions, returning true if all of them are true."
+  _and: [NestedFilterUnknownEvent]
+  "logical operator for UnknownEvent that will combine two or more conditions, returning true if at least one of them is true."
+  _or: [NestedFilterUnknownEvent]
+  "logical operator for UnknownEvent that will reverse conditions."
+  _not: NestedFilterUnknownEvent
+  "filter for value field."
+  value: FilterString
+}
+"`TransactionBankMessageInput` represents input parameters required when the message router is `bank`."
+input TransactionBankMessageInput {
+  "send represents input parameters required when the message type is `send`."
+  send: BankMsgSendInput
+}
+"Filters for querying Transactions within specified criteria related to their execution and placement within Blocks."
+input TransactionFilter {
+  "Minimum block height from which to start fetching Transactions, inclusive. Aids in scoping the search to recent Transactions."
+  from_block_height: Int
+  "Maximum block height up to which Transactions should be fetched, exclusive. Helps in limiting the search to older Transactions."
+  to_block_height: Int
+  "Minimum Transaction index from which to start fetching, inclusive. Facilitates ordering in Transaction queries."
+  from_index: Int
+  "Maximum Transaction index up to which to fetch, exclusive. Ensures a limit on the ordering range for Transaction queries."
+  to_index: Int
+  "Minimum `gas_wanted` value to filter Transactions by, inclusive. Filters Transactions based on the minimum computational effort declared."
+  from_gas_wanted: Int
+  "Maximum `gas_wanted` value for filtering Transactions, exclusive. Limits Transactions based on the declared computational effort."
+  to_gas_wanted: Int
+  "Minimum `gas_used` value to filter Transactions by, inclusive. Selects Transactions based on the minimum computational effort actually used."
+  from_gas_used: Int
+  "Maximum `gas_used` value for filtering Transactions, exclusive. Refines selection based on the computational effort actually consumed."
+  to_gas_used: Int
+  "Hash from Transaction content in base64 encoding. If this filter is used, any other filter will be ignored."
+  hash: String
+  """
+  Transaction's messages to filter Transactions.
+  `message` can be configured as a filter with a transaction message's `router` and `type` and `parameters(bank / vm)`.
+  `message` is entered as an array and works exclusively.
+  ex) `message[0] || message[1] || message[2]`
+  """
+  message: [TransactionMessageInput!]
+  """
+  `memo` are string information stored within a transaction.
+  `memo` can be utilized to find or distinguish transactions.
+  For example, when trading a specific exchange, you would utilize the memo field of the transaction.
+  """
+  memo: String
+  """
+  `success` is whether the transaction was successful or not.
+  `success` enables you to filter between successful and unsuccessful transactions.
+  """
+  success: Boolean
+  """
+  `events` are what the transaction has emitted.
+  `events` can be filtered with a specific event to query its transactions.
+  `events` is entered as an array and works exclusively.
+  ex) `events[0] || events[1] || events[2]`
+  """
+  events: [EventInput!]
+}
+"""
+Transaction's message to filter Transactions.
+`TransactionMessageInput` can be configured as a filter with a transaction message's `router` and `type` and `parameters(bank / vm)`.
+"""
+input TransactionMessageInput {
+  """
+  The type of transaction message.
+  The value of `typeUrl` can be `send`, `exec`, `add_package`, `run`.
+  """
+  type_url: MessageType
+  """
+  The route of transaction message.
+  The value of `route` can be `bank`, `vm`.
+  """
+  route: MessageRoute
+  "`TransactionBankMessageInput` represents input parameters required when the message router is `bank`."
+  bank_param: TransactionBankMessageInput
+  "`TransactionVmMessageInput` represents input parameters required when the message router is `vm`."
+  vm_param: TransactionVmMessageInput
+}
+"`TransactionVmMessageInput` represents input parameters required when the message router is `vm`."
+input TransactionVmMessageInput {
+  "`MsgCallInput` represents input parameters required when the message type is `exec`."
+  exec: MsgCallInput
+  "`MsgAddPackageInput` represents input parameters required when the message type is `add_package`."
+  add_package: MsgAddPackageInput
+  "`MsgRunInput` represents input parameters required when the message type is `run`."
+  run: MsgRunInput
+}
+"The @defer directive may be specified on a fragment spread to imply de-prioritization, that causes the fragment to be omitted in the initial response, and delivered as a subsequent response afterward. A query with @defer directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred delivered in a subsequent response. @include and @skip take precedence over @defer."
+directive @defer(if: Boolean = true, label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+directive @filterable(
+    "Add extra functionality to this field apart from the filtering capabilities."
+    extras: [FilterableExtra!]
+  ) on FIELD_DEFINITION
+"The @specifiedBy built-in directive is used within the type system definition language to provide a scalar specification URL for specifying the behavior of custom scalar types."
+directive @specifiedBy(url: String!) on SCALAR

@@ -1,18 +1,18 @@
-import { View, ViewStyle, StyleSheet } from "react-native";
+import { StyleSheet, View, ViewStyle } from "react-native";
 
-import { BrandText } from "../../../components/BrandText";
-import { OptimizedImage } from "../../../components/OptimizedImage";
+import { BrandText } from "@/components/BrandText";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import {
   orangeDefault,
   pinkDefault,
   purpleDefault,
+  redDefault,
   secondaryColor,
   withAlpha,
-  redDefault,
-} from "../../../utils/style/colors";
-import { fontSemibold9 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
-import { RipperRarity } from "../types";
+} from "@/utils/style/colors";
+import { fontSemibold9 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { RipperRarity } from "@/utils/types/riot-p2e";
 
 type RipperAvatarProps = {
   size: number;
@@ -72,7 +72,7 @@ export const RipperAvatar: React.FC<RipperAvatarProps> = ({
         </View>
       )}
 
-      {rarity && (
+      {!!rarity && (
         <View style={[styles.labelContainer, { bottom: 0 }]}>
           <BrandText style={[styles.label, { color: rarityColor }]}>
             {rarity}

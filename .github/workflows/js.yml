@@ -5,17 +5,18 @@ on:
     branches:
       - main
   pull_request:
+  merge_group:
 
 jobs:
-  lint-and-build:
+  check-js:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           cache: "yarn"
-          node-version: 18
+          node-version-file: ".nvmrc"
 
       - name: Install node modules
         run: yarn
@@ -23,23 +24,8 @@ jobs:
       - name: Lint
         run: make lint.js
 
-      - name: Validate networks
-        run: make validate-networks
-
-      - name: Validate expo config
-        run: npx expo-doctor
-
-      - name: Check for unused environment variables
-        run: npx ts-node packages/scripts/unusedEnv.ts
-
-      - name: Check dependencies
-        run: npx depcheck
-
       - name: Build web app
-        run: yarn expo export:web
+        run: yarn expo export -p web
 
       - name: Check that there is no diff
         run: git diff --exit-code
-
-      - name: Check typescript unused exports
-        run: make unused-exports

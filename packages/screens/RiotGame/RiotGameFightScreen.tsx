@@ -5,19 +5,22 @@ import { FightSection } from "./component/FightSection";
 import { FightSectionHeader } from "./component/FightSectionHeader";
 import { GameContentView } from "./component/GameContentView";
 import addCircleSFilledSVG from "../../../assets/icons/add-circle-filled.svg";
-import { PrimaryButtonOutline } from "../../components/buttons/PrimaryButtonOutline";
-import { SpacerColumn } from "../../components/spacer";
-import { Squad } from "../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
-import { useSquadStakingConfig } from "../../hooks/riotGame/useSquadStakingConfig";
-import { useSquadStakingSquadsV2 } from "../../hooks/riotGame/useSquadStakingSquadsV2";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { useAppNavigation } from "../../utils/navigation";
-import { yellowDefault } from "../../utils/style/colors";
-import { layout } from "../../utils/style/layout";
 
-const FIGHT_BG_URI =
-  "https://bafybeigv6eunkzlb4a7je6c5ezrcxgr2bv2guuwogin6mbsmdl2i6mgvwq.ipfs.cf-ipfs.com/";
+import { PrimaryButtonOutline } from "@/components/buttons/PrimaryButtonOutline";
+import { SpacerColumn } from "@/components/spacer";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useSquadStakingConfig } from "@/hooks/riotGame/useSquadStakingConfig";
+import { useSquadStakingSquads } from "@/hooks/riotGame/useSquadStakingSquads";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { web3ToWeb2URI } from "@/utils/ipfs";
+import { yellowDefault } from "@/utils/style/colors";
+import { layout } from "@/utils/style/layout";
+import { SquadInfo } from "@/utils/types/riot-p2e";
+
+const FIGHT_BG_URI = web3ToWeb2URI(
+  "ipfs://bafybeigv6eunkzlb4a7je6c5ezrcxgr2bv2guuwogin6mbsmdl2i6mgvwq",
+);
 
 export const RiotGameFightScreen = () => {
   const navigation = useAppNavigation();
@@ -29,13 +32,13 @@ export const RiotGameFightScreen = () => {
     data: squads,
     isInitialLoading,
     refetch: fetchSquads,
-  } = useSquadStakingSquadsV2(selectedWallet?.userId);
+  } = useSquadStakingSquads(selectedWallet?.userId);
   const isSquadsLoaded = !!isInitialLoading;
 
   const [now, setNow] = useState<number>(0);
 
   const isCompleted = useCallback(
-    (squad: Squad) => now - squad.end_time * 1000 >= 0,
+    (squad: SquadInfo) => now - squad.endTime * 1000 >= 0,
     [now],
   );
 
@@ -84,7 +87,7 @@ export const RiotGameFightScreen = () => {
           title="Ongoing fights"
           total={ongoingSquads.length}
           hasStakeButton={
-            squads?.length < (squadStakingConfig?.squad_count_limit || 0)
+            squads?.length < (squadStakingConfig?.squadCountLimit || 0)
           }
         />
       )}
@@ -92,11 +95,11 @@ export const RiotGameFightScreen = () => {
       {ongoingSquads.map((squad) => {
         return (
           <FightSection
-            key={squad.start_time}
+            key={squad.startTime}
             squad={squad}
             onCloseClaimModal={onCloseClaimModal}
             now={now}
-            cooldown={squadStakingConfig?.cooldown_period || 0}
+            cooldown={squadStakingConfig?.cooldownPeriod || 0}
           />
         );
       })}
@@ -108,7 +111,7 @@ export const RiotGameFightScreen = () => {
           title="Victories"
           total={completedSquads.length}
           hasStakeButton={
-            squads?.length < (squadStakingConfig?.squad_count_limit || 0)
+            squads?.length < (squadStakingConfig?.squadCountLimit || 0)
           }
         />
       )}
@@ -116,11 +119,11 @@ export const RiotGameFightScreen = () => {
       {completedSquads.map((squad) => {
         return (
           <FightSection
-            key={squad.start_time}
+            key={squad.startTime}
             squad={squad}
             onCloseClaimModal={onCloseClaimModal}
             now={now}
-            cooldown={squadStakingConfig?.cooldown_period || 0}
+            cooldown={squadStakingConfig?.cooldownPeriod || 0}
           />
         );
       })}

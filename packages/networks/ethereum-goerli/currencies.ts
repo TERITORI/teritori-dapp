@@ -6,8 +6,9 @@ export const ethereumGoerliCurrencies: CurrencyInfo[] = [
     denom: "0x0000000000000000000000000000000000000000", // native currency: wei
     displayName: "GoerliETH",
     decimals: 18,
+    variant: "ethereum",
     coingeckoId: "ethereum",
-    icon: "icons/networks/ethereum-circle.svg",
+    icon: "ethereum-circle.svg",
     kind: "native",
     color: currencyETHcolor,
   },

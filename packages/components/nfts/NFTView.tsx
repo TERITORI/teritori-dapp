@@ -1,22 +1,27 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { isEqual } from "lodash";
-import React, { RefObject, memo, useMemo, useRef, useState } from "react";
+import React, { memo, useMemo, useState } from "react";
 import { View, StyleProp, StyleSheet, Pressable } from "react-native";
 import { useSelector } from "react-redux";
 
 import { NFTTransferModal } from "./NFTTransferModal";
+import burnSVG from "../../../assets/icons/burn.svg";
 import checkMark from "../../../assets/icons/checkmark-marketplace.svg";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
-import footerSVG from "../../../assets/icons/footer-regular.svg";
 import gridSVG from "../../../assets/icons/grid.svg";
-import octagonSVG from "../../../assets/icons/octagon.svg";
-import raffleSVG from "../../../assets/icons/raffle.svg";
 import sendSVG from "../../../assets/icons/send.svg";
 import { NFT } from "../../api/marketplace/v1/marketplace";
-import { useDropdowns } from "../../context/DropdownsProvider";
+import { useDropdowns } from "../../hooks/useDropdowns";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { parseUserId } from "../../networks";
+import {
+  NetworkFeature,
+  getCollectionId,
+  getNetworkFeature,
+  parseNftId,
+  parseUserId,
+} from "../../networks";
 import {
   addSelected,
   removeSelected,
@@ -45,6 +50,16 @@ import { SecondaryButton } from "../buttons/SecondaryButton";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { TeritoriNftClient } from "@/contracts-clients/teritori-nft/TeritoriNft.client";
+import { popularCollectionsQueryKey } from "@/hooks/marketplace/usePopularCollections";
+import { useNFTBurnerAuthorizedCollections } from "@/hooks/nft-burner/useNFTBurnerAuthorizedCollections";
+import { nftBurnerTotalQueryKey } from "@/hooks/nft-burner/useNFTBurnerTotal";
+import { nftBurnerUserCountQueryKey } from "@/hooks/nft-burner/useNFTBurnerUserCount";
+import { collectionStatsQueryKey } from "@/hooks/useCollectionStats";
+import { nftsQueryKey } from "@/hooks/useNFTs";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
+
 // NOTE: we put content in a memoized component to only rerender the container when the window width changes
 
 export const NFTView: React.FC<{
@@ -54,8 +69,6 @@ export const NFTView: React.FC<{
   const isMobile = useIsMobile();
   const cardWidth = isMobile ? 220 : 250;
   const flatStyle = StyleSheet.flatten(style);
-
-  const dropdownRef = useRef<View>(null);
 
   // put margins on touchable opacity
   const {
@@ -81,7 +94,6 @@ export const NFTView: React.FC<{
   return (
     <>
       <View
-        ref={dropdownRef}
         style={{
           margin,
           marginBottom,
@@ -98,6 +110,7 @@ export const NFTView: React.FC<{
             {
               width: widthNumber,
               padding: 0,
+              flex: 1,
             },
             localSelected && {
               backgroundColor: neutral22,
@@ -106,9 +119,9 @@ export const NFTView: React.FC<{
         >
           <NFTViewContent
             nft={nft}
-            dropdownRef={dropdownRef}
             mobileMode={isMobile}
             localSelected={localSelected}
+            size={width || widthNumber}
           />
         </TertiaryBox>
       </View>
@@ -118,10 +131,10 @@ export const NFTView: React.FC<{
 
 const NFTViewContent: React.FC<{
   nft: NFT;
-  dropdownRef: RefObject<View>;
   mobileMode: boolean;
   localSelected: boolean;
-}> = memo(({ nft, dropdownRef, mobileMode, localSelected }) => {
+  size: number | undefined;
+}> = memo(({ nft, mobileMode, localSelected, size }) => {
   const insideMargin = layout.spacing_x2;
   const selectedWallet = useSelectedWallet();
   const dispatch = useAppDispatch();
@@ -134,6 +147,8 @@ const NFTViewContent: React.FC<{
       dispatch(removeSelected(nft.id));
     }
   };
+
+  const imgRenderSize = size ? size - insideMargin * 2 : 250;
 
   const isOwner = nft.ownerId === selectedWallet?.userId;
   return (
@@ -151,11 +166,7 @@ const NFTViewContent: React.FC<{
           handleClick(nft, localSelected);
         }}
       >
-        <NFTViewHeader
-          nft={nft}
-          localSelected={localSelected}
-          dropdownRef={dropdownRef}
-        />
+        <NFTViewHeader nft={nft} localSelected={localSelected} />
         <OmniLink
           to={{
             screen: "NFTDetail",
@@ -163,15 +174,15 @@ const NFTViewContent: React.FC<{
           }}
         >
           <ImageWithTextInsert
-            size={250}
+            sourceSize={250}
             imageURL={nft.imageUri}
             textInsert={nft.textInsert}
             style={{
               marginTop: 15,
               marginBottom: 20,
               borderRadius: 12,
-              width: "100%",
-              aspectRatio: 1,
+              width: imgRenderSize,
+              height: imgRenderSize,
             }}
           />
           <BrandText
@@ -220,16 +231,15 @@ const NFTViewContent: React.FC<{
 const NFTViewHeader: React.FC<{
   nft: NFT;
   localSelected: boolean;
-  dropdownRef: RefObject<View>;
-}> = memo(({ nft, localSelected, dropdownRef }) => {
+}> = memo(({ nft, localSelected }) => {
   const selectedWallet = useSelectedWallet();
   const userInfo = useNSUserInfo(nft.ownerId);
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
-  const isOwner = nft.ownerId === selectedWallet?.userId;
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
+  const isOwner = !!selectedWallet && nft.ownerId === selectedWallet?.userId;
   const isOwnerAndNotListed = isOwner && !nft.isListed;
   const [isTransferNFTVisible, setIsTransferNFTVisible] =
     useState<boolean>(false);
+
   return (
     <View
       style={{
@@ -284,11 +294,15 @@ const NFTViewHeader: React.FC<{
         </View>
       )}
       {isOwnerAndNotListed && (
-        <View style={{ position: "relative", zIndex: 1000 }}>
-          <Pressable onPress={() => onPressDropdownButton(dropdownRef)}>
+        <View
+          style={{ position: "relative", zIndex: 1000 }}
+          ref={dropdownRef}
+          collapsable={false}
+        >
+          <Pressable onPress={() => setDropdownState(!isDropdownOpen)}>
             <SVG source={dotsCircleSVG} height={32} width={32} />
           </Pressable>
-          {isDropdownOpen(dropdownRef) && (
+          {isDropdownOpen && (
             <View
               style={{
                 position: "absolute",
@@ -303,43 +317,26 @@ const NFTViewHeader: React.FC<{
                 minWidth: 250,
               }}
             >
-              <DropdownOption
-                onPress={closeOpenedDropdown}
-                icon={octagonSVG}
-                isComingSoon
-                label="Set as Avatar"
-              />
-              <SpacerColumn size={0.5} />
               <OmniLink
                 to={{
                   screen: "NFTDetail",
                   params: { id: nft.id },
                 }}
               >
-                <DropdownOption icon={gridSVG} label="List this NFT" />
+                <DropdownOption icon={gridSVG} label="Sell" />
               </OmniLink>
               <SpacerColumn size={0.5} />
               <DropdownOption
-                onPress={closeOpenedDropdown}
-                icon={raffleSVG}
-                isComingSoon
-                label="Create Raffle with this NFT"
-              />
-              <SpacerColumn size={0.5} />
-              <DropdownOption
                 onPress={() => {
-                  closeOpenedDropdown();
+                  setDropdownState(false);
                   setIsTransferNFTVisible(true);
                 }}
                 icon={sendSVG}
-                label="Send & Transfer this NFT"
+                label="Send"
               />
-              <SpacerColumn size={0.5} />
-              <DropdownOption
-                onPress={closeOpenedDropdown}
-                icon={footerSVG}
-                isComingSoon
-                label="Put this NFT in the Rioters Footer"
+              <RecycleSection
+                nft={nft}
+                closeDropdown={() => setDropdownState(false)}
               />
             </View>
           )}
@@ -354,6 +351,84 @@ const NFTViewHeader: React.FC<{
     </View>
   );
 });
+
+const RecycleSection: React.FC<{ nft: NFT; closeDropdown: () => void }> = memo(
+  ({ nft, closeDropdown }) => {
+    const selectedWallet = useSelectedWallet();
+    const { wrapWithFeedback, setLoadingFullScreen } = useFeedbacks();
+    const burnerFeature = getNetworkFeature(
+      nft.networkId,
+      NetworkFeature.CosmWasmNFTsBurner,
+    );
+    const { data: authorizedCollections } = useNFTBurnerAuthorizedCollections(
+      nft.networkId,
+    );
+    const queryClient = useQueryClient();
+
+    const showRecycle =
+      !!burnerFeature &&
+      (authorizedCollections || []).includes(nft.nftContractAddress);
+    if (!showRecycle || !selectedWallet) {
+      return null;
+    }
+
+    return (
+      <>
+        <SpacerColumn size={0.5} />
+        <DropdownOption
+          onPress={wrapWithFeedback(
+            async () => {
+              setLoadingFullScreen(true);
+              try {
+                closeDropdown();
+                const [, mintContractAddress, tokenId] = parseNftId(nft.id);
+                if (!mintContractAddress || !tokenId) {
+                  throw new Error("Invalid NFT ID");
+                }
+                const cosmWasmClient = await getKeplrSigningCosmWasmClient(
+                  nft.networkId,
+                  "low",
+                );
+                const collectionClient = new TeritoriNftClient(
+                  cosmWasmClient,
+                  selectedWallet.address,
+                  nft.nftContractAddress,
+                );
+                await collectionClient.sendNft({
+                  contract: burnerFeature.burnerContractAddress,
+                  tokenId,
+                  msg: "",
+                });
+                await Promise.all([
+                  queryClient.invalidateQueries(nftsQueryKey()),
+                  queryClient.invalidateQueries(
+                    nftBurnerTotalQueryKey(nft.networkId),
+                  ),
+                  queryClient.invalidateQueries(
+                    nftBurnerUserCountQueryKey(selectedWallet.userId),
+                  ),
+                  queryClient.invalidateQueries(
+                    collectionStatsQueryKey(
+                      getCollectionId(nft.networkId, mintContractAddress),
+                    ),
+                  ),
+                  queryClient.invalidateQueries(
+                    popularCollectionsQueryKey(nft.networkId),
+                  ),
+                ]);
+              } finally {
+                setLoadingFullScreen(false);
+              }
+            },
+            { title: "Recycled NFT!" },
+          )}
+          icon={burnSVG}
+          label="Recycle"
+        />
+      </>
+    );
+  },
+);
 
 const NFTViewFooter: React.FC<{ nft: NFT; localSelected: boolean }> = memo(
   ({ nft, localSelected }) => {

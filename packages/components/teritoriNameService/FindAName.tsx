@@ -6,6 +6,8 @@ import { NameStatus } from "./NameStatus";
 import { neutral17 } from "../../utils/style/colors";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 
+import { LETTERS_REGEXP } from "@/utils/regex";
+
 // TODO: Maybe it can be a screen that is called in Register and Explore flow... TNSRegisterScreen.tsx and TNSExploreScreen.tsx have duplicated code
 
 // A title + Name status (minted or available) + NFT card + optional buttons
@@ -37,7 +39,7 @@ export const FindAName: React.FC<{
         style={{ marginBottom: 12 }}
         onChangeText={setName}
         value={name || ""}
-        regexp={new RegExp(/^[a-zA-Z]+$/)}
+        regexp={new RegExp(LETTERS_REGEXP)}
         squaresBackgroundColor={neutral17}
       />
 
@@ -54,6 +56,7 @@ export const FindAName: React.FC<{
                 {
                   marginTop: 12,
                   marginBottom: children ? 20 : 0,
+                  flex: 1,
                 },
                 nameNFTStyle,
               ]}

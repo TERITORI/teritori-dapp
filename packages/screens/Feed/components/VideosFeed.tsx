@@ -1,22 +1,43 @@
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 import { ScrollView, useWindowDimensions } from "react-native";
 
 import { FeedHeader } from "./FeedHeader";
-import { PostsRequest } from "../../../api/feed/v1/feed";
-import { MobileTitle } from "../../../components/ScreenContainer/ScreenContainerMobile";
-import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { FeedVideosList } from "../../../components/video/FeedVideosList";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
+
+import { PostsRequest } from "@/api/feed/v1/feed";
+import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
+import { FeedVideosList } from "@/components/video/FeedVideosList";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   RESPONSIVE_BREAKPOINT_S,
   screenContentMaxWidth,
-} from "../../../utils/style/layout";
+} from "@/utils/style/layout";
+import { PostCategory } from "@/utils/types/feed";
 
 export const VideosFeed: FC = () => {
   const { width: windowWidth } = useWindowDimensions();
   const { width, height } = useMaxResolution();
   const isMobile = useIsMobile();
+  const selectedNetworkId = useSelectedNetworkId();
+
+  const feedRequest = useMemo(() => {
+    const req: Partial<PostsRequest> = {
+      filter: {
+        networkId: selectedNetworkId,
+        categories: [PostCategory.Video],
+        user: "",
+        mentions: [],
+        hashtags: [],
+        premiumLevelMin: 0,
+        premiumLevelMax: -1,
+      },
+      limit: 10,
+      offset: 0,
+    };
+    return req;
+  }, [selectedNetworkId]);
+
   return (
     <ScrollView style={{ height }}>
       {/* ScreenContainer in FeedScreen has noScroll, so we need to add MobileTitle here */}
@@ -34,15 +55,4 @@ export const VideosFeed: FC = () => {
       />
     </ScrollView>
   );
-};
-
-const feedRequest: Partial<PostsRequest> = {
-  filter: {
-    categories: [PostCategory.Video],
-    user: "",
-    mentions: [],
-    hashtags: [],
-  },
-  limit: 10,
-  offset: 0,
 };

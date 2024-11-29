@@ -1,4 +1,3 @@
-import Clipboard from "@react-native-clipboard/clipboard";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 
@@ -9,15 +8,17 @@ import copySVG from "../../assets/icons/copy.svg";
 import { useFeedbacks } from "../context/FeedbacksProvider";
 import { neutral22 } from "../utils/style/colors";
 
+import Clipboard from "@/modules/Clipboard";
+
 export const useCopyToClipboard = () => {
   const { setToastSuccess } = useFeedbacks();
 
-  const copyToClipboard = (text: string, successText?: string) => {
+  const copyToClipboard = async (text: string, successText?: string) => {
     setToastSuccess({
       title: successText || "Copied",
       message: "",
     });
-    Clipboard.setString(text);
+    Clipboard.setStringAsync(text);
   };
 
   return { copyToClipboard };

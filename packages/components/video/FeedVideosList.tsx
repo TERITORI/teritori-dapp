@@ -5,27 +5,35 @@ import { UploadVideoButton } from "./UploadVideoButton";
 import { UploadVideoModal } from "./UploadVideoModal";
 import { VideoCard } from "./VideoCard";
 import { Post, PostsRequest } from "../../api/feed/v1/feed";
+import { useWalletControl } from "../../context/WalletControlProvider";
 import {
   combineFetchFeedPages,
   useFetchFeed,
 } from "../../hooks/feed/useFetchFeed";
+import { useAppMode } from "../../hooks/useAppMode";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+import { NetworkFeature } from "../../networks";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
+import { ZodSocialFeedVideoMetadata } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 import { GridList } from "../layout/GridList";
-import { ZodSocialFeedVideoMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
+
+import { Spinner } from "@/components/Spinner";
+import { DeepPartial } from "@/utils/typescript";
 
 const minCardWidth = 261;
 
 export const FeedVideosList: React.FC<{
   title: string;
-  req: Partial<PostsRequest>;
+  req: DeepPartial<PostsRequest>;
   allowUpload?: boolean;
   style?: StyleProp<ViewStyle>;
 }> = ({ title, req, allowUpload, style }) => {
+  const [appMode] = useAppMode();
   const selectedWallet = useSelectedWallet();
+  const { showConnectWalletModal } = useWalletControl();
   const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
 
@@ -51,8 +59,37 @@ export const FeedVideosList: React.FC<{
     }
   };
 
+  const onPressUploadVideo = async () => {
+    if (!selectedWallet?.address || !selectedWallet.connected) {
+      showConnectWalletModal({
+        forceNetworkFeature: NetworkFeature.SocialFeed,
+        action: "Publish a Video",
+      });
+      return;
+    }
+    setOpenUploadModal(true);
+  };
+
   if (!data && (isLoading || isFetching))
-    return <View style={{ minWidth: minCardWidth }} />;
+    return (
+      <View
+        style={{
+          minWidth: minCardWidth,
+        }}
+      >
+        {appMode === "mini" && (
+          <View
+            style={{
+              alignItems: "center",
+              marginVertical: layout.spacing_x1_5,
+            }}
+          >
+            <Spinner />
+          </View>
+        )}
+      </View>
+    );
+
   return (
     <View style={[containerCStyle, style]}>
       <View style={oneLineCStyle}>
@@ -60,13 +97,17 @@ export const FeedVideosList: React.FC<{
           {title}
         </BrandText>
 
-        {allowUpload && (
-          <UploadVideoButton onPress={() => setOpenUploadModal(true)} />
-        )}
+        {allowUpload && <UploadVideoButton onPress={onPressUploadVideo} />}
       </View>
-      <View style={[contentGroupCStyle]}>
+      <View
+        style={
+          appMode === "mini"
+            ? { marginTop: layout.spacing_x2, paddingBottom: 100 } //paddingBottom :100 to make last card visible completely, otherwise gets hidden behind bottom tabs
+            : [contentGroupCStyle]
+        }
+      >
         <GridList<Post>
-          keyExtractor={(item) => `video-${item.identifier}`}
+          keyExtractor={(item) => item.id}
           data={videos}
           minElemWidth={minCardWidth}
           renderItem={({ item }, elemSize) => (
@@ -77,6 +118,7 @@ export const FeedVideosList: React.FC<{
             />
           )}
           onEndReached={onEndReached}
+          noFixedHeight //FIXME: adding noFixedHeight breaks pagination ie.infinite pagination, without it scroll won't work
         />
       </View>
 
@@ -104,4 +146,5 @@ const contentGroupCStyle: ViewStyle = {
   justifyContent: "center",
   flexWrap: "wrap",
   marginTop: layout.spacing_x2,
+  paddingBottom: layout.spacing_x4,
 };

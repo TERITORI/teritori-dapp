@@ -13,6 +13,7 @@ const (
 	ActivityKindTrade          = ActivityKind("trade")
 	ActivityKindList           = ActivityKind("list")
 	ActivityKindCancelListing  = ActivityKind("cancel-listing")
+	ActivityKindRequestMint    = ActivityKind("request-mint")
 	ActivityKindMint           = ActivityKind("mint")
 	ActivityKindBurn           = ActivityKind("burn")
 	ActivityKindSendNFT        = ActivityKind("send-nft")
@@ -22,10 +23,15 @@ const (
 
 type Activity struct {
 	// ID is network-dependent
-	// Teritori: tori-<tx_hash>-<msg_index>
-	ID   networks.ActivityID
-	Kind ActivityKind `gorm:"index"`
-	Time time.Time    `gorm:"index"`
+	// Teritori: tori-<tx_hash>-<msg_index>[-<activity_index>]
+	ID           networks.ActivityID
+	Kind         ActivityKind    `gorm:"index"`
+	Time         time.Time       `gorm:"index"`
+	NetworkID    string          `gorm:"index"`
+	NFTID        *networks.NFTID `gorm:"index"`
+	NFT          *NFT
+	CollectionID *networks.CollectionID `gorm:"index"`
+	Collection   *Collection
 
 	// "has one" relations
 	Listing        *Listing
@@ -36,10 +42,7 @@ type Activity struct {
 	SendNFT        *SendNFT
 	TransferNFT    *TransferNFT
 	UpdateNFTPrice *UpdateNFTPrice
-
-	// "belongs to" relations
-	NFTID networks.NFTID `gorm:"index"`
-	NFT   *NFT
+	RequestMint    *RequestMint
 }
 
 type Listing struct {
@@ -48,11 +51,15 @@ type Listing struct {
 	PriceDenom string
 	USDPrice   float64
 	SellerID   networks.UserID
+
+	NetworkID string `gorm:"index"`
 }
 
 type CancelListing struct {
 	ActivityID networks.ActivityID `gorm:"primaryKey"`
 	SellerID   networks.UserID
+
+	NetworkID string `gorm:"index"`
 }
 
 type UpdateNFTPrice struct {
@@ -61,6 +68,8 @@ type UpdateNFTPrice struct {
 	Price      string
 	PriceDenom string
 	USDPrice   float64
+
+	NetworkID string `gorm:"index"`
 }
 
 type Trade struct {
@@ -70,6 +79,8 @@ type Trade struct {
 	USDPrice   float64
 	BuyerID    networks.UserID
 	SellerID   networks.UserID
+
+	NetworkID string `gorm:"index"`
 }
 
 type Mint struct {
@@ -78,21 +89,41 @@ type Mint struct {
 	PriceDenom string
 	USDPrice   float64
 	BuyerID    networks.UserID
+
+	NetworkID string `gorm:"index"`
+}
+
+type RequestMint struct {
+	ActivityID   networks.ActivityID `gorm:"primaryKey"`
+	Price        string
+	PriceDenom   string
+	USDPrice     float64
+	CollectionID networks.CollectionID `gorm:"index"`
+	BuyerID      networks.UserID       `gorm:"index"`
+	Minted       bool                  `gorm:"index"`
+
+	NetworkID string `gorm:"index"`
 }
 
 type Burn struct {
 	ActivityID networks.ActivityID `gorm:"primaryKey"`
 	BurnerID   networks.UserID
+
+	NetworkID string `gorm:"index"`
 }
 
 type SendNFT struct {
 	ActivityID networks.ActivityID `gorm:"primaryKey"`
 	Sender     networks.UserID
 	Receiver   networks.UserID
+
+	NetworkID string `gorm:"index"`
 }
 
 type TransferNFT struct {
 	ActivityID networks.ActivityID `gorm:"primaryKey"`
 	Sender     networks.UserID
 	Receiver   networks.UserID
+
+	NetworkID string `gorm:"index"`
 }

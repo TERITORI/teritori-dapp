@@ -17,8 +17,6 @@ import {
   NetworkKind,
   UserKind,
 } from "../../networks";
-import { DepositWithdrawModal } from "../../screens/WalletManager/components/DepositWithdrawModal";
-import { useAppNavigation } from "../../utils/navigation";
 import {
   gradientColorBlue,
   gradientColorDarkerBlue,
@@ -41,6 +39,9 @@ import { SVG } from "../SVG";
 import { SecondaryButton } from "../buttons/SecondaryButton";
 import { SendModal } from "../modals/SendModal";
 
+import { DepositWithdrawModal } from "@/components/modals/DepositWithdrawModal";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+
 const TokenBalance: React.FC = () => {
   const selectedWallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
@@ -48,7 +49,7 @@ const TokenBalance: React.FC = () => {
     selectedNetworkId,
     selectedWallet?.address,
   );
-  const balances = useBalances(selectedNetworkId, selectedWallet?.address);
+  const { balances } = useBalances(selectedNetworkId, selectedWallet?.address);
   const GAUGE_WIDTH = 300;
 
   const availableUSDBalance = useMemo(

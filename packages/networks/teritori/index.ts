@@ -1,4 +1,5 @@
 import { teritoriCurrencies } from "./currencies";
+import { CosmWasmNFTsBurner } from "../features";
 import { NetworkKind, CosmosNetworkInfo, NetworkFeature } from "../types";
 
 const nameServiceContractAddress =
@@ -6,22 +7,32 @@ const nameServiceContractAddress =
 const riotContractAddressGen1 =
   "tori1gflccmghzfscmxl95z43v36y0rle8v9x8kvt9na03yzywtw86amsj9nf37";
 
+const burnCapitalFeature: CosmWasmNFTsBurner = {
+  type: NetworkFeature.CosmWasmNFTsBurner,
+  burnerContractAddress:
+    "tori16tlfw7uq73d5n8j5tl0zl367c58f032j50jgxr3e7f09gez3xq5qvcrxy7",
+};
+
 export const teritoriNetwork: CosmosNetworkInfo = {
   id: "teritori",
   kind: NetworkKind.Cosmos,
   chainId: "teritori-1",
   displayName: "Teritori",
-  icon: "icons/networks/teritori.svg",
+  icon: "teritori.svg",
   features: [
     NetworkFeature.NFTMarketplace,
+    NetworkFeature.RiotP2E,
     NetworkFeature.Organizations,
     NetworkFeature.SocialFeed,
     NetworkFeature.UPP,
     NetworkFeature.NameService,
     NetworkFeature.BurnTokens,
-    NetworkFeature.NFTLaunchpad,
-    NetworkFeature.RiotP2E,
+    NetworkFeature.CosmWasmNFTLaunchpad,
+    NetworkFeature.NFTMarketplaceLeaderboard,
+    NetworkFeature.CosmWasmNFTsBurner,
   ],
+  featureObjects: [burnCapitalFeature],
+  registryName: "teritori",
   overrides: "cosmos-registry:teritori",
   walletUrlForStaking: "https://app.teritori.com/staking",
   currencies: teritoriCurrencies,
@@ -62,8 +73,6 @@ export const teritoriNetwork: CosmosNetworkInfo = {
     "tori1kvjk9m7dk0es35y6ah0k28llllvle3n7xgvh0gh568ta0paf8awsml2xev",
   distributorContractAddress:
     "tori1mnem0rhjaxcsghe0xw692xysra63xwwdee2wth9s0rkfwh4dxpaq76qqre",
-  riotersFooterContractAddress:
-    "tori1m6g3l3j5t988zwmp965hrhsxvm8jrkf2ulw4gmwj8hx8pd84tvcqeearsd",
   secondaryDuringMintList: [
     nameServiceContractAddress,
     riotContractAddressGen1,
@@ -73,11 +82,11 @@ export const teritoriNetwork: CosmosNetworkInfo = {
   excludeFromLaunchpadList: [riotContractAddressGen1],
   socialFeedContractAddress:
     "tori1lxf8agg0wd2m7n2ultl0yx337jw23puh0mlkkw5vhtnkkfettwfqya7kpp",
-  daoFactoryContractAddress:
+  cwAdminFactoryContractAddress:
     "tori16rxh5hgukhdq8rvm2j3t6v483dcqguwp4l825vlwz5pmfpw7s4rs45nnca",
   daoCoreCodeId: 27,
   daoPreProposeSingleCodeId: 28,
   daoProposalSingleCodeId: 31,
-  daoCw4GroupCodeId: 32,
+  cw4GroupCodeId: 32,
   daoVotingCw4CodeId: 33,
 };

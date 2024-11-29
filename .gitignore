@@ -10,6 +10,11 @@ web-build/
 .idea/
 .vscode/
 /cache/
+/ios
+/android
+/app-build/
+
+gnobuild/
 
 # macOS
 .DS_Store
@@ -77,6 +82,9 @@ buck-out/
 # Expo
 .expo/
 
+# Substreams
+substreams-*/target
+
 # @end expo-cli
 
 
@@ -85,7 +93,18 @@ buck-out/
 
 
 # weshnet
-/temp/
+/weshd/ios/Frameworks/
+/weshd/android/libs/
+/weshd/temp/
+temp/
 
 # eslint
 /.eslintcache
+
+# rust
+/target/
+artifacts
+rust/cw-contracts/*/target
+
+# cypress
+cypress/screenshots

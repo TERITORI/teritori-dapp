@@ -7,7 +7,6 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { SidebarButton } from "./components/SidebarButton";
-import { SidebarType } from "./types";
 import addSVG from "../../../assets/icons/add-circle.svg";
 import { useSidebar } from "../../context/SidebarProvider";
 import { useSelectedNetworkKind } from "../../hooks/useSelectedNetwork";
@@ -19,6 +18,7 @@ import {
   MOBILE_HEADER_HEIGHT,
   MOBILE_SIDEBAR_MAX_WIDTH,
 } from "../../utils/style/layout";
+import { SidebarType } from "../../utils/types/sidebar";
 import { SpacerColumn } from "../spacer";
 
 const SpringConfig: WithSpringConfig = {
@@ -48,7 +48,7 @@ export const SidebarMobile: FC = () => {
   );
 
   const onRouteChange = (name: SidebarType["route"]) => {
-    // @ts-expect-error
+    // @ts-expect-error: description todo
     navigation.navigate(name);
   };
 

@@ -1,6 +1,11 @@
 CANDYMACHINE_REPO=teritori-nfts
 BUNKER_MINTER_PACKAGE=teritori-bunker-minter
 GO?=go
+GOFMT?=$(shell $(GO) env GOROOT)/bin/gofmt
+CAT := $(if $(filter $(OS),Windows_NT),type,cat)
+
+COSMWASM_CONTRACTS_DIR=rust/cw-contracts
+INTERNAL_COSMWASM_CONTRACTS=$(wildcard $(COSMWASM_CONTRACTS_DIR)/*)
 
 TOKEN_REPO=teritori-nfts
 TOKEN_PACKAGE=teritori-nft
@@ -11,12 +16,6 @@ DISTRIBUTOR_PACKAGE=teritori-distributor
 NAME_SERVICE_REPO=teritori-name-service
 NAME_SERVICE_PACKAGE=teritori-name-service
 
-RIOTER_FOOTER_REPO=rioters-footer-nft
-RIOTER_FOOTER_PACKAGE=rioter-footer-nft
-
-VAULT_REPO=teritori-vault
-VAULT_PACKAGE=teritori-nft-vault
-
 ADDR_LIST_REPO=cw_addr_list
 ADDR_LIST_PACKAGE=cw-address-list
 
@@ -26,6 +25,9 @@ CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
 DOCKER_REGISTRY=rg.nl-ams.scw.cloud/teritori
 INDEXER_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-indexer:$(shell git rev-parse --short HEAD)
+EVM_INDEXER_IMAGE=$(DOCKER_REGISTRY)/evm-indexer:$(shell git rev-parse --short HEAD)
+GNO_INDEXER_DOCKER_IMAGE=$(DOCKER_REGISTRY)/gno-indexer:$(shell git rev-parse --short HEAD)
+FLUSH_DATA_IMAGE=$(DOCKER_REGISTRY)/flush-data:$(shell git rev-parse --short HEAD)
 BACKEND_DOCKER_IMAGE=$(DOCKER_REGISTRY)/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
 PRICES_SERVICE_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-service:$(shell git rev-parse --short HEAD)
 PRICES_OHLC_REFRESH_DOCKER_IMAGE=$(DOCKER_REGISTRY)/prices-ohlc-refresh:$(shell git rev-parse --short HEAD)
@@ -33,9 +35,25 @@ P2E_DOCKER_IMAGE=$(DOCKER_REGISTRY)/p2e-update-leaderboard:$(shell git rev-parse
 FEED_DOCKER_IMAGE=$(DOCKER_REGISTRY)/feed-clean-pinata-keys:$(shell git rev-parse --short HEAD)
 MULTISIG_DOCKER_IMAGE=$(DOCKER_REGISTRY)/cosmos-multisig-backend:$(shell git rev-parse --short HEAD)
 
+GNODEV=gnodev --add-account g193vp9tjhfpldvgg3gn433ayv8pn7rtfv8shyeq $$(find gno -name gno.mod -type f -exec dirname {} \;)
+GNODEV_E2E=$(GNODEV) --unsafe-api --server-mode
+
+
+ARCH := $(shell uname -m)
+
+ifeq ($(ARCH),x86_64)
+    ARCH := amd64
+else ifeq ($(ARCH),aarch64)
+    ARCH := arm64
+endif
+
 node_modules: package.json yarn.lock
 	yarn
 	touch $@
+
+.PHONY: go-mod-tidy
+go-mod-tidy:
+	go mod tidy
 
 .PHONY: generate
 generate: generate.protobuf generate.graphql generate.contracts-clients generate.go-networks networks.json
@@ -56,6 +74,7 @@ packages/api/weshnet: node_modules
 .PHONY: generate.graphql
 generate.graphql:
 	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/holagql/genqlient.yaml
+	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/gnoindexerql/genqlient.yaml
 
 .PHONY: generate.graphql-thegraph
 generate.graphql-thegraph:
@@ -63,7 +82,7 @@ generate.graphql-thegraph:
 	go run github.com/Khan/genqlient@85e2e8dffd211c83a2be626474993ef68e44a242 go/pkg/thegraph/genqlient.yaml
 
 .PHONY: lint
-lint: lint.buf lint.js
+lint: lint.buf lint.js lint.rust
 
 .PHONY: lint.buf
 lint.buf:
@@ -74,20 +93,33 @@ lint.buf:
 lint.js: node_modules
 	yarn lint
 
+.PHONY: lint.rust
+lint.rust:
+	cargo clippy
+
+.PHONY: fmt.rust
+fmt.rust:
+	cargo fmt
+
 .PHONY: go/pkg/holagql/holaplex-schema.graphql
 go/pkg/holagql/holaplex-schema.graphql:
 	rover graph introspect https://graph.65.108.73.219.nip.io/v1 > $@
+
+.PHONY: go/pkg/gnoindexerql/indexer-schema.graphql
+go/pkg/gnoindexerql/indexer-schema.graphql:
+	rover graph introspect http://localhost:8546/graphql/query > $@
 
 .PHONY: docker.backend
 docker.backend:
 	docker build . -f go/cmd/teritori-dapp-backend/Dockerfile -t teritori/teritori-dapp-backend:$(shell git rev-parse --short HEAD)
 
 .PHONY: generate.contracts-clients
-generate.contracts-clients: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(ADDR_LIST_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RAKKI_PACKAGE)
+generate.contracts-clients: generate.internal-contracts-clients $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE) $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE)
 
 .PHONY: generate.go-networks
 generate.go-networks: node_modules validate-networks
-	npx ts-node packages/scripts/generateGoNetworks.ts | gofmt > go/pkg/networks/networks.gen.go
+	npx tsx packages/scripts/generateGoNetworks.ts | $(GOFMT) > go/pkg/networks/networks.gen.go
+	npx tsx packages/scripts/codegen/generateGoNetworkFeatures.ts | $(GOFMT) > go/pkg/networks/features.gen.go
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(BUNKER_MINTER_PACKAGE): node_modules
@@ -122,20 +154,6 @@ $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE): node_modules
 	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(NAME_SERVICE_REPO)/schema/contract_info_response.json -o go/pkg/contracts/name_service_types/contract_info_response.go -p name_service_types
 	go fmt ./go/pkg/contracts/name_service_types
 	rm -fr $(NAME_SERVICE_REPO)
-
-.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE)
-$(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE): node_modules
-	rm -fr $(RIOTER_FOOTER_REPO)
-	git clone git@github.com:TERITORI/$(RIOTER_FOOTER_REPO).git
-	cd $(RIOTER_FOOTER_REPO) && git checkout e5a5b22cc3e72e09df6b4642d62dc21d99ca34c3
-	rm -fr $@
-	npx cosmwasm-ts-codegen generate \
-		--plugin client \
-		--schema $(RIOTER_FOOTER_REPO)/contracts/rioter_footer_nft/schema \
-		--out $@ \
-		--name $(RIOTER_FOOTER_PACKAGE) \
-		--no-bundle
-	rm -fr $(RIOTER_FOOTER_REPO)
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE): node_modules
@@ -196,23 +214,6 @@ $(CONTRACTS_CLIENTS_DIR)/$(BREEDING_PACKAGE): node_modules
 	go fmt ./go/pkg/contracts/breeding_minter_types		
 	rm -fr $(CANDYMACHINE_REPO)
 
-.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE)
-$(CONTRACTS_CLIENTS_DIR)/$(VAULT_PACKAGE): node_modules
-	rm -fr $(VAULT_REPO)
-	git clone git@github.com:TERITORI/$(VAULT_REPO).git
-	cd $(VAULT_REPO) && git checkout 75a692533b9188587ebfa909c5576376b8d65999
-	rm -fr $@
-	npx cosmwasm-ts-codegen generate \
-		--plugin client \
-		--schema $(VAULT_REPO)/contracts/nft-vault/schema \
-		--out $@ \
-		--name $(VAULT_PACKAGE) \
-		--no-bundle
-	mkdir -p go/pkg/contracts/vault_types
-	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(VAULT_REPO)/contracts/nft-vault/schema/execute_msg.json -o go/pkg/contracts/vault_types/execute_msg.go -p vault_types
-	go fmt ./go/pkg/contracts/vault_types
-	rm -fr $(VAULT_REPO)
-
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(ADDR_LIST_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(ADDR_LIST_PACKAGE): node_modules
 	rm -fr $(ADDR_LIST_REPO)
@@ -240,6 +241,16 @@ $(CONTRACTS_CLIENTS_DIR)/$(RAKKI_PACKAGE): node_modules
 publish.backend:
 	docker build -f go/cmd/teritori-dapp-backend/Dockerfile .  --platform linux/amd64 -t $(BACKEND_DOCKER_IMAGE)
 	docker push $(BACKEND_DOCKER_IMAGE)
+
+.PHONY: publish.flush-data
+publish.flush-data:
+	docker build -f go/cmd/flush-data/Dockerfile .  --platform linux/amd64 -t $(FLUSH_DATA_IMAGE)
+	docker push $(FLUSH_DATA_IMAGE)
+
+.PHONY: publish.evm-indexer
+publish.evm-indexer:
+	docker build -f go/cmd/evm-indexer/Dockerfile .  --platform linux/amd64 -t $(EVM_INDEXER_IMAGE)
+	docker push $(EVM_INDEXER_IMAGE)
 
 .PHONY: publish.indexer
 publish.indexer:
@@ -277,26 +288,32 @@ publish.multisig-backend:
 	docker build -f go/cmd/multisig-backend/Dockerfile . --platform linux/amd64 -t $(MULTISIG_DOCKER_IMAGE)
 	docker push $(MULTISIG_DOCKER_IMAGE)
 
+.PHONY: publish.gno-indexer
+publish.gno-indexer:
+	docker build -f go/cmd/gno_social_feed_indexer/Dockerfile . --platform linux/amd64 -t $(GNO_INDEXER_DOCKER_IMAGE)
+	docker push $(GNO_INDEXER_DOCKER_IMAGE)
+
 .PHONY: validate-networks
 validate-networks: node_modules
-	npx ts-node packages/scripts/validateNetworks.ts
+	yarn validate-networks
 
 .PHONY: networks.json
 networks.json: node_modules validate-networks
-	npx ts-node packages/scripts/generateJSONNetworks.ts > $@
+	npx tsx packages/scripts/generateJSONNetworks.ts > $@
 
 .PHONY: unused-exports
 unused-exports: node_modules
 	## TODO unexclude all paths except packages/api;packages/contracts-clients;packages/evm-contracts-clients
-	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/components/socialFeed/RichText/inline-toolbar;./App.tsx;.*\.web|.electron|.d.ts" --ignoreTestFiles 
+	yarn unused-exports
 
 .PHONY: prepare-electron
 prepare-electron: node_modules
-	yarn rimraf ./web-build
-	yarn cross-env isElectron=prod expo export:web
+	yarn rimraf ./dist
+	yarn cross-env isElectron=prod expo export -p web
 	yarn rimraf ./electron/web-build
 	mkdir ./electron/web-build
-	cp -r ./web-build/* ./electron/web-build
+	cp -r ./dist/* ./electron/web-build
+	yarn tsx ./packages/scripts/electron/fixHTML.ts
 
 # requires prepare-electron
 .PHONY: build-electron-mac-amd64
@@ -304,7 +321,7 @@ build-electron-macos-amd64:
 	rm -fr ./electron/dist
 	rm -fr ./electron/build
 	cd ./electron && npm i
-	cd ./electron && GOOS=darwin GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/mac ./prod.go
+	cd ./weshd && GOOS=darwin GOARCH=amd64 $(GO) build -tags noNativeLogger -o ../electron/build/mac ./go/electron/prod.go
 	cd ./electron && node ./builder/mac.js amd64
 
 # requires prepare-electron
@@ -313,7 +330,7 @@ build-electron-macos-arm64:
 	rm -fr ./electron/dist
 	rm -fr ./electron/build
 	cd ./electron && npm i
-	cd ./electron && GOOS=darwin GOARCH=arm64 $(GO) build -tags noNativeLogger -o ./build/mac ./prod.go
+	cd ./weshd && GOOS=darwin GOARCH=arm64 $(GO) build -tags noNativeLogger -o ../electron/build/mac ./go/electron/prod.go
 	cd ./electron && node ./builder/mac.js arm64
 
 # requires prepare-electron
@@ -322,7 +339,7 @@ build-electron-windows-amd64:
 	rm -fr ./electron/dist
 	rm -fr ./electron/build
 	cd ./electron && npm i
-	cd ./electron && GOOS=windows GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/win.exe ./prod.go
+	cd ./weshd && GOOS=windows GOARCH=amd64 $(GO) build -tags noNativeLogger -o ../electron/build/win.exe ./go/electron/prod.go
 	cd ./electron && node ./builder/win.js
 
 # requires prepare-electron
@@ -331,5 +348,131 @@ build-electron-linux-amd64:
 	rm -fr ./electron/dist
 	rm -fr ./electron/build
 	cd ./electron && npm i
-	cd ./electron && GOOS=linux GOARCH=amd64 $(GO) build -tags noNativeLogger -o ./build/linux ./prod.go
+	cd ./weshd && GOOS=linux GOARCH=amd64 $(GO) build -tags noNativeLogger -o ../electron/build/linux ./go/electron/prod.go
 	cd ./electron && node ./builder/linux.js
+
+.PHONY: check-ios-weshframework
+check-ios-weshframework:
+	@if [ ! -e ./weshd/ios/Frameworks/WeshFramework.xcframework ]; then \
+		echo "WeshFramework does not exist. Running a command to create it."; \
+		$(MAKE) build-ios-weshframework; \
+	fi
+
+.PHONY: build-ios-weshframework
+build-ios-weshframework:
+	$(MAKE) init-weshd-go
+	cd ./weshd && GOARCH=$(ARCH) gomobile bind -v \
+	-o ./ios/Frameworks/WeshFramework.xcframework \
+	-tags 'nowatchdog' -target ios \
+	./go/app
+
+.PHONY: check-android-weshframework
+check-android-weshframework:
+	@if [ ! -e ./weshd/android/libs/WeshFramework.aar ]; then \
+		echo "WeshFramework does not exist. Running a command to create it."; \
+		$(MAKE) build-android-weshframework; \
+	fi
+
+.PHONY: build-android-weshframework
+build-android-weshframework:
+	mkdir -p ./weshd/android/libs
+	$(MAKE) init-weshd-go
+	cd ./weshd && gomobile bind \
+	-javapkg=com.weshnet \
+	-o ./android/libs/WeshFramework.aar \
+    -tags 'nowatchdog' -target android -androidapi 23 \
+	./go/app
+
+.PHONY: init-weshd-go
+init-weshd-go:
+	cd ./weshd && go mod tidy
+	cd ./weshd && go get golang.org/x/mobile/cmd/gobind
+	cd ./weshd && go get golang.org/x/mobile/cmd/gomobile
+	cd ./weshd && go install golang.org/x/mobile/cmd/gobind
+	cd ./weshd && go install golang.org/x/mobile/cmd/gomobile
+	cd ./weshd && gomobile init
+
+.PHONY: bump-app-build-number
+bump-app-build-number:  
+	npx tsx packages/scripts/app-build/bumpBuildNumber.ts $(shell echo $$(($$(git rev-list HEAD --count) + 10)))
+
+.PHONY: test.rust
+test.rust:
+	set -e ; \
+	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
+		echo "> Testing $${file}" ; \
+		cd $${file} ; \
+		cargo test ; \
+		cd - ; \
+	done
+
+.PHONY: build.rust
+build.rust:
+	set -e ; \
+	for file in $(INTERNAL_COSMWASM_CONTRACTS); do \
+		echo "> Building $${file}" ; \
+		cd $${file} ; \
+		cargo wasm ; \
+		cd - ; \
+	done
+
+.PHONY: generate.internal-contracts-clients
+generate.internal-contracts-clients: node_modules
+	set -e ; \
+	for indir in $(INTERNAL_COSMWASM_CONTRACTS) ; do \
+		echo "> Generating client for $${indir}" ; \
+		rm -fr $${indir}/schema ; \
+		cd $${indir} && cargo schema && cd - ; \
+		pkgname="$$(basename $${indir})" ; \
+		outdir="$(CONTRACTS_CLIENTS_DIR)/$${pkgname}" ; \
+		rm -fr $${outdir} ; \
+		npx cosmwasm-ts-codegen generate \
+			--plugin client \
+			--schema $${indir}/schema \
+			--out $${outdir} \
+			--name $${pkgname} \
+			--no-bundle \
+		;\
+		npx tsx packages/scripts/makeTypescriptIndex $${outdir} ; \
+	done
+
+.PHONY: install-gno
+install-gno: node_modules
+	yarn install-gno
+
+.PHONY: start.gnodev
+start.gnodev:
+	$(GNODEV)
+
+.PHONY: start.gnodev-e2e
+start.gnodev-e2e:
+	$(GNODEV_E2E)
+
+.PHONY: clone-gno
+clone-gno:
+	rm -fr gnobuild
+	mkdir -p gnobuild
+	cd gnobuild && git clone https://github.com/gnolang/gno.git && cd gno && git checkout $(shell $(CAT) .gnoversion)
+	cp -r ./gno/p ./gnobuild/gno/examples/gno.land/p/teritori
+	cp -r ./gno/r ./gnobuild/gno/examples/gno.land/r/teritori
+
+.PHONY: build-gno
+build-gno:
+	cd gnobuild/gno/gnovm && make build
+
+.PHONY: lint-gno
+lint-gno:
+	./gnobuild/gno/gnovm/build/gno lint ./gno/. -v
+
+.PHONY: test-gno
+test-gno:
+	./gnobuild/gno/gnovm/build/gno test ./gno/... -v
+
+.PHONY: gno-mod-tidy
+gno-mod-tidy:
+	export gno=$$(pwd)/gnobuild/gno/gnovm/build/gno; \
+	find gno -name gno.mod -type f | xargs -I'{}' sh -c 'cd $$(dirname {}); $$gno mod tidy' \;
+
+.PHONY: clean-gno
+clean-gno:
+	rm -rf gnobuild

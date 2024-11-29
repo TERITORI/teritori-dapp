@@ -9,56 +9,59 @@ import { useSelector } from "react-redux";
 import { EnrollSlot } from "./component/EnrollSlot";
 import { GameContentView } from "./component/GameContentView";
 import { RipperSelectorModal } from "./component/RipperGridSelectorModal";
-import { SimpleButton } from "./component/SimpleButton";
 import controllerSVG from "../../../assets/game/controller-yellow.svg";
 import closeSVG from "../../../assets/icons/close.svg";
-import { NFT } from "../../api/marketplace/v1/marketplace";
-import { BrandText } from "../../components/BrandText";
-import { SVG } from "../../components/SVG";
-import { LegacyTertiaryBox } from "../../components/boxes/LegacyTertiaryBox";
-import { TertiaryButton } from "../../components/buttons/TertiaryButton";
-import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { useRippers } from "../../hooks/riotGame/useRippers";
-import { useSquadStakingConfig } from "../../hooks/riotGame/useSquadStakingConfig";
+import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { NFT } from "@/api/marketplace/v1/marketplace";
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { SimpleButton } from "@/components/buttons/SimpleButton";
+import { TertiaryButton } from "@/components/buttons/TertiaryButton";
+import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useRippers } from "@/hooks/riotGame/useRippers";
+import { useSquadStakingConfig } from "@/hooks/riotGame/useSquadStakingConfig";
+import { useSquadStakingSquads } from "@/hooks/riotGame/useSquadStakingSquads";
 import {
   getSquadStakingSquadsV1QueryKey,
   useSquadStakingSquadsV1,
-} from "../../hooks/riotGame/useSquadStakingSquadsV1";
-import { useSquadStakingSquadsV2 } from "../../hooks/riotGame/useSquadStakingSquadsV2";
-import { useIsMobile } from "../../hooks/useIsMobile";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
+} from "@/hooks/riotGame/useSquadStakingSquadsV1";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   persistSquadPreset,
   selectSquadPresets,
-} from "../../store/slices/squadPresets";
-import { useAppDispatch } from "../../store/store";
-import { getP2eClient } from "../../utils/backend";
+} from "@/store/slices/squadPresets";
+import { useAppDispatch } from "@/store/store";
+import { getP2eClient } from "@/utils/backend";
 import {
   estimateStakingDuration,
   getSquadPresetId,
   squadStake,
   squadWithdrawSeason1,
-} from "../../utils/game";
-import { useAppNavigation } from "../../utils/navigation";
+} from "@/utils/game";
+import { web3ToWeb2URI } from "@/utils/ipfs";
 import {
   neutral00,
   neutral33,
   secondaryColor,
   yellowDefault,
-} from "../../utils/style/colors";
+} from "@/utils/style/colors";
 import {
   fontMedium24,
   fontMedium32,
   fontMedium48,
   fontSemibold20,
   fontSemibold28,
-} from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const RIPPER_SLOTS = [0, 1, 2, 3, 4, 5];
-const EMBEDDED_VIDEO_URI =
-  "https://bafybeihfkmpunve47w4avfnuv3mfnsgoqclahpx54zj4b2ypve52iqmxsa.ipfs.cf-ipfs.com/";
+const EMBEDDED_VIDEO_URI = web3ToWeb2URI(
+  "ipfs://bafybeihfkmpunve47w4avfnuv3mfnsgoqclahpx54zj4b2ypve52iqmxsa",
+);
 const embeddedVideoHeight = 267;
 const embeddedVideoWidth = 468;
 
@@ -77,9 +80,10 @@ export const RiotGameEnrollScreen: React.FC = () => {
   const { myAvailableRippers } = useRippers();
 
   const { data: squadStakingConfig } = useSquadStakingConfig(networkId);
-  const { data: squads, isInitialLoading } = useSquadStakingSquadsV2(
+  const { data: squads, isInitialLoading } = useSquadStakingSquads(
     selectedWallet?.userId,
   );
+
   const { data: squadSeason1 } = useSquadStakingSquadsV1(
     selectedWallet?.userId,
   );
@@ -182,7 +186,7 @@ export const RiotGameEnrollScreen: React.FC = () => {
       });
     }
 
-    const currentSeason = await p2eClient.CurrentSeason({});
+    const currentSeason = await p2eClient.CurrentSeason({ networkId });
     if (currentSeason.isPre) {
       return setToastError({
         title: "Warning",
@@ -254,7 +258,7 @@ export const RiotGameEnrollScreen: React.FC = () => {
     if (
       !isInitialLoading &&
       squadStakingConfig?.owner &&
-      squads.length === squadStakingConfig.squad_count_limit
+      squads.length === squadStakingConfig.squadCountLimit
     ) {
       navigation.replace("RiotGameFight");
     }
@@ -262,7 +266,7 @@ export const RiotGameEnrollScreen: React.FC = () => {
     isInitialLoading,
     navigation,
     squadStakingConfig?.owner,
-    squadStakingConfig?.squad_count_limit,
+    squadStakingConfig?.squadCountLimit,
     squads,
   ]);
 

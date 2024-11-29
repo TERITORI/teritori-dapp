@@ -1,8 +1,9 @@
-import { TabDefinition } from "../components/tabs/Tabs";
-import { NetworkFeature, NetworkKind, UserKind } from "../networks";
+import { NetworkFeature, NetworkKind, UserKind } from "@/networks";
+import { TabDefinition } from "@/utils/types/tabs";
 
 export enum UppTabKeys {
   posts = "",
+  premiumSubscribe = "premium-content",
   nfts = "nfts",
   quests = "quests",
   mentionsPosts = "mentions-posts",
@@ -18,6 +19,10 @@ export enum UppTabKeys {
 export const uppTabItems: { [key: string]: TabDefinition } = {
   [UppTabKeys.posts]: {
     name: "Posts",
+    networkFeatures: [NetworkFeature.SocialFeed],
+  },
+  [UppTabKeys.premiumSubscribe]: {
+    name: "Premium Content",
     networkFeatures: [NetworkFeature.SocialFeed],
   },
   [UppTabKeys.nfts]: {
@@ -64,4 +69,18 @@ export const uppTabItems: { [key: string]: TabDefinition } = {
     networkKinds: [NetworkKind.Gno],
     userKinds: [UserKind.Organization],
   },
+};
+
+export type ProfileData = {
+  displayName?: string | null;
+  avatarURL?: string | null;
+  bannerURL?: string | null;
+  bio?: string | null;
+};
+
+export const EMPTY_PROFILE: ProfileData = {
+  displayName: "",
+  avatarURL: "",
+  bannerURL: "",
+  bio: "",
 };

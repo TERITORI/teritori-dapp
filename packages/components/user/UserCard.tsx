@@ -1,4 +1,5 @@
-import React, { ComponentProps, useRef, useCallback } from "react";
+import { Buffer } from "buffer";
+import React, { ComponentProps, useCallback } from "react";
 import {
   StyleProp,
   ViewStyle,
@@ -8,14 +9,16 @@ import {
   ScrollView,
 } from "react-native";
 
+import { UserDisplayName } from "./UserDisplayName";
+import { Username } from "./Username";
 import dotsCircleSVG from "../../../assets/icons/dots-circle.svg";
 import trashSVG from "../../../assets/icons/trash.svg";
-import { useDropdowns } from "../../context/DropdownsProvider";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { Member } from "../../contracts-clients/cw4-group/Cw4Group.types";
 import { useDAOGroup } from "../../hooks/dao/useDAOGroup";
 import { useDAOMakeProposal } from "../../hooks/dao/useDAOMakeProposal";
 import { useIsDAOMember } from "../../hooks/dao/useDAOMember";
+import { useDropdowns } from "../../hooks/useDropdowns";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseUserId } from "../../networks";
@@ -35,12 +38,13 @@ import { BrandText } from "../BrandText";
 import { DropdownOption } from "../DropdownOption";
 import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
-import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
+import { BoxStyle } from "../boxes/Box";
+import { TertiaryBox } from "../boxes/TertiaryBox";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 
 export const UserCard: React.FC<{
   userId: string;
-  style: StyleProp<ViewStyle>;
+  style: StyleProp<BoxStyle>;
   daoId?: string;
 }> = ({ userId, style, daoId }) => {
   const [, userAddress] = parseUserId(userId);
@@ -58,9 +62,8 @@ export const UserCard: React.FC<{
   const padding = 16;
   const width = typeof flatStyle.width === "number" ? flatStyle.width : 325;
   return (
-    <LegacyTertiaryBox
-      style={style}
-      mainContainerStyle={[
+    <TertiaryBox
+      style={[
         {
           width,
           height: 287,
@@ -68,6 +71,7 @@ export const UserCard: React.FC<{
           justifyContent: "space-between",
           alignItems: "flex-start",
         },
+        style,
       ]}
     >
       <OmniLink to={{ screen: "UserPublicProfile", params: { id: userId } }}>
@@ -80,22 +84,19 @@ export const UserCard: React.FC<{
             alignSelf: "flex-start", // this extra flex-start is needed on web when the bio is long
           }}
         />
-        <BrandText
+        <UserDisplayName
+          userId={userId}
           style={[
             fontSemibold12,
             { lineHeight: 14, marginBottom: 8, width: width - 2 * padding }, // FIXME: we have to set a fixed width because LegacyTertiaryBox is broken
           ]}
-          numberOfLines={1}
-        >
-          {metadata.public_name || userAddress}
-        </BrandText>
-        <View>
-          <BrandText
-            style={[fontSemibold10, { color: neutral77, marginBottom: 8 }]}
-          >
-            {metadata.tokenId ? `@${metadata.tokenId}` : "Anon"}
-          </BrandText>
-        </View>
+        />
+        <Username
+          userId={userId}
+          namedColor={neutral77}
+          anonColor={neutral77}
+          textStyle={[fontSemibold10, { color: neutral77, marginBottom: 8 }]}
+        />
         <BrandText
           style={[
             fontSemibold10,
@@ -176,7 +177,7 @@ export const UserCard: React.FC<{
           ]}
         />
       </View>
-    </LegacyTertiaryBox>
+    </TertiaryBox>
   );
 };
 
@@ -188,9 +189,7 @@ const CardActions: React.FC<{
     | boolean
   )[];
 }> = ({ actions }) => {
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
 
   const filteredActions = actions.filter(
     (a): a is ComponentProps<typeof DropdownOption> =>
@@ -201,11 +200,11 @@ const CardActions: React.FC<{
   }
 
   return (
-    <View>
-      <Pressable onPress={() => onPressDropdownButton(dropdownRef)}>
+    <View ref={dropdownRef} collapsable={false}>
+      <Pressable onPress={() => setDropdownState(false)}>
         <SVG source={dotsCircleSVG} height={32} width={32} />
       </Pressable>
-      {isDropdownOpen(dropdownRef) && (
+      {isDropdownOpen && (
         <View
           style={{
             position: "absolute",
@@ -224,7 +223,7 @@ const CardActions: React.FC<{
             <DropdownOption
               {...action}
               onPress={() => {
-                closeOpenedDropdown();
+                setDropdownState(false);
                 action.onPress?.();
               }}
             />

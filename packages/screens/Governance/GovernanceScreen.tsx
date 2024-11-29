@@ -1,37 +1,27 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 
-import { NavBarGovernance } from "./NavBarGovernance";
-import { Proposal, ProposalStatus } from "./types";
-import { BrandText } from "../../components/BrandText/BrandText";
+import { StatesDropdown } from "./components/dropdowns/StatesDropdown";
 import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { NetworkKind, mustGetCosmosNetwork } from "../../networks";
 
-// FIXME: properly handle pagination
+import { BrandText } from "@/components/BrandText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { SearchInputRounded } from "@/components/sorts/SearchInputRounded";
+import { useGetAllProposals } from "@/hooks/governance/useGetAllProposals";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { NetworkKind } from "@/networks";
+import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { ProposalStatus } from "@/utils/types/gov";
 
 export const GovernanceScreen: React.FC = () => {
-  const [proposals, setProposals] = useState<Proposal[]>([]);
   const [filter, setFilter] = useState<ProposalStatus>();
+  const [searchInput, setSearchInput] = useState("");
   const selectedNetworkId = useSelectedNetworkId();
+  const isMobile = useIsMobile();
 
-  useEffect(() => {
-    const effect = async () => {
-      try {
-        const network = mustGetCosmosNetwork(selectedNetworkId);
-        const res = await fetch(
-          `${network.restEndpoint}/cosmos/gov/v1beta1/proposals`,
-        );
-        const data = await res.json();
-
-        setProposals(data.proposals.reverse());
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    effect();
-  }, [selectedNetworkId]);
+  const proposals = useGetAllProposals(selectedNetworkId);
 
   const filteredProposals = useMemo(
     () => (filter ? proposals.filter((p) => p.status === filter) : proposals),
@@ -39,43 +29,64 @@ export const GovernanceScreen: React.FC = () => {
   );
 
   return (
-    <ScreenContainer forceNetworkKind={NetworkKind.Cosmos}>
-      <BrandText style={{ fontSize: 28 }}>Decentralized Governance</BrandText>
-
-      <NavBarGovernance onChange={setFilter} />
+    <ScreenContainer
+      forceNetworkKind={NetworkKind.Cosmos}
+      isLarge
+      headerChildren={
+        <BrandText style={fontSemibold20}>Decentralized Governance</BrandText>
+      }
+    >
+      <View
+        style={{
+          flexDirection: isMobile ? "column" : "row",
+          marginTop: layout.spacing_x3,
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <BrandText style={fontSemibold28}>Decentralized Governance</BrandText>
+        <View
+          style={{
+            flexDirection: "row",
+            gap: layout.spacing_x1_5,
+            alignItems: "center",
+            marginTop: isMobile ? layout.spacing_x1_5 : 0,
+          }}
+        >
+          <SearchInputRounded
+            isMobile={isMobile}
+            handleChangeSearch={(text) => setSearchInput(text)}
+          />
+          <StatesDropdown
+            onChange={setFilter}
+            style={{ zIndex: 100 }}
+            isMobile={isMobile}
+          />
+        </View>
+      </View>
 
       <View
         style={{
           display: "flex",
-          flexDirection: "row",
+          flexDirection: isMobile ? "column" : "row",
           flexWrap: "wrap",
-          marginTop: 110,
-          marginLeft: -70,
-          marginRight: -60,
+          marginTop: 24,
+          marginRight: isMobile ? 0 : -20,
+          zIndex: -1,
+          marginBottom: isMobile ? 60 : 0,
         }}
       >
-        {filteredProposals.map((proposals, index) => (
-          <GovernanceBox
-            key={index}
-            numberProposal={proposals.proposal_id}
-            titleProposal={proposals.content.title}
-            descriptionProposal={proposals.content.description}
-            votingEndTime={proposals.voting_end_time}
-            votingStartTime={proposals.voting_start_time}
-            votingSubmitTime={proposals.submit_time}
-            votingDepositEndTime={proposals.deposit_end_time}
-            colorMostVoted="#16BBFF"
-            percentageNoValue={parseFloat(proposals.final_tally_result.no)}
-            percentageYesValue={parseFloat(proposals.final_tally_result.yes)}
-            percentageNoWithVetoValue={parseFloat(
-              proposals.final_tally_result.no_with_veto,
-            )}
-            percentageAbstainValue={parseFloat(
-              proposals.final_tally_result.abstain,
-            )}
-            status={proposals.status}
-          />
-        ))}
+        {filteredProposals
+          .filter(
+            (value) =>
+              value.content.title &&
+              value.content.title
+                .toLowerCase()
+                .includes(searchInput.toLowerCase()),
+          )
+          .map((proposals) => (
+            <GovernanceBox proposal={proposals} isMobile={isMobile} />
+          ))}
       </View>
     </ScreenContainer>
   );

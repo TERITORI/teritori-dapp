@@ -2,10 +2,16 @@ package p2e
 
 import (
 	"context"
+	"math/big"
+	"strings"
 	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
+	"github.com/TERITORI/teritori-dapp/go/pkg/merkletree"
+	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/TERITORI/teritori-dapp/go/pkg/p2epb"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -17,8 +23,9 @@ type P2eService struct {
 }
 
 type Config struct {
-	Logger    *zap.Logger
-	IndexerDB *gorm.DB
+	Logger       *zap.Logger
+	IndexerDB    *gorm.DB
+	NetworkStore networks.NetworkStore
 }
 
 func NewP2eService(ctx context.Context, conf *Config) p2epb.P2EServiceServer {
@@ -102,7 +109,7 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 
 	err := s.conf.IndexerDB.Order("rank ASC").Limit(int(limit)).Offset(int(offset)).Find(
 		&leaderboard,
-		"season_id = ?", seasonId,
+		"season_id = ? AND in_progress_score != 0", seasonId,
 	).Error
 
 	if err != nil {
@@ -126,8 +133,14 @@ func (s *P2eService) Leaderboard(req *p2epb.LeaderboardRequest, srv p2epb.P2ESer
 }
 
 func (s *P2eService) CurrentSeason(ctx context.Context, req *p2epb.CurrentSeasonRequest) (*p2epb.CurrentSeasonResponse, error) {
+	network, err := s.conf.NetworkStore.GetNetwork(req.GetNetworkId())
+
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get provided network")
+	}
+
 	currentTime := time.Now().UTC()
-	currentSeason, remainingHp, err := GetSeasonByTime(currentTime)
+	currentSeason, remainingHp, err := GetSeasonByTime(currentTime, network)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get current season")
 	}
@@ -150,7 +163,13 @@ func (s *P2eService) CurrentSeason(ctx context.Context, req *p2epb.CurrentSeason
 }
 
 func (s *P2eService) AllSeasons(ctx context.Context, req *p2epb.AllSeasonsRequest) (*p2epb.AllSeasonsResponse, error) {
-	allSeasons := GetAllSeasons()
+	network, err := s.conf.NetworkStore.GetNetwork(req.GetNetworkId())
+
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get provided network")
+	}
+
+	allSeasons := GetAllSeasons(network)
 
 	var data []*p2epb.SeasonWithoutPrize
 
@@ -168,4 +187,106 @@ func (s *P2eService) AllSeasons(ctx context.Context, req *p2epb.AllSeasonsReques
 	}
 
 	return &p2epb.AllSeasonsResponse{Seasons: data}, nil
+}
+
+func (s *P2eService) MerkleData(ctx context.Context, req *p2epb.MerkleDataRequest) (*p2epb.MerkleDataResponse, error) {
+	userID := req.GetUserId()
+	token := req.GetToken()
+	networkID := req.GetNetworkId()
+
+	if userID == "" {
+		return nil, errors.New("missing userId")
+	}
+
+	if token == "" {
+		return nil, errors.New("missing token")
+	}
+
+	if networkID == "" {
+		return nil, errors.New("missing networkId")
+	}
+
+	//   todayID := time.Now().UTC().Format("2006-01-02")
+	currentReward := indexerdb.P2eDailyReward{
+		//     DayID:     todayID,
+		NetworkID: networkID,
+	}
+
+	if err := s.conf.IndexerDB.Order("day_id desc").First(&currentReward).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to get current daily reward")
+	}
+
+	var totalRewards UserRewardMap
+	if err := mapstructure.Decode(currentReward.TotalRewards, &totalRewards); err != nil {
+		return nil, errors.Wrap(err, "failed to decode user reward map from DB")
+	}
+
+	var userLeaf RewardData
+	var leaves []merkletree.Content
+	for addr, userReward := range totalRewards {
+		amount := new(big.Int)
+		// userReward.Amount is already BigInt string so base here is 0
+		amount, ok := amount.SetString(userReward.Amount, 0)
+		if !ok {
+			return nil, errors.New("failed to create BigInt from user reward amount")
+		}
+
+		leaf := RewardData{
+			To:     common.HexToAddress(addr),
+			Token:  common.HexToAddress(userReward.Token),
+			Amount: amount,
+		}
+
+		if addr == userID && token == strings.ToLower(leaf.Token.String()) {
+			userLeaf = leaf
+		}
+
+		leaves = append(leaves, leaf)
+	}
+
+	if userLeaf.Amount == nil {
+		return nil, errors.New("user does not have reward")
+	}
+
+	tree, err := merkletree.New(leaves)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to build merkletree from DB")
+	}
+
+	proof, err := tree.GetHexProof(userLeaf)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get proof")
+	}
+
+	// Get total claimed
+	ethNetwork := s.conf.NetworkStore.MustGetEthereumNetwork(networkID)
+	var totalClaimed = indexerdb.P2eTotalClaimed{
+		UserID:    ethNetwork.UserID(userID),
+		NetworkID: networkID,
+	}
+
+	claimedAmount := big.NewInt(0)
+	resultErr := s.conf.IndexerDB.First(&totalClaimed).Error
+
+	// If no error and there is claimed amount then convert that value to bigInt
+	if resultErr == nil && totalClaimed.Amount != "" {
+		claimedAmount = new(big.Int)
+		if _, ok := claimedAmount.SetString(totalClaimed.Amount, 10); !ok {
+			return nil, errors.New("failed to get current claimed amount")
+		}
+	}
+
+	totalAllocation := userLeaf.Amount.String()
+
+	resp := &p2epb.MerkleDataResponse{
+		Proof:           proof,
+		ClaimableAmount: userLeaf.Amount.Sub(userLeaf.Amount, claimedAmount).String(),
+		UserReward: &p2epb.UserReward{
+			To:     userLeaf.To.String(),
+			Token:  userLeaf.Token.String(),
+			Amount: totalAllocation,
+		},
+	}
+
+	return resp, nil
 }

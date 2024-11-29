@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { TeritoriNftVaultQueryClient } from "../contracts-clients/teritori-nft-vault/TeritoriNftVault.client";
+import { NftMarketplaceQueryClient } from "@/contracts-clients/nft-marketplace/NftMarketplace.client";
 import {
   getCosmosNetwork,
   mustGetNonSigningCosmWasmClient,
   parseNftId,
-} from "../networks";
+} from "@/networks";
 
 export const useVaultNFTInfo = (nftId: string | undefined) => {
   const { data, ...other } = useQuery(
@@ -25,10 +25,8 @@ export const useVaultNFTInfo = (nftId: string | undefined) => {
         return null;
       }
 
-      console.log("network nft info", network);
-
       const client = await mustGetNonSigningCosmWasmClient(network.id);
-      const vaultClient = new TeritoriNftVaultQueryClient(
+      const vaultClient = new NftMarketplaceQueryClient(
         client,
         network?.vaultContractAddress,
       );

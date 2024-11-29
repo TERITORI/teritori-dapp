@@ -1,4 +1,7 @@
+import { NetworkFeature, NetworkFeatureObject } from "./features";
 import { IBCCurrencyInfo } from "./ibc";
+
+export { NetworkFeature } from "./features";
 
 export enum NetworkKind {
   Unknown = "Unknown",
@@ -15,6 +18,7 @@ interface NetworkInfoBase {
   icon?: string;
   currencies: CurrencyInfo[];
   features: NetworkFeature[];
+  featureObjects?: NetworkFeatureObject[];
   idPrefix: string;
   txExplorer: string;
   accountExplorer: string;
@@ -23,8 +27,12 @@ interface NetworkInfoBase {
   backendEndpoint: string;
   secondaryDuringMintList?: string[];
   excludeFromLaunchpadList?: string[];
+
+  // p2e
+  distributorContractAddress?: string;
+  riotContractAddressGen0?: string;
+  riotContractAddressGen1?: string;
   overrides?: string;
-  featureObjects?: FeatureObject[];
 }
 
 export type CosmosNetworkInfo = NetworkInfoBase & {
@@ -34,6 +42,7 @@ export type CosmosNetworkInfo = NetworkInfoBase & {
   restEndpoint: string;
   rpcEndpoint: string;
   stakeCurrency: string;
+  registryName: string;
   gasPriceStep: {
     low: number;
     average: number;
@@ -41,28 +50,29 @@ export type CosmosNetworkInfo = NetworkInfoBase & {
   };
   cosmosFeatures: string[];
   walletUrlForStaking?: string;
+  nameServiceCodeId?: number;
   nameServiceContractAddress?: string;
   nameServiceDefaultImage?: string;
   nameServiceTLD?: string;
+  marketplaceVaultCodeId?: number;
   vaultContractAddress?: string;
-  distributorContractAddress?: string;
-  riotContractAddressGen0?: string;
-  riotContractAddressGen1?: string;
   riotSquadStakingContractAddressV1?: string;
   riotSquadStakingContractAddressV2?: string;
-  riotersFooterContractAddress?: string;
+  socialFeedCodeId?: number;
   socialFeedContractAddress?: string;
   daoCw20CodeId?: number;
-  daoFactoryCodeId?: number;
+  cwAdminFactoryCodeId?: number;
   daoCoreCodeId?: number;
   daoPreProposeSingleCodeId?: number;
   daoProposalSingleCodeId?: number;
   daoVotingCw20StakedCodeId?: number;
   daoCw20StakeCodeId?: number;
-  daoCw4GroupCodeId?: number;
+  cw4GroupCodeId?: number;
   daoVotingCw4CodeId?: number;
-  daoFactoryContractAddress?: string;
+  cwAdminFactoryContractAddress?: string;
   coreDAOAddress?: string;
+  cwAddressListContractAddress?: string;
+  cwAddressListCodeId?: number;
 };
 
 export type EthereumNetworkInfo = NetworkInfoBase & {
@@ -70,9 +80,24 @@ export type EthereumNetworkInfo = NetworkInfoBase & {
   endpoint: string;
   chainId: number;
   alchemyApiKey: string;
-  theGraphEndpoint: string;
   vaultContractAddress: string;
-  riotContractAddress: string;
+  riotSquadStakingContractAddress: string;
+  firehoseEndpoint?: string;
+  indexStartBlock?: string;
+  substreamsManifest?: string;
+  toriBridgedTokenAddress?: string;
+
+  riotContractAddressGen0: string;
+  riotOriginalCollectionIdGen0?: string;
+  riotBridgeAddressGen0?: string;
+  riotNFTAddressGen0?: string;
+  riotBridgedNFTAddressGen0?: string;
+
+  riotContractAddressGen1?: string;
+  riotOriginalCollectionIdGen1?: string;
+  riotBridgeAddressGen1?: string;
+  riotNFTAddressGen1?: string;
+  riotBridgedNFTAddressGen1?: string;
 };
 
 export type GnoNetworkInfo = NetworkInfoBase & {
@@ -93,7 +118,11 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   daoInterfacesPkgPath?: string;
   daoCorePkgPath?: string;
   groupsPkgPath?: string;
+  daoUtilsPkgPath?: string;
+  toriPkgPath?: string;
+  profilePkgPath?: string;
   faucetURL?: string;
+  txIndexerURL?: string;
 };
 
 export type NetworkInfo =
@@ -103,6 +132,7 @@ export type NetworkInfo =
 
 export type NativeCurrencyInfo = {
   kind: "native";
+  variant: "cosmos" | "ethereum" | "gno" | "grc20";
   denom: string;
   displayName: string;
   decimals: number;
@@ -113,35 +143,8 @@ export type NativeCurrencyInfo = {
 
 export type CurrencyInfo = NativeCurrencyInfo | IBCCurrencyInfo;
 
-export enum NetworkFeature {
-  NFTMarketplace = "NFTMarketplace",
-  NFTLaunchpad = "NFTLaunchpad",
-  NameService = "NameService",
-  Swap = "Swap",
-  BurnTokens = "BurnTokens",
-  Organizations = "Organizations",
-  SocialFeed = "SocialFeed",
-  UPP = "UPP",
-  RiotP2E = "RiotP2E",
-  CosmWasmRakki = "CosmWasmRakki",
-}
-
 export enum UserKind {
   Single = "Single",
   Multisig = "Multisig",
   Organization = "Organization",
 }
-
-type NameServiceFeature = {
-  kind: NetworkFeature.NameService;
-  codeId: number;
-  contractAddress: string;
-};
-
-type CosmWasmRakkiFeature = {
-  kind: NetworkFeature.CosmWasmRakki;
-  codeId: number;
-  contractAddress: string;
-};
-
-type FeatureObject = NameServiceFeature | CosmWasmRakkiFeature;

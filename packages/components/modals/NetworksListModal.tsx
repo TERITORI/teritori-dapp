@@ -10,9 +10,7 @@ import { useSelector } from "react-redux";
 
 import ModalBase from "./ModalBase";
 import { allNetworks, getNetwork } from "../../networks";
-import { joinElements } from "../../screens/Multisig/components/MultisigRightSection";
 import {
-  selectAreTestnetsEnabled,
   selectNetworkEnabled,
   toggleNetwork,
 } from "../../store/slices/settings";
@@ -33,6 +31,9 @@ import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
+import { useAreTestnetsEnabled } from "@/hooks/useAreTestnetsEnabled";
+import { joinElements } from "@/utils/react";
+
 export const NetworksListModal: FC<{
   isVisible: boolean;
   onClose: () => void;
@@ -52,7 +53,7 @@ export const NetworksListModal: FC<{
 
 const NetworksSettings: FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
+  const areTestnetsEnabled = useAreTestnetsEnabled();
   const results = useMemo(() => {
     const searchTerms = searchTerm
       .split(" ")
@@ -126,7 +127,7 @@ const NetworkSettingsItem: FC<{ networkId: string }> = memo(({ networkId }) => {
         </View>
         <SpacerRow size={1} />
         <Switch
-          // @ts-expect-error
+          // @ts-expect-error: description todo
           activeThumbColor={primaryColor}
           thumbColor={state ? primaryColor : neutral55}
           trackColor={{ true: secondaryColor, false: neutralA3 }}

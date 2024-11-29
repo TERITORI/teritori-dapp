@@ -3,8 +3,8 @@ import { useWindowDimensions } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 
 import { layout } from "../../../../utils/style/layout";
+import { ReplyToType } from "../../../../utils/types/feed";
 import ModalBase from "../../../modals/ModalBase";
-import { ReplyToType } from "../NewsFeed.type";
 import { NewsFeedInput } from "../NewsFeedInput";
 
 export const CreateShortPostModal: React.FC<{

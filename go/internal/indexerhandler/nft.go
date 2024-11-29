@@ -43,10 +43,93 @@ func (h *Handler) handleExecuteSendNFT(e *Message, execMsg *wasmtypes.MsgExecute
 		return nil
 	}
 
+	// burn capital
+	burnerFeature, err := h.config.Network.GetFeatureCosmWasmNFTsBurner()
+	if err == nil && sendNFTMsg.Data.Contract == burnerFeature.BurnerContractAddress {
+		if err := h.handleExecuteSendNFTNFTsBurner(e, execMsg, &sendNFTMsg); err != nil {
+			return errors.Wrap(err, "failed to handle burn")
+		}
+		return nil
+	}
+
 	// fallback
 	if err := h.handleExecuteSendNFTFallback(e, execMsg, &sendNFTMsg); err != nil {
 		return errors.Wrap(err, "failed to handle fallback send_nft")
 	}
+	return nil
+}
+
+func (h *Handler) handleExecuteSendNFTNFTsBurner(e *Message, execMsg *wasmtypes.MsgExecuteContract, sendNFTMsg *SendNFTExecuteMsg) error {
+	// get token id
+	tokenId := sendNFTMsg.Data.TokenID
+
+	// get burnerID
+	burnerID := h.config.Network.UserID(execMsg.Sender)
+
+	// find nft id
+	var collection *indexerdb.Collection
+	findResult := h.db.
+		Preload("TeritoriCollection").
+		Joins("JOIN teritori_collections on teritori_collections.collection_id = collections.id").
+		Where("teritori_collections.nft_contract_address = ?", execMsg.Contract).
+		Find(&collection)
+	if err := findResult.
+		Error; err != nil {
+		return errors.Wrap(err, "failed to query collection")
+	}
+	if findResult.RowsAffected == 0 {
+		h.logger.Debug("ignored send_nft on unknown collection")
+		return nil
+	}
+	if collection.TeritoriCollection == nil {
+		return errors.New("no teritori info on collection")
+	}
+	nftID := h.config.Network.NFTID(collection.TeritoriCollection.MintContractAddress, tokenId)
+
+	// delete nft
+	if err := h.db.Model(&indexerdb.NFT{}).Where(&indexerdb.NFT{ID: nftID}).UpdateColumn("burnt", true).Error; err != nil {
+		return errors.Wrap(err, "failed to delete nft")
+	}
+
+	// get block time
+	blockTime, err := e.GetBlockTime()
+	if err != nil {
+		return errors.Wrap(err, "failed to get block time")
+	}
+
+	// create burn
+	var nft indexerdb.NFT
+	if err := h.db.Find(&nft, &indexerdb.NFT{ID: nftID}).Error; err != nil {
+		return errors.Wrap(err, "nft not found in db")
+	}
+	activityID := h.config.Network.ActivityID(e.TxHash, e.MsgIndex)
+	if err := h.db.Create(&indexerdb.Activity{
+		ID:           activityID,
+		NFTID:        &nftID,
+		CollectionID: &collection.ID,
+		Kind:         indexerdb.ActivityKindBurn,
+		Time:         blockTime,
+		Burn: &indexerdb.Burn{
+			BurnerID:  burnerID,
+			NetworkID: collection.NetworkID,
+		},
+		NetworkID: collection.NetworkID,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to create listing in db")
+	}
+
+	// complete quest
+	if err := h.db.Save(&indexerdb.QuestCompletion{
+		UserID:         burnerID,
+		QuestID:        "burn_capital",
+		Completed:      true,
+		QuestNetworkID: collection.NetworkID,
+	}).Error; err != nil {
+		return errors.Wrap(err, "failed to save quest completion")
+	}
+
+	h.logger.Info("created burn via burn capital", zap.String("id", string(activityID)))
+
 	return nil
 }
 
@@ -94,10 +177,13 @@ func (h *Handler) handleExecuteSendNFTFallback(e *Message, execMsg *wasmtypes.Ms
 		Kind: indexerdb.ActivityKindSendNFT,
 		Time: blockTime,
 		SendNFT: &indexerdb.SendNFT{
-			Sender:   senderID,
-			Receiver: receiverID,
+			Sender:    senderID,
+			Receiver:  receiverID,
+			NetworkID: collection.NetworkID,
 		},
-		NFTID: nftId,
+		NFTID:        &nftId,
+		CollectionID: &collection.ID,
+		NetworkID:    collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create mint activity")
 	}
@@ -154,9 +240,12 @@ func (h *Handler) handleExecuteBurn(e *Message, execMsg *wasmtypes.MsgExecuteCon
 		Kind: indexerdb.ActivityKindBurn,
 		Time: blockTime,
 		Burn: &indexerdb.Burn{
-			BurnerID: h.config.Network.UserID(execMsg.Sender),
+			BurnerID:  h.config.Network.UserID(execMsg.Sender),
+			NetworkID: collection.NetworkID,
 		},
-		NFTID: nftId,
+		NFTID:        &nftId,
+		CollectionID: &collection.ID,
+		NetworkID:    collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create burn activity")
 	}
@@ -190,7 +279,7 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 		return errors.Wrap(err, "failed to query collections")
 	}
 	if r.RowsAffected == 0 {
-		h.logger.Debug("ignored burn on unknown collection", zap.String("contract-address", contractAddress))
+		h.logger.Debug("ignored transfer nft on unknown collection", zap.String("contract-address", contractAddress))
 		return nil
 	}
 	if collection.TeritoriCollection == nil {
@@ -200,7 +289,7 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 	// get msg
 	var msg ExecuteTransferNftMsg
 	if err := json.Unmarshal(execMsg.Msg, &msg); err != nil {
-		return errors.Wrap(err, "failed to un marshal msg")
+		return errors.Wrap(err, "failed to unmarshal msg")
 	}
 
 	receiverID := h.config.Network.UserID(msg.Data.Recipient)
@@ -223,10 +312,13 @@ func (h *Handler) handleExecuteTransferNFT(e *Message, execMsg *wasmtypes.MsgExe
 		Kind: indexerdb.ActivityKindTransferNFT,
 		Time: blockTime,
 		TransferNFT: &indexerdb.TransferNFT{
-			Sender:   h.config.Network.UserID(execMsg.Sender),
-			Receiver: receiverID,
+			Sender:    h.config.Network.UserID(execMsg.Sender),
+			Receiver:  receiverID,
+			NetworkID: collection.NetworkID,
 		},
-		NFTID: nftId,
+		NFTID:        &nftId,
+		CollectionID: &collection.ID,
+		NetworkID:    collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create transfer activity")
 	}

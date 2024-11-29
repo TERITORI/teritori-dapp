@@ -1,61 +1,66 @@
 import React from "react";
-import { ViewStyle, View, StyleProp, TouchableOpacity } from "react-native";
+import { ViewStyle, StyleProp, TouchableOpacity } from "react-native";
 import { SvgProps } from "react-native-svg";
+
+import { iconPadding, iconSize, innerGap, outerPadding } from "./SocialButton";
+import { BrandText } from "../BrandText";
+import { SVG } from "../SVG";
+import { Box } from "../boxes/Box";
 
 import {
   neutral1A,
   primaryColor,
   primaryTextColor,
   withAlpha,
-} from "../../utils/style/colors";
-import { fontMedium14 } from "../../utils/style/fonts";
-import { BrandText } from "../BrandText";
-import { SVG } from "../SVG";
-import { LegacySecondaryBox } from "../boxes/LegacySecondaryBox";
+} from "@/utils/style/colors";
+import { fontMedium14 } from "@/utils/style/fonts";
 
 export const SocialButtonSecondary: React.FC<{
-  text: string;
+  text?: string;
   iconSvg: React.FC<SvgProps>;
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
 }> = ({ text, onPress, iconSvg, style }) => {
   return (
     <TouchableOpacity onPress={onPress} style={style}>
-      <LegacySecondaryBox
-        noBrokenCorners
-        mainContainerStyle={{ backgroundColor: withAlpha(neutral1A, 0.64) }}
-        height={44}
+      <Box
+        style={{
+          paddingVertical: outerPadding,
+          backgroundColor: withAlpha(neutral1A, 0.64),
+          paddingLeft: outerPadding,
+          paddingRight: outerPadding + (text ? innerGap : 0),
+          flexDirection: "row",
+          alignItems: "center",
+        }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <LegacySecondaryBox
-            noBrokenCorners
-            style={{ marginLeft: 6 }}
-            mainContainerStyle={{
-              backgroundColor: primaryColor,
-              borderRadius: 6,
-            }}
-            width={32}
-            height={32}
-            squaresBackgroundColor={withAlpha(neutral1A, 0.64)}
-            cornerWidth={5.5}
-          >
-            <SVG
-              source={iconSvg}
-              width={20}
-              height={20}
-              color={primaryTextColor}
-            />
-          </LegacySecondaryBox>
+        <Box
+          style={{
+            backgroundColor: primaryColor,
+            borderRadius: 6,
+            width: iconSize,
+            height: iconSize,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <SVG
+            source={iconSvg}
+            height={iconSize - iconPadding}
+            width={iconSize - iconPadding}
+            color={primaryTextColor}
+          />
+        </Box>
+        {!!text && (
           <BrandText
             style={[
               fontMedium14,
-              { color: primaryColor, marginLeft: 8, marginRight: 16 },
+              { color: primaryColor, marginLeft: innerGap },
             ]}
           >
             {text}
           </BrandText>
-        </View>
-      </LegacySecondaryBox>
+        )}
+      </Box>
     </TouchableOpacity>
   );
 };

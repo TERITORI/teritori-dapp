@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { View } from "react-native";
 
 import { SettingItem } from "./SettingItem";
-import { BrandText } from "../../../components/BrandText";
-import { SpacerColumn } from "../../../components/spacer";
-import { neutral17, neutralA3 } from "../../../utils/style/colors";
-import { fontSemibold14, fontSemibold20 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { SettingItemGroupType, SettingItemType } from "../types";
+
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn } from "@/components/spacer";
+import { neutral17, neutralA3 } from "@/utils/style/colors";
+import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const Notifications: React.FC = () => {
   const data: SettingItemGroupType = {
@@ -30,7 +31,7 @@ export const Notifications: React.FC = () => {
     expiredBids: {
       title: "Expired bids",
       description:
-        "When your bid expires or gets deactivated because of insufficient funds",
+        "When your bid expires or gets deactivated because of not enough funds",
       state: true,
     },
     purchase: {

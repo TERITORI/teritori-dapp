@@ -1,9 +1,10 @@
 import React, { ReactNode } from "react";
 
 import { useMention } from "../../../../hooks/feed/useMention";
-import { useAppNavigation } from "../../../../utils/navigation";
 import { getReactNodeStringProp } from "../../../../utils/react";
 import { neutralA3, primaryColor } from "../../../../utils/style/colors";
+
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export const RichMentionRendererConsultation = (props: {
   children: ReactNode;

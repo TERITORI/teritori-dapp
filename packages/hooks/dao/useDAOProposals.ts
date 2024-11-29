@@ -3,17 +3,18 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 
 import { useDAOFirstProposalModule } from "./useDAOProposalModules";
-import { DaoProposalSingleQueryClient } from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.client";
+
+import { DaoProposalSingleQueryClient } from "@/contracts-clients/dao-proposal-single/DaoProposalSingle.client";
 import {
   ProposalResponse,
   Status,
-} from "../../contracts-clients/dao-proposal-single/DaoProposalSingle.types";
+} from "@/contracts-clients/dao-proposal-single/DaoProposalSingle.types";
 import {
   NetworkKind,
   mustGetNonSigningCosmWasmClient,
   parseUserId,
-} from "../../networks";
-import { extractGnoJSONString } from "../../utils/gno";
+} from "@/networks";
+import { extractGnoJSONString } from "@/utils/gno";
 
 const daoProposalsQueryKey = (daoId: string | undefined) => [
   "dao-proposals",
@@ -30,7 +31,7 @@ type GnoProposalVotes = {
   abstain: number;
 };
 
-type GnoDAOProposal = {
+export type GnoDAOProposal = {
   id: number;
   title: string;
   description: string;
@@ -50,7 +51,7 @@ export const useDAOProposals = (daoId: string | undefined) => {
   const { daoProposals: cosmWasmDAOProposals, ...cosmWasmOther } =
     useCosmWasmDAOProposals(daoId);
   const { data: gnoDAOProposals, ...gnoOther } = useQuery(
-    [daoProposalsQueryKey(daoId), NetworkKind.Gno],
+    [...daoProposalsQueryKey(daoId), "gno"],
     async () => {
       if (network?.kind !== NetworkKind.Gno) return [];
       const provider = new GnoJSONRPCProvider(network.endpoint);
@@ -66,47 +67,7 @@ export const useDAOProposals = (daoId: string | undefined) => {
 
       for (let i = 0; i < gnoProposals.length; i++) {
         const prop = gnoProposals[i];
-        const title = prop.title;
-        const description = prop.description;
-        const status = prop.status.toLowerCase() as Status;
-        const proposer = prop.proposer;
-        const yesVotes = prop.votes.yes;
-        const noVotes = prop.votes.no;
-        const abstainVotes = prop.votes.abstain;
-        const threshold =
-          prop.threshold.thresholdQuorum.threshold.percent / 10000;
-        const quorum = prop.threshold.thresholdQuorum.quorum.percent / 10000;
-        const actions = prop.messages.map((m) => JSON.stringify(m));
-        // TODO: render actions
-        proposals.push({
-          id: i,
-          proposal: {
-            title,
-            description,
-            votes: {
-              yes: yesVotes.toString(),
-              no: noVotes.toString(),
-              abstain: abstainVotes.toString(),
-            },
-            allow_revoting: false,
-            expiration: "TODO" as any,
-            msgs: prop.messages.map((m) => ({
-              ...m,
-              gno: true,
-            })),
-            actions,
-            proposer,
-            start_height: prop.startHeight,
-            status,
-            threshold: {
-              threshold_quorum: {
-                threshold: { percent: `${threshold}` },
-                quorum: { percent: `${quorum}` },
-              },
-            },
-            total_power: prop.totalPower.toString(),
-          },
-        });
+        proposals.push(gnoToAppProposal(prop));
       }
       return proposals;
     },
@@ -132,7 +93,7 @@ const useCosmWasmDAOProposals = (daoId: string | undefined) => {
   const proposalModuleAddress = daoFirstProposalModule?.address;
 
   const { data, ...other } = useQuery(
-    [daoProposalsQueryKey(daoId), NetworkKind.Cosmos],
+    [...daoProposalsQueryKey(daoId), "cosmwasm"],
     async () => {
       if (!networkId || !proposalModuleAddress) return null;
 
@@ -152,13 +113,7 @@ const useCosmWasmDAOProposals = (daoId: string | undefined) => {
         });
         if (listProposals.proposals.length === 0) break;
         allProposals.push(
-          ...listProposals.proposals.map((p) => ({
-            ...p,
-            proposal: {
-              ...p.proposal,
-              actions: [] as string[],
-            },
-          })),
+          ...listProposals.proposals.map((p) => cosmwasmToAppProposal(p)),
         );
         startAfter += listProposals.proposals.length;
       }
@@ -176,4 +131,62 @@ export const useInvalidateDAOProposals = (daoId: string | undefined) => {
     () => queryClient.invalidateQueries(daoProposalsQueryKey(daoId)),
     [queryClient, daoId],
   );
+};
+
+export const gnoToAppProposal = (proposal: GnoDAOProposal) => {
+  // TODO: render actions
+  const title = proposal.title;
+  const description = proposal.description;
+  const status = proposal.status.toLowerCase() as Status;
+  const proposer = proposal.proposer;
+  const yesVotes = proposal.votes.yes;
+  const noVotes = proposal.votes.no;
+  const abstainVotes = proposal.votes.abstain;
+  const threshold =
+    proposal.threshold.thresholdQuorum.threshold.percent / 10000;
+  const quorum = proposal.threshold.thresholdQuorum.quorum.percent / 10000;
+  const actions = proposal.messages.map((m) => JSON.stringify(m));
+
+  const appProposal: AppProposalResponse = {
+    id: proposal.id,
+    proposal: {
+      title,
+      description,
+      votes: {
+        yes: yesVotes.toString(),
+        no: noVotes.toString(),
+        abstain: abstainVotes.toString(),
+      },
+      allow_revoting: false,
+      expiration: "TODO" as any,
+      msgs: proposal.messages.map((m) => ({
+        ...m,
+        gno: true,
+      })),
+      actions,
+      proposer,
+      start_height: proposal.startHeight,
+      status,
+      threshold: {
+        threshold_quorum: {
+          threshold: { percent: `${threshold}` },
+          quorum: { percent: `${quorum}` },
+        },
+      },
+      total_power: proposal.totalPower.toString(),
+    },
+  };
+
+  return appProposal;
+};
+
+export const cosmwasmToAppProposal = (proposal: ProposalResponse) => {
+  const appPrpoposal: AppProposalResponse = {
+    ...proposal,
+    proposal: {
+      ...proposal.proposal,
+      actions: [] as string[],
+    },
+  };
+  return appPrpoposal;
 };

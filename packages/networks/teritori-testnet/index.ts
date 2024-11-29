@@ -1,27 +1,84 @@
 import { teritoriTestnetCurrencies } from "./currencies";
-import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
+import {
+  CosmWasmNFTLaunchpad,
+  CosmWasmNFTsBurner,
+  CosmWasmPremiumFeed,
+  CosmWasmRakki,
+  NetworkFeature,
+  NFTMarketplace,
+} from "../features";
+import { CosmosNetworkInfo, NetworkKind } from "../types";
 
 const nameServiceContractAddress =
-  "tori18etjzrma5604af50jjklk3wlkqcsxdrvmy6jzw5naw2t7kyv4rys3kpwky";
+  "tori1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgsjscd88";
 
-const riotContractAddressGen1 =
-  "tori1afwrcs58afaka6ltynevwcvq8zhejr3ssn703c0hky5emh890vzsry5wp5";
+const premiumFeedFeature: CosmWasmPremiumFeed = {
+  type: NetworkFeature.CosmWasmPremiumFeed,
+  membershipContractAddress: "",
+  mintDenom: "utori",
+};
 
-export const teritoriTestnetNetwork: NetworkInfo = {
+const nftsBurnerFeature: CosmWasmNFTsBurner = {
+  type: NetworkFeature.CosmWasmNFTsBurner,
+  burnerContractAddress:
+    "tori1qyl0j7a24amk8k8gcmvv07y2zjx7nkcwpk73js24euh64hkja6esd2p2xp",
+};
+
+const nftMarketplace: NFTMarketplace = {
+  type: NetworkFeature.NFTMarketplace,
+  cwAddressListCodeId: 63,
+  cwAddressListContractAddress:
+    "tori1x72plnprsjnmszylmdm3cnvu5h6u55fyf0pe02lye9p6q2ws05ps33qmft",
+};
+
+const cosmwasmNftLaunchpadFeature: CosmWasmNFTLaunchpad = {
+  type: NetworkFeature.CosmWasmNFTLaunchpad,
+  launchpadContractAddress:
+    "tori1te7ku4de0k4rl8lhyuvpmhygaq7k7vy5zpsjq9y638efxsnx3aaqck2utf",
+  launchpadEndpoint: "https://dapp-backend.testnet.teritori.com",
+  nftTr721CodeId: 60,
+  codeId: 71,
+  defaultMintDenom: "utori",
+};
+
+const rakkiFeature: CosmWasmRakki = {
+  type: NetworkFeature.CosmWasmRakki,
+  codeId: 79,
+  contractAddress:
+    "tori1smdl4c0mc4kqsrg42rhrx5czqwxtp2gml0v8yrzhclesf5n47wzqds7dx3",
+};
+
+const riotContractAddressGen0 =
+  "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0";
+const riotContractAddressGen1 = "";
+
+export const teritoriTestnetNetwork: CosmosNetworkInfo = {
   id: "teritori-testnet",
   kind: NetworkKind.Cosmos,
   chainId: "teritori-test-7",
   displayName: "Teritori Testnet",
-  icon: "icons/networks/teritori.svg",
+  registryName: "teritoritestnet",
+  icon: "teritori.svg",
   features: [
     NetworkFeature.NFTMarketplace,
+    NetworkFeature.RiotP2E,
     NetworkFeature.Organizations,
     NetworkFeature.SocialFeed,
     NetworkFeature.UPP,
     NetworkFeature.NameService,
     NetworkFeature.BurnTokens,
-    NetworkFeature.NFTLaunchpad,
-    NetworkFeature.RiotP2E,
+    NetworkFeature.CosmWasmNFTLaunchpad,
+    NetworkFeature.CosmWasmPremiumFeed,
+    NetworkFeature.NFTMarketplaceLeaderboard,
+    NetworkFeature.CosmWasmNFTsBurner,
+    NetworkFeature.CosmWasmRakki,
+  ],
+  featureObjects: [
+    premiumFeedFeature,
+    nftsBurnerFeature,
+    nftMarketplace,
+    cosmwasmNftLaunchpadFeature,
+    rakkiFeature,
   ],
   currencies: teritoriTestnetCurrencies,
   txExplorer: "https://explorer.teritori.com/teritori-testnet/tx/$hash",
@@ -53,44 +110,27 @@ export const teritoriTestnetNetwork: NetworkInfo = {
     "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
   nameServiceTLD: ".tori",
   vaultContractAddress:
-    "tori13d26fzmvuvlvvxwt3ur0vkv8j6f28mf4nqfmxu3xk5r57wzxxglqut8ezk",
-  riotContractAddressGen0:
-    "tori162skshe30f43kv2q2rw6we2mu3pvz43lm2zrg4hq50jdd2fjjdjsvm8mc7",
+    "tori1wn625s4jcmvk0szpl85rj5azkfc6suyvf75q6vrddscjdphtve8s2f76jm",
+  riotContractAddressGen0,
   riotContractAddressGen1,
-  riotSquadStakingContractAddressV1:
-    "tori15wl5lw9pxpedcekgqr8vk5xfpkrsax3reyfkkey458t6a7vv0d5ssark6m",
-  riotSquadStakingContractAddressV2:
-    "tori1gzk7kets2dfr7rcmzunkem0a23pn9ktkpjf0elxp38x42zpddt6qhvsp9l",
-  distributorContractAddress:
-    "tori1ff0ze096zcy5va5xhl7zenwt5vca6z9n0l8du7q7qsd7ftrcz0cqvd0vgc",
-  riotersFooterContractAddress:
-    "tori1m6g3l3j5t988zwmp965hrhsxvm8jrkf2ulw4gmwj8hx8pd84tvcqeearsd",
+  riotSquadStakingContractAddressV1: "",
+  riotSquadStakingContractAddressV2: "",
+  distributorContractAddress: "",
   secondaryDuringMintList: [
+    premiumFeedFeature.membershipContractAddress,
     nameServiceContractAddress,
+    riotContractAddressGen0,
     riotContractAddressGen1,
   ],
   excludeFromLaunchpadList: [riotContractAddressGen1],
   socialFeedContractAddress:
-    "tori1umsk53n6rf5j2lam80zuz50sz9sdw2vdpr0vvd2xaaryprfa7ryslyvm69",
-  daoCw20CodeId: 99,
-  daoFactoryCodeId: 100,
-  daoCoreCodeId: 176,
-  daoPreProposeSingleCodeId: 102,
-  daoProposalSingleCodeId: 103,
-  daoVotingCw20StakedCodeId: 104,
-  daoCw20StakeCodeId: 105,
-  daoCw4GroupCodeId: 106,
-  daoVotingCw4CodeId: 109,
-  daoFactoryContractAddress:
-    "tori1r29chp8ufwgx9u3wr4sfk050aardhkzwve7nht6y06gvlaqutr3qt83z6r",
-  coreDAOAddress:
-    "tori1dy5h9q9zue4swxe9mzracm8gudp0fcf2ncllch6pfq9d0fq0ftgq546063",
-  featureObjects: [
-    {
-      kind: NetworkFeature.CosmWasmRakki,
-      codeId: 79,
-      contractAddress:
-        "tori1smdl4c0mc4kqsrg42rhrx5czqwxtp2gml0v8yrzhclesf5n47wzqds7dx3",
-    },
-  ],
+    "tori1mf6ptkssddfmxvhdx0ech0k03ktp6kf9yk59renau2gvht3nq2gqg87tkw",
+  daoCoreCodeId: 30,
+  daoPreProposeSingleCodeId: 32,
+  daoProposalSingleCodeId: 33,
+  cw4GroupCodeId: 28,
+  daoVotingCw4CodeId: 31,
+  cwAdminFactoryCodeId: 29,
+  cwAdminFactoryContractAddress:
+    "tori1du6yg34tljg54s5qhsqv2ay23nx7cqjmku2yuv0fs4namz7yn9yqep8rde",
 };

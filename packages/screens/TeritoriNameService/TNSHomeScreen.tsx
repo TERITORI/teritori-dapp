@@ -12,35 +12,26 @@ import TNSBannerPNG from "../../../assets/banners/tns.png";
 import exploreSVG from "../../../assets/icons/explore-neutral77.svg";
 import penSVG from "../../../assets/icons/pen-neutral77.svg";
 import registerSVG from "../../../assets/icons/register-neutral77.svg";
-import { BrandText } from "../../components/BrandText";
-import { IntroLogoText } from "../../components/IntroLogoText";
-import { ScreenContainer } from "../../components/ScreenContainer";
-import { ActivityTable } from "../../components/activity/ActivityTable";
-import { TNSNameFinderModal } from "../../components/modals/teritoriNameService/TNSNameFinderModal";
-import { FlowCard } from "../../components/teritoriNameService/FlowCard";
-import { useTNS } from "../../context/TNSProvider";
-import { useIsKeplrConnected } from "../../hooks/useIsKeplrConnected";
-import { useIsLeapConnected } from "../../hooks/useIsLeapConnected";
-import { useNSTokensByOwner } from "../../hooks/useNSTokensByOwner";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
+
+import { BrandText } from "@/components/BrandText";
+import { ImageBackgroundLogoText } from "@/components/ImageBackgroundLogoText";
+import { ScreenContainer } from "@/components/ScreenContainer";
+import { ActivityTable } from "@/components/activity/ActivityTable";
+import { FlowCard } from "@/components/cards/FlowCard";
+import { TNSNameFinderModal } from "@/components/modals/teritoriNameService/TNSNameFinderModal";
+import { TNSCloseHandler, TNSItems, TNSModals } from "@/components/user/types";
+import { useTNS } from "@/context/TNSProvider";
+import { useWalletControl } from "@/context/WalletControlProvider";
+import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
-  NetworkKind,
   getCollectionId,
   getCosmosNetwork,
   NetworkFeature,
-} from "../../networks";
-import { ScreenFC, useAppNavigation } from "../../utils/navigation";
-
-type TNSItems = "TNSManage" | "TNSRegister" | "TNSExplore";
-type TNSModals =
-  | "TNSManage"
-  | "TNSRegister"
-  | "TNSExplore"
-  | "TNSConsultName"
-  | "TNSMintName"
-  | "TNSUpdateName"
-  | "TNSBurnName";
+  NetworkKind,
+} from "@/networks";
+import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 
 const TNSPathMap = {
   TNSManage: "manage",
@@ -51,17 +42,6 @@ const TNSPathMap = {
   TNSUpdateName: "update-name",
   TNSBurnName: "burn-name",
 };
-
-export type TNSCloseHandler = (
-  modalName?: TNSModals,
-  navigateTo?: TNSModals,
-  name?: string,
-) => void;
-
-export interface TNSModalCommonProps {
-  onClose: TNSCloseHandler;
-  navigateBackTo?: TNSModals;
-}
 
 const LG_BREAKPOINT = 1600;
 const MD_BREAKPOINT = 820;
@@ -79,13 +59,11 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
   const selectedNetwork = getCosmosNetwork(selectedNetworkId);
   const selectedWallet = useSelectedWallet();
   const { tokens } = useNSTokensByOwner(selectedWallet?.userId);
+  const { showConnectWalletModal } = useWalletControl();
   const collectionId = getCollectionId(
     selectedNetwork?.id,
     selectedNetwork?.nameServiceContractAddress,
   );
-
-  const isKeplrConnected = useIsKeplrConnected();
-  const isLeapConnected = useIsLeapConnected();
 
   const handleModalClose: TNSCloseHandler = (
     modalName,
@@ -111,24 +89,33 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
       return;
     }
     try {
-      //@ts-ignore
       const routeName = Object.keys(TNSPathMap).find(
-        //@ts-ignore
+        // @ts-expect-error: description todo
         (key) => TNSPathMap[key] === modal,
       );
-      //@ts-ignore
 
       if (["register", "explore"].includes(modal) && !name) {
         setModalNameFinderVisible(true);
         setPressedTNSItems(modal === "register" ? "TNSRegister" : "TNSExplore");
       } else {
-        //@ts-ignore
+        // @ts-expect-error: description todo
         setActiveModal(routeName);
         setModalNameFinderVisible(false);
       }
     } catch (err) {
       console.log("route path parsing failed", err);
     }
+  };
+
+  const onPressRegister = async () => {
+    if (!selectedWallet?.address || !selectedWallet.connected) {
+      showConnectWalletModal({
+        forceNetworkFeature: NetworkFeature.NameService,
+        action: "Register a Name",
+      });
+      return;
+    }
+    navigation.navigate("TNSHome", { modal: "register" });
   };
 
   useEffect(() => {
@@ -145,18 +132,15 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
 
   return (
     <ScreenContainer
-      noMargin={width <= 1600}
       headerChildren={<BrandText>Name Service</BrandText>}
       forceNetworkFeatures={[NetworkFeature.NameService]}
       forceNetworkKind={NetworkKind.Cosmos}
+      isLarge
+      responsive
     >
-      <View
-        style={{
-          marginHorizontal: 32,
-        }}
-      >
-        <IntroLogoText
-          title={`${selectedNetwork?.displayName} Name Service`}
+      <View>
+        <ImageBackgroundLogoText
+          text={`${selectedNetwork?.displayName} Name Service`}
           backgroundImage={TNSBannerPNG}
         />
         <View
@@ -167,18 +151,12 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
           }}
         >
           <FlowCard
-            disabled={!isKeplrConnected && !isLeapConnected}
             label="Register"
             description="Register and configure a new name"
             iconSVG={registerSVG}
-            onPress={() =>
-              navigation.navigate("TNSHome", { modal: "register" })
-            }
+            onPress={onPressRegister}
           />
           <FlowCard
-            disabled={
-              (!isKeplrConnected && !isLeapConnected) || !tokens?.length
-            }
             label="Manage"
             description="Transfer, edit, or burn a name that you own"
             iconSVG={penSVG}
@@ -187,6 +165,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
               marginHorizontal: width >= MD_BREAKPOINT ? 12 : 0,
               marginVertical: width >= MD_BREAKPOINT ? 0 : 12,
             }}
+            disabled={!tokens.length}
           />
           <FlowCard
             label="Explore"

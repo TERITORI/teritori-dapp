@@ -1,12 +1,13 @@
-import React, { useRef } from "react";
+import React from "react";
 import { View, TouchableOpacity } from "react-native";
 
 import { BrandText } from "./BrandText";
-import { LegacyPrimaryBox } from "./boxes/LegacyPrimaryBox";
-import { useDropdowns } from "../context/DropdownsProvider";
-import { neutral33 } from "../utils/style/colors";
-import { fontSemibold13 } from "../utils/style/fonts";
-import { layout } from "../utils/style/layout";
+import { PrimaryBox } from "./boxes/PrimaryBox";
+
+import { useDropdowns } from "@/hooks/useDropdowns";
+import { neutral33 } from "@/utils/style/colors";
+import { fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 const DEFAULT_WIDTH = 164;
 
@@ -25,22 +26,21 @@ export const Menu: React.FC<MenuProps> = ({
   component,
   width = DEFAULT_WIDTH,
 }) => {
-  const { onPressDropdownButton, isDropdownOpen, closeOpenedDropdown } =
-    useDropdowns();
-  const dropdownRef = useRef<View>(null);
+  const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
 
   return (
     <View style={{ position: "relative" }}>
-      <TouchableOpacity onPress={() => onPressDropdownButton(dropdownRef)}>
+      <TouchableOpacity onPress={() => setDropdownState(!isDropdownOpen)}>
         {component}
       </TouchableOpacity>
-      {isDropdownOpen(dropdownRef) && (
-        <View ref={dropdownRef}>
-          <LegacyPrimaryBox
-            width={width}
-            style={{ position: "absolute", right: 0, bottom: -20 }}
-            mainContainerStyle={{
+      {isDropdownOpen && (
+        <View ref={dropdownRef} collapsable={false}>
+          <PrimaryBox
+            style={{
               position: "absolute",
+              right: 0,
+              bottom: -20,
+              width,
               paddingHorizontal: layout.spacing_x1_5,
             }}
           >
@@ -49,7 +49,7 @@ export const Menu: React.FC<MenuProps> = ({
                 disabled={item.disabled}
                 key={item.label}
                 onPress={() => {
-                  closeOpenedDropdown();
+                  setDropdownState(false);
                   item.onPress();
                 }}
                 activeOpacity={0.7}
@@ -68,7 +68,7 @@ export const Menu: React.FC<MenuProps> = ({
                 </BrandText>
               </TouchableOpacity>
             ))}
-          </LegacyPrimaryBox>
+          </PrimaryBox>
         </View>
       )}
     </View>

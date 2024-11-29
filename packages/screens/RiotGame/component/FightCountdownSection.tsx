@@ -12,27 +12,24 @@ import brokenBoxPNG from "../../../../assets/game/broken-box.png";
 import clockSVG from "../../../../assets/game/clock.svg";
 import countDownPNG from "../../../../assets/game/countdown.png";
 import unstakeSVG from "../../../../assets/icons/unstake.svg";
-import { BrandText } from "../../../components/BrandText";
-import { SVG } from "../../../components/SVG";
-import { SpacerColumn } from "../../../components/spacer";
-import { Squad } from "../../../contracts-clients/teritori-squad-staking/TeritoriSquadStaking.types";
-import { StakingState } from "../../../utils/game";
-import {
-  neutral77,
-  redDefault,
-  yellowDefault,
-} from "../../../utils/style/colors";
+
+import { BrandText } from "@/components/BrandText";
+import { SVG } from "@/components/SVG";
+import { SpacerColumn } from "@/components/spacer";
+import { StakingState } from "@/utils/game";
+import { neutral77, redDefault, yellowDefault } from "@/utils/style/colors";
 import {
   fontSemibold20,
   fontSemibold14,
   fontMedium40,
-} from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+} from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
+import { SquadInfo } from "@/utils/types/riot-p2e";
 
 type FightCountdownSectionProps = {
   unstake(): void;
   isUnstaking: boolean;
-  squad: Squad;
+  squad: SquadInfo;
   now: number;
   cooldown: number;
 };
@@ -48,8 +45,8 @@ export const FightCountdownSection: React.FC<FightCountdownSectionProps> = ({
     let remainingTime = 0;
     let stakingState = StakingState.UNKNOWN;
 
-    const startsAt = moment(squad.start_time * 1000);
-    const endsAt = moment(squad.end_time * 1000);
+    const startsAt = moment(squad.startTime * 1000);
+    const endsAt = moment(squad.endTime * 1000);
     const completesAt = moment(startsAt).add(cooldown, "seconds");
 
     const nowDt = moment(now);
@@ -68,7 +65,7 @@ export const FightCountdownSection: React.FC<FightCountdownSectionProps> = ({
       remainingTime,
       stakingState,
     };
-  }, [squad.start_time, squad.end_time, cooldown, now]);
+  }, [squad.startTime, squad.endTime, cooldown, now]);
 
   const isOnGoing = stakingState === StakingState.ONGOING;
   const isCompleted = stakingState === StakingState.COMPLETED;

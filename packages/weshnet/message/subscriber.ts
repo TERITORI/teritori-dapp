@@ -1,4 +1,4 @@
-import { Platform } from "react-native";
+import { Subscription } from "rxjs";
 
 import { processMessage } from "./processEvent";
 import {
@@ -10,20 +10,37 @@ import { store } from "../../store/store";
 import { weshClient } from "../client";
 import { bytesFromString, stringFromBytes } from "../utils";
 
-export const subscribeMessages = async (groupPk: string) => {
+const messageSubscriptions: Subscription[] = [];
+const subscribers: { [key: string]: boolean } = {};
+
+export const subscribeMessages = async (
+  groupPk: string,
+  ignoreDuplication?: boolean,
+) => {
   try {
     const lastId = selectLastIdByKey(store.getState(), groupPk);
 
     const config: Partial<GroupMessageList_Request> = {
       groupPk: bytesFromString(groupPk),
     };
+    let uniqKey = groupPk;
 
     if (lastId) {
       config.sinceId = bytesFromString(lastId);
+      uniqKey += "sinceId";
     } else {
       config.untilNow = true;
       config.reverseOrder = true;
+      uniqKey += "untilNow";
     }
+
+    if (!ignoreDuplication && subscribers[uniqKey]) {
+      return;
+    }
+
+    subscribers[uniqKey] = true;
+
+    let newLastId: string | undefined;
 
     try {
       await weshClient.client.ActivateGroup({
@@ -49,6 +66,7 @@ export const subscribeMessages = async (groupPk: string) => {
                   value: id,
                 }),
               );
+              newLastId = id;
               isLastIdSet = true;
             }
 
@@ -59,6 +77,7 @@ export const subscribeMessages = async (groupPk: string) => {
                   value: id,
                 }),
               );
+              newLastId = id;
             }
 
             processMessage(data, groupPk);
@@ -70,19 +89,32 @@ export const subscribeMessages = async (groupPk: string) => {
           console.error("get message err", e);
         },
         complete: async () => {
-          const lastId = selectLastIdByKey(store.getState(), groupPk);
-          if (Platform.OS === "web" && lastId) {
+          messageSubscriptions.splice(
+            messageSubscriptions.indexOf(subscription),
+            1,
+          );
+
+          if (newLastId) {
             subscribeMessages(groupPk);
           } else {
-            setTimeout(() => subscribeMessages(groupPk), 3500);
+            setTimeout(() => subscribeMessages(groupPk, true), 3500);
           }
         },
       };
-      return messages.subscribe(observer);
+
+      const subscription = messages.subscribe(observer);
+
+      messageSubscriptions.push(subscription);
     } catch (err) {
       console.error("get messages err", err);
     }
   } catch (err) {
     console.error("subscribe message", err);
   }
+};
+
+export const unsubscribeMessageSubscriptions = () => {
+  messageSubscriptions.forEach((subscriber) => {
+    subscriber?.unsubscribe?.();
+  });
 };

@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 
-import { trimFixed } from "./numbers";
+import { prettyNumber } from "./numbers";
 import { getNativeCurrency } from "../networks";
 
 export interface Balance {
@@ -21,8 +21,6 @@ export const decimalFromAtomics = (
   return Decimal.fromAtomics("0", 0);
 };
 
-const units = ["", "K", "M", "B", "T", "P", "E", "Z", "Y"];
-
 // FIXME: rename to prettyAmount
 
 // Returns the price with denom (Text + denom)
@@ -38,6 +36,13 @@ export const prettyPrice = (
   if (!denom) {
     denom = "unknown";
   }
+
+  // PATCH/HACK: sometime, the original value is corrupted. Ex: 1.0000000200408773e+21
+  // To avoid crash, we handle that case here. Ofc, fixing it at source of data would be better
+  if (value.includes("e+")) {
+    value = bigNumToStr(Number(value));
+  }
+
   const currency = getNativeCurrency(networkId, denom);
   if (currency) {
     const decval = Decimal.fromAtomics(value || "0", currency.decimals);
@@ -49,17 +54,16 @@ export const prettyPrice = (
       if (noDenom) return `${decval.toString()}`;
       return `${decval.toString()} ${currency.displayName}`;
     }
-    let val = decval.toFloatApproximation();
-    let unitIndex = 0;
-    while (val >= 1000 && unitIndex !== units.length - 1) {
-      val /= 1000;
-      unitIndex++;
-    }
-    if (noDenom) return `${trimFixed(val.toFixed(2))}${units[unitIndex]}`;
-    return `${trimFixed(val.toFixed(2))}${units[unitIndex]} ${
-      currency.displayName
-    }`;
+    const val = decval.toFloatApproximation();
+    const text = prettyNumber(val, 2);
+    if (noDenom) return text;
+    return `${text} ${currency.displayName}`;
   }
   if (noDenom) return `${value}`;
   return `${value} ${denom}`;
+};
+
+// Src: https://stackoverflow.com/questions/1685680/how-to-avoid-scientific-notation-for-large-numbers-in-javascript
+const bigNumToStr = (myNumb: number | string) => {
+  return Number(myNumb).toLocaleString("fullwide", { useGrouping: false });
 };

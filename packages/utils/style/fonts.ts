@@ -39,7 +39,20 @@ export const fontBold9: TextStyle = {
   fontFamily: "Exo_700Bold",
   fontWeight: "700",
 };
-
+export const fontBold10: TextStyle = {
+  fontSize: 10,
+  letterSpacing: 10 * 0.08,
+  lineHeight: 12,
+  fontFamily: "Exo_700Bold",
+  fontWeight: "700",
+};
+export const fontSemibold30: TextStyle = {
+  fontSize: 30,
+  letterSpacing: -(30 * 0.04),
+  lineHeight: 36,
+  fontFamily: "Exo_600SemiBold",
+  fontWeight: "600",
+};
 export const fontSemibold28: TextStyle = {
   fontSize: 28,
   letterSpacing: -(28 * 0.04),
@@ -47,9 +60,17 @@ export const fontSemibold28: TextStyle = {
   fontFamily: "Exo_600SemiBold",
   fontWeight: "600",
 };
+
 export const fontSemibold24: TextStyle = {
   fontSize: 24,
   letterSpacing: -(24 * 0.04),
+  lineHeight: 28,
+  fontFamily: "Exo_600SemiBold",
+  fontWeight: "600",
+};
+export const fontSemibold22: TextStyle = {
+  fontSize: 22,
+  letterSpacing: -(22 * 0.04),
   lineHeight: 28,
   fontFamily: "Exo_600SemiBold",
   fontWeight: "600",
@@ -58,6 +79,13 @@ export const fontSemibold20: TextStyle = {
   fontSize: 20,
   letterSpacing: -(20 * 0.04),
   lineHeight: 24,
+  fontFamily: "Exo_600SemiBold",
+  fontWeight: "600",
+};
+export const fontSemibold18: TextStyle = {
+  fontSize: 18,
+  letterSpacing: 0,
+  lineHeight: 22,
   fontFamily: "Exo_600SemiBold",
   fontWeight: "600",
 };
@@ -159,6 +187,13 @@ export const fontMedium16: TextStyle = {
   fontFamily: "Exo_500Medium",
   fontWeight: "500",
 };
+export const fontMedium15: TextStyle = {
+  fontSize: 15,
+  letterSpacing: -(14 * 0.04),
+  lineHeight: 18,
+  fontFamily: "Exo_500Medium",
+  fontWeight: "500",
+};
 export const fontMedium14: TextStyle = {
   fontSize: 14,
   letterSpacing: -(14 * 0.04),
@@ -179,4 +214,11 @@ export const fontMedium10: TextStyle = {
   lineHeight: 12,
   fontFamily: "Exo_500Medium",
   fontWeight: "500",
+};
+export const fontNormal15: TextStyle = {
+  fontSize: 15,
+  letterSpacing: -(14 * 0.04),
+  lineHeight: 22,
+  fontFamily: "Exo_500Medium",
+  fontWeight: "400",
 };

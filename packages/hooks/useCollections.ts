@@ -5,13 +5,13 @@ import {
 } from "@tanstack/react-query";
 import { useRef, useMemo, useCallback } from "react";
 
-import { addCollectionMetadata } from "./../utils/ethereum";
 import {
   Collection,
   CollectionsRequest,
-} from "../api/marketplace/v1/marketplace";
-import { getNetwork, NetworkKind } from "../networks";
-import { getMarketplaceClient } from "../utils/backend";
+} from "@/api/marketplace/v1/marketplace";
+import { getNetwork, NetworkKind } from "@/networks";
+import { getMarketplaceClient } from "@/utils/backend";
+import { addCollectionMetadata } from "@/utils/ethereum";
 
 export const useCollections = (
   req: CollectionsRequest,
@@ -55,15 +55,19 @@ export const useCollections = (
 
       // FIXME: refactor into addCollectionListMetadata
 
-      collections = await Promise.all(
-        collections.map(async (c) => {
-          const network = getNetwork(c.networkId);
-          if (network?.kind === NetworkKind.Ethereum) {
-            return addCollectionMetadata(c);
-          }
-          return c;
-        }),
-      );
+      try {
+        collections = await Promise.all(
+          collections.map(async (c) => {
+            const network = getNetwork(c.networkId);
+            if (network?.kind === NetworkKind.Ethereum) {
+              return addCollectionMetadata(c);
+            }
+            return c;
+          }),
+        );
+      } catch (e) {
+        console.warn("failed to add collection metadata", e);
+      }
 
       return { nextCursor: pageParam + req.limit, collections };
     },

@@ -1,59 +1,60 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
-import { Post, PostsRequest } from "../../api/feed/v1/feed";
-import { nonSigningSocialFeedClient } from "../../client-creators/socialFeedClient";
-import { TERITORI_FEED_ID } from "../../components/socialFeed/const";
-import { decodeGnoPost } from "../../components/socialFeed/utils";
+import { useSelectedNetworkInfo } from "../useSelectedNetwork";
+import useSelectedWallet from "../useSelectedWallet";
+
+import {
+  AggregatedPost,
+  Post,
+  PostsWithLocationRequest,
+  PostsRequest,
+} from "@/api/feed/v1/feed";
 import {
   GnoNetworkInfo,
   NetworkInfo,
   NetworkKind,
   parseUserId,
-} from "../../networks";
-import { mustGetFeedClient } from "../../utils/backend";
-import { extractGnoJSONString } from "../../utils/gno";
-import { useSelectedNetworkInfo } from "../useSelectedNetwork";
-import useSelectedWallet from "../useSelectedWallet";
+} from "@/networks";
+import { mustGetFeedClient } from "@/utils/backend";
+import { TERITORI_FEED_ID } from "@/utils/feed/constants";
+import { decodeGnoPost } from "@/utils/feed/gno";
+import { extractGnoJSONString } from "@/utils/gno";
+import { DeepPartial } from "@/utils/typescript";
+
+interface PostsWithAggregations {
+  list: Post[];
+  totalCount: number;
+  aggregations: AggregatedPost[];
+}
 
 export type PostsList = {
   list: Post[];
-  totalCount: number;
-} | null;
+  totalCount: number | undefined;
+};
 
 export const combineFetchFeedPages = (pages: PostsList[]) =>
   pages.reduce((acc: Post[], page) => [...acc, ...(page?.list || [])], []);
 
 const fetchTeritoriFeed = async (
   selectedNetwork: NetworkInfo,
-  req: Partial<PostsRequest>,
+  req: DeepPartial<PostsRequest>,
   pageParam: number,
 ) => {
-  try {
-    // ===== We use social-feed contract to get the total posts count
-    const client = await nonSigningSocialFeedClient({
-      networkId: selectedNetwork.id,
-    });
-    const mainPostsCount = await client.queryMainPostsCount();
-
-    // Overriding the posts request with the current pageParam as offset
-    const postsRequest: Partial<PostsRequest> = {
-      ...req,
-      offset: pageParam || 0,
-    };
-    // Getting posts
-    const list = await getPosts(selectedNetwork.id, postsRequest);
-    return { list, totalCount: mainPostsCount } as PostsList;
-  } catch (err) {
-    console.error("teritori initData err", err);
-    return { list: [], totalCount: 0 } as PostsList;
-  }
+  const postsRequest: DeepPartial<PostsRequest> = {
+    ...req,
+    offset: pageParam || 0,
+  };
+  const feedClient = mustGetFeedClient(selectedNetwork.id);
+  const response = await feedClient.Posts(postsRequest);
+  const list = response.posts.sort((a, b) => b.createdAt - a.createdAt);
+  return { list, totalCount: undefined };
 };
 
 const fetchGnoFeed = async (
   selectedNetwork: GnoNetworkInfo,
   callerAddress: string | undefined,
-  req: Partial<PostsRequest>,
+  req: DeepPartial<PostsRequest>,
   pageParam: number,
 ) => {
   if (!selectedNetwork.socialFeedsPkgPath) return { list: [], totalCount: 0 };
@@ -62,38 +63,34 @@ const fetchGnoFeed = async (
 
   const [, userAddress] = parseUserId(userId);
 
-  try {
-    const offset = pageParam || 0;
-    const limit = req.limit;
-    const categories = req.filter?.categories || []; // Default = all
-    const categoriesStr = `[]uint64{${categories.join(",")}}`;
-    const parentId = 0;
+  const offset = pageParam || 0;
+  const limit = req.limit;
+  const categories = req.filter?.categories || []; // Default = all
+  const categoriesStr = `[]uint64{${categories.join(",")}}`;
+  const parentId = 0;
 
-    const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
-    const output = await provider.evaluateExpression(
-      selectedNetwork.socialFeedsPkgPath,
-      `GetPostsWithCaller(${TERITORI_FEED_ID}, ${parentId}, "${callerAddress}", "${userAddress}", ${categoriesStr}, ${offset}, ${limit})`,
-    );
+  const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
+  const output = await provider.evaluateExpression(
+    selectedNetwork.socialFeedsPkgPath,
+    `GetPostsWithCaller(${TERITORI_FEED_ID}, ${parentId}, "${callerAddress}", "${userAddress}", ${categoriesStr}, ${offset}, ${limit})`,
+  );
 
-    const posts: Post[] = [];
-    const gnoPosts = extractGnoJSONString(output);
+  const posts: Post[] = [];
+  const gnoPosts = extractGnoJSONString(output);
 
-    for (const gnoPost of gnoPosts) {
-      const post = decodeGnoPost(selectedNetwork.id, gnoPost);
-      posts.push(post);
-    }
-
-    const result = {
-      list: posts.sort((p1, p2) => p2.createdAt - p1.createdAt),
-      totalCount: posts.length,
-    } as PostsList;
-    return result;
-  } catch (err) {
-    throw err;
+  for (const gnoPost of gnoPosts) {
+    const post = decodeGnoPost(selectedNetwork.id, gnoPost);
+    posts.push(post);
   }
+
+  const result = {
+    list: posts.sort((p1, p2) => p2.createdAt - p1.createdAt),
+    totalCount: posts.length,
+  } as PostsList;
+  return result;
 };
 
-export const useFetchFeed = (req: Partial<PostsRequest>) => {
+export const useFetchFeed = (req: DeepPartial<PostsRequest>) => {
   const selectedNetwork = useSelectedNetworkInfo();
   const wallet = useSelectedWallet();
 
@@ -119,9 +116,7 @@ export const useFetchFeed = (req: Partial<PostsRequest>) => {
             }
           } else {
             const postsLength = combineFetchFeedPages(pages).length;
-            if (lastPage?.totalCount && lastPage.totalCount > postsLength) {
-              return postsLength;
-            }
+            return postsLength;
           }
         },
         staleTime: Infinity,
@@ -131,16 +126,30 @@ export const useFetchFeed = (req: Partial<PostsRequest>) => {
   return { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading };
 };
 
-const getPosts = async (networkId: string, req: Partial<PostsRequest>) => {
-  try {
-    // ===== We use FeedService to be able to fetch filtered posts
-    const feedClient = mustGetFeedClient(networkId);
-    const response = await feedClient.Posts(req);
+export const useFetchFeedLocation = (
+  req: Partial<PostsWithLocationRequest>,
+) => {
+  return useQuery(
+    ["postsWithLocation", req],
+    async () => {
+      return await fetchTeritoriFeedLocation(req);
+    },
+    {
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+    },
+  );
+};
 
-    // ---- We sort by creation date
-    return response.posts.sort((a, b) => b.createdAt - a.createdAt);
-  } catch (err) {
-    console.log("initData err", err);
-    return [] as Post[];
-  }
+const fetchTeritoriFeedLocation = async (
+  req: Partial<PostsWithLocationRequest>,
+): Promise<PostsWithAggregations> => {
+  const feedClient = mustGetFeedClient(req.networkId);
+  const response = await feedClient.PostsWithLocation(req);
+  const list = response.posts.sort((a, b) => b.createdAt - a.createdAt);
+  return {
+    list,
+    totalCount: list.length,
+    aggregations: response.aggregatedPosts,
+  };
 };

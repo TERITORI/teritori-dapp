@@ -1,21 +1,22 @@
 import { cloneDeep } from "lodash";
 import React, { useMemo } from "react";
 
-import { PostsRequest } from "../../../api/feed/v1/feed";
-import { BrandText } from "../../../components/BrandText";
-import { PostCategory } from "../../../components/socialFeed/NewsFeed/NewsFeed.type";
-import { SpacerColumn } from "../../../components/spacer";
-import { Tabs } from "../../../components/tabs/Tabs";
-import { useIsDAOMember } from "../../../hooks/dao/useDAOMember";
-import { useFetchFeed } from "../../../hooks/feed/useFetchFeed";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
-import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { getUserId, NetworkKind, parseUserId } from "../../../networks";
-import { useAppNavigation } from "../../../utils/navigation";
-import { feedsTabItems } from "../../../utils/social-feed";
-import { primaryColor } from "../../../utils/style/colors";
-import { fontSemibold16 } from "../../../utils/style/fonts";
+
+import { PostsRequest } from "@/api/feed/v1/feed";
+import { BrandText } from "@/components/BrandText";
+import { SpacerColumn } from "@/components/spacer";
+import { Tabs } from "@/components/tabs/Tabs";
+import { useIsDAOMember } from "@/hooks/dao/useDAOMember";
+import { useFetchFeed } from "@/hooks/feed/useFetchFeed";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { getUserId, NetworkKind, parseUserId } from "@/networks";
+import { feedsTabItems } from "@/utils/social-feed";
+import { primaryColor } from "@/utils/style/colors";
+import { fontSemibold16 } from "@/utils/style/fonts";
+import { PostCategory } from "@/utils/types/feed";
 
 type FeedHeaderProps = {
   selectedTab: keyof typeof feedsTabItems;
@@ -30,13 +31,15 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
   const isModerationDAOMember = useIsModerationDAOMember(
     selectedWallet?.userId,
   );
-
   const req: Partial<PostsRequest> = {
     filter: {
+      networkId: selectedNetworkInfo?.id || "",
       categories: [PostCategory.Flagged],
       user: "",
       mentions: [],
       hashtags: [],
+      premiumLevelMin: 0,
+      premiumLevelMax: -1,
     },
     limit: 1,
     offset: 0,

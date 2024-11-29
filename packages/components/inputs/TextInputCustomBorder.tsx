@@ -10,6 +10,8 @@ import {
 import { neutral22, neutral33 } from "../../utils/style/colors";
 import { SVG } from "../SVG";
 
+import { NUMBERS_REGEXP } from "@/utils/regex";
+
 // A custom TextInput. You can add children (Ex: An icon or a small container)
 export const TextInputCustomBorder: React.FC<{
   value: string;
@@ -39,7 +41,7 @@ export const TextInputCustomBorder: React.FC<{
       if (onlyNumbers) {
         const withoutCommaValue = thousandSeparatedToNumber(value);
         // Set value only if fully number
-        const reg = new RegExp(/^\d+$/);
+        const reg = new RegExp(NUMBERS_REGEXP);
         if (reg.test(withoutCommaValue)) {
           onChangeText(numberWithThousandsSeparator(withoutCommaValue));
         }
@@ -85,7 +87,7 @@ export const TextInputCustomBorder: React.FC<{
           >
             <SVG source={searchSVG} width={16} height={16} />
             <TextInput
-              editable={!disabled}
+              readOnly={disabled}
               placeholder={placeHolder}
               value={value}
               onChangeText={handleChangeText}

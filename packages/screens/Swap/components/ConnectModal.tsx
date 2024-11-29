@@ -1,20 +1,16 @@
 import React, { Suspense } from "react";
-import { StyleSheet, View, Image } from "react-native";
-import { useSelector } from "react-redux";
+import { Image, StyleSheet, View } from "react-native";
 
 import osmosisIllustration from "../../../../assets/osmosis-illustration.png";
-import { BrandText } from "../../../components/BrandText";
-import { SecondaryButton } from "../../../components/buttons/SecondaryButton";
 import ModalBase from "../../../components/modals/ModalBase";
-import { SpacerColumn } from "../../../components/spacer";
-import { selectAreTestnetsEnabled } from "../../../store/slices/settings";
-import {
-  neutral00,
-  neutral77,
-  secondaryColor,
-} from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+
+import { BrandText } from "@/components/BrandText";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { SpacerColumn } from "@/components/spacer";
+import { useAreTestnetsEnabled } from "@/hooks/useAreTestnetsEnabled";
+import { neutral00, neutral77, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 type ConnectModalProps = {
   onClose: () => void;
@@ -29,7 +25,7 @@ export const ConnectModal: React.FC<ConnectModalProps> = ({
   onPressConnectTestnet,
   onClose,
 }) => {
-  const testnetsEnabled = useSelector(selectAreTestnetsEnabled);
+  const testnetsEnabled = useAreTestnetsEnabled();
   const ModalHeader = React.lazy(() =>
     import("./SwapView/SwapHeader").then((module) => ({
       default: module.SwapHeader,

@@ -40,10 +40,10 @@ Then press `w` to open the page in your browser
 ### Build web app
 
 ```
-yarn && npx expo-optimize && npx expo export:web
+yarn && npx expo-optimize && npx expo export -p web
 ```
 
-The site is in `web-build/`
+The site is in `dist/`
 
 ## Introduction
 
@@ -57,7 +57,6 @@ In the future (v3) it will also be a privacy first messaging application built o
     - Staking $TORI Tokens 
     - Teritori Chain Governance (& Bounty Program)
     - Teritori Name Service
-    - Rioters footer v0.1
     - Social Feed v0.1
     - The R!OT Play2Earn Experience: "Genesis Collection" v0.1
     - Org Deployer v0.1
@@ -105,5 +104,5 @@ Please feel free to use PR & Issues, and to join us on Discord for any question!
 
 ___
 
-Licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0) ([`LICENSE-APACHE`](LICENSE-APACHE)) or the [MIT license](https://opensource.org/licenses/MIT) ([`LICENSE-MIT`](LICENSE-MIT)), at your discretion. See the [`COPYRIGHT`](COPYRIGHT) file for more details.
+Licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0) or the [MIT license](https://opensource.org/licenses/MIT), at your discretion.
 

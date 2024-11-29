@@ -1,14 +1,16 @@
 import React from "react";
+import { Platform, useWindowDimensions } from "react-native";
 
-import { TNSCloseHandler } from "./TNSHomeScreen";
-import { PrimaryButton } from "../../components/buttons/PrimaryButton";
 import GradientModalBase from "../../components/modals/GradientModalBase";
-import { FindAName } from "../../components/teritoriNameService/FindAName";
-import { useTNS } from "../../context/TNSProvider";
-import { useNSMintAvailability } from "../../hooks/useNSMintAvailability";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getCosmosNetwork } from "../../networks";
-import { neutral00, neutral33 } from "../../utils/style/colors";
+
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { FindAName } from "@/components/teritoriNameService/FindAName";
+import { TNSCloseHandler } from "@/components/user/types";
+import { useTNS } from "@/context/TNSProvider";
+import { useNSMintAvailability } from "@/hooks/useNSMintAvailability";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getCosmosNetwork } from "@/networks";
+import { neutral00, neutral33 } from "@/utils/style/colors";
 
 interface TNSRegisterScreenProps {
   onClose: TNSCloseHandler;
@@ -17,6 +19,8 @@ interface TNSRegisterScreenProps {
 export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
   onClose,
 }) => {
+  const { width: windowWidth } = useWindowDimensions();
+
   const networkId = useSelectedNetworkId();
   const { name, setName } = useTNS();
   const network = getCosmosNetwork(networkId);
@@ -25,15 +29,19 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
     networkId,
     tokenId,
   );
+  const width = windowWidth < 457 ? windowWidth : 457;
 
   return (
     <GradientModalBase
       onClose={() => onClose()}
-      label="Find a name"
-      width={457}
+      label="Find a Name"
+      width={width}
       modalStatus={name && nameAvailable ? "success" : "danger"}
       hideMainSeparator
       scrollable
+      contentStyle={{
+        marginTop: Platform.OS === "web" ? 0 : 60,
+      }}
     >
       {/*----- The first thing you'll see on this screen is <FindAName> */}
       <FindAName

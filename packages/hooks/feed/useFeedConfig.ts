@@ -1,10 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { TeritoriSocialFeedQueryClient } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.client";
-import {
-  getCosmosNetwork,
-  mustGetNonSigningCosmWasmClient,
-} from "../../networks";
+import { TeritoriSocialFeedQueryClient } from "@/contracts-clients/teritori-social-feed/TeritoriSocialFeed.client";
+import { getCosmosNetwork, mustGetNonSigningCosmWasmClient } from "@/networks";
 
 export const useFeedConfig = (networkId: string) => {
   const { data: feedConfig, ...other } = useQuery(

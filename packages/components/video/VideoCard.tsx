@@ -9,19 +9,18 @@ import {
   ViewStyle,
 } from "react-native";
 
-import defaultThumbnailImage from "../../../assets/default-images/default-video-thumbnail.jpg";
+import defaultThumbnailImage from "../../../assets/default-images/default-video-thumbnail.webp";
 import { Post } from "../../api/feed/v1/feed";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { getNetworkObjectId, parseUserId } from "../../networks";
+import { parseUserId } from "../../networks";
 import { prettyMediaDuration } from "../../utils/mediaPlayer";
-import { useAppNavigation } from "../../utils/navigation";
 import { zodTryParseJSON } from "../../utils/sanitize";
 import {
   errorColor,
   neutral00,
   neutral22,
   neutral77,
+  neutralFF,
   withAlpha,
 } from "../../utils/style/colors";
 import {
@@ -31,14 +30,17 @@ import {
 } from "../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
+import { ZodSocialFeedVideoMetadata } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 import { OmniLink } from "../OmniLink";
 import { OptimizedImage } from "../OptimizedImage";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
-import { ZodSocialFeedVideoMetadata } from "../socialFeed/NewsFeed/NewsFeed.type";
 import { DateTime } from "../socialFeed/SocialCard/DateTime";
 import { SpacerColumn, SpacerRow } from "../spacer";
+
+import { LocationButton } from "@/components/socialFeed/NewsFeed/LocationButton";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 const IMAGE_HEIGHT = 173;
 const VIDEO_CARD_WIDTH = 261;
@@ -49,7 +51,6 @@ export const VideoCard: React.FC<{
   style?: StyleProp<ViewStyle>;
 }> = memo(({ post, hideAuthor, hideDescription, style }) => {
   const { width: windowWidth } = useWindowDimensions();
-  const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
   const video = zodTryParseJSON(ZodSocialFeedVideoMetadata, post.metadata);
   const authorNSInfo = useNSUserInfo(post.authorId);
@@ -70,16 +71,6 @@ export const VideoCard: React.FC<{
       ? video.videoFile.thumbnailFileData.url
       : "ipfs://" + video.videoFile.thumbnailFileData?.url // we need this hack because ipfs "urls" in feed are raw CIDs
     : defaultThumbnailImage;
-
-  if (post.identifier.startsWith("padded-")) {
-    return (
-      <View
-        style={{
-          width: cardWidth,
-        }}
-      />
-    );
-  }
 
   if (!video)
     return (
@@ -106,7 +97,7 @@ export const VideoCard: React.FC<{
           onHoverOut={() => setIsHovered(false)}
           onPress={() =>
             navigation.navigate("FeedPostView", {
-              id: getNetworkObjectId(selectedNetworkId, post.identifier),
+              id: post.id,
             })
           }
         >
@@ -130,6 +121,21 @@ export const VideoCard: React.FC<{
               {prettyMediaDuration(video.videoFile.videoMetadata?.duration)}
             </BrandText>
           </View>
+
+          {video?.location && (
+            <View style={positionButtonBoxStyle}>
+              <LocationButton
+                onPress={() =>
+                  video?.location &&
+                  navigation.navigate("Feed", {
+                    tab: "map",
+                    post: post.id,
+                  })
+                }
+                stroke={neutralFF}
+              />
+            </View>
+          )}
         </CustomPressable>
 
         <SpacerColumn size={1.5} />
@@ -205,6 +211,7 @@ export const VideoCard: React.FC<{
 const imgBoxStyle: ViewStyle = {
   position: "relative",
 };
+
 const imgDurationBoxStyle: ViewStyle = {
   justifyContent: "center",
   alignItems: "center",
@@ -216,6 +223,13 @@ const imgDurationBoxStyle: ViewStyle = {
   top: layout.spacing_x1,
   left: layout.spacing_x1,
 };
+
+const positionButtonBoxStyle: ViewStyle = {
+  position: "absolute",
+  top: layout.spacing_x1,
+  right: layout.spacing_x1,
+};
+
 const contentNameStyle: TextStyle = {
   ...fontSemibold14,
 };

@@ -1,14 +1,14 @@
-import Lottie, { LottieRefCurrentProps } from "lottie-react";
-import React, { useRef, useEffect } from "react";
-import { StyleSheet, View, Animated } from "react-native";
+import Lottie from "lottie-react-native";
+import React, { useEffect, useRef } from "react";
+import { Animated, StyleSheet, View } from "react-native";
 
-import { BrandText } from "../../../components/BrandText";
-import { PrimaryButton } from "../../../components/buttons/PrimaryButton";
-import { SpacerColumn } from "../../../components/spacer";
-import { useAppNavigation } from "../../../utils/navigation";
-import { neutralA3 } from "../../../utils/style/colors";
-import { fontSemibold20, fontSemibold28 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
+import { BrandText } from "@/components/BrandText";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { SpacerColumn } from "@/components/spacer";
+import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { neutralA3 } from "@/utils/style/colors";
+import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const LaunchingOrganizationSection: React.FC<{
   isLaunched: boolean;
@@ -17,7 +17,7 @@ export const LaunchingOrganizationSection: React.FC<{
 }> = ({ isLaunched, id, resetForm }) => {
   const { navigate } = useAppNavigation();
   const successAnimateValue = useRef(new Animated.Value(0)).current;
-  const lottieRef = useRef<LottieRefCurrentProps>(null);
+  const lottieRef = useRef<Lottie>(null);
 
   useEffect(() => {
     if (isLaunched) {
@@ -26,7 +26,7 @@ export const LaunchingOrganizationSection: React.FC<{
         duration: 500,
         useNativeDriver: true,
       }).start();
-      lottieRef.current?.stop();
+      lottieRef.current?.pause();
       lottieRef.current?.play();
     }
   }, [isLaunched, successAnimateValue]);
@@ -65,12 +65,12 @@ export const LaunchingOrganizationSection: React.FC<{
         style={[styles.lottieAnim, { opacity: successAnimateValue }]}
       >
         <Lottie
-          lottieRef={lottieRef}
+          ref={lottieRef}
           style={{
             width: 200,
             height: 200,
           }}
-          animationData={require("../../../../assets/lottie/animation-success.json")}
+          source={require("../../../../assets/lottie/animation-success.json")}
           autoPlay={false}
           loop={false}
         />
@@ -82,7 +82,7 @@ export const LaunchingOrganizationSection: React.FC<{
             width: 200,
             height: 200,
           }}
-          animationData={require("../../../../assets/lottie/animation-loading.json")}
+          source={require("../../../../assets/lottie/animation-loading.json")}
           autoPlay
         />
       </Animated.View>

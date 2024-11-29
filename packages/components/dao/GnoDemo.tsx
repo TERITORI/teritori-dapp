@@ -7,14 +7,13 @@ import { useFeedbacks } from "../../context/FeedbacksProvider";
 import { useInvalidateDAOProposals } from "../../hooks/dao/useDAOProposals";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkKind, parseUserId } from "../../networks";
-import { ConfigureVotingSection } from "../../screens/Organizations/components/ConfigureVotingSection";
 import { adenaVMCall, extractGnoNumber } from "../../utils/gno";
 import {
   GnoDAOUpdateSettings,
-  GnoSingleChoiceProposal,
-  GnoModboardsDeletePostMessage,
-  GnoModboardsCreateMessage,
   GnoMintToriMessage,
+  GnoModboardsCreateMessage,
+  GnoModboardsDeletePostMessage,
+  GnoSingleChoiceProposal,
 } from "../../utils/gnodao/messages";
 import { fontSemibold20 } from "../../utils/style/fonts";
 import { modalMarginPadding } from "../../utils/style/modals";
@@ -23,6 +22,8 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import ModalBase from "../modals/ModalBase";
 import { SpacerColumn } from "../spacer";
+
+import { ConfigureVotingSection } from "@/components/dao/ConfigureVotingSection";
 
 const toFixed4 = (n: number) => {
   return Math.round(n * 100);
@@ -48,7 +49,7 @@ export const GnoDemo: React.FC<{
         onSubmit={async (form) =>
           wrapWithFeedback(async () => {
             const msg: GnoDAOUpdateSettings = {
-              type: "gno.land/p/demo/teritori/dao_proposal_single.UpdateSettings",
+              type: "gno.land/p/teritori/dao_proposal_single.UpdateSettings",
               payload: {
                 threshold: {
                   thresholdQuorum: {
@@ -179,7 +180,7 @@ const DeletePost: React.FC<{ daoId: string }> = ({ daoId }) => {
           const threadIdNum = parseInt(threadId, 10);
           const postIdNum = parseInt(postId, 10);
           const payload: GnoModboardsDeletePostMessage = {
-            type: "gno.land/r/demo/teritori/modboards.DeletePost",
+            type: "gno.land/r/teritori/modboards.DeletePost",
             payload: {
               boardId: boardIdNum,
               threadId: threadIdNum,
@@ -233,7 +234,7 @@ const CreateBoard: React.FC<{ daoId: string }> = ({ daoId }) => {
         loader
         onPress={wrapWithFeedback(async () => {
           const payload: GnoModboardsCreateMessage = {
-            type: "gno.land/r/demo/teritori/modboards.CreateBoard",
+            type: "gno.land/r/teritori/modboards.CreateBoard",
             payload: {
               name,
             },
@@ -293,7 +294,7 @@ const MintTori: React.FC<{ daoId: string }> = ({ daoId }) => {
         loader
         onPress={wrapWithFeedback(async () => {
           const payload: GnoMintToriMessage = {
-            type: "gno.land/r/demo/teritori/tori.Mint",
+            type: "gno.land/r/teritori/tori.Mint",
             payload: {
               amount: parseInt(amount, 10),
               address: recipient,
@@ -375,7 +376,7 @@ const GnoCreateProposal: React.FC<{ daoId: string | undefined }> = ({
                 {
                   caller: selectedWallet.address,
                   send: "",
-                  pkg_path: daoAddress,
+                  pkg_path: "gno.land/r/" + selectedWallet,
                   func: "ProposeJSON",
                   args: ["0", JSON.stringify(propReq)],
                 },

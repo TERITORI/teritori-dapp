@@ -2,15 +2,16 @@ import React from "react";
 import { Linking, View } from "react-native";
 
 import twitterSVG from "../../../assets/icons/twitter.svg";
-import { BrandText } from "../../components/BrandText";
-import { SocialButton } from "../../components/buttons/SocialButton";
 import ModalBase from "../../components/modals/ModalBase";
-import { NameNFT } from "../../components/teritoriNameService/NameNFT";
-import { useTNS } from "../../context/TNSProvider";
-import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
-import { getCosmosNetwork } from "../../networks";
-import { neutral00, neutral33, neutral77 } from "../../utils/style/colors";
+
+import { BrandText } from "@/components/BrandText";
+import { SocialButton } from "@/components/buttons/SocialButton";
+import { NameNFT } from "@/components/teritoriNameService/NameNFT";
+import { useTNS } from "@/context/TNSProvider";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getCosmosNetwork } from "@/networks";
+import { neutral00, neutral33, neutral77 } from "@/utils/style/colors";
 
 const Footer: React.FC<{ tokenId: string }> = ({ tokenId }) => {
   const selectedWallet = useSelectedWallet();

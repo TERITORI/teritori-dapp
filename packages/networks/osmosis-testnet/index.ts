@@ -4,10 +4,11 @@ import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
 export const osmosisTestnetNetwork: NetworkInfo = {
   id: "osmosis-testnet",
   kind: NetworkKind.Cosmos,
+  registryName: "osmosistestnet",
   chainId: "osmo-test-5",
   overrides: "cosmos-registry:osmosistestnet",
   displayName: "Osmosis Latest Testnet",
-  icon: "icons/networks/osmosis.svg",
+  icon: "osmosis.svg",
   features: [NetworkFeature.Swap],
   currencies: osmosisTestnetCurrencies,
   txExplorer: "https://testnet.mintscan.io/osmosis-testnet/txs/$hash",

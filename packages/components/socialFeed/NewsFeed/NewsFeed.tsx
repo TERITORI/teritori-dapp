@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   LayoutChangeEvent,
-  View,
   useWindowDimensions,
+  View,
   ViewStyle,
 } from "react-native";
 import Animated, {
+  runOnJS,
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
@@ -13,7 +14,6 @@ import Animated, {
 import { CreateShortPostButton } from "./CreateShortPost/CreateShortPostButton";
 import { CreateShortPostButtonRound } from "./CreateShortPost/CreateShortPostButtonRound";
 import { CreateShortPostModal } from "./CreateShortPost/CreateShortPostModal";
-import { PostCategory } from "./NewsFeed.type";
 import { NewsFeedInput } from "./NewsFeedInput";
 import { RefreshButton } from "./RefreshButton/RefreshButton";
 import { RefreshButtonRound } from "./RefreshButton/RefreshButtonRound";
@@ -30,18 +30,19 @@ import {
   RESPONSIVE_BREAKPOINT_S,
   screenContentMaxWidth,
 } from "../../../utils/style/layout";
+import { PostCategory } from "../../../utils/types/feed";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
 import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
 import { SocialVideoCard } from "../SocialCard/cards/SocialVideoCard";
 
+import { DeepPartial } from "@/utils/typescript";
+
 const OFFSET_Y_LIMIT_FLOATING = 224;
-export const ROUND_BUTTON_WIDTH_L = 60;
-export const ROUND_BUTTON_WIDTH_S = 42;
 
 interface NewsFeedProps {
   Header: React.ComponentType;
-  req: Partial<PostsRequest>;
+  req: DeepPartial<PostsRequest>;
   // Receive this if the post is created from HashFeedScreen
   additionalHashtag?: string;
   // Receive this if the post is created from UserPublicProfileScreen (If the user doesn't own the UPP)
@@ -80,13 +81,13 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
-      setFlatListContentOffsetY(event.contentOffset.y);
+      runOnJS(setFlatListContentOffsetY)(event.contentOffset.y);
       if (flatListContentOffsetY > event.contentOffset.y) {
         isGoingUp.value = true;
       } else if (flatListContentOffsetY < event.contentOffset.y) {
         isGoingUp.value = false;
       }
-      setFlatListContentOffsetY(event.contentOffset.y);
+      runOnJS(setFlatListContentOffsetY)(event.contentOffset.y);
     },
   });
 
@@ -230,7 +231,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
             <ListHeaderComponent />
           </>
         }
-        keyExtractor={(post: Post) => post.identifier}
+        keyExtractor={(post) => post.id}
         onScroll={scrollHandler}
         contentContainerStyle={contentCStyle}
         onEndReachedThreshold={4}

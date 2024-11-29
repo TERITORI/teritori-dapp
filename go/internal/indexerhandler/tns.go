@@ -30,13 +30,14 @@ func (h *Handler) handleInstantiateTNS(e *Message, contractAddress string, insta
 	collectionId := h.config.Network.CollectionID(contractAddress)
 	if err := h.db.Create(&indexerdb.Collection{
 		ID:                  collectionId,
-		NetworkId:           h.config.Network.ID,
+		NetworkID:           h.config.Network.ID,
 		Name:                tnsInstantiateMsg.Name,
 		ImageURI:            h.config.Network.NameServiceDefaultImage,
 		MaxSupply:           -1,
 		SecondaryDuringMint: true,
 		Time:                blockTime,
 		TeritoriCollection: &indexerdb.TeritoriCollection{
+			NetworkID:           h.config.Network.ID,
 			MintContractAddress: contractAddress,
 			NFTContractAddress:  contractAddress,
 			CreatorAddress:      tnsInstantiateMsg.AdminAddress,
@@ -98,8 +99,10 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		ImageURI:     imageURI,
 		CollectionID: collection.ID,
 		TeritoriNFT: &indexerdb.TeritoriNFT{
-			TokenID: tokenId,
+			TokenID:   tokenId,
+			NetworkID: h.config.Network.ID,
 		},
+		NetworkID: h.config.Network.ID,
 	}
 	var count int64
 	if err := h.db.Model(&indexerdb.NFT{}).Where(&indexerdb.NFT{ID: nftId}).Count(&count).Error; err != nil {
@@ -129,9 +132,10 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 
 	// complete quest
 	if err := h.db.Save(&indexerdb.QuestCompletion{
-		UserID:    ownerId,
-		QuestID:   "book_tns",
-		Completed: true,
+		UserID:         ownerId,
+		QuestID:        "book_tns",
+		Completed:      true,
+		QuestNetworkID: h.config.Network.ID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to save quest completion")
 	}
@@ -142,16 +146,37 @@ func (h *Handler) handleExecuteMintTNS(e *Message, collection *indexerdb.Collect
 		return errors.Wrap(err, "failed to get block time")
 	}
 
+	// get amounts and denom from funds
+	amount := "0"
+	denom := ""
+	usdAmount := 0.0
+	if len(execMsg.Funds) > 0 {
+		if len(execMsg.Funds) != 1 {
+			return errors.New("expected 1 fund")
+		}
+		amount = execMsg.Funds[0].Amount.String()
+		denom = execMsg.Funds[0].Denom
+		usdAmount, err = h.usdAmount(denom, amount, blockTime)
+		if err != nil {
+			return errors.Wrap(err, "failed to get usd price")
+		}
+	}
+
 	// create mint activity
 	if err := h.db.Create(&indexerdb.Activity{
 		ID:   h.config.Network.ActivityID(e.TxHash, e.MsgIndex),
 		Kind: indexerdb.ActivityKindMint,
 		Time: blockTime,
 		Mint: &indexerdb.Mint{
-			// TODO: get price
-			BuyerID: ownerId,
+			BuyerID:    ownerId,
+			NetworkID:  collection.NetworkID,
+			Price:      amount,
+			PriceDenom: denom,
+			USDPrice:   usdAmount,
 		},
-		NFTID: nftId,
+		NFTID:        &nftId,
+		CollectionID: &collection.ID,
+		NetworkID:    collection.NetworkID,
 	}).Error; err != nil {
 		return errors.Wrap(err, "failed to create mint activity")
 	}
