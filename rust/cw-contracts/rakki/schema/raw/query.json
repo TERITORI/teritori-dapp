@@ -50,6 +50,26 @@
             }
           },
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "tickets_count_by_user"
+          ],
+          "properties": {
+            "tickets_count_by_user": {
+              "type": "object",
+              "required": [
+                "user_addr"
+              ],
+              "properties": {
+                "user_addr": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
         }
       ]
     }

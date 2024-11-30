@@ -49,6 +49,11 @@ export type QueryMsg1 = {
     limit: number;
     [k: string]: unknown;
   };
+} | {
+  tickets_count_by_user: {
+    user_addr: string;
+    [k: string]: unknown;
+  };
 };
 export type Addr = string;
 export type ArrayOfTupleOfUint64AndAddr = [number, Addr][];
@@ -63,3 +68,4 @@ export interface Config {
   stopped: boolean;
   ticket_price: Coin;
 }
+export type Uint16 = number;

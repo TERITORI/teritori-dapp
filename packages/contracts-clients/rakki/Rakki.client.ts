@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { Uint128, InstantiateMsg, Coin, ExecuteMsg, ExecMsg, QueryMsg, QueryMsg1, Addr, ArrayOfTupleOfUint64AndAddr, Info, Config } from "./Rakki.types";
+import { Uint128, InstantiateMsg, Coin, ExecuteMsg, ExecMsg, QueryMsg, QueryMsg1, Addr, ArrayOfTupleOfUint64AndAddr, Info, Config, Uint16 } from "./Rakki.types";
 export interface RakkiReadOnlyInterface {
   contractAddress: string;
   info: () => Promise<Info>;
@@ -17,6 +17,11 @@ export interface RakkiReadOnlyInterface {
     cursor?: number;
     limit: number;
   }) => Promise<ArrayOfTupleOfUint64AndAddr>;
+  ticketsCountByUser: ({
+    userAddr
+  }: {
+    userAddr: string;
+  }) => Promise<Uint16>;
 }
 export class RakkiQueryClient implements RakkiReadOnlyInterface {
   client: CosmWasmClient;
@@ -27,6 +32,7 @@ export class RakkiQueryClient implements RakkiReadOnlyInterface {
     this.contractAddress = contractAddress;
     this.info = this.info.bind(this);
     this.history = this.history.bind(this);
+    this.ticketsCountByUser = this.ticketsCountByUser.bind(this);
   }
 
   info = async (): Promise<Info> => {
@@ -45,6 +51,17 @@ export class RakkiQueryClient implements RakkiReadOnlyInterface {
       history: {
         cursor,
         limit
+      }
+    });
+  };
+  ticketsCountByUser = async ({
+    userAddr
+  }: {
+    userAddr: string;
+  }): Promise<Uint16> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      tickets_count_by_user: {
+        user_addr: userAddr
       }
     });
   };

@@ -19,8 +19,6 @@ NAME_SERVICE_PACKAGE=teritori-name-service
 ADDR_LIST_REPO=cw_addr_list
 ADDR_LIST_PACKAGE=cw-address-list
 
-RAKKI_PACKAGE=rakki
-
 CONTRACTS_CLIENTS_DIR=packages/contracts-clients
 
 DOCKER_REGISTRY=rg.nl-ams.scw.cloud/teritori
@@ -227,15 +225,6 @@ $(CONTRACTS_CLIENTS_DIR)/$(ADDR_LIST_PACKAGE): node_modules
 		--name $(ADDR_LIST_PACKAGE) \
 		--no-bundle
 	rm -fr $(ADDR_LIST_REPO)
-
-.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(RAKKI_PACKAGE)
-$(CONTRACTS_CLIENTS_DIR)/$(RAKKI_PACKAGE): node_modules
-	npx cosmwasm-ts-codegen generate \
-		--plugin client \
-		--schema cosmwasm/$(RAKKI_PACKAGE)/schema \
-		--out $@ \
-		--name $(RAKKI_PACKAGE) \
-		--no-bundle
 
 .PHONY: publish.backend
 publish.backend:
