@@ -39,6 +39,7 @@ import {
   fontSemibold13,
   fontSemibold14,
   fontSemibold16,
+  fontSemibold28,
 } from "../../utils/style/fonts";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { joinElements } from "../Multisig/components/MultisigRightSection";
@@ -842,10 +843,7 @@ const gameBoxLabelCStyle: TextStyle = {
 };
 
 const sectionLabelCStyle: TextStyle = {
+  ...fontSemibold28,
   textAlign: "center",
-  fontSize: 28,
-  lineHeight: 32,
-  letterSpacing: -1.12,
   marginBottom: 12,
-  fontWeight: "600",
 };
