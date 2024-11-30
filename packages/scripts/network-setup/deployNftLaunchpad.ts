@@ -34,38 +34,35 @@ const deployNftLaunchpad = async ({
     wallet: deployerWallet,
   });
 
-  const cosmwasmNftLaunchpadFeature = cloneDeep(
+  const cosmwasmLaunchpadFeature = cloneDeep(
     getNetworkFeature(networkId, NetworkFeature.CosmWasmNFTLaunchpad),
   );
-  if (!cosmwasmNftLaunchpadFeature) {
+  if (!cosmwasmLaunchpadFeature) {
     console.error(`Cosmwasm Launchpad feature not found on ${networkId}`);
     process.exit(1);
   }
   console.log("Storing nft launchpad");
   const nftLaunchpadWasmFilePath = path.join(__dirname, "nft_launchpad.wasm");
-  cosmwasmNftLaunchpadFeature.codeId = await storeWASM(
+  cosmwasmLaunchpadFeature.codeId = await storeWASM(
     opts,
     deployerWallet,
     network,
     nftLaunchpadWasmFilePath,
   );
 
-  console.log(
-    "Instantiating nft launchpad",
-    cosmwasmNftLaunchpadFeature.codeId,
-  );
-  cosmwasmNftLaunchpadFeature.launchpadContractAddress =
+  console.log("Instantiating nft launchpad", cosmwasmLaunchpadFeature.codeId);
+  cosmwasmLaunchpadFeature.launchpadContractAddress =
     await instantiateNftLaunchpad(
       opts,
       deployerWallet,
       deployerAddr,
       launchpadAdmin,
       network,
-      cosmwasmNftLaunchpadFeature,
+      cosmwasmLaunchpadFeature,
     );
   network.featureObjects = network.featureObjects?.map((featureObject) => {
     if (featureObject.type === NetworkFeature.CosmWasmNFTLaunchpad) {
-      return cosmwasmNftLaunchpadFeature;
+      return cosmwasmLaunchpadFeature;
     } else return featureObject;
   });
 };
@@ -124,21 +121,21 @@ const deployNftTr721 = async ({
     networkId,
     wallet: deployerWallet,
   });
-  const cosmwasmNftLaunchpadFeature = cloneDeep(
+  const cosmwasmLaunchpadFeature = cloneDeep(
     getNetworkFeature(networkId, NetworkFeature.CosmWasmNFTLaunchpad),
   );
-  if (!cosmwasmNftLaunchpadFeature) {
+  if (!cosmwasmLaunchpadFeature) {
     console.error(`Cosmwasm Launchpad feature not found on ${networkId}`);
     process.exit(1);
   }
   const nftTr721WasmFilePath = path.join(__dirname, "nft_tr721.wasm");
-  cosmwasmNftLaunchpadFeature.nftTr721CodeId = await storeWASM(
+  cosmwasmLaunchpadFeature.nftTr721CodeId = await storeWASM(
     opts,
     deployerWallet,
     network,
     nftTr721WasmFilePath,
   );
-  return cosmwasmNftLaunchpadFeature.nftTr721CodeId;
+  return cosmwasmLaunchpadFeature.nftTr721CodeId;
 };
 
 const main = async () => {
