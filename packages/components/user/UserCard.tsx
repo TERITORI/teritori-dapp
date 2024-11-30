@@ -45,9 +45,8 @@ import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 export const UserCard: React.FC<{
   userId: string;
   style: StyleProp<BoxStyle>;
-  roles?: string[];
   daoId?: string;
-}> = ({ userId, style, daoId, roles }) => {
+}> = ({ userId, style, daoId }) => {
   const [, userAddress] = parseUserId(userId);
   const { metadata } = useNSUserInfo(userId);
   const selectedWallet = useSelectedWallet();
@@ -115,7 +114,6 @@ export const UserCard: React.FC<{
 
       <View>
         <FollowingFollowers style={{ marginBottom: 10 }} />
-
         <BrandText
           style={[fontSemibold12, { lineHeight: 14, marginBottom: 8 }]}
         >
