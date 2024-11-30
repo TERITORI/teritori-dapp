@@ -836,12 +836,9 @@ const rakkiJapTextCStyle: TextStyle = {
 };
 
 const gameBoxLabelCStyle: TextStyle = {
+  ...fontSemibold12,
   color: "#777",
   textAlign: "center",
-  fontSize: 12,
-  lineHeight: 16,
-  letterSpacing: -0.48,
-  fontWeight: "400",
 };
 
 const sectionLabelCStyle: TextStyle = {
