@@ -46,10 +46,7 @@ import { joinElements } from "../Multisig/components/MultisigRightSection";
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 
 // TODO: replace all placeholders text with real values
-// TODO: remove fake history data
 // TODO: jap gradient
-// TODO: buy button
-// TODO: buy button in modal font weight
 
 export const RakkiScreen: ScreenFC<"Rakki"> = () => {
   const networkId = useSelectedNetworkId();
