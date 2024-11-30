@@ -115,48 +115,49 @@ export const UserCard: React.FC<{
 
       <View>
         <FollowingFollowers style={{ marginBottom: 10 }} />
-        {roles && (
-          <View>
-            <BrandText
-              style={[fontSemibold12, { lineHeight: 14, marginBottom: 8 }]}
-            >
-              Roles
-            </BrandText>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ width: width - 2 * padding }}
-            >
-              {roles.map((role, index) => {
-                return (
-                  <View
-                    style={[
-                      {
-                        marginLeft: index === 0 ? undefined : 4,
-                        justifyContent: "center",
-                        borderRadius: 4,
-                        backgroundColor: "#1C1C1C",
-                        height: 18,
-                        paddingHorizontal: 4,
-                      },
-                    ]}
-                  >
-                    <BrandText
-                      style={[
-                        fontSemibold8,
-                        {
-                          color: neutralA3,
-                        },
-                      ]}
-                    >
-                      {role}
-                    </BrandText>
-                  </View>
-                );
-              })}
-            </ScrollView>
-          </View>
-        )}
+
+        <BrandText
+          style={[fontSemibold12, { lineHeight: 14, marginBottom: 8 }]}
+        >
+          Roles
+        </BrandText>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ width: width - 2 * padding }}
+        >
+          {fakeRoles.map((role, index) => {
+            return (
+              <View
+                style={[
+                  {
+                    marginLeft: index === 0 ? undefined : 4,
+                    justifyContent: "center",
+                    borderRadius: 4,
+                    backgroundColor: role.highlight ? "#9C4CEA" : "#1C1C1C",
+                    height: 18,
+                    paddingHorizontal: 4,
+                  },
+                  !role.highlight && {
+                    borderWidth: 0.5,
+                    borderColor: neutral33,
+                  },
+                ]}
+              >
+                <BrandText
+                  style={[
+                    fontSemibold8,
+                    {
+                      color: role.highlight ? "white" : neutralA3,
+                    },
+                  ]}
+                >
+                  {role.text}
+                </BrandText>
+              </View>
+            );
+          })}
+        </ScrollView>
       </View>
 
       <View style={{ position: "absolute", top: padding, right: padding }}>
@@ -251,6 +252,20 @@ const FollowingFollowers: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
     </View>
   );
 };
+
+const fakeRoles: { highlight?: boolean; text: string }[] = [
+  {
+    text: "Hiring",
+    highlight: true,
+  },
+  { text: "Teritorian" },
+  { text: "Torishark" },
+  { text: "OG" },
+  { text: "Ripper" },
+  { text: "Squad leader" },
+  { text: "NFT Enjoyoor" },
+  { text: "Tester" },
+];
 
 const useProposeToRemoveMember = (daoId: string | undefined) => {
   const makeProposal = useDAOMakeProposal(daoId);
