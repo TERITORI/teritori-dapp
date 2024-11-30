@@ -31,7 +31,7 @@ func (vm *votingModule) ConfigJSON() string {
 }
 
 func (vm *votingModule) GetMembersJSON(start, end string, limit uint64, height int64) string {
-	return "{}"
+	return "[]"
 }
 
 func (vm *votingModule) Render(path string) string {
