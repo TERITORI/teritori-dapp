@@ -22,7 +22,7 @@ export const LaunchpadScreen: ScreenFC<"Launchpad"> = () => {
 
   return (
     <ScreenContainer
-      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+      forceNetworkFeatures={[NetworkFeature.CosmWasmNFTLaunchpad]}
       headerChildren={<BrandText style={fontSemibold20}>Launchpad</BrandText>}
     >
       <View

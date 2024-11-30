@@ -8,7 +8,7 @@ on:
   merge_group:
 
 jobs:
-  lint-and-build:
+  check-js:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

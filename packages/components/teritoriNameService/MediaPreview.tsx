@@ -1,7 +1,7 @@
 import * as DocumentPicker from "expo-document-picker";
 import { DocumentPickerResult } from "expo-document-picker";
 import React, { Dispatch, SetStateAction, useState } from "react";
-import { ActivityIndicator, View, ViewStyle } from "react-native";
+import { ActivityIndicator, StyleProp, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
 import tnsProfileAvatar from "../../../assets/default-images/default-name-nft.png";
@@ -26,15 +26,17 @@ import { SVG } from "../SVG";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 
 export const MediaPreview: React.FC<{
-  style: ViewStyle;
+  style?: StyleProp<ViewStyle>;
+  textInputsStyle?: StyleProp<ViewStyle>;
   avatarImageUrl: string;
-  setAvatarImageUrl: Dispatch<SetStateAction<string>>;
+  setAvatarImageUrl?: Dispatch<SetStateAction<string>>;
   bannerImageUrl: string;
-  setBannerImageUrl: Dispatch<SetStateAction<string>>;
+  setBannerImageUrl?: Dispatch<SetStateAction<string>>;
   variant?: "regular" | "labelOutside" | "noStyle";
   hasPadding?: boolean;
 }> = ({
   style,
+  textInputsStyle,
   avatarImageUrl,
   setAvatarImageUrl,
   bannerImageUrl,
@@ -77,6 +79,9 @@ export const MediaPreview: React.FC<{
   };
 
   const onPressUploadAvatar = async () => {
+    if (!setAvatarImageUrl) {
+      return;
+    }
     const documentPickerResult = await DocumentPicker.getDocumentAsync({
       multiple: false,
     });
@@ -86,6 +91,9 @@ export const MediaPreview: React.FC<{
   };
 
   const onPressUploadBanner = async () => {
+    if (!setBannerImageUrl) {
+      return;
+    }
     const documentPickerResult = await DocumentPicker.getDocumentAsync({
       multiple: false,
     });
@@ -104,16 +112,18 @@ export const MediaPreview: React.FC<{
           marginBottom: layout.spacing_x1,
           padding: layout.spacing_x1_5,
         },
+        style,
       ]}
     >
       <TextInputCustom<Metadata>
         name="image"
-        style={style}
+        style={textInputsStyle}
         label="Avatar URL"
         noBrokenCorners
         variant={variant}
         placeHolder="https://website.com/avatar.jpg"
         onPressChildren={onPressUploadAvatar}
+        disabled={!onPressUploadAvatar}
         value={avatarImageUrl}
         onChangeText={setAvatarImageUrl}
         squaresBackgroundColor={neutral17}
@@ -127,10 +137,11 @@ export const MediaPreview: React.FC<{
 
       <TextInputCustom<Metadata>
         name="public_profile_header"
-        style={style}
+        style={textInputsStyle}
         label="Cover Image URL"
         noBrokenCorners
         onPressChildren={onPressUploadBanner}
+        disabled={!onPressUploadBanner}
         variant={variant}
         placeHolder="https://website.com/coverimage.jpg"
         value={bannerImageUrl}
@@ -152,8 +163,8 @@ export const MediaPreview: React.FC<{
       >
         <OptimizedImage
           sourceURI={bannerImageUrl || tnsProfileCover}
-          width={410}
-          height={120}
+          width={820}
+          height={240}
           style={{
             width: "100%",
             height: 120,

@@ -63,7 +63,6 @@ import { RiotGameLeaderboardScreen } from "@/screens/RiotGame/RiotGameLeaderboar
 import { RiotGameMarketplaceScreen } from "@/screens/RiotGame/RiotGameMarketplaceScreen";
 import { RiotGameMemoriesScreen } from "@/screens/RiotGame/RiotGameMemoriesScreen";
 import { RiotGameScreen } from "@/screens/RiotGame/RiotGameScreen";
-import { RiotersFooterScreen } from "@/screens/RiotersFooter/RiotersFooterScreen";
 import { SettingsScreen } from "@/screens/Settings/SettingsScreen";
 import { StakeScreen } from "@/screens/Stake";
 import { SwapScreen } from "@/screens/Swap/SwapScreen";
@@ -128,9 +127,12 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         options={{ header: () => null }}
       />
       <Nav.Screen
-        name="RiotersFooter"
-        component={RiotersFooterScreen}
-        options={{ header: () => null, title: screenTitle("Rioters Footer") }}
+        name="MarketplaceLeaderboard"
+        component={MarketplaceLeaderboardScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Application Review"),
+        }}
       />
 
       {/* === Riot Game */}
@@ -345,15 +347,6 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
       <Nav.Screen
         name="LaunchpadApplicationReview"
         component={LaunchpadApplicationReviewScreen}
-        options={{
-          header: () => null,
-          title: screenTitle("Launchpad Application Review"),
-        }}
-      />
-
-      <Nav.Screen
-        name="MarketplaceLeaderboard"
-        component={MarketplaceLeaderboardScreen}
         options={{
           header: () => null,
           title: screenTitle("Launchpad Application Review"),

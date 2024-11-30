@@ -3,36 +3,25 @@
   "title": "Config",
   "type": "object",
   "required": [
+    "admin",
     "name",
-    "owner",
-    "supported_networks"
+    "nft_code_id",
+    "owner"
   ],
   "properties": {
-    "launchpad_admin": {
-      "type": [
-        "string",
-        "null"
-      ]
+    "admin": {
+      "$ref": "#/definitions/Addr"
     },
     "name": {
       "type": "string"
     },
     "nft_code_id": {
-      "type": [
-        "integer",
-        "null"
-      ],
+      "type": "integer",
       "format": "uint64",
       "minimum": 0.0
     },
     "owner": {
       "$ref": "#/definitions/Addr"
-    },
-    "supported_networks": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
     }
   },
   "additionalProperties": false,

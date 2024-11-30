@@ -71,7 +71,7 @@ export const usePost = (id: string | undefined) => {
           isDeleted: res.deleted,
           subPostLength: res.sub_post_length,
           createdAt,
-          tipAmount: res.tip_amount,
+          tipAmount: parseFloat(res.tip_amount),
           premiumLevel: commonMetadata?.premium || 0,
         };
         return post;

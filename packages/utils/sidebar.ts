@@ -2,7 +2,6 @@ import { SidebarRecordType } from "./types/sidebar";
 import daoSVG from "../../assets/icons/dao.svg";
 import dappStoreSVG from "../../assets/icons/dapp-store.svg";
 import feedSVG from "../../assets/icons/feed.svg";
-import rioterFooterSVG from "../../assets/icons/footer-rioters.svg";
 import governanceSVG from "../../assets/icons/governance.svg";
 import gridSVG from "../../assets/icons/grid.svg";
 import launchpadApplySVG from "../../assets/icons/launchpad-apply.svg";
@@ -141,12 +140,6 @@ export const SIDEBAR_LIST: SidebarRecordType = {
     id: "Projects Program",
     route: "Projects",
     icon: projectsProgramSVG,
-  },
-  riotersFooter: {
-    title: "Rioters Footer",
-    id: "Rioters Footer",
-    route: "ComingSoon",
-    icon: rioterFooterSVG,
   },
   DAppsStore: {
     title: "dApp Store",

@@ -23,6 +23,8 @@ import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { TertiaryButton } from "../buttons/TertiaryButton";
 import { NetworksListModal } from "../modals/NetworksListModal";
 
+import { useAppConfig } from "@/context/AppConfigProvider";
+
 export const NetworkSelectorMenu: FC<{
   forceNetworkId?: string;
   forceNetworkKind?: NetworkKind;
@@ -46,6 +48,7 @@ export const NetworkSelectorMenu: FC<{
   const [networksModalVisible, setNetworksModalVisible] = useState(false);
   const enabledNetworks = useEnabledNetworks();
   const isMobile = useIsMobile();
+  const { forceNetworkList } = useAppConfig();
 
   const onPressNetwork = (networkId: string) => {
     onSelect();
@@ -136,22 +139,27 @@ export const NetworkSelectorMenu: FC<{
             </TouchableOpacity>
           );
         })}
-      <TertiaryButton
-        text="Manage"
-        size="XS"
-        squaresBackgroundColor={neutral17}
-        style={{ marginBottom: layout.spacing_x2 }}
-        onPress={() => {
-          setNetworksModalVisible(true);
-        }}
-        fullWidth
-      />
-      <NetworksListModal
-        isVisible={networksModalVisible}
-        onClose={() => {
-          setNetworksModalVisible(false);
-        }}
-      />
+      {!forceNetworkList && (
+        <>
+          {" "}
+          <TertiaryButton
+            text="Manage"
+            size="XS"
+            squaresBackgroundColor={neutral17}
+            style={{ marginBottom: layout.spacing_x2 }}
+            onPress={() => {
+              setNetworksModalVisible(true);
+            }}
+            fullWidth
+          />
+          <NetworksListModal
+            isVisible={networksModalVisible}
+            onClose={() => {
+              setNetworksModalVisible(false);
+            }}
+          />
+        </>
+      )}
     </LegacyTertiaryBox>
   );
 };

@@ -1,10 +1,5 @@
-
-
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{
-    attr, to_json_binary, Addr, Reply, Response,
-    StdResult, SubMsg, WasmMsg,
-};
+use cosmwasm_std::{attr, to_json_binary, Addr, Reply, Response, StdResult, SubMsg, WasmMsg};
 use cw_storage_plus::{Item, Map};
 use cw_utils::parse_reply_instantiate_data;
 use sylvia::{
@@ -24,7 +19,7 @@ const INSTANTIATE_REPLY_ID: u64 = 1u64;
 // Contract states ------------------------------------------------------
 pub struct NftLaunchpad {
     pub(crate) config: Item<'static, Config>, // nft launchpad config
-    pub(crate) collections: Map<'static, String, Collection>, // collection id => collection info
+    pub(crate) collections: Map<'static, String, CollectionProject>, // collection id => collection info
     pub(crate) instantiating_collection_id: Item<'static, String>,
 }
 
@@ -65,10 +60,16 @@ impl NftLaunchpad {
         if ctx.info.sender != config.owner {
             return Err(ContractError::Unauthorized);
         }
+
         // Save new config
-        config.launchpad_admin = changes.launchpad_admin;
-        config.nft_code_id = changes.nft_code_id;
-        config.supported_networks = changes.supported_networks;
+        if let Some(nft_code_id) = changes.nft_code_id {
+            config.nft_code_id = nft_code_id;
+            attributes.push(attr("new_nft_code_id", nft_code_id.to_string()))
+        }
+        if let Some(admin) = &changes.admin {
+            config.admin = ctx.deps.api.addr_validate(&admin)?;
+            attributes.push(attr("new_admin", admin))
+        }
         if let Some(owner) = changes.owner {
             config.owner = ctx.deps.api.addr_validate(&owner)?;
             attributes.push(attr("new_owner", owner))
@@ -82,7 +83,7 @@ impl NftLaunchpad {
     pub fn submit_collection(
         &self,
         ctx: ExecCtx,
-        collection: Collection,
+        collection: CollectionProject,
     ) -> Result<Response, ContractError> {
         let storage = ctx.deps.storage;
 
@@ -169,10 +170,7 @@ impl NftLaunchpad {
         let config = self.config.load(ctx.deps.storage)?;
 
         // Only allow launchpad_admin to deploy
-        if config.launchpad_admin.is_none() {
-            return Err(ContractError::DeployerMissing);
-        }
-        if sender != config.launchpad_admin.unwrap() {
+        if sender != config.admin {
             return Err(ContractError::WrongDeployer);
         }
 
@@ -188,15 +186,10 @@ impl NftLaunchpad {
 
         let nft_code_id = config.nft_code_id;
 
-        // Do not allow to deploy collection is nft_code_is is not set
-        if nft_code_id.is_none() {
-            return Err(ContractError::NftCodeIdMissing);
-        }
-
         // NOTE: cannot use wasm_instantiate because we need to specify admin
         let instantiate_msg = WasmMsg::Instantiate {
             admin: Some(sender.clone()),
-            code_id: nft_code_id.unwrap(),
+            code_id: nft_code_id,
             msg: to_json_binary(&Tr721InstantiateMsg {
                 admin: sender.clone(),
                 name: collection.name.clone(),
@@ -214,9 +207,7 @@ impl NftLaunchpad {
             funds: vec![],
             label: format!(
                 "TR721 codeId:{} collectionId:{} symbol:{}",
-                nft_code_id.unwrap(),
-                collection_id,
-                collection.symbol
+                nft_code_id, collection_id, collection.symbol
             ),
         };
 
@@ -237,7 +228,7 @@ impl NftLaunchpad {
         &self,
         ctx: QueryCtx,
         collection_id: String,
-    ) -> StdResult<Collection> {
+    ) -> StdResult<CollectionProject> {
         let collection = self.collections.load(ctx.deps.storage, collection_id)?;
         Ok(collection)
     }
@@ -280,31 +271,29 @@ impl NftLaunchpad {
 #[cw_serde]
 pub struct Config {
     pub name: String,
-    pub nft_code_id: Option<u64>,
-    pub supported_networks: Vec<String>,
-    pub launchpad_admin: Option<String>,
+    pub nft_code_id: u64,
+    pub admin: Addr,
     pub owner: Addr,
 }
 
 #[cw_serde]
 pub struct ConfigChanges {
-    pub name: String,
+    pub name: Option<String>,
     pub nft_code_id: Option<u64>,
-    pub supported_networks: Vec<String>,
-    pub launchpad_admin: Option<String>,
+    pub admin: Option<String>,
     pub owner: Option<String>,
 }
 
 #[cw_serde]
 #[derive(Default)]
-pub struct Collection {
-    // Collection info ----------------------------
+pub struct CollectionProject {
+    // Info ----------------------------
     pub name: String,
     pub desc: String,
     pub symbol: String, // Unique
     pub cover_img_uri: String,
     pub target_network: String,
-    // Collection details ----------------------------
+    // Details ----------------------------
     pub website_link: String,
     pub contact_email: String,
     pub is_project_derivative: bool,
@@ -335,12 +324,3 @@ pub struct Collection {
     pub deployed_address: Option<String>,
     pub owner: Option<String>,
 }
-
-#[cw_serde]
-pub enum CollectionState {
-    Pending,  // When user summit the collection but not deployed yet
-    Deployed, // When collection has been deployed
-}
-
-
-

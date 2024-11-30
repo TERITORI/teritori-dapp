@@ -35,7 +35,7 @@
           ],
           "properties": {
             "collection": {
-              "$ref": "#/definitions/Collection"
+              "$ref": "#/definitions/CollectionProject"
             }
           }
         }
@@ -107,7 +107,7 @@
         }
       }
     },
-    "Collection": {
+    "CollectionProject": {
       "type": "object",
       "required": [
         "artwork_desc",
@@ -125,7 +125,6 @@
         "mint_periods",
         "name",
         "partners",
-        "project_desc",
         "project_type",
         "symbol",
         "target_network",
@@ -210,9 +209,6 @@
         "partners": {
           "type": "string"
         },
-        "project_desc": {
-          "type": "string"
-        },
         "project_type": {
           "type": "string"
         },
@@ -264,19 +260,18 @@
     },
     "ConfigChanges": {
       "type": "object",
-      "required": [
-        "name",
-        "supported_networks"
-      ],
       "properties": {
-        "launchpad_admin": {
+        "admin": {
           "type": [
             "string",
             "null"
           ]
         },
         "name": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "nft_code_id": {
           "type": [
@@ -291,12 +286,6 @@
             "string",
             "null"
           ]
-        },
-        "supported_networks": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         }
       },
       "additionalProperties": false

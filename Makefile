@@ -16,9 +16,6 @@ DISTRIBUTOR_PACKAGE=teritori-distributor
 NAME_SERVICE_REPO=teritori-name-service
 NAME_SERVICE_PACKAGE=teritori-name-service
 
-RIOTER_FOOTER_REPO=rioters-footer-nft
-RIOTER_FOOTER_PACKAGE=rioter-footer-nft
-
 ADDR_LIST_REPO=cw_addr_list
 ADDR_LIST_PACKAGE=cw-address-list
 
@@ -155,20 +152,6 @@ $(CONTRACTS_CLIENTS_DIR)/$(NAME_SERVICE_PACKAGE): node_modules
 	go run github.com/a-h/generate/cmd/schema-generate@v0.0.0-20220105161013-96c14dfdfb60 -i $(NAME_SERVICE_REPO)/schema/contract_info_response.json -o go/pkg/contracts/name_service_types/contract_info_response.go -p name_service_types
 	go fmt ./go/pkg/contracts/name_service_types
 	rm -fr $(NAME_SERVICE_REPO)
-
-.PHONY: $(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE)
-$(CONTRACTS_CLIENTS_DIR)/$(RIOTER_FOOTER_PACKAGE): node_modules
-	rm -fr $(RIOTER_FOOTER_REPO)
-	git clone git@github.com:TERITORI/$(RIOTER_FOOTER_REPO).git
-	cd $(RIOTER_FOOTER_REPO) && git checkout e5a5b22cc3e72e09df6b4642d62dc21d99ca34c3
-	rm -fr $@
-	npx cosmwasm-ts-codegen generate \
-		--plugin client \
-		--schema $(RIOTER_FOOTER_REPO)/contracts/rioter_footer_nft/schema \
-		--out $@ \
-		--name $(RIOTER_FOOTER_PACKAGE) \
-		--no-bundle
-	rm -fr $(RIOTER_FOOTER_REPO)
 
 .PHONY: $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE)
 $(CONTRACTS_CLIENTS_DIR)/$(TOKEN_PACKAGE): node_modules

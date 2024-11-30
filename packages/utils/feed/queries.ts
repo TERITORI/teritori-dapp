@@ -21,23 +21,14 @@ import {
 } from "../types/feed";
 import { RemoteFileData } from "../types/files";
 
-import { gnoTeritoriNetwork } from "@/networks/gno-teritori";
 import { teritoriNetwork } from "@/networks/teritori";
 
 export const convertLegacyPostId = (legacyId: string) => {
   // a "legacy id" has no network prefix, we need to support those to preserve early permalinks
   let [network, localIdentifier] = parseNetworkObjectId(legacyId);
   if (!network) {
-    // fallback to teritori or gno network if there is no network prefix in the id
-    if (legacyId.includes("-")) {
-      // teritori ids are uuids
-      network = teritoriNetwork;
-      localIdentifier = legacyId;
-    } else {
-      // gno ids are integers
-      network = gnoTeritoriNetwork;
-      localIdentifier = legacyId;
-    }
+    network = teritoriNetwork;
+    localIdentifier = legacyId;
   }
   return getNetworkObjectId(network?.id, localIdentifier);
 };

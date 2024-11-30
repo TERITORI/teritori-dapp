@@ -52,4 +52,3 @@ instantiate.mainnet: config-mainnet.json
 	set -o pipefail; \
 	TXHASH=$$(teritorid tx wasm instantiate $(CODE_ID_MAINNET) $(CONFIG_MAINNET) --label NftsBurner --admin $(ADMIN_ADDR_MAINNET) $(TX_FLAGS_MAINNET) | jq -r .txhash); \
 	while ! teritorid query tx $$TXHASH $(QUERY_FLAGS_MAINNET) 2>/dev/null | jq -r '.logs[0].events[] | select(.type=="instantiate").attributes[] | select(.key=="_contract_address").value'; do sleep 1; done
-

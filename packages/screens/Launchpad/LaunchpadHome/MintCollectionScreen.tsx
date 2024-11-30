@@ -126,7 +126,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     };
   }, [info.unitPrice, info?.priceDenom]);
   const canPayForMint = useCanPay({ userId, cost });
-  const forceNetworkFeature = NetworkFeature.NFTLaunchpad;
+  const forceNetworkFeature = NetworkFeature.CosmWasmNFTLaunchpad;
   const imageSize = viewWidth < maxImageSize ? viewWidth : maxImageSize;
   const mintButtonDisabled = minted;
 

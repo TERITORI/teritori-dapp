@@ -3,7 +3,7 @@
     "name": "NFT Launchpad",
     "supported_networks": ["teritori-testnet"],
     "owner": "tori1llmym9upcpwnz7qte856ghlp5437ezz2gg7z0q",
-    "launchpad_admin": "tori1kjvyqf4mttwrhfuq5gfj9xgxx9jdt92xnxzf770x853567ymx8cscrnw05",
+    "admin": "tori1kjvyqf4mttwrhfuq5gfj9xgxx9jdt92xnxzf770x853567ymx8cscrnw05",
     "nft_code_id": 60
   } 
 }

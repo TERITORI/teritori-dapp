@@ -2,7 +2,7 @@ use cosmwasm_std::{Addr, Attribute, Coin, Uint128};
 use sylvia::multitest::App;
 
 use crate::{
-    contract::{sv::multitest_utils::CodeId as LaunchpadCodeId, Collection, Config},
+    contract::{sv::multitest_utils::CodeId as LaunchpadCodeId, CollectionProject, Config},
     error::ContractError,
 };
 
@@ -11,7 +11,7 @@ use nft_tr721::contract::{
     sv::multitest_utils::CodeId as NftTr721CodeId, MintPeriod, WhitelistInfo,
 };
 
-fn get_default_collection() -> Collection {
+fn get_default_collection() -> CollectionProject {
     let mint_periods = vec![MintPeriod {
         price: Some(Coin {
             amount: Uint128::new(10),
@@ -29,63 +29,38 @@ fn get_default_collection() -> Collection {
         }),
     }];
 
-    Collection {
-        // Collection info ----------------------------
+    CollectionProject {
+        // Info ----------------------------
         name: "name".to_string(),
         desc: "desc".to_string(),
         symbol: "SYMBOL".to_string(),
         cover_img_uri: "img".to_string(),
         target_network: "network".to_string(),
-        // external_link: None,
-
-        // Collection details ----------------------------
+        // Details ----------------------------
         website_link: "aaa".to_string(),
-
-        // twitter_profile: "twitter_profile".to_string(),
-        // twitter_followers_count: 1,
-
-        // contact_discord_name: "contact_discord_name".to_string(),
         contact_email: "contact_email".to_string(),
-
         is_project_derivative: true,
-
         project_type: "project_type".to_string(),
-
         is_applied_previously: false,
-
         // Team info --------------------------------------
         team_desc: "team_desc".to_string(),
-        // team_link: "team_link".to_string(),
-
         partners: "partners".to_string(),
-
         investment_desc: "investment_desc".to_string(),
         investment_link: "investment_link".to_string(),
-
-        // whitepaper_link: "whitepaper_link".to_string(),
-        // roadmap_link: "roadmap_link".to_string(),
-
         // Additional info ----------------------------
         artwork_desc: "artwork_desc".to_string(),
-
         is_ready_for_mint: true,
-
         escrow_mint_proceeds_period: u64::default(),
         is_dox: true,
-
         dao_whitelist_count: 10,
-
         // Minting details ----------------------------
         tokens_count: 1000,
         reveal_time: Some(u64::default()),
-
         // Whitelist minting --------------------------
         mint_periods,
-
         // Royalty --------------------------
         royalty_address: Some(Addr::unchecked("royalty_address")),
         royalty_percentage: Some(50),
-
         // Extend info --------------------------
         base_token_uri: None,
         metadatas_merkle_root: None,
@@ -99,13 +74,15 @@ fn instantiate() {
     let app = App::default();
     let code_id = LaunchpadCodeId::store_code(&app);
     let sender = "sender";
+    // Deploy NFT TR721 for sylvia contract
+    let nft_contract = NftTr721CodeId::store_code(&app);
+    let deployed_nft_code_id = nft_contract.code_id();
 
     // Instantiate
     let config = Config {
         name: "teritori launchpad".to_string(),
-        supported_networks: vec![],
-        nft_code_id: None,
-        launchpad_admin: Some("admin".to_string()),
+        nft_code_id: deployed_nft_code_id,
+        admin: Addr::unchecked("admin"),
         owner: Addr::unchecked(sender),
     };
 
@@ -124,12 +101,7 @@ fn full_flow() {
     let app: App<sylvia::cw_multi_test::App> = App::default();
     let sender = "sender";
 
-    // Deploy NFT contract for non-sylvia contract
-    // let contract_wrapper = ContractWrapper::new(tr721_execute, tr721_instantiate, tr721_query);
-    // let launchpad_contract = Box::new(contract_wrapper);
-    // let deployed_nft_code_id = app.app_mut().store_code(launchpad_contract);
-
-    // Deploy NFT for sylvia contract
+    // Deploy NFT TR721 for sylvia contract
     let nft_contract = NftTr721CodeId::store_code(&app);
     let deployed_nft_code_id = nft_contract.code_id();
 
@@ -137,9 +109,8 @@ fn full_flow() {
     let contract = LaunchpadCodeId::store_code(&app)
         .instantiate(Config {
             name: "teritori launchpad".to_string(),
-            supported_networks: vec![],
-            nft_code_id: None,
-            launchpad_admin: Some("admin".to_string()),
+            nft_code_id: deployed_nft_code_id,
+            admin: Addr::unchecked("admin"),
             owner: Addr::unchecked(sender),
         })
         .call(sender)
@@ -152,9 +123,9 @@ fn full_flow() {
     // Create collection without period -----------------------------------------
     {
         let err = contract
-            .submit_collection(Collection {
+            .submit_collection(CollectionProject {
                 mint_periods: vec![],
-                ..Collection::default()
+                ..CollectionProject::default()
             })
             .call(sender)
             .unwrap_err();
@@ -165,7 +136,7 @@ fn full_flow() {
     // Create collection with invalid symbol ---------------------------------------------------------
     {
         let err = contract
-            .submit_collection(Collection {
+            .submit_collection(CollectionProject {
                 symbol: "a_123".to_string(),
                 ..default_collection.clone()
             })
@@ -207,14 +178,13 @@ fn full_flow() {
         assert_eq!(err, ContractError::CollectionSymbolExists);
     }
 
-    // Update config when sender is not contract owner 
+    // Update config when sender is not contract owner
     {
         let err = contract
             .update_config(ConfigChanges {
-                name: "test".to_string(),
+                name: Some("test".to_string()),
                 nft_code_id: Some(deployed_nft_code_id),
-                supported_networks: vec![],
-                launchpad_admin: Some(sender.to_string()),
+                admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
             })
             .call("wrong_owner")
@@ -226,10 +196,9 @@ fn full_flow() {
     {
         contract
             .update_config(ConfigChanges {
-                name: "test".to_string(),
-                supported_networks: vec![],
-                nft_code_id: None,
-                launchpad_admin: Some("deployer".to_string()),
+                name: Some("test".to_string()),
+                nft_code_id: Some(deployed_nft_code_id),
+                admin: Some("deployer".to_string()),
                 owner: Some(sender.to_string()),
             })
             .call(sender)
@@ -246,10 +215,9 @@ fn full_flow() {
     {
         contract
             .update_config(ConfigChanges {
-                name: "test".to_string(),
-                supported_networks: vec![],
-                nft_code_id: None,
-                launchpad_admin: Some(sender.to_string()),
+                name: Some("test".to_string()),
+                nft_code_id: Some(deployed_nft_code_id),
+                admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
             })
             .call(sender)
@@ -298,30 +266,20 @@ fn full_flow() {
         );
     }
 
-    // Deploy collection with merkle root but dont have nft code id  ---------------------------------------------------------
-    {
-        let err = contract
-            .deploy_collection("SYMBOL".to_string())
-            .call(sender)
-            .unwrap_err();
-        assert_eq!(err, ContractError::NftCodeIdMissing)
-    }
-
     // Update config to have deployed nft_code_id
     {
         contract
             .update_config(ConfigChanges {
-                name: "test".to_string(),
+                name: Some("test".to_string()),
                 nft_code_id: Some(deployed_nft_code_id),
-                supported_networks: vec![],
-                launchpad_admin: Some(sender.to_string()),
+                admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
             })
             .call(sender)
             .unwrap();
 
         let resp = contract.get_config().unwrap();
-        assert_eq!(resp.nft_code_id, Some(deployed_nft_code_id))
+        assert_eq!(resp.nft_code_id, deployed_nft_code_id)
     }
 
     // Deploy completed collection after update merkle root + nft code id  ---------------------------------------------------------
@@ -345,5 +303,3 @@ fn full_flow() {
         assert_eq!(collection.deployed_address, Some("contract1".to_string()));
     }
 }
-
-

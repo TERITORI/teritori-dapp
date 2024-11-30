@@ -10,11 +10,10 @@ export interface InstantiateMsg {
   [k: string]: unknown;
 }
 export interface Config {
-  launchpad_admin?: string | null;
+  admin: Addr;
   name: string;
-  nft_code_id?: number | null;
+  nft_code_id: number;
   owner: Addr;
-  supported_networks: string[];
 }
 export type ExecuteMsg = {
   update_config: {
@@ -23,7 +22,7 @@ export type ExecuteMsg = {
   };
 } | {
   submit_collection: {
-    collection: Collection;
+    collection: CollectionProject;
     [k: string]: unknown;
   };
 } | {
@@ -40,13 +39,12 @@ export type ExecuteMsg = {
 };
 export type Uint128 = string;
 export interface ConfigChanges {
-  launchpad_admin?: string | null;
-  name: string;
+  admin?: string | null;
+  name?: string | null;
   nft_code_id?: number | null;
   owner?: string | null;
-  supported_networks: string[];
 }
-export interface Collection {
+export interface CollectionProject {
   artwork_desc: string;
   base_token_uri?: string | null;
   contact_email: string;
@@ -66,7 +64,6 @@ export interface Collection {
   name: string;
   owner?: string | null;
   partners: string;
-  project_desc: string;
   project_type: string;
   reveal_time?: number | null;
   royalty_address?: Addr | null;
