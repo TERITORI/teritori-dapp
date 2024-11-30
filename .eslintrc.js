@@ -42,7 +42,6 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": "error",
     "prettier/prettier": "error",
     "import/order": "error",
-    // "import/no-cycle": "error",
     "@typescript-eslint/ban-ts-comment": [
       "error",
       { "ts-expect-error": "allow-with-description" },
