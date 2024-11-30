@@ -57,6 +57,11 @@ fn optimistic() {
     let history = contract.history(42, None).unwrap();
     assert_eq!(history.len(), 0);
 
+    let player_1_count = contract.tickets_count_by_user(player_1.to_string());
+    assert_eq!(player_1_count, Ok(0));
+    let player_2_count = contract.tickets_count_by_user(player_2.to_string());
+    assert_eq!(player_2_count, Ok(0));
+
     for i in 0..half_tickets.into() {
         contract
             .buy_ticket(i % 2 == 1)
@@ -64,6 +69,13 @@ fn optimistic() {
             .call(player_1)
             .unwrap();
     }
+
+    let player_1_count = contract
+        .tickets_count_by_user(player_1.to_string())
+        .unwrap();
+    assert_eq!(Uint128::from(player_1_count), half_tickets);
+    let player_2_count = contract.tickets_count_by_user(player_2.to_string());
+    assert_eq!(player_2_count, Ok(0));
 
     let contract_balance = app
         .app()
@@ -79,6 +91,11 @@ fn optimistic() {
             .call(player_2)
             .unwrap();
     }
+
+    let player_1_count = contract.tickets_count_by_user(player_1.to_string());
+    assert_eq!(player_1_count, Ok(0));
+    let player_2_count = contract.tickets_count_by_user(player_2.to_string());
+    assert_eq!(player_2_count, Ok(0));
 
     let contract_balance = app
         .app()

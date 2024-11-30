@@ -29,6 +29,7 @@ pub struct Info {
 pub struct RakkiContract {
     pub(crate) current_tickets: Map<'static, u16, Addr>,
     pub(crate) current_entropy: Item<'static, Uint512>,
+    pub(crate) tickets_by_user: Map<'static, Addr, u16>,
     pub(crate) fees: Item<'static, Uint128>,
     pub(crate) config: Item<'static, Config>,
     pub(crate) history: Map<'static, u64, Addr>,
@@ -42,6 +43,7 @@ impl RakkiContract {
         Self {
             current_tickets: Map::new("current_tickets"),
             current_entropy: Item::new("current_entropy"),
+            tickets_by_user: Map::new("tickets_by_user"),
             fees: Item::new("fees"),
             config: Item::new("config"),
             history: Map::new("history"),
@@ -105,6 +107,12 @@ impl RakkiContract {
         self.current_tickets
             .save(ctx.deps.storage, offset, &ctx.info.sender)?;
 
+        self.tickets_by_user
+            .update(ctx.deps.storage, ctx.info.sender, |opt| match opt {
+                Some(value) => Ok::<u16, StdError>(value + 1),
+                None => Ok(1),
+            })?;
+
         // FIXME: find a better/stronger way to accumulate entropy
         let final_entropy = self.current_entropy.update(
             ctx.deps.storage,
@@ -165,6 +173,7 @@ impl RakkiContract {
         self.current_entropy
             .save(ctx.deps.storage, &Uint512::zero())?;
         self.current_tickets.clear(ctx.deps.storage);
+        self.tickets_by_user.clear(ctx.deps.storage);
 
         // update history
         self.history.save(ctx.deps.storage, now, &winner)?;
@@ -279,11 +288,19 @@ impl RakkiContract {
         return entries;
     }
 
+    #[msg(query)]
+    fn tickets_count_by_user(&self, ctx: QueryCtx, user_addr: String) -> StdResult<u16> {
+        let opt = self
+            .tickets_by_user
+            .may_load(ctx.deps.storage, Addr::unchecked(user_addr))?;
+        Ok(opt.unwrap_or(0))
+    }
+
     fn tickets_count(&self, storage: &dyn Storage) -> StdResult<u16> {
         return Ok(self
             .current_tickets
             .last(storage)?
             .map(|pair| pair.0 + 1)
-            .unwrap_or(0u16));
+            .unwrap_or(0));
     }
 }
