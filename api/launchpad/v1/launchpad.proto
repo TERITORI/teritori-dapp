@@ -1,0 +1,161 @@
+syntax = "proto3";
+
+package launchpad.v1;
+option go_package = "./launchpadpb";
+
+service LaunchpadService {
+  rpc UploadMetadatas(UploadMetadatasRequest) returns (UploadMetadatasResponse);
+  rpc CalculateCollectionMerkleRoot(CalculateCollectionMerkleRootRequest) returns (CalculateCollectionMerkleRootResponse);
+  rpc TokenMetadata(TokenMetadataRequest) returns (TokenMetadataResponse);
+  rpc LaunchpadProjectsByCreator(LaunchpadProjectsByCreatorRequest) returns (LaunchpadProjectsByCreatorResponse);
+  rpc LaunchpadProjects(LaunchpadProjectsRequest) returns (LaunchpadProjectsResponse);
+  rpc LaunchpadProjectById(LaunchpadProjectByIdRequest) returns (LaunchpadProjectByIdResponse);
+  rpc LaunchpadProjectsCounts(LaunchpadProjectsCountsRequest) returns (LaunchpadProjectsCountsResponse);
+  rpc ProposeApproveProject(ProposeApproveProjectRequest) returns (ProposeApproveProjectResponse);
+}
+
+enum Sort {
+  SORT_UNSPECIFIED = 0;
+  SORT_COLLECTION_NAME = 1;
+}
+
+enum SortDirection {
+  SORT_DIRECTION_UNSPECIFIED = 0;
+  SORT_DIRECTION_ASCENDING = 1;
+  SORT_DIRECTION_DESCENDING = 2;
+}
+
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  STATUS_INCOMPLETE = 1;
+  STATUS_COMPLETE = 2;
+  STATUS_REVIEWING = 3;
+  STATUS_CONFIRMED = 4;
+}
+
+// -------------------------------
+
+message LaunchpadProjectsByCreatorRequest {
+  string creator_id = 1;
+  string network_id = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+  Sort sort = 5;
+  SortDirection sort_direction = 6;
+  optional Status status = 7;
+}
+
+message LaunchpadProjectsByCreatorResponse {
+  repeated LaunchpadProject projects = 1;
+}
+
+message LaunchpadProjectsRequest {
+  string network_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+  Sort sort = 4;
+  SortDirection sort_direction = 5;
+  optional Status status = 6;
+}
+
+message LaunchpadProjectsResponse {
+  repeated LaunchpadProject projects = 1;
+}
+
+message LaunchpadProjectByIdRequest {
+  string network_id = 1;
+  string project_id = 2;
+}
+
+message LaunchpadProjectByIdResponse {
+  LaunchpadProject project = 1;
+}
+
+message UploadMetadatasRequest {
+  string sender = 1;
+  string network_id = 2;
+  string project_id = 3;
+  repeated Metadata metadatas = 4;
+  optional string pinata_jwt = 5;
+}
+
+message UploadMetadatasResponse {
+  string merkle_root = 1;
+}
+
+message CalculateCollectionMerkleRootRequest {
+  string sender = 1;
+  repeated Metadata metadatas = 2;
+}
+
+message CalculateCollectionMerkleRootResponse {
+  string merkle_root = 1;
+}
+
+message TokenMetadataRequest {
+  string sender = 1;
+  string network_id = 2;
+  string project_id = 3;
+  uint32 token_id = 4;
+}
+
+message TokenMetadataResponse {
+  string merkle_root = 1;
+  Metadata metadata = 2;
+  repeated string merkle_proof = 3;
+}
+
+message LaunchpadProjectsCountsRequest {
+  string network_id = 1;
+}
+
+message LaunchpadProjectsCountsResponse {
+  repeated StatusCount statusCounts = 1;
+}
+
+message ProposeApproveProjectRequest {
+  string sender = 1;
+  string network_id = 2;
+  string project_id = 3;
+  string proposal_id = 4;
+}
+
+message ProposeApproveProjectResponse {
+  bool approved = 1;
+}
+
+// -------------------------------
+
+message StatusCount {
+  Status status = 1;
+  uint32 count = 2;
+}
+
+message LaunchpadProject {
+  string id = 1;
+  string network_id = 2;
+  string creator_id = 3;
+  string collection_data = 4;
+  Status status = 5;
+  optional string proposal_id = 6;
+}
+
+message Metadata {
+  optional string image = 1;
+  optional string image_data = 2;
+  optional string external_url = 3;
+  optional string description = 4;
+  optional string name = 5;
+  repeated Trait attributes = 6;
+  optional string background_color = 7;
+  optional string animation_url = 8;
+  optional string youtube_url = 9;
+  optional uint64 royalty_percentage = 10;
+  optional string royalty_payment_address = 11;
+}
+
+message Trait {
+  optional string display_type = 1;
+  string trait_type = 2;
+  string value = 3;
+}

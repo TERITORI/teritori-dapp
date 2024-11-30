@@ -336,6 +336,19 @@ func (h *Handler) handleExecute(e *Message) error {
 				return errors.Wrap(err, "failed to handle premium feed subscribe")
 			}
 		}
+		// Launchpad
+		case "submit_collection":
+			if err := h.handleExecuteSubmitCollection(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle submit collection")
+			}
+		case "update_merkle_root":
+			if err := h.handleExecuteUpdateMerkleRoot(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle update merkle root")
+			}
+		case "deploy_collection":
+			if err := h.handleExecuteDeployCollection(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle deploy collection")
+			}
 	}
 
 	return nil
