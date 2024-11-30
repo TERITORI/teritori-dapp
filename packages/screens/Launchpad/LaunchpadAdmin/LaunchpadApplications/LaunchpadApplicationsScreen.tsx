@@ -51,7 +51,7 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
         onBackPress={() =>
           navigation.navigate("LaunchpadAdministrationOverview")
         }
-        forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+        forceNetworkFeatures={[NetworkFeature.CosmWasmNFTLaunchpad]}
       >
         <BrandText
           style={[
@@ -74,7 +74,7 @@ export const LaunchpadApplicationsScreen: React.FC = () => {
       }
       responsive
       onBackPress={() => navigation.navigate("LaunchpadAdministrationOverview")}
-      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+      forceNetworkFeatures={[NetworkFeature.CosmWasmNFTLaunchpad]}
     >
       <View style={{ marginTop: layout.spacing_x4 }}>
         <View

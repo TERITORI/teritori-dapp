@@ -102,7 +102,7 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
       fullWidth
       responsive
       footerChildren={<></>}
-      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+      forceNetworkFeatures={[NetworkFeature.CosmWasmNFTLaunchpad]}
       // TODO: Remove after tests
       forceNetworkId="teritori-testnet"
       headerChildren={<BrandText>Collection Completion</BrandText>}

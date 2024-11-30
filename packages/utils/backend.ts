@@ -117,16 +117,16 @@ const launchpadClients: { [key: string]: LaunchpadService } = {};
 
 export const getLaunchpadClient = (networkId: string | undefined) => {
   const network = getNetwork(networkId);
-  const cosmwasmLaunchpadFeature = getNetworkFeature(
+  const cosmwasmNftLaunchpadFeature = getNetworkFeature(
     networkId,
-    NetworkFeature.NFTLaunchpad,
+    NetworkFeature.CosmWasmNFTLaunchpad,
   );
-  if (!network || !cosmwasmLaunchpadFeature) {
+  if (!network || !cosmwasmNftLaunchpadFeature) {
     return undefined;
   }
   if (!launchpadClients[network.id]) {
     const rpc = new LaunchpadGrpcWebImpl(
-      cosmwasmLaunchpadFeature.launchpadEndpoint,
+      cosmwasmNftLaunchpadFeature.launchpadEndpoint,
       {
         debug: false,
       },

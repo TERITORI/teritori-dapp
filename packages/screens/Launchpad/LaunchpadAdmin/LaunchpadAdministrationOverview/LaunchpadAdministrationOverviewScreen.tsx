@@ -78,7 +78,7 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
           </BrandText>
         }
         responsive
-        forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+        forceNetworkFeatures={[NetworkFeature.CosmWasmNFTLaunchpad]}
       >
         <BrandText
           style={[
@@ -99,7 +99,7 @@ export const LaunchpadAdministrationOverviewScreen: React.FC = () => {
         <BrandText style={fontSemibold20}>Administration Dashboard</BrandText>
       }
       responsive
-      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+      forceNetworkFeatures={[NetworkFeature.CosmWasmNFTLaunchpad]}
     >
       <View style={{ marginTop: layout.spacing_x4 }}>
         <View

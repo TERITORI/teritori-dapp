@@ -135,7 +135,7 @@ export const LaunchpadBasic: FC = () => {
         {/*/>*/}
 
         <NetworkSelectorWithLabel
-          forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+          forceNetworkFeatures={[NetworkFeature.CosmWasmNFTLaunchpad]}
           style={{ marginBottom: layout.spacing_x3 }}
           label="Which network is your project on?"
         />

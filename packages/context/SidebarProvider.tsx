@@ -98,36 +98,42 @@ export const useSidebar = () => {
             return;
           }
 
-        if (SIDEBAR_LIST[option.id]) {
-          const newOption = cloneDeep(SIDEBAR_LIST[option.id]);
+          if (SIDEBAR_LIST[option.id]) {
+            const newOption = cloneDeep(SIDEBAR_LIST[option.id]);
 
-          // Sidebar restriction (Hide items or nested items):
-          // Launchpad Admin
-          if (
-            !isUserLaunchpadAdmin &&
-            newOption.id === "Launchpad" &&
-            newOption.nested &&
-            has(newOption, "nested.admin")
-          ) {
-            delete newOption.nested.admin;
+            // Sidebar restriction (Hide items or nested items):
+            // Launchpad Admin
+            if (
+              !isUserLaunchpadAdmin &&
+              newOption.id === "Launchpad" &&
+              newOption.nested &&
+              has(newOption, "nested.admin")
+            ) {
+              delete newOption.nested.admin;
+            }
+
+            dynamicAppsSelection[element] = newOption;
+          } else {
+            dynamicAppsSelection[element] = {
+              id: option.id,
+              title: option.title,
+              route: option.route,
+              url: option.url,
+              icon: option.icon,
+            };
           }
-
-          dynamicAppsSelection[element] = newOption;
-        } else {
-          dynamicAppsSelection[element] = {
-            id: option.id,
-            title: option.title,
-            route: option.route,
-            url: option.url,
-            icon: option.icon,
-          };
-        }
-      });
+        });
 
     dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
 
     return dynamicAppsSelection;
-  }, [availableApps, selectedApps, developerMode, isUserLaunchpadAdmin]);
+  }, [
+    availableApps,
+    selectedApps,
+    developerMode,
+    isUserLaunchpadAdmin,
+    forceDAppsList,
+  ]);
 
   const toggleSidebar = () => {
     dispatch(setSidebarExpanded(!isSidebarExpanded));

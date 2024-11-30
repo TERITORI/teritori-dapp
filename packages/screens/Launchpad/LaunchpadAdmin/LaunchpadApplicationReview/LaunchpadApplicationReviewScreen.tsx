@@ -113,7 +113,7 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
         }
         responsive
         onBackPress={onBackPress}
-        forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+        forceNetworkFeatures={[NetworkFeature.CosmWasmNFTLaunchpad]}
       >
         <BrandText
           style={[
@@ -138,7 +138,7 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
         }
         responsive
         onBackPress={onBackPress}
-        forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+        forceNetworkFeatures={[NetworkFeature.CosmWasmNFTLaunchpad]}
       >
         {isLoading ? (
           <BrandText style={{ marginTop: layout.spacing_x4 }}>
@@ -159,7 +159,7 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
       }
       responsive
       onBackPress={onBackPress}
-      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+      forceNetworkFeatures={[NetworkFeature.CosmWasmNFTLaunchpad]}
     >
       {selectedNetworkId !== launchpadProject.networkId ? (
         <BrandText style={{ alignSelf: "center" }}>Wrong network</BrandText>

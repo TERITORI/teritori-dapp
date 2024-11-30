@@ -219,16 +219,16 @@ const getNavConfig: (homeScreen: keyof RootStackParamList) => NavConfig = (
       RiotGameLeaderboard: "riot-game/leaderboard",
       RiotGameInventory: "riot-game/inventory",
 
-    // ==== Launchpad
-    Launchpad: "launchpad",
-    LaunchpadApply: "launchpad/apply",
-    LaunchpadCreate: "launchpad/create",
-    LaunchpadComplete: "launchpad/complete/:id",
-    LaunchpadMyCollections: "launchpad/my-collections",
-    LaunchpadAdministrationOverview: "launchpad/admin",
-    LaunchpadApplications: "launchpad/admin/applications",
-    LaunchpadApplicationReview: "launchpad/review/:id",
-    LaunchpadReadyApplications: "launchpad/admin/ready-applications",
+      // ==== Launchpad
+      Launchpad: "launchpad",
+      LaunchpadApply: "launchpad/apply",
+      LaunchpadCreate: "launchpad/create",
+      LaunchpadComplete: "launchpad/complete/:id",
+      LaunchpadMyCollections: "launchpad/my-collections",
+      LaunchpadAdministrationOverview: "launchpad/admin",
+      LaunchpadApplications: "launchpad/admin/applications",
+      LaunchpadApplicationReview: "launchpad/review/:id",
+      LaunchpadReadyApplications: "launchpad/admin/ready-applications",
 
       // ==== Launchpad ERC20
       LaunchpadERC20: "launchpad-erc20",

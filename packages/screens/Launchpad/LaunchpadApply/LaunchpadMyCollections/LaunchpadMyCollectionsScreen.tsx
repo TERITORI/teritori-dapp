@@ -47,7 +47,7 @@ export const LaunchpadMyCollectionsScreen: ScreenFC<
       isLarge
       responsive
       footerChildren={<></>}
-      forceNetworkFeatures={[NetworkFeature.NFTLaunchpad]}
+      forceNetworkFeatures={[NetworkFeature.CosmWasmNFTLaunchpad]}
       headerChildren={<BrandText>Apply to Launchpad</BrandText>}
       onBackPress={() => navigation.navigate("LaunchpadApply")}
     >

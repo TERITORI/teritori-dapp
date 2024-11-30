@@ -34,18 +34,18 @@ export const useCompleteCollection = () => {
 
       const signingComswasmClient =
         await getKeplrSigningCosmWasmClient(selectedNetworkId);
-      const cosmwasmLaunchpadFeature = getNetworkFeature(
+      const cosmwasmNftLaunchpadFeature = getNetworkFeature(
         selectedNetworkId,
-        NetworkFeature.NFTLaunchpad,
+        NetworkFeature.CosmWasmNFTLaunchpad,
       );
-      if (!cosmwasmLaunchpadFeature) return false;
+      if (!cosmwasmNftLaunchpadFeature) return false;
 
       const launchpadBackendClient = mustGetLaunchpadClient(networkId);
 
       const nftLaunchpadContractClient = new NftLaunchpadClient(
         signingComswasmClient,
         walletAddress,
-        cosmwasmLaunchpadFeature.launchpadContractAddress,
+        cosmwasmNftLaunchpadFeature.launchpadContractAddress,
       );
       const pinataJWTKey =
         assetsMetadatasFormsValues.nftApiKey ||

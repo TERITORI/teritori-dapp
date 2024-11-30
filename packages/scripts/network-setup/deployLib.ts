@@ -136,20 +136,20 @@ export const deployTeritoriEcosystem = async (
   );
 
   console.log("Instantiating NFT Launchpad", network.nameServiceCodeId);
-  const cosmwasmLaunchpadFeature = cloneDeep(
-    getNetworkFeature(networkId, NetworkFeature.NFTLaunchpad),
+  const cosmwasmNftLaunchpadFeature = cloneDeep(
+    getNetworkFeature(networkId, NetworkFeature.CosmWasmNFTLaunchpad),
   );
-  if (!cosmwasmLaunchpadFeature) {
+  if (!cosmwasmNftLaunchpadFeature) {
     console.error(`Cosmwasm Launchpad feature not found on ${networkId}`);
   } else {
-    cosmwasmLaunchpadFeature.launchpadContractAddress =
+    cosmwasmNftLaunchpadFeature.launchpadContractAddress =
       await instantiateNftLaunchpad(
         opts,
         wallet,
         walletAddr,
         "TODO DAO address",
         network,
-        cosmwasmLaunchpadFeature,
+        cosmwasmNftLaunchpadFeature,
       );
   }
 

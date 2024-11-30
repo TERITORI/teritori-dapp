@@ -23,16 +23,6 @@ const nftsBurnerFeature: CosmWasmNFTsBurner = {
     "tori1qyl0j7a24amk8k8gcmvv07y2zjx7nkcwpk73js24euh64hkja6esd2p2xp",
 };
 
-const cosmwasmLaunchpadFeature: CosmWasmLaunchpad = {
-  type: NetworkFeature.NFTLaunchpad,
-  launchpadContractAddress:
-    "tori1te7ku4de0k4rl8lhyuvpmhygaq7k7vy5zpsjq9y638efxsnx3aaqck2utf",
-  launchpadEndpoint: "https://dapp-backend.testnet.teritori.com",
-  nftTr721CodeId: 60,
-  codeId: 71,
-  defaultMintDenom: "utori",
-};
-
 const nftMarketplace: NFTMarketplace = {
   type: NetworkFeature.NFTMarketplace,
   cwAddressListCodeId: 63,

@@ -36,7 +36,10 @@ export const LaunchpadMintPeriods: FC = () => {
   const createMintPeriod = useCallback(() => {
     if (!selectedNetwork) return;
     closeAll();
-    const feature = getNetworkFeature(networkId, NetworkFeature.NFTLaunchpad);
+    const feature = getNetworkFeature(
+      networkId,
+      NetworkFeature.CosmWasmNFTLaunchpad,
+    );
     if (!feature) {
       throw new Error("This network does not support nft launchpad");
     }

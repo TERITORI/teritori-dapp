@@ -23,19 +23,19 @@ export const useGetLaunchpadAdmin = () => {
         }
         const signingComswasmClient =
           await getKeplrSigningCosmWasmClient(selectedNetworkId);
-        const cosmwasmLaunchpadFeature = getNetworkFeature(
+        const cosmwasmNftLaunchpadFeature = getNetworkFeature(
           selectedNetworkId,
-          NetworkFeature.NFTLaunchpad,
+          NetworkFeature.CosmWasmNFTLaunchpad,
         );
 
-        if (!cosmwasmLaunchpadFeature) {
+        if (!cosmwasmNftLaunchpadFeature) {
           throw Error("No Launchpad feature");
         }
 
         const nftLaunchpadContractClient = new NftLaunchpadClient(
           signingComswasmClient,
           userAddress,
-          cosmwasmLaunchpadFeature.launchpadContractAddress,
+          cosmwasmNftLaunchpadFeature.launchpadContractAddress,
         );
 
         if (!nftLaunchpadContractClient) {

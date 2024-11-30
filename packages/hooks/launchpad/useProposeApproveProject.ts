@@ -40,12 +40,12 @@ export const useProposeApproveProject = () => {
           throw new Error("Invalid DAO Proposal module");
         }
 
-        const cosmwasmLaunchpadFeature = getNetworkFeature(
+        const cosmwasmNftLaunchpadFeature = getNetworkFeature(
           selectedNetworkId,
-          NetworkFeature.NFTLaunchpad,
+          NetworkFeature.CosmWasmNFTLaunchpad,
         );
 
-        if (!cosmwasmLaunchpadFeature) {
+        if (!cosmwasmNftLaunchpadFeature) {
           throw new Error("No Launchpad feature");
         }
 
@@ -58,7 +58,7 @@ export const useProposeApproveProject = () => {
               wasm: {
                 execute: {
                   contract_addr:
-                    cosmwasmLaunchpadFeature.launchpadContractAddress,
+                    cosmwasmNftLaunchpadFeature.launchpadContractAddress,
                   msg: Buffer.from(
                     JSON.stringify({
                       deploy_collection: {
