@@ -335,7 +335,6 @@ func (h *Handler) handleExecute(e *Message) error {
 			if err := h.handleExecutePremiumFeedSubscribe(e, &executeMsg); err != nil {
 				return errors.Wrap(err, "failed to handle premium feed subscribe")
 			}
-		}
 		// Launchpad
 		case "submit_collection":
 			if err := h.handleExecuteSubmitCollection(e, &executeMsg); err != nil {
@@ -349,6 +348,7 @@ func (h *Handler) handleExecute(e *Message) error {
 			if err := h.handleExecuteDeployCollection(e, &executeMsg); err != nil {
 				return errors.Wrap(err, "failed to handle deploy collection")
 			}
+		}
 	}
 
 	return nil
