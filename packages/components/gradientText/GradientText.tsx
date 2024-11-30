@@ -17,6 +17,8 @@ import {
   gradientColorPurple,
   gradientColorSalmon,
   gradientColorTurquoise,
+  rakkiYellow,
+  rakkiYellowLight,
 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
@@ -113,7 +115,7 @@ const gradient = (type: GradientType): LinearGradientProps => {
       };
     case "yellow":
       return {
-        colors: ["#FFD83D", "#FFEDAE"],
+        colors: [rakkiYellow, rakkiYellowLight],
         locations: [-0.0109, 1],
       };
     case getMapPostTextGradientType(PostCategory.Normal):
