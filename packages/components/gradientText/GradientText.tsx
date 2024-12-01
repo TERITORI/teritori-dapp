@@ -116,7 +116,8 @@ const gradient = (type: GradientType): LinearGradientProps => {
     case "yellow":
       return {
         colors: [rakkiYellow, rakkiYellowLight],
-        locations: [-0.0109, 1],
+        start,
+        end,
       };
     case getMapPostTextGradientType(PostCategory.Normal):
       return getMapPostTextGradient(PostCategory.Normal);

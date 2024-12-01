@@ -43,7 +43,7 @@ const gradient = (type: GradientType) => {
     case "grayLight":
       return `90deg, ${gradientColorLighterGray} 0%, ${gradientColorLightLavender} 100%`;
     case "yellow":
-      return `267deg, ${rakkiYellow} -1.09%, ${rakkiYellowLight} 100%`;
+      return `267deg, ${rakkiYellow} 0%, ${rakkiYellowLight} 100%`;
     case getMapPostTextGradientType(PostCategory.Normal):
       return getMapPostTextGradientString(PostCategory.Normal);
     case getMapPostTextGradientType(PostCategory.Article):
