@@ -4,10 +4,11 @@ export type AdenaState = { addresses: string[]; chainId?: string };
 
 type AdenaStore = {
   state: AdenaState;
-  setState: (state: AdenaState) => void;
+  setState: (state: Partial<AdenaState>) => void;
 };
 
-export const useAdenaStore = create<AdenaStore>()((set) => ({
+export const useAdenaStore = create<AdenaStore>()((set, get) => ({
   state: { addresses: [] },
-  setState: (state: AdenaState) => set({ state }),
+  setState: (changes: Partial<AdenaState>) =>
+    set({ state: { ...get().state, ...changes } }),
 }));
