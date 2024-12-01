@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { useAdenaUtils } from "./useAdenaUtils";
+import { useAdenaStore } from "./useAdenaStore";
 import { useAppDispatch } from "../../../store/store";
 import { Wallet } from "../wallet";
 
@@ -33,9 +33,7 @@ export const useAdena: () => UseAdenaResult = () => {
 
   const adena = hasAdena ? (window as any).adena : null;
 
-  const [state, setState] = useState<{ addresses: string[]; chainId?: string }>(
-    { addresses: [] },
-  );
+  const { state, setState } = useAdenaStore();
   const [ready, setReady] = useState(false);
 
   const fetchAccount = useCallback(
@@ -46,6 +44,9 @@ export const useAdena: () => UseAdenaResult = () => {
       targetChainId: string | undefined,
     ) => {
       if (!adena || !isAdenaConnected || !selectedNetworkInfo) {
+        console.log(
+          `adena: ${!adena} connected: ${isAdenaConnected} chainId: ${selectedNetworkInfo?.chainId}`,
+        );
         setReady(true);
         return;
       }
@@ -77,7 +78,7 @@ export const useAdena: () => UseAdenaResult = () => {
 
       setReady(true);
     },
-    [selectedNetworkInfo],
+    [selectedNetworkInfo, setState],
   );
 
   const addNetwork = useCallback(
@@ -89,23 +90,10 @@ export const useAdena: () => UseAdenaResult = () => {
       });
 
       if (res.status === "failure") {
-        setToast({
-          type: "error",
-          message: res.message,
-          mode: "normal",
-          title: "Error",
-        });
-        return;
+        throw Error(res.message);
       }
-
-      fetchAccount(
-        dispatch,
-        adena,
-        isAdenaConnected,
-        selectedNetworkInfo.chainId,
-      );
     },
-    [setToast, adena, dispatch, fetchAccount, isAdenaConnected],
+    [adena],
   );
 
   const switchNetwork = useCallback(
@@ -126,14 +114,15 @@ export const useAdena: () => UseAdenaResult = () => {
         const res = await adena.SwitchNetwork(selectedNetworkInfo?.chainId);
 
         if (res.status === "success") {
-          setState((state) => ({ ...state, chainId: res.data.chainId }));
+          setState({ ...state, chainId: res.data.chainId });
           return;
         }
 
         console.warn(res);
 
         if (res.type === "UNADDED_NETWORK") {
-          addNetwork(selectedNetworkInfo);
+          await addNetwork(selectedNetworkInfo);
+          switchNetwork(selectedNetworkInfo);
           return;
         }
 
@@ -150,7 +139,7 @@ export const useAdena: () => UseAdenaResult = () => {
         }
       }
     },
-    [adena, setToast, addNetwork],
+    [adena, setToast, addNetwork, setState, state],
   );
 
   useEffect(() => {
@@ -165,12 +154,12 @@ export const useAdena: () => UseAdenaResult = () => {
     if (!adena) return;
 
     adena.On("changedAccount", (address: string) => {
-      setState((state) => ({ ...state, addresses: [address] }));
+      setState({ ...state, addresses: [address] });
     });
     adena.On("changedNetwork", (network: string) => {
-      setState((state) => ({ ...state, chainId: network }));
+      setState({ ...state, chainId: network });
     });
-  }, [adena]);
+  }, [adena, state, setState]);
 
   useEffect(() => {
     const handleLoad = () => {

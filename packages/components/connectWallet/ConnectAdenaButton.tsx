@@ -5,12 +5,9 @@ import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 
 import adenaSVG from "@/assets/icons/adena.svg";
+import { useAdenaStore } from "@/context/WalletsProvider/adena/useAdenaStore";
 import { getGnoNetworkFromChainId } from "@/networks/index";
-import {
-  setIsAdenaConnected,
-  setSelectedNetworkId,
-  setSelectedWalletId,
-} from "@/store/slices/settings";
+import { setIsAdenaConnected } from "@/store/slices/settings";
 import { useAppDispatch } from "@/store/store";
 
 export const ConnectAdenaButton: React.FC<{
@@ -18,6 +15,7 @@ export const ConnectAdenaButton: React.FC<{
 }> = ({ onDone }) => {
   const { setToast } = useFeedbacks();
   const dispatch = useAppDispatch();
+  const { state, setState } = useAdenaStore();
 
   const handlePress = async () => {
     try {
@@ -27,15 +25,16 @@ export const ConnectAdenaButton: React.FC<{
         return;
       }
 
+      dispatch(setIsAdenaConnected(false));
       const establishResult = await adena.AddEstablish("Teritori dApp");
       if (establishResult.status === "failure") {
         throw Error(establishResult.message);
       }
 
       console.log("established", establishResult);
+      dispatch(setIsAdenaConnected(true));
 
       const account = await adena.GetAccount();
-      const address = account.data.address;
       const chainId = account.data.chainId;
       const gnoNetwork = getGnoNetworkFromChainId(chainId);
 
@@ -43,11 +42,9 @@ export const ConnectAdenaButton: React.FC<{
         throw new Error(`Unsupported chainId ${chainId}`);
       }
 
-      dispatch(setSelectedNetworkId(gnoNetwork.id));
-      dispatch(setSelectedWalletId(`adena-${gnoNetwork.id}-${address}`));
-      dispatch(setIsAdenaConnected(true));
+      setState({ ...state, chainId });
 
-      onDone && onDone();
+      onDone?.();
     } catch (err) {
       console.error(err);
       if (err instanceof Error) {
@@ -58,7 +55,7 @@ export const ConnectAdenaButton: React.FC<{
           title: "Failed to connect to Adena (1)",
         });
       }
-      onDone && onDone(err);
+      onDone?.(err);
     }
   };
   return (
