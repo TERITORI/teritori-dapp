@@ -48,6 +48,7 @@ import { ProjectsMakeRequestScreen } from "@/screens/Projects/ProjectsMakeReques
 import { ProjectsManagerScreen } from "@/screens/Projects/ProjectsManagerScreen";
 import { ProjectsPaymentScreen } from "@/screens/Projects/ProjectsPaymentScreen";
 import { ProjectsScreen } from "@/screens/Projects/ProjectsScreen";
+import { RakkiScreen } from "@/screens/Rakki/RakkiScreen";
 import { RiotGameBreedingScreen } from "@/screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "@/screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "@/screens/RiotGame/RiotGameFightScreen";
@@ -535,6 +536,11 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         name="BurnCapital"
         component={BurnCapitalScreen}
         options={{ header: () => null, title: screenTitle("Burn Capital") }}
+      />
+      <Nav.Screen
+        name="Rakki"
+        component={RakkiScreen}
+        options={{ header: () => null, title: screenTitle("Rakki") }}
       />
       {platformScreens}
     </>

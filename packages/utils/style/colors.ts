@@ -58,6 +58,9 @@ export const trashBackground = "rgba(244, 111, 118, 0.1)";
 
 export const orangeLight = "#EAA54B";
 
+export const rakkiYellow = "#FFD83D";
+export const rakkiYellowLight = "#FFEDAE";
+
 export const gradientColorTurquoise = "#A5FECB";
 export const gradientColorLightLavender = "#C3CFE2";
 export const gradientColorLavender = "#AEB1FF";
