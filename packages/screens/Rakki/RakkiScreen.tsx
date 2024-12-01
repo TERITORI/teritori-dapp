@@ -343,8 +343,8 @@ const BuyTicketsButton: React.FC<{ networkId: string; info: Info }> = ({
                     throw new Error("Rakki not supported on this network");
                   }
                   const msgs: MsgExecuteContractEncodeObject[] = [];
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  for (const _ of range(ticketAmountNumber.toNumber())) {
+                  const len = ticketAmountNumber.toNumber();
+                  for (let i = 0; i < len; i++) {
                     const payload: ExecMsg = {
                       buy_ticket: {
                         entropy: !!Math.round(Math.random()), // FIXME: secure entropy
