@@ -1,12 +1,12 @@
 import { Buffer } from "buffer";
 import React, { ComponentProps, useCallback } from "react";
 import {
+  StyleProp,
+  ViewStyle,
+  View,
+  StyleSheet,
   Pressable,
   ScrollView,
-  StyleProp,
-  StyleSheet,
-  View,
-  ViewStyle,
 } from "react-native";
 
 import { UserDisplayName } from "./UserDisplayName";
@@ -23,14 +23,14 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { parseUserId } from "../../networks";
 import {
-  neutral00,
-  neutral33,
   neutral77,
+  neutral33,
   neutralA3,
+  neutral00,
 } from "../../utils/style/colors";
 import {
-  fontSemibold10,
   fontSemibold12,
+  fontSemibold10,
   fontSemibold8,
 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
