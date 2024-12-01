@@ -1,7 +1,6 @@
 import { MsgExecuteContractEncodeObject } from "@cosmjs/cosmwasm-stargate";
 import { toUtf8 } from "@cosmjs/encoding";
 import { useQueryClient } from "@tanstack/react-query";
-import { range } from "lodash";
 import Long from "long";
 import moment from "moment";
 import { useEffect, useState } from "react";
