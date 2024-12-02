@@ -8,17 +8,23 @@ export const LoaderFullScreen: React.FC<{ visible: boolean }> = ({
 }) => {
   return (
     <Modal visible={visible} transparent>
-      <View
-        style={{
-          width: "100%",
-          height: "100%",
-          backgroundColor: "rgba(0,0,0,.8)",
-          position: "absolute",
-          zIndex: 10,
-        }}
-      >
-        <AnimatedLoader testID="loader-full-screen" />
-      </View>
+      <LoaderFullSize />
     </Modal>
+  );
+};
+
+export const LoaderFullSize: React.FC = () => {
+  return (
+    <View
+      style={{
+        width: "100%",
+        height: "100%",
+        flex: 1,
+        backgroundColor: "rgba(0,0,0,.8)",
+        position: "absolute",
+      }}
+    >
+      <AnimatedLoader />
+    </View>
   );
 };
