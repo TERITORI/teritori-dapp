@@ -22,6 +22,7 @@ const (
 	FeatureTypeLaunchpadERC20            = FeatureType("LaunchpadERC20")
 	FeatureTypeNFTMarketplaceLeaderboard = FeatureType("NFTMarketplaceLeaderboard")
 	FeatureTypeCosmWasmNFTsBurner        = FeatureType("CosmWasmNFTsBurner")
+	FeatureTypeCosmWasmRakki             = FeatureType("CosmWasmRakki")
 )
 
 type FeatureCosmWasmPremiumFeed struct {
@@ -146,6 +147,26 @@ func (nb *NetworkBase) GetFeatureNFTMarketplace() (*FeatureNFTMarketplace, error
 	return feature.(*FeatureNFTMarketplace), nil
 }
 
+type FeatureCosmWasmRakki struct {
+	*FeatureBase
+	CodeId          float64 `json:"codeId"`
+	ContractAddress string  `json:"contractAddress"`
+}
+
+var _ Feature = &FeatureCosmWasmRakki{}
+
+func (f FeatureCosmWasmRakki) Type() FeatureType {
+	return FeatureTypeCosmWasmRakki
+}
+
+func (nb *NetworkBase) GetFeatureCosmWasmRakki() (*FeatureCosmWasmRakki, error) {
+	feature, err := nb.GetFeature(FeatureTypeCosmWasmRakki)
+	if err != nil {
+		return nil, err
+	}
+	return feature.(*FeatureCosmWasmRakki), nil
+}
+
 func UnmarshalFeature(b []byte) (Feature, error) {
 	var base FeatureBase
 	if err := json.Unmarshal(b, &base); err != nil {
@@ -186,6 +207,12 @@ func UnmarshalFeature(b []byte) (Feature, error) {
 		var f FeatureNFTMarketplace
 		if err := json.Unmarshal(b, &f); err != nil {
 			return nil, errors.Wrap(err, "failed to unmarshal feature NFTMarketplace")
+		}
+		return &f, nil
+	case FeatureTypeCosmWasmRakki:
+		var f FeatureCosmWasmRakki
+		if err := json.Unmarshal(b, &f); err != nil {
+			return nil, errors.Wrap(err, "failed to unmarshal feature CosmWasmRakki")
 		}
 		return &f, nil
 	}

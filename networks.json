@@ -11605,7 +11605,8 @@
       "CosmWasmNFTLaunchpad",
       "CosmWasmPremiumFeed",
       "NFTMarketplaceLeaderboard",
-      "CosmWasmNFTsBurner"
+      "CosmWasmNFTsBurner",
+      "CosmWasmRakki"
     ],
     "featureObjects": [
       {
@@ -11629,6 +11630,11 @@
         "nftTr721CodeId": 60,
         "codeId": 71,
         "defaultMintDenom": "utori"
+      },
+      {
+        "type": "CosmWasmRakki",
+        "codeId": 79,
+        "contractAddress": "tori1smdl4c0mc4kqsrg42rhrx5czqwxtp2gml0v8yrzhclesf5n47wzqds7dx3"
       }
     ],
     "currencies": [

@@ -17,6 +17,8 @@ import {
   gradientColorPurple,
   gradientColorSalmon,
   gradientColorTurquoise,
+  rakkiYellow,
+  rakkiYellowLight,
 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
@@ -34,6 +36,7 @@ export type GradientType =
   | "pink"
   | "gray"
   | "grayLight"
+  | "yellow"
   | "feed-map-normal-post"
   | "feed-map-article-post"
   | "feed-map-video-post"
@@ -107,6 +110,12 @@ const gradient = (type: GradientType): LinearGradientProps => {
     case "grayLight":
       return {
         colors: [gradientColorLighterGray, gradientColorLightLavender],
+        start,
+        end,
+      };
+    case "yellow":
+      return {
+        colors: [rakkiYellow, rakkiYellowLight],
         start,
         end,
       };
