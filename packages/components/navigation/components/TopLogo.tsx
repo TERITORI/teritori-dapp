@@ -1,18 +1,18 @@
 import React from "react";
 import { View, TouchableOpacity, ViewStyle } from "react-native";
 
-import logoTopVersionSVG from "../../../../assets/logos/logo-hexagon-version-alpha.svg";
-import { layout } from "../../../utils/style/layout";
-import { SVG } from "../../SVG";
-
+import logoTopVersionSVG from "@/assets/logos/logo-hexagon-version-alpha.svg";
+import { SVG } from "@/components/SVG";
 import { useAppConfig } from "@/context/AppConfigProvider";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { layout } from "@/utils/style/layout";
 
 export const TopLogo = () => {
   const navigation = useAppNavigation();
-  const { homeScreen } = useAppConfig();
+  const { homeScreen, logo: configLogo } = useAppConfig();
 
-  const logo = <SVG width={68} height={68} source={logoTopVersionSVG} />;
+  const logoSource = configLogo || logoTopVersionSVG;
+  const logo = <SVG width={68} height={68} source={logoSource} />;
 
   const style: ViewStyle = {
     marginHorizontal: layout.spacing_x0_5,
