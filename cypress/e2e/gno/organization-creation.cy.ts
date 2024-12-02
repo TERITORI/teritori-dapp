@@ -28,7 +28,7 @@ describe("Create an organization flow", () => {
 
     cy.contains("Next: Configure voting").click();
     cy.get('[data-testid="roles-permissions-next"]').click();
-    cy.contains('Add New Role').click();
+    cy.contains("Add New Role").click();
     cy.get("input[placeholder='Role name']").type(role);
     cy.contains("Next: Set tokens or members").click();
     cy.get("input[placeholder='administrator, moderator']").type(role);
