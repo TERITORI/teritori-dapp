@@ -4,9 +4,7 @@ import { Controller, useForm } from "react-hook-form";
 import { ScrollView, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import priceSVG from "../../../assets/icons/price.svg";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-
+import priceSVG from "@/assets/icons/price.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
@@ -25,6 +23,7 @@ import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
 import { useIpfs } from "@/hooks/useIpfs";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";

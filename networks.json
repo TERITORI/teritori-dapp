@@ -11619,6 +11619,14 @@
         "burnerContractAddress": "tori1qyl0j7a24amk8k8gcmvv07y2zjx7nkcwpk73js24euh64hkja6esd2p2xp"
       },
       {
+        "type": "NFTLaunchpad",
+        "launchpadContractAddress": "tori1te7ku4de0k4rl8lhyuvpmhygaq7k7vy5zpsjq9y638efxsnx3aaqck2utf",
+        "launchpadEndpoint": "https://dapp-backend.testnet.teritori.com",
+        "nftTr721CodeId": 60,
+        "codeId": 71,
+        "defaultMintDenom": "utori"
+      },
+      {
         "type": "NFTMarketplace",
         "cwAddressListCodeId": 63,
         "cwAddressListContractAddress": "tori1x72plnprsjnmszylmdm3cnvu5h6u55fyf0pe02lye9p6q2ws05ps33qmft"
@@ -11685,7 +11693,7 @@
     "nameServiceDefaultImage": "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
     "nameServiceTLD": ".tori",
     "vaultContractAddress": "tori1wn625s4jcmvk0szpl85rj5azkfc6suyvf75q6vrddscjdphtve8s2f76jm",
-    "riotContractAddressGen0": "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0",
+    "riotContractAddressGen0": "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc",
     "riotContractAddressGen1": "",
     "riotSquadStakingContractAddressV1": "",
     "riotSquadStakingContractAddressV2": "",
@@ -11693,7 +11701,7 @@
     "secondaryDuringMintList": [
       "",
       "tori1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgsjscd88",
-      "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0",
+      "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc",
       ""
     ],
     "excludeFromLaunchpadList": [
