@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type AdenaState = { addresses: string[]; chainId?: string };
+type AdenaState = { addresses: string[]; chainId?: string };
 
 type AdenaStore = {
   state: AdenaState;
