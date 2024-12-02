@@ -89,6 +89,10 @@ func (rm *rolesModule) RevokeRole(address std.Address, role string) {
 	panic("not implemented")
 }
 
+func (rm *rolesModule) GetMemberRoles(address std.Address) []string {
+	return []string{}
+}
+
 type proposalModule struct {
 	core dao_interfaces.IDAOCore
 }

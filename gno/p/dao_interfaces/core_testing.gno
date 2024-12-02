@@ -14,6 +14,10 @@ func (d *dummyCore) VotingModule() IVotingModule {
 	panic("not implemented")
 }
 
+func (d *dummyCore) RolesModule() IRolesModule {
+	panic("not implemented")
+}
+
 func (d *dummyCore) ProposalModules() []ActivableProposalModule {
 	panic("not implemented")
 }

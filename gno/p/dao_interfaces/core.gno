@@ -11,6 +11,7 @@ type IDAOCore interface {
 	Render(path string) string
 
 	VotingModule() IVotingModule
+	RolesModule() IRolesModule
 	ProposalModules() []ActivableProposalModule
 	ActiveProposalModuleCount() int
 	Registry() *MessagesRegistry
