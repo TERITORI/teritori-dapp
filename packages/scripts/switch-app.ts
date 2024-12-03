@@ -7,11 +7,18 @@ const main = async () => {
   const [appName] = program.argument("<app-name>").parse().args;
 
   const rootPath = path.join(__dirname, "..", "..");
-
-  const appPath = path.join(rootPath, "apps", appName);
+  const appsPath = path.join(rootPath, "apps");
+  const appPath = path.join(appsPath, appName);
   const exists = fs.existsSync(appPath);
   if (!exists) {
-    console.error(`ERROR: App "${appName}" does not exist`);
+    let apps: string[] = [];
+    try {
+      apps = await fsp.readdir(appsPath, {});
+      apps = apps.filter((app) => ![".DS_Store"].includes(app));
+    } catch {}
+    console.error(
+      `ERROR: App ${JSON.stringify(appName)} does not exist, must be one of ${apps.map((app) => JSON.stringify(app)).join(", ")}`,
+    );
     process.exit(1);
   }
 
