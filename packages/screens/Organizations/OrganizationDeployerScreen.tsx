@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
 import { CreateDAOSection } from "./components/CreateDAOSection";
 import { MembershipDeployerSteps } from "./components/MembershipOrg/MembershipDeployerSteps";
@@ -46,9 +46,15 @@ export const OrganizationDeployerScreen = () => {
       fullWidth
       noScroll
     >
-      <View style={styles.row}>
-        <View style={styles.fill}>
-          <View style={currentStep === 0 ? styles.show : styles.hidden}>
+      <View style={{ flexDirection: "row", flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          <View
+            style={
+              currentStep === 0
+                ? { display: "flex", flex: 1 }
+                : { display: "none" }
+            }
+          >
             <CreateDAOSection
               onSubmit={onSubmitDAO}
               onStructureChange={onStructureChange}
@@ -95,12 +101,3 @@ export const OrganizationDeployerScreen = () => {
     </ScreenContainer>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  row: { flexDirection: "row", flex: 1 },
-  fill: { flex: 1 },
-  hidden: { display: "none" },
-  show: { display: "flex", flex: 1 },
-});
