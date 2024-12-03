@@ -10,6 +10,7 @@ import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { AvailableNamesInput } from "@/components/inputs/AvailableNamesInput";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { useNSAvailability } from "@/hooks/useNSAvailability";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { NetworkKind } from "@/networks";
