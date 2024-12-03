@@ -2,7 +2,7 @@ import {
   changeSelectedMilestoneStatus,
   changeTestUser,
   connectWallet,
-} from "./lib";
+} from "../lib";
 
 describe("Contractor proposer full flow", () => {
   it("works", () => {
