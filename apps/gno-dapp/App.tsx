@@ -1,4 +1,4 @@
-import logo from "@/assets/logos/gnotribe-logo.svg";
+import logo from "@/assets/logos/gnotribe-toplogo.svg";
 import { AppConfig } from "@/context/AppConfigProvider";
 import AppRoot from "@/dapp-root/App";
 

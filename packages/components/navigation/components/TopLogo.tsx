@@ -12,10 +12,11 @@ export const TopLogo = () => {
   const { homeScreen, logo: configLogo } = useAppConfig();
 
   const logoSource = configLogo || logoTopVersionSVG;
-  const logo = <SVG width={68} height={68} source={logoSource} />;
+  const logo = <SVG height={68} source={logoSource} />;
 
   const style: ViewStyle = {
-    marginHorizontal: layout.spacing_x0_5,
+    marginHorizontal: layout.spacing_x0_25,
+    overflow: "hidden",
   };
 
   const content =
