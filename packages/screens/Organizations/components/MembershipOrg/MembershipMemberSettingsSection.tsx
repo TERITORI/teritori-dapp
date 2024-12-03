@@ -17,19 +17,19 @@ import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
-  MemberSettingFormType,
+  MembershipMemberSettingFormType,
   ORGANIZATION_DEPLOYER_STEPS,
 } from "@/utils/types/organizations";
 
 interface MembershipMemberSettingsSectionProps {
-  onSubmit: (form: MemberSettingFormType) => void;
+  onSubmit: (form: MembershipMemberSettingFormType) => void;
 }
 
 export const MembershipMemberSettingsSection: React.FC<
   MembershipMemberSettingsSectionProps
 > = ({ onSubmit }) => {
   const { handleSubmit, control, resetField } =
-    useForm<MemberSettingFormType>();
+    useForm<MembershipMemberSettingFormType>();
 
   // this effect put the selected wallet address in the first field only on initial load
   const selectedWallet = useSelectedWallet();
@@ -70,7 +70,7 @@ export const MembershipMemberSettingsSection: React.FC<
         {addressIndexes.map((id, index) => (
           <View style={inputContainerCStyle} key={id.toString()}>
             <View style={leftInputCStyle}>
-              <TextInputCustom<MemberSettingFormType>
+              <TextInputCustom<MembershipMemberSettingFormType>
                 name={`members.${index}.addr`}
                 noBrokenCorners
                 label="Member Address"
@@ -90,7 +90,7 @@ export const MembershipMemberSettingsSection: React.FC<
             </View>
             <SpacerRow size={2.5} />
             <View style={rightInputCStyle}>
-              <TextInputCustom<MemberSettingFormType>
+              <TextInputCustom<MembershipMemberSettingFormType>
                 name={`members.${index}.weight`}
                 noBrokenCorners
                 label="Weight"

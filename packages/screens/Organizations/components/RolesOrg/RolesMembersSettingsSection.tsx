@@ -17,19 +17,19 @@ import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
-  MemberSettingFormType,
   ORGANIZATION_DEPLOYER_STEPS,
+  RolesMemberSettingFormType,
 } from "@/utils/types/organizations";
 
 interface RolesMembersSettingsSectionProps {
-  onSubmit: (form: MemberSettingFormType) => void;
+  onSubmit: (form: RolesMemberSettingFormType) => void;
 }
 
 export const RolesMembersSettingsSection: React.FC<
   RolesMembersSettingsSectionProps
 > = ({ onSubmit }) => {
   const { handleSubmit, control, resetField, unregister } =
-    useForm<MemberSettingFormType>();
+    useForm<RolesMemberSettingFormType>();
 
   // this effect put the selected wallet address in the first field only on initial load
   const selectedWallet = useSelectedWallet();
@@ -53,6 +53,7 @@ export const RolesMembersSettingsSection: React.FC<
   const removeAddressField = (id: number, index: number) => {
     unregister(`members.${index}.addr`);
     unregister(`members.${index}.weight`);
+    unregister(`members.${index}.roles`);
     if (addressIndexes.length > 1) {
       const copyIndex = [...addressIndexes].filter((i) => i !== id);
       setAddressIndexes(copyIndex);
@@ -72,7 +73,7 @@ export const RolesMembersSettingsSection: React.FC<
         {addressIndexes.map((id, index) => (
           <View style={inputContainerCStyle} key={id.toString()}>
             <View style={leftInputCStyle}>
-              <TextInputCustom<MemberSettingFormType>
+              <TextInputCustom<RolesMemberSettingFormType>
                 name={`members.${index}.addr`}
                 noBrokenCorners
                 label="Member Address"
@@ -92,7 +93,7 @@ export const RolesMembersSettingsSection: React.FC<
             </View>
             <SpacerRow size={2.5} />
             <View style={rightInputCStyle}>
-              <TextInputCustom<MemberSettingFormType>
+              <TextInputCustom<RolesMemberSettingFormType>
                 name={`members.${index}.weight`}
                 noBrokenCorners
                 label="Weight"
@@ -105,7 +106,7 @@ export const RolesMembersSettingsSection: React.FC<
             </View>
             <SpacerRow size={2.5} />
             <View style={rightInputCStyle}>
-              <TextInputCustom<MemberSettingFormType>
+              <TextInputCustom<RolesMemberSettingFormType>
                 name={`members.${index}.roles`}
                 noBrokenCorners
                 label="Roles - separate with a comma"

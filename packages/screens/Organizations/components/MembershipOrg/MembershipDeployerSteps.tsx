@@ -23,7 +23,7 @@ import {
   ConfigureVotingFormType,
   CreateDaoFormType,
   LAUNCHING_PROCESS_STEPS,
-  MemberSettingFormType,
+  MembershipMemberSettingFormType,
 } from "@/utils/types/organizations";
 
 export const MembershipDeployerSteps: React.FC<{
@@ -49,7 +49,7 @@ export const MembershipDeployerSteps: React.FC<{
   const [configureVotingFormData, setConfigureVotingFormData] =
     useState<ConfigureVotingFormType>();
   const [memberSettingsFormData, setMemberSettingsFormData] =
-    useState<MemberSettingFormType>();
+    useState<MembershipMemberSettingFormType>();
 
   const createDaoContract = async (): Promise<boolean> => {
     try {
@@ -169,7 +169,7 @@ export const MembershipDeployerSteps: React.FC<{
     setCurrentStep(2);
   };
 
-  const onSubmitMemberSettings = (data: MemberSettingFormType) => {
+  const onSubmitMemberSettings = (data: MembershipMemberSettingFormType) => {
     setMemberSettingsFormData(data);
     setCurrentStep(3);
   };

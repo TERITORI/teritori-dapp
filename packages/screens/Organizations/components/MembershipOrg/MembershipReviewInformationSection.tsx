@@ -24,7 +24,7 @@ import { tinyAddress } from "@/utils/text";
 import {
   ConfigureVotingFormType,
   CreateDaoFormType,
-  MemberSettingFormType,
+  MembershipMemberSettingFormType,
   TokenSettingFormType,
 } from "@/utils/types/organizations";
 
@@ -32,7 +32,7 @@ interface MembershipReviewInformationSectionProps {
   organizationData?: CreateDaoFormType;
   votingSettingData?: ConfigureVotingFormType;
   tokenSettingData?: TokenSettingFormType;
-  memberSettingData?: MemberSettingFormType;
+  memberSettingData?: MembershipMemberSettingFormType;
   onSubmit: () => void;
 }
 

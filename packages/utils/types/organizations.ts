@@ -33,12 +33,10 @@ export type LaunchingProcessStepType = {
   isComplete?: boolean;
 };
 
-// TOKEN BASED ORGANIZATION FORM TYPES
+// MEMBERSHIP BASED ORGANIZATION FORM TYPES
 
-export type TokenSettingFormType = {
-  tokenName: string;
-  tokenSymbol: string;
-  tokenHolders: { address: string; balance: string }[];
+export type MembershipMemberSettingFormType = {
+  members: { addr: string; weight: string }[];
 };
 
 // ROLES BASED ORGANIZATION FORM TYPES
@@ -47,10 +45,16 @@ export type RolesSettingFormType = {
   roles: { name: string; color: string }[];
 };
 
-// SPLIT IT INTO ROLES & NORMAL MEMBERSHIPS ORGS
+export type RolesMemberSettingFormType = {
+  members: { addr: string; weight: string; roles: string | undefined }[];
+};
 
-export type MemberSettingFormType = {
-  members: { addr: string; weight: string; roles: string }[];
+// TOKEN BASED ORGANIZATION FORM TYPES
+
+export type TokenSettingFormType = {
+  tokenName: string;
+  tokenSymbol: string;
+  tokenHolders: { address: string; balance: string }[];
 };
 
 export const ROLES_BASED_ORGANIZATION_STEPS = [

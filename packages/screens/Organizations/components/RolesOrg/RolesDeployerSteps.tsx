@@ -24,7 +24,7 @@ import {
   ConfigureVotingFormType,
   CreateDaoFormType,
   LAUNCHING_PROCESS_STEPS,
-  MemberSettingFormType,
+  RolesMemberSettingFormType,
   RolesSettingFormType,
 } from "@/utils/types/organizations";
 
@@ -53,7 +53,7 @@ export const RolesDeployerSteps: React.FC<{
   const [rolesSettingsFormData, setRolesSettingsFormData] =
     useState<RolesSettingFormType>();
   const [memberSettingsFormData, setMemberSettingsFormData] =
-    useState<MemberSettingFormType>();
+    useState<RolesMemberSettingFormType>();
 
   const createDaoContract = async (): Promise<boolean> => {
     try {
@@ -74,7 +74,9 @@ export const RolesDeployerSteps: React.FC<{
                 (member) => ({
                   address: member.addr,
                   weight: parseInt(member.weight, 10),
-                  roles: member.roles.split(",").map((role) => role.trim()),
+                  roles: (member.roles ?? "")
+                    .split(",")
+                    .map((role) => role.trim()),
                 }),
               ),
               thresholdPercent:
@@ -180,7 +182,7 @@ export const RolesDeployerSteps: React.FC<{
     setCurrentStep(3);
   };
 
-  const onSubmitMemberSettings = (data: MemberSettingFormType) => {
+  const onSubmitMemberSettings = (data: RolesMemberSettingFormType) => {
     setMemberSettingsFormData(data);
     setCurrentStep(4);
   };

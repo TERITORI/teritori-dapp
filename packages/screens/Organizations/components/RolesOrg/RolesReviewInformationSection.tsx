@@ -24,7 +24,7 @@ import { tinyAddress } from "@/utils/text";
 import {
   ConfigureVotingFormType,
   CreateDaoFormType,
-  MemberSettingFormType,
+  RolesMemberSettingFormType,
   RolesSettingFormType,
   TokenSettingFormType,
 } from "@/utils/types/organizations";
@@ -33,7 +33,7 @@ interface RolesReviewInformationSectionProps {
   organizationData?: CreateDaoFormType;
   votingSettingData?: ConfigureVotingFormType;
   tokenSettingData?: TokenSettingFormType;
-  memberSettingData?: MemberSettingFormType;
+  memberSettingData?: RolesMemberSettingFormType;
   rolesSettingData?: RolesSettingFormType;
   onSubmit: () => void;
 }
@@ -189,7 +189,9 @@ export const RolesReviewInformationSection: React.FC<
                 <MemberReviewValue
                   address={member.addr}
                   weight={`${member.weight}`}
-                  roles={member.roles.split(",")}
+                  roles={(member.roles ?? "")
+                    .split(",")
+                    .map((role) => role.trim())}
                 />
               )}
             />
