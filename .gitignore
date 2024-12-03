@@ -110,5 +110,5 @@ rust/cw-contracts/*/target
 cypress/screenshots
 
 # multi-app
-/app-switch.js
+/app-selector.js
 /app.config.js

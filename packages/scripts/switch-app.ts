@@ -15,8 +15,8 @@ const main = async () => {
     process.exit(1);
   }
 
-  const appSwitchPath = path.join(rootPath, "app-switch.js");
-  await fsp.writeFile(appSwitchPath, `require("./apps/${appName}/index");\n`);
+  const appSelectorPath = path.join(rootPath, "app-selector.js");
+  await fsp.writeFile(appSelectorPath, `require("./apps/${appName}/index");\n`);
 
   const appConfigPath = path.join(rootPath, "app.config.js");
   await fsp.writeFile(
