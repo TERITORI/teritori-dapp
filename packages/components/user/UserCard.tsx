@@ -115,7 +115,7 @@ export const UserCard: React.FC<{
 
       <View>
         <FollowingFollowers style={{ marginBottom: 10 }} />
-        {roles && (
+        {roles && roles.length && (
           <View>
             <BrandText
               style={[fontSemibold12, { lineHeight: 14, marginBottom: 8 }]}
