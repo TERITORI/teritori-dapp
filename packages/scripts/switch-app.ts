@@ -1,35 +1,28 @@
+import { program } from "commander";
+import fs from "fs";
 import fsp from "fs/promises";
 import path from "path";
 
 const main = async () => {
-  const appName = "gno-dapp"; // TODO: CLI arg
+  const [appName] = program.argument("<app-name>").parse().args;
 
   const rootPath = path.join(__dirname, "..", "..");
 
-  await editJSON(path.join(rootPath, "package.json"), (packageJson) => {
-    packageJson.main = `apps/${appName}/index.js`;
+  const appPath = path.join(rootPath, "apps", appName);
+  const exists = fs.existsSync(appPath);
+  if (!exists) {
+    console.error(`ERROR: App "${appName}" does not exist`);
+    process.exit(1);
+  }
 
-    return packageJson;
-  });
+  const appSwitchPath = path.join(rootPath, "app-switch.js");
+  await fsp.writeFile(appSwitchPath, `require("./apps/${appName}/index");\n`);
 
-  await editJSON(path.join(rootPath, "app.json"), (appConfig) => {
-    const iconPath = `apps/${appName}/icon.png`;
-    appConfig.expo.icon = iconPath;
-    appConfig.expo.web.favicon = iconPath;
-
-    return appConfig;
-  });
-};
-
-const editJSON = async (
-  filePath: string,
-  edit: (json: any) => Promise<any>,
-) => {
-  const data = await fsp.readFile(filePath, { encoding: "utf-8" });
-  // eslint-disable-next-line no-restricted-syntax
-  const json = JSON.parse(data);
-  const edited = await edit(json);
-  await fsp.writeFile(filePath, JSON.stringify(edited, null, 2));
+  const appConfigPath = path.join(rootPath, "app.config.js");
+  await fsp.writeFile(
+    appConfigPath,
+    `module.exports = require("./apps/${appName}/app.config.js");\n`,
+  );
 };
 
 main();
