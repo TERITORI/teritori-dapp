@@ -21,7 +21,7 @@ const main = async () => {
   const appConfigPath = path.join(rootPath, "app.config.js");
   await fsp.writeFile(
     appConfigPath,
-    `module.exports = require("./apps/${appName}/app.config.js");\n`,
+    `import config from "./apps/${appName}/app.config";\nexport default config;\n`,
   );
 };
 
