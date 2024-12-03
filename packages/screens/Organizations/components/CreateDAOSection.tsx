@@ -51,7 +51,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   const selectedRadioStructure = watch("structure");
   const uri = watch("imageUrl");
   const name = watch("associatedHandle");
-  const isDev = process.env.NODE_ENV === "development";
+  const [isDev] = useDeveloperMode();
 
   const nameAvailability = useNSAvailability(selectedNetwork?.id, name);
 
