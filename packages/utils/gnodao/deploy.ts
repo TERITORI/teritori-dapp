@@ -10,7 +10,7 @@ interface GnoDAOMember {
 interface GnoDAOConfig {
   name: string;
   maxVotingPeriodSeconds: number;
-  roles: string[];
+  roles: string[] | undefined;
   initialMembers: GnoDAOMember[];
   thresholdPercent: number;
   quorumPercent: number;
@@ -58,7 +58,7 @@ func init() {
 
   rolesModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IRolesModule {
 		roles = dao_roles_group.NewRolesGroup()
-    ${conf.roles.map((role) => `roles.NewRole("${role}");`).join("\n\t")}
+    ${(conf.roles ?? []).map((role) => `roles.NewRole("${role}");`).join("\n\t")}
     ${conf.initialMembers.map((member) => member.roles.map((role) => `roles.GrantRole("${member.address}", "${role}")`).join("\n\t"))}
 		return roles
 	}

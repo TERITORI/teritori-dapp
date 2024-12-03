@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
-import trashSVG from "../../../../assets/icons/trash.svg";
-import walletInputSVG from "../../../../assets/icons/wallet-input.svg";
-import useSelectedWallet from "../../../hooks/useSelectedWallet";
+import trashSVG from "../../../../../assets/icons/trash.svg";
+import walletInputSVG from "../../../../../assets/icons/wallet-input.svg";
+import useSelectedWallet from "../../../../hooks/useSelectedWallet";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
@@ -21,14 +21,14 @@ import {
   ORGANIZATION_DEPLOYER_STEPS,
 } from "@/utils/types/organizations";
 
-interface MemberSettingsSectionProps {
+interface MembershipMemberSettingsSectionProps {
   onSubmit: (form: MemberSettingFormType) => void;
 }
 
-export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
-  onSubmit,
-}) => {
-  const { handleSubmit, control, resetField, unregister } =
+export const MembershipMemberSettingsSection: React.FC<
+  MembershipMemberSettingsSectionProps
+> = ({ onSubmit }) => {
+  const { handleSubmit, control, resetField } =
     useForm<MemberSettingFormType>();
 
   // this effect put the selected wallet address in the first field only on initial load
@@ -50,9 +50,7 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
   const [addressIndexes, setAddressIndexes] = useState<number[]>([0]);
 
   // functions
-  const removeAddressField = (id: number, index: number) => {
-    unregister(`members.${index}.addr`);
-    unregister(`members.${index}.weight`);
+  const removeAddressField = (id: number) => {
     if (addressIndexes.length > 1) {
       const copyIndex = [...addressIndexes].filter((i) => i !== id);
       setAddressIndexes(copyIndex);
@@ -84,7 +82,7 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
               >
                 <Pressable
                   style={styles.trashContainer}
-                  onPress={() => removeAddressField(id, index)}
+                  onPress={() => removeAddressField(id)}
                 >
                   <SVG source={trashSVG} width={12} height={12} />
                 </Pressable>
@@ -103,17 +101,6 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
                 placeHolder="1"
               />
             </View>
-            <SpacerRow size={2.5} />
-            <View style={styles.rightInput}>
-              <TextInputCustom<MemberSettingFormType>
-                name={`members.${index}.roles`}
-                noBrokenCorners
-                label="Roles - separate with a comma"
-                hideLabel={index > 0}
-                control={control}
-                placeHolder="administrator, moderator"
-              />
-            </View>
           </View>
         ))}
 
@@ -123,7 +110,7 @@ export const MemberSettingsSection: React.FC<MemberSettingsSectionProps> = ({
       <View style={styles.footer}>
         <PrimaryButton
           size="M"
-          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[4]}`}
+          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[3]}`}
           onPress={handleSubmit(onSubmit)}
           testID="member-settings-next"
         />

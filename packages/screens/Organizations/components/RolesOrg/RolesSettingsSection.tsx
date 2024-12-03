@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
-import trashSVG from "../../../../assets/icons/trash.svg";
+import trashSVG from "../../../../../assets/icons/trash.svg";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
