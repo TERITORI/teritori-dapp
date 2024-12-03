@@ -1,1 +1,1 @@
-require("./apps/teritori-dapp/index");
+require("./apps/teritori/index");

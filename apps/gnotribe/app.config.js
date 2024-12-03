@@ -4,7 +4,7 @@ module.exports = {
     slug: "gnotribe",
     version: "1.0.3",
     orientation: "portrait",
-    icon: "./apps/gno-dapp/icon.png",
+    icon: "./apps/gnotribe/icon.png",
     owner: "gnotribe",
     userInterfaceStyle: "light",
     splash: {
@@ -50,7 +50,7 @@ module.exports = {
     },
     web: {
       bundler: "metro",
-      favicon: "./apps/gno-dapp/icon.png",
+      favicon: "./apps/gnotribe/icon.png",
     },
     extra: {
       eas: {
