@@ -24,7 +24,6 @@ import { PictureMapPost } from "@/components/socialFeed/Map/MapPosts/PictureMapP
 import { VideoMapPost } from "@/components/socialFeed/Map/MapPosts/VideoMapPost";
 import { useFetchFeedLocation } from "@/hooks/feed/useFetchFeed";
 import { usePost } from "@/hooks/feed/usePost";
-import { useUpdateMinZoom } from "@/hooks/feed/useUpdateMinZoom";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import {
   DEFAULT_MAP_POSITION,
@@ -51,15 +50,27 @@ interface MapManagerProps {
   setBounds: Dispatch<SetStateAction<LatLngBounds | null>>;
   creatingPostLocation?: CustomLatLngExpression;
   consultedPostLocation?: CustomLatLngExpression;
+  setMinZoom: Dispatch<SetStateAction<number>>;
 }
 const MapManager = ({
   setBounds,
   creatingPostLocation,
   consultedPostLocation,
+  setMinZoom,
 }: MapManagerProps) => {
   const map = useMap();
   const [isMapReady, setMapReady] = useState(false);
   const [isConsultedPostConsulted, setConsultedPostConsulted] = useState(false);
+
+  const postLocationZoom = 12;
+
+  useEffect(() => {
+    // Calculate and set minimal zoom
+    const calculatedMinZoom = map.getBoundsZoom(MAP_MAX_BOUND, true);
+    setMinZoom(calculatedMinZoom);
+    map.setMinZoom(calculatedMinZoom);
+    map.setZoom(calculatedMinZoom);
+  }, [map, setMinZoom]);
 
   useEffect(() => {
     const updateBounds = () => {
@@ -80,11 +91,11 @@ const MapManager = ({
 
     // Center to creatingPostLocation when it's updated
     if (creatingPostLocation) {
-      map.setView(creatingPostLocation);
+      map.setView(creatingPostLocation, postLocationZoom);
     }
     // Center to consultedPostLocation when it's updated (Once)
     if (consultedPostLocation && !isConsultedPostConsulted) {
-      map.setView(consultedPostLocation);
+      map.setView(consultedPostLocation, postLocationZoom);
       setConsultedPostConsulted(true);
     }
 
@@ -105,17 +116,6 @@ const MapManager = ({
   return null;
 };
 
-const DynamicMinZoom = ({
-  setMinZoom,
-}: {
-  setMinZoom: Dispatch<SetStateAction<number>>;
-}) => {
-  const map = useMap();
-  useUpdateMinZoom(map, setMinZoom);
-
-  return null;
-};
-
 export const Map: FC<MapProps> = ({
   consultedPostId,
   style,
@@ -124,7 +124,7 @@ export const Map: FC<MapProps> = ({
 }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const [bounds, setBounds] = useState<LatLngBounds | null>(null);
-  const [minZoom, setMinZoom] = useState(2);
+  const [minZoom, setMinZoom] = useState(2.15);
 
   // Fetch the consulted post
   const { post: consultedPost } = usePost(consultedPostId);
@@ -222,6 +222,7 @@ export const Map: FC<MapProps> = ({
         }
         zoom={minZoom}
         minZoom={minZoom}
+        zoomSnap={0.5}
         attributionControl={false}
         maxBounds={MAP_MAX_BOUND}
         maxBoundsViscosity={1.0}
@@ -298,8 +299,8 @@ export const Map: FC<MapProps> = ({
           setBounds={setBounds}
           creatingPostLocation={creatingPostLocation}
           consultedPostLocation={consultedPostLocation}
+          setMinZoom={setMinZoom}
         />
-        <DynamicMinZoom setMinZoom={setMinZoom} />
       </MapContainer>
     </View>
   );

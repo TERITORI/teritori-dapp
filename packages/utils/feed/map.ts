@@ -13,15 +13,11 @@ import { CustomLatLngExpression, PostCategory } from "@/utils/types/feed";
 
 export const MAP_LAYER_URL = `https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=${process.env.EXPO_PUBLIC_LEAFLET_MAP_TOKEN}`;
 
-// Paris baguette
-export const DEFAULT_MAP_POSITION: CustomLatLngExpression = [48.8566, 2.3522];
+// Center of the map
+export const DEFAULT_MAP_POSITION: CustomLatLngExpression = [0, 0];
 export const MAP_MAX_BOUND: LatLngBoundsLiteral = [
   [-90, -180], // South-West corner
   [90, 180], // North-East corner
-];
-export const MAP_HALF_BOUND: LatLngBoundsLiteral = [
-  [-45, -90], // South-West corner
-  [45, 90], // North-East corner
 ];
 
 const musicPostSvgString = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
