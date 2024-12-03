@@ -358,7 +358,7 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 		Denom:      "tori",
 		Decimals:   6,
 		TotalPrize: 1_200_000,
-		BossName:   "Alexander Aldrin",
+		BossName:   "Revenge of Alexander Aldrin",
 		BossImage:  "https://gateway.pinata.cloud/ipfs/Qmd98tXCe7bxULC2X8wAhSN7KgJ2M5UESqRzhFT9VrBTpn",
 		TopN:       300,
 		StartsAt:   "2024-12-09T00:00:00",
