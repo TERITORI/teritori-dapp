@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import { SvgProps } from "react-native-svg";
 
 import { RootStackParamList } from "@/utils/navigation";
 
@@ -9,6 +10,7 @@ export interface AppConfig {
   forceDAppsList?: string[];
   defaultNetworkId: string;
   homeScreen: keyof RootStackParamList;
+  logo?: React.FC<SvgProps>;
 }
 const defaultValue: AppConfig = {
   defaultNetworkId: "teritori",
