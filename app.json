@@ -34,7 +34,7 @@
     },
     "android": {
       "package": "com.teritori",
-      "versionCode": "6",
+      "versionCode": 6,
       "permissions": [
         "WAKE_LOCK",
         "BLUETOOTH",
