@@ -23,8 +23,6 @@ import {
   ORGANIZATION_DEPLOYER_STEPS,
 } from "@/utils/types/organizations";
 
-//const RADIO_DESCRIPTION_TYPES = ["Membership", "Governance", "Decentralized"];
-
 interface CreateDAOSectionProps {
   onSubmit: (form: CreateDaoFormType) => void;
   onStructureChange: (structure: DaoType) => void;
