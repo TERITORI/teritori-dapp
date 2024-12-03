@@ -94,11 +94,6 @@ func init() {
 	profile.SetStringField(profile.Bio, "Default testing DAO")
 	profile.SetStringField(profile.Avatar, "")
 
-	// Register the DAO profile
-	profile.SetStringField(profile.DisplayName, "DAO Realm")
-	profile.SetStringField(profile.Bio, "Default testing DAO")
-	profile.SetStringField(profile.Avatar, "")
-
 	// dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "DAO Realm", "Default testing DAO", "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1080&fit=max")
 }
 
