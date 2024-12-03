@@ -189,6 +189,7 @@ export const RolesDeployerSteps: React.FC<{
     setCurrentStep(5);
     if (!(await createDaoContract())) {
       setCurrentStep(4);
+      resetForm();
     }
   };
 

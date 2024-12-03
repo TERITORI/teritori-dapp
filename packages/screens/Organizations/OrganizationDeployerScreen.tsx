@@ -20,6 +20,7 @@ export const OrganizationDeployerScreen = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [daoInfoFormData, setdaoInfoFormData] = useState<CreateDaoFormType>();
   const [launchingStep, setLaunchingStep] = useState(0);
+  const [unlockedSteps, setUnlockedSteps] = useState<number[]>([0]);
 
   // functions
   const onStructureChange = (structure: DaoType) => {
@@ -29,6 +30,7 @@ export const OrganizationDeployerScreen = () => {
         : ORGANIZATION_DEPLOYER_STEPS,
     );
     setCurrentStep(0);
+    setUnlockedSteps([0]);
   };
 
   const onSubmitDAO = (data: CreateDaoFormType) => {
@@ -86,6 +88,8 @@ export const OrganizationDeployerScreen = () => {
           onStepChange={setCurrentStep}
           isLaunching={currentStep === steps.length - 1}
           launchingCompleteStep={launchingStep}
+          unlockedSteps={unlockedSteps}
+          setUnlockedSteps={setUnlockedSteps}
         />
       </View>
     </ScreenContainer>
