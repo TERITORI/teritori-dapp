@@ -215,22 +215,30 @@ export const RolesDeployerSteps: React.FC<{
   return (
     <>
       <View
-        style={currentStep === 1 ? { display: "flex" } : { display: "none" }}
+        style={
+          currentStep === 1 ? { display: "flex", flex: 1 } : { display: "none" }
+        }
       >
         <ConfigureVotingSection onSubmit={onSubmitConfigureVoting} />
       </View>
       <View
-        style={currentStep === 2 ? { display: "flex" } : { display: "none" }}
+        style={
+          currentStep === 2 ? { display: "flex", flex: 1 } : { display: "none" }
+        }
       >
         <RolesSettingsSection onSubmit={onSubmitRolesSettings} />
       </View>
       <View
-        style={currentStep === 3 ? { display: "flex" } : { display: "none" }}
+        style={
+          currentStep === 3 ? { display: "flex", flex: 1 } : { display: "none" }
+        }
       >
         <RolesMembersSettingsSection onSubmit={onSubmitMemberSettings} />
       </View>
       <View
-        style={currentStep === 4 ? { display: "flex" } : { display: "none" }}
+        style={
+          currentStep === 4 ? { display: "flex", flex: 1 } : { display: "none" }
+        }
       >
         <RolesReviewInformationSection
           organizationData={organizationData}
