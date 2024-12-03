@@ -1,5 +1,5 @@
 [build]
-command = 'sed -i "s/teritori-dapp/gno-dapp/" package.json && npm i -g sharp-cli && npx expo-optimize && npx expo export -p web'
+command = 'npx tsx packages/scripts/switch-app gno-dapp && npm i -g sharp-cli && npx expo-optimize && npx expo export -p web'
 publish = '/dist'
 [build.environment]
 NODE_OPTIONS = "--max_old_space_size=4096"
