@@ -24,6 +24,7 @@ import {
   ConfigureVotingFormType,
   CreateDaoFormType,
   LAUNCHING_PROCESS_STEPS,
+  ROLES_BASED_ORGANIZATION_STEPS,
   RolesMemberSettingFormType,
   RolesSettingFormType,
 } from "@/utils/types/organizations";
@@ -223,7 +224,10 @@ export const RolesDeployerSteps: React.FC<{
           currentStep === 1 ? { display: "flex", flex: 1 } : { display: "none" }
         }
       >
-        <ConfigureVotingSection onSubmit={onSubmitConfigureVoting} />
+        <ConfigureVotingSection
+          steps={ROLES_BASED_ORGANIZATION_STEPS}
+          onSubmit={onSubmitConfigureVoting}
+        />
       </View>
       <View
         style={

@@ -23,6 +23,7 @@ import {
   ConfigureVotingFormType,
   CreateDaoFormType,
   LAUNCHING_PROCESS_STEPS,
+  MEMBERSHIP_ORGANIZATION_DEPLOYER_STEPS,
   MembershipMemberSettingFormType,
 } from "@/utils/types/organizations";
 
@@ -207,7 +208,10 @@ export const MembershipDeployerSteps: React.FC<{
           currentStep === 1 ? { display: "flex", flex: 1 } : { display: "none" }
         }
       >
-        <ConfigureVotingSection onSubmit={onSubmitConfigureVoting} />
+        <ConfigureVotingSection
+          steps={MEMBERSHIP_ORGANIZATION_DEPLOYER_STEPS}
+          onSubmit={onSubmitConfigureVoting}
+        />
       </View>
       <View
         style={

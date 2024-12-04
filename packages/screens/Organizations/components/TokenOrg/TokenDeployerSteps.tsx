@@ -24,6 +24,7 @@ import {
   ConfigureVotingFormType,
   CreateDaoFormType,
   LAUNCHING_PROCESS_STEPS,
+  TOKEN_ORGANIZATION_DEPLOYER_STEPS,
   TokenSettingFormType,
 } from "@/utils/types/organizations";
 
@@ -201,7 +202,10 @@ export const TokenDeployerSteps: React.FC<{
           currentStep === 1 ? { display: "flex", flex: 1 } : { display: "none" }
         }
       >
-        <ConfigureVotingSection onSubmit={onSubmitConfigureVoting} />
+        <ConfigureVotingSection
+          steps={TOKEN_ORGANIZATION_DEPLOYER_STEPS}
+          onSubmit={onSubmitConfigureVoting}
+        />
       </View>
       <View
         style={
