@@ -44,7 +44,7 @@ type IRolesModule interface {
 	Render(path string) string
 	GetMemberRoles(address std.Address) []string
 	HasRole(address std.Address, role string) bool
-	NewRole(roleName string)
+	NewRole(roleName string, permissionsJSON string)
 	DeleteRole(roleName string)
 	GrantRole(address std.Address, role string)
 	RevokeRole(address std.Address, role string)

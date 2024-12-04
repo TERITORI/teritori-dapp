@@ -3,6 +3,7 @@ package dao_roles_group
 import (
 	"std"
 
+	"gno.land/p/demo/avl"
 	"gno.land/p/demo/json"
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
 	"gno.land/p/teritori/jsonutil"
@@ -12,7 +13,13 @@ import (
 type RolesGroup struct {
 	dao_interfaces.IRolesModule
 
-	rm *role_manager.RoleManager
+	rm               *role_manager.RoleManager
+	permissionsPower *avl.Tree // roles -> PermissionPower
+}
+
+type PermissionPower struct {
+	Permission string
+	Power      uint64
 }
 
 func NewRolesGroup() *RolesGroup {
@@ -42,7 +49,12 @@ func (r *RolesGroup) HasRole(address std.Address, role string) bool {
 	return r.rm.HasRole(address, role)
 }
 
-func (r *RolesGroup) NewRole(roleName string) {
+func (r *RolesGroup) NewRole(roleName string, permissionsJSON string) {
+	// TODO:
+	// 1. Parse permissionsJSON
+	// 2. Create a new role with the parsed permissions
+	// 3. Create a new array of PermissionPower and store it in r.permissionsPower
+	_ = permissionsJSON
 	r.rm.CreateNewRole(roleName, []string{})
 }
 
@@ -61,3 +73,7 @@ func (r *RolesGroup) RevokeRole(address std.Address, role string) {
 func (r *RolesGroup) GetMemberRoles(address std.Address) []string {
 	return r.rm.GetUserRoles(address)
 }
+
+// TODO:
+// 1. Add GetUserPower(address std.Address, permission string) uint64
+// 2. Add SetRolePower(role string, permission string, power uint64)
