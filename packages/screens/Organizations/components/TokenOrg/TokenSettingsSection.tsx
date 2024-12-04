@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, View, ViewStyle } from "react-native";
 
-import trashSVG from "../../../../assets/icons/trash.svg";
-import walletInputSVG from "../../../../assets/icons/wallet-input.svg";
+import trashSVG from "../../../../../assets/icons/trash.svg";
+import walletInputSVG from "../../../../../assets/icons/wallet-input.svg";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";

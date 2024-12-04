@@ -17,20 +17,18 @@ import { NetworkKind } from "@/networks";
 import { neutral33, neutral77 } from "@/utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import {
-  CreateDaoFormType,
-  DaoType,
-  ORGANIZATION_DEPLOYER_STEPS,
-} from "@/utils/types/organizations";
+import { CreateDaoFormType, DaoType } from "@/utils/types/organizations";
 
 interface CreateDAOSectionProps {
   onSubmit: (form: CreateDaoFormType) => void;
   onStructureChange: (structure: DaoType) => void;
+  organizationSteps: string[];
 }
 
 export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   onSubmit,
   onStructureChange,
+  organizationSteps,
 }) => {
   const {
     control,
@@ -184,7 +182,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
       <View style={footerCStyle}>
         <PrimaryButton
           size="M"
-          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[1]}`}
+          text={`Next: ${organizationSteps[1]}`}
           onPress={handleSubmit(onSubmit)}
           disabled={
             !isValid ||

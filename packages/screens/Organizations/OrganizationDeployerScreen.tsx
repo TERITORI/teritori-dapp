@@ -64,6 +64,7 @@ export const OrganizationDeployerScreen = () => {
             <CreateDAOSection
               onSubmit={onSubmitDAO}
               onStructureChange={onStructureChange}
+              organizationSteps={steps}
             />
           </View>
 
