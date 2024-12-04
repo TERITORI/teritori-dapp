@@ -1,7 +1,7 @@
 import React from "react";
 
 import { platformScreens } from "./platformSpecific";
-import { getNav, screenTitle } from "./util";
+import { getNav } from "./util";
 
 import { BurnCapitalScreen } from "@/screens/BurnCapital/BurnCapitalScreen";
 import { ComingSoonScreen } from "@/screens/ComingSoon/ComingSoon";
@@ -70,8 +70,16 @@ import { WalletManagerScreen } from "@/screens/WalletManager/WalletManagerScreen
 import { WalletManagerWalletsScreen } from "@/screens/WalletManager/WalletsScreen";
 import { AppMode } from "@/utils/types/app-mode";
 
-export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
+export const getNormalModeScreens = ({
+  appMode,
+  browserTabsPrefix,
+}: {
+  appMode: AppMode;
+  browserTabsPrefix: string;
+}) => {
   const { Nav } = getNav(appMode);
+
+  const screenTitle = (title: string) => browserTabsPrefix + title;
 
   return (
     <>

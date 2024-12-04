@@ -9,6 +9,7 @@ const config: AppConfig = {
   forceDAppsList: ["feed", "organizations"],
   defaultNetworkId: "gno-test5",
   homeScreen: "Feed",
+  browserTabsPrefix: "Gnotribe - ",
   logo,
 };
 

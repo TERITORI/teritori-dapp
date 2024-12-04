@@ -20,6 +20,7 @@ import {
   ScreenContainer,
   ScreenContainerProps,
 } from "@/components/ScreenContainer";
+import { useAppConfig } from "@/context/AppConfigProvider";
 import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { NetworkKind, parseUserId } from "@/networks";
@@ -41,6 +42,8 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   const [network, userAddress] = parseUserId(id);
   useForceNetworkSelection(network?.id);
   const { metadata, notFound } = useNSUserInfo(id);
+  const { browserTabsPrefix } = useAppConfig();
+
   const screenContainerOtherProps: Partial<ScreenContainerProps> =
     useMemo(() => {
       return {
@@ -62,9 +65,9 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
 
   useEffect(() => {
     navigation.setOptions({
-      title: `Teritori - User: ${metadata.tokenId || userAddress}`,
+      title: `${browserTabsPrefix}User: ${metadata.tokenId || userAddress}`,
     });
-  }, [navigation, userAddress, metadata.tokenId]);
+  }, [navigation, userAddress, metadata.tokenId, browserTabsPrefix]);
 
   if (
     (tabKey && !uppTabItems[tabKey]) ||

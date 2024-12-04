@@ -10,9 +10,11 @@ export interface AppConfig {
   forceDAppsList?: string[];
   defaultNetworkId: string;
   homeScreen: keyof RootStackParamList;
+  browserTabsPrefix: string;
   logo?: React.FC<SvgProps>;
 }
 const defaultValue: AppConfig = {
+  browserTabsPrefix: "Teritori - ",
   defaultNetworkId: "teritori",
   homeScreen: "Home",
 };

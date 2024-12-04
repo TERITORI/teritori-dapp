@@ -25,5 +25,3 @@ export const getNav = (appMode: AppMode) => {
     };
   }
 };
-
-export const screenTitle = (title: string) => "Teritori - " + title;

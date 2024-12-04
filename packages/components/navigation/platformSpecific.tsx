@@ -1,1 +1,3 @@
-export const platformScreens: JSX.Element = <></>;
+import { FC } from "react";
+
+export const platformScreens: FC = () => <></>;
