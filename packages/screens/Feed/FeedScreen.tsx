@@ -19,6 +19,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
 import { ScreenFC } from "@/utils/navigation";
+import { fontRegular15 } from "@/utils/style/fonts";
 
 export const FeedScreen: ScreenFC<"Feed"> = ({
   route: { params },
@@ -80,7 +81,7 @@ export const FeedScreen: ScreenFC<"Feed"> = ({
       noScroll
       footerChildren={<></>}
       forceNetworkFeatures={[NetworkFeature.SocialFeed]}
-      headerChildren={<BrandText>Social Feed</BrandText>}
+      headerChildren={<BrandText style={fontRegular15}>Social Feed</BrandText>}
     >
       {feedContent}
     </ScreenContainer>

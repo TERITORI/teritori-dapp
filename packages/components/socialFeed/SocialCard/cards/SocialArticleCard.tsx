@@ -24,12 +24,13 @@ import {
   ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH,
   SOCIAl_CARD_BORDER_RADIUS,
 } from "@/utils/social-feed";
-import { neutral00, neutral33, neutralA3 } from "@/utils/style/colors";
 import {
-  fontSemibold14,
-  fontSemibold16,
-  fontSemibold20,
-} from "@/utils/style/fonts";
+  neutral00,
+  neutral33,
+  neutralA3,
+  withAlpha,
+} from "@/utils/style/colors";
+import { fontRegular13, fontRegular15 } from "@/utils/style/fonts";
 import {
   layout,
   RESPONSIVE_BREAKPOINT_S,
@@ -121,7 +122,7 @@ export const SocialArticleCard: FC<{
         style={[
           {
             borderWidth: 1,
-            borderColor: neutral33,
+            borderColor: withAlpha(neutral33, 0.5),
             borderRadius,
             backgroundColor: neutral00,
             width: "100%",
@@ -154,8 +155,8 @@ export const SocialArticleCard: FC<{
               numberOfLines={2}
               style={
                 windowWidth < SOCIAL_FEED_BREAKPOINT_M
-                  ? fontSemibold16
-                  : fontSemibold20
+                  ? fontRegular15
+                  : fontRegular15
               }
             >
               {title?.trim().replace("\n", " ")}
@@ -163,7 +164,7 @@ export const SocialArticleCard: FC<{
 
             <SpacerColumn size={1} />
             <BrandText
-              style={[fontSemibold14, { color: neutralA3 }]}
+              style={[fontRegular13, { color: neutralA3 }]}
               numberOfLines={windowWidth < SOCIAL_FEED_BREAKPOINT_M ? 2 : 3}
             >
               {shortDescription.trim().replace("\n", " ")}

@@ -26,6 +26,7 @@ import {
   neutral00,
   neutral33,
   neutralA3,
+  withAlpha,
 } from "@/utils/style/colors";
 import {
   fontSemibold13,
@@ -87,7 +88,7 @@ export const SocialVideoCard: FC<{
         style={[
           {
             borderWidth: 1,
-            borderColor: neutral33,
+            borderColor: withAlpha(neutral33, 0.5),
             borderRadius: SOCIAl_CARD_BORDER_RADIUS,
             backgroundColor: neutral00,
             width: "100%",
