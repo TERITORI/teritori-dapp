@@ -14,11 +14,11 @@ import {
   heightButton,
 } from "../../utils/style/buttons";
 import { primaryColor, primaryTextColor } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import { fontRegular14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { BoxStyle } from "../boxes/Box";
-import { SecondaryBox } from "../boxes/SecondaryBox";
+import { PrimaryBox } from "../boxes/PrimaryBox";
 
 export const PrimaryButton: React.FC<{
   size?: ButtonsSize;
@@ -93,7 +93,7 @@ export const PrimaryButton: React.FC<{
       }}
       testID={testID}
     >
-      <SecondaryBox
+      <PrimaryBox
         style={[
           {
             borderRadius: borderRadiusButton(size),
@@ -129,7 +129,7 @@ export const PrimaryButton: React.FC<{
 
           <BrandText
             style={[
-              fontSemibold14,
+              fontRegular14,
               {
                 color: primaryTextColor,
                 textAlign: "center",
@@ -155,7 +155,7 @@ export const PrimaryButton: React.FC<{
             <ActivityIndicator />
           </View>
         )}
-      </SecondaryBox>
+      </PrimaryBox>
     </Pressable>
   );
 };
