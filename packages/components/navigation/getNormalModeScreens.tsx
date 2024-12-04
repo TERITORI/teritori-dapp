@@ -1,6 +1,6 @@
 import React from "react";
 
-import { platformScreens } from "./platformSpecific";
+import { PlatformScreens } from "./platformSpecific";
 import { getNav } from "./util";
 
 import { BurnCapitalScreen } from "@/screens/BurnCapital/BurnCapitalScreen";
@@ -550,7 +550,7 @@ export const getNormalModeScreens = ({
         component={RakkiScreen}
         options={{ header: () => null, title: screenTitle("Rakki") }}
       />
-      {platformScreens}
+      <PlatformScreens />
     </>
   );
 };

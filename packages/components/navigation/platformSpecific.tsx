@@ -1,3 +1,3 @@
 import { FC } from "react";
 
-export const platformScreens: FC = () => <></>;
+export const PlatformScreens: FC = () => <></>;
