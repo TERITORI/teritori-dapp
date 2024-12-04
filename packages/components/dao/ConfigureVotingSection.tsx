@@ -122,7 +122,7 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
           text={submitLabel || `Next: ${steps[2]}`}
           loader
           onPress={handleSubmit(onSubmit)}
-          testID="roles-permissions-next"
+          testID="configure-voting-next"
         />
       </View>
     </View>

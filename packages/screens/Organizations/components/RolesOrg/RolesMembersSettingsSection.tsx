@@ -17,7 +17,7 @@ import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
-  ORGANIZATION_DEPLOYER_STEPS,
+  ROLES_BASED_ORGANIZATION_STEPS,
   RolesMemberSettingFormType,
 } from "@/utils/types/organizations";
 
@@ -124,7 +124,7 @@ export const RolesMembersSettingsSection: React.FC<
       <View style={footerCStyle}>
         <PrimaryButton
           size="M"
-          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[4]}`}
+          text={`Next: ${ROLES_BASED_ORGANIZATION_STEPS[4]}`}
           onPress={handleSubmit(onSubmit)}
           testID="member-settings-next"
         />
