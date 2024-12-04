@@ -72,9 +72,10 @@ import {
   yellowPremium,
 } from "@/utils/style/colors";
 import {
-  fontSemibold12,
-  fontSemibold13,
-  fontSemibold16,
+  fontMedium13,
+  fontRegular12,
+  fontRegular13,
+  fontRegular15,
 } from "@/utils/style/fonts";
 import { RESPONSIVE_BREAKPOINT_S, layout } from "@/utils/style/layout";
 import { replaceBetweenString } from "@/utils/text";
@@ -341,6 +342,17 @@ export const NewsFeedInput = React.forwardRef<
       NetworkFeature.CosmWasmPremiumFeed,
     );
 
+    // TODO: Find type: evt.nativeEvent.target was not recognised by LayoutChangeEvent, but the object target exist, so i don't undertand
+    // https://github.com/necolas/react-native-web/issues/795#issuecomment-1297511068, fix that i found for shrink lines when we deleting lines in the editor
+    const adjustTextInputSize = (evt: any) => {
+      const el = evt?.nativeEvent?.target;
+      if (el) {
+        el.style.height = 0;
+        const newHeight = el.offsetHeight - el.clientHeight + el.scrollHeight;
+        el.style.height = `${newHeight > inputMaxHeight ? inputMaxHeight : newHeight}px`;
+      }
+    };
+
     return (
       <View
         style={[{ width }, style]}
@@ -355,7 +367,7 @@ export const NewsFeedInput = React.forwardRef<
             postCategory={postCategory}
           />
         )}
-        <View style={{ backgroundColor: neutral22, zIndex: 9 }}>
+        <View style={{ backgroundColor: neutral00, zIndex: 9 }}>
           <PrimaryBox
             style={{
               backgroundColor: appMode === "mini" ? neutral00 : neutral22,
@@ -376,22 +388,21 @@ export const NewsFeedInput = React.forwardRef<
                     : layout.spacing_x3,
                 paddingTop:
                   windowWidth < BREAKPOINT_M
-                    ? layout.spacing_x2
-                    : layout.spacing_x3,
+                    ? layout.spacing_x1_5
+                    : layout.spacing_x2,
                 paddingBottom:
                   windowWidth < BREAKPOINT_M
-                    ? layout.spacing_x1
-                    : layout.spacing_x1_5,
+                    ? layout.spacing_x1_5
+                    : layout.spacing_x2,
               }}
             >
-              <FlexRow style={{ marginTop: layout.spacing_x1 }}>
+              <FlexRow>
                 <SVG
                   height={24}
                   width={24}
                   source={penSVG}
                   color={secondaryColor}
                   style={{
-                    alignSelf: "flex-end",
                     marginRight: layout.spacing_x1_5,
                   }}
                 />
@@ -410,18 +421,15 @@ export const NewsFeedInput = React.forwardRef<
                     placeholderTextColor={neutral77}
                     onChangeText={handleTextChange}
                     multiline
-                    onContentSizeChange={(e) => {
-                      // TODO: onContentSizeChange is not fired when deleting lines. We can only grow the input, but not shrink
-                      if (e.nativeEvent.contentSize.height < inputMaxHeight) {
-                        inputHeight.value = e.nativeEvent.contentSize.height;
-                      }
-                    }}
+                    onChange={adjustTextInputSize}
+                    onLayout={adjustTextInputSize}
                     style={[
-                      fontSemibold16,
+                      fontRegular15,
                       {
                         height: formValues.message
                           ? inputHeight.value || inputMinHeight
                           : inputMinHeight,
+                        lineHeight: inputMinHeight,
                         width: "100%",
                         color: secondaryColor,
                         // @ts-expect-error: description todo
@@ -431,34 +439,32 @@ export const NewsFeedInput = React.forwardRef<
                     ]}
                   />
                 </Animated.View>
-              </FlexRow>
-              {/* Changing this text's color depending on the message length */}
-              <BrandText
-                style={[
-                  fontSemibold12,
-                  {
-                    color: !formValues?.message
-                      ? neutral77
-                      : formValues?.message?.length >
-                            SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
-                              CHARS_LIMIT_WARNING_MULTIPLIER &&
-                          formValues?.message?.length <
-                            SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                        ? yellowDefault
-                        : formValues?.message?.length >=
-                            SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                          ? errorColor
-                          : primaryColor,
-                    marginTop: layout.spacing_x0_5,
-                    alignSelf: "flex-end",
-                  },
-                ]}
-              >
-                {formValues?.message?.length}
-                <BrandText style={[fontSemibold12, { color: neutral77 }]}>
-                  /{SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT}
+                {/* Changing this text's color depending on the message length */}
+                <BrandText
+                  style={[
+                    fontRegular12,
+                    {
+                      color: !formValues?.message
+                        ? neutral77
+                        : formValues?.message?.length >
+                              SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT *
+                                CHARS_LIMIT_WARNING_MULTIPLIER &&
+                            formValues?.message?.length <
+                              SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                          ? yellowDefault
+                          : formValues?.message?.length >=
+                              SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                            ? errorColor
+                            : primaryColor,
+                    },
+                  ]}
+                >
+                  {formValues?.message?.length}
+                  <BrandText style={[fontMedium13, { color: neutral77 }]}>
+                    /{SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT}
+                  </BrandText>
                 </BrandText>
-              </BrandText>
+              </FlexRow>
             </Pressable>
 
             <FilesPreviewsContainer
@@ -493,7 +499,6 @@ export const NewsFeedInput = React.forwardRef<
         <View
           style={{
             backgroundColor: appMode === "mini" ? neutral00 : neutral17,
-
             paddingVertical:
               windowWidth < BREAKPOINT_M
                 ? layout.spacing_x1_5
@@ -531,7 +536,7 @@ export const NewsFeedInput = React.forwardRef<
               />
               <BrandText
                 style={[
-                  fontSemibold13,
+                  fontMedium13,
                   { color: neutral77, marginLeft: layout.spacing_x1 },
                 ]}
               >
@@ -713,7 +718,7 @@ export const NewsFeedInput = React.forwardRef<
                 {type === "post" && (
                   <OmniLink to={{ screen: "FeedNewArticle" }}>
                     <SecondaryButtonOutline
-                      size="M"
+                      size="SM"
                       color={
                         formValues?.message.length >
                         SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
@@ -740,7 +745,7 @@ export const NewsFeedInput = React.forwardRef<
                   disabled={isPublishDisabled}
                   isLoading={isLoading}
                   loader
-                  size="M"
+                  size="SM"
                   text={
                     daoId
                       ? "Propose"
@@ -785,7 +790,7 @@ const PremiumPostToggle: FC<{
     >
       <BrandText
         style={[
-          fontSemibold13,
+          fontRegular13,
           {
             marginRight: layout.spacing_x1,
             color: premium ? yellowPremium : "#777777",

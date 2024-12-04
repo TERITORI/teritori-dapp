@@ -13,7 +13,7 @@ import {
   neutral77,
   secondaryColor,
 } from "../../utils/style/colors";
-import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
+import { fontRegular12, fontRegular13 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { Media } from "../../utils/types/mediaPlayer";
 import { BrandText } from "../BrandText";
@@ -65,7 +65,7 @@ export const AudioView: React.FC<{
 
   if (!fileUrl)
     return (
-      <BrandText style={[fontSemibold13, { color: errorColor }]}>
+      <BrandText style={[fontRegular13, { color: errorColor }]}>
         Audio not found
       </BrandText>
     );
@@ -127,14 +127,14 @@ export const AudioView: React.FC<{
                 marginBottom: 8,
               }}
             >
-              <BrandText style={[fontSemibold14]}>
+              <BrandText style={[fontRegular12]}>
                 {prettyMediaDuration(
                   isInMediaPlayer && playbackStatus?.positionMillis
                     ? playbackStatus.positionMillis
                     : 0,
                 )}
               </BrandText>
-              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+              <BrandText style={[fontRegular12, { color: neutral77 }]}>
                 {prettyMediaDuration(duration)}
               </BrandText>
             </View>

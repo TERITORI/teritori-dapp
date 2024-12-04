@@ -88,9 +88,7 @@ export const SocialThreadCard: React.FC<{
           style={[
             {
               borderWidth: isPostConsultation ? 4 : 1,
-              borderColor: isPostConsultation
-                ? withAlpha(neutral33, 0.5)
-                : neutral33,
+              borderColor: withAlpha(neutral33, 0.5),
               borderRadius: SOCIAl_CARD_BORDER_RADIUS,
               paddingVertical: layout.spacing_x2,
               paddingHorizontal: layout.spacing_x2_5,

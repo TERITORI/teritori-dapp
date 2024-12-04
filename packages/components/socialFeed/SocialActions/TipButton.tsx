@@ -17,7 +17,7 @@ import {
   neutral77,
   secondaryColor,
 } from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
+import { fontRegular12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
@@ -101,12 +101,12 @@ export const TipButton: React.FC<{
       >
         <SVG
           source={appMode === "mini" ? tipSolidSVG : tipSVG}
-          width={20}
-          height={20}
+          width={17}
+          height={17}
           color={secondaryColor}
         />
         <SpacerRow size={0.75} />
-        <BrandText style={[fontSemibold13, disabled && { color: neutral77 }]}>
+        <BrandText style={[fontRegular12, disabled && { color: neutral77 }]}>
           {selectedNetworkInfo?.kind === NetworkKind.Gno ? (
             <GnoTipAmount
               networkId={selectedNetworkInfo.id}
