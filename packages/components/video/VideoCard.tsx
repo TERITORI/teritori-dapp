@@ -1,5 +1,7 @@
+import { AVPlaybackStatus } from "expo-av";
 import { isEqual } from "lodash";
-import React, { memo, useState } from "react";
+import MP4Box from "mp4box";
+import React, { memo, useEffect, useState } from "react";
 import {
   StyleProp,
   StyleSheet,
@@ -30,7 +32,10 @@ import {
 } from "../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
-import { ZodSocialFeedVideoMetadata } from "../../utils/types/feed";
+import {
+  SocialFeedVideoMetadata,
+  ZodSocialFeedVideoMetadata,
+} from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
 import { OmniLink } from "../OmniLink";
 import { OptimizedImage } from "../OptimizedImage";
@@ -40,7 +45,9 @@ import { DateTime } from "../socialFeed/SocialCard/DateTime";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
 import { LocationButton } from "@/components/socialFeed/NewsFeed/LocationButton";
+import { useVideoAudioDuration } from "@/hooks/feed/useVideoAudioDuration";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { web3ToWeb2URI } from "@/utils/ipfs";
 
 const IMAGE_HEIGHT = 173;
 const VIDEO_CARD_WIDTH = 261;
@@ -56,6 +63,7 @@ export const VideoCard: React.FC<{
   const authorNSInfo = useNSUserInfo(post.authorId);
   const [, userAddress] = parseUserId(post.authorId);
   const [isHovered, setIsHovered] = useState(false);
+  // const [duration, setDuration] = useState(0);
 
   let cardWidth = StyleSheet.flatten(style)?.width;
   if (typeof cardWidth !== "number") {
@@ -71,6 +79,18 @@ export const VideoCard: React.FC<{
       ? video.videoFile.thumbnailFileData.url
       : "ipfs://" + video.videoFile.thumbnailFileData?.url // we need this hack because ipfs "urls" in feed are raw CIDs
     : defaultThumbnailImage;
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       if (video && !video.videoFile.videoMetadata?.duration) {
+  //         const duration = await getVideoDurationFromURL();
+  //         setDuration(duration);
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   })();
+  // }, [video]);
 
   if (!video)
     return (
@@ -78,6 +98,7 @@ export const VideoCard: React.FC<{
         Video not found
       </BrandText>
     );
+
   return (
     <View
       style={[
@@ -116,13 +137,8 @@ export const VideoCard: React.FC<{
             ]}
           />
 
-          <View style={imgDurationBoxStyle}>
-            <BrandText style={fontSemibold13}>
-              {prettyMediaDuration(video.videoFile.videoMetadata?.duration)}
-            </BrandText>
-          </View>
-
-          {video?.location && (
+          <VideoDuration video={video} />
+          {video?.location ? (
             <View style={positionButtonBoxStyle}>
               <LocationButton
                 onPress={() =>
@@ -135,6 +151,8 @@ export const VideoCard: React.FC<{
                 stroke={neutralFF}
               />
             </View>
+          ) : (
+            <View />
           )}
         </CustomPressable>
 
@@ -207,6 +225,27 @@ export const VideoCard: React.FC<{
     </View>
   );
 }, isEqual);
+
+function VideoDuration({ video }: { video: SocialFeedVideoMetadata }) {
+  const { duration, isLoading } = useVideoAudioDuration(
+    web3ToWeb2URI(video?.videoFile.url),
+    video?.videoFile.videoMetadata?.duration || 0,
+  );
+
+  return (
+    <>
+      {!isLoading ? (
+        <View style={imgDurationBoxStyle}>
+          <BrandText style={fontSemibold13}>
+            {prettyMediaDuration(duration)}
+          </BrandText>
+        </View>
+      ) : (
+        <View />
+      )}
+    </>
+  );
+}
 
 const imgBoxStyle: ViewStyle = {
   position: "relative",
