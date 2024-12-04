@@ -17,8 +17,8 @@ import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
+  MEMBERSHIP_ORGANIZATION_DEPLOYER_STEPS,
   MembershipMemberSettingFormType,
-  ORGANIZATION_DEPLOYER_STEPS,
 } from "@/utils/types/organizations";
 
 interface MembershipMemberSettingsSectionProps {
@@ -110,7 +110,7 @@ export const MembershipMemberSettingsSection: React.FC<
       <View style={footerCStyle}>
         <PrimaryButton
           size="M"
-          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[3]}`}
+          text={`Next: ${MEMBERSHIP_ORGANIZATION_DEPLOYER_STEPS[3]}`}
           onPress={handleSubmit(onSubmit)}
           testID="member-settings-next"
         />

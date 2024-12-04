@@ -66,10 +66,18 @@ export const ROLES_BASED_ORGANIZATION_STEPS = [
   "Launch organization",
 ];
 
-export const ORGANIZATION_DEPLOYER_STEPS = [
+export const MEMBERSHIP_ORGANIZATION_DEPLOYER_STEPS = [
   "Create a DAO",
   "Configure voting",
-  "Set tokens or members",
+  "Set members",
+  "Review information",
+  "Launch organization",
+];
+
+export const TOKEN_ORGANIZATION_DEPLOYER_STEPS = [
+  "Create a DAO",
+  "Configure voting",
+  "Set tokens",
   "Review information",
   "Launch organization",
 ];

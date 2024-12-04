@@ -20,7 +20,7 @@ import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
-  ORGANIZATION_DEPLOYER_STEPS,
+  TOKEN_ORGANIZATION_DEPLOYER_STEPS,
   TokenSettingFormType,
 } from "@/utils/types/organizations";
 
@@ -121,7 +121,7 @@ export const TokenSettingsSection: React.FC<TokenSettingsSectionProps> = ({
       <View style={footerCStyle}>
         <PrimaryButton
           size="M"
-          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[3]}`}
+          text={`Next: ${TOKEN_ORGANIZATION_DEPLOYER_STEPS[3]}`}
           onPress={handleSubmit(onSubmit)}
         />
       </View>
