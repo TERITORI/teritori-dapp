@@ -4,11 +4,13 @@ import { adenaAddPkg } from "../gno";
 interface GnoDAOMember {
   address: string;
   weight: number;
+  roles: string[];
 }
 
 interface GnoDAOConfig {
   name: string;
   maxVotingPeriodSeconds: number;
+  roles: string[] | undefined;
   initialMembers: GnoDAOMember[];
   thresholdPercent: number;
   quorumPercent: number;
@@ -27,6 +29,7 @@ const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
     dao_core "${network.daoCorePkgPath}"
     dao_interfaces "${network.daoInterfacesPkgPath}"
     proposal_single "${network.daoProposalSinglePkgPath}"
+    "${network.rolesGroupPkgPath}"
     "${network.daoUtilsPkgPath}"
     "${network.profilePkgPath}"
     voting_group "${network.votingGroupPkgPath}"
@@ -37,6 +40,7 @@ const generateDAORealmSource = (networkId: string, conf: GnoDAOConfig) => {
 var (
 	daoCore    dao_interfaces.IDAOCore
 	group      *voting_group.VotingGroup
+  roles      *dao_roles_group.RolesGroup
 	registered bool
 )
 
@@ -46,11 +50,19 @@ func init() {
       ${conf.initialMembers
         .map(
           (member) =>
-            `group.SetMemberPower("${member.address}", ${member.weight});`,
+            `group.SetMemberPower("${member.address}", ${member.weight})`,
         )
         .join("\n\t")}
 		return group
 	}
+
+  rolesModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IRolesModule {
+		roles = dao_roles_group.NewRolesGroup()
+    ${(conf.roles ?? []).map((role) => `roles.NewRole("${role}");`).join("\n\t")}
+    ${conf.initialMembers.map((member) => member.roles.map((role) => `roles.GrantRole("${member.address}", "${role}")`).join("\n\t"))}
+		return roles
+	}
+
 
     // TODO: consider using factories that return multiple modules and handlers
   
@@ -86,7 +98,7 @@ func init() {
 		},
 	}
 
-	daoCore = dao_core.NewDAOCore(votingModuleFactory, proposalModulesFactories, messageHandlersFactories)
+	daoCore = dao_core.NewDAOCore(votingModuleFactory, rolesModuleFactory, proposalModulesFactories, messageHandlersFactories)
 
   // Register the DAO profile
 	profile.SetStringField(profile.DisplayName, "${conf.displayName}")

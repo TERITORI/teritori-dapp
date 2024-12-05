@@ -1,4 +1,4 @@
-import { connectWallet, resetChain } from "./lib";
+import { connectWallet, resetChain } from "../lib";
 
 describe("Create an organization flow", () => {
   it("works", () => {
@@ -26,7 +26,7 @@ describe("Create an organization flow", () => {
     cy.get('[data-testid="organization-description"]').type(description);
 
     cy.contains("Next: Configure voting").click();
-    cy.contains("Next: Set tokens or members").click();
+    cy.contains("Next: Set members").click();
     cy.get('[data-testid="member-settings-next"]').click();
     cy.contains("Confirm & Launch the Organization").click();
 

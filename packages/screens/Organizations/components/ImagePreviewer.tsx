@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native";
 
 import dorgSVG from "../../../../assets/icons/dorg-icon.svg";
 
@@ -21,49 +21,44 @@ export const ImagePreviewer: React.FC<ImagePreviewerProps> = ({
 }) => {
   return (
     <View>
-      <View style={styles.imagePreviewer}>
+      <View style={imagePreviewerCStyle}>
         {uri ? (
           <Image
             source={{ uri: web3ToWeb2URI(uri) }}
-            style={styles.image}
+            style={imageCStyle}
             onError={onError}
           />
         ) : (
-          <SVG
-            source={dorgSVG}
-            height={styles.image.height}
-            width={styles.image.width}
-          />
+          <SVG source={dorgSVG} height={140} width={140} />
         )}
       </View>
 
-      <BrandText style={styles.text}>Preview</BrandText>
+      <BrandText style={textCStyle}>Preview</BrandText>
     </View>
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  imagePreviewer: {
-    height: 140,
-    width: 140,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: neutral33,
-    backgroundColor: neutral22,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: layout.spacing_x1_5,
-    overflow: "hidden",
-  },
-  image: {
-    height: 140,
-    width: 140,
-    borderRadius: 12,
-  },
-  text: StyleSheet.flatten([
-    fontSemibold14,
-    { color: neutralA3, textAlign: "center" },
-  ]),
-});
+const imagePreviewerCStyle: ViewStyle = {
+  height: 140,
+  width: 140,
+  borderRadius: 12,
+  borderWidth: 1,
+  borderColor: neutral33,
+  backgroundColor: neutral22,
+  justifyContent: "center",
+  alignItems: "center",
+  marginBottom: layout.spacing_x1_5,
+  overflow: "hidden",
+};
+
+const imageCStyle: ImageStyle = {
+  height: 140,
+  width: 140,
+  borderRadius: 12,
+};
+
+const textCStyle: TextStyle = {
+  ...fontSemibold14,
+  color: neutralA3,
+  textAlign: "center",
+};
