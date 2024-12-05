@@ -5,7 +5,7 @@ import { BrandText } from "../BrandText";
 
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { DEFAULT_NAME } from "@/utils/social-feed";
-import { fontSemibold16 } from "@/utils/style/fonts";
+import { fontRegular15 } from "@/utils/style/fonts";
 
 export const UserDisplayName: FC<{
   userId: string;
@@ -13,7 +13,7 @@ export const UserDisplayName: FC<{
 }> = ({ userId, style }) => {
   const { metadata } = useNSUserInfo(userId);
   return (
-    <BrandText style={[fontSemibold16, style]} numberOfLines={1}>
+    <BrandText style={[fontRegular15, style]} numberOfLines={1}>
       {metadata?.public_name ||
         metadata?.tokenId?.split(".")?.[0] ||
         DEFAULT_NAME}

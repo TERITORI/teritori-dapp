@@ -19,8 +19,12 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature, NetworkKind } from "../../networks";
-import { neutral00, neutral33 } from "../../utils/style/colors";
-import { fontBold16, fontBold9, fontSemibold14 } from "../../utils/style/fonts";
+import { neutral00, neutral33, withAlpha } from "../../utils/style/colors";
+import {
+  fontMedium10,
+  fontMedium15,
+  fontSemibold14,
+} from "../../utils/style/fonts";
 import {
   fullSidebarWidth,
   headerHeight,
@@ -51,6 +55,7 @@ const SidebarSeparator: React.FC = () => {
         marginHorizontal: layout.spacing_x2,
         backgroundColor: neutral33,
         marginBottom: layout.spacing_x1,
+        opacity: 0.5,
       }}
     />
   );
@@ -179,7 +184,7 @@ export const Sidebar: React.FC = () => {
             <>
               <BuyTokens
                 flexDirection={isSidebarExpanded ? "row" : "column"}
-                textStyle={isSidebarExpanded ? fontBold16 : fontBold9}
+                textStyle={isSidebarExpanded ? fontMedium15 : fontMedium10}
               />
               <SidebarSeparator />
             </>
@@ -201,7 +206,7 @@ export const Sidebar: React.FC = () => {
 
 const containerCStyle: ViewStyle = {
   borderRightWidth: 1,
-  borderColor: neutral33,
+  borderColor: withAlpha(neutral33, 0.5),
   zIndex: 100,
   flex: 1,
 };

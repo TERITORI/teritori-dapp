@@ -201,6 +201,13 @@ export const fontMedium13: TextStyle = {
   fontFamily: "Exo_500Medium",
   fontWeight: "500",
 };
+export const fontMedium12: TextStyle = {
+  fontSize: 12,
+  letterSpacing: -(12 * 0.04),
+  lineHeight: 14,
+  fontFamily: "Exo_500Medium",
+  fontWeight: "500",
+};
 export const fontMedium10: TextStyle = {
   fontSize: 10,
   letterSpacing: -(10 * 0.04),
@@ -213,5 +220,33 @@ export const fontNormal15: TextStyle = {
   letterSpacing: -(14 * 0.04),
   lineHeight: 22,
   fontFamily: "Exo_500Medium",
+  fontWeight: "400",
+};
+export const fontRegular15: TextStyle = {
+  fontSize: 15,
+  letterSpacing: -(15 * 0.02),
+  lineHeight: 17,
+  fontFamily: "Exo_400Regular",
+  fontWeight: "400",
+};
+export const fontRegular14: TextStyle = {
+  fontSize: 14,
+  letterSpacing: -(14 * 0.02),
+  lineHeight: 16,
+  fontFamily: "Exo_400Regular",
+  fontWeight: "400",
+};
+export const fontRegular13: TextStyle = {
+  fontSize: 13,
+  letterSpacing: -(13 * 0.02),
+  lineHeight: 15,
+  fontFamily: "Exo_400Regular",
+  fontWeight: "400",
+};
+export const fontRegular12: TextStyle = {
+  fontSize: 12,
+  letterSpacing: -(12 * 0.02),
+  lineHeight: 14,
+  fontFamily: "Exo_400Regular",
   fontWeight: "400",
 };

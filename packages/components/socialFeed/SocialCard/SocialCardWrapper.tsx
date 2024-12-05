@@ -17,7 +17,7 @@ import {
   redDefault,
   secondaryColor,
 } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
+import { fontRegular14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import FlexRow from "../../FlexRow";
@@ -191,7 +191,7 @@ export const SocialCardWrapper: FC<{
             marginBottom: layout.spacing_x1,
           }}
         >
-          <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+          <BrandText style={[fontRegular14, { color: neutral77 }]}>
             {localPost.parentPostIdentifier ? "Comment by" : "Post by"}
           </BrandText>
 
@@ -199,7 +199,7 @@ export const SocialCardWrapper: FC<{
 
           <Username
             userId={post.authorId}
-            textStyle={fontSemibold14}
+            textStyle={fontRegular14}
             namedColor={secondaryColor}
             anonColor={secondaryColor}
           />
@@ -214,7 +214,7 @@ export const SocialCardWrapper: FC<{
 
           {proposalId !== "" ? (
             <FlexRow style={{ justifyContent: "flex-end" }}>
-              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+              <BrandText style={[fontRegular14, { color: neutral77 }]}>
                 My verdict
               </BrandText>
               <SpacerRow size={2} />
