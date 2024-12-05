@@ -38,7 +38,7 @@ type RolesVotingGroup struct {
 }
 
 func NewRolesVotingGroup() *RolesVotingGroup {
-	return &VotingGroup{
+	return &RolesVotingGroup{
 		powerByAddr: havl.NewTree(),
 		totalPower:  havl.NewTree(),
 		memberCount: havl.NewTree(),
@@ -137,7 +137,7 @@ func (g *RolesVotingGroup) UpdateMembersHandler() dao_interfaces.MessageHandler 
 	return &updateMembersHandler{vg: g}
 }
 
-func (g *VotingGroup) MemberCount(height int64) uint32 {
+func (g *RolesVotingGroup) MemberCount(height int64) uint32 {
 	val, ok := g.memberCount.Get("", height)
 	if !ok {
 		return 0

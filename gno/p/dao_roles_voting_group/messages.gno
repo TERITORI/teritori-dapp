@@ -37,7 +37,7 @@ func (m *UpdateMembersExecutableMessage) Type() string {
 }
 
 type updateMembersHandler struct {
-	vg *VotingGroup
+	vg *RolesVotingGroup
 }
 
 var _ dao_interfaces.MessageHandler = (*updateMembersHandler)(nil)
