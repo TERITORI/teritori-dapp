@@ -355,7 +355,7 @@ export const NewsFeedInput = React.forwardRef<
 
     return (
       <View
-        style={[{ width }, style]}
+        style={[{ width: "100%" }, style]}
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       >
         {isMapShown && (

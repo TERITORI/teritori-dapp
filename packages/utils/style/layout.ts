@@ -1,5 +1,5 @@
 import { Platform } from "react-native";
-export const screenContainerContentMarginHorizontal = 140; // Corresponding to the space H between the Sidebar and the page content
+export const screenContainerContentMarginHorizontal = 20; // Corresponding to the space H between the Sidebar and the page content
 export const headerHeight = 80;
 export const MOBILE_HEADER_HEIGHT = 64;
 export const legalFooterHeight = 58;
