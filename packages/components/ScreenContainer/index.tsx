@@ -17,20 +17,12 @@ import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import {
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
-  headerMarginHorizontal,
-  layout,
   screenContainerContentMarginHorizontal,
 } from "../../utils/style/layout";
-import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
-import { SearchBar } from "../Search/SearchBar";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
-import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
 import { Footer } from "../footers/Footer";
 import { MediaPlayerBar } from "../mediaPlayer/MediaPlayerBar";
-import { TogglePlayerButton } from "../mediaPlayer/TogglePlayerButton";
 import { Sidebar } from "../navigation/Sidebar";
-import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
-import { Separator } from "../separators/Separator";
 
 export interface ScreenContainerProps {
   headerChildren?: JSX.Element;
@@ -137,7 +129,14 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
 
         <View style={{ flex: 1 }}>
           {/*==== Header*/}
-          <Header onBackPress={onBackPress}>{headerChildren}</Header>
+          <Header
+            forceNetworkId={forceNetworkId}
+            forceNetworkKind={forceNetworkKind}
+            forceNetworkFeatures={forceNetworkFeatures}
+            onBackPress={onBackPress}
+          >
+            {headerChildren}
+          </Header>
 
           <View
             style={{ width: "100%", flexDirection: "row", flex: 1, height }}
@@ -149,9 +148,7 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
                   <ScrollView
                     style={{ width: "100%", flex: 1 }}
                     contentContainerStyle={[
-                      {
-                        minHeight: height - headerHeight,
-                      },
+                      { minHeight: height - headerHeight },
                     ]}
                   >
                     <View
@@ -178,44 +175,7 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
               </SelectedNetworkGate>
             </View>
           </View>
-          {/*-----
-            We render the wallet selector here with absolute position to make sure
-            the popup is on top of everything else, otherwise it's unusable
-            TODO: Fix that and put this in Header.tsx
-          */}
-          <View
-            style={{
-              position: "absolute",
-              flexDirection: "row",
-              top: 0,
-              right: headerMarginHorizontal,
-              height: headerHeight,
-              alignItems: "center",
-            }}
-          >
-            <TogglePlayerButton />
-            <Separator
-              horizontal
-              style={{ height: "100%", marginHorizontal: layout.spacing_x2 }}
-            />
-            <SearchBar />
-            <Separator
-              horizontal
-              style={{ height: "100%", marginHorizontal: layout.spacing_x2 }}
-            />
-            <CartIconButtonBadge style={{ marginRight: layout.spacing_x1_5 }} />
-            <NetworkSelector
-              forceNetworkId={forceNetworkId}
-              forceNetworkKind={forceNetworkKind}
-              forceNetworkFeatures={forceNetworkFeatures}
-              style={{ marginRight: layout.spacing_x1_5 }}
-            />
-            <ConnectWalletButton
-              style={{ marginRight: headerMarginHorizontal }}
-            />
-          </View>
         </View>
-        {/*-----END TODO*/}
         <MediaPlayerBar
           style={{
             position: "absolute",
