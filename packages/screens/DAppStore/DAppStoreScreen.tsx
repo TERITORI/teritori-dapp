@@ -5,9 +5,9 @@ import { Header } from "./components/Header";
 import { LeftRail } from "./components/LeftRail";
 import { RightRail } from "./components/RightRail";
 
-import { BrandText } from "@/components/BrandText";
 import { FullWidthSeparator } from "@/components/FullWidthSeparator";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { Separator } from "@/components/separators/Separator";
 import { ScreenFC } from "@/utils/navigation";
 
@@ -18,7 +18,7 @@ export const DAppStoreScreen: ScreenFC<"DAppStore"> = () => {
   return (
     <ScreenContainer
       fullWidth
-      headerChildren={<BrandText>dApp Store</BrandText>}
+      headerChildren={<ScreenTitle>dApp Store</ScreenTitle>}
     >
       <Header setSearchInput={setSearchInput} />
 
