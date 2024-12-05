@@ -22,7 +22,7 @@ import {
   secondaryColor,
   yellowPremium,
 } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import { fontRegular14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { objectKeys } from "../../utils/typescript";
 import { BrandText } from "../BrandText";
@@ -137,14 +137,14 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                     {isSelected && gradientText ? (
                       <GradientText
                         gradientType="blueExtended"
-                        style={[fontSemibold14, tabTextStyle]}
+                        style={[fontRegular14, tabTextStyle]}
                       >
                         {item.name}
                       </GradientText>
                     ) : (
                       <BrandText
                         style={[
-                          fontSemibold14,
+                          fontRegular14,
                           { lineHeight: 14 },
                           key === "premium-content" && { color: yellowPremium },
                           item.disabled && { color: neutral77 },

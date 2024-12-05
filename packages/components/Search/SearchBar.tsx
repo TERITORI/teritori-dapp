@@ -35,7 +35,7 @@ export const SearchBar: React.FC<{ style?: StyleProp<ViewStyle> }> = ({
           style={{
             position: "absolute",
             top: SEARCH_BAR_INPUT_HEIGHT + 4,
-            right: 0,
+            left: 0,
           }}
           mainContainerStyle={{
             // make the results fit 3 collections horizontally
