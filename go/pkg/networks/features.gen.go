@@ -7,7 +7,7 @@ import (
 
 const (
 	FeatureTypeNFTMarketplace            = FeatureType("NFTMarketplace")
-	FeatureTypeNFTLaunchpad              = FeatureType("NFTLaunchpad")
+	FeatureTypeCosmWasmNFTLaunchpad      = FeatureType("CosmWasmNFTLaunchpad")
 	FeatureTypeNameService               = FeatureType("NameService")
 	FeatureTypeSwap                      = FeatureType("Swap")
 	FeatureTypeBurnTokens                = FeatureType("BurnTokens")
@@ -22,6 +22,7 @@ const (
 	FeatureTypeLaunchpadERC20            = FeatureType("LaunchpadERC20")
 	FeatureTypeNFTMarketplaceLeaderboard = FeatureType("NFTMarketplaceLeaderboard")
 	FeatureTypeCosmWasmNFTsBurner        = FeatureType("CosmWasmNFTsBurner")
+	FeatureTypeCosmWasmRakki             = FeatureType("CosmWasmRakki")
 )
 
 type FeatureCosmWasmPremiumFeed struct {
@@ -61,6 +62,29 @@ func (nb *NetworkBase) GetFeatureCosmWasmNFTsBurner() (*FeatureCosmWasmNFTsBurne
 		return nil, err
 	}
 	return feature.(*FeatureCosmWasmNFTsBurner), nil
+}
+
+type FeatureCosmWasmNFTLaunchpad struct {
+	*FeatureBase
+	LaunchpadContractAddress string  `json:"launchpadContractAddress"`
+	DefaultMintDenom         string  `json:"defaultMintDenom"`
+	LaunchpadEndpoint        string  `json:"launchpadEndpoint"`
+	CodeId                   float64 `json:"codeId"`
+	NftTr721CodeId           float64 `json:"nftTr721CodeId"`
+}
+
+var _ Feature = &FeatureCosmWasmNFTLaunchpad{}
+
+func (f FeatureCosmWasmNFTLaunchpad) Type() FeatureType {
+	return FeatureTypeCosmWasmNFTLaunchpad
+}
+
+func (nb *NetworkBase) GetFeatureCosmWasmNFTLaunchpad() (*FeatureCosmWasmNFTLaunchpad, error) {
+	feature, err := nb.GetFeature(FeatureTypeCosmWasmNFTLaunchpad)
+	if err != nil {
+		return nil, err
+	}
+	return feature.(*FeatureCosmWasmNFTLaunchpad), nil
 }
 
 type FeatureGnoProjectManager struct {
@@ -123,6 +147,26 @@ func (nb *NetworkBase) GetFeatureNFTMarketplace() (*FeatureNFTMarketplace, error
 	return feature.(*FeatureNFTMarketplace), nil
 }
 
+type FeatureCosmWasmRakki struct {
+	*FeatureBase
+	CodeId          float64 `json:"codeId"`
+	ContractAddress string  `json:"contractAddress"`
+}
+
+var _ Feature = &FeatureCosmWasmRakki{}
+
+func (f FeatureCosmWasmRakki) Type() FeatureType {
+	return FeatureTypeCosmWasmRakki
+}
+
+func (nb *NetworkBase) GetFeatureCosmWasmRakki() (*FeatureCosmWasmRakki, error) {
+	feature, err := nb.GetFeature(FeatureTypeCosmWasmRakki)
+	if err != nil {
+		return nil, err
+	}
+	return feature.(*FeatureCosmWasmRakki), nil
+}
+
 func UnmarshalFeature(b []byte) (Feature, error) {
 	var base FeatureBase
 	if err := json.Unmarshal(b, &base); err != nil {
@@ -141,6 +185,12 @@ func UnmarshalFeature(b []byte) (Feature, error) {
 			return nil, errors.Wrap(err, "failed to unmarshal feature CosmWasmNFTsBurner")
 		}
 		return &f, nil
+	case FeatureTypeCosmWasmNFTLaunchpad:
+		var f FeatureCosmWasmNFTLaunchpad
+		if err := json.Unmarshal(b, &f); err != nil {
+			return nil, errors.Wrap(err, "failed to unmarshal feature CosmWasmNFTLaunchpad")
+		}
+		return &f, nil
 	case FeatureTypeGnoProjectManager:
 		var f FeatureGnoProjectManager
 		if err := json.Unmarshal(b, &f); err != nil {
@@ -157,6 +207,12 @@ func UnmarshalFeature(b []byte) (Feature, error) {
 		var f FeatureNFTMarketplace
 		if err := json.Unmarshal(b, &f); err != nil {
 			return nil, errors.Wrap(err, "failed to unmarshal feature NFTMarketplace")
+		}
+		return &f, nil
+	case FeatureTypeCosmWasmRakki:
+		var f FeatureCosmWasmRakki
+		if err := json.Unmarshal(b, &f); err != nil {
+			return nil, errors.Wrap(err, "failed to unmarshal feature CosmWasmRakki")
 		}
 		return &f, nil
 	}

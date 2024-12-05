@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleProp, StyleSheet, ViewStyle } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { Menu, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
@@ -48,6 +48,7 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
         ) : (
           <IconBox
             icon={appMode === "mini" ? emojiSolidSVG : emojiSVG}
+            iconProps={{ height: 17, width: 17 }}
             onPress={toggleEmojiModal}
             disabled={disabled}
             style={iconStyle}
@@ -57,7 +58,12 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
 
       <MenuOptions
         customStyles={{
-          optionsContainer: StyleSheet.flatten([styles.optionsContainer]),
+          optionsContainer: {
+            width: WIDTH,
+            height: HEIGHT,
+            left: 0,
+            backgroundColor: "transparent",
+          },
         }}
       >
         <EmojiModal
@@ -67,7 +73,15 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
             }
             toggleEmojiModal();
           }}
-          containerStyle={styles.modalContainer}
+          containerStyle={{
+            paddingHorizontal: layout.spacing_x1,
+            paddingVertical: layout.spacing_x1_5,
+            backgroundColor: neutral67,
+            borderWidth: 1,
+            borderColor: neutral33,
+            width: WIDTH,
+            height: HEIGHT,
+          }}
           searchStyle={{
             backgroundColor: neutral33,
             // @ts-expect-error: description todo
@@ -82,23 +96,3 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
     </Menu>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  modalContainer: {
-    paddingHorizontal: layout.spacing_x1,
-    paddingVertical: layout.spacing_x1_5,
-    backgroundColor: neutral67,
-    borderWidth: 1,
-    borderColor: neutral33,
-    width: WIDTH,
-    height: HEIGHT,
-  },
-  optionsContainer: {
-    width: WIDTH,
-    height: HEIGHT,
-    left: 0,
-    backgroundColor: "transparent",
-  },
-});

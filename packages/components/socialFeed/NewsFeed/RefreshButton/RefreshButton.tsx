@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import Animated, {
   Easing,
   SharedValue,
@@ -11,7 +11,7 @@ import Animated, {
 
 import refreshSVG from "../../../../../assets/icons/refresh.svg";
 import { neutral17, neutral33 } from "../../../../utils/style/colors";
-import { fontSemibold14 } from "../../../../utils/style/fonts";
+import { fontRegular14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { BrandText } from "../../../BrandText";
 import { SVG } from "../../../SVG";
@@ -77,36 +77,41 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
   );
 
   return (
-    <Animated.View style={[styles.selfCenter, animStyle]}>
-      <TouchableOpacity style={styles.container} onPress={onPress}>
+    <Animated.View
+      style={[
+        {
+          alignSelf: "center",
+        },
+        animStyle,
+      ]}
+    >
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          backgroundColor: neutral17,
+          borderWidth: 1,
+          borderColor: neutral33,
+          borderRadius: 999,
+          paddingHorizontal: layout.spacing_x1_5,
+          height: 42,
+        }}
+        onPress={onPress}
+      >
         <Animated.View style={animatedStyles}>
           <SVG source={refreshSVG} width={SVG_SIZE} height={SVG_SIZE} />
         </Animated.View>
-        <Animated.View style={[styles.textContainer, opacityStyle]}>
-          <BrandText style={fontSemibold14}>Refresh feed</BrandText>
+        <Animated.View
+          style={[
+            {
+              marginLeft: layout.spacing_x1_5,
+            },
+            opacityStyle,
+          ]}
+        >
+          <BrandText style={fontRegular14}>Refresh feed</BrandText>
         </Animated.View>
       </TouchableOpacity>
     </Animated.View>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  selfCenter: {
-    alignSelf: "center",
-  },
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: neutral17,
-    borderWidth: 1,
-    borderColor: neutral33,
-    borderRadius: 999,
-    paddingHorizontal: layout.spacing_x1_5,
-    height: 42,
-  },
-  textContainer: {
-    marginLeft: layout.spacing_x1_5,
-  },
-});

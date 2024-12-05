@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export enum NetworkFeature {
   NFTMarketplace = "NFTMarketplace",
-  NFTLaunchpad = "NFTLaunchpad",
+  CosmWasmNFTLaunchpad = "CosmWasmNFTLaunchpad",
   NameService = "NameService",
   Swap = "Swap",
   BurnTokens = "BurnTokens",
@@ -17,6 +17,7 @@ export enum NetworkFeature {
   LaunchpadERC20 = "LaunchpadERC20",
   NFTMarketplaceLeaderboard = "NFTMarketplaceLeaderboard",
   CosmWasmNFTsBurner = "CosmWasmNFTsBurner",
+  CosmWasmRakki = "CosmWasmRakki",
 }
 
 // Marketplace
@@ -48,12 +49,18 @@ const zodCosmWasmNFTsBurner = z.object({
 
 export type CosmWasmNFTsBurner = z.infer<typeof zodCosmWasmNFTsBurner>;
 
-// CosmWasm Social Feed
+// CosmWasm Launchpad
 
-type CosmWasmSocialFeed = {
-  type: NetworkFeature.SocialFeed;
-  feedContractAddress: string;
-};
+const zodCosmWasmNFTLaunchpad = z.object({
+  type: z.literal(NetworkFeature.CosmWasmNFTLaunchpad),
+  launchpadContractAddress: z.string(),
+  defaultMintDenom: z.string(),
+  launchpadEndpoint: z.string(),
+  codeId: z.number(),
+  nftTr721CodeId: z.number(),
+});
+
+export type CosmWasmNFTLaunchpad = z.infer<typeof zodCosmWasmNFTLaunchpad>;
 
 // Gno Project Manager
 
@@ -63,8 +70,6 @@ const zodGnoProjectManager = z.object({
   paymentsDenom: z.string(),
 });
 
-type GnoProjectManager = z.infer<typeof zodGnoProjectManager>;
-
 // Launchpad ERC20
 
 const zodLaunchpadERC20 = z.object({
@@ -73,22 +78,26 @@ const zodLaunchpadERC20 = z.object({
   paymentsDenom: z.string(),
 });
 
-type LaunchpadERC20 = z.infer<typeof zodLaunchpadERC20>;
+// Rakki
+
+const zodCosmWasmRakki = z.object({
+  type: z.literal(NetworkFeature.CosmWasmRakki),
+  codeId: z.number().int().positive(),
+  contractAddress: z.string(),
+});
+
+export type CosmWasmRakki = z.infer<typeof zodCosmWasmRakki>;
 
 // Registry
 
 export const allFeatureObjects = [
   zodCosmWasmPremiumFeed,
   zodCosmWasmNFTsBurner,
+  zodCosmWasmNFTLaunchpad,
   zodGnoProjectManager,
   zodLaunchpadERC20,
   zodNFTMarketplace,
+  zodCosmWasmRakki,
 ];
 
-export type NetworkFeatureObject =
-  | CosmWasmPremiumFeed
-  | CosmWasmSocialFeed
-  | CosmWasmNFTsBurner
-  | GnoProjectManager
-  | LaunchpadERC20
-  | NFTMarketplace;
+export type NetworkFeatureObject = z.infer<(typeof allFeatureObjects)[0]>;

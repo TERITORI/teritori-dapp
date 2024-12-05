@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { TextStyle, View, ViewStyle } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
@@ -17,11 +17,11 @@ export const ReviewCollapsableItem: React.FC<ReviewCollapsableItemProps> = ({
   value,
 }) => {
   return (
-    <View style={styles.container}>
-      <BrandText style={styles.title}>{title}</BrandText>
+    <View style={containerCStyle}>
+      <BrandText style={titleCStyle}>{title}</BrandText>
       <SpacerColumn size={0.5} />
       {typeof value === "string" ? (
-        <BrandText style={styles.value}>{value}</BrandText>
+        <BrandText style={valueCStyle}>{value}</BrandText>
       ) : (
         value && value()
       )}
@@ -29,13 +29,16 @@ export const ReviewCollapsableItem: React.FC<ReviewCollapsableItemProps> = ({
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: neutral17,
-    padding: layout.spacing_x1_5,
-  },
-  title: StyleSheet.flatten([fontSemibold12, { color: neutralA3 }]),
-  value: StyleSheet.flatten([fontSemibold14]),
-});
+const containerCStyle: ViewStyle = {
+  backgroundColor: neutral17,
+  padding: layout.spacing_x1_5,
+};
+
+const titleCStyle: TextStyle = {
+  ...fontSemibold12,
+  color: neutralA3,
+};
+
+const valueCStyle: TextStyle = {
+  ...fontSemibold14,
+};

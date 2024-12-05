@@ -54,13 +54,6 @@ export const FeedPostDefaultView: FC<{
   const isMobile = useIsMobile();
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
 
-  useEffect(() => {
-    if (post.category === PostCategory.Video)
-      navigation.replace("FeedPostView", {
-        id: post.id,
-      });
-  }, [post.category, post.id, navigation]);
-
   const authorId = post?.authorId;
   const authorNSInfo = useNSUserInfo(authorId);
 

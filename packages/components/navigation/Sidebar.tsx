@@ -19,8 +19,12 @@ import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature, NetworkKind } from "../../networks";
-import { neutral00, neutral33 } from "../../utils/style/colors";
-import { fontBold16, fontBold9, fontSemibold14 } from "../../utils/style/fonts";
+import { neutral00, neutral33, withAlpha } from "../../utils/style/colors";
+import {
+  fontMedium10,
+  fontMedium15,
+  fontSemibold14,
+} from "../../utils/style/fonts";
 import {
   fullSidebarWidth,
   headerHeight,
@@ -33,6 +37,7 @@ import ToggleButton from "../buttons/ToggleButton";
 import { Separator } from "../separators/Separator";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
+import { useAppConfig } from "@/context/AppConfigProvider";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useAppMode } from "@/hooks/useAppMode";
 
@@ -50,6 +55,7 @@ const SidebarSeparator: React.FC = () => {
         marginHorizontal: layout.spacing_x2,
         backgroundColor: neutral33,
         marginBottom: layout.spacing_x1,
+        opacity: 0.5,
       }}
     />
   );
@@ -66,6 +72,7 @@ export const Sidebar: React.FC = () => {
   const { name: currentRouteName } = useRoute();
   const { isSidebarExpanded, dynamicSidebar } = useSidebar();
   const [appMode, handleSet] = useAppMode();
+  const { disableDAppStore, disableBuyTokensButton } = useAppConfig();
 
   const layoutStyle = useAnimatedStyle(
     () => ({
@@ -156,26 +163,32 @@ export const Sidebar: React.FC = () => {
                   />
                 </View>
               )}
-              <SidebarButton
-                icon={addSVG}
-                iconSize={36}
-                route="DAppStore"
-                key="ComingSoon2"
-                id="ComingSoon2"
-                title=""
-                onPress={() => navigation.navigate("DAppStore")}
-              />
+              {!disableDAppStore && (
+                <SidebarButton
+                  icon={addSVG}
+                  iconSize={36}
+                  route="DAppStore"
+                  key="ComingSoon2"
+                  id="ComingSoon2"
+                  title=""
+                  onPress={() => navigation.navigate("DAppStore")}
+                />
+              )}
               <SpacerColumn size={1} />
             </>
           }
         />
         <View>
           <SidebarSeparator />
-          <BuyTokens
-            flexDirection={isSidebarExpanded ? "row" : "column"}
-            textStyle={isSidebarExpanded ? fontBold16 : fontBold9}
-          />
-          <SidebarSeparator />
+          {!disableBuyTokensButton && (
+            <>
+              <BuyTokens
+                flexDirection={isSidebarExpanded ? "row" : "column"}
+                textStyle={isSidebarExpanded ? fontMedium15 : fontMedium10}
+              />
+              <SidebarSeparator />
+            </>
+          )}
 
           {selectedNetworkInfo?.features.includes(NetworkFeature.UPP) &&
             connected &&
@@ -193,7 +206,7 @@ export const Sidebar: React.FC = () => {
 
 const containerCStyle: ViewStyle = {
   borderRightWidth: 1,
-  borderColor: neutral33,
+  borderColor: withAlpha(neutral33, 0.5),
   zIndex: 100,
   flex: 1,
 };

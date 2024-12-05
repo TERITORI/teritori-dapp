@@ -3880,7 +3880,7 @@
     "features": [
       "NFTMarketplace",
       "RiotP2E",
-      "NFTLaunchpad",
+      "CosmWasmNFTLaunchpad",
       "NFTBridge"
     ],
     "currencies": [
@@ -3926,7 +3926,7 @@
     "features": [
       "NFTMarketplace",
       "RiotP2E",
-      "NFTLaunchpad",
+      "CosmWasmNFTLaunchpad",
       "NFTBridge"
     ],
     "currencies": [
@@ -4522,6 +4522,7 @@
     "modboardsPkgPath": "gno.land/r/teritori/modboards",
     "groupsPkgPath": "gno.land/r/teritori/groups",
     "votingGroupPkgPath": "gno.land/p/teritori/dao_voting_group",
+    "rolesGroupPkgPath": "gno.land/p/teritori/dao_roles_group",
     "daoProposalSinglePkgPath": "gno.land/p/teritori/dao_proposal_single",
     "profilePkgPath": "gno.land/r/demo/profile",
     "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
@@ -4573,6 +4574,7 @@
     "socialFeedsDAOPkgPath": "gno.land/r/teritori/social_feeds_dao",
     "groupsPkgPath": "gno.land/r/teritori/groups",
     "votingGroupPkgPath": "gno.land/p/teritori/dao_voting_group",
+    "rolesGroupPkgPath": "gno.land/p/teritori/dao_roles_group",
     "daoProposalSinglePkgPath": "gno.land/p/teritori/dao_proposal_single",
     "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
     "daoCorePkgPath": "gno.land/p/teritori/dao_core",
@@ -4615,9 +4617,9 @@
     "txIndexerURL": "https://indexer.test3.gno.testnet.teritori.com"
   },
   {
-    "id": "gno-test4",
+    "id": "gno-test5",
     "kind": "Gno",
-    "displayName": "Gno Test4",
+    "displayName": "Gno Test5",
     "icon": "gno.svg",
     "features": [
       "SocialFeed",
@@ -4645,12 +4647,12 @@
       }
     ],
     "stakeCurrency": "ugnot",
-    "idPrefix": "gnotest4",
-    "chainId": "test4",
-    "endpoint": "https://rpc.test4.gno.land:443",
-    "txExplorer": "https://gnoscan.io/transactions/details?txhash=$hash&chainId=test4",
-    "accountExplorer": "https://gnoscan.io/accounts/$address?chainId=test4",
-    "contractExplorer": "https://gnoscan.io/realms/details?path=$address&chainId=test4",
+    "idPrefix": "gnotest5",
+    "chainId": "test5",
+    "endpoint": "https://rpc.test5.gno.land",
+    "txExplorer": "https://gnoscan.io/transactions/details?txhash=$hash&chainId=test5",
+    "accountExplorer": "https://gnoscan.io/accounts/$address?chainId=test5",
+    "contractExplorer": "https://gnoscan.io/realms/details?path=$address&chainId=test5",
     "testnet": true,
     "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
     "gnowebURL": "https://gno.land",
@@ -4660,8 +4662,8 @@
     "socialFeedsPkgPath": "gno.land/r/teritori/social_feeds",
     "socialFeedsDAOPkgPath": "gno.land/r/teritori/social_feeds_dao",
     "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
-    "profilePkgPath": "gno.land/r/teritori/profile",
-    "txIndexerURL": "https://indexer.test4.gno.testnet.teritori.com"
+    "profilePkgPath": "gno.land/r/demo/profile",
+    "txIndexerURL": "https://indexer.test5.gno.testnet.teritori.com"
   },
   {
     "id": "cosmos-registry:gravitybridge",
@@ -11427,7 +11429,7 @@
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad",
+      "CosmWasmNFTLaunchpad",
       "NFTMarketplaceLeaderboard",
       "CosmWasmNFTsBurner"
     ],
@@ -11524,7 +11526,7 @@
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad",
+      "CosmWasmNFTLaunchpad",
       "RiotP2E",
       "NFTMarketplaceLeaderboard"
     ],
@@ -11602,10 +11604,11 @@
       "UPP",
       "NameService",
       "BurnTokens",
-      "NFTLaunchpad",
+      "CosmWasmNFTLaunchpad",
       "CosmWasmPremiumFeed",
       "NFTMarketplaceLeaderboard",
-      "CosmWasmNFTsBurner"
+      "CosmWasmNFTsBurner",
+      "CosmWasmRakki"
     ],
     "featureObjects": [
       {
@@ -11621,6 +11624,19 @@
         "type": "NFTMarketplace",
         "cwAddressListCodeId": 63,
         "cwAddressListContractAddress": "tori1x72plnprsjnmszylmdm3cnvu5h6u55fyf0pe02lye9p6q2ws05ps33qmft"
+      },
+      {
+        "type": "CosmWasmNFTLaunchpad",
+        "launchpadContractAddress": "tori1te7ku4de0k4rl8lhyuvpmhygaq7k7vy5zpsjq9y638efxsnx3aaqck2utf",
+        "launchpadEndpoint": "https://dapp-backend.testnet.teritori.com",
+        "nftTr721CodeId": 60,
+        "codeId": 71,
+        "defaultMintDenom": "utori"
+      },
+      {
+        "type": "CosmWasmRakki",
+        "codeId": 79,
+        "contractAddress": "tori1smdl4c0mc4kqsrg42rhrx5czqwxtp2gml0v8yrzhclesf5n47wzqds7dx3"
       }
     ],
     "currencies": [

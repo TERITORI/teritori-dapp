@@ -1,4 +1,5 @@
-import React, { useMemo } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useCallback, useMemo } from "react";
 
 import { ArticlesFeed } from "./components/ArticlesFeed";
 import { FeedHeader } from "./components/FeedHeader";
@@ -19,10 +20,19 @@ import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
 import { ScreenFC } from "@/utils/navigation";
 
-export const FeedScreen: ScreenFC<"Feed"> = ({ route: { params } }) => {
+export const FeedScreen: ScreenFC<"Feed"> = ({
+  route: { params },
+  navigation: { setParams },
+}) => {
   useForceNetworkSelection(params?.network);
   const isMobile = useIsMobile();
   const selectedNetworkId = useSelectedNetworkId();
+
+  const updateParams = useCallback(() => {
+    setParams({ network: selectedNetworkId });
+  }, [setParams, selectedNetworkId]);
+
+  useFocusEffect(updateParams);
 
   const defaultFeedRequest = useMemo(() => {
     return getDefaultFeedRequest(selectedNetworkId);

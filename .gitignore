@@ -104,6 +104,11 @@ temp/
 # rust
 /target/
 artifacts
+rust/cw-contracts/*/target
 
 # cypress
 cypress/screenshots
+
+# multi-app
+/app-selector.js
+/app.config.js

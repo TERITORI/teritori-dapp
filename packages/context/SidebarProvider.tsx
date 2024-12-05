@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { Platform } from "react-native";
 import { useSelector } from "react-redux";
 
+import { useAppConfig } from "./AppConfigProvider";
 import { useIsMobile } from "../hooks/useIsMobile";
 import {
   selectAvailableApps,
@@ -31,6 +32,7 @@ export const useSidebar = () => {
       dispatch(setSidebarExpanded(false));
     }
   }, [dispatch, isMobile]);
+  const { forceDAppsList } = useAppConfig();
 
   useEffect(() => {
     if (selectedApps.length === 0 && Object.values(availableApps).length > 0) {
@@ -53,46 +55,57 @@ export const useSidebar = () => {
       [key: string]: any;
     };
 
-    selectedApps
-      .filter((element) => {
-        const { appId, groupKey } = getValuesFromId(element);
-        if (!availableApps[groupKey]) {
-          return false;
-        }
-        const option = availableApps[groupKey].options[appId];
-        if (option === undefined) {
-          return false;
-        }
-        if (option.devOnly && !developerMode) {
-          return false;
-        }
-        return true;
-      })
-      .map((element) => {
-        const { appId, groupKey } = getValuesFromId(element);
-        if (!availableApps[groupKey]) {
-          return;
-        }
-        const option = availableApps[groupKey].options[appId];
-        if (option === undefined) {
-          return;
-        }
+    if (forceDAppsList) {
+      return forceDAppsList
+        .filter((element) => {
+          return !!SIDEBAR_LIST[element];
+        })
+        .map((element) => {
+          return SIDEBAR_LIST[element];
+        });
+    }
 
-        dynamicAppsSelection[element] = SIDEBAR_LIST[option.id]
-          ? SIDEBAR_LIST[option.id]
-          : {
-              id: option.id,
-              title: option.title,
-              route: option.route,
-              url: option.url,
-              icon: option.icon,
-            };
-      });
+    forceDAppsList ||
+      selectedApps
+        .filter((element) => {
+          const { appId, groupKey } = getValuesFromId(element);
+          if (!availableApps[groupKey]) {
+            return false;
+          }
+          const option = availableApps[groupKey].options[appId];
+          if (option === undefined) {
+            return false;
+          }
+          if (option.devOnly && !developerMode) {
+            return false;
+          }
+          return true;
+        })
+        .map((element) => {
+          const { appId, groupKey } = getValuesFromId(element);
+          if (!availableApps[groupKey]) {
+            return;
+          }
+          const option = availableApps[groupKey].options[appId];
+          if (option === undefined) {
+            return;
+          }
+
+          dynamicAppsSelection[element] = SIDEBAR_LIST[option.id]
+            ? SIDEBAR_LIST[option.id]
+            : {
+                id: option.id,
+                title: option.title,
+                route: option.route,
+                url: option.url,
+                icon: option.icon,
+              };
+        });
 
     dynamicAppsSelection["dappstore"] = SIDEBAR_LIST["DAppsStore"];
 
     return dynamicAppsSelection;
-  }, [availableApps, selectedApps, developerMode]);
+  }, [forceDAppsList, availableApps, selectedApps, developerMode]);
 
   const toggleSidebar = () => {
     dispatch(setSidebarExpanded(!isSidebarExpanded));
