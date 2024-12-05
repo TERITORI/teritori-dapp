@@ -6,8 +6,6 @@ import { SVG } from "@/components/SVG";
 import { useAppConfig } from "@/context/AppConfigProvider";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
-const viewPort = { width: 188, height: 68 }; // from the svg code
-
 export const TopLogo: React.FC<{
   height: number;
   style?: StyleProp<ViewStyle>;
@@ -19,7 +17,7 @@ export const TopLogo: React.FC<{
   const logo = (
     <SVG
       height={height}
-      width={(height / viewPort.height) * viewPort.width}
+      preserveAspectRatio="xMinYMin meet"
       source={logoSource}
     />
   );
