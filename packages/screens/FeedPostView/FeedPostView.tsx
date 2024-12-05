@@ -5,7 +5,6 @@ import { FeedPostArticleView } from "./components/FeedPostArticleView";
 import { FeedPostDefaultView } from "./components/FeedPostDefaultView";
 import { FeedPostVideoView } from "./components/FeedPostVideoView";
 
-import { BrandText } from "@/components/BrandText";
 import { NotFound } from "@/components/NotFound";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
@@ -14,7 +13,6 @@ import { parseNetworkObjectId } from "@/networks";
 import { convertLegacyPostId } from "@/utils/feed/queries";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { primaryColor } from "@/utils/style/colors";
-import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { PostCategory } from "@/utils/types/feed";
 
