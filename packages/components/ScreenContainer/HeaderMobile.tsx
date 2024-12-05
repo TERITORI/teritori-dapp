@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { FC } from "react";
-import { View, StyleSheet, TouchableOpacity, Platform } from "react-native";
+import { View, TouchableOpacity, Platform, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
 import hamburgerCrossSVG from "../../../assets/icons/hamburger-button-cross.svg";
@@ -17,7 +17,7 @@ import { ConnectWalletButtonMobile } from "../TopMenu/ConnectWalletButtonMobile"
 import { TogglePlayerButton } from "../mediaPlayer/TogglePlayerButton";
 import { BackButton } from "../navigation/components/BackButton";
 import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
-import { TopLogoMobile } from "../navigation/components/TopLogoMobile";
+import { TopLogo } from "../navigation/components/TopLogo";
 import { SpacerRow } from "../spacer";
 
 export const HeaderMobile: FC<{
@@ -36,9 +36,9 @@ export const HeaderMobile: FC<{
   const navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
-      <TopLogoMobile />
-      <View style={styles.rightContainer}>
+    <View style={containerCStyle}>
+      <TopLogo height={48} />
+      <View style={rightContainerCStyle}>
         {onBackPress && (
           <>
             <SpacerRow size={1} />
@@ -54,9 +54,10 @@ export const HeaderMobile: FC<{
           <>
             <SpacerRow size={1} />
             <CartIconButtonBadge isMobile />
-            <SpacerRow size={1} />
           </>
         )}
+
+        <SpacerRow size={1} />
 
         <NetworkSelectorMobile
           forceNetworkId={forceNetworkId}
@@ -91,28 +92,25 @@ export const HeaderMobile: FC<{
   );
 };
 
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    height: MOBILE_HEADER_HEIGHT,
-    maxHeight: MOBILE_HEADER_HEIGHT,
-    width: "100%",
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderBottomColor: neutral33,
-    borderBottomWidth: 1,
-    paddingHorizontal: layout.spacing_x1_5,
-    position: "absolute",
-    top: 0,
-    zIndex: 99999,
-    backgroundColor: neutral00,
-  },
-  rightContainer: {
-    height: MOBILE_HEADER_HEIGHT,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-});
+const containerCStyle: ViewStyle = {
+  height: MOBILE_HEADER_HEIGHT,
+  maxHeight: MOBILE_HEADER_HEIGHT,
+  width: "100%",
+  flex: 1,
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  borderBottomColor: neutral33,
+  borderBottomWidth: 1,
+  paddingHorizontal: layout.spacing_x1_5,
+  position: "absolute",
+  top: 0,
+  zIndex: 99999,
+  backgroundColor: neutral00,
+};
+
+const rightContainerCStyle: ViewStyle = {
+  height: MOBILE_HEADER_HEIGHT,
+  flexDirection: "row",
+  alignItems: "center",
+};
