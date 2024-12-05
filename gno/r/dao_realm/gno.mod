@@ -5,6 +5,7 @@ require (
 	gno.land/p/teritori/dao_core v0.0.0-latest
 	gno.land/p/teritori/dao_interfaces v0.0.0-latest
 	gno.land/p/teritori/dao_proposal_single v0.0.0-latest
+	gno.land/p/teritori/dao_roles_group v0.0.0-latest
 	gno.land/p/teritori/dao_utils v0.0.0-latest
 	gno.land/p/teritori/dao_voting_group v0.0.0-latest
 	gno.land/p/teritori/havl v0.0.0-latest

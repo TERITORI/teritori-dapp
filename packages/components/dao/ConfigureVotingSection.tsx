@@ -12,10 +12,7 @@ import { patternOnlyNumbers } from "../../utils/formRules";
 import { neutral33, neutral77, neutralA3 } from "../../utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
-import {
-  ConfigureVotingFormType,
-  ORGANIZATION_DEPLOYER_STEPS,
-} from "../../utils/types/organizations";
+import { ConfigureVotingFormType } from "../../utils/types/organizations";
 import { BrandText } from "../BrandText";
 import { RangeSlider } from "../RangeSlider";
 import { PrimaryButton } from "../buttons/PrimaryButton";
@@ -24,6 +21,7 @@ import { SpacerColumn, SpacerRow } from "../spacer";
 
 interface ConfigureVotingSectionProps {
   onSubmit: (form: ConfigureVotingFormType) => void;
+  steps: string[];
   noDuration?: boolean;
   submitLabel?: string;
   contentContainerStyle?: StyleProp<ViewStyle>;
@@ -31,6 +29,7 @@ interface ConfigureVotingSectionProps {
 
 export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
   onSubmit,
+  steps,
   noDuration,
   submitLabel,
   contentContainerStyle,
@@ -120,9 +119,10 @@ export const ConfigureVotingSection: React.FC<ConfigureVotingSectionProps> = ({
       <View style={styles.footer}>
         <PrimaryButton
           size="M"
-          text={submitLabel || `Next: ${ORGANIZATION_DEPLOYER_STEPS[2]}`}
+          text={submitLabel || `Next: ${steps[2]}`}
           loader
           onPress={handleSubmit(onSubmit)}
+          testID="configure-voting-next"
         />
       </View>
     </View>
