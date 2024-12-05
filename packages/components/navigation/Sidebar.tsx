@@ -103,7 +103,6 @@ export const Sidebar: React.FC = () => {
             {currentRouteName === "Home" && <SideNotch />}
 
             <TopLogo
-              height={68}
               style={{
                 flex: 1,
                 marginHorizontal: layout.spacing_x0_25,

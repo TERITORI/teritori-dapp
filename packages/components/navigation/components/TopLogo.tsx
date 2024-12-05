@@ -7,9 +7,9 @@ import { useAppConfig } from "@/context/AppConfigProvider";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
 export const TopLogo: React.FC<{
-  height: number;
+  height?: number;
   style?: StyleProp<ViewStyle>;
-}> = ({ height, style }) => {
+}> = ({ height = 68, style }) => {
   const navigation = useAppNavigation();
   const { homeScreen, logo: configLogo } = useAppConfig();
 
