@@ -13,7 +13,7 @@ import { AppMode } from "@/utils/types/app-mode";
 export const Navigator: React.FC = () => {
   const [appMode] = useAppMode();
   const [isLoading] = useOnboardedStatus();
-  const { homeScreen } = useAppConfig();
+  const { homeScreen, browserTabsPrefix } = useAppConfig();
 
   const { Nav, navigatorScreenOptions } = getNav(appMode as AppMode);
 
@@ -29,7 +29,7 @@ export const Navigator: React.FC = () => {
       }
       screenOptions={navigatorScreenOptions as any} // FIXME: upgrade to expo-router
     >
-      {getNormalModeScreens({ appMode: appMode as AppMode })}
+      {getNormalModeScreens({ appMode, browserTabsPrefix })}
       {appMode === "mini" ? getMiniModeScreens() : null}
     </Nav.Navigator>
   );

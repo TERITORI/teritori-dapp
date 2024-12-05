@@ -9,6 +9,7 @@ import { GovernanceVoteHeader } from "./GovernanceVoteHeader/GovernanceVoteHeade
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
+import { useAppConfig } from "@/context/AppConfigProvider";
 import { useGetProposal } from "@/hooks/governance/useGetProposal";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkKind } from "@/networks";
@@ -23,14 +24,15 @@ export const GovernanceProposalScreen: ScreenFC<"GovernanceProposal"> = ({
 }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const navigation = useAppNavigation();
+  const { browserTabsPrefix } = useAppConfig();
   const proposal = useGetProposal(selectedNetworkId, id);
   const headerTitle =
     "#" + proposal?.proposal_id + " " + proposal?.content.title;
   useEffect(() => {
     navigation.setOptions({
-      title: `Teritori - Governance: ${headerTitle || ""}`,
+      title: `${browserTabsPrefix}Governance: ${headerTitle || ""}`,
     });
-  }, [navigation, id, headerTitle]);
+  }, [navigation, id, headerTitle, browserTabsPrefix]);
 
   return (
     <ScreenContainer
