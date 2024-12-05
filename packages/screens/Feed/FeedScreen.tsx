@@ -1,5 +1,6 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useMemo } from "react";
+import { View } from "react-native";
 
 import { ArticlesFeed } from "./components/ArticlesFeed";
 import { FeedHeader } from "./components/FeedHeader";
@@ -11,7 +12,10 @@ import { VideosFeed } from "./components/VideosFeed";
 
 import { PostsRequest } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
-import { ScreenContainer } from "@/components/ScreenContainer";
+import {
+  NewScreenContainer,
+  ScreenContainer,
+} from "@/components/ScreenContainer";
 import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
 import { NewsFeed } from "@/components/socialFeed/NewsFeed/NewsFeed";
 import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
@@ -61,11 +65,11 @@ export const FeedScreen: ScreenFC<"Feed"> = ({
             isFlagged={params?.tab === "moderationDAO"}
             disablePosting={params?.tab === "moderationDAO"}
             Header={() => (
-              <>
+              <View style={{ width: "100%" }}>
                 {/* ScreenContainer in FeedScreen has noScroll, so we need to add MobileTitle here */}
                 {isMobile && <MobileTitle title="SOCIAL FEED" />}
                 <FeedHeader selectedTab="" />
-              </>
+              </View>
             )}
           />
         );
@@ -73,17 +77,12 @@ export const FeedScreen: ScreenFC<"Feed"> = ({
   }, [params?.tab, params?.post, isMobile, defaultFeedRequest]);
 
   return (
-    <ScreenContainer
-      fullWidth
-      responsive
-      noMargin
-      noScroll
-      footerChildren={<></>}
+    <NewScreenContainer
       forceNetworkFeatures={[NetworkFeature.SocialFeed]}
-      headerChildren={<BrandText>Social Feed</BrandText>}
+      title="Social Feed"
     >
       {feedContent}
-    </ScreenContainer>
+    </NewScreenContainer>
   );
 };
 

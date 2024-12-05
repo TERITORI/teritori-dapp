@@ -1,5 +1,6 @@
 import { cloneDeep } from "lodash";
 import React, { useMemo } from "react";
+import { View } from "react-native";
 
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 
@@ -72,7 +73,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
   }, [hasFlaggedPosts, isModerationDAOMember, selectedNetworkKind]);
 
   return (
-    <>
+    <View>
       <Tabs
         items={adjustedTabItems}
         selected={selectedTab}
@@ -80,11 +81,10 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
           navigation.navigate("Feed", { tab: key });
         }}
         style={{
-          alignSelf: "center",
+          alignItems: "center",
           height: 64,
           zIndex: 9,
           elevation: 9,
-          width,
         }}
         borderColorTabSelected={primaryColor}
         gradientText
@@ -101,7 +101,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
             : "There are no items to moderate yet."}
         </BrandText>
       )}
-    </>
+    </View>
   );
 };
 

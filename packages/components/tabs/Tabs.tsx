@@ -183,7 +183,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                     )}
                   </View>
                   {!hideSelector && isSelected && (
-                    <>
+                    <View>
                       {gradientText ? (
                         <LinearGradient
                           start={{ x: 0, y: 0.5 }}
@@ -211,7 +211,7 @@ export const Tabs = <T extends { [key: string]: TabDefinition }>({
                           ]}
                         />
                       )}
-                    </>
+                    </View>
                   )}
                 </TouchableOpacity>
               );
@@ -230,6 +230,6 @@ const styles = StyleSheet.create({
     height: 2,
     width: "100%",
     position: "absolute",
-    bottom: -1,
+    bottom: -19,
   },
 });

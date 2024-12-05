@@ -177,10 +177,12 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       // Heavy components like SocialThreadCard, SocialArticleCard, etc. should be properly memoized
       return (
         <View
-          style={{
-            width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-            maxWidth: screenContentMaxWidth,
-          }}
+          style={
+            {
+              // width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
+              // maxWidth: screenContentMaxWidth,
+            }
+          }
         >
           {post.category === PostCategory.Article ? (
             <SocialArticleCard
@@ -207,25 +209,21 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         </View>
       );
     },
-    [windowWidth, width, isFlagged, refetch, cardStyle],
+    [isFlagged, refetch, cardStyle],
   );
 
   return (
-    <>
+    <View>
       <Animated.FlatList
         data={posts}
         renderItem={({ item: post }) => RenderItem(post)}
         ListHeaderComponentStyle={{
           zIndex: 1,
-          width: windowWidth,
-          maxWidth: screenContentMaxWidth,
+          width: "100%",
         }}
         ListHeaderComponent={
           <>
-            <View
-              onLayout={onHeaderLayout}
-              style={{ width, alignSelf: "center", alignItems: "center" }}
-            >
+            <View onLayout={onHeaderLayout} style={{ width: "100%" }}>
               <Header />
             </View>
             <ListHeaderComponent />
@@ -258,13 +256,11 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         additionalHashtag={additionalHashtag}
         onSubmitSuccess={refetch}
       />
-    </>
+    </View>
   );
 };
 
 const contentCStyle: ViewStyle = {
-  alignItems: "center",
-  alignSelf: "center",
   width: "100%",
 };
 const floatingActionsCStyle: ViewStyle = {
