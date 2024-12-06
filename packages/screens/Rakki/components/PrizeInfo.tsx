@@ -2,11 +2,10 @@ import Long from "long";
 import { FC } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import rakkiTicketImage from "@/assets/logos/rakki-ticket.png";
 import { BrandText } from "@/components/BrandText";
-import { OptimizedImage } from "@/components/OptimizedImage";
 import { GradientText } from "@/components/gradientText";
 import { Info } from "@/contracts-clients/rakki/Rakki.types";
+import { IntroTicketImageButton } from "@/screens/Rakki/components/IntroTicketImageButton";
 import { prettyPrice } from "@/utils/coins";
 import {
   fontSemibold14,
@@ -52,18 +51,15 @@ export const PrizeInfo: FC<{
           {
             textAlign: "center",
             marginTop: layout.spacing_x1_5,
+            marginBottom: 50,
           },
           fontSemibold14,
         ]}
       >
         in prizes!
       </BrandText>
-      <OptimizedImage
-        sourceURI={rakkiTicketImage}
-        style={{ width: 457, height: 260, marginTop: 50 }}
-        width={457}
-        height={260}
-      />
+
+      <IntroTicketImageButton networkId={networkId} info={info} />
     </View>
   );
 };

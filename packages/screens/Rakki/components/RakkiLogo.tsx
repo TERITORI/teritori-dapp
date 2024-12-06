@@ -2,12 +2,12 @@ import { FC } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
-import { JapaneseText } from "@/screens/Rakki/components/JapaneseText";
+import { IntroJapText } from "@/screens/Rakki/components/IntroJapText";
 
 export const RakkiLogo: FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => {
   return (
     <View style={style}>
-      <JapaneseText />
+      <IntroJapText />
       <BrandText
         style={{
           textAlign: "center",
@@ -19,7 +19,7 @@ export const RakkiLogo: FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => {
       >
         RAKKi
       </BrandText>
-      <JapaneseText />
+      <IntroJapText />
     </View>
   );
 };

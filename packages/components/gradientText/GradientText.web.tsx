@@ -13,10 +13,10 @@ import {
   gradientColorLightLavender,
   gradientColorPink,
   gradientColorPurple,
+  gradientColorRakkiYellow,
+  gradientColorRakkiYellowLight,
   gradientColorSalmon,
   gradientColorTurquoise,
-  rakkiYellow,
-  rakkiYellowLight,
 } from "../../utils/style/colors";
 import { exoFontFamilyFromFontWeight } from "../../utils/style/fonts";
 
@@ -43,7 +43,7 @@ const gradient = (type: GradientType) => {
     case "grayLight":
       return `90deg, ${gradientColorLighterGray} 0%, ${gradientColorLightLavender} 100%`;
     case "yellow":
-      return `267deg, ${rakkiYellow} 0%, ${rakkiYellowLight} 100%`;
+      return `267deg, ${gradientColorRakkiYellow} 0%, ${gradientColorRakkiYellowLight} 100%`;
     case getMapPostTextGradientType(PostCategory.Normal):
       return getMapPostTextGradientString(PostCategory.Normal);
     case getMapPostTextGradientType(PostCategory.Article):

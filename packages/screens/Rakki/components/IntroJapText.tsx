@@ -4,7 +4,7 @@ import { TextStyle, View } from "react-native";
 import { BrandText } from "@/components/BrandText";
 import { neutral67, neutralFF } from "@/utils/style/colors";
 
-export const JapaneseText: FC = () => {
+export const IntroJapText: FC = () => {
   return (
     <View>
       <BrandText

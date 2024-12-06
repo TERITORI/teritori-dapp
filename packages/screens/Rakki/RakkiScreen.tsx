@@ -7,11 +7,11 @@ import { useRakkiInfo } from "@/hooks/rakki/useRakkiInfo";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { GameBox } from "@/screens/Rakki/components/GameBox";
-import { GetTicketCTA } from "@/screens/Rakki/components/GetTicketsCTA";
 import { Help } from "@/screens/Rakki/components/Help";
 import { PrizeInfo } from "@/screens/Rakki/components/PrizeInfo";
 import { RakkiHistory } from "@/screens/Rakki/components/RakkiHistory";
 import { RakkiLogo } from "@/screens/Rakki/components/RakkiLogo";
+import { TicketsRemaining } from "@/screens/Rakki/components/TicketsRamaining";
 import { sectionLabelCStyle } from "@/screens/Rakki/styles";
 import { ScreenFC } from "@/utils/navigation";
 import { layout } from "@/utils/style/layout";
@@ -52,7 +52,7 @@ export const RakkiScreen: ScreenFC<"Rakki"> = () => {
           networkId={networkId}
           style={{ marginTop: 50 }}
         />
-        <GetTicketCTA
+        <TicketsRemaining
           info={rakkiInfo}
           style={{ marginTop: layout.spacing_x4 }}
           networkId={networkId}

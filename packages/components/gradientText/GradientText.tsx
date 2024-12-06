@@ -17,8 +17,8 @@ import {
   gradientColorPurple,
   gradientColorSalmon,
   gradientColorTurquoise,
-  rakkiYellow,
-  rakkiYellowLight,
+  gradientColorRakkiYellow,
+  gradientColorRakkiYellowLight,
 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
@@ -115,7 +115,7 @@ const gradient = (type: GradientType): LinearGradientProps => {
       };
     case "yellow":
       return {
-        colors: [rakkiYellow, rakkiYellowLight],
+        colors: [gradientColorRakkiYellow, gradientColorRakkiYellowLight],
         start,
         end,
       };

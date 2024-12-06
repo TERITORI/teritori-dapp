@@ -9,7 +9,7 @@ import { Username } from "@/components/user/Username";
 import { Info } from "@/contracts-clients/rakki/Rakki.types";
 import { useRakkiHistory } from "@/hooks/rakki/useRakkiHistory";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
-import { BuyTicketsButton } from "@/screens/Rakki/components/BuyTicketsButton";
+import { BuyTicketsButton } from "@/screens/Rakki/components/BuyTickets/BuyTicketsButton";
 import { gameBoxLabelCStyle, sectionLabelCStyle } from "@/screens/Rakki/styles";
 import { joinElements } from "@/utils/react";
 import { neutral22, neutral33, neutral77 } from "@/utils/style/colors";

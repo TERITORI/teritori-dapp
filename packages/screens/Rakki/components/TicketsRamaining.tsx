@@ -3,17 +3,15 @@ import { StyleProp, View, ViewStyle } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
 import { Info } from "@/contracts-clients/rakki/Rakki.types";
-import { BuyTicketsButton } from "@/screens/Rakki/components/BuyTicketsButton";
 import { sectionLabelCStyle } from "@/screens/Rakki/styles";
 import { primaryColor } from "@/utils/style/colors";
 import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-export const GetTicketCTA: FC<{
-  networkId: string;
+export const TicketsRemaining: FC<{
   info: Info;
   style?: StyleProp<ViewStyle>;
-}> = ({ networkId, info, style }) => {
+}> = ({ info, style }) => {
   return (
     <View style={style}>
       <BrandText style={sectionLabelCStyle}>Get your tickets now!</BrandText>
@@ -60,9 +58,6 @@ export const GetTicketCTA: FC<{
         >
           remaining
         </BrandText>
-      </View>
-      <View style={{ alignSelf: "center", marginTop: layout.spacing_x2 }}>
-        <BuyTicketsButton networkId={networkId} info={info} />
       </View>
     </View>
   );
