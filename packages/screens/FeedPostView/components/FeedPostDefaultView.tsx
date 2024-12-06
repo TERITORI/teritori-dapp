@@ -148,11 +148,7 @@ export const FeedPostDefaultView: FC<{
       fullWidth
       responsive
       noMargin
-      headerChildren={
-        <ScreenTitle style={{ width: "18%" }} numberOfLines={1}>
-          {headerLabel}
-        </ScreenTitle>
-      }
+      headerChildren={<ScreenTitle>{headerLabel}</ScreenTitle>}
       onBackPress={() =>
         post?.parentPostIdentifier
           ? navigation.navigate("FeedPostView", {
