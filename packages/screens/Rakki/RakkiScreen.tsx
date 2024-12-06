@@ -55,7 +55,6 @@ export const RakkiScreen: ScreenFC<"Rakki"> = () => {
         <TicketsRemaining
           info={rakkiInfo}
           style={{ marginTop: layout.spacing_x4 }}
-          networkId={networkId}
         />
         <GameBox
           info={rakkiInfo}
