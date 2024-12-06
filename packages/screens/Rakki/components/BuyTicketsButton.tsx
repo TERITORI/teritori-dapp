@@ -5,7 +5,7 @@ import Long from "long";
 import { FC, useEffect, useMemo, useState } from "react";
 import { TextInput, TextStyle, View } from "react-native";
 
-import ticketIconSVG from "@/assets/icons/ticket.svg";
+import rakkiTicketSVG from "@/assets/icons/rakki-ticket.svg";
 import rakkiTicketImage from "@/assets/logos/rakki-ticket.png";
 import { BrandText } from "@/components/BrandText";
 import { OptimizedImage } from "@/components/OptimizedImage";
@@ -175,7 +175,7 @@ export const BuyTicketsButton: FC<{ networkId: string; info: Info }> = ({
                   alignItems: "center",
                 }}
               >
-                <SVG source={ticketIconSVG} width={16} height={16} />
+                <SVG source={rakkiTicketSVG} width={24} height={24} />
               </View>
               <BrandText
                 style={[
