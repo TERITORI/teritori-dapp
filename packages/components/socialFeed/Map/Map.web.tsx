@@ -30,6 +30,7 @@ import {
   getMapPostIconColorRgba,
   getMapPostIconSVGString,
   MAP_LAYER_URL,
+  MAP_MAX_BOUND,
 } from "@/utils/feed/map";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {
@@ -49,15 +50,27 @@ interface MapManagerProps {
   setBounds: Dispatch<SetStateAction<LatLngBounds | null>>;
   creatingPostLocation?: CustomLatLngExpression;
   consultedPostLocation?: CustomLatLngExpression;
+  setMinZoom: Dispatch<SetStateAction<number>>;
 }
 const MapManager = ({
   setBounds,
   creatingPostLocation,
   consultedPostLocation,
+  setMinZoom,
 }: MapManagerProps) => {
   const map = useMap();
   const [isMapReady, setMapReady] = useState(false);
   const [isConsultedPostConsulted, setConsultedPostConsulted] = useState(false);
+
+  const postLocationZoom = 12;
+
+  useEffect(() => {
+    // Calculate and set minimal zoom
+    const calculatedMinZoom = map.getBoundsZoom(MAP_MAX_BOUND, true);
+    setMinZoom(calculatedMinZoom);
+    map.setMinZoom(calculatedMinZoom);
+    map.setZoom(calculatedMinZoom);
+  }, [map, setMinZoom]);
 
   useEffect(() => {
     const updateBounds = () => {
@@ -78,11 +91,11 @@ const MapManager = ({
 
     // Center to creatingPostLocation when it's updated
     if (creatingPostLocation) {
-      map.setView(creatingPostLocation);
+      map.setView(creatingPostLocation, postLocationZoom);
     }
     // Center to consultedPostLocation when it's updated (Once)
     if (consultedPostLocation && !isConsultedPostConsulted) {
-      map.setView(consultedPostLocation);
+      map.setView(consultedPostLocation, postLocationZoom);
       setConsultedPostConsulted(true);
     }
 
@@ -111,6 +124,7 @@ export const Map: FC<MapProps> = ({
 }) => {
   const selectedNetworkId = useSelectedNetworkId();
   const [bounds, setBounds] = useState<LatLngBounds | null>(null);
+  const [minZoom, setMinZoom] = useState(2.15);
 
   // Fetch the consulted post
   const { post: consultedPost } = usePost(consultedPostId);
@@ -197,6 +211,7 @@ export const Map: FC<MapProps> = ({
           width: "100%",
           height: "100%",
           alignSelf: "center",
+          maxHeight: 1000,
         },
         style,
       ]}
@@ -205,8 +220,13 @@ export const Map: FC<MapProps> = ({
         center={
           consultedPostLocation || creatingPostLocation || DEFAULT_MAP_POSITION
         }
-        zoom={12}
+        zoom={minZoom}
+        minZoom={minZoom}
+        zoomSnap={0.5}
         attributionControl={false}
+        maxBounds={MAP_MAX_BOUND}
+        maxBoundsViscosity={1.0}
+        style={{ width: "100%", height: "100%" }}
       >
         {/*----Loads and displays tiles on the map*/}
         <TileLayer noWrap attribution="" url={MAP_LAYER_URL} />
@@ -279,6 +299,7 @@ export const Map: FC<MapProps> = ({
           setBounds={setBounds}
           creatingPostLocation={creatingPostLocation}
           consultedPostLocation={consultedPostLocation}
+          setMinZoom={setMinZoom}
         />
       </MapContainer>
     </View>
