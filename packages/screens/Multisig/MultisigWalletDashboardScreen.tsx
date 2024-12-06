@@ -10,6 +10,7 @@ import { Assets } from "../WalletManager/Assets";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { MultisigTransactions } from "@/components/multisig/MultisigTransactions";
 import { SpacerColumn } from "@/components/spacer";
 import { UserCard } from "@/components/user/UserCard";
@@ -18,7 +19,7 @@ import { getUserId, parseUserId } from "@/networks";
 import { validateAddress } from "@/utils/formRules";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral33 } from "@/utils/style/colors";
-import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
+import { fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 type MultisigFormType = {
@@ -41,9 +42,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
 
   return (
     <ScreenContainer
-      headerChildren={
-        <BrandText style={fontSemibold20}>Dashboard {walletName}</BrandText>
-      }
+      headerChildren={<ScreenTitle>Dashboard {walletName}</ScreenTitle>}
       onBackPress={() => navigation.navigate("Multisig")}
       footerChildren={<></>}
       noMargin

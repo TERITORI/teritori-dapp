@@ -8,9 +8,9 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { Post } from "@/api/feed/v1/feed";
-import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { CommentsContainer } from "@/components/cards/CommentsContainer";
 import { CreateShortPostButton } from "@/components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostButton";
 import { CreateShortPostModal } from "@/components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostModal";
@@ -29,7 +29,6 @@ import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
 import { DEFAULT_USERNAME, LINES_HORIZONTAL_SPACE } from "@/utils/social-feed";
-import { fontSemibold20 } from "@/utils/style/fonts";
 import {
   layout,
   RESPONSIVE_BREAKPOINT_S,
@@ -149,11 +148,7 @@ export const FeedPostDefaultView: FC<{
       fullWidth
       responsive
       noMargin
-      headerChildren={
-        <BrandText style={[fontSemibold20, { width: "18%" }]} numberOfLines={1}>
-          {headerLabel}
-        </BrandText>
-      }
+      headerChildren={<ScreenTitle>{headerLabel}</ScreenTitle>}
       onBackPress={() =>
         post?.parentPostIdentifier
           ? navigation.navigate("FeedPostView", {

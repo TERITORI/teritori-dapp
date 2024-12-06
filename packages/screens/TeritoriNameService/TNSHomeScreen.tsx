@@ -14,9 +14,9 @@ import penSVG from "../../../assets/icons/pen-neutral77.svg";
 import registerSVG from "../../../assets/icons/register-neutral77.svg";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 
-import { BrandText } from "@/components/BrandText";
 import { ImageBackgroundLogoText } from "@/components/ImageBackgroundLogoText";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { ActivityTable } from "@/components/activity/ActivityTable";
 import { FlowCard } from "@/components/cards/FlowCard";
 import { TNSNameFinderModal } from "@/components/modals/teritoriNameService/TNSNameFinderModal";
@@ -132,7 +132,7 @@ export const TNSHomeScreen: ScreenFC<"TNSHome"> = ({ route }) => {
 
   return (
     <ScreenContainer
-      headerChildren={<BrandText>Name Service</BrandText>}
+      headerChildren={<ScreenTitle>Name Service</ScreenTitle>}
       forceNetworkFeatures={[NetworkFeature.NameService]}
       forceNetworkKind={NetworkKind.Cosmos}
       isLarge
