@@ -4,6 +4,7 @@ import { ScrollView, View } from "react-native";
 import { DAOsRequest } from "@/api/dao/v1/dao";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { DAOsList } from "@/components/dao/DAOsList";
 import { SpacerColumn } from "@/components/spacer";
@@ -23,7 +24,7 @@ export const OrganizationsScreen: ScreenFC<"Organizations"> = ({
 
   return (
     <ScreenContainer
-      headerChildren={<BrandText>DAO List</BrandText>}
+      headerChildren={<ScreenTitle>DAO List</ScreenTitle>}
       footerChildren={<></>}
       noMargin
       fullWidth

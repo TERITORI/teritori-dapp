@@ -15,9 +15,10 @@ import { NetworkKind, getNetwork } from "../../networks";
 import { ScreenFC, useAppNavigation } from "../../utils/navigation";
 import { ContractStatusFilter } from "../../utils/projects/types";
 import { primaryColor, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
+import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { GridList } from "@/components/layout/GridList";
 import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
 import { joinElements } from "@/utils/react";
@@ -64,7 +65,7 @@ export const ProjectsScreen: ScreenFC<"Projects"> = ({ route: { params } }) => {
       isLarge
       responsive
       footerChildren={<></>}
-      headerChildren={<BrandText style={fontSemibold20}>Projects</BrandText>}
+      headerChildren={<ScreenTitle>Projects</ScreenTitle>}
     >
       <GridList
         ListHeaderComponent={

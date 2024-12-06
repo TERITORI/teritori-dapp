@@ -10,6 +10,7 @@ import { Post } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { CommentsContainer } from "@/components/cards/CommentsContainer";
 import { CreateShortPostButton } from "@/components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostButton";
 import { CreateShortPostModal } from "@/components/socialFeed/NewsFeed/CreateShortPost/CreateShortPostModal";
@@ -41,7 +42,6 @@ import {
   SOCIAl_CARD_BORDER_RADIUS,
 } from "@/utils/social-feed";
 import { neutral33 } from "@/utils/style/colors";
-import { fontSemibold20 } from "@/utils/style/fonts";
 import {
   layout,
   RESPONSIVE_BREAKPOINT_S,
@@ -182,9 +182,7 @@ export const FeedPostArticleView: FC<{
       fullWidth
       responsive
       noMargin
-      headerChildren={
-        <BrandText style={fontSemibold20}>{headerLabel}</BrandText>
-      }
+      headerChildren={<ScreenTitle>{headerLabel}</ScreenTitle>}
       onBackPress={() =>
         post?.parentPostIdentifier
           ? navigation.navigate("FeedPostView", {

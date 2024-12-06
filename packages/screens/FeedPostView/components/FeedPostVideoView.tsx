@@ -13,6 +13,7 @@ import { VideoComment } from "./VideoComment";
 import { Post, PostsRequest } from "@/api/feed/v1/feed";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
 import { MediaPlayerVideo } from "@/components/mediaPlayer/MediaPlayerVideo";
@@ -234,9 +235,7 @@ export const FeedPostVideoView: FC<{
   if (!video) return <BrandText>Video not valid</BrandText>;
   return (
     <ScreenContainer
-      headerChildren={
-        <BrandText style={fontSemibold20}>Video by {username}</BrandText>
-      }
+      headerChildren={<ScreenTitle>Video by {username}</ScreenTitle>}
       onBackPress={() =>
         navigation.canGoBack()
           ? navigation.goBack()
