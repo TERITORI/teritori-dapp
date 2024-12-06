@@ -1,7 +1,7 @@
-KEY = teritori
+KEY = teritori-test4-seed
 BASE = teritori
-REMOTE = https://rpc.test5.gno.land
-CHAIN_ID = test5
+REMOTE = https://rpc.gno.land
+CHAIN_ID = portal-loop
 
 .PHONY: add_social_feeds_realm add_utf16_pkg add_ujson_pkg add_flags_index_pkg add_dao_interfaces_pkg add_social_feed all
 
