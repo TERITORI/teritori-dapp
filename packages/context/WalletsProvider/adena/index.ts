@@ -43,7 +43,7 @@ export const useAdena: () => UseAdenaResult = () => {
     ) => {
       if (!adena || !isAdenaConnected || !selectedNetworkInfo) {
         console.log(
-          `adena: ${!adena} connected: ${isAdenaConnected} chainId: ${selectedNetworkInfo?.chainId}`,
+          `adena: ${!!adena} connected: ${isAdenaConnected} chainId: ${selectedNetworkInfo?.chainId}`,
         );
         setReady(true);
         return;
