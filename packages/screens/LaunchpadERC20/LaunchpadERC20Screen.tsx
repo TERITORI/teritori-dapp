@@ -6,6 +6,7 @@ import { BrandText } from "@/components/BrandText";
 import { ImageBackgroundLogoText } from "@/components/ImageBackgroundLogoText";
 import { OmniLink } from "@/components/OmniLink";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import {
   LargeBoxButton,
   LargeBoxButtonProps,
@@ -39,7 +40,7 @@ const BUTTONS: LargeBoxButtonProps[] = [
 export const LaunchpadERC20Screen: ScreenFC<"LaunchpadERC20"> = () => {
   return (
     <ScreenContainer
-      headerChildren={<BrandText>Launchpad ERC 20</BrandText>}
+      headerChildren={<ScreenTitle>Launchpad ERC 20</ScreenTitle>}
       forceNetworkFeatures={[NetworkFeature.LaunchpadERC20]}
       forceNetworkKind={NetworkKind.Gno}
     >

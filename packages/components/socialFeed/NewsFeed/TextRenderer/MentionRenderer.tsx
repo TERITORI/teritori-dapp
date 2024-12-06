@@ -3,7 +3,7 @@ import { TouchableOpacity } from "react-native";
 
 import { useMention } from "../../../../hooks/feed/useMention";
 import { neutralA3, primaryColor } from "../../../../utils/style/colors";
-import { fontSemibold13 } from "../../../../utils/style/fonts";
+import { fontRegular13 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText";
 
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
@@ -15,7 +15,7 @@ export const MentionRenderer: React.FC<{ text: string }> = ({ text }) => {
   // Every text with a "@" is a mention. But we consider valid mentions as a valid wallet address or a valid NS token id.
   if (!userId) {
     return (
-      <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
+      <BrandText style={[fontRegular13, { color: neutralA3 }]}>
         {text}
       </BrandText>
     );
@@ -28,7 +28,7 @@ export const MentionRenderer: React.FC<{ text: string }> = ({ text }) => {
         })
       }
     >
-      <BrandText style={[fontSemibold13, { color: primaryColor }]}>
+      <BrandText style={[fontRegular13, { color: primaryColor }]}>
         {text}
       </BrandText>
     </TouchableOpacity>

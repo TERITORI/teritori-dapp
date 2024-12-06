@@ -4,7 +4,7 @@ import defaultThumbnailImage from "../../../../assets/default-images/default-tra
 import { Post } from "../../../api/feed/v1/feed";
 import { zodTryParseJSON } from "../../../utils/sanitize";
 import { neutralA3 } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
+import { fontRegular13, fontRegular15 } from "../../../utils/style/fonts";
 import { ZodSocialFeedTrackMetadata } from "../../../utils/types/feed";
 import { BrandText } from "../../BrandText";
 import { AudioView } from "../../FilePreview/AudioView";
@@ -17,12 +17,12 @@ export const MusicPostTrackContent: FC<{
   if (!track) return null;
   return (
     <>
-      <BrandText>{track.title}</BrandText>
+      <BrandText style={[fontRegular15]}>{track.title}</BrandText>
 
       {track.description && (
         <>
           <SpacerColumn size={1} />
-          <BrandText style={[fontSemibold14, { color: neutralA3 }]}>
+          <BrandText style={[fontRegular13, { color: neutralA3 }]}>
             {track.description}
           </BrandText>
         </>

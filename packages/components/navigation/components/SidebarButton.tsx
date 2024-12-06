@@ -18,7 +18,7 @@ import {
   primaryColor,
   secondaryColor,
 } from "../../../utils/style/colors";
-import { fontSemibold12 } from "../../../utils/style/fonts";
+import { fontRegular12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { SidebarType } from "../../../utils/types/sidebar";
 import { arrayIncludes } from "../../../utils/typescript";
@@ -118,7 +118,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
             <Animated.View style={[rowCenterCStyle, opacityStyle]}>
               <BrandText
                 style={[
-                  fontSemibold12,
+                  fontRegular12,
                   (isSelected || isComingSoon) && { color: neutral77 },
                 ]}
               >

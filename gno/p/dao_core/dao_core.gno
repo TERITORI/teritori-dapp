@@ -5,7 +5,9 @@ import (
 	"strconv"
 	"strings"
 
+	"gno.land/p/demo/json"
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
+	"gno.land/p/teritori/jsonutil"
 )
 
 // TODO: add wrapper message handler to handle multiple proposal modules messages
@@ -14,6 +16,7 @@ type daoCore struct {
 	dao_interfaces.IDAOCore
 
 	votingModule              dao_interfaces.IVotingModule
+	rolesModule               dao_interfaces.IRolesModule
 	proposalModules           []dao_interfaces.ActivableProposalModule
 	activeProposalModuleCount int
 	realm                     std.Realm
@@ -22,11 +25,16 @@ type daoCore struct {
 
 func NewDAOCore(
 	votingModuleFactory dao_interfaces.VotingModuleFactory,
+	rolesModuleFactory dao_interfaces.RolesModuleFactory,
 	proposalModulesFactories []dao_interfaces.ProposalModuleFactory,
 	messageHandlersFactories []dao_interfaces.MessageHandlerFactory,
 ) dao_interfaces.IDAOCore {
 	if votingModuleFactory == nil {
 		panic("Missing voting module factory")
+	}
+
+	if rolesModuleFactory == nil {
+		panic("Missing roles module factory")
 	}
 
 	if len(proposalModulesFactories) == 0 {
@@ -43,6 +51,11 @@ func NewDAOCore(
 	core.votingModule = votingModuleFactory(core)
 	if core.votingModule == nil {
 		panic("voting module factory returned nil")
+	}
+
+	core.rolesModule = rolesModuleFactory(core)
+	if core.rolesModule == nil {
+		panic("roles module factory returned nil")
 	}
 
 	for i, modFactory := range proposalModulesFactories {
@@ -117,6 +130,32 @@ func (d *daoCore) VotingModule() dao_interfaces.IVotingModule {
 	return d.votingModule
 }
 
+func (d *daoCore) RolesModule() dao_interfaces.IRolesModule {
+	return d.rolesModule
+}
+
+func (d *daoCore) GetMembersJSON(start, end string, limit uint64, height int64) string {
+	vMembers := d.votingModule.GetMembersJSON(start, end, limit, height)
+	nodes, err := json.Unmarshal([]byte(vMembers))
+	if err != nil {
+		panic("failed to unmarshal voting module members")
+	}
+	vals := nodes.MustArray()
+	for i, val := range vals {
+		obj := val.MustObject()
+		addr := jsonutil.MustAddress(obj["address"])
+		roles := d.rolesModule.GetMemberRoles(addr)
+		rolesJSON := make([]*json.Node, len(roles))
+		for j, role := range roles {
+			rolesJSON[j] = json.StringNode("", role)
+		}
+		obj["roles"] = json.ArrayNode("", rolesJSON)
+		vals[i] = json.ObjectNode("", obj)
+
+	}
+	return json.ArrayNode("", vals).String()
+}
+
 func (d *daoCore) VotingPowerAtHeight(address std.Address, height int64) uint64 {
 	return d.VotingModule().VotingPowerAtHeight(address, height)
 }
@@ -133,6 +172,11 @@ func (d *daoCore) Render(path string) string {
 	sb.WriteString(votingInfo.String())
 	sb.WriteRune('\n')
 	sb.WriteString(d.votingModule.Render(""))
+	rolesInfo := d.rolesModule.Info()
+	sb.WriteString("# Roles Module: ")
+	sb.WriteString(rolesInfo.String())
+	sb.WriteRune('\n')
+	sb.WriteString(d.rolesModule.Render(""))
 	sb.WriteString("## Supported Messages:\n")
 	sb.WriteString(d.registry.Render())
 

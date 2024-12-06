@@ -5,15 +5,14 @@ import { FeedPostArticleView } from "./components/FeedPostArticleView";
 import { FeedPostDefaultView } from "./components/FeedPostDefaultView";
 import { FeedPostVideoView } from "./components/FeedPostVideoView";
 
-import { BrandText } from "@/components/BrandText";
 import { NotFound } from "@/components/NotFound";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { usePost } from "@/hooks/feed/usePost";
 import { parseNetworkObjectId } from "@/networks";
 import { convertLegacyPostId } from "@/utils/feed/queries";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { primaryColor } from "@/utils/style/colors";
-import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { PostCategory } from "@/utils/types/feed";
 
@@ -26,7 +25,8 @@ export const FeedPostView: ScreenFC<"FeedPostView"> = ({
   const navigation = useAppNavigation();
   const [network] = parseNetworkObjectId(idParam);
   const { post, isLoading, refetch } = usePost(id);
-  const label = post?.category === PostCategory.Video ? "Video" : "Post";
+  const label: string =
+    post?.category === PostCategory.Video ? "Video" : "Post";
 
   if (isLoading) {
     return (
@@ -35,9 +35,7 @@ export const FeedPostView: ScreenFC<"FeedPostView"> = ({
         fullWidth
         responsive
         noMargin
-        headerChildren={
-          <BrandText style={fontSemibold20}>Loading {label}</BrandText>
-        }
+        headerChildren={<ScreenTitle>Loading {label}</ScreenTitle>}
         onBackPress={() =>
           navigation.canGoBack()
             ? navigation.goBack()
@@ -62,9 +60,7 @@ export const FeedPostView: ScreenFC<"FeedPostView"> = ({
         fullWidth
         responsive
         noMargin
-        headerChildren={
-          <BrandText style={fontSemibold20}>{label} not found</BrandText>
-        }
+        headerChildren={<ScreenTitle>{label} not found</ScreenTitle>}
         onBackPress={() =>
           navigation.canGoBack()
             ? navigation.goBack()

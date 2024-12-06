@@ -8,7 +8,7 @@ import { useDropdowns } from "../../hooks/useDropdowns";
 import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
 import { NetworkFeature, NetworkKind } from "../../networks";
 import { neutral17, secondaryColor } from "../../utils/style/colors";
-import { fontMedium14 } from "../../utils/style/fonts";
+import { fontRegular14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { NetworkIcon } from "../NetworkIcon";
 import { SVG } from "../SVG";
@@ -38,14 +38,7 @@ export const NetworkSelector: React.FC<{
         >
           <NetworkIcon networkId={selectedNetworkInfo?.id || ""} size={16} />
           <SpacerRow size={1} />
-          <BrandText
-            style={[
-              fontMedium14,
-              {
-                color: "white",
-              },
-            ]}
-          >
+          <BrandText style={[fontRegular14, { color: "white" }]}>
             {selectedNetworkInfo?.displayName}
           </BrandText>
           <SpacerRow size={1} />

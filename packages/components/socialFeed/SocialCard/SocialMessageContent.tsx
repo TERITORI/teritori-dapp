@@ -18,7 +18,7 @@ import { HTML_TAG_REGEXP } from "@/utils/regex";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import { convertGIFToLocalFileType } from "@/utils/social-feed";
 import { yellowPremium } from "@/utils/style/colors";
-import { fontSemibold13 } from "@/utils/style/fonts";
+import { fontRegular13 } from "@/utils/style/fonts";
 import { ZodSocialFeedPostMetadata } from "@/utils/types/feed";
 
 interface Props {
@@ -109,7 +109,7 @@ export const SocialMessageContent: React.FC<Props> = ({ post, isPreview }) => {
                 Platform.OS === "android" ? "rgb(0,0,0)" : "transparent",
             }}
           >
-            <BrandText style={[fontSemibold13, { color: yellowPremium }]}>
+            <BrandText style={[fontRegular13, { color: yellowPremium }]}>
               Premium Content
             </BrandText>
           </BlurView>

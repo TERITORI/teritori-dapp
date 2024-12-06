@@ -10,26 +10,25 @@ import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { AvailableNamesInput } from "@/components/inputs/AvailableNamesInput";
 import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { useDeveloperMode } from "@/hooks/useDeveloperMode";
 import { useNSAvailability } from "@/hooks/useNSAvailability";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { NetworkKind } from "@/networks";
 import { neutral33, neutral77 } from "@/utils/style/colors";
 import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import {
-  CreateDaoFormType,
-  DaoType,
-  ORGANIZATION_DEPLOYER_STEPS,
-} from "@/utils/types/organizations";
-
-//const RADIO_DESCRIPTION_TYPES = ["Membership", "Governance", "Decentralized"];
+import { CreateDaoFormType, DaoType } from "@/utils/types/organizations";
 
 interface CreateDAOSectionProps {
   onSubmit: (form: CreateDaoFormType) => void;
+  onStructureChange: (structure: DaoType) => void;
+  organizationSteps: string[];
 }
 
 export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   onSubmit,
+  onStructureChange,
+  organizationSteps,
 }) => {
   const {
     control,
@@ -49,6 +48,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   const selectedRadioStructure = watch("structure");
   const uri = watch("imageUrl");
   const name = watch("associatedHandle");
+  const [isDev] = useDeveloperMode();
 
   const nameAvailability = useNSAvailability(selectedNetwork?.id, name);
 
@@ -59,6 +59,11 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
   // functions
   const onErrorImageLoading = () =>
     setError("imageUrl", { type: "pattern", message: "This image is invalid" });
+
+  const onStructureChangeHandler = (structure: DaoType) => {
+    setValue("structure", structure);
+    onStructureChange(structure);
+  };
 
   return (
     <View style={fillCStyle}>
@@ -142,7 +147,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
           <View style={fillCStyle}>
             <RadioDescriptionSelector
               selected={selectedRadioStructure === DaoType.MEMBER_BASED}
-              onPress={() => setValue("structure", DaoType.MEMBER_BASED)}
+              onPress={() => onStructureChangeHandler(DaoType.MEMBER_BASED)}
               title="Membership-based TORG - Teritori Organization"
               description="Small organization with a few members who are likely to stick around. Members can be added and removed by a vote of existing members."
             />
@@ -152,11 +157,24 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
             <RadioDescriptionSelector
               disabled
               selected={selectedRadioStructure === DaoType.TOKEN_BASED}
-              onPress={() => setValue("structure", DaoType.TOKEN_BASED)}
+              onPress={() => onStructureChangeHandler(DaoType.TOKEN_BASED)}
               title="Governance Token-based TORG - Teritori Organization"
               description="Fluid organization with many members who leave and join frequently. Members can join and leave by exchanging governance shares."
             />
           </View>
+        </View>
+        <SpacerColumn size={2} />
+        <View style={rowCStyle}>
+          <View style={halfRowFlexCStyle}>
+            <RadioDescriptionSelector
+              disabled={!isDev}
+              selected={selectedRadioStructure === DaoType.ROLES_BASED}
+              onPress={() => onStructureChangeHandler(DaoType.ROLES_BASED)}
+              title="Roles-based TORG - Teritori Organization"
+              description="Organization where members have roles and permissions. Roles can be assigned and removed through a vote of existing members."
+            />
+          </View>
+          <SpacerRow size={2} />
         </View>
         <SpacerColumn size={2} />
       </ScrollView>
@@ -164,7 +182,7 @@ export const CreateDAOSection: React.FC<CreateDAOSectionProps> = ({
       <View style={footerCStyle}>
         <PrimaryButton
           size="M"
-          text={`Next: ${ORGANIZATION_DEPLOYER_STEPS[1]}`}
+          text={`Next: ${organizationSteps[1]}`}
           onPress={handleSubmit(onSubmit)}
           disabled={
             !isValid ||
@@ -196,6 +214,8 @@ const sectionCStyle: ViewStyle = {
 const rowCStyle: ViewStyle = { flexDirection: "row" };
 
 const fillCStyle: ViewStyle = { flex: 1 };
+
+const halfRowFlexCStyle: ViewStyle = { flex: 0.5 };
 
 const footerCStyle: ViewStyle = {
   justifyContent: "flex-end",

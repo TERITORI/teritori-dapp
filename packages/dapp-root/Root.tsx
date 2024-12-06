@@ -2,6 +2,7 @@ import {
   Exo_500Medium,
   Exo_600SemiBold,
   Exo_700Bold,
+  Exo_400Regular,
   useFonts,
 } from "@expo-google-fonts/exo";
 import { NavigationContainer } from "@react-navigation/native";
@@ -74,6 +75,7 @@ const App: React.FC<{ config: AppConfig }> = ({ config }) => {
     Exo_500Medium,
     Exo_600SemiBold,
     Exo_700Bold,
+    Exo_400Regular,
   });
 
   // FIXME: Fonts don't load on electron
