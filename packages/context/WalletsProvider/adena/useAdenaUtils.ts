@@ -31,8 +31,10 @@ export const useAdenaUtils = () => {
 
       try {
         const network = await adena.GetNetwork();
+
         if (network.status === "failure") {
           if (network.type === "NOT_CONNECTED") return;
+          if (network.type === "WALLET_LOCKED") return;
           throw Error(network.message);
         }
 
