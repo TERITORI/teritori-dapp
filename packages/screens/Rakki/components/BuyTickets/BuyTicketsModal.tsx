@@ -2,14 +2,7 @@ import { MsgExecuteContractEncodeObject } from "@cosmjs/cosmwasm-stargate";
 import { toUtf8 } from "@cosmjs/encoding";
 import { useQueryClient } from "@tanstack/react-query";
 import Long from "long";
-import {
-  Dispatch,
-  FC,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import { TextInput, TextStyle, View } from "react-native";
 
 import rakkiTicketSVG from "@/assets/icons/rakki-ticket.svg";
@@ -20,18 +13,12 @@ import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SecondaryButton } from "@/components/buttons/SecondaryButton";
 import { MainConnectWalletButton } from "@/components/connectWallet/MainConnectWalletButton";
 import { GradientText } from "@/components/gradientText";
-import { DepositWithdrawModal } from "@/components/modals/DepositWithdrawModal";
 import ModalBase from "@/components/modals/ModalBase";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { ExecMsg, Info } from "@/contracts-clients/rakki";
 import { useBalances } from "@/hooks/useBalances";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
-import {
-  CurrencyInfo,
-  getCosmosNetwork,
-  getNetworkFeature,
-  NetworkFeature,
-} from "@/networks";
+import { getNetworkFeature, NetworkFeature } from "@/networks";
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { ModalTicketImage } from "@/screens/Rakki/components/BuyTickets/ModalTicketImage";
 import { prettyPrice } from "@/utils/coins";
@@ -79,15 +66,6 @@ export const BuyTicketsModal: FC<{
   const canPay = Long.fromString(ticketDenomBalance).gte(totalPrice);
   const canBuy = ticketAmountNumber.gt(0) && canPay;
   const { wrapWithFeedback } = useFeedbacks();
-
-  const [isDepositVisible, setDepositVisible] = useState(false);
-  const network = getCosmosNetwork(networkId);
-  const atomIbcCurrency = useMemo(() => {
-    return network?.currencies.find(
-      (currencyInfo: CurrencyInfo) =>
-        currencyInfo.kind === "ibc" && currencyInfo.sourceDenom === "uatom",
-    );
-  }, [network]);
 
   const onPressBuyTickets = wrapWithFeedback(async () => {
     if (!selectedWallet?.address) {
@@ -337,13 +315,6 @@ export const BuyTicketsModal: FC<{
                 style={{ alignSelf: "center" }}
                 size="M"
               />
-            ) : !canPay ? (
-              <PrimaryButton
-                loader
-                onPress={() => setDepositVisible(true)}
-                text="Deposit funds"
-                size="M"
-              />
             ) : (
               <PrimaryButton
                 disabled={!canBuy}
@@ -356,14 +327,6 @@ export const BuyTicketsModal: FC<{
           </View>
         </View>
       </Box>
-
-      <DepositWithdrawModal
-        variation="deposit"
-        networkId={networkId}
-        targetCurrency={atomIbcCurrency?.denom}
-        onClose={() => setDepositVisible(false)}
-        isVisible={isDepositVisible}
-      />
     </ModalBase>
   );
 };
