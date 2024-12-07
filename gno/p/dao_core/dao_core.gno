@@ -157,7 +157,7 @@ func (d *daoCore) GetMembersJSON(start, end string, limit uint64, height int64) 
 }
 
 func (d *daoCore) VotingPowerAtHeight(address std.Address, height int64) uint64 {
-	return d.VotingModule().VotingPowerAtHeight(address, height)
+	return d.VotingModule().VotingPowerAtHeight(address, height, "")
 }
 
 func (d *daoCore) ActiveProposalModuleCount() int {
