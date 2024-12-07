@@ -29,7 +29,7 @@ interface RolesSettingsSectionProps {
 export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
   onSubmit,
 }) => {
-  const { handleSubmit, control, unregister, register, setValue, reset } = useForm<RolesSettingFormType>();
+  const { handleSubmit, control, unregister, register, setValue, resetField } = useForm<RolesSettingFormType>();
   const [modalVisible, setModalVisible] = useState(false);
   const [rolesIndexes, setRolesIndexes] = useState<number[]>([]);
   const [features, setFeatures] = useState<{ name: string, value: boolean }[]>(fakeFeatures);
@@ -42,13 +42,17 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
     if (rolesIndexes.length > 0) {
       const copyIndex = [...rolesIndexes].filter((i) => i !== id);;
       setRolesIndexes(copyIndex);
-    } reset
+    }
   };
 
+  const resetModal = () => {
+    resetField(`roles.${rolesIndexes.length}.name`);
+    resetField(`roles.${rolesIndexes.length}.color`);
+    resetField(`roles.${rolesIndexes.length}.features`);
+  }
+
   const onOpenModal = () => {
-    console.log(rolesIndexes);
-    register
-    reset();
+    resetModal();
     setModalVisible(true);
   }
 
@@ -61,7 +65,6 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
   };
 
   const onCloseModal = () => {
-    reset();
     setModalVisible(false);
   }
 

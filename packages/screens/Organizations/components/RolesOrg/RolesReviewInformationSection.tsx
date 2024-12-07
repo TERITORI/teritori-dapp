@@ -169,16 +169,7 @@ export const RolesReviewInformationSection: React.FC<
               <ReviewCollapsableItem
                 title={`ROLE #${index + 1}`}
                 value={() => (
-                  <>
-                    <BrandText style={fontSemibold14}>{role.name}</BrandText>
-                    <SpacerColumn size={1} />
-                    {rolesSettingData.roles[index].features.map((feature) => (
-                      <View key={feature} style={rowCStyle}>
-                        <BrandText style={fontSemibold14}>{feature}</BrandText>
-                        <SpacerColumn size={1} />
-                      </View>
-                    ))}
-                  </>
+                  <BrandText style={fontSemibold14}>{role.name} permissions: {role.features?.join(", ")}</BrandText>
                 )}
               />
               {rolesSettingData?.roles.length !== index + 1 && (
