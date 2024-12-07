@@ -81,6 +81,17 @@ const main = async () => {
     readline,
     `Destination channel id: `,
   );
+  let ordering: "ordered" | "unordered" = "ordered";
+  while (true) {
+    const ordered = await promptForString(readline, `Ordered: `);
+    if (ordered.toLowerCase() === "yes") {
+      break;
+    }
+    if (ordered.toLowerCase() === "no") {
+      ordering = "unordered";
+      break;
+    }
+  }
   readline.close();
 
   printOutput(
@@ -106,7 +117,7 @@ const main = async () => {
               channel_id: `${dstChannelId}`,
               port_id: "transfer",
             },
-            ordering: "",
+            ordering,
             version: "",
           },
         ],
