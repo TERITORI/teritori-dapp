@@ -69,6 +69,8 @@ export const NetworkSelectorMenu: FC<{
         break;
       case NetworkKind.Cosmos:
         walletProvider = WalletProvider.Keplr;
+      case NetworkKind.Gno:
+        walletProvider = WalletProvider.Adena;
         break;
     }
 
