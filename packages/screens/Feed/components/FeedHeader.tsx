@@ -15,7 +15,7 @@ import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { getUserId, NetworkKind, parseUserId } from "@/networks";
 import { feedsTabItems } from "@/utils/social-feed";
 import { primaryColor } from "@/utils/style/colors";
-import { fontSemibold16 } from "@/utils/style/fonts";
+import { fontRegular14 } from "@/utils/style/fonts";
 import { PostCategory } from "@/utils/types/feed";
 
 type FeedHeaderProps = {
@@ -88,7 +88,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
         }}
         borderColorTabSelected={primaryColor}
         gradientText
-        tabTextStyle={fontSemibold16}
+        tabTextStyle={fontRegular14}
         tabContainerStyle={{ height: 64 }}
       />
 

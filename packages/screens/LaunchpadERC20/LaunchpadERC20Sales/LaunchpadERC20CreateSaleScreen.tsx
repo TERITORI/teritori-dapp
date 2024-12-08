@@ -5,13 +5,12 @@ import { CreateSaleForm } from "./LaunchpadERC20CreateSaleForm";
 import { CreateSaleSign } from "./LaunchpadERC20CreateSaleSign";
 import { useCreateSaleState } from "../hooks/useCreateSale";
 
-import { BrandText } from "@/components/BrandText";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { SpacerColumn } from "@/components/spacer";
 import { NetworkKind } from "@/networks";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
-import { fontSemibold20 } from "@/utils/style/fonts";
 
 const renderStep = (stepIndice: number) => {
   if (stepIndice === 1) return <CreateSaleForm />;
@@ -34,11 +33,7 @@ export const LaunchpadERC20CreateSaleScreen: ScreenFC<
       forceNetworkKind={NetworkKind.Gno}
       isLarge
       responsive
-      headerChildren={
-        <BrandText style={fontSemibold20}>
-          Launchpad ERC20 Sale Creation
-        </BrandText>
-      }
+      headerChildren={<ScreenTitle>Launchpad ERC20 Sale Creation</ScreenTitle>}
       onBackPress={() => navigation.navigate("LaunchpadERC20Sales")}
     >
       <Breadcrumb

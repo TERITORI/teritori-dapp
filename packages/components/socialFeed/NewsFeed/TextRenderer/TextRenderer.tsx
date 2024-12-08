@@ -11,7 +11,7 @@ import {
   urlMatch,
 } from "../../../../utils/social-feed";
 import { neutral77, neutralA3 } from "../../../../utils/style/colors";
-import { fontSemibold14 } from "../../../../utils/style/fonts";
+import { fontRegular14 } from "../../../../utils/style/fonts";
 import { BrandText } from "../../../BrandText";
 
 const REFERENCE_REGEX = /(?=--\S.+--)/gm;
@@ -110,10 +110,10 @@ export const TextRenderer = ({
   }, [refText, isTruncateNeeded]);
 
   return (
-    <BrandText style={[fontSemibold14, { color: neutralA3 }, style]}>
+    <BrandText style={[fontRegular14, { color: neutralA3 }, style]}>
       {formattedText}
       {isTruncateNeeded && (
-        <BrandText style={[fontSemibold14, { color: neutral77 }, seeMoreStyle]}>
+        <BrandText style={[fontRegular14, { color: neutral77 }, seeMoreStyle]}>
           {"\n...see more"}
         </BrandText>
       )}

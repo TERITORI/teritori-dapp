@@ -5,8 +5,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import { SideCart, useShowCart } from "./SideCart";
 
 import { SortDirection } from "@/api/marketplace/v1/marketplace";
-import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { CollectionContent } from "@/components/collections/CollectionContent";
 import { CollectionHeader } from "@/components/collections/CollectionHeader";
 import { TabsListType } from "@/components/collections/types";
@@ -17,7 +17,6 @@ import { setBuyNow, setShowFilters } from "@/store/slices/marketplaceFilters";
 import { useAppDispatch } from "@/store/store";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral00, neutral33 } from "@/utils/style/colors";
-import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
@@ -52,7 +51,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
       isLarge
       key={`Collection ${id}`} // this key is to reset the screen state when the id changes
       footerChildren={<></>}
-      headerChildren={<BrandText style={fontSemibold20}>{info.name}</BrandText>}
+      headerChildren={<ScreenTitle>{info.name}</ScreenTitle>}
       responsive
       onBackPress={() => navigation.navigate("Marketplace")}
       forceNetworkId={network?.id}

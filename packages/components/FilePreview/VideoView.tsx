@@ -5,7 +5,7 @@ import { View } from "react-native";
 import { DeleteButton } from "./DeleteButton";
 import { web3ToWeb2URI } from "../../utils/ipfs";
 import { errorColor } from "../../utils/style/colors";
-import { fontSemibold13 } from "../../utils/style/fonts";
+import { fontRegular13 } from "../../utils/style/fonts";
 import { SocialFeedVideoMetadata } from "../../utils/types/feed";
 import { LocalFileData, RemoteFileData } from "../../utils/types/files";
 import { BrandText } from "../BrandText";
@@ -34,7 +34,7 @@ export const VideoView: React.FC<Props> = ({
 
   if (!file?.url)
     return (
-      <BrandText style={[fontSemibold13, { color: errorColor }]}>
+      <BrandText style={[fontRegular13, { color: errorColor }]}>
         Video not found
       </BrandText>
     );

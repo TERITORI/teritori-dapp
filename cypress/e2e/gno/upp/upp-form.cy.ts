@@ -1,4 +1,4 @@
-import { changeTestUser, connectWallet, resetChain } from "./lib";
+import { changeTestUser, connectWallet, resetChain } from "../lib";
 
 const showUppForm = () => {
   cy.contains("Edit profile").click();

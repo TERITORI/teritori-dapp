@@ -6,13 +6,12 @@ import { CreateTokenDetails } from "./LaunchpadERC20CreateTokenDetails";
 import { CreateTokenSign } from "./LaunchpadERC20CreateTokenSign";
 import { useCreateTokenState } from "../hooks/useCreateToken";
 
-import { BrandText } from "@/components/BrandText";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { SpacerColumn } from "@/components/spacer";
 import { NetworkKind } from "@/networks";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
-import { fontSemibold20 } from "@/utils/style/fonts";
 
 const renderStep = (stepIndice: number) => {
   if (stepIndice === 1) return <CreateTokenBasics />;
@@ -36,11 +35,7 @@ export const LaunchpadERC20CreateTokenScreen: ScreenFC<
       forceNetworkKind={NetworkKind.Gno}
       isLarge
       responsive
-      headerChildren={
-        <BrandText style={fontSemibold20}>
-          Launchpad ERC20 Token Creation
-        </BrandText>
-      }
+      headerChildren={<ScreenTitle>Launchpad ERC20 Token Creation</ScreenTitle>}
       onBackPress={() => navigation.navigate("LaunchpadERC20Tokens")}
     >
       <Breadcrumb

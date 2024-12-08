@@ -18,6 +18,7 @@ export const TogglePlayerButton: FC = () => {
       onPress={() =>
         setIsMediaPlayerOpen((isMediaPlayerOpen) => !isMediaPlayerOpen)
       }
+      style={{ marginLeft: 60 }}
     >
       <LegacyTertiaryBox
         noBrokenCorners

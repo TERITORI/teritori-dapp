@@ -1,15 +1,9 @@
 import React from "react";
 
-import { BrandText } from "@/components/BrandText";
-import { secondaryColor } from "@/utils/style/colors";
-import { fontSemibold20 } from "@/utils/style/fonts";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 
 interface MessageHeaderProps {}
 
 export const MessageHeader: React.FC<MessageHeaderProps> = () => {
-  return (
-    <BrandText style={[fontSemibold20, { color: secondaryColor }]}>
-      Messenger home
-    </BrandText>
-  );
+  return <ScreenTitle>Messenger home</ScreenTitle>;
 };

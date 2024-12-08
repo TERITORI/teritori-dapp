@@ -2,9 +2,9 @@ import {
   changeSelectedMilestoneStatus,
   changeTestUser,
   connectWallet,
-} from "./lib";
+} from "../lib";
 
-describe("Contractor proposer full flow", () => {
+describe("Funder proposer full flow", () => {
   it("works", () => {
     cy.request("http://127.0.0.1:8888/reset");
 
@@ -19,9 +19,10 @@ describe("Contractor proposer full flow", () => {
     cy.contains("Create a Project").click();
 
     connectWallet();
-    changeTestUser("bob");
+    changeTestUser("alice");
 
     // first step: basic project info
+    cy.contains("A funder looking for a developer").click();
     cy.get("input[placeholder='Your Grant name']").type(projectName);
     cy.get("input[placeholder='Project GitHub']").type("https://github.com");
     cy.get("textarea[placeholder='Your Grant description']").type(
@@ -34,7 +35,6 @@ describe("Contractor proposer full flow", () => {
     cy.get("input[type=file]").selectFile("cypress/fixtures/image.png", {
       force: true,
     });
-
     cy.get("div[data-testid=loader-full-screen]", { timeout: 10_000 }).should(
       "not.exist",
     );
@@ -68,24 +68,32 @@ describe("Contractor proposer full flow", () => {
     );
     cy.contains("Back to Project Program").click();
 
-    // check that the project is present in manager as funder
+    // check that the project is present in manager as contractor
     cy.contains("Projects Manager").click();
-    cy.contains("My projects").click();
     cy.contains("Test Project").should("exist");
     cy.contains("Projects Program").click({ force: true });
 
-    // make alice fund the project
+    // make bob candidate to project
     cy.contains(projectName).click();
-    changeTestUser("alice");
-    cy.contains("Fund this project").click();
+    changeTestUser("bob");
+    cy.contains("Submit your candidacy as contractor").click();
     cy.get("div[data-testid='confirm-and-sign']").click();
     cy.get("div[data-testid='confirm-and-sign']", { timeout: 20000 }).should(
       "not.exist",
     );
 
+    // accept bob candidacy
+    changeTestUser("alice");
+    cy.contains("1 candidates").click({ timeout: 10000 });
+    cy.contains("Accept").click();
+    // check that the project is not present anymore in candidates list
+    cy.contains("Accept").should("not.exist");
+    cy.go("back");
+
     // switch to bob and do milestone
     changeTestUser("bob");
-    cy.contains(milestoneName).click();
+    cy.contains("Test Project").click();
+    cy.contains(milestoneName).click({ force: true });
     // TODO: test in progress state
     changeSelectedMilestoneStatus("Review");
 

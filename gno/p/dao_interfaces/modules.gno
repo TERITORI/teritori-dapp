@@ -37,3 +37,17 @@ type IProposalModule interface {
 }
 
 type ProposalModuleFactory func(core IDAOCore) IProposalModule
+
+type IRolesModule interface {
+	Info() ModuleInfo
+	ConfigJSON() string
+	Render(path string) string
+	GetMemberRoles(address std.Address) []string
+	HasRole(address std.Address, role string) bool
+	NewRole(roleName string)
+	DeleteRole(roleName string)
+	GrantRole(address std.Address, role string)
+	RevokeRole(address std.Address, role string)
+}
+
+type RolesModuleFactory func(core IDAOCore) IRolesModule

@@ -6,6 +6,7 @@ import { PeriodFilter } from "./PeriodFilter";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { SearchInput } from "@/components/sorts/SearchInput";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
@@ -17,7 +18,7 @@ import { NetworkFeature } from "@/networks";
 import { CollectionsTable } from "@/screens/Marketplace/CollectionsTable";
 import { selectTimePeriod } from "@/store/slices/marketplaceFilters";
 import { ScreenFC } from "@/utils/navigation";
-import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
+import { fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { arrayIncludes } from "@/utils/typescript";
 
@@ -61,9 +62,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
     <ScreenContainer
       isLarge
       footerChildren={<></>}
-      headerChildren={
-        <BrandText style={fontSemibold20}>NFT Marketplace</BrandText>
-      }
+      headerChildren={<ScreenTitle>NFT Marketplace</ScreenTitle>}
       responsive
     >
       <View

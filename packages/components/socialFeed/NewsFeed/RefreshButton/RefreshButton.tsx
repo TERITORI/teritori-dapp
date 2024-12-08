@@ -11,7 +11,7 @@ import Animated, {
 
 import refreshSVG from "../../../../../assets/icons/refresh.svg";
 import { neutral17, neutral33 } from "../../../../utils/style/colors";
-import { fontSemibold14 } from "../../../../utils/style/fonts";
+import { fontRegular14 } from "../../../../utils/style/fonts";
 import { layout } from "../../../../utils/style/layout";
 import { BrandText } from "../../../BrandText";
 import { SVG } from "../../../SVG";
@@ -109,7 +109,7 @@ export const RefreshButton: React.FC<RefreshButtonProps> = ({
             opacityStyle,
           ]}
         >
-          <BrandText style={fontSemibold14}>Refresh feed</BrandText>
+          <BrandText style={fontRegular14}>Refresh feed</BrandText>
         </Animated.View>
       </TouchableOpacity>
     </Animated.View>

@@ -8,11 +8,24 @@ import Animated, {
 
 import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSidebar } from "../../context/SidebarProvider";
-import { neutral17, neutral33 } from "../../utils/style/colors";
-import { headerHeight, layout } from "../../utils/style/layout";
+import { neutral17, neutral33, withAlpha } from "../../utils/style/colors";
+import {
+  headerHeight,
+  headerMarginHorizontal,
+  layout,
+} from "../../utils/style/layout";
+import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
 import { SVG } from "../SVG";
+import { SearchBar } from "../Search/SearchBar";
+import { ConnectWalletButton } from "../TopMenu/ConnectWalletButton";
+import { TogglePlayerButton } from "../mediaPlayer/TogglePlayerButton";
 import { BackButton } from "../navigation/components/BackButton";
+import { CartIconButtonBadge } from "../navigation/components/CartIconButtonBadge";
+import { Separator } from "../separators/Separator";
 import { SpacerRow } from "../spacer";
+
+import { useMediaPlayer } from "@/context/MediaPlayerProvider";
+import { NetworkFeature, NetworkKind } from "@/networks";
 
 const SpringConfig: WithSpringConfig = {
   stiffness: 100,
@@ -24,7 +37,17 @@ export const Header: React.FC<{
   style?: StyleProp<ViewStyle>;
   onBackPress?: () => void;
   children: ReactNode;
-}> = ({ children, style, onBackPress }) => {
+  forceNetworkId?: string;
+  forceNetworkKind?: NetworkKind;
+  forceNetworkFeatures?: NetworkFeature[];
+}> = ({
+  children,
+  style,
+  onBackPress,
+  forceNetworkId,
+  forceNetworkKind,
+  forceNetworkFeatures,
+}) => {
   const { isSidebarExpanded, toggleSidebar } = useSidebar();
   const toggleButtonStyle = useAnimatedStyle(
     () => ({
@@ -40,6 +63,7 @@ export const Header: React.FC<{
     }),
     [isSidebarExpanded],
   );
+  const { media } = useMediaPlayer();
   return (
     <View
       style={[
@@ -51,8 +75,9 @@ export const Header: React.FC<{
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          borderBottomColor: neutral33,
+          borderBottomColor: withAlpha(neutral33, 0.5),
           borderBottomWidth: 1,
+          zIndex: 999,
         },
         style,
       ]}
@@ -98,9 +123,38 @@ export const Header: React.FC<{
             {children}
           </>
         )}
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            height: headerHeight,
+            alignItems: "center",
+          }}
+        >
+          <TogglePlayerButton />
+          {media && (
+            <Separator
+              horizontal
+              style={{ height: "100%", marginHorizontal: layout.spacing_x2 }}
+            />
+          )}
+          <SearchBar style={{ marginLeft: media ? 0 : 60, flex: 1 }} />
+          <Separator
+            horizontal
+            style={{ height: "100%", marginHorizontal: layout.spacing_x2 }}
+          />
+          <CartIconButtonBadge style={{ marginRight: layout.spacing_x1_5 }} />
+          <NetworkSelector
+            forceNetworkId={forceNetworkId}
+            forceNetworkKind={forceNetworkKind}
+            forceNetworkFeatures={forceNetworkFeatures}
+            style={{ marginRight: layout.spacing_x1_5 }}
+          />
+          <ConnectWalletButton
+            style={{ marginRight: headerMarginHorizontal }}
+          />
+        </View>
       </View>
-
-      {/* Wallet selector placeholder */}
       <View />
     </View>
   );

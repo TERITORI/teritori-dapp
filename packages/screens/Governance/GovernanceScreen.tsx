@@ -6,12 +6,13 @@ import { GovernanceBox } from "../../components/GovernanceBox/GovernanceBox";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { SearchInputRounded } from "@/components/sorts/SearchInputRounded";
 import { useGetAllProposals } from "@/hooks/governance/useGetAllProposals";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkKind } from "@/networks";
-import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
+import { fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { ProposalStatus } from "@/utils/types/gov";
 
@@ -32,9 +33,7 @@ export const GovernanceScreen: React.FC = () => {
     <ScreenContainer
       forceNetworkKind={NetworkKind.Cosmos}
       isLarge
-      headerChildren={
-        <BrandText style={fontSemibold20}>Decentralized Governance</BrandText>
-      }
+      headerChildren={<ScreenTitle>Decentralized Governance</ScreenTitle>}
     >
       <View
         style={{
