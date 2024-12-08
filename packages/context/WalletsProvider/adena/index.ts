@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 import { useAdenaStore } from "./useAdenaStore";
 import { useAdenaUtils } from "./useAdenaUtils";
-import { useAppDispatch } from "../../../store/store";
+import { AppDispatch, useAppDispatch } from "../../../store/store";
 import { Wallet } from "../wallet";
 
 import { useFeedbacks } from "@/context/FeedbacksProvider";
@@ -36,7 +36,7 @@ export const useAdena: () => UseAdenaResult = () => {
 
   const fetchAccount = useCallback(
     async (
-      dispatch: any,
+      dispatch: AppDispatch,
       adena: any,
       isAdenaConnected: boolean,
       targetChainId: string | undefined,
