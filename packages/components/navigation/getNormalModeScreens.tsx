@@ -9,7 +9,8 @@ import { CoreDAOScreen } from "@/screens/CoreDAO/CoreDAOScreen";
 import { DAppStoreScreen } from "@/screens/DAppStore/DAppStoreScreen";
 import { ToriPunks } from "@/screens/DAppStore/apps/toripunks/HomeScreen";
 import { FeedScreen } from "@/screens/Feed/FeedScreen";
-import { FeedNewArticleScreen } from "@/screens/FeedNewArticle/FeedNewArticleScreen";
+import { FeedNewArticleMarkdownScreen } from "@/screens/FeedNewArticle/FeedNewArticleMarkdownScreen.tsx";
+import { FeedNewArticleScreen } from "@/screens/FeedNewArticle/FeedNewArticleScreen.tsx";
 import { FeedPostViewScreen } from "@/screens/FeedPostView/FeedPostViewScreen";
 import { GovernanceProposalScreen } from "@/screens/Governance/GovernanceProposal/GovernanceProposalScreen";
 import { GovernanceScreen } from "@/screens/Governance/GovernanceScreen";
@@ -451,6 +452,11 @@ export const getNormalModeScreens = ({
       <Nav.Screen
         name="FeedNewArticle"
         component={FeedNewArticleScreen}
+        options={{ header: () => null, title: screenTitle("New Article") }}
+      />
+      <Nav.Screen
+        name="FeedNewArticleMarkdown"
+        component={FeedNewArticleMarkdownScreen}
         options={{ header: () => null, title: screenTitle("New Article") }}
       />
 
