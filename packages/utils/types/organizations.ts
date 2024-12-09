@@ -42,7 +42,7 @@ export type MembershipMemberSettingFormType = {
 // ROLES BASED ORGANIZATION FORM TYPES
 
 export type RolesSettingFormType = {
-  roles: { name: string; color: string, features: string[] | undefined }[];
+  roles: { name: string; color: string; resources: string[] | undefined }[];
 };
 
 export type RolesMemberSettingFormType = {

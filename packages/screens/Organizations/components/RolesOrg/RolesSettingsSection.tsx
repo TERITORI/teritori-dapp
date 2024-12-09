@@ -29,18 +29,19 @@ interface RolesSettingsSectionProps {
 export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
   onSubmit,
 }) => {
-  const { handleSubmit, control, unregister, register, setValue, resetField } = useForm<RolesSettingFormType>();
+  const { handleSubmit, control, unregister, register, setValue, resetField } =
+    useForm<RolesSettingFormType>();
   const [modalVisible, setModalVisible] = useState(false);
   const [rolesIndexes, setRolesIndexes] = useState<number[]>([]);
-  const [features, setFeatures] = useState<{ name: string, value: boolean }[]>(fakeFeatures);
+  const [resources, setResources] =
+    useState<{ name: string; value: boolean }[]>(fakeResources);
 
   const removeRoleField = (id: number, index: number) => {
-    console.log(id);
     unregister(`roles.${index}.name`);
     unregister(`roles.${index}.color`);
-    unregister(`roles.${index}.features`);
+    unregister(`roles.${index}.resources`);
     if (rolesIndexes.length > 0) {
-      const copyIndex = [...rolesIndexes].filter((i) => i !== id);;
+      const copyIndex = [...rolesIndexes].filter((i) => i !== id);
       setRolesIndexes(copyIndex);
     }
   };
@@ -48,36 +49,45 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
   const resetModal = () => {
     resetField(`roles.${rolesIndexes.length}.name`);
     resetField(`roles.${rolesIndexes.length}.color`);
-    resetField(`roles.${rolesIndexes.length}.features`);
-  }
+    resetField(`roles.${rolesIndexes.length}.resources`);
+  };
 
   const onOpenModal = () => {
     resetModal();
+    setResources(fakeResources.map((r) => ({ ...r, value: false })));
     setModalVisible(true);
-  }
+  };
 
   const addRoleField = () => {
-    register(`roles.${rolesIndexes.length}.features`);
-    const selectedFeatures = features.filter(f => f.value).map(f => f.name);
-    setValue(`roles.${rolesIndexes.length}.features`, selectedFeatures);
+    register(`roles.${rolesIndexes.length}.resources`);
+    const selectedResources = resources
+      .filter((r) => r.value)
+      .map((r) => r.name);
+    setValue(`roles.${rolesIndexes.length}.resources`, selectedResources);
+    console.log(`Selected resources: ${selectedResources}`);
     setRolesIndexes([...rolesIndexes, Math.floor(Math.random() * 200000)]);
     setModalVisible(false);
   };
 
   const onCloseModal = () => {
     setModalVisible(false);
-  }
+  };
 
   const onCheckboxChange = (index: number) => {
-    const copyFeatures = [...features];
-    copyFeatures[index].value = !copyFeatures[index].value;
-    setFeatures(copyFeatures);
-    console.log(features);
-  }
+    const copyResources = [...resources];
+    copyResources[index].value = !copyResources[index].value;
+    setResources(copyResources);
+  };
 
   return (
     <View style={{ flex: 1 }}>
-      <ModalBase key={modalVisible ? "open" : "closed"} visible={modalVisible} onClose={onCloseModal} width={480} label="Add a new Role">
+      <ModalBase
+        key={modalVisible ? "open" : "closed"}
+        visible={modalVisible}
+        onClose={onCloseModal}
+        width={480}
+        label="Add a new Role"
+      >
         <View>
           <TextInputCustom<RolesSettingFormType>
             control={control}
@@ -111,30 +121,25 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
           >
             <ScrollView style={{ maxHeight: 180 }}>
               {/* TODO: Refactor Checkbox to make it a global component instead of Dapp!*/}
-              {features.map((feature, index) => (
-                <View style={{ flex: 1, flexDirection: "row" }} >
+              {resources.map((resource, index) => (
+                <View style={{ flex: 1, flexDirection: "row" }}>
                   <TouchableOpacity onPress={() => onCheckboxChange(index)}>
-                    <CheckboxDappStore isChecked={feature.value} />
+                    <CheckboxDappStore isChecked={resource.value} />
                   </TouchableOpacity>
                   <SpacerRow size={1} />
-                  <BrandText style={fontSemibold18}>{feature.name}</BrandText>
+                  <BrandText style={fontSemibold18}>{resource.name}</BrandText>
                   <SpacerColumn size={4} />
                 </View>
-
               ))}
             </ScrollView>
           </Box>
         </View>
         <SpacerColumn size={2.5} />
         <View style={{ alignItems: "center" }}>
-          <PrimaryButton
-            size="SM"
-            text="Add New Role"
-            onPress={addRoleField}
-          />
+          <PrimaryButton size="SM" text="Add New Role" onPress={addRoleField} />
         </View>
         <SpacerColumn size={2.5} />
-      </ModalBase >
+      </ModalBase>
       <ScrollView
         style={{
           padding: layout.contentSpacing,
@@ -206,13 +211,13 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
           testID="roles-settings-next"
         />
       </View>
-    </View >
+    </View>
   );
 };
 
-// TODO: Create a hook to get all the features
-const fakeFeatures = [
-  { name: "Organizations", value: true },
+// TODO: Create a hook to get all the resources
+const fakeResources = [
+  { name: "Organizations", value: false },
   { name: "Social Feed", value: false },
   { name: "Marketplace", value: false },
   { name: "Launchpad NFT", value: false },
@@ -220,4 +225,4 @@ const fakeFeatures = [
   { name: "Name Service", value: false },
   { name: "Multisig Wallet", value: false },
   { name: "Projects", value: false },
-]
+];
