@@ -348,7 +348,7 @@ var THE_RIOT_ETHEREUM_SEASONS = []Season{
 		BossName:  `== $*=|'¤?")à-£_%`,
 		BossImage: "https://bafybeiacz7z2kqoskbtixovgzzdwiuhpfc7z4tac37qpxhjxyyljbp7v6i.ipfs." + ipfsutil.GatewayBase + "/",
 		StartsAt:  "2024-10-06T00:00:00",
-		EndsAt:    "2030-01-01T00:00:00",
+		EndsAt:    "2024-12-09T00:00:00",
 		IsPre:     true,
 	},
 	// The R!ot EVM - Mainnet Season 2
