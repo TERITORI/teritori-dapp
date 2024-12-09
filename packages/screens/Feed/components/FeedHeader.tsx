@@ -1,5 +1,6 @@
 import { cloneDeep } from "lodash";
 import React, { useMemo } from "react";
+import { View } from "react-native";
 
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 
@@ -10,7 +11,6 @@ import { Tabs } from "@/components/tabs/Tabs";
 import { useIsDAOMember } from "@/hooks/dao/useDAOMember";
 import { useFetchFeed } from "@/hooks/feed/useFetchFeed";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
-import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { getUserId, NetworkKind, parseUserId } from "@/networks";
 import { feedsTabItems } from "@/utils/social-feed";
@@ -23,7 +23,6 @@ type FeedHeaderProps = {
 };
 
 export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
-  const { width } = useMaxResolution();
   const navigation = useAppNavigation();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkKind = selectedNetworkInfo?.kind;
@@ -72,7 +71,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
   }, [hasFlaggedPosts, isModerationDAOMember, selectedNetworkKind]);
 
   return (
-    <>
+    <View>
       <Tabs
         items={adjustedTabItems}
         selected={selectedTab}
@@ -80,11 +79,10 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
           navigation.navigate("Feed", { tab: key });
         }}
         style={{
-          alignSelf: "center",
+          alignItems: "center",
           height: 64,
           zIndex: 9,
           elevation: 9,
-          width,
         }}
         borderColorTabSelected={primaryColor}
         gradientText
@@ -101,7 +99,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
             : "There are no items to moderate yet."}
         </BrandText>
       )}
-    </>
+    </View>
   );
 };
 

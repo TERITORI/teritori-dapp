@@ -23,13 +23,8 @@ import {
   useFetchFeed,
 } from "../../../hooks/feed/useFetchFeed";
 import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import {
-  layout,
-  RESPONSIVE_BREAKPOINT_S,
-  screenContentMaxWidth,
-} from "../../../utils/style/layout";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
 import { PostCategory } from "../../../utils/types/feed";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
@@ -63,7 +58,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
 }) => {
   const isMobile = useIsMobile();
   const { width: windowWidth } = useWindowDimensions();
-  const { width } = useMaxResolution();
   const selectedWallet = useSelectedWallet();
   const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
@@ -176,12 +170,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       // NOTE: if you edit this, make sure that this is not too CPU expensive
       // Heavy components like SocialThreadCard, SocialArticleCard, etc. should be properly memoized
       return (
-        <View
-          style={{
-            width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-            maxWidth: screenContentMaxWidth,
-          }}
-        >
+        <View>
           {post.category === PostCategory.Article ? (
             <SocialArticleCard
               post={post}
@@ -207,25 +196,21 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         </View>
       );
     },
-    [windowWidth, width, isFlagged, refetch, cardStyle],
+    [isFlagged, refetch, cardStyle],
   );
 
   return (
-    <>
+    <View>
       <Animated.FlatList
         data={posts}
         renderItem={({ item: post }) => RenderItem(post)}
         ListHeaderComponentStyle={{
           zIndex: 1,
-          width: windowWidth,
-          maxWidth: screenContentMaxWidth,
+          width: "100%",
         }}
         ListHeaderComponent={
           <>
-            <View
-              onLayout={onHeaderLayout}
-              style={{ width, alignSelf: "center", alignItems: "center" }}
-            >
+            <View onLayout={onHeaderLayout} style={{ width: "100%" }}>
               <Header />
             </View>
             <ListHeaderComponent />
@@ -258,13 +243,11 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         additionalHashtag={additionalHashtag}
         onSubmitSuccess={refetch}
       />
-    </>
+    </View>
   );
 };
 
 const contentCStyle: ViewStyle = {
-  alignItems: "center",
-  alignSelf: "center",
   width: "100%",
 };
 const floatingActionsCStyle: ViewStyle = {
