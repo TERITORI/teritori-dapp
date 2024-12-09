@@ -11,11 +11,7 @@ import { PicsFeed } from "./components/PicsFeed";
 import { VideosFeed } from "./components/VideosFeed";
 
 import { PostsRequest } from "@/api/feed/v1/feed";
-import { BrandText } from "@/components/BrandText";
-import {
-  NewScreenContainer,
-  ScreenContainer,
-} from "@/components/ScreenContainer";
+import { NewScreenContainer } from "@/components/ScreenContainer";
 import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
 import { NewsFeed } from "@/components/socialFeed/NewsFeed/NewsFeed";
 import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";

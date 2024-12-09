@@ -102,7 +102,14 @@ export const Sidebar: React.FC = () => {
           <View style={headerContainerCStyle}>
             {currentRouteName === "Home" && <SideNotch />}
 
-            <TopLogo />
+            <TopLogo
+              style={{
+                flex: 1,
+                marginHorizontal: layout.spacing_x0_25,
+                justifyContent: "center",
+                overflow: "hidden",
+              }}
+            />
 
             <Separator color={neutral33} />
           </View>

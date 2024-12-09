@@ -6,15 +6,14 @@ import { GovernanceDescription } from "./GovernanceDescription/GovernanceDescrip
 import { GovernanceVoteDetails } from "./GovernanceVoteDetails/GovernanceVoteDetails";
 import { GovernanceVoteHeader } from "./GovernanceVoteHeader/GovernanceVoteHeader";
 
-import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { SpacerColumn } from "@/components/spacer";
 import { useAppConfig } from "@/context/AppConfigProvider";
 import { useGetProposal } from "@/hooks/governance/useGetProposal";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkKind } from "@/networks";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
-import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const GovernanceProposalScreen: ScreenFC<"GovernanceProposal"> = ({
@@ -38,9 +37,7 @@ export const GovernanceProposalScreen: ScreenFC<"GovernanceProposal"> = ({
     <ScreenContainer
       forceNetworkKind={NetworkKind.Cosmos}
       isLarge
-      headerChildren={
-        <BrandText style={fontSemibold20}>{`Proposal #${id}`}</BrandText>
-      }
+      headerChildren={<ScreenTitle>{`Proposal #${id}`}</ScreenTitle>}
       onBackPress={() => navigation.navigate("Governance")}
     >
       {proposal && (

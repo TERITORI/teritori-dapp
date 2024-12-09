@@ -20,6 +20,7 @@ import {
   ScreenContainer,
   ScreenContainerProps,
 } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { useAppConfig } from "@/context/AppConfigProvider";
 import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
@@ -78,9 +79,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
       <ScreenContainer
         key={`NotFoundUPP ${id}-${tabKey}`} // this key is to reset the screen state when the id changes
         {...screenContainerOtherProps}
-        headerChildren={
-          <BrandText style={fontSemibold20}>Page not found</BrandText>
-        }
+        headerChildren={<ScreenTitle>Page not found</ScreenTitle>}
       >
         <NotFound label="Page" />
       </ScreenContainer>
