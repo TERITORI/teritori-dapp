@@ -23,19 +23,15 @@ import {
   useFetchFeed,
 } from "../../../hooks/feed/useFetchFeed";
 import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import {
-  layout,
-  RESPONSIVE_BREAKPOINT_S,
-  screenContentMaxWidth,
-} from "../../../utils/style/layout";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
 import { PostCategory } from "../../../utils/types/feed";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
 import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
 import { SocialVideoCard } from "../SocialCard/cards/SocialVideoCard";
 
+import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { DeepPartial } from "@/utils/typescript";
 
 const OFFSET_Y_LIMIT_FLOATING = 224;
@@ -63,7 +59,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
 }) => {
   const isMobile = useIsMobile();
   const { width: windowWidth } = useWindowDimensions();
-  const { width } = useMaxResolution();
+  const width = useMaxResolution();
   const selectedWallet = useSelectedWallet();
   const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
@@ -177,12 +173,9 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       // Heavy components like SocialThreadCard, SocialArticleCard, etc. should be properly memoized
       return (
         <View
-          style={
-            {
-              // width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-              // maxWidth: screenContentMaxWidth,
-            }
-          }
+          style={{
+            width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
+          }}
         >
           {post.category === PostCategory.Article ? (
             <SocialArticleCard
@@ -209,7 +202,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         </View>
       );
     },
-    [isFlagged, refetch, cardStyle],
+    [windowWidth, width, isFlagged, refetch, cardStyle],
   );
 
   return (

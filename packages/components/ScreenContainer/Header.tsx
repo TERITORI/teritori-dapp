@@ -13,7 +13,6 @@ import {
   headerHeight,
   headerMarginHorizontal,
   layout,
-  screenContainerContentMarginHorizontal,
 } from "../../utils/style/layout";
 import { NetworkSelector } from "../NetworkSelector/NetworkSelector";
 import { SVG } from "../SVG";
@@ -71,7 +70,6 @@ export const Header: React.FC<{
         {
           height: headerHeight,
           maxHeight: headerHeight,
-          paddingRight: screenContainerContentMarginHorizontal,
           width: "100%",
           flex: 1,
           flexDirection: "row",
@@ -152,7 +150,9 @@ export const Header: React.FC<{
             forceNetworkFeatures={forceNetworkFeatures}
             style={{ marginRight: layout.spacing_x1_5 }}
           />
-          <ConnectWalletButton />
+          <ConnectWalletButton
+            style={{ marginRight: headerMarginHorizontal }}
+          />
         </View>
       </View>
       <View />

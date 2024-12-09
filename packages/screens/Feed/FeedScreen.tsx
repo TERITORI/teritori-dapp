@@ -75,10 +75,8 @@ export const FeedScreen: ScreenFC<"Feed"> = ({
 
   return (
     <ScreenContainer
-      fullWidth
+      isLarge
       responsive
-      noMargin
-      noScroll
       footerChildren={<></>}
       forceNetworkFeatures={[NetworkFeature.SocialFeed]}
       headerChildren={<ScreenTitle>Social Feed</ScreenTitle>}

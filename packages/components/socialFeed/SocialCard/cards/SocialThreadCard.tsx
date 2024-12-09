@@ -93,8 +93,6 @@ export const SocialThreadCard: React.FC<{
               paddingVertical: layout.spacing_x2,
               paddingHorizontal: layout.spacing_x2_5,
               backgroundColor: neutral00,
-              width: "100%",
-              flex: 1,
             },
             style,
           ]}
