@@ -11,7 +11,6 @@ import { Tabs } from "@/components/tabs/Tabs";
 import { useIsDAOMember } from "@/hooks/dao/useDAOMember";
 import { useFetchFeed } from "@/hooks/feed/useFetchFeed";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
-import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { getUserId, NetworkKind, parseUserId } from "@/networks";
 import { feedsTabItems } from "@/utils/social-feed";
@@ -24,7 +23,6 @@ type FeedHeaderProps = {
 };
 
 export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
-  const { width } = useMaxResolution();
   const navigation = useAppNavigation();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkKind = selectedNetworkInfo?.kind;
