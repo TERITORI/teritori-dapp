@@ -277,13 +277,26 @@ export const FeedNewArticleMarkdownScreen: ScreenFC<
   const [isEditorHovered, setEditorHovered] = useState(false);
   const borderWidth = 1;
 
-  const editorMinHeight = height - 140;
-  const [editorHeight, setEditorHeight] = useState(editorMinHeight);
+  const contentInputMinHeight = height - 140;
+  const [contentInputHeight, setContentInputHeight] = useState(
+    contentInputMinHeight,
+  );
   const [mode, setMode] = useState<"edition" | "both" | "preview">("both");
   const editorPadding =
     windowWidth < RESPONSIVE_BREAKPOINT_S
       ? 0
       : layout.spacing_x2 - borderWidth * 2;
+
+  // TODO: Find type: evt.nativeEvent.target was not recognised by LayoutChangeEvent, but the object target exist, so i don't understand (Same as NewsFeedInput)
+  // https://github.com/necolas/react-native-web/issues/795#issuecomment-1297511068, fix that i found for shrink lines when we deleting lines in the editor
+  const adjustTextInputSize = (evt: any) => {
+    const el = evt?.nativeEvent?.target;
+    if (el) {
+      el.style.height = 0;
+      const newHeight = el.offsetHeight - el.clientHeight + el.scrollHeight;
+      el.style.height = `${newHeight < contentInputMinHeight ? contentInputMinHeight : newHeight}px`;
+    }
+  };
   ///////////////////////////////////////////
 
   return (
@@ -559,16 +572,20 @@ export const FeedNewArticleMarkdownScreen: ScreenFC<
                           value={value}
                           style={[
                             {
-                              height: editorHeight,
+                              height: contentInputHeight,
                               outlineStyle: "none",
                               color: neutralA3,
                               border: "none",
                             } as TextStyle,
                           ]}
+                          onChange={adjustTextInputSize}
+                          onLayout={adjustTextInputSize}
                           onChangeText={onChange}
                           onContentSizeChange={(e) => {
                             // The editor input grows depending on the content height
-                            setEditorHeight(e.nativeEvent.contentSize.height);
+                            setContentInputHeight(
+                              e.nativeEvent.contentSize.height,
+                            );
                           }}
                           ref={inputRef}
                         />
@@ -603,9 +620,9 @@ export const FeedNewArticleMarkdownScreen: ScreenFC<
                   ]}
                   contentContainerStyle={[
                     mode !== "preview" && {
-                      height: editorHeight + editorPadding,
+                      height: contentInputHeight + editorPadding,
                     },
-                    { minHeight: editorMinHeight + editorPadding },
+                    { minHeight: contentInputMinHeight + editorPadding },
                   ]} // + editorPadding to offset the inexistant ScrollView paddingTop
                 >
                   <Markdown
