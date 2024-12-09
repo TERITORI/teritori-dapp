@@ -31,7 +31,6 @@ import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
 import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
 import { SocialVideoCard } from "../SocialCard/cards/SocialVideoCard";
 
-import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { DeepPartial } from "@/utils/typescript";
 
 const OFFSET_Y_LIMIT_FLOATING = 224;
@@ -59,7 +58,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
 }) => {
   const isMobile = useIsMobile();
   const { width: windowWidth } = useWindowDimensions();
-  const width = useMaxResolution();
   const selectedWallet = useSelectedWallet();
   const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
@@ -172,11 +170,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       // NOTE: if you edit this, make sure that this is not too CPU expensive
       // Heavy components like SocialThreadCard, SocialArticleCard, etc. should be properly memoized
       return (
-        <View
-          style={{
-            width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-          }}
-        >
+        <View>
           {post.category === PostCategory.Article ? (
             <SocialArticleCard
               post={post}
@@ -202,7 +196,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         </View>
       );
     },
-    [windowWidth, width, isFlagged, refetch, cardStyle],
+    [isFlagged, refetch, cardStyle],
   );
 
   return (
