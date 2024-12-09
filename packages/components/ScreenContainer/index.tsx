@@ -15,20 +15,14 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../../networks";
 import {
-  fullSidebarWidth,
   getResponsiveScreenContainerMarginHorizontal,
   headerHeight,
   screenContainerContentMarginHorizontal,
-  smallSidebarWidth,
 } from "../../utils/style/layout";
-import { BrandText } from "../BrandText";
 import { SelectedNetworkGate } from "../SelectedNetworkGate";
 import { Footer } from "../footers/Footer";
 import { MediaPlayerBar } from "../mediaPlayer/MediaPlayerBar";
 import { Sidebar } from "../navigation/Sidebar";
-
-import { useSidebar } from "@/context/SidebarProvider";
-import { fontRegular15 } from "@/utils/style/fonts";
 
 export interface ScreenContainerProps {
   headerChildren?: JSX.Element;
@@ -178,112 +172,6 @@ export const ScreenContainer: React.FC<ScreenContainerProps> = ({
                     {footerChildren ? footerChildren : <Footer />}
                   </View>
                 )}
-              </SelectedNetworkGate>
-            </View>
-          </View>
-        </View>
-        <MediaPlayerBar
-          style={{
-            position: "absolute",
-            bottom: 0,
-            right: 0,
-            width: contentWidth,
-          }}
-        />
-      </View>
-    </SafeAreaView>
-  );
-};
-
-interface NewScreenContainerProps {
-  title: string;
-  children?: ReactNode;
-  forceNetworkId?: string;
-  forceNetworkKind?: NetworkKind;
-  forceNetworkFeatures?: NetworkFeature[];
-}
-
-export const NewScreenContainer: React.FC<NewScreenContainerProps> = ({
-  title,
-  children,
-  forceNetworkId,
-  forceNetworkKind,
-  forceNetworkFeatures,
-}) => {
-  const { width, height } = useWindowDimensions();
-  const { isSidebarExpanded } = useSidebar();
-
-  const contentWidth = useMemo(
-    () => width - (isSidebarExpanded ? fullSidebarWidth : smallSidebarWidth),
-    [width, isSidebarExpanded],
-  );
-
-  useForceNetworkSelection(forceNetworkId);
-  useForceNetworkKind(forceNetworkKind);
-  useForceNetworkFeatures(forceNetworkFeatures);
-
-  const networkFilter = useCallback(
-    (n: NetworkInfo | undefined) => {
-      if (forceNetworkId && n?.id !== forceNetworkId) {
-        return false;
-      }
-      return !(forceNetworkKind && n?.kind !== forceNetworkKind);
-    },
-    [forceNetworkId, forceNetworkKind],
-  );
-
-  return (
-    <SafeAreaView style={{ width: "100%", flex: 1 }}>
-      {/*FIXME: Too many containers levels*/}
-
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "#000000",
-          flexDirection: "row",
-          zIndex: 999,
-        }}
-      >
-        <Sidebar />
-
-        <View style={{ flex: 1 }}>
-          {/*==== Header*/}
-          <Header
-            forceNetworkId={forceNetworkId}
-            forceNetworkKind={forceNetworkKind}
-            forceNetworkFeatures={forceNetworkFeatures}
-          >
-            {/* Replace it by ScreenTitle */}
-            <BrandText style={fontRegular15}>{title}</BrandText>
-          </Header>
-
-          <View
-            style={{ width: "100%", flexDirection: "row", flex: 1, height }}
-          >
-            {/*==== Scrollable screen content*/}
-            <View style={{ flex: 1 }}>
-              <SelectedNetworkGate filter={networkFilter}>
-                <ScrollView
-                  style={{ width: "100%", flex: 1 }}
-                  contentContainerStyle={[{ minHeight: height - headerHeight }]}
-                  showsVerticalScrollIndicator={false}
-                >
-                  <View
-                    style={[
-                      {
-                        flex: 1,
-                        width: "100%",
-                        height: "100%",
-                        alignSelf: "center",
-                        paddingHorizontal:
-                          screenContainerContentMarginHorizontal,
-                      },
-                    ]}
-                  >
-                    {children}
-                  </View>
-                  <Footer />
-                </ScrollView>
               </SelectedNetworkGate>
             </View>
           </View>
