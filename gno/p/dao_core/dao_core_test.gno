@@ -38,7 +38,7 @@ func (vm *votingModule) Render(path string) string {
 	return "# Test Voting Module"
 }
 
-func (vm *votingModule) VotingPowerAtHeight(address std.Address, height int64) uint64 {
+func (vm *votingModule) VotingPowerAtHeight(address std.Address, height int64, feature string) uint64 {
 	return 0
 }
 
@@ -73,7 +73,7 @@ func (rm *rolesModule) HasRole(address std.Address, role string) bool {
 	return false
 }
 
-func (rm *rolesModule) NewRole(roleName string) {
+func (rm *rolesModule) NewRole(roleName string, permissionsJSON string) {
 	panic("not implemented")
 }
 
