@@ -60,6 +60,7 @@ export const MembershipDeployerSteps: React.FC<{
           const pkgPath = await adenaDeployGnoDAO(
             network.id,
             selectedWallet?.address!,
+            organizationData?.structure!,
             {
               name,
               maxVotingPeriodSeconds:
