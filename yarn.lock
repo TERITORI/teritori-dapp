@@ -5715,10 +5715,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/slider@npm:4.4.2":
-  version: 4.4.2
-  resolution: "@react-native-community/slider@npm:4.4.2"
-  checksum: 1ae613f594a8ea9d7243b3125d26b36aab4e4c2dd9eba1bf66c4f31878e74fae055cd35a1babc46b262240885bb61fa321610417bb2a6d9f77a330136ff33293
+"@react-native-community/slider@npm:^4.5.5":
+  version: 4.5.5
+  resolution: "@react-native-community/slider@npm:4.5.5"
+  checksum: 8d818e7f505694269bf8009c8c5db89efc3e9bb56054a1835613b6d7431356370bef9ce23d269519163097fe506e3f5420b34ba2c553bf380d1f144277a11942
   languageName: node
   linkType: hard
 
@@ -20162,7 +20162,7 @@ __metadata:
     "@react-native-anywhere/polyfill-base64": ^0.0.1-alpha.0
     "@react-native-async-storage/async-storage": 1.21.0
     "@react-native-clipboard/clipboard": ^1.13.2
-    "@react-native-community/slider": 4.4.2
+    "@react-native-community/slider": ^4.5.5
     "@react-native-masked-view/masked-view": 0.3.0
     "@react-native-picker/picker": 2.6.1
     "@react-navigation/bottom-tabs": ^6.5.11
