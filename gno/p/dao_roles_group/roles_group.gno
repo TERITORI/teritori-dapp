@@ -14,7 +14,7 @@ type RolesGroup struct {
 	dao_interfaces.IRolesModule
 
 	rm               *role_manager.RoleManager
-	permissionsPower *avl.Tree // roles -> PermissionPower
+	permissionsPower *avl.Tree // roles -> PermissionPower[]
 }
 
 type PermissionPower struct {
@@ -24,7 +24,8 @@ type PermissionPower struct {
 
 func NewRolesGroup() *RolesGroup {
 	return &RolesGroup{
-		rm: role_manager.NewWithAddress(std.PrevRealm().Addr()),
+		rm:               role_manager.NewWithAddress(std.PrevRealm().Addr()),
+		permissionsPower: avl.NewTree(),
 	}
 }
 
@@ -49,13 +50,23 @@ func (r *RolesGroup) HasRole(address std.Address, role string) bool {
 	return r.rm.HasRole(address, role)
 }
 
+// TODO: Create a method fromJSON for PermissionPower struct
+// TODO: Create a NewRoleJSON method that accepts a JSON string and that calls NewRole with the parsed values
 func (r *RolesGroup) NewRole(roleName string, permissionsJSON string) {
-	// TODO:
-	// 1. Parse permissionsJSON
-	// 2. Create a new role with the parsed permissions
-	// 3. Create a new array of PermissionPower and store it in r.permissionsPower
-	_ = permissionsJSON
+	node := json.Must(json.Unmarshal([]byte(permissionsJSON)))
+	arr := node.MustArray()
+	permissions := make([]PermissionPower, len(arr))
+	for i, n := range arr {
+		node := n.MustObject()
+		permissions[i] = PermissionPower{
+			Permission: node["permission"].MustString(),
+			Power:      jsonutil.MustUint64(node["power"]),
+		}
+	}
 	r.rm.CreateNewRole(roleName, []string{})
+	if permissions != nil {
+		r.permissionsPower.Set(roleName, permissions)
+	}
 }
 
 func (r *RolesGroup) DeleteRole(roleName string) {

@@ -47,7 +47,10 @@ func init() {
       .map(
         (role) =>
           `roles.NewRole("${role.name}", "[${(role.resources ?? [])
-            .map((resource) => `{permission: '${resource}', power: 999}`)
+            .map(
+              (resource) =>
+                `{\\"permission\\": \\"${resource}\\", \\"power\\": \\"999\\"}`,
+            )
             .join(", ")}]")`,
       )
       .join("\n\t")}
