@@ -1,21 +1,13 @@
 import pluralize from "pluralize";
-import React, { useEffect, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import {
-  ScrollView,
-  TextInput,
-  TextStyle,
-  useWindowDimensions,
-  View,
-} from "react-native";
-import Markdown from "react-native-markdown-display";
+import { useEffect, useRef, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { ScrollView, useWindowDimensions, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { fontSemibold12 } from "./../../utils/style/fonts";
-import priceSVG from "../../../assets/icons/price.svg";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 
 import penSVG from "@/assets/icons/pen.svg";
+import priceSVG from "@/assets/icons/price.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
@@ -28,7 +20,7 @@ import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgress
 import { PublishValues } from "@/components/socialFeed/RichText/RichText.type";
 import { SocialArticleCard } from "@/components/socialFeed/SocialCard/cards/SocialArticleCard";
 import { MapModal } from "@/components/socialFeed/modals/MapModal/MapModal";
-import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
@@ -37,21 +29,18 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
+import { ArticleContentEditor } from "@/screens/FeedNewArticle/components/ArticleContentEditor/ArticleContentEditor";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
 import { generateArticleMetadata } from "@/utils/feed/queries";
 import { generateIpfsKey } from "@/utils/ipfs";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
-import { ARTICLE_MAX_WIDTH } from "@/utils/social-feed";
 import {
   neutral00,
   neutral11,
-  neutral17,
-  neutral1A,
   neutral33,
   neutral77,
-  neutralA3,
   neutralFF,
   secondaryColor,
 } from "@/utils/style/colors";
@@ -271,34 +260,6 @@ export const FeedNewArticleMarkdownScreen: ScreenFC<
       scrollViewRef.current?.scrollToEnd();
   }, [step, isLoading]);
 
-  /////////// MD EDITOR /////////////////////
-  const { height } = useMaxResolution();
-  const inputRef = useRef<TextInput>(null);
-  const [isEditorHovered, setEditorHovered] = useState(false);
-  const borderWidth = 1;
-
-  const contentInputMinHeight = height - 140;
-  const [contentInputHeight, setContentInputHeight] = useState(
-    contentInputMinHeight,
-  );
-  const [mode, setMode] = useState<"edition" | "both" | "preview">("both");
-  const editorPadding =
-    windowWidth < RESPONSIVE_BREAKPOINT_S
-      ? 0
-      : layout.spacing_x2 - borderWidth * 2;
-
-  // TODO: Find type: evt.nativeEvent.target was not recognised by LayoutChangeEvent, but the object target exist, so i don't understand (Same as NewsFeedInput)
-  // https://github.com/necolas/react-native-web/issues/795#issuecomment-1297511068, fix that i found for shrink lines when we deleting lines in the editor
-  const adjustTextInputSize = (evt: any) => {
-    const el = evt?.nativeEvent?.target;
-    if (el) {
-      el.style.height = 0;
-      const newHeight = el.offsetHeight - el.clientHeight + el.scrollHeight;
-      el.style.height = `${newHeight < contentInputMinHeight ? contentInputMinHeight : newHeight}px`;
-    }
-  };
-  ///////////////////////////////////////////
-
   return (
     <ScreenContainer
       forceNetworkFeatures={[forceNetworkFeature]}
@@ -474,200 +435,9 @@ export const FeedNewArticleMarkdownScreen: ScreenFC<
         </View>
         <SpacerColumn size={3} />
 
-        <View
-          style={{
-            alignSelf: "center",
-            width,
-          }}
-        >
-          {/* ==== Article content views button */}
-          <View style={{ flexDirection: "row", alignSelf: "center" }}>
-            <CustomPressable
-              onPress={() => setMode("edition")}
-              style={{
-                backgroundColor: neutral1A,
-                padding: 8,
-                borderRadius: 8,
-              }}
-            >
-              <BrandText style={fontSemibold12}>Edition</BrandText>
-            </CustomPressable>
-            <SpacerRow size={1} />
-            <CustomPressable
-              onPress={() => setMode("both")}
-              style={{
-                backgroundColor: neutral1A,
-                padding: 8,
-                borderRadius: 8,
-              }}
-            >
-              <BrandText style={fontSemibold12}>Edition | Preview</BrandText>
-            </CustomPressable>
-            <SpacerRow size={1} />
-            <CustomPressable
-              onPress={() => setMode("preview")}
-              style={{
-                backgroundColor: neutral1A,
-                padding: 8,
-                borderRadius: 8,
-              }}
-            >
-              <BrandText style={fontSemibold12}>Preview</BrandText>
-            </CustomPressable>
-          </View>
-          <SpacerColumn size={3} />
-
-          {/* ==== Editor and preview */}
-          <View
-            style={{
-              flexDirection: "row",
-              width: windowWidth < RESPONSIVE_BREAKPOINT_S ? "100%" : width,
-              maxWidth: ARTICLE_MAX_WIDTH + layout.spacing_x2 * 2,
-              // height
-            }}
-          >
-            {/* ==== Article content edition */}
-            {(mode === "both" || mode === "edition") && (
-              <CustomPressable
-                style={{
-                  flex: 1,
-                }}
-                onPress={() => inputRef.current?.focus()}
-                onHoverIn={() => setEditorHovered(true)}
-                onHoverOut={() => setEditorHovered(false)}
-              >
-                <Label
-                  isRequired
-                  style={isEditorHovered && { color: neutralFF }}
-                >
-                  Article content edition
-                </Label>
-                <SpacerColumn size={1.5} />
-
-                <Controller<NewArticleFormValues>
-                  name="message"
-                  control={newArticleForm.control}
-                  render={({ field }) => {
-                    const { value, onChange } = field as {
-                      value: string;
-                      onChange: (value: string) => void;
-                    };
-                    return (
-                      <View
-                        style={[
-                          {
-                            padding: editorPadding,
-                            borderRadius: 12,
-                          },
-                          windowWidth >= RESPONSIVE_BREAKPOINT_S && {
-                            borderWidth,
-                            borderColor: isEditorHovered
-                              ? neutralFF
-                              : neutral00,
-                          },
-                        ]}
-                      >
-                        <TextInput
-                          multiline
-                          value={value}
-                          style={[
-                            {
-                              height: contentInputHeight,
-                              outlineStyle: "none",
-                              color: neutralA3,
-                              border: "none",
-                            } as TextStyle,
-                          ]}
-                          onChange={adjustTextInputSize}
-                          onLayout={adjustTextInputSize}
-                          onChangeText={onChange}
-                          onContentSizeChange={(e) => {
-                            // The editor input grows depending on the content height
-                            setContentInputHeight(
-                              e.nativeEvent.contentSize.height,
-                            );
-                          }}
-                          ref={inputRef}
-                        />
-                      </View>
-                    );
-                  }}
-                />
-              </CustomPressable>
-            )}
-
-            {/* ==== Article content preview */}
-            {(mode === "both" || mode === "preview") && (
-              <View
-                style={{
-                  flex: 1,
-                }}
-              >
-                <Label>Article content preview</Label>
-                <SpacerColumn size={1.5} />
-
-                <ScrollView
-                  showsHorizontalScrollIndicator={false}
-                  style={[
-                    {
-                      borderRadius: 12,
-                      borderWidth,
-                      borderColor: neutral00,
-                      // No paddingTop to offset the default vertical space from markdown's rendered elements
-                      paddingHorizontal: editorPadding,
-                      paddingBottom: editorPadding,
-                    },
-                  ]}
-                  contentContainerStyle={[
-                    mode !== "preview" && {
-                      height: contentInputHeight + editorPadding,
-                    },
-                    { minHeight: contentInputMinHeight + editorPadding },
-                  ]} // + editorPadding to offset the inexistant ScrollView paddingTop
-                >
-                  <Markdown
-                    style={{
-                      body: {
-                        color: neutralA3,
-                        lineBreak: "anywhere",
-                      } as TextStyle,
-                      // p:{
-                      //   // overflowWrap: 'break-word', // Gère le découpage des mots longs
-                      //   // wordWrap: 'break-word',
-                      //   width: '100%',
-                      //   maxWidth: 400, color: neutralA3, display: "flex",flexWrap: "wrap", flex: 1, flexShrink: 1},
-                      // span:{
-                      //   // overflowWrap: 'break-word', // Gère le découpage des mots longs
-                      //   // wordWrap: 'break-word',
-                      //   width: '100%',
-                      //   maxWidth: 400, color: neutralA3, display: "flex",flexWrap: "wrap", flex: 1, flexShrink: 1},
-                      // div:{
-                      //   // overflowWrap: 'break-word', // Gère le découpage des mots longs
-                      //   // wordWrap: 'break-word',
-                      //   width: '100%',
-                      //   maxWidth: 400, color: neutralA3, display: "flex", flexWrap: "wrap", flex: 1, flexShrink: 1},
-                      hr: { backgroundColor: neutralA3 },
-                      code_inline: {
-                        backgroundColor: neutral17,
-                        borderWidth: 0,
-                      },
-                      code_block: {
-                        backgroundColor: neutral17,
-                        borderWidth: 0,
-                      },
-                      fence: {
-                        backgroundColor: neutral17,
-                        borderWidth: 0,
-                      },
-                    }}
-                  >
-                    {formValues.message}
-                  </Markdown>
-                </ScrollView>
-              </View>
-            )}
-          </View>
-        </View>
+        <FormProvider {...newArticleForm}>
+          <ArticleContentEditor width={width} />
+        </FormProvider>
 
         {step.id !== "UNDEFINED" && isProgressBarShown && (
           <>
