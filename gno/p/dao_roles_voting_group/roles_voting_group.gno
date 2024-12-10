@@ -35,13 +35,15 @@ type RolesVotingGroup struct {
 	powerByAddr *havl.Tree // std.Address -> uint64
 	totalPower  *havl.Tree // "" -> uint64
 	memberCount *havl.Tree // "" -> uint32
+	rolesModule dao_interfaces.IRolesModule
 }
 
-func NewRolesVotingGroup() *RolesVotingGroup {
+func NewRolesVotingGroup(rm dao_interfaces.IRolesModule) *RolesVotingGroup {
 	return &RolesVotingGroup{
 		powerByAddr: havl.NewTree(),
 		totalPower:  havl.NewTree(),
 		memberCount: havl.NewTree(),
+		rolesModule: rm,
 	}
 }
 
@@ -68,17 +70,19 @@ func (v *RolesVotingGroup) GetMembersJSON(start, end string, limit uint64, heigh
 	return json.ArrayNode("", membersJSON).String()
 }
 
+// TODO: rename feature to resource
 func (v *RolesVotingGroup) VotingPowerAtHeight(addr std.Address, height int64, feature string) uint64 {
-	_ = feature
-	// TODO:
-	// 1. Ask dao roles group module to see if the user have a role that give him more power on the feature
-	// 2. If not, return the power of the user
-	p, ok := v.powerByAddr.Get(addr.String(), height)
+	userPower, ok := v.powerByAddr.Get(addr.String(), height)
 	if !ok {
 		return 0
 	}
 
-	return p.(uint64)
+	rolePower := v.rolesModule.GetMemberResourcePower(addr, feature)
+	if rolePower > userPower.(uint64) {
+		return rolePower
+	}
+
+	return userPower.(uint64)
 }
 
 func (v *RolesVotingGroup) TotalPowerAtHeight(height int64) uint64 {

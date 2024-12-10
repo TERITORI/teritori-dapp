@@ -43,6 +43,8 @@ type IRolesModule interface {
 	ConfigJSON() string
 	Render(path string) string
 	GetMemberRoles(address std.Address) []string
+	GetMemberResourcePower(address std.Address, resource string) uint64
+	SetMemberResourcePower(address std.Address, resource string, power uint64)
 	HasRole(address std.Address, role string) bool
 	NewRole(roleName string, permissionsJSON string)
 	DeleteRole(roleName string)

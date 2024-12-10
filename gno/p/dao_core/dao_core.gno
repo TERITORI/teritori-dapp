@@ -48,14 +48,15 @@ func NewDAOCore(
 		proposalModules:           make([]dao_interfaces.ActivableProposalModule, len(proposalModulesFactories)),
 	}
 
-	core.votingModule = votingModuleFactory(core)
-	if core.votingModule == nil {
-		panic("voting module factory returned nil")
-	}
-
+	// important to keep this order since voting module might depend on roles module
 	core.rolesModule = rolesModuleFactory(core)
 	if core.rolesModule == nil {
 		panic("roles module factory returned nil")
+	}
+
+	core.votingModule = votingModuleFactory(core)
+	if core.votingModule == nil {
+		panic("voting module factory returned nil")
 	}
 
 	for i, modFactory := range proposalModulesFactories {

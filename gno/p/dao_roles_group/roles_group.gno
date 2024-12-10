@@ -17,6 +17,7 @@ type RolesGroup struct {
 	permissionsPower *avl.Tree // roles -> PermissionPower[]
 }
 
+// TODO: Rename permission to resourcePower
 type PermissionPower struct {
 	Permission string
 	Power      uint64
@@ -63,8 +64,9 @@ func (r *RolesGroup) NewRole(roleName string, permissionsJSON string) {
 			Power:      jsonutil.MustUint64(node["power"]),
 		}
 	}
+	// Since we want to match permissions with a voting power, we need to store them in a separate tree for now
 	r.rm.CreateNewRole(roleName, []string{})
-	if permissions != nil {
+	if len(permissions) > 0 {
 		r.permissionsPower.Set(roleName, permissions)
 	}
 }
@@ -85,6 +87,28 @@ func (r *RolesGroup) GetMemberRoles(address std.Address) []string {
 	return r.rm.GetUserRoles(address)
 }
 
+func (r *RolesGroup) GetMemberResourcePower(address std.Address, resource string) uint64 {
+	roles := r.rm.GetUserRoles(address)
+	power := uint64(0)
+	for _, role := range roles {
+		permissionRaw, exists := r.permissionsPower.Get(role)
+		if !exists {
+			continue
+		}
+		permissions := permissionRaw.([]PermissionPower)
+		for _, p := range permissions.([]PermissionPower) {
+			if p.Permission == resource && p.Power > power {
+				power = p.Power
+			}
+		}
+	}
+	return power
+}
+
+func (r *RolesGroup) SetMemberResourcePower(address std.Address, resource string, power uint64) {
+	panic("Not implemented yet")
+}
+
 // TODO:
-// 1. Add GetUserPower(address std.Address, permission string) uint64
-// 2. Add SetRolePower(role string, permission string, power uint64)
+// 1. Add GetUserResourcePower(address std.Address, resource string) uint64
+// 2. Add SetRoleResourcePower(role string, resource string, power uint64)
