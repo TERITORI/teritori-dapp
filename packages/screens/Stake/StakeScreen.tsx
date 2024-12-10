@@ -10,6 +10,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { Tabs } from "@/components/tabs/Tabs";
 import { useAreThereWallets } from "@/hooks/useAreThereWallets";
 import { useCosmosDelegations } from "@/hooks/useCosmosDelegations";
@@ -18,7 +19,7 @@ import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { useValidators } from "@/hooks/useValidators";
 import { NetworkKind, parseUserId, UserKind } from "@/networks";
 import { ScreenFC } from "@/utils/navigation";
-import { fontSemibold20, fontSemibold28 } from "@/utils/style/fonts";
+import { fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { ValidatorInfo } from "@/utils/types/staking";
 
@@ -97,7 +98,7 @@ export const StakeScreen: ScreenFC<"Staking"> = ({ route: { params } }) => {
 
   return (
     <ScreenContainer
-      headerChildren={<BrandText style={fontSemibold20}>Stake</BrandText>}
+      headerChildren={<ScreenTitle>Stake</ScreenTitle>}
       responsive
       isLarge
       forceNetworkKind={NetworkKind.Cosmos}

@@ -7,8 +7,8 @@ import { RightSection } from "./components/RightSection";
 import { RolesDeployerSteps } from "./components/RolesOrg/RolesDeployerSteps";
 import { TokenDeployerSteps } from "./components/TokenOrg/TokenDeployerSteps";
 
-import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import {
   CreateDaoFormType,
   DaoType,
@@ -46,7 +46,7 @@ export const OrganizationDeployerScreen = () => {
 
   return (
     <ScreenContainer
-      headerChildren={<BrandText>Organization Deployer</BrandText>}
+      headerChildren={<ScreenTitle>Organization Deployer</ScreenTitle>}
       footerChildren={<></>}
       noMargin
       fullWidth

@@ -1,12 +1,15 @@
 // axelar libs imported by the bridge screen are breaking the ios CI
 
-import { getNav, screenTitle } from "./util";
+import { getNav } from "./util";
 
 import { RiotGameBridgeScreen } from "@/screens/RiotGame/RiotGameBridgeScreen";
 
 const { Nav } = getNav("normal");
 
-export const platformScreens: JSX.Element = (
+// this can't be a FC because using an intermediary component makes the Navigator crash
+export const getPlatformScreens: (
+  screenTitle: (title: string) => string,
+) => JSX.Element = (screenTitle) => (
   <>
     <Nav.Screen
       name="RiotGameBridge"

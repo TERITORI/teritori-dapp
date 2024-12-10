@@ -10,9 +10,9 @@ import { PicsFeed } from "./components/PicsFeed";
 import { VideosFeed } from "./components/VideosFeed";
 
 import { PostsRequest } from "@/api/feed/v1/feed";
-import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { NewsFeed } from "@/components/socialFeed/NewsFeed/NewsFeed";
 import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -80,7 +80,7 @@ export const FeedScreen: ScreenFC<"Feed"> = ({
       noScroll
       footerChildren={<></>}
       forceNetworkFeatures={[NetworkFeature.SocialFeed]}
-      headerChildren={<BrandText>Social Feed</BrandText>}
+      headerChildren={<ScreenTitle>Social Feed</ScreenTitle>}
     >
       {feedContent}
     </ScreenContainer>

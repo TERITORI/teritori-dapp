@@ -7,10 +7,11 @@ import LeaderboardBannerImage from "../../../assets/banners/LeaderboardBanner.pn
 import { BrandText } from "../../components/BrandText";
 import { ScreenContainer } from "../../components/ScreenContainer";
 import { useAppNavigation } from "../../utils/navigation";
-import { fontSemibold20, fontSemibold28 } from "../../utils/style/fonts";
+import { fontSemibold28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 
 import { OptimizedImage } from "@/components/OptimizedImage";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { Tabs } from "@/components/tabs/Tabs";
 import { useEnabledNetworks } from "@/hooks/useEnabledNetworks";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -52,9 +53,7 @@ export const MarketplaceLeaderboardScreen: React.FC = () => {
     <ScreenContainer
       isLarge
       footerChildren={<></>}
-      headerChildren={
-        <BrandText style={fontSemibold20}>NFT Traders Leaderboard</BrandText>
-      }
+      headerChildren={<ScreenTitle>NFT Traders Leaderboard</ScreenTitle>}
       responsive
       onBackPress={() => navigation.goBack()}
     >

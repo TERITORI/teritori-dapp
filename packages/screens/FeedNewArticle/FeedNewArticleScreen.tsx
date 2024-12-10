@@ -10,6 +10,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { WalletStatusBox } from "@/components/WalletStatusBox";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
 import { Label, TextInputCustom } from "@/components/inputs/TextInputCustom";
@@ -44,7 +45,7 @@ import {
   neutral77,
   secondaryColor,
 } from "@/utils/style/colors";
-import { fontSemibold13, fontSemibold20 } from "@/utils/style/fonts";
+import { fontSemibold13 } from "@/utils/style/fonts";
 import { layout, screenContentMaxWidth } from "@/utils/style/layout";
 import {
   CustomLatLngExpression,
@@ -248,7 +249,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       responsive
       mobileTitle="NEW ARTICLE"
       fullWidth
-      headerChildren={<BrandText style={fontSemibold20}>New Article</BrandText>}
+      headerChildren={<ScreenTitle>New Article</ScreenTitle>}
       onBackPress={navigateBack}
       footerChildren
       noScroll
