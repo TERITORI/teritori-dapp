@@ -62,9 +62,9 @@ fn optimistic() {
     let player_2_count = contract.tickets_count_by_user(player_2.to_string());
     assert_eq!(player_2_count, Ok(0));
 
-    for i in 0..half_tickets.into() {
+    for _i in 0..half_tickets.into() {
         contract
-            .buy_ticket(i % 2 == 1)
+            .buy_tickets(1)
             .with_funds(&[Coin::new(ticket_price.into(), "uusdc")])
             .call(player_1)
             .unwrap();
@@ -84,9 +84,9 @@ fn optimistic() {
         .unwrap();
     assert_eq!(contract_balance, Coin::new(half_reward.into(), "uusdc"));
 
-    for i in 0..half_tickets.into() {
+    for _i in 0..half_tickets.into() {
         contract
-            .buy_ticket(i % 2 == 1)
+            .buy_tickets(1)
             .with_funds(&[Coin::new(ticket_price.into(), "uusdc")])
             .call(player_2)
             .unwrap();
@@ -104,19 +104,19 @@ fn optimistic() {
         .unwrap();
     assert_eq!(contract_balance, Coin::new(fee.into(), "uusdc"));
 
-    let player_1_balance = app.app().wrap().query_balance(player_1, "uusdc").unwrap();
+    let player_2_balance = app.app().wrap().query_balance(player_2, "uusdc").unwrap();
     assert_eq!(
-        player_1_balance,
+        player_2_balance,
         Coin::new(total_reward.checked_sub(fee).unwrap().into(), "uusdc")
     );
 
-    let player_2_balance = app.app().wrap().query_balance(player_2, "uusdc").unwrap();
-    assert_eq!(player_2_balance, Coin::new(0, "uusdc"));
+    let player_1_balance = app.app().wrap().query_balance(player_1, "uusdc").unwrap();
+    assert_eq!(player_1_balance, Coin::new(0, "uusdc"));
 
     let history = contract.history(42, None).unwrap();
     assert_eq!(history.len(), 1);
     let history_entry = &history[0];
-    assert_eq!(history_entry, &(1571797419u64, Addr::unchecked(player_1)));
+    assert_eq!(history_entry, &(1571797419u64, Addr::unchecked(player_2)));
 
     contract
         .withdraw_fees(treasury.to_string())
@@ -166,10 +166,10 @@ fn stop() {
         .call(creator)
         .unwrap();
 
-    for i in 0..5000 {
+    for _i in 0..500 {
         contract
-            .buy_ticket(i % 2 == 1)
-            .with_funds(&[Coin::new(10, "uusdc")])
+            .buy_tickets(10)
+            .with_funds(&[Coin::new(100, "uusdc")])
             .call(player_1)
             .unwrap();
     }
@@ -181,9 +181,9 @@ fn stop() {
         .unwrap();
     assert_eq!(contract_balance, Coin::new(50000, "uusdc"));
 
-    for i in 0..4999 {
+    for _i in 0..4999 {
         contract
-            .buy_ticket(i % 2 == 1)
+            .buy_tickets(1)
             .with_funds(&[Coin::new(10, "uusdc")])
             .call(player_2)
             .unwrap();
@@ -202,7 +202,7 @@ fn stop() {
     let player_2_balance = app.app().wrap().query_balance(player_2, "uusdc").unwrap();
     assert_eq!(player_2_balance, Coin::new(10, "uusdc"));
 
-    contract.stop().call(admin).unwrap();
+    contract.refund().call(admin).unwrap();
     let contract_balance = app
         .app()
         .wrap()
