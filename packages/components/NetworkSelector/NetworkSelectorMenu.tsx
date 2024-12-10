@@ -69,6 +69,7 @@ export const NetworkSelectorMenu: FC<{
         break;
       case NetworkKind.Cosmos:
         walletProvider = WalletProvider.Keplr;
+        break;
       case NetworkKind.Gno:
         walletProvider = WalletProvider.Adena;
         break;
@@ -143,7 +144,6 @@ export const NetworkSelectorMenu: FC<{
         })}
       {!forceNetworkList && (
         <>
-          {" "}
           <TertiaryButton
             text="Manage"
             size="XS"
