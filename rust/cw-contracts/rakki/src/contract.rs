@@ -1,15 +1,14 @@
 use std::collections::BTreeMap;
+use std::io::Write;
 
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{Addr, BankMsg, Coin, Response, StdError, StdResult, Storage, Uint128, Uint512};
+use cosmwasm_std::{Addr, BankMsg, Coin, Response, StdError, StdResult, Storage, Uint128};
 use cw_storage_plus::{Bound, Item, Map};
-use sha3::{Digest, Sha3_224};
+use sha3::{Digest, Sha3_256};
 use sylvia::types::{ExecCtx, InstantiateCtx, QueryCtx};
 use sylvia::{contract, entry_points};
 
 use crate::error::ContractError;
-
-// TODO: optimize
 
 #[cw_serde]
 pub struct Config {
@@ -28,7 +27,7 @@ pub struct Info {
 
 pub struct RakkiContract {
     pub(crate) current_tickets: Map<'static, u16, Addr>,
-    pub(crate) current_entropy: Item<'static, Uint512>,
+    pub(crate) current_entropy: Item<'static, [u8; 32]>,
     pub(crate) tickets_by_user: Map<'static, Addr, u16>,
     pub(crate) fees: Item<'static, Uint128>,
     pub(crate) config: Item<'static, Config>,
@@ -84,49 +83,46 @@ impl RakkiContract {
             },
         )?;
         self.current_entropy
-            .save(ctx.deps.storage, &Uint512::zero())?;
+            .save(ctx.deps.storage, &INITIAL_ENTROPY)?;
         self.fees.save(ctx.deps.storage, &Uint128::zero())?;
         Ok(Response::default())
     }
 
     #[msg(exec)]
-    pub fn buy_ticket(&self, ctx: ExecCtx, entropy: bool) -> StdResult<Response> {
+    pub fn buy_tickets(&self, ctx: ExecCtx, count: u16) -> StdResult<Response> {
         let config = self.config.load(ctx.deps.storage)?;
 
-        if ctx.info.funds.len() != 1 {
-            return Err(StdError::generic_err("must pay with exactly one coin"));
+        let offset = self.tickets_count(ctx.deps.storage)?;
+        let target = offset + count;
+
+        if target > config.max_tickets {
+            return Err(StdError::generic_err("too much tickets"));
         }
+
         let funds = ctx.info.funds.get(0).unwrap();
-        let total_price = config.ticket_price.amount;
+        let total_price = config.ticket_price.amount * Uint128::from(count);
         if funds != &Coin::new(total_price.into(), config.ticket_price.denom.to_owned()) {
             return Err(StdError::generic_err("must pay exactly ticket_price"));
         }
 
-        let offset = self.tickets_count(ctx.deps.storage)?;
+        let current_entropy = self
+            .current_entropy
+            .update(ctx.deps.storage, |current_entropy| {
+                Ok::<[u8; 32], StdError>(hash_duo(&current_entropy, ctx.info.sender.as_bytes()))
+            })?;
 
-        self.current_tickets
-            .save(ctx.deps.storage, offset, &ctx.info.sender)?;
+        for i in 0..count {
+            self.current_tickets
+                .save(ctx.deps.storage, offset + i, &ctx.info.sender)?;
+        }
 
         self.tickets_by_user
             .update(ctx.deps.storage, ctx.info.sender, |opt| match opt {
-                Some(value) => Ok::<u16, StdError>(value + 1),
-                None => Ok(1),
+                Some(value) => Ok::<u16, StdError>(value + count),
+                None => Ok(count),
             })?;
 
-        // FIXME: find a better/stronger way to accumulate entropy
-        let final_entropy = self.current_entropy.update(
-            ctx.deps.storage,
-            |current_entropy| -> Result<Uint512, StdError> {
-                Ok((current_entropy << 1)
-                    + if entropy {
-                        Uint512::one()
-                    } else {
-                        Uint512::zero()
-                    })
-            },
-        )?;
-
-        if offset + 1 != config.max_tickets {
+        if target < config.max_tickets {
             // not enough tickets, wait for more
             return Ok(Response::default());
         }
@@ -145,11 +141,7 @@ impl RakkiContract {
         }
 
         // pick winner
-        // FIXME: calculate game theory of cheating
-        let mut hasher = Sha3_224::new();
-        hasher.update(final_entropy.to_be_bytes());
-        let hash = hasher.finalize();
-        let hash_index = u16::from_be_bytes(hash[0..2].try_into().unwrap());
+        let hash_index = u16::from_be_bytes(current_entropy[0..2].try_into().unwrap());
         let winner_index = hash_index % config.max_tickets;
         let winner = self.current_tickets.load(ctx.deps.storage, winner_index)?;
 
@@ -171,7 +163,7 @@ impl RakkiContract {
 
         // reset state
         self.current_entropy
-            .save(ctx.deps.storage, &Uint512::zero())?;
+            .save(ctx.deps.storage, &INITIAL_ENTROPY)?;
         self.current_tickets.clear(ctx.deps.storage);
         self.tickets_by_user.clear(ctx.deps.storage);
 
@@ -206,18 +198,30 @@ impl RakkiContract {
 
     #[msg(exec)]
     pub fn stop(&self, ctx: ExecCtx) -> StdResult<Response> {
-        let config = self.config.load(ctx.deps.storage)?;
-        if ctx.info.sender != config.owner {
-            return Err(StdError::generic_err("only owner can stop"));
-        }
-        if config.stopped {
-            return Err(StdError::generic_err("already stopped"));
-        }
         self.config
             .update(ctx.deps.storage, |mut config| -> StdResult<Config> {
+                if ctx.info.sender != config.owner {
+                    return Err(StdError::generic_err("only owner can stop"));
+                }
+                if config.stopped {
+                    return Err(StdError::generic_err("already stopped"));
+                }
                 config.stopped = true;
                 return Ok(config);
             })?;
+        Ok(Response::default())
+    }
+
+    #[msg(exec)]
+    pub fn refund(&self, ctx: ExecCtx) -> StdResult<Response> {
+        let config = self.config.load(ctx.deps.storage)?;
+        if ctx.info.sender != config.owner {
+            return Err(StdError::generic_err("only owner can refund"));
+        }
+        if !config.stopped {
+            return Err(StdError::generic_err("must be stopped"));
+        }
+
         let mut funds_by_address = BTreeMap::<Addr, Uint128>::new();
         for r in
             self.current_tickets
@@ -304,3 +308,14 @@ impl RakkiContract {
             .unwrap_or(0));
     }
 }
+
+fn hash_duo(a: &[u8], b: &[u8]) -> [u8; 32] {
+    let mut hasher = Sha3_256::new();
+    hasher.write_all(a).unwrap();
+    hasher.write_all(b).unwrap();
+    return hasher.finalize().into();
+}
+
+const INITIAL_ENTROPY: [u8; 32] = [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+];
