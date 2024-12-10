@@ -1,5 +1,6 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useMemo } from "react";
+import { View } from "react-native";
 
 import { ArticlesFeed } from "./components/ArticlesFeed";
 import { FeedHeader } from "./components/FeedHeader";
@@ -61,11 +62,11 @@ export const FeedScreen: ScreenFC<"Feed"> = ({
             isFlagged={params?.tab === "moderationDAO"}
             disablePosting={params?.tab === "moderationDAO"}
             Header={() => (
-              <>
+              <View style={{ width: "100%" }}>
                 {/* ScreenContainer in FeedScreen has noScroll, so we need to add MobileTitle here */}
                 {isMobile && <MobileTitle title="SOCIAL FEED" />}
                 <FeedHeader selectedTab="" />
-              </>
+              </View>
             )}
           />
         );
@@ -74,10 +75,8 @@ export const FeedScreen: ScreenFC<"Feed"> = ({
 
   return (
     <ScreenContainer
-      fullWidth
+      isLarge
       responsive
-      noMargin
-      noScroll
       footerChildren={<></>}
       forceNetworkFeatures={[NetworkFeature.SocialFeed]}
       headerChildren={<ScreenTitle>Social Feed</ScreenTitle>}
