@@ -1,5 +1,3 @@
-import { MsgExecuteContractEncodeObject } from "@cosmjs/cosmwasm-stargate";
-import { toUtf8 } from "@cosmjs/encoding";
 import { useQueryClient } from "@tanstack/react-query";
 import Long from "long";
 import moment from "moment";
@@ -21,7 +19,7 @@ import { LoaderFullSize } from "../../components/loaders/LoaderFullScreen";
 import ModalBase from "../../components/modals/ModalBase";
 import { Username } from "../../components/user/Username";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { ExecMsg, Info } from "../../contracts-clients/rakki/Rakki.types";
+import { Info } from "../../contracts-clients/rakki/Rakki.types";
 import { useRakkiHistory } from "../../hooks/rakki/useRakkiHistory";
 import { useRakkiInfo } from "../../hooks/rakki/useRakkiInfo";
 import { useBalances } from "../../hooks/useBalances";
@@ -43,6 +41,7 @@ import {
 import { modalMarginPadding } from "../../utils/style/modals";
 import { joinElements } from "../Multisig/components/MultisigRightSection";
 
+import { RakkiClient } from "@/contracts-clients/rakki";
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 
 // TODO: replace all placeholders text with real values
@@ -341,29 +340,14 @@ const BuyTicketsButton: React.FC<{ networkId: string; info: Info }> = ({
                   if (feature?.type !== NetworkFeature.CosmWasmRakki) {
                     throw new Error("Rakki not supported on this network");
                   }
-                  const msgs: MsgExecuteContractEncodeObject[] = [];
-                  const len = ticketAmountNumber.toNumber();
-                  for (let i = 0; i < len; i++) {
-                    const payload: ExecMsg = {
-                      buy_ticket: {
-                        entropy: !!Math.round(Math.random()), // FIXME: secure entropy
-                      },
-                    };
-                    msgs.push({
-                      typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
-                      value: {
-                        sender: selectedWallet.address,
-                        contract: feature.contractAddress,
-                        msg: toUtf8(JSON.stringify(payload)),
-                        funds: [info.config.ticket_price],
-                      },
-                    });
-                  }
-                  await cosmWasmClient.signAndBroadcast(
+                  const rakkiClient = new RakkiClient(
+                    cosmWasmClient,
                     selectedWallet.address,
-                    msgs,
-                    "auto",
+                    feature.contractAddress,
                   );
+                  await rakkiClient.buyTickets({
+                    count: ticketAmountNumber.toNumber(),
+                  });
                   await Promise.all([
                     queryClient.invalidateQueries(["rakkiInfo", networkId]),
                     queryClient.invalidateQueries([
