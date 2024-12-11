@@ -91,6 +91,9 @@ impl RakkiContract {
     #[msg(exec)]
     pub fn buy_tickets(&self, ctx: ExecCtx, count: u16) -> StdResult<Response> {
         let config = self.config.load(ctx.deps.storage)?;
+        if config.stopped {
+            return Err(StdError::generic_err("stopped"));
+        }
 
         let offset = self.tickets_count(ctx.deps.storage)?;
         let target = offset + count;
@@ -108,11 +111,11 @@ impl RakkiContract {
         let current_entropy = self
             .current_entropy
             .update(ctx.deps.storage, |current_entropy| {
-                Ok::<[u8; 32], StdError>(hash_bytes(&[
+                hash_arrays(&[
                     &current_entropy,
                     &ctx.info.sender.as_bytes(),
                     &ctx.env.block.time.nanos().to_be_bytes(),
-                ]))
+                ])
             })?;
 
         for i in 0..count {
@@ -313,12 +316,14 @@ impl RakkiContract {
     }
 }
 
-fn hash_bytes(arrays: &[&[u8]]) -> [u8; 32] {
+fn hash_arrays(arrays: &[&[u8]]) -> Result<[u8; 32], StdError> {
     let mut hasher = Sha3_256::new();
     for array in arrays {
-        hasher.write_all(array).unwrap();
+        hasher
+            .write_all(array)
+            .map_err(|_err| StdError::generic_err("hash write failed"))?;
     }
-    return hasher.finalize().into();
+    return Ok(hasher.finalize().into());
 }
 
 const INITIAL_ENTROPY: [u8; 32] = [

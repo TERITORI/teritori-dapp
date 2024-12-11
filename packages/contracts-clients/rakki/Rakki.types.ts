@@ -19,8 +19,8 @@ export interface Coin {
 }
 export type ExecuteMsg = ExecMsg;
 export type ExecMsg = {
-  buy_ticket: {
-    entropy: boolean;
+  buy_tickets: {
+    count: number;
     [k: string]: unknown;
   };
 } | {
@@ -30,6 +30,10 @@ export type ExecMsg = {
   };
 } | {
   stop: {
+    [k: string]: unknown;
+  };
+} | {
+  refund: {
     [k: string]: unknown;
   };
 } | {
