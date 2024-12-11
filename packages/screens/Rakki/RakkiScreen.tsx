@@ -345,9 +345,21 @@ const BuyTicketsButton: React.FC<{ networkId: string; info: Info }> = ({
                     selectedWallet.address,
                     feature.contractAddress,
                   );
-                  await rakkiClient.buyTickets({
-                    count: ticketAmountNumber.toNumber(),
-                  });
+                  const count = ticketAmountNumber.toNumber();
+                  const price = {
+                    amount: Long.fromString(info.config.ticket_price.amount)
+                      .multiply(count)
+                      .toString(),
+                    denom: info.config.ticket_price.denom,
+                  };
+                  await rakkiClient.buyTickets(
+                    {
+                      count,
+                    },
+                    "auto",
+                    undefined,
+                    [price],
+                  );
                   await Promise.all([
                     queryClient.invalidateQueries(["rakkiInfo", networkId]),
                     queryClient.invalidateQueries([
