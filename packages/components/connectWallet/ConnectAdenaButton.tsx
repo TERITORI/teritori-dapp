@@ -2,21 +2,26 @@ import React from "react";
 import { Linking } from "react-native";
 
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
-import adenaSVG from "../../../assets/icons/adena.svg";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
-import { getGnoNetworkFromChainId } from "../../networks";
-import {
-  setIsAdenaConnected,
-  setSelectedNetworkId,
-  setSelectedWalletId,
-} from "../../store/slices/settings";
-import { useAppDispatch } from "../../store/store";
+
+import adenaSVG from "@/assets/icons/adena.svg";
+import { useAdenaStore } from "@/context/WalletsProvider/adena/useAdenaStore";
+import { useAdenaUtils } from "@/context/WalletsProvider/adena/useAdenaUtils";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { getGnoNetworkFromChainId } from "@/networks/index";
+import { setIsAdenaConnected } from "@/store/slices/settings";
+import { useAppDispatch } from "@/store/store";
 
 export const ConnectAdenaButton: React.FC<{
   onDone?: (err?: unknown) => void;
 }> = ({ onDone }) => {
-  const { setToastError } = useFeedbacks();
+  const { setToast } = useFeedbacks();
   const dispatch = useAppDispatch();
+  const { state, setState } = useAdenaStore();
+  const selectedNetworkInfo = useSelectedNetworkInfo();
+
+  const { switchAdenaNetwork } = useAdenaUtils();
+
   const handlePress = async () => {
     try {
       const adena = (window as any)?.adena;
@@ -24,29 +29,42 @@ export const ConnectAdenaButton: React.FC<{
         Linking.openURL("https://adena.app/");
         return;
       }
+
+      dispatch(setIsAdenaConnected(false));
       const establishResult = await adena.AddEstablish("Teritori dApp");
+      if (establishResult.status === "failure") {
+        throw Error(establishResult.message);
+      }
+
       console.log("established", establishResult);
       dispatch(setIsAdenaConnected(true));
-      const account = await adena.GetAccount();
-      const address = account.data.address;
-      const chainId = account.data.chainId;
-      const network = getGnoNetworkFromChainId(chainId);
 
-      if (!network) {
+      const account = await adena.GetAccount();
+      const chainId = account.data.chainId;
+      const gnoNetwork = getGnoNetworkFromChainId(chainId);
+
+      if (!gnoNetwork) {
         throw new Error(`Unsupported chainId ${chainId}`);
       }
-      dispatch(setSelectedNetworkId(network.id));
-      dispatch(setSelectedWalletId(`adena-${network.id}-${address}`));
-      onDone && onDone();
+
+      setState({ ...state, chainId });
+
+      if (chainId !== selectedNetworkInfo?.accountExplorer) {
+        await switchAdenaNetwork(adena, selectedNetworkInfo);
+      }
+
+      onDone?.();
     } catch (err) {
       console.error(err);
       if (err instanceof Error) {
-        setToastError({
-          title: "Failed to connect Adena",
+        setToast({
+          type: "error",
           message: err.message,
+          mode: "normal",
+          title: "Failed to connect to Adena (1)",
         });
       }
-      onDone && onDone(err);
+      onDone?.(err);
     }
   };
   return (

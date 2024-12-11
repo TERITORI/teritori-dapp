@@ -70,6 +70,9 @@ export const NetworkSelectorMenu: FC<{
       case NetworkKind.Cosmos:
         walletProvider = WalletProvider.Keplr;
         break;
+      case NetworkKind.Gno:
+        walletProvider = WalletProvider.Adena;
+        break;
     }
 
     // Auto select the first connected wallet when switching network
@@ -141,7 +144,6 @@ export const NetworkSelectorMenu: FC<{
         })}
       {!forceNetworkList && (
         <>
-          {" "}
           <TertiaryButton
             text="Manage"
             size="XS"
