@@ -108,7 +108,11 @@ impl RakkiContract {
         let current_entropy = self
             .current_entropy
             .update(ctx.deps.storage, |current_entropy| {
-                Ok::<[u8; 32], StdError>(hash_duo(&current_entropy, ctx.info.sender.as_bytes()))
+                Ok::<[u8; 32], StdError>(hash_bytes(&[
+                    &current_entropy,
+                    &ctx.info.sender.as_bytes(),
+                    &ctx.env.block.time.nanos().to_be_bytes(),
+                ]))
             })?;
 
         for i in 0..count {
@@ -135,7 +139,7 @@ impl RakkiContract {
         if let Some(last_history) = last_history {
             if last_history.0 == now {
                 return Err(StdError::generic_err(
-                    "cannot run two draws in the same block",
+                    "cannot run two draws in the same second",
                 ));
             }
         }
@@ -309,10 +313,11 @@ impl RakkiContract {
     }
 }
 
-fn hash_duo(a: &[u8], b: &[u8]) -> [u8; 32] {
+fn hash_bytes(arrays: &[&[u8]]) -> [u8; 32] {
     let mut hasher = Sha3_256::new();
-    hasher.write_all(a).unwrap();
-    hasher.write_all(b).unwrap();
+    for array in arrays {
+        hasher.write_all(array).unwrap();
+    }
     return hasher.finalize().into();
 }
 

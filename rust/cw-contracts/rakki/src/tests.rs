@@ -104,19 +104,19 @@ fn optimistic() {
         .unwrap();
     assert_eq!(contract_balance, Coin::new(fee.into(), "uusdc"));
 
-    let player_2_balance = app.app().wrap().query_balance(player_2, "uusdc").unwrap();
+    let player_1_balance = app.app().wrap().query_balance(player_1, "uusdc").unwrap();
     assert_eq!(
-        player_2_balance,
+        player_1_balance,
         Coin::new(total_reward.checked_sub(fee).unwrap().into(), "uusdc")
     );
 
-    let player_1_balance = app.app().wrap().query_balance(player_1, "uusdc").unwrap();
-    assert_eq!(player_1_balance, Coin::new(0, "uusdc"));
+    let player_2_balance = app.app().wrap().query_balance(player_2, "uusdc").unwrap();
+    assert_eq!(player_2_balance, Coin::new(0, "uusdc"));
 
     let history = contract.history(42, None).unwrap();
     assert_eq!(history.len(), 1);
     let history_entry = &history[0];
-    assert_eq!(history_entry, &(1571797419u64, Addr::unchecked(player_2)));
+    assert_eq!(history_entry, &(1571797419u64, Addr::unchecked(player_1)));
 
     contract
         .withdraw_fees(treasury.to_string())
@@ -201,6 +201,26 @@ fn stop() {
 
     let player_2_balance = app.app().wrap().query_balance(player_2, "uusdc").unwrap();
     assert_eq!(player_2_balance, Coin::new(10, "uusdc"));
+
+    let stop_err = contract.stop().call(player_1).unwrap_err();
+    assert_eq!(
+        stop_err,
+        ContractError::Std(StdError::generic_err("only owner can stop"))
+    );
+
+    let stop_err = contract.refund().call(admin).unwrap_err();
+    assert_eq!(
+        stop_err,
+        ContractError::Std(StdError::generic_err("must be stopped"))
+    );
+
+    contract.stop().call(admin).unwrap();
+
+    let refund_err = contract.refund().call(player_1).unwrap_err();
+    assert_eq!(
+        refund_err,
+        ContractError::Std(StdError::generic_err("only owner can refund"))
+    );
 
     contract.refund().call(admin).unwrap();
     let contract_balance = app
