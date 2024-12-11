@@ -94,6 +94,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   // Can't use useMaxResolution because i want a specific value for FeedScreen
   // If we have a different width when sidebar is expanded and when it's not, the sidebar will be laggy
   // So this calcul find the bigger width to have the same width no matter the sidebar state
+  // TODO: move this calcul in useMaxResolution
   const contentWidth = React.useMemo(
     () => windowWidth - fullSidebarWidth,
     [windowWidth],
