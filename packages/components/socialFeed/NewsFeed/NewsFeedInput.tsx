@@ -716,54 +716,29 @@ export const NewsFeedInput = React.forwardRef<
                 }}
               >
                 {type === "post" && (
-                  <>
-                    <OmniLink to={{ screen: "FeedNewArticle" }}>
-                      <SecondaryButtonOutline
-                        size="SM"
-                        color={
-                          formValues?.message.length >
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                            ? primaryTextColor
-                            : primaryColor
-                        }
-                        borderColor={primaryColor}
-                        touchableStyle={{
-                          marginRight: layout.spacing_x2,
-                        }}
-                        backgroundColor={
-                          formValues?.message.length >
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                            ? primaryColor
-                            : neutral17
-                        }
-                        text="Create an Article"
-                        squaresBackgroundColor={neutral17}
-                      />
-                    </OmniLink>
-                    <OmniLink to={{ screen: "FeedNewArticleMarkdown" }}>
-                      <SecondaryButtonOutline
-                        size="SM"
-                        color={
-                          formValues?.message.length >
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                            ? primaryTextColor
-                            : primaryColor
-                        }
-                        borderColor={primaryColor}
-                        touchableStyle={{
-                          marginRight: layout.spacing_x2,
-                        }}
-                        backgroundColor={
-                          formValues?.message.length >
-                          SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
-                            ? primaryColor
-                            : neutral17
-                        }
-                        text="MD"
-                        squaresBackgroundColor={neutral17}
-                      />
-                    </OmniLink>
-                  </>
+                  <OmniLink to={{ screen: "FeedNewArticle" }}>
+                    <SecondaryButtonOutline
+                      size="SM"
+                      color={
+                        formValues?.message.length >
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                          ? primaryTextColor
+                          : primaryColor
+                      }
+                      borderColor={primaryColor}
+                      touchableStyle={{
+                        marginRight: layout.spacing_x2,
+                      }}
+                      backgroundColor={
+                        formValues?.message.length >
+                        SOCIAL_FEED_ARTICLE_MIN_CHARS_LIMIT
+                          ? primaryColor
+                          : neutral17
+                      }
+                      text="Create an Article"
+                      squaresBackgroundColor={neutral17}
+                    />
+                  </OmniLink>
                 )}
 
                 <PrimaryButton
