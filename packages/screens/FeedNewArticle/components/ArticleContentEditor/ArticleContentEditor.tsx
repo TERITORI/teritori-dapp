@@ -1,3 +1,5 @@
+import type { MixedStyleRecord } from "@native-html/transient-render-engine";
+import markdownit from "markdown-it";
 import { FC, useRef, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import {
@@ -7,9 +9,8 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import Markdown from "react-native-markdown-display";
+import RenderHtml from "react-native-render-html";
 
-import { OptimizedImage } from "@/components/OptimizedImage";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { Label } from "@/components/inputs/TextInputCustom";
 import { SpacerColumn } from "@/components/spacer";
@@ -17,12 +18,7 @@ import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { Toolbar } from "@/screens/FeedNewArticle/components/ArticleContentEditor/Toolbar/Toolbar";
 import { ContentMode } from "@/screens/FeedNewArticle/components/ArticleContentEditor/utils";
 import { ARTICLE_MAX_WIDTH } from "@/utils/social-feed";
-import {
-  neutral00,
-  neutral17,
-  neutralA3,
-  neutralFF,
-} from "@/utils/style/colors";
+import { neutral00, neutralA3, neutralFF } from "@/utils/style/colors";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 import { NewArticleFormValues } from "@/utils/types/feed";
 import { LocalFileData } from "@/utils/types/files";
@@ -32,7 +28,7 @@ interface Props {
 }
 
 export const ArticleContentEditor: FC<Props> = ({ width }) => {
-  // ========== Layout
+  // ========== UI
   const { width: windowWidth } = useWindowDimensions();
   const { height } = useMaxResolution();
   const textInputRef = useRef<TextInput>(null);
@@ -40,7 +36,12 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
   const borderWidth = 1;
   const textInputMinHeight = height - 140;
   const [textInputHeight, setTextInputHeight] = useState(textInputMinHeight);
+  const [textInputSelection, setTextInputSelection] = useState({
+    start: 0,
+    end: 0,
+  }); // Used to get the cursor position
   const [mode, setMode] = useState<ContentMode>("BOTH");
+  const [renderWidth, setRenderWidth] = useState(0);
   const textInputContainerPadding =
     windowWidth < RESPONSIVE_BREAKPOINT_S
       ? 0
@@ -66,59 +67,27 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
       console.error("Invalid file: Missing URL or MIME type");
       return;
     }
-    setValue("message", `![image](${file.url})`);
+    const textBefore = message.substring(0, textInputSelection.start);
+    const textAfter = message.substring(
+      textInputSelection.start,
+      message.length - 1,
+    );
+    const result = `${textBefore}![image](${file.url})${textAfter}`;
+    setValue("message", result);
   };
 
   // ========== Markdown
-  const markdownStyle = {
-    body: {
-      color: neutralA3,
-      lineBreak: "anywhere",
-    } as TextStyle,
-    // p:{
-    //   // overflowWrap: 'break-word', // Gère le découpage des mots longs
-    //   // wordWrap: 'break-word',
-    //   width: '100%',
-    //   maxWidth: 400, color: neutralA3, display: "flex",flexWrap: "wrap", flex: 1, flexShrink: 1},
-    // span:{
-    //   // overflowWrap: 'break-word', // Gère le découpage des mots longs
-    //   // wordWrap: 'break-word',
-    //   width: '100%',
-    //   maxWidth: 400, color: neutralA3, display: "flex",flexWrap: "wrap", flex: 1, flexShrink: 1},
-    // div:{
-    //   // overflowWrap: 'break-word', // Gère le découpage des mots longs
-    //   // wordWrap: 'break-word',
-    //   width: '100%',
-    //   maxWidth: 400, color: neutralA3, display: "flex", flexWrap: "wrap", flex: 1, flexShrink: 1},
-    hr: { backgroundColor: neutralA3 },
-    code_inline: {
-      backgroundColor: neutral17,
-      borderWidth: 0,
-    },
-    code_block: {
-      backgroundColor: neutral17,
-      borderWidth: 0,
-    },
-    fence: {
-      backgroundColor: neutral17,
-      borderWidth: 0,
-    },
-  };
+  const md = markdownit();
+  const html = md.render(message);
 
-  const markdownRules = {
-    // TODO: type this
-    image: (node, children, parent, styles) => {
-      const { src } = node.attributes;
-      return (
-        <OptimizedImage
-          key={src}
-          sourceURI={src}
-          style={{ width: 200, height: 200, resizeMode: "contain" }}
-          height={200}
-          width={200}
-        />
-      );
-    },
+  // TODO: Style this
+  const markdownTagStyles: MixedStyleRecord = {
+    body: { fontSize: 14, color: neutralA3 },
+    h1: { fontSize: 24, fontWeight: "bold" },
+    p: { margin: 0 },
+    strong: { fontWeight: "bold", color: "yellow" },
+    a: { color: "blue", textDecorationLine: "underline" },
+    // img: {resizeMode: "contain"}
   };
 
   // ========== JSX
@@ -129,42 +98,6 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
         width,
       }}
     >
-      {/* ==== Editor views button */}
-      {/*<View style={{ flexDirection: "row", alignSelf: "center" }}>*/}
-      {/*  <CustomPressable*/}
-      {/*    onPress={() => setMode("edition")}*/}
-      {/*    style={{*/}
-      {/*      backgroundColor: neutral1A,*/}
-      {/*      padding: 8,*/}
-      {/*      borderRadius: 8,*/}
-      {/*    }}*/}
-      {/*  >*/}
-      {/*    <BrandText style={fontSemibold12}>Edition</BrandText>*/}
-      {/*  </CustomPressable>*/}
-      {/*  <SpacerRow size={1} />*/}
-      {/*  <CustomPressable*/}
-      {/*    onPress={() => setMode("both")}*/}
-      {/*    style={{*/}
-      {/*      backgroundColor: neutral1A,*/}
-      {/*      padding: 8,*/}
-      {/*      borderRadius: 8,*/}
-      {/*    }}*/}
-      {/*  >*/}
-      {/*    <BrandText style={fontSemibold12}>Edition | Preview</BrandText>*/}
-      {/*  </CustomPressable>*/}
-      {/*  <SpacerRow size={1} />*/}
-      {/*  <CustomPressable*/}
-      {/*    onPress={() => setMode("preview")}*/}
-      {/*    style={{*/}
-      {/*      backgroundColor: neutral1A,*/}
-      {/*      padding: 8,*/}
-      {/*      borderRadius: 8,*/}
-      {/*    }}*/}
-      {/*  >*/}
-      {/*    <BrandText style={fontSemibold12}>Preview</BrandText>*/}
-      {/*  </CustomPressable>*/}
-      {/*</View>*/}
-
       {/* ==== Toolbar */}
       <Toolbar
         addEmoji={() => {
@@ -182,7 +115,7 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
         addImage={addImage}
         setMode={setMode}
       />
-      <SpacerColumn size={3} />
+      <SpacerColumn size={2} />
 
       {/* ==== Edition and preview */}
       <View
@@ -246,6 +179,9 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
                       onChange={adjustTextInputSize}
                       onLayout={adjustTextInputSize}
                       onChangeText={onChange}
+                      onSelectionChange={(e) =>
+                        setTextInputSelection(e.nativeEvent.selection)
+                      }
                       onContentSizeChange={(e) => {
                         // The input grows depending on the content height
                         setTextInputHeight(e.nativeEvent.contentSize.height);
@@ -271,26 +207,27 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
 
             <ScrollView
               showsHorizontalScrollIndicator={false}
-              style={[
-                {
-                  borderRadius: 12,
-                  borderWidth,
-                  borderColor: neutral00,
-                  // No paddingTop to offset the default vertical space from markdown's rendered elements
-                  paddingHorizontal: textInputContainerPadding,
-                  paddingBottom: textInputContainerPadding,
-                },
-              ]}
+              style={{
+                borderRadius: 12,
+                borderWidth,
+                borderColor: neutral00,
+                paddingBottom: textInputContainerPadding,
+                paddingHorizontal: textInputContainerPadding,
+                marginTop: textInputContainerPadding,
+              }}
               contentContainerStyle={[
                 mode !== "PREVIEW" && {
-                  height: textInputHeight + textInputContainerPadding,
+                  height: textInputHeight,
                 },
-                { minHeight: textInputMinHeight + textInputContainerPadding },
-              ]} // + textInputContainerPadding to offset the inexistant ScrollView paddingTop
+                { minHeight: textInputMinHeight },
+              ]}
+              onLayout={(e) => setRenderWidth(e.nativeEvent.layout.width)}
             >
-              <Markdown style={markdownStyle} rules={markdownRules}>
-                {message}
-              </Markdown>
+              <RenderHtml
+                source={{ html }}
+                tagsStyles={markdownTagStyles}
+                contentWidth={renderWidth - textInputContainerPadding * 2}
+              />
             </ScrollView>
           </View>
         )}
