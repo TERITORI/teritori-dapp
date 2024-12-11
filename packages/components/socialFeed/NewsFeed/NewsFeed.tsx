@@ -24,7 +24,13 @@ import {
 } from "../../../hooks/feed/useFetchFeed";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
+import {
+  fullSidebarWidth,
+  getResponsiveScreenContainerMarginHorizontal,
+  layout,
+  RESPONSIVE_BREAKPOINT_S,
+  screenContentMaxWidthLarge,
+} from "../../../utils/style/layout";
 import { PostCategory } from "../../../utils/types/feed";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
@@ -84,6 +90,22 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       runOnJS(setFlatListContentOffsetY)(event.contentOffset.y);
     },
   });
+
+  // Can't use useMaxResolution because i want a specific value for FeedScreen
+  // If we have a different width when sidebar is expanded and when it's not, the sidebar will be laggy
+  // So this calcul find the bigger width to have the same width no matter the sidebar state
+  const contentWidth = React.useMemo(
+    () => windowWidth - fullSidebarWidth,
+    [windowWidth],
+  );
+  const width = useMemo(() => {
+    const margin = getResponsiveScreenContainerMarginHorizontal(contentWidth);
+    const finalWidth = contentWidth - margin;
+
+    return finalWidth > screenContentMaxWidthLarge
+      ? screenContentMaxWidthLarge
+      : finalWidth;
+  }, [contentWidth]);
 
   useEffect(() => {
     if (isFetching || isLoading) {
@@ -199,18 +221,24 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     [isFlagged, refetch, cardStyle],
   );
 
+  // We have to keep the first fragment here to don't have a loop of re-renders
   return (
-    <View>
+    <>
       <Animated.FlatList
         data={posts}
         renderItem={({ item: post }) => RenderItem(post)}
         ListHeaderComponentStyle={{
           zIndex: 1,
-          width: "100%",
         }}
         ListHeaderComponent={
           <>
-            <View onLayout={onHeaderLayout} style={{ width: "100%" }}>
+            <View
+              onLayout={onHeaderLayout}
+              style={{
+                alignSelf: "center",
+                alignItems: "center",
+              }}
+            >
               <Header />
             </View>
             <ListHeaderComponent />
@@ -218,7 +246,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         }
         keyExtractor={(post) => post.id}
         onScroll={scrollHandler}
-        contentContainerStyle={contentCStyle}
+        contentContainerStyle={{ ...contentCStyle, width }}
         onEndReachedThreshold={4}
         onEndReached={onEndReached}
       />
@@ -243,12 +271,12 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         additionalHashtag={additionalHashtag}
         onSubmitSuccess={refetch}
       />
-    </View>
+    </>
   );
 };
 
 const contentCStyle: ViewStyle = {
-  width: "100%",
+  alignSelf: "center",
 };
 const floatingActionsCStyle: ViewStyle = {
   position: "absolute",
