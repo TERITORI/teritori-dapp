@@ -1,4 +1,4 @@
-import type { MixedStyleRecord } from "@native-html/transient-render-engine";
+import { MixedStyleRecord } from "react-native-render-html";
 
 import {
   neutral17,

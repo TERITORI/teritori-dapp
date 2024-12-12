@@ -9,7 +9,7 @@ import { CoreDAOScreen } from "@/screens/CoreDAO/CoreDAOScreen";
 import { DAppStoreScreen } from "@/screens/DAppStore/DAppStoreScreen";
 import { ToriPunks } from "@/screens/DAppStore/apps/toripunks/HomeScreen";
 import { FeedScreen } from "@/screens/Feed/FeedScreen";
-import { FeedNewArticleScreen } from "@/screens/FeedNewArticle/FeedNewArticleScreen.tsx";
+import { FeedNewArticleScreen } from "@/screens/FeedNewArticle/FeedNewArticleScreen";
 import { FeedPostViewScreen } from "@/screens/FeedPostView/FeedPostViewScreen";
 import { GovernanceProposalScreen } from "@/screens/Governance/GovernanceProposal/GovernanceProposalScreen";
 import { GovernanceScreen } from "@/screens/Governance/GovernanceScreen";

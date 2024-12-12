@@ -163,7 +163,7 @@ export const FeedPostArticleMarkdownView: FC<{
     isNextPageAvailable.value = hasNextPage;
   }, [hasNextPage, isNextPageAvailable]);
 
-  if (!articleMetadata) return null;
+  if (!articleMetadata || !message) return null;
   return (
     <ScreenContainer
       forceNetworkId={post.networkId}

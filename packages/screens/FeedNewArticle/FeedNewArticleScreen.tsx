@@ -33,6 +33,7 @@ import { ArticleContentEditor } from "@/screens/FeedNewArticle/components/Articl
 import { NewArticleLocationButton } from "@/screens/FeedNewArticle/components/NewArticleLocationButton";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
+import { generateArticleMetadata } from "@/utils/feed/queries";
 import { generateIpfsKey } from "@/utils/ipfs";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
@@ -129,6 +130,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     mentions: [],
   };
 
+  const navigateBack = () => navigation.navigate("Feed");
+
   const onPublish = async () => {
     const action = "Publish an Article";
     if (!wallet?.address || !wallet.connected) {
@@ -177,15 +180,16 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           )[0]
         : undefined;
 
-      const metadata: SocialFeedArticleMetadata = {
+      const metadata = generateArticleMetadata({
+        ...formValues,
         thumbnailImage: remoteThumbnail,
-        title: formValues.title,
-        shortDescription: formValues.shortDescription || "",
+        gifs: [],
+        files: [],
+        mentions: [],
+        hashtags: [],
         message: formValues.message,
         location,
-        hashtags: [],
-        mentions: [],
-      };
+      });
 
       await makePost(JSON.stringify(metadata));
     } catch (err) {
@@ -208,7 +212,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       mobileTitle="NEW ARTICLE"
       fullWidth
       headerChildren={<BrandText style={fontSemibold20}>New Article</BrandText>}
-      onBackPress={() => navigation.navigate("Feed")}
+      onBackPress={navigateBack}
       footerChildren
       noMargin
       noScroll
