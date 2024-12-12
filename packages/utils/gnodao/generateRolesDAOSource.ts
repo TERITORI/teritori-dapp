@@ -43,7 +43,14 @@ func init() {
             .join(", ")}]")`,
       )
       .join("\n\t")}
-    ${conf.initialMembers.map((member) => member.roles.map((role) => `roles.GrantRole("${member.address}", "${role}")`).join("\n\t"))}
+    ${conf.initialMembers
+      .filter((member) => member.roles.length > 0)
+      .map((member) =>
+        member.roles
+          .map((role) => `roles.GrantRole("${member.address}", "${role}")`)
+          .join("\n\t"),
+      )
+      .join("\n\t")}
 		return roles
 	}
 
