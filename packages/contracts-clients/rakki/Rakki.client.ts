@@ -69,10 +69,10 @@ export class RakkiQueryClient implements RakkiReadOnlyInterface {
 export interface RakkiInterface extends RakkiReadOnlyInterface {
   contractAddress: string;
   sender: string;
-  buyTicket: ({
-    entropy
+  buyTickets: ({
+    count
   }: {
-    entropy: boolean;
+    count: number;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   withdrawFees: ({
     destination
@@ -80,6 +80,7 @@ export interface RakkiInterface extends RakkiReadOnlyInterface {
     destination: string;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   stop: (fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
+  refund: (fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   changeOwner: ({
     newOwner
   }: {
@@ -96,20 +97,21 @@ export class RakkiClient extends RakkiQueryClient implements RakkiInterface {
     this.client = client;
     this.sender = sender;
     this.contractAddress = contractAddress;
-    this.buyTicket = this.buyTicket.bind(this);
+    this.buyTickets = this.buyTickets.bind(this);
     this.withdrawFees = this.withdrawFees.bind(this);
     this.stop = this.stop.bind(this);
+    this.refund = this.refund.bind(this);
     this.changeOwner = this.changeOwner.bind(this);
   }
 
-  buyTicket = async ({
-    entropy
+  buyTickets = async ({
+    count
   }: {
-    entropy: boolean;
+    count: number;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
-      buy_ticket: {
-        entropy
+      buy_tickets: {
+        count
       }
     }, fee, memo, _funds);
   };
@@ -127,6 +129,11 @@ export class RakkiClient extends RakkiQueryClient implements RakkiInterface {
   stop = async (fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       stop: {}
+    }, fee, memo, _funds);
+  };
+  refund = async (fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      refund: {}
     }, fee, memo, _funds);
   };
   changeOwner = async ({
