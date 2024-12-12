@@ -30,17 +30,6 @@ var (
 )
 
 func init() {
-	votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
-		group = voting_group.NewRolesVotingGroup()
-      ${conf.initialMembers
-        .map(
-          (member) =>
-            `group.SetMemberPower("${member.address}", ${member.weight})`,
-        )
-        .join("\n\t")}
-		return group
-	}
-
   rolesModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IRolesModule {
 		roles = dao_roles_group.NewRolesGroup()
     ${(conf.roles ?? [])
@@ -56,6 +45,17 @@ func init() {
       .join("\n\t")}
     ${conf.initialMembers.map((member) => member.roles.map((role) => `roles.GrantRole("${member.address}", "${role}")`).join("\n\t"))}
 		return roles
+	}
+
+	votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
+		group = voting_group.NewRolesVotingGroup(core.RolesModule())
+      ${conf.initialMembers
+        .map(
+          (member) =>
+            `group.SetMemberPower("${member.address}", ${member.weight})`,
+        )
+        .join("\n\t")}
+		return group
 	}
 
 

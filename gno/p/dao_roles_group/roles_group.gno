@@ -96,7 +96,7 @@ func (r *RolesGroup) GetMemberResourcePower(address std.Address, resource string
 			continue
 		}
 		permissions := permissionRaw.([]PermissionPower)
-		for _, p := range permissions.([]PermissionPower) {
+		for _, p := range permissions {
 			if p.Permission == resource && p.Power > power {
 				power = p.Power
 			}
@@ -108,7 +108,3 @@ func (r *RolesGroup) GetMemberResourcePower(address std.Address, resource string
 func (r *RolesGroup) SetMemberResourcePower(address std.Address, resource string, power uint64) {
 	panic("Not implemented yet")
 }
-
-// TODO:
-// 1. Add GetUserResourcePower(address std.Address, resource string) uint64
-// 2. Add SetRoleResourcePower(role string, resource string, power uint64)

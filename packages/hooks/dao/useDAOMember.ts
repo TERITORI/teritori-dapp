@@ -52,7 +52,7 @@ const useDAOMember = (
       const power = extractGnoNumber(
         await provider.evaluateExpression(
           packagePath,
-          `daoCore.VotingModule().VotingPowerAtHeight("${userAddress}", 0)`,
+          `daoCore.VotingModule().VotingPowerAtHeight("${userAddress}", 0, "")`,
           0,
         ),
       );
