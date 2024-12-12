@@ -100,6 +100,7 @@ export const RakkiScreen: ScreenFC<"Rakki"> = () => {
   return (
     <ScreenContainer
       footerChildren={rakkiInfo === undefined ? <></> : undefined}
+      forceNetworkFeatures={[NetworkFeature.CosmWasmRakki]}
     >
       {content}
     </ScreenContainer>
