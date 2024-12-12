@@ -1,5 +1,3 @@
-import markdownit from "markdown-it";
-import { full as emoji } from "markdown-it-emoji";
 import { FC, useRef, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import {
@@ -18,6 +16,7 @@ import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { Toolbar } from "@/screens/FeedNewArticle/components/ArticleContentEditor/Toolbar/Toolbar";
 import {
   ContentMode,
+  initializeArticleMd,
   markdownTagStyles,
 } from "@/screens/FeedNewArticle/components/ArticleContentEditor/utils";
 import { ARTICLE_MAX_WIDTH } from "@/utils/social-feed";
@@ -51,10 +50,7 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
   const message = watch("message");
 
   // ========== Markdown
-  const md = markdownit({
-    linkify: true,
-    breaks: true,
-  }).use(emoji);
+  const md = initializeArticleMd();
   const html = md.render(message);
 
   // ========== JSX

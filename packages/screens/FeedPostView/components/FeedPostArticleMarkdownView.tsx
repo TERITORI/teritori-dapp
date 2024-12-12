@@ -31,7 +31,10 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
-import { markdownTagStyles } from "@/screens/FeedNewArticle/components/ArticleContentEditor/utils";
+import {
+  initializeArticleMd,
+  markdownTagStyles,
+} from "@/screens/FeedNewArticle/components/ArticleContentEditor/utils";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {
   ARTICLE_MAX_WIDTH,
@@ -99,7 +102,9 @@ export const FeedPostArticleMarkdownView: FC<{
     ZodSocialFeedArticleMetadata,
     post.metadata,
   );
+  const md = initializeArticleMd();
   const message = articleMetadata?.message;
+  const html = message ? md.render(message) : null;
   const title = articleMetadata?.title;
   const location = articleMetadata?.location;
 
@@ -163,7 +168,7 @@ export const FeedPostArticleMarkdownView: FC<{
     isNextPageAvailable.value = hasNextPage;
   }, [hasNextPage, isNextPageAvailable]);
 
-  if (!articleMetadata || !message) return null;
+  if (!articleMetadata || !html) return null;
   return (
     <ScreenContainer
       forceNetworkId={post.networkId}
@@ -247,7 +252,7 @@ export const FeedPostArticleMarkdownView: FC<{
                   }
                 >
                   <RenderHtml
-                    source={{ html: message }}
+                    source={{ html }}
                     tagsStyles={markdownTagStyles}
                     contentWidth={renderHtmlWidth}
                   />

@@ -1,3 +1,5 @@
+import markdownit from "markdown-it";
+import { full as emoji } from "markdown-it-emoji/dist/index.cjs";
 import { MixedStyleRecord } from "react-native-render-html";
 
 import {
@@ -107,4 +109,12 @@ export const markdownTagStyles: MixedStyleRecord = {
     fontFamily: "Exo_500Medium",
     fontWeight: "500",
   },
+};
+
+// Used to get the same parameters at Article creation and consultation
+export const initializeArticleMd = () => {
+  return markdownit({
+    linkify: true,
+    breaks: true,
+  }).use(emoji);
 };
