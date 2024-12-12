@@ -24,19 +24,14 @@ import {
 } from "../../../hooks/feed/useFetchFeed";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import {
-  fullSidebarWidth,
-  getResponsiveScreenContainerMarginHorizontal,
-  layout,
-  RESPONSIVE_BREAKPOINT_S,
-  screenContentMaxWidthLarge,
-} from "../../../utils/style/layout";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
 import { PostCategory } from "../../../utils/types/feed";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
 import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
 import { SocialVideoCard } from "../SocialCard/cards/SocialVideoCard";
 
+import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { DeepPartial } from "@/utils/typescript";
 
 const OFFSET_Y_LIMIT_FLOATING = 224;
@@ -64,6 +59,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
 }) => {
   const isMobile = useIsMobile();
   const { width: windowWidth } = useWindowDimensions();
+  const { width } = useMaxResolution({ isLarge: true });
   const selectedWallet = useSelectedWallet();
   const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
@@ -90,23 +86,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       runOnJS(setFlatListContentOffsetY)(event.contentOffset.y);
     },
   });
-
-  // Can't use useMaxResolution because i want a specific value for FeedScreen
-  // If we have a different width when sidebar is expanded and when it's not, the sidebar will be laggy
-  // So this calcul find the bigger width to have the same width no matter the sidebar state
-  // TODO: move this calcul in useMaxResolution
-  const contentWidth = React.useMemo(
-    () => windowWidth - fullSidebarWidth,
-    [windowWidth],
-  );
-  const width = useMemo(() => {
-    const margin = getResponsiveScreenContainerMarginHorizontal(contentWidth);
-    const finalWidth = contentWidth - margin;
-
-    return finalWidth > screenContentMaxWidthLarge
-      ? screenContentMaxWidthLarge
-      : finalWidth;
-  }, [contentWidth]);
 
   useEffect(() => {
     if (isFetching || isLoading) {
