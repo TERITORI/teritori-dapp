@@ -222,6 +222,20 @@ export const fontNormal15: TextStyle = {
   fontFamily: "Exo_500Medium",
   fontWeight: "400",
 };
+export const fontRegular20: TextStyle = {
+  fontSize: 20,
+  letterSpacing: -(20 * 0.02),
+  lineHeight: 22,
+  fontFamily: "Exo_400Regular",
+  fontWeight: "400",
+};
+export const fontRegular16: TextStyle = {
+  fontSize: 16,
+  letterSpacing: -(16 * 0.02),
+  lineHeight: 18,
+  fontFamily: "Exo_400Regular",
+  fontWeight: "400",
+};
 export const fontRegular15: TextStyle = {
   fontSize: 15,
   letterSpacing: -(15 * 0.02),
