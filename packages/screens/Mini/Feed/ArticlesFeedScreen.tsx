@@ -14,7 +14,7 @@ export const ArticlesFeedScreen = () => {
     const req: Partial<PostsRequest> = {
       filter: {
         networkId: selectedNetworkId,
-        categories: [PostCategory.Article],
+        categories: [PostCategory.Article, PostCategory.ArticleMarkdown],
         user: "",
         mentions: [],
         hashtags: [],

@@ -187,6 +187,7 @@ export const getMapPostIconSVG = (
     case PostCategory.VideoNote:
       return videoPostSvg;
     case PostCategory.Article:
+    case PostCategory.ArticleMarkdown:
       return articlePostSvg;
     case PostCategory.Normal:
       return normalPostSvg;
@@ -206,6 +207,7 @@ export const getMapPostIconSVGString = (postCategory: PostCategory) => {
     case PostCategory.VideoNote:
       return videoPostSvgString;
     case PostCategory.Article:
+    case PostCategory.ArticleMarkdown:
       return articlePostSvgString;
     case PostCategory.Normal:
       return normalPostSvgString;
@@ -225,6 +227,7 @@ export const getMapPostIconColorRgba = (postCategory: PostCategory) => {
     case PostCategory.VideoNote:
       return "198,171,255,.40";
     case PostCategory.Article:
+    case PostCategory.ArticleMarkdown:
       return "255,252,207,.40";
     case PostCategory.Normal:
       return "255,178,107,.40";
@@ -244,6 +247,7 @@ export const getMapPostTextGradientType = (postCategory: PostCategory) => {
     case PostCategory.VideoNote:
       return "feed-map-video-post";
     case PostCategory.Article:
+    case PostCategory.ArticleMarkdown:
       return "feed-map-article-post";
     case PostCategory.Normal:
       return "feed-map-normal-post";
@@ -271,6 +275,7 @@ export const getMapPostTextGradient = (postCategory: PostCategory) => {
       gradientProps.colors = ["#C6ABFF", "#A57AFF"];
       break;
     case PostCategory.Article:
+    case PostCategory.ArticleMarkdown:
       gradientProps.colors = ["#FFFC6B", "#E5E13B"];
       break;
     case PostCategory.Normal:
@@ -294,6 +299,7 @@ export const getMapPostTextGradientString = (postCategory: PostCategory) => {
     case PostCategory.VideoNote:
       return `180deg, #C6ABFF 100%, #A57AFF 100%`;
     case PostCategory.Article:
+    case PostCategory.ArticleMarkdown:
       return `180deg, #FFFC6B 100%, #E5E13B 100%`;
     case PostCategory.Normal:
       return `180deg, #FFB26B 100%, #E58C3B 100%`;
