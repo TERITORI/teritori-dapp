@@ -1,5 +1,5 @@
 import pluralize from "pluralize";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { ScrollView, useWindowDimensions, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -14,13 +14,13 @@ import { ScreenContainer } from "@/components/ScreenContainer";
 import { WalletStatusBox } from "@/components/WalletStatusBox";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { Label, TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { FileUploader } from "@/components/inputs/fileUploader";
 import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgressBar";
-import { PublishValues } from "@/components/socialFeed/RichText/RichText.type";
-import { SocialArticleCard } from "@/components/socialFeed/SocialCard/cards/SocialArticleCard";
+import { SocialArticleMarkdownCard } from "@/components/socialFeed/SocialCard/cards/SocialArticleMarkdownCard";
 import { MapModal } from "@/components/socialFeed/modals/MapModal/MapModal";
-import { SpacerColumn } from "@/components/spacer";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
@@ -30,9 +30,9 @@ import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
 import { ArticleContentEditor } from "@/screens/FeedNewArticle/components/ArticleContentEditor/ArticleContentEditor";
+import { NewArticleLocationButton } from "@/screens/FeedNewArticle/components/NewArticleLocationButton";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
-import { generateArticleMetadata } from "@/utils/feed/queries";
 import { generateIpfsKey } from "@/utils/ipfs";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
@@ -56,9 +56,6 @@ import {
   PostCategory,
   SocialFeedArticleMetadata,
 } from "@/utils/types/feed";
-import { RemoteFileData } from "@/utils/types/files";
-
-//TODO: In mobile : Make ActionsContainer accessible (floating button ?)
 
 export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const { width } = useMaxResolution();
@@ -72,7 +69,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const { uploadFilesToPinata, ipfsUploadProgress } = useIpfs();
   const [isUploadLoading, setIsUploadLoading] = useState(false);
   const [isProgressBarShown, setIsProgressBarShown] = useState(false);
-  const postCategory = PostCategory.Article;
+  const [isMapShown, setIsMapShown] = useState(false);
+  const postCategory = PostCategory.ArticleMarkdown;
   const {
     makePost,
     isProcessing,
@@ -106,7 +104,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const [isThumbnailButtonHovered, setThumbnailButtonHovered] = useState(false);
   const [location, setLocation] = useState<CustomLatLngExpression>();
-  const [isMapShown, setIsMapShown] = useState(false);
   const cardStyle = isSmallScreen && {
     borderRadius: 0,
     borderLeftWidth: 0,
@@ -116,15 +113,12 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     defaultValues: {
       title: "",
       message: "",
-      files: [],
-      gifs: [],
-      hashtags: [],
-      mentions: [],
       thumbnailImage: undefined,
       shortDescription: "",
     },
     mode: "onBlur",
   });
+
   const formValues = newArticleForm.watch();
   const previewMetadata: SocialFeedArticleMetadata = {
     title: formValues.title,
@@ -135,7 +129,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     mentions: [],
   };
 
-  const onPublish = async (values: PublishValues) => {
+  const onPublish = async () => {
     const action = "Publish an Article";
     if (!wallet?.address || !wallet.connected) {
       showConnectWalletModal({
@@ -156,71 +150,42 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     }
     setIsUploadLoading(true);
     setIsProgressBarShown(true);
+
     try {
-      const localFiles = [
-        ...(formValues.files || []),
-        ...values.images,
-        ...values.audios,
-        ...values.videos,
-      ];
-      if (formValues.thumbnailImage) localFiles.push(formValues.thumbnailImage);
-      if (formValues.coverImage) localFiles.push(formValues.coverImage);
-
-      let pinataJWTKey = undefined;
-      if (localFiles?.length) {
-        setStep(feedPostingStep(FeedPostingStepId.GENERATING_KEY));
-
-        pinataJWTKey =
-          userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
-      }
-
-      // Upload files to IPFS
-      let remoteFiles: RemoteFileData[] = [];
-      if (pinataJWTKey) {
-        setStep(feedPostingStep(FeedPostingStepId.UPLOADING_FILES));
-
-        remoteFiles = await uploadFilesToPinata({
-          files: localFiles,
-          pinataJWTKey,
-        });
-      }
-
-      // If the user uploaded files, but they are not pinned to IPFS, it returns files with empty url, so this is an error.
-      if (formValues.files?.length && !remoteFiles.find((file) => file.url)) {
-        console.error("upload file err : Fail to pin to IPFS");
+      // Upload thumbnail to IPFS
+      const pinataJWTKey =
+        userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
+      if (!pinataJWTKey) {
+        console.error("upload file err : No Pinata JWT");
         setToast({
-          mode: "normal",
-          type: "error",
           title: "File upload failed",
-          message: "Fail to pin to IPFS, please try to Publish again",
+          message: "No Pinata JWT",
+          type: "error",
+          mode: "normal",
         });
         setIsUploadLoading(false);
         return;
       }
+      setStep(feedPostingStep(FeedPostingStepId.UPLOADING_FILES));
 
-      let message = values.html;
-      if (remoteFiles.length) {
-        localFiles?.map((file, index) => {
-          // Audio are not in the HTML for now
-          if (remoteFiles[index]?.fileType !== "audio") {
-            message = message.replace(file.url, remoteFiles[index].url);
-          }
-        });
-      }
+      const remoteThumbnail = formValues.thumbnailImage
+        ? (
+            await uploadFilesToPinata({
+              files: [formValues.thumbnailImage],
+              pinataJWTKey,
+            })
+          )[0]
+        : undefined;
 
-      const metadata = generateArticleMetadata({
-        ...formValues,
-        thumbnailImage: remoteFiles.find(
-          (remoteFile) => remoteFile.isThumbnailImage,
-        ),
-        coverImage: remoteFiles.find((remoteFile) => remoteFile.isCoverImage),
-        gifs: values.gifs,
-        files: remoteFiles,
-        mentions: values.mentions,
-        hashtags: values.hashtags,
-        message,
+      const metadata: SocialFeedArticleMetadata = {
+        thumbnailImage: remoteThumbnail,
+        title: formValues.title,
+        shortDescription: formValues.shortDescription || "",
+        message: formValues.message,
         location,
-      });
+        hashtags: [],
+        mentions: [],
+      };
 
       await makePost(JSON.stringify(metadata));
     } catch (err) {
@@ -236,28 +201,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     }
   };
 
-  //TODO: Keep short post formValues when returning to short post
-  const navigateBack = () => navigation.navigate("Feed");
-
-  //TODO: Not handled for now
-  // const { mutate: openGraphMutate, data: openGraphData } = useOpenGraph();
-
-  // // OpenGraph URL preview
-  // useEffect(() => {
-  //   addedUrls.forEach(url => {
-  //     openGraphMutate({
-  //       url,
-  //     });
-  //
-  //   })
-  // }, [addedUrls])
-
-  // Scroll to bottom when the loading bar appears
-  useEffect(() => {
-    if (step.id !== "UNDEFINED" && isLoading)
-      scrollViewRef.current?.scrollToEnd();
-  }, [step, isLoading]);
-
   return (
     <ScreenContainer
       forceNetworkFeatures={[forceNetworkFeature]}
@@ -265,7 +208,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       mobileTitle="NEW ARTICLE"
       fullWidth
       headerChildren={<BrandText style={fontSemibold20}>New Article</BrandText>}
-      onBackPress={navigateBack}
+      onBackPress={() => navigation.navigate("Feed")}
       footerChildren
       noMargin
       noScroll
@@ -291,37 +234,71 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           <WalletStatusBox />
           <SpacerColumn size={3} />
 
-          <TertiaryBox
-            style={{
-              paddingVertical: layout.spacing_x1,
-              paddingHorizontal: layout.spacing_x1_5,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              height: 48,
-              backgroundColor: neutral11,
-            }}
-          >
-            <SVG
-              source={priceSVG}
-              height={24}
-              width={24}
-              color={secondaryColor}
-            />
-            <BrandText
-              style={[
-                fontSemibold13,
-                { color: neutral77, marginLeft: layout.spacing_x1 },
-              ]}
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <TertiaryBox
+              style={{
+                paddingVertical: layout.spacing_x1,
+                paddingHorizontal: layout.spacing_x1_5,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                height: 48,
+                backgroundColor: neutral11,
+                flex: 1,
+              }}
             >
-              {freePostCount
-                ? `You have ${freePostCount} free ${pluralize(
-                    "Article",
-                    freePostCount,
-                  )} left`
-                : `The cost for this Article is ${prettyPublishingFee}`}
-            </BrandText>
-          </TertiaryBox>
+              <SVG
+                source={priceSVG}
+                height={24}
+                width={24}
+                color={secondaryColor}
+              />
+              <BrandText
+                style={[
+                  fontSemibold13,
+                  { color: neutral77, marginLeft: layout.spacing_x1 },
+                ]}
+              >
+                {freePostCount
+                  ? `You have ${freePostCount} free ${pluralize(
+                      "Article",
+                      freePostCount,
+                    )} left`
+                  : `The cost for this Article is ${prettyPublishingFee}`}
+              </BrandText>
+            </TertiaryBox>
+
+            <SpacerRow size={2} />
+            <NewArticleLocationButton
+              setIsMapShown={setIsMapShown}
+              location={location}
+            />
+
+            <SpacerRow size={2} />
+            <PrimaryButton
+              text="Publish"
+              width={120}
+              disabled={
+                !formValues.title ||
+                !formValues.shortDescription ||
+                !formValues.message ||
+                isLoading
+              }
+              onPress={newArticleForm.handleSubmit(onPublish)}
+              loader
+              isLoading={isLoading}
+            />
+          </View>
+
+          {step.id !== "UNDEFINED" && isProgressBarShown && (
+            <>
+              <SpacerColumn size={3} />
+              <FeedPostingProgressBar
+                step={step}
+                ipfsUploadProgress={ipfsUploadProgress}
+              />
+            </>
+          )}
 
           <TextInputCustom<NewArticleFormValues>
             noBrokenCorners
@@ -409,11 +386,11 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
               )}
             </FileUploader>
 
-            <SocialArticleCard
+            <SocialArticleMarkdownCard
               style={cardStyle}
               disabled
               post={{
-                category: PostCategory.MarkdownArticle,
+                category: PostCategory.ArticleMarkdown,
                 isDeleted: false,
                 identifier: "",
                 metadata: JSON.stringify(previewMetadata),
@@ -436,16 +413,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         <FormProvider {...newArticleForm}>
           <ArticleContentEditor width={width} />
         </FormProvider>
-
-        {step.id !== "UNDEFINED" && isProgressBarShown && (
-          <>
-            <FeedPostingProgressBar
-              step={step}
-              ipfsUploadProgress={ipfsUploadProgress}
-            />
-            <SpacerColumn size={3} />
-          </>
-        )}
       </ScrollView>
 
       {isMapShown && (

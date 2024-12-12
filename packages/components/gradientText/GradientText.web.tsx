@@ -48,6 +48,8 @@ const gradient = (type: GradientType) => {
       return getMapPostTextGradientString(PostCategory.Normal);
     case getMapPostTextGradientType(PostCategory.Article):
       return getMapPostTextGradientString(PostCategory.Article);
+    case getMapPostTextGradientType(PostCategory.ArticleMarkdown):
+      return getMapPostTextGradientString(PostCategory.Article);
     case getMapPostTextGradientType(PostCategory.Video):
       return getMapPostTextGradientString(PostCategory.Video);
     case getMapPostTextGradientType(PostCategory.Picture):

@@ -1,4 +1,3 @@
-import type { MixedStyleRecord } from "@native-html/transient-render-engine";
 import markdownit from "markdown-it";
 import { full as emoji } from "markdown-it-emoji";
 import { FC, useRef, useState } from "react";
@@ -17,15 +16,12 @@ import { Label } from "@/components/inputs/TextInputCustom";
 import { SpacerColumn } from "@/components/spacer";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { Toolbar } from "@/screens/FeedNewArticle/components/ArticleContentEditor/Toolbar/Toolbar";
-import { ContentMode } from "@/screens/FeedNewArticle/components/ArticleContentEditor/utils";
-import { ARTICLE_MAX_WIDTH } from "@/utils/social-feed";
 import {
-  neutral00,
-  neutral17,
-  neutralA3,
-  neutralFF,
-  primaryColor,
-} from "@/utils/style/colors";
+  ContentMode,
+  markdownTagStyles,
+} from "@/screens/FeedNewArticle/components/ArticleContentEditor/utils";
+import { ARTICLE_MAX_WIDTH } from "@/utils/social-feed";
+import { neutral00, neutralA3, neutralFF } from "@/utils/style/colors";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 import { NewArticleFormValues } from "@/utils/types/feed";
 
@@ -44,7 +40,7 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
   const editionAndPreviewHeight = height - 80;
   const [textInputHeight, setTextInputHeight] = useState(textInputMinHeight);
   const [mode, setMode] = useState<ContentMode>("BOTH");
-  const [renderWidth, setRenderWidth] = useState(0);
+  const [renderHtmlWidth, setRenderHtmlWidth] = useState(0);
   const textInputContainerPadding =
     windowWidth < RESPONSIVE_BREAKPOINT_S
       ? 0
@@ -60,106 +56,6 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
     breaks: true,
   }).use(emoji);
   const html = md.render(message);
-
-  const markdownTagStyles: MixedStyleRecord = {
-    body: {
-      color: neutralA3,
-      fontSize: 14,
-      letterSpacing: -(14 * 0.04),
-      lineHeight: 22,
-      fontFamily: "Exo_500Medium",
-      fontWeight: "500",
-    },
-    p: {
-      marginVertical: 4,
-      color: neutralA3,
-      fontSize: 14,
-      letterSpacing: -(14 * 0.04),
-      lineHeight: 22,
-      fontFamily: "Exo_500Medium",
-      fontWeight: "500",
-    },
-    code: {
-      color: neutralA3,
-      fontSize: 13,
-      letterSpacing: -(13 * 0.04),
-      lineHeight: 22,
-      fontFamily: "Exo_500Medium",
-      fontWeight: "500",
-
-      backgroundColor: neutral17,
-      marginVertical: 4,
-      paddingHorizontal: 4,
-      paddingVertical: 2,
-      borderRadius: 4,
-      alignSelf: "flex-start",
-    },
-    pre: {
-      fontSize: 13,
-      letterSpacing: -(13 * 0.04),
-      fontFamily: "Exo_500Medium",
-      fontWeight: "500",
-
-      backgroundColor: neutral17,
-      paddingHorizontal: 8,
-      paddingVertical: 8,
-      borderRadius: 4,
-    },
-    strong: { fontWeight: "700" },
-    a: {
-      color: primaryColor,
-      textDecorationLine: "none",
-    },
-    hr: { backgroundColor: neutralA3 },
-    h1: {
-      color: neutralFF,
-      fontSize: 28,
-      letterSpacing: -(28 * 0.02),
-      lineHeight: 37,
-      fontFamily: "Exo_500Medium",
-      fontWeight: "500",
-    },
-    h2: {
-      color: neutralFF,
-      fontSize: 21,
-      letterSpacing: -(21 * 0.02),
-      lineHeight: 28,
-      fontFamily: "Exo_500Medium",
-      fontWeight: "500",
-    },
-    h3: {
-      color: neutralFF,
-      fontSize: 16,
-      letterSpacing: -(16 * 0.02),
-      lineHeight: 23,
-      fontFamily: "Exo_500Medium",
-      fontWeight: "500",
-    },
-    h4: {
-      color: neutralFF,
-      fontSize: 14,
-      letterSpacing: -(14 * 0.04),
-      lineHeight: 20,
-      fontFamily: "Exo_500Medium",
-      fontWeight: "500",
-    },
-    h5: {
-      color: neutralA3,
-      fontSize: 14,
-      letterSpacing: -(14 * 0.04),
-      lineHeight: 20,
-      fontFamily: "Exo_500Medium",
-      fontWeight: "500",
-    },
-    h6: {
-      color: neutralA3,
-      fontSize: 12,
-      letterSpacing: -(12 * 0.04),
-      lineHeight: 16,
-      fontFamily: "Exo_500Medium",
-      fontWeight: "500",
-    },
-  };
 
   // ========== JSX
   return (
@@ -270,12 +166,12 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
                 paddingHorizontal: textInputContainerPadding,
                 marginTop: textInputContainerPadding,
               }}
-              onLayout={(e) => setRenderWidth(e.nativeEvent.layout.width)}
+              onLayout={(e) => setRenderHtmlWidth(e.nativeEvent.layout.width)}
             >
               <RenderHtml
                 source={{ html }}
                 tagsStyles={markdownTagStyles}
-                contentWidth={renderWidth - textInputContainerPadding * 2}
+                contentWidth={renderHtmlWidth - textInputContainerPadding * 2}
               />
             </ScrollView>
           </View>
