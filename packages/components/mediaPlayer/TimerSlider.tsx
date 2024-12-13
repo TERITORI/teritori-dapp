@@ -11,7 +11,7 @@ import {
   primaryColor,
   secondaryColor,
 } from "../../utils/style/colors";
-import { fontSemibold12 } from "../../utils/style/fonts";
+import { fontRegular12 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerRow } from "../spacer";
@@ -92,6 +92,6 @@ export const TimerSlider: FC<{
 };
 
 const timeTextStyle: TextStyle = {
-  ...fontSemibold12,
+  ...fontRegular12,
   color: neutral77,
 };

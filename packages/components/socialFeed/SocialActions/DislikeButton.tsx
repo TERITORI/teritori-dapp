@@ -7,7 +7,7 @@ import { Post } from "../../../api/feed/v1/feed";
 import { useSocialReactions } from "../../../hooks/feed/useSocialReactions";
 import { DISLIKE_EMOJI } from "../../../utils/social-feed";
 import { neutral22, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
+import { fontRegular13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
@@ -44,7 +44,7 @@ export const DislikeButton: FC<{
         color={secondaryColor}
       />
       <SpacerRow size={0.75} />
-      <BrandText style={fontSemibold13}>
+      <BrandText style={fontRegular13}>
         {post.reactions.find((reaction) => reaction.icon === DISLIKE_EMOJI)
           ?.count || 0}
       </BrandText>

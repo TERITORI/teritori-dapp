@@ -9,7 +9,7 @@ import {
   neutralA3,
   secondaryColor,
 } from "../../../utils/style/colors";
-import { fontSemibold13 } from "../../../utils/style/fonts";
+import { fontRegular13 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
@@ -75,7 +75,7 @@ export const ShareButton = ({ postId, useAltStyle }: ShareButtonProps) => {
           <>
             <SpacerRow size={0.75} />
             <BrandText
-              style={[fontSemibold13, useAltStyle && { color: neutralA3 }]}
+              style={[fontRegular13, useAltStyle && { color: neutralA3 }]}
             >
               Share
             </BrandText>
