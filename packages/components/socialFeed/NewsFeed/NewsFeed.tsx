@@ -31,6 +31,7 @@ import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
 import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
 import { SocialVideoCard } from "../SocialCard/cards/SocialVideoCard";
 
+import { useAppMode } from "@/hooks/useAppMode";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { DeepPartial } from "@/utils/typescript";
 
@@ -207,9 +208,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       <Animated.FlatList
         data={posts}
         renderItem={({ item: post }) => RenderItem(post)}
-        ListHeaderComponentStyle={{
-          zIndex: 1,
-        }}
+        ListHeaderComponentStyle={{ zIndex: 1 }}
         ListHeaderComponent={
           <>
             <View
@@ -226,7 +225,10 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         }
         keyExtractor={(post) => post.id}
         onScroll={scrollHandler}
-        contentContainerStyle={{ ...contentCStyle, width }}
+        contentContainerStyle={{
+          ...contentCStyle,
+          width: isMobile ? "100%" : width,
+        }}
         onEndReachedThreshold={4}
         onEndReached={onEndReached}
       />
