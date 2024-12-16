@@ -1,5 +1,5 @@
 import pluralize from "pluralize";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { ScrollView, useWindowDimensions, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -11,6 +11,7 @@ import priceSVG from "@/assets/icons/price.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { WalletStatusBox } from "@/components/WalletStatusBox";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
@@ -45,7 +46,7 @@ import {
   neutralFF,
   secondaryColor,
 } from "@/utils/style/colors";
-import { fontSemibold13, fontSemibold20 } from "@/utils/style/fonts";
+import { fontSemibold13 } from "@/utils/style/fonts";
 import {
   layout,
   RESPONSIVE_BREAKPOINT_S,
@@ -211,7 +212,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       responsive
       mobileTitle="NEW ARTICLE"
       fullWidth
-      headerChildren={<BrandText style={fontSemibold20}>New Article</BrandText>}
+      headerChildren={<ScreenTitle>New Article</ScreenTitle>}
       onBackPress={navigateBack}
       footerChildren
       noMargin
