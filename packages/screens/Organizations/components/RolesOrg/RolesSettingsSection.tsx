@@ -34,7 +34,9 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
   const [modalVisible, setModalVisible] = useState(false);
   const [rolesIndexes, setRolesIndexes] = useState<number[]>([]);
   const [resources, setResources] =
-    useState<{ name: string; value: boolean }[]>(fakeResources);
+    useState<{ name: string; resources: string[]; value: boolean }[]>(
+      fakeResources,
+    );
 
   const removeRoleField = (id: number, index: number) => {
     unregister(`roles.${index}.name`);
@@ -62,7 +64,7 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
     register(`roles.${rolesIndexes.length}.resources`);
     const selectedResources = resources
       .filter((r) => r.value)
-      .map((r) => r.name);
+      .flatMap((r) => r.resources);
     setValue(`roles.${rolesIndexes.length}.resources`, selectedResources);
     console.log(`Selected resources: ${selectedResources}`);
     setRolesIndexes([...rolesIndexes, Math.floor(Math.random() * 200000)]);
@@ -217,12 +219,44 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
 
 // TODO: Create a hook to get all the resources
 const fakeResources = [
-  { name: "gno.land/r/teritori/social_feeds.CreatePost", value: false },
-  { name: "Social Feed", value: false },
-  { name: "Marketplace", value: false },
-  { name: "Launchpad NFT", value: false },
-  { name: "Launchpad ERC20", value: false },
-  { name: "Name Service", value: false },
-  { name: "Multisig Wallet", value: false },
-  { name: "Projects", value: false },
+  {
+    name: "Organizations",
+    resources: [],
+    value: false,
+  },
+  {
+    name: "Social Feed",
+    resources: ["gno.land/r/teritori/social_feeds.CreatePost"],
+    value: false,
+  },
+  {
+    name: "Marketplace",
+    resources: [],
+    value: false,
+  },
+  {
+    name: "Launchpad NFT",
+    resources: [],
+    value: false,
+  },
+  {
+    name: "Launchpad ERC20",
+    resources: [],
+    value: false,
+  },
+  {
+    name: "Name Service",
+    resources: [],
+    value: false,
+  },
+  {
+    name: "Multisig Wallet",
+    resources: [],
+    value: false,
+  },
+  {
+    name: "Projects",
+    resources: [],
+    value: false,
+  },
 ];
