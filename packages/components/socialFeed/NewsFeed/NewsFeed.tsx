@@ -228,11 +228,17 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         }
         keyExtractor={(post) => post.id}
         onScroll={scrollHandler}
-        contentContainerStyle={{
-          alignItems: isMobile ? "center" : undefined,
-          alignSelf: !isMobile ? "center" : undefined,
-          width: isMobile ? "100%" : width,
-        }}
+        contentContainerStyle={
+          isMobile
+            ? {
+                alignItems: "center",
+                width: "100%",
+              }
+            : {
+                alignSelf: "center",
+                width,
+              }
+        }
         onEndReachedThreshold={4}
         onEndReached={onEndReached}
       />

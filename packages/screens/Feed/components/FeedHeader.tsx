@@ -24,7 +24,7 @@ type FeedHeaderProps = {
 
 export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
   const navigation = useAppNavigation();
-  const { width } = useMaxResolution();
+  const { width } = useMaxResolution({ isLarge: true });
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkKind = selectedNetworkInfo?.kind;
   const selectedWallet = useSelectedWallet();
