@@ -1,7 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import Long from "long";
+import LottieView from "lottie-react-native";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { StyleProp, TextInput, TextStyle, View, ViewStyle } from "react-native";
 
 import rakkiTicketSVG from "../../../assets/logos/rakki-ticket.svg";
@@ -51,6 +52,8 @@ export const RakkiScreen: ScreenFC<"Rakki"> = () => {
   const networkId = useSelectedNetworkId();
   const { height } = useMaxResolution();
   const { rakkiInfo } = useRakkiInfo(networkId);
+  const [isLottie, setIsLottie] = useState<boolean>(false);
+
   let content;
   if (rakkiInfo === undefined) {
     content = (
@@ -75,7 +78,7 @@ export const RakkiScreen: ScreenFC<"Rakki"> = () => {
     );
   } else {
     content = (
-      <>
+      <View>
         <RakkiLogo style={{ marginTop: 100 }} />
         <PrizeInfo
           info={rakkiInfo}
@@ -86,31 +89,67 @@ export const RakkiScreen: ScreenFC<"Rakki"> = () => {
         <GameBox
           info={rakkiInfo}
           networkId={networkId}
+          setIsLottie={setIsLottie}
           style={{ marginTop: 32 }}
         />
         <Help style={{ marginTop: 50 }} />
         <History
           info={rakkiInfo}
           networkId={networkId}
+          setIsLottie={setIsLottie}
           style={{ marginTop: 50 }}
         />
-      </>
+      </View>
     );
   }
+
   return (
     <ScreenContainer
       footerChildren={rakkiInfo === undefined ? <></> : undefined}
       forceNetworkFeatures={[NetworkFeature.CosmWasmRakki]}
     >
+      {isLottie && (
+        <View style={{ zIndex: 1000 }}>
+          <LottieView
+            source={require("../../../assets/lottie/confetti-lottie.json")}
+            autoPlay
+            loop
+            webStyle={{ position: "absolute", height, width: "100%", top: 0 }}
+          />
+          <LottieView
+            source={require("../../../assets/lottie/confetti-lottie.json")}
+            autoPlay
+            loop
+            webStyle={{
+              position: "absolute",
+              height,
+              width: "100%",
+              top: height / 2,
+            }}
+          />
+          <LottieView
+            source={require("../../../assets/lottie/confetti-lottie.json")}
+            autoPlay
+            loop
+            webStyle={{
+              position: "absolute",
+              width: "100%",
+              height,
+              top: height,
+            }}
+          />
+        </View>
+      )}
       {content}
     </ScreenContainer>
   );
 };
 
-const BuyTicketsButton: React.FC<{ networkId: string; info: Info }> = ({
-  networkId,
-  info,
-}) => {
+const BuyTicketsButton: React.FC<{
+  networkId: string;
+  info: Info;
+  setIsLottie: Dispatch<SetStateAction<boolean>>;
+}> = ({ networkId, info, setIsLottie }) => {
   const selectedWallet = useSelectedWallet();
   const [modalVisible, setModalVisible] = useState(false);
   const remainingTickets = info.config.max_tickets - info.current_tickets_count;
@@ -371,6 +410,7 @@ const BuyTicketsButton: React.FC<{ networkId: string; info: Info }> = ({
                     queryClient.invalidateQueries(["rakkiHistory", networkId]),
                   ]);
                   setModalVisible(false);
+                  setIsLottie(true);
                 })}
                 text="Buy Tickets"
                 size="M"
@@ -387,7 +427,8 @@ const History: React.FC<{
   style?: StyleProp<ViewStyle>;
   networkId: string;
   info: Info;
-}> = ({ style, networkId, info }) => {
+  setIsLottie: Dispatch<SetStateAction<boolean>>;
+}> = ({ style, networkId, info, setIsLottie }) => {
   const { width } = useMaxResolution();
   const isSmallScreen = width < 400;
   const { rakkiHistory } = useRakkiHistory(networkId);
@@ -487,7 +528,11 @@ const History: React.FC<{
             justifyContent: "center",
           }}
         >
-          <BuyTicketsButton networkId={networkId} info={info} />
+          <BuyTicketsButton
+            setIsLottie={setIsLottie}
+            networkId={networkId}
+            info={info}
+          />
         </View>
       </Box>
     </View>
@@ -575,8 +620,9 @@ const Help: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => {
 const GameBox: React.FC<{
   networkId: string;
   info: Info;
+  setIsLottie: Dispatch<SetStateAction<boolean>>;
   style?: StyleProp<BoxStyle>;
-}> = ({ networkId, info, style }) => {
+}> = ({ networkId, info, setIsLottie, style }) => {
   const totalPrizeAmount = Long.fromString(info.config.ticket_price.amount).mul(
     info.current_tickets_count,
   );
@@ -667,7 +713,11 @@ const GameBox: React.FC<{
         }}
       >
         <BrandText style={gameBoxLabelCStyle}>Your tickets</BrandText>
-        <BuyTicketsButton networkId={networkId} info={info} />
+        <BuyTicketsButton
+          setIsLottie={setIsLottie}
+          networkId={networkId}
+          info={info}
+        />
       </View>
     </Box>
   );
