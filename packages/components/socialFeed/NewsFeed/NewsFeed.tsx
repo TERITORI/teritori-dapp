@@ -172,7 +172,11 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
       // NOTE: if you edit this, make sure that this is not too CPU expensive
       // Heavy components like SocialThreadCard, SocialArticleCard, etc. should be properly memoized
       return (
-        <View>
+        <View
+          style={{
+            width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
+          }}
+        >
           {post.category === PostCategory.Article ? (
             <SocialArticleCard
               post={post}
@@ -198,7 +202,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         </View>
       );
     },
-    [isFlagged, refetch, cardStyle],
+    [windowWidth, width, isFlagged, refetch, cardStyle],
   );
 
   // We have to keep the first fragment here to don't have a loop of re-renders
@@ -225,7 +229,8 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         keyExtractor={(post) => post.id}
         onScroll={scrollHandler}
         contentContainerStyle={{
-          ...contentCStyle,
+          alignItems: isMobile ? "center" : undefined,
+          alignSelf: !isMobile ? "center" : undefined,
           width: isMobile ? "100%" : width,
         }}
         onEndReachedThreshold={4}
@@ -256,9 +261,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   );
 };
 
-const contentCStyle: ViewStyle = {
-  alignSelf: "center",
-};
 const floatingActionsCStyle: ViewStyle = {
   position: "absolute",
   justifyContent: "center",

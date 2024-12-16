@@ -10,6 +10,7 @@ import { Tabs } from "@/components/tabs/Tabs";
 import { useIsDAOMember } from "@/hooks/dao/useDAOMember";
 import { useFetchFeed } from "@/hooks/feed/useFetchFeed";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import { getUserId, NetworkKind, parseUserId } from "@/networks";
 import { feedsTabItems } from "@/utils/social-feed";
@@ -23,6 +24,7 @@ type FeedHeaderProps = {
 
 export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
   const navigation = useAppNavigation();
+  const { width } = useMaxResolution();
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const selectedNetworkKind = selectedNetworkInfo?.kind;
   const selectedWallet = useSelectedWallet();
@@ -82,6 +84,7 @@ export const FeedHeader: React.FC<FeedHeaderProps> = ({ selectedTab }) => {
           height: 64,
           zIndex: 9,
           elevation: 9,
+          width,
         }}
         borderColorTabSelected={primaryColor}
         gradientText
