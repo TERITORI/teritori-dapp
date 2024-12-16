@@ -70,14 +70,21 @@ func (v *RolesVotingGroup) GetMembersJSON(start, end string, limit uint64, heigh
 	return json.ArrayNode("", membersJSON).String()
 }
 
-// TODO: rename feature to resource
-func (v *RolesVotingGroup) VotingPowerAtHeight(addr std.Address, height int64, feature string) uint64 {
+func (v *RolesVotingGroup) VotingPowerAtHeight(addr std.Address, height int64, resources []string) uint64 {
 	userPower, ok := v.powerByAddr.Get(addr.String(), height)
 	if !ok {
 		return 0
 	}
 
-	rolePower := v.rolesModule.GetMemberResourcePower(addr, feature)
+	// In case there is many resources involved, we take the lowest value
+	rolePower := uint64(0)
+	for _, resource := range resources {
+		tmp := v.rolesModule.GetMemberResourcePower(addr, resource)
+		if tmp < rolePower || rolePower == 0 {
+			rolePower = tmp
+		}
+	}
+
 	if rolePower > userPower.(uint64) {
 		return rolePower
 	}

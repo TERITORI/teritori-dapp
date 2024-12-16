@@ -217,7 +217,7 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
 
 // TODO: Create a hook to get all the resources
 const fakeResources = [
-  { name: "Organizations", value: false },
+  { name: "gno.land/r/teritori/social_feeds.CreatePost", value: false },
   { name: "Social Feed", value: false },
   { name: "Marketplace", value: false },
   { name: "Launchpad NFT", value: false },

@@ -331,7 +331,12 @@ func (d *DAOProposalSingle) VoteJSON(proposalID int, voteJSON string) {
 		panic("proposal is expired")
 	}
 
-	votePower := d.core.VotingModule().VotingPowerAtHeight(voter, proposal.StartHeight, "")
+	resources := make([]string, len(proposal.Messages))
+	for i, m := range proposal.Messages {
+		resources[i] = m.Type()
+	}
+
+	votePower := d.core.VotingModule().VotingPowerAtHeight(voter, proposal.StartHeight, resources)
 	if votePower == 0 {
 		panic("not registered")
 	}
