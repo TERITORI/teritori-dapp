@@ -31,10 +31,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
-import {
-  initializeArticleMd,
-  markdownTagStyles,
-} from "@/screens/FeedNewArticle/components/ArticleContentEditor/utils";
+import { markdownTagStyles, articleMd as md } from "@/utils/feed/markdown";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {
   ARTICLE_MAX_WIDTH,
@@ -102,7 +99,6 @@ export const FeedPostArticleMarkdownView: FC<{
     ZodSocialFeedArticleMetadata,
     post.metadata,
   );
-  const md = initializeArticleMd();
   const message = articleMetadata?.message;
   const html = message ? md.render(message) : null;
   const title = articleMetadata?.title;

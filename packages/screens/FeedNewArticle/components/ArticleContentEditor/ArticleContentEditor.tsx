@@ -16,9 +16,9 @@ import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { Toolbar } from "@/screens/FeedNewArticle/components/ArticleContentEditor/Toolbar/Toolbar";
 import {
   ContentMode,
-  initializeArticleMd,
   markdownTagStyles,
-} from "@/screens/FeedNewArticle/components/ArticleContentEditor/utils";
+  articleMd as md,
+} from "@/utils/feed/markdown";
 import { ARTICLE_MAX_WIDTH } from "@/utils/social-feed";
 import { neutral00, neutralA3, neutralFF } from "@/utils/style/colors";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
@@ -50,7 +50,6 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
   const message = watch("message");
 
   // ========== Markdown
-  const md = initializeArticleMd();
   const html = md.render(message);
 
   // ========== JSX

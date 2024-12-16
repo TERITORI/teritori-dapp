@@ -111,10 +111,8 @@ export const markdownTagStyles: MixedStyleRecord = {
   },
 };
 
-// Used to get the same parameters at Article creation and consultation
-export const initializeArticleMd = () => {
-  return markdownit({
-    linkify: true,
-    breaks: true,
-  }).use(emoji);
-};
+// The markdownit instance. Used to get the same parameters at Article creation and consultation.
+export const articleMd = markdownit({
+  linkify: true,
+  breaks: true,
+}).use(emoji);

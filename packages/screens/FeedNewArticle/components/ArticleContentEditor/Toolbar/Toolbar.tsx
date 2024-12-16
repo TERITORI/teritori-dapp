@@ -4,7 +4,7 @@ import { View } from "react-native";
 import { BrandText } from "@/components/BrandText";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerRow } from "@/components/spacer";
-import { ContentMode } from "@/screens/FeedNewArticle/components/ArticleContentEditor/utils";
+import { ContentMode } from "@/utils/feed/markdown";
 import { neutral1A } from "@/utils/style/colors";
 import { fontSemibold12 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
