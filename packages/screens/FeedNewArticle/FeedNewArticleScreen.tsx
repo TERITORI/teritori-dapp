@@ -11,8 +11,8 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
-import { WalletStatusBox } from "@/components/WalletStatusBox";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
+import { DAOSelector } from "@/components/dao/DAOSelector";
 import { Label, TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { FileUploader } from "@/components/inputs/fileUploader";
 import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgressBar";
@@ -60,8 +60,9 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const isMobile = useIsMobile();
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
-  const userId = wallet?.userId;
   const userIPFSKey = useSelector(selectNFTStorageAPI);
+  const [selectedDaoId, setSelectedDAOId] = useState<string>();
+  const userId = selectedDaoId || wallet?.userId;
   const { uploadFilesToPinata, ipfsUploadProgress } = useIpfs();
   const [isUploadLoading, setIsUploadLoading] = useState(false);
   const [isProgressBarShown, setIsProgressBarShown] = useState(false);
@@ -265,7 +266,11 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           alignSelf: "center",
         }}
       >
-        <WalletStatusBox />
+        <DAOSelector
+          onSelect={setSelectedDAOId}
+          userId={wallet?.userId}
+          style={{ width: "100%" }}
+        />
         <SpacerColumn size={3} />
 
         <TertiaryBox
