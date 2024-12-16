@@ -13,20 +13,19 @@ import (
 type RolesGroup struct {
 	dao_interfaces.IRolesModule
 
-	rm               *role_manager.RoleManager
-	permissionsPower *avl.Tree // roles -> PermissionPower[]
+	rm              *role_manager.RoleManager
+	resourcesVPower *avl.Tree // roles -> ResourceVPower[]
 }
 
-// TODO: Rename permission to resourcePower
-type PermissionPower struct {
-	Permission string
-	Power      uint64
+type ResourceVPower struct {
+	Resource string
+	Power    uint64
 }
 
 func NewRolesGroup() *RolesGroup {
 	return &RolesGroup{
-		rm:               role_manager.NewWithAddress(std.PrevRealm().Addr()),
-		permissionsPower: avl.NewTree(),
+		rm:              role_manager.NewWithAddress(std.PrevRealm().Addr()),
+		resourcesVPower: avl.NewTree(),
 	}
 }
 
@@ -51,23 +50,24 @@ func (r *RolesGroup) HasRole(address std.Address, role string) bool {
 	return r.rm.HasRole(address, role)
 }
 
-// TODO: Create a method fromJSON for PermissionPower struct
-// TODO: Create a NewRoleJSON method that accepts a JSON string and that calls NewRole with the parsed values
-func (r *RolesGroup) NewRole(roleName string, permissionsJSON string) {
-	node := json.Must(json.Unmarshal([]byte(permissionsJSON)))
+func (r *RolesGroup) NewRoleJSON(roleName, resourcesJSON string) {
+	node := json.Must(json.Unmarshal([]byte(resourcesJSON)))
 	arr := node.MustArray()
-	permissions := make([]PermissionPower, len(arr))
+	resources := make([]ResourceVPower, len(arr))
 	for i, n := range arr {
 		node := n.MustObject()
-		permissions[i] = PermissionPower{
-			Permission: node["permission"].MustString(),
-			Power:      jsonutil.MustUint64(node["power"]),
+		resources[i] = ResourceVPower{
+			Resource: node["resource"].MustString(),
+			Power:    jsonutil.MustUint64(node["power"]),
 		}
 	}
-	// Since we want to match permissions with a voting power, we need to store them in a separate tree for now
+	r.newRole(roleName, resources)
+}
+
+func (r *RolesGroup) newRole(roleName string, resources []ResourceVPower) {
 	r.rm.CreateNewRole(roleName, []string{})
-	if len(permissions) > 0 {
-		r.permissionsPower.Set(roleName, permissions)
+	if len(resources) > 0 {
+		r.resourcesVPower.Set(roleName, resources)
 	}
 }
 
@@ -87,24 +87,24 @@ func (r *RolesGroup) GetMemberRoles(address std.Address) []string {
 	return r.rm.GetUserRoles(address)
 }
 
-func (r *RolesGroup) GetMemberResourcePower(address std.Address, resource string) uint64 {
+func (r *RolesGroup) GetMemberResourceVPower(address std.Address, resource string) uint64 {
 	roles := r.rm.GetUserRoles(address)
 	power := uint64(0)
 	for _, role := range roles {
-		permissionRaw, exists := r.permissionsPower.Get(role)
+		resourcesRaw, exists := r.resourcesVPower.Get(role)
 		if !exists {
 			continue
 		}
-		permissions := permissionRaw.([]PermissionPower)
-		for _, p := range permissions {
-			if p.Permission == resource && p.Power > power {
-				power = p.Power
+		resources := resourcesRaw.([]ResourceVPower)
+		for _, r := range resources {
+			if r.Resource == resource && r.Power > power {
+				power = r.Power
 			}
 		}
 	}
 	return power
 }
 
-func (r *RolesGroup) SetMemberResourcePower(address std.Address, resource string, power uint64) {
+func (r *RolesGroup) SetMemberResourceVPower(address std.Address, resource string, power uint64) {
 	panic("Not implemented yet")
 }
