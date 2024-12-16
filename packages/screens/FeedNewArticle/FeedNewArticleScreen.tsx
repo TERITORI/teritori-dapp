@@ -400,6 +400,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                   !formValues.shortDescription ||
                   !wallet
                 }
+                publishText={selectedDaoId ? "Propose" : "Publish"}
                 onPublish={onPublish}
                 authorId={userId || ""}
                 postId=""
