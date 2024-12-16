@@ -73,7 +73,7 @@ func (rm *rolesModule) HasRole(address std.Address, role string) bool {
 	return false
 }
 
-func (rm *rolesModule) NewRole(roleName string, permissionsJSON string) {
+func (rm *rolesModule) NewRoleJSON(roleName, resourcesJSON string) {
 	panic("not implemented")
 }
 
@@ -91,6 +91,10 @@ func (rm *rolesModule) RevokeRole(address std.Address, role string) {
 
 func (rm *rolesModule) GetMemberRoles(address std.Address) []string {
 	return []string{}
+}
+
+func (rm *rolesModule) GetMemberResourceVPower(address std.Address, resource string) uint64 {
+	return 0
 }
 
 type proposalModule struct {

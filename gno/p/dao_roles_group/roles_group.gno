@@ -61,10 +61,10 @@ func (r *RolesGroup) NewRoleJSON(roleName, resourcesJSON string) {
 			Power:    jsonutil.MustUint64(node["power"]),
 		}
 	}
-	r.newRole(roleName, resources)
+	r.NewRole(roleName, resources)
 }
 
-func (r *RolesGroup) newRole(roleName string, resources []ResourceVPower) {
+func (r *RolesGroup) NewRole(roleName string, resources []ResourceVPower) {
 	r.rm.CreateNewRole(roleName, []string{})
 	if len(resources) > 0 {
 		r.resourcesVPower.Set(roleName, resources)
@@ -103,8 +103,4 @@ func (r *RolesGroup) GetMemberResourceVPower(address std.Address, resource strin
 		}
 	}
 	return power
-}
-
-func (r *RolesGroup) SetMemberResourceVPower(address std.Address, resource string, power uint64) {
-	panic("Not implemented yet")
 }

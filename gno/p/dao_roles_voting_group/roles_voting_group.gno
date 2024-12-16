@@ -79,7 +79,7 @@ func (v *RolesVotingGroup) VotingPowerAtHeight(addr std.Address, height int64, r
 	// In case there is many resources involved, we take the lowest value
 	rolePower := uint64(0)
 	for _, resource := range resources {
-		tmp := v.rolesModule.GetMemberResourcePower(addr, resource)
+		tmp := v.rolesModule.GetMemberResourceVPower(addr, resource)
 		if tmp < rolePower || rolePower == 0 {
 			rolePower = tmp
 		}
