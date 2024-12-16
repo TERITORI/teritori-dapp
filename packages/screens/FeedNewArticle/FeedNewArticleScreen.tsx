@@ -234,6 +234,13 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       scrollViewRef.current?.scrollToEnd();
   }, [step, isLoading]);
 
+  // Reset DAOSelector when the user selects another wallet
+  const [daoSelectorKey, setDaoSelectorKey] = useState(0);
+  useEffect(() => {
+    setSelectedDAOId(undefined);
+    setDaoSelectorKey((key) => key + 1);
+  }, [wallet]);
+
   // // OpenGraph URL preview
   // useEffect(() => {
   //   addedUrls.forEach(url => {
@@ -270,6 +277,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           onSelect={setSelectedDAOId}
           userId={wallet?.userId}
           style={{ width: "100%" }}
+          key={daoSelectorKey}
         />
         <SpacerColumn size={3} />
 
