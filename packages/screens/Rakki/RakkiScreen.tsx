@@ -14,6 +14,7 @@ import { RakkiLogo } from "@/screens/Rakki/components/RakkiLogo";
 import { TicketsRemaining } from "@/screens/Rakki/components/TicketsRamaining";
 import { sectionLabelCStyle } from "@/screens/Rakki/styles";
 import { ScreenFC } from "@/utils/navigation";
+import { NetworkFeature } from "../../networks";
 import { layout } from "@/utils/style/layout";
 
 export const RakkiScreen: ScreenFC<"Rakki"> = () => {
@@ -73,6 +74,7 @@ export const RakkiScreen: ScreenFC<"Rakki"> = () => {
   return (
     <ScreenContainer
       footerChildren={rakkiInfo === undefined ? <></> : undefined}
+      forceNetworkFeatures={[NetworkFeature.CosmWasmRakki]}
     >
       <View style={{ width: "100%", maxWidth: 664, alignSelf: "center" }}>
         {content}

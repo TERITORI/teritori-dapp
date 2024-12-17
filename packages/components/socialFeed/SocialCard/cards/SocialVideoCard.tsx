@@ -29,10 +29,10 @@ import {
   withAlpha,
 } from "@/utils/style/colors";
 import {
+  fontRegular14,
+  fontRegular16,
+  fontRegular20,
   fontSemibold13,
-  fontSemibold14,
-  fontSemibold16,
-  fontSemibold20,
 } from "@/utils/style/fonts";
 import { layout, SOCIAL_FEED_BREAKPOINT_M } from "@/utils/style/layout";
 import {
@@ -126,8 +126,8 @@ export const SocialVideoCard: FC<{
             numberOfLines={2}
             style={
               windowWidth < SOCIAL_FEED_BREAKPOINT_M
-                ? fontSemibold16
-                : fontSemibold20
+                ? fontRegular16
+                : fontRegular20
             }
           >
             {title?.trim()}
@@ -184,7 +184,7 @@ export const SocialVideoCard: FC<{
 
           <SpacerColumn size={1.5} />
           <BrandText
-            style={[fontSemibold14, { color: neutralA3 }]}
+            style={[fontRegular14, { color: neutralA3 }]}
             numberOfLines={windowWidth < SOCIAL_FEED_BREAKPOINT_M ? 2 : 3}
           >
             {description.trim()}

@@ -1,5 +1,5 @@
 import { teritoriCurrencies } from "./currencies";
-import { CosmWasmNFTsBurner } from "../features";
+import { CosmWasmNFTsBurner, CosmWasmRakki } from "../features";
 import { NetworkKind, CosmosNetworkInfo, NetworkFeature } from "../types";
 
 const nameServiceContractAddress =
@@ -11,6 +11,13 @@ const burnCapitalFeature: CosmWasmNFTsBurner = {
   type: NetworkFeature.CosmWasmNFTsBurner,
   burnerContractAddress:
     "tori16tlfw7uq73d5n8j5tl0zl367c58f032j50jgxr3e7f09gez3xq5qvcrxy7",
+};
+
+const rakkiFeature: CosmWasmRakki = {
+  type: NetworkFeature.CosmWasmRakki,
+  codeId: 39,
+  contractAddress:
+    "tori1v38u97f66zajd3qftr9zue96arw7jztngln5ftzmccjqdq3cml2s7549lg",
 };
 
 export const teritoriNetwork: CosmosNetworkInfo = {
@@ -30,8 +37,9 @@ export const teritoriNetwork: CosmosNetworkInfo = {
     NetworkFeature.CosmWasmNFTLaunchpad,
     NetworkFeature.NFTMarketplaceLeaderboard,
     NetworkFeature.CosmWasmNFTsBurner,
+    NetworkFeature.CosmWasmRakki,
   ],
-  featureObjects: [burnCapitalFeature],
+  featureObjects: [burnCapitalFeature, rakkiFeature],
   registryName: "teritori",
   overrides: "cosmos-registry:teritori",
   walletUrlForStaking: "https://app.teritori.com/staking",
