@@ -1,7 +1,7 @@
-import { generateMembershipDAOSource } from "./generateMembershipDAOSource";
-import { generateRolesDAOSource } from "./generateRolesDAOSource";
 import { adenaAddPkg } from "../gno";
 import { DaoType } from "../types/organizations";
+import { generateMembershipDAOSource } from "./generateMembershipDAOSource";
+import { generateRolesDAOSource } from "./generateRolesDAOSource";
 
 interface GnoDAOMember {
   address: string;
@@ -39,7 +39,6 @@ export const adenaDeployGnoDAO = async (
   } else {
     source = generateRolesDAOSource(networkId, conf);
   }
-  console.log(source);
   const pkgPath = `gno.land/r/${creator}/${conf.name}`;
   await adenaAddPkg(
     networkId,
