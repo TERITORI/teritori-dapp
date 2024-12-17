@@ -1,4 +1,4 @@
-package dao_realm
+package dao_roles_realm
 
 // TODO: Create two dao_realm example: Membership based & Roles based
 
@@ -10,8 +10,8 @@ import (
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
 	proposal_single "gno.land/p/teritori/dao_proposal_single"
 	"gno.land/p/teritori/dao_roles_group"
+	roles_voting_group "gno.land/p/teritori/dao_roles_voting_group"
 	"gno.land/p/teritori/dao_utils"
-	voting_group "gno.land/p/teritori/dao_voting_group"
 	"gno.land/r/demo/profile"
 	"gno.land/r/teritori/dao_registry"
 	"gno.land/r/teritori/social_feeds"
@@ -22,25 +22,32 @@ import (
 
 var (
 	daoCore    dao_interfaces.IDAOCore
-	group      *voting_group.VotingGroup
+	group      *roles_voting_group.RolesVotingGroup
 	roles      *dao_roles_group.RolesGroup
 	registered bool
 )
 
 func init() {
+	rolesModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IRolesModule {
+		roles = dao_roles_group.NewRolesGroup()
+		roles.NewRoleJSON("admin", "[]")
+		roles.NewRoleJSON("moderator", "[]")
+		roles.NewRoleJSON("member", "[]")
+		roles.GrantRole("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", "admin")
+		roles.GrantRole("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", "moderator")
+		roles.GrantRole("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", "member")
+		roles.GrantRole("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", "member")
+		return roles
+	}
+
 	votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
-		group = voting_group.NewVotingGroup()
+		group = roles_voting_group.NewRolesVotingGroup(core.RolesModule())
 		group.SetMemberPower("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", 1)
 		group.SetMemberPower("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", 1)
 		group.SetMemberPower("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", 1)
 		group.SetMemberPower("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", 1)
 		group.SetMemberPower(std.GetOrigCaller(), 1)
 		return group
-	}
-
-	rolesModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IRolesModule {
-		roles = dao_roles_group.NewRolesGroup()
-		return roles
 	}
 
 	// TODO: consider using factories that return multiple modules and handlers
