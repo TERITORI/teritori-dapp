@@ -1,5 +1,7 @@
 import { View } from "react-native";
 
+import { NetworkFeature } from "../../networks";
+
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { LoaderFullSize } from "@/components/loaders/LoaderFullScreen";
@@ -14,7 +16,6 @@ import { RakkiLogo } from "@/screens/Rakki/components/RakkiLogo";
 import { TicketsRemaining } from "@/screens/Rakki/components/TicketsRamaining";
 import { sectionLabelCStyle } from "@/screens/Rakki/styles";
 import { ScreenFC } from "@/utils/navigation";
-import { NetworkFeature } from "../../networks";
 import { layout } from "@/utils/style/layout";
 
 export const RakkiScreen: ScreenFC<"Rakki"> = () => {

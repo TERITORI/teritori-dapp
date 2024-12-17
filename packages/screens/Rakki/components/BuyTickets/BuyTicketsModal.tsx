@@ -1,5 +1,3 @@
-import { MsgExecuteContractEncodeObject } from "@cosmjs/cosmwasm-stargate";
-import { toUtf8 } from "@cosmjs/encoding";
 import { useQueryClient } from "@tanstack/react-query";
 import Long from "long";
 import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
@@ -15,7 +13,7 @@ import { MainConnectWalletButton } from "@/components/connectWallet/MainConnectW
 import { GradientText } from "@/components/gradientText";
 import ModalBase from "@/components/modals/ModalBase";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
-import { ExecMsg, Info } from "@/contracts-clients/rakki";
+import { Info, RakkiClient } from "@/contracts-clients/rakki";
 import { useBalances } from "@/hooks/useBalances";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetworkFeature, NetworkFeature } from "@/networks";
@@ -76,25 +74,26 @@ export const BuyTicketsModal: FC<{
     if (feature?.type !== NetworkFeature.CosmWasmRakki) {
       throw new Error("Rakki not supported on this network");
     }
-    const msgs: MsgExecuteContractEncodeObject[] = [];
-    const len = ticketAmountNumber.toNumber();
-    for (let i = 0; i < len; i++) {
-      const payload: ExecMsg = {
-        buy_ticket: {
-          entropy: !!Math.round(Math.random()), // FIXME: secure entropy
-        },
-      };
-      msgs.push({
-        typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
-        value: {
-          sender: selectedWallet.address,
-          contract: feature.contractAddress,
-          msg: toUtf8(JSON.stringify(payload)),
-          funds: [info.config.ticket_price],
-        },
-      });
-    }
-    await cosmWasmClient.signAndBroadcast(selectedWallet.address, msgs, "auto");
+    const rakkiClient = new RakkiClient(
+      cosmWasmClient,
+      selectedWallet.address,
+      feature.contractAddress,
+    );
+    const count = ticketAmountNumber.toNumber();
+    const price = {
+      amount: Long.fromString(info.config.ticket_price.amount)
+        .multiply(count)
+        .toString(),
+      denom: info.config.ticket_price.denom,
+    };
+    await rakkiClient.buyTickets(
+      {
+        count,
+      },
+      "auto",
+      undefined,
+      [price],
+    );
     await Promise.all([
       queryClient.invalidateQueries(["rakkiInfo", networkId]),
       queryClient.invalidateQueries([
