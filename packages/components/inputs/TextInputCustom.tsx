@@ -287,6 +287,20 @@ export const TextInputCustom = <T extends FieldValues>({
                     style={[styles.labelText, fontMedium10, labelStyle]}
                   >
                     {label}
+                    {rules?.required && (
+                      <BrandText
+                        style={[
+                          styles.labelText,
+                          fontMedium10,
+                          {
+                            color: additionalRed,
+                            marginLeft: layout.spacing_x0_5,
+                          },
+                        ]}
+                      >
+                        *
+                      </BrandText>
+                    )}
                   </BrandText>
                   <SpacerColumn size={0.5} />
                 </>
