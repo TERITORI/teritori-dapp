@@ -35,10 +35,10 @@ func init() {
     ${(conf.roles ?? [])
       .map(
         (role) =>
-          `roles.NewRole("${role.name}", "[${(role.resources ?? [])
+          `roles.NewRoleJSON("${role.name}", "[${(role.resources ?? [])
             .map(
               (resource) =>
-                `{\\"permission\\": \\"${resource}\\", \\"power\\": \\"999\\"}`,
+                `{\\"resource\\": \\"${resource}\\", \\"power\\": \\"999\\"}`,
             )
             .join(", ")}]")`,
       )
