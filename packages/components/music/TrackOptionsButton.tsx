@@ -12,6 +12,7 @@ import { SpacerColumn } from "../spacer";
 import { Post } from "@/api/feed/v1/feed";
 import ThreeDotsCircleWhite from "@/assets/icons/music/three-dot-circle-white.svg";
 import { useAppMode } from "@/hooks/useAppMode";
+import { fontRegular16, fontRegular20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 const BUTTONS_HEIGHT = 28;
@@ -29,7 +30,11 @@ export const TrackOptionsButton: FC<{
   };
 
   const TrackOptionModalHeader = () => {
-    return <BrandText numberOfLines={2}>{trackName}</BrandText>;
+    return (
+      <BrandText numberOfLines={2} style={fontRegular20}>
+        {trackName}
+      </BrandText>
+    );
   };
 
   return (
@@ -70,7 +75,7 @@ export const TrackOptionsButton: FC<{
               alignItems: "center",
             }}
           >
-            <BrandText>Share</BrandText>
+            <BrandText style={fontRegular16}>Share</BrandText>
             <ShareButton postId={post.id} useAltStyle />
           </View>
           <View
@@ -79,7 +84,7 @@ export const TrackOptionsButton: FC<{
               alignItems: "center",
             }}
           >
-            <BrandText>Tip</BrandText>
+            <BrandText style={fontRegular16}>Tip</BrandText>
             <TipButton
               postId={post.id}
               authorId={post.authorId}

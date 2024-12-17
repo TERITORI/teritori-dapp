@@ -22,6 +22,7 @@ import { fontSemibold14 } from "../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
+import FlexRow from "../FlexRow";
 import { SVG } from "../SVG";
 import { BoxStyle } from "../boxes/Box";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -229,14 +230,16 @@ const ModalBase: React.FC<ModalBaseProps> = ({
                 </View>
               )}
 
-              {!!Header && <Header />}
+              <FlexRow justifyContent="space-between">
+                {!!Header && <Header />}
 
-              <TouchableOpacity
-                style={{ justifyContent: "center" }}
-                onPress={onClose}
-              >
-                <SVG width={32} height={32} source={closeSVG} />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={{ justifyContent: "center" }}
+                  onPress={onClose}
+                >
+                  <SVG width={32} height={32} source={closeSVG} />
+                </TouchableOpacity>
+              </FlexRow>
             </View>
           )}
           {!!children && (
