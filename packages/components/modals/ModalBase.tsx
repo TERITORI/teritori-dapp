@@ -18,7 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import chevronLeft from "../../../assets/icons/chevron-left.svg";
 import closeSVG from "../../../assets/icons/hamburger-button-cross.svg";
 import { neutral77, neutral22 } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import { fontRegular20, fontSemibold14 } from "../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
@@ -200,7 +200,13 @@ const ModalBase: React.FC<ModalBaseProps> = ({
 
                   <View style={{ flex: 1, width: "100%" }}>
                     {!!label && (
-                      <BrandText style={{ color: "white", lineHeight: 24 }}>
+                      <BrandText
+                        style={{
+                          ...fontRegular20,
+                          color: "white",
+                          lineHeight: 24,
+                        }}
+                      >
                         {label}
                       </BrandText>
                     )}

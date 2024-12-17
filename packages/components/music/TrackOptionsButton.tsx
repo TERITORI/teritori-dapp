@@ -31,7 +31,10 @@ export const TrackOptionsButton: FC<{
 
   const TrackOptionModalHeader = () => {
     return (
-      <BrandText numberOfLines={2} style={fontRegular20}>
+      <BrandText
+        numberOfLines={2}
+        style={{ ...fontRegular20, alignSelf: "center" }}
+      >
         {trackName}
       </BrandText>
     );
