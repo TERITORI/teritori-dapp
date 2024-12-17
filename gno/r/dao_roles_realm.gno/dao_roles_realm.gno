@@ -30,8 +30,8 @@ var (
 func init() {
 	rolesModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IRolesModule {
 		roles = dao_roles_group.NewRolesGroup()
-		roles.NewRoleJSON("admin", "[]")
-		roles.NewRoleJSON("moderator", "[]")
+		roles.NewRoleJSON("admin", "[{\"resource\": \"social_feed\", \"power\": \"25\"}, {\"resource\": \"organizations\", \"power\": \"100\"}]")
+		roles.NewRoleJSON("moderator", "[{\"resource\": \"social_feed\", \"power\": \"10\"}]")
 		roles.NewRoleJSON("member", "[]")
 		roles.GrantRole("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", "admin")
 		roles.GrantRole("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", "moderator")
