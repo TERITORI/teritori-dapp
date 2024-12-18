@@ -28,6 +28,7 @@ export const RichText: React.FC<RichTextProps> = ({
   loading,
   isPostConsultation,
   initialValue,
+  publishText = "Publish",
 }) => {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const richText = useRef(null);
@@ -93,7 +94,7 @@ export const RichText: React.FC<RichTextProps> = ({
               disabled={publishDisabled}
               isLoading={loading}
               loader
-              text="Publish"
+              text={publishText}
               size="M"
             />
           </ActionsContainer>

@@ -12,17 +12,19 @@
         {
           "type": "object",
           "required": [
-            "buy_ticket"
+            "buy_tickets"
           ],
           "properties": {
-            "buy_ticket": {
+            "buy_tickets": {
               "type": "object",
               "required": [
-                "entropy"
+                "count"
               ],
               "properties": {
-                "entropy": {
-                  "type": "boolean"
+                "count": {
+                  "type": "integer",
+                  "format": "uint16",
+                  "minimum": 0.0
                 }
               }
             }
@@ -56,6 +58,18 @@
           ],
           "properties": {
             "stop": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "refund"
+          ],
+          "properties": {
+            "refund": {
               "type": "object"
             }
           },

@@ -43,9 +43,9 @@ const cosmwasmNftLaunchpadFeature: CosmWasmNFTLaunchpad = {
 
 const rakkiFeature: CosmWasmRakki = {
   type: NetworkFeature.CosmWasmRakki,
-  codeId: 79,
+  codeId: 81,
   contractAddress:
-    "tori1smdl4c0mc4kqsrg42rhrx5czqwxtp2gml0v8yrzhclesf5n47wzqds7dx3",
+    "tori1ycw04kktq9l0ywqr85suuvg9t80h3nr94juxxkuxhh4sha7r8fuses8de3",
 };
 
 const riotContractAddressGen0 =
