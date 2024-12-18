@@ -20,7 +20,12 @@ import {
   articleMd as md,
 } from "@/utils/feed/markdown";
 import { ARTICLE_MAX_WIDTH } from "@/utils/social-feed";
-import { neutral00, neutralA3, neutralFF } from "@/utils/style/colors";
+import {
+  neutral00,
+  neutral33,
+  neutralA3,
+  neutralFF,
+} from "@/utils/style/colors";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 import { NewArticleFormValues } from "@/utils/types/feed";
 
@@ -110,7 +115,7 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
                       },
                       windowWidth >= RESPONSIVE_BREAKPOINT_S && {
                         borderWidth,
-                        borderColor: isTextInputHovered ? neutralFF : neutral00,
+                        borderColor: isTextInputHovered ? neutralFF : neutral33,
                       },
                     ]}
                   >
