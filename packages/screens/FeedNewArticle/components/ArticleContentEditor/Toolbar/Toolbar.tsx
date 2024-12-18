@@ -17,7 +17,9 @@ export const Toolbar: FC<Props> = ({ setMode, mode }) => {
       style={{
         flexDirection: "row",
         alignSelf: "center",
-        padding: layout.spacing_x1,
+        height: 48,
+        alignItems: "center",
+        paddingHorizontal: layout.spacing_x1,
         backgroundColor: neutral11,
       }}
     >

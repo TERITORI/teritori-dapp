@@ -11,7 +11,6 @@ import RenderHtml from "react-native-render-html";
 
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { Label } from "@/components/inputs/TextInputCustom";
-import { SpacerColumn } from "@/components/spacer";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { Toolbar } from "@/screens/FeedNewArticle/components/ArticleContentEditor/Toolbar/Toolbar";
 import {
@@ -40,15 +39,21 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
   const textInputRef = useRef<TextInput>(null);
   const [isTextInputHovered, setTextInputHovered] = useState(false);
   const borderWidth = 1;
-  const textInputMinHeight = height - 142;
-  const editionAndPreviewHeight = height - 80;
+  const textInputContainerPadding = layout.spacing_x2 - borderWidth * 2;
+  const responsiveTextInputContainerPadding =
+    windowWidth < RESPONSIVE_BREAKPOINT_S ? 0 : textInputContainerPadding;
+  const toolbarWrapperHeight = 68;
+  const labelsWrappersHeight = 32;
+  const editionAndPreviewHeight =
+    height - toolbarWrapperHeight - textInputContainerPadding * 2;
+  const textInputMinHeight =
+    editionAndPreviewHeight -
+    labelsWrappersHeight -
+    responsiveTextInputContainerPadding * 2;
+
   const [textInputHeight, setTextInputHeight] = useState(textInputMinHeight);
   const [mode, setMode] = useState<ContentMode>("BOTH");
   const [renderHtmlWidth, setRenderHtmlWidth] = useState(0);
-  const textInputContainerPadding =
-    windowWidth < RESPONSIVE_BREAKPOINT_S
-      ? 0
-      : layout.spacing_x2 - borderWidth * 2;
 
   // ========== Form
   const { watch, control } = useFormContext<NewArticleFormValues>();
@@ -66,8 +71,9 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
       }}
     >
       {/* ==== Toolbar */}
-      <Toolbar setMode={setMode} mode={mode} />
-      <SpacerColumn size={2} />
+      <View style={{ height: toolbarWrapperHeight }}>
+        <Toolbar setMode={setMode} mode={mode} />
+      </View>
 
       {/* ==== Edition and preview */}
       <View
@@ -88,13 +94,14 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
             onHoverIn={() => setTextInputHovered(true)}
             onHoverOut={() => setTextInputHovered(false)}
           >
-            <Label
-              isRequired
-              style={isTextInputHovered && { color: neutralFF }}
-            >
-              Article content edition
-            </Label>
-            <SpacerColumn size={1.5} />
+            <View style={{ height: labelsWrappersHeight }}>
+              <Label
+                isRequired
+                style={isTextInputHovered && { color: neutralFF }}
+              >
+                Article content edition
+              </Label>
+            </View>
 
             <Controller<NewArticleFormValues>
               name="message"
@@ -110,7 +117,7 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
                     style={[
                       {
                         flex: 1,
-                        padding: textInputContainerPadding,
+                        padding: responsiveTextInputContainerPadding,
                         borderRadius: 12,
                       },
                       windowWidth >= RESPONSIVE_BREAKPOINT_S && {
@@ -153,8 +160,9 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
               flex: 1,
             }}
           >
-            <Label>Article content preview</Label>
-            <SpacerColumn size={1.5} />
+            <View style={{ height: labelsWrappersHeight }}>
+              <Label>Article content preview</Label>
+            </View>
 
             <ScrollView
               showsHorizontalScrollIndicator={false}
@@ -162,16 +170,18 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
                 borderRadius: 12,
                 borderWidth,
                 borderColor: neutral00,
-                paddingBottom: textInputContainerPadding,
-                paddingHorizontal: textInputContainerPadding,
-                marginTop: textInputContainerPadding,
+                paddingBottom: responsiveTextInputContainerPadding,
+                paddingHorizontal: responsiveTextInputContainerPadding,
+                marginTop: responsiveTextInputContainerPadding,
               }}
               onLayout={(e) => setRenderHtmlWidth(e.nativeEvent.layout.width)}
             >
               <RenderHtml
                 source={{ html }}
                 tagsStyles={markdownTagStyles}
-                contentWidth={renderHtmlWidth - textInputContainerPadding * 2}
+                contentWidth={
+                  renderHtmlWidth - responsiveTextInputContainerPadding * 2
+                }
               />
             </ScrollView>
           </View>

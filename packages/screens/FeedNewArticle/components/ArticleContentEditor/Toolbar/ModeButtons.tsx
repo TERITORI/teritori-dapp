@@ -34,7 +34,7 @@ export const ModeButtons: FC<Props> = ({ setMode, mode }) => {
       >
         <SVG source={penSVG} height={24} width={24} color={neutralFF} />
       </CustomPressable>
-      <SpacerRow size={1} />
+      <SpacerRow size={0.5} />
       <CustomPressable
         onPress={() => setMode("BOTH")}
         style={{
@@ -54,7 +54,7 @@ export const ModeButtons: FC<Props> = ({ setMode, mode }) => {
           color={neutralFF}
         />
       </CustomPressable>
-      <SpacerRow size={1} />
+      <SpacerRow size={0.5} />
       <CustomPressable
         onPress={() => setMode("PREVIEW")}
         style={{
