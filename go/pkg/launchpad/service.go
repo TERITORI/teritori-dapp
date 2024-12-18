@@ -291,7 +291,7 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 	}
 
 	creatorFilterSQL := "AND lp.creator_id = " + creatorID
-	if creatorID == nil {
+	if creatorID == "" {
 		creatorFilterSQL = ""
 	}
 
@@ -311,7 +311,7 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 			CreatorId:      string(dbProject.CreatorID),
 			CollectionData: string(dbProject.CollectionData),
 			Status:         dbProject.Status,
-			ProposalId:     &dbProject.ProposalId,
+			ProposalId:     dbProject.ProposalId,
 		}
 	}
 
@@ -350,7 +350,7 @@ func (s *Launchpad) LaunchpadProjectById(ctx context.Context, req *launchpadpb.L
 			CreatorId:      string(project.CreatorID),
 			CollectionData: string(project.CollectionData),
 			Status:         project.Status,
-			ProposalId:     &project.ProposalId,
+			ProposalId:     project.ProposalId,
 		},
 	}, nil
 }
