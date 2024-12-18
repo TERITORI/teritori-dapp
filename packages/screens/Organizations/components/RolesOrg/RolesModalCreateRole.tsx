@@ -61,7 +61,7 @@ export const RolesModalCreateRole: React.FC<RolesModalCreateRoleProps> = ({
       </View>
       <SpacerColumn size={2.5} />
       <View>
-        <Label>Features & Permissions</Label>
+        <Label>Resources & Permissions</Label>
         <Box
           style={{
             borderWidth: 1,
