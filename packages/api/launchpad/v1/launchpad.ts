@@ -129,27 +129,14 @@ export function statusToJSON(object: Status): string {
   }
 }
 
-export interface LaunchpadProjectsByCreatorRequest {
-  creatorId: string;
-  networkId: string;
-  limit: number;
-  offset: number;
-  sort: Sort;
-  sortDirection: SortDirection;
-  status?: Status | undefined;
-}
-
-export interface LaunchpadProjectsByCreatorResponse {
-  projects: LaunchpadProject[];
-}
-
 export interface LaunchpadProjectsRequest {
   networkId: string;
   limit: number;
   offset: number;
   sort: Sort;
   sortDirection: SortDirection;
-  status?: Status | undefined;
+  status: Status;
+  creatorId: string;
 }
 
 export interface LaunchpadProjectsResponse {
@@ -170,7 +157,7 @@ export interface UploadMetadatasRequest {
   networkId: string;
   projectId: string;
   metadatas: Metadata[];
-  pinataJwt?: string | undefined;
+  pinataJwt: string;
 }
 
 export interface UploadMetadatasResponse {
@@ -229,7 +216,7 @@ export interface LaunchpadProject {
   creatorId: string;
   collectionData: string;
   status: Status;
-  proposalId?: string | undefined;
+  proposalId: string;
 }
 
 export interface Metadata {
@@ -252,226 +239,8 @@ export interface Trait {
   value: string;
 }
 
-function createBaseLaunchpadProjectsByCreatorRequest(): LaunchpadProjectsByCreatorRequest {
-  return { creatorId: "", networkId: "", limit: 0, offset: 0, sort: 0, sortDirection: 0, status: undefined };
-}
-
-export const LaunchpadProjectsByCreatorRequest = {
-  encode(message: LaunchpadProjectsByCreatorRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.creatorId !== "") {
-      writer.uint32(10).string(message.creatorId);
-    }
-    if (message.networkId !== "") {
-      writer.uint32(18).string(message.networkId);
-    }
-    if (message.limit !== 0) {
-      writer.uint32(24).int32(message.limit);
-    }
-    if (message.offset !== 0) {
-      writer.uint32(32).int32(message.offset);
-    }
-    if (message.sort !== 0) {
-      writer.uint32(40).int32(message.sort);
-    }
-    if (message.sortDirection !== 0) {
-      writer.uint32(48).int32(message.sortDirection);
-    }
-    if (message.status !== undefined) {
-      writer.uint32(56).int32(message.status);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): LaunchpadProjectsByCreatorRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseLaunchpadProjectsByCreatorRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.creatorId = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.networkId = reader.string();
-          continue;
-        case 3:
-          if (tag !== 24) {
-            break;
-          }
-
-          message.limit = reader.int32();
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.offset = reader.int32();
-          continue;
-        case 5:
-          if (tag !== 40) {
-            break;
-          }
-
-          message.sort = reader.int32() as any;
-          continue;
-        case 6:
-          if (tag !== 48) {
-            break;
-          }
-
-          message.sortDirection = reader.int32() as any;
-          continue;
-        case 7:
-          if (tag !== 56) {
-            break;
-          }
-
-          message.status = reader.int32() as any;
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): LaunchpadProjectsByCreatorRequest {
-    return {
-      creatorId: isSet(object.creatorId) ? globalThis.String(object.creatorId) : "",
-      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
-      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
-      offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
-      sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
-      sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
-      status: isSet(object.status) ? statusFromJSON(object.status) : undefined,
-    };
-  },
-
-  toJSON(message: LaunchpadProjectsByCreatorRequest): unknown {
-    const obj: any = {};
-    if (message.creatorId !== "") {
-      obj.creatorId = message.creatorId;
-    }
-    if (message.networkId !== "") {
-      obj.networkId = message.networkId;
-    }
-    if (message.limit !== 0) {
-      obj.limit = Math.round(message.limit);
-    }
-    if (message.offset !== 0) {
-      obj.offset = Math.round(message.offset);
-    }
-    if (message.sort !== 0) {
-      obj.sort = sortToJSON(message.sort);
-    }
-    if (message.sortDirection !== 0) {
-      obj.sortDirection = sortDirectionToJSON(message.sortDirection);
-    }
-    if (message.status !== undefined) {
-      obj.status = statusToJSON(message.status);
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<LaunchpadProjectsByCreatorRequest>, I>>(
-    base?: I,
-  ): LaunchpadProjectsByCreatorRequest {
-    return LaunchpadProjectsByCreatorRequest.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<LaunchpadProjectsByCreatorRequest>, I>>(
-    object: I,
-  ): LaunchpadProjectsByCreatorRequest {
-    const message = createBaseLaunchpadProjectsByCreatorRequest();
-    message.creatorId = object.creatorId ?? "";
-    message.networkId = object.networkId ?? "";
-    message.limit = object.limit ?? 0;
-    message.offset = object.offset ?? 0;
-    message.sort = object.sort ?? 0;
-    message.sortDirection = object.sortDirection ?? 0;
-    message.status = object.status ?? undefined;
-    return message;
-  },
-};
-
-function createBaseLaunchpadProjectsByCreatorResponse(): LaunchpadProjectsByCreatorResponse {
-  return { projects: [] };
-}
-
-export const LaunchpadProjectsByCreatorResponse = {
-  encode(message: LaunchpadProjectsByCreatorResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    for (const v of message.projects) {
-      LaunchpadProject.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): LaunchpadProjectsByCreatorResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseLaunchpadProjectsByCreatorResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.projects.push(LaunchpadProject.decode(reader, reader.uint32()));
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): LaunchpadProjectsByCreatorResponse {
-    return {
-      projects: globalThis.Array.isArray(object?.projects)
-        ? object.projects.map((e: any) => LaunchpadProject.fromJSON(e))
-        : [],
-    };
-  },
-
-  toJSON(message: LaunchpadProjectsByCreatorResponse): unknown {
-    const obj: any = {};
-    if (message.projects?.length) {
-      obj.projects = message.projects.map((e) => LaunchpadProject.toJSON(e));
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<LaunchpadProjectsByCreatorResponse>, I>>(
-    base?: I,
-  ): LaunchpadProjectsByCreatorResponse {
-    return LaunchpadProjectsByCreatorResponse.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<LaunchpadProjectsByCreatorResponse>, I>>(
-    object: I,
-  ): LaunchpadProjectsByCreatorResponse {
-    const message = createBaseLaunchpadProjectsByCreatorResponse();
-    message.projects = object.projects?.map((e) => LaunchpadProject.fromPartial(e)) || [];
-    return message;
-  },
-};
-
 function createBaseLaunchpadProjectsRequest(): LaunchpadProjectsRequest {
-  return { networkId: "", limit: 0, offset: 0, sort: 0, sortDirection: 0, status: undefined };
+  return { networkId: "", limit: 0, offset: 0, sort: 0, sortDirection: 0, status: 0, creatorId: "" };
 }
 
 export const LaunchpadProjectsRequest = {
@@ -491,8 +260,11 @@ export const LaunchpadProjectsRequest = {
     if (message.sortDirection !== 0) {
       writer.uint32(40).int32(message.sortDirection);
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       writer.uint32(48).int32(message.status);
+    }
+    if (message.creatorId !== "") {
+      writer.uint32(58).string(message.creatorId);
     }
     return writer;
   },
@@ -546,6 +318,13 @@ export const LaunchpadProjectsRequest = {
 
           message.status = reader.int32() as any;
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.creatorId = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -562,7 +341,8 @@ export const LaunchpadProjectsRequest = {
       offset: isSet(object.offset) ? globalThis.Number(object.offset) : 0,
       sort: isSet(object.sort) ? sortFromJSON(object.sort) : 0,
       sortDirection: isSet(object.sortDirection) ? sortDirectionFromJSON(object.sortDirection) : 0,
-      status: isSet(object.status) ? statusFromJSON(object.status) : undefined,
+      status: isSet(object.status) ? statusFromJSON(object.status) : 0,
+      creatorId: isSet(object.creatorId) ? globalThis.String(object.creatorId) : "",
     };
   },
 
@@ -583,8 +363,11 @@ export const LaunchpadProjectsRequest = {
     if (message.sortDirection !== 0) {
       obj.sortDirection = sortDirectionToJSON(message.sortDirection);
     }
-    if (message.status !== undefined) {
+    if (message.status !== 0) {
       obj.status = statusToJSON(message.status);
+    }
+    if (message.creatorId !== "") {
+      obj.creatorId = message.creatorId;
     }
     return obj;
   },
@@ -599,7 +382,8 @@ export const LaunchpadProjectsRequest = {
     message.offset = object.offset ?? 0;
     message.sort = object.sort ?? 0;
     message.sortDirection = object.sortDirection ?? 0;
-    message.status = object.status ?? undefined;
+    message.status = object.status ?? 0;
+    message.creatorId = object.creatorId ?? "";
     return message;
   },
 };
@@ -799,7 +583,7 @@ export const LaunchpadProjectByIdResponse = {
 };
 
 function createBaseUploadMetadatasRequest(): UploadMetadatasRequest {
-  return { sender: "", networkId: "", projectId: "", metadatas: [], pinataJwt: undefined };
+  return { sender: "", networkId: "", projectId: "", metadatas: [], pinataJwt: "" };
 }
 
 export const UploadMetadatasRequest = {
@@ -816,7 +600,7 @@ export const UploadMetadatasRequest = {
     for (const v of message.metadatas) {
       Metadata.encode(v!, writer.uint32(34).fork()).ldelim();
     }
-    if (message.pinataJwt !== undefined) {
+    if (message.pinataJwt !== "") {
       writer.uint32(42).string(message.pinataJwt);
     }
     return writer;
@@ -881,7 +665,7 @@ export const UploadMetadatasRequest = {
       metadatas: globalThis.Array.isArray(object?.metadatas)
         ? object.metadatas.map((e: any) => Metadata.fromJSON(e))
         : [],
-      pinataJwt: isSet(object.pinataJwt) ? globalThis.String(object.pinataJwt) : undefined,
+      pinataJwt: isSet(object.pinataJwt) ? globalThis.String(object.pinataJwt) : "",
     };
   },
 
@@ -899,7 +683,7 @@ export const UploadMetadatasRequest = {
     if (message.metadatas?.length) {
       obj.metadatas = message.metadatas.map((e) => Metadata.toJSON(e));
     }
-    if (message.pinataJwt !== undefined) {
+    if (message.pinataJwt !== "") {
       obj.pinataJwt = message.pinataJwt;
     }
     return obj;
@@ -914,7 +698,7 @@ export const UploadMetadatasRequest = {
     message.networkId = object.networkId ?? "";
     message.projectId = object.projectId ?? "";
     message.metadatas = object.metadatas?.map((e) => Metadata.fromPartial(e)) || [];
-    message.pinataJwt = object.pinataJwt ?? undefined;
+    message.pinataJwt = object.pinataJwt ?? "";
     return message;
   },
 };
@@ -1674,7 +1458,7 @@ export const StatusCount = {
 };
 
 function createBaseLaunchpadProject(): LaunchpadProject {
-  return { id: "", networkId: "", creatorId: "", collectionData: "", status: 0, proposalId: undefined };
+  return { id: "", networkId: "", creatorId: "", collectionData: "", status: 0, proposalId: "" };
 }
 
 export const LaunchpadProject = {
@@ -1694,7 +1478,7 @@ export const LaunchpadProject = {
     if (message.status !== 0) {
       writer.uint32(40).int32(message.status);
     }
-    if (message.proposalId !== undefined) {
+    if (message.proposalId !== "") {
       writer.uint32(50).string(message.proposalId);
     }
     return writer;
@@ -1765,7 +1549,7 @@ export const LaunchpadProject = {
       creatorId: isSet(object.creatorId) ? globalThis.String(object.creatorId) : "",
       collectionData: isSet(object.collectionData) ? globalThis.String(object.collectionData) : "",
       status: isSet(object.status) ? statusFromJSON(object.status) : 0,
-      proposalId: isSet(object.proposalId) ? globalThis.String(object.proposalId) : undefined,
+      proposalId: isSet(object.proposalId) ? globalThis.String(object.proposalId) : "",
     };
   },
 
@@ -1786,7 +1570,7 @@ export const LaunchpadProject = {
     if (message.status !== 0) {
       obj.status = statusToJSON(message.status);
     }
-    if (message.proposalId !== undefined) {
+    if (message.proposalId !== "") {
       obj.proposalId = message.proposalId;
     }
     return obj;
@@ -1802,7 +1586,7 @@ export const LaunchpadProject = {
     message.creatorId = object.creatorId ?? "";
     message.collectionData = object.collectionData ?? "";
     message.status = object.status ?? 0;
-    message.proposalId = object.proposalId ?? undefined;
+    message.proposalId = object.proposalId ?? "";
     return message;
   },
 };
@@ -2131,10 +1915,6 @@ export interface LaunchpadService {
     metadata?: grpc.Metadata,
   ): Promise<CalculateCollectionMerkleRootResponse>;
   TokenMetadata(request: DeepPartial<TokenMetadataRequest>, metadata?: grpc.Metadata): Promise<TokenMetadataResponse>;
-  LaunchpadProjectsByCreator(
-    request: DeepPartial<LaunchpadProjectsByCreatorRequest>,
-    metadata?: grpc.Metadata,
-  ): Promise<LaunchpadProjectsByCreatorResponse>;
   LaunchpadProjects(
     request: DeepPartial<LaunchpadProjectsRequest>,
     metadata?: grpc.Metadata,
@@ -2161,7 +1941,6 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
     this.UploadMetadatas = this.UploadMetadatas.bind(this);
     this.CalculateCollectionMerkleRoot = this.CalculateCollectionMerkleRoot.bind(this);
     this.TokenMetadata = this.TokenMetadata.bind(this);
-    this.LaunchpadProjectsByCreator = this.LaunchpadProjectsByCreator.bind(this);
     this.LaunchpadProjects = this.LaunchpadProjects.bind(this);
     this.LaunchpadProjectById = this.LaunchpadProjectById.bind(this);
     this.LaunchpadProjectsCounts = this.LaunchpadProjectsCounts.bind(this);
@@ -2188,17 +1967,6 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
 
   TokenMetadata(request: DeepPartial<TokenMetadataRequest>, metadata?: grpc.Metadata): Promise<TokenMetadataResponse> {
     return this.rpc.unary(LaunchpadServiceTokenMetadataDesc, TokenMetadataRequest.fromPartial(request), metadata);
-  }
-
-  LaunchpadProjectsByCreator(
-    request: DeepPartial<LaunchpadProjectsByCreatorRequest>,
-    metadata?: grpc.Metadata,
-  ): Promise<LaunchpadProjectsByCreatorResponse> {
-    return this.rpc.unary(
-      LaunchpadServiceLaunchpadProjectsByCreatorDesc,
-      LaunchpadProjectsByCreatorRequest.fromPartial(request),
-      metadata,
-    );
   }
 
   LaunchpadProjects(
@@ -2307,29 +2075,6 @@ export const LaunchpadServiceTokenMetadataDesc: UnaryMethodDefinitionish = {
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = TokenMetadataResponse.decode(data);
-      return {
-        ...value,
-        toObject() {
-          return value;
-        },
-      };
-    },
-  } as any,
-};
-
-export const LaunchpadServiceLaunchpadProjectsByCreatorDesc: UnaryMethodDefinitionish = {
-  methodName: "LaunchpadProjectsByCreator",
-  service: LaunchpadServiceDesc,
-  requestStream: false,
-  responseStream: false,
-  requestType: {
-    serializeBinary() {
-      return LaunchpadProjectsByCreatorRequest.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      const value = LaunchpadProjectsByCreatorResponse.decode(data);
       return {
         ...value,
         toObject() {
