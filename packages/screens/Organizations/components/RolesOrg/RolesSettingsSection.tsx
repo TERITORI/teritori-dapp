@@ -151,6 +151,7 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
             />
           </TableWrapper>
         </View>
+        <SpacerColumn size={2.5} />
         <SecondaryButton size="SM" text="Add New Role" onPress={onOpenModal} />
       </ScrollView>
       <View

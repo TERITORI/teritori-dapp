@@ -10,6 +10,7 @@ import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { CheckboxDappStore } from "@/screens/DAppStore/components/CheckboxDappStore";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold18 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 import { RolesSettingFormType } from "@/utils/types/organizations";
 
 interface RolesModalCreateRoleProps {
@@ -61,7 +62,9 @@ export const RolesModalCreateRole: React.FC<RolesModalCreateRoleProps> = ({
       </View>
       <SpacerColumn size={2.5} />
       <View>
-        <Label>Resources & Permissions</Label>
+        <Label style={{ marginBottom: layout.spacing_x1_5 }}>
+          Resources & Permissions
+        </Label>
         <Box
           style={{
             borderWidth: 1,
