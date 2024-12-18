@@ -21,8 +21,7 @@ export const GameBox: FC<{
 }> = ({ networkId, info, style }) => {
   const selectedWallet = useSelectedWallet();
   const { ticketsCount: userTicketsCount } = useRakkiTicketsCountByUser(
-    networkId,
-    selectedWallet?.address,
+    selectedWallet?.userId,
   );
   const totalPrizeAmount = Long.fromString(info.config.ticket_price.amount).mul(
     info.current_tickets_count,

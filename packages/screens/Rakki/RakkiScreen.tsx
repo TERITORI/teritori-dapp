@@ -18,6 +18,8 @@ import { sectionLabelCStyle } from "@/screens/Rakki/styles";
 import { ScreenFC } from "@/utils/navigation";
 import { layout } from "@/utils/style/layout";
 
+// TODO: replace all placeholders text with real values
+
 export const RakkiScreen: ScreenFC<"Rakki"> = () => {
   const networkId = useSelectedNetworkId();
   const { height } = useMaxResolution();

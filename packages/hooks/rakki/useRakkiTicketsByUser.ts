@@ -5,16 +5,19 @@ import {
   NetworkFeature,
   getNetworkFeature,
   getNonSigningCosmWasmClient,
+  parseUserId,
 } from "../../networks";
 
-export const useRakkiTicketsCountByUser = (
-  networkId: string,
-  userAddress?: string,
-) => {
+export const useRakkiTicketsCountByUser = (userId?: string) => {
   const { data: ticketsCount = null, ...other } = useQuery(
-    ["rakkiTicketsCountByUser", networkId],
+    ["rakkiTicketsCountByUser", userId],
     async () => {
-      if (!userAddress) {
+      if (!userId) {
+        return null;
+      }
+      const [network, userAddress] = parseUserId(userId);
+      const networkId = network?.id;
+      if (!networkId) {
         return null;
       }
       const rakkiFeature = getNetworkFeature(
