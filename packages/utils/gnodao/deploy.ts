@@ -1,7 +1,7 @@
-import { adenaAddPkg } from "../gno";
-import { DaoType } from "../types/organizations";
 import { generateMembershipDAOSource } from "./generateMembershipDAOSource";
 import { generateRolesDAOSource } from "./generateRolesDAOSource";
+import { adenaAddPkg } from "../gno";
+import { DaoType } from "../types/organizations";
 
 interface GnoDAOMember {
   address: string;

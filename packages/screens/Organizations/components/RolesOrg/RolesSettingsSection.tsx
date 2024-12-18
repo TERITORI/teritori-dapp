@@ -1,21 +1,19 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Pressable, TouchableOpacity, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
+import { RolesModalCreateRole } from "./RolesModalCreateRole";
 import trashSVG from "../../../../../assets/icons/trash.svg";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
-import { Box } from "@/components/boxes/Box";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SecondaryButton } from "@/components/buttons/SecondaryButton";
-import { Label, TextInputCustom } from "@/components/inputs/TextInputCustom";
-import ModalBase from "@/components/modals/ModalBase";
+import { TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
-import { CheckboxDappStore } from "@/screens/DAppStore/components/CheckboxDappStore";
 import { neutral33 } from "@/utils/style/colors";
-import { fontSemibold18, fontSemibold28 } from "@/utils/style/fonts";
+import { fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
   ROLES_BASED_ORGANIZATION_STEPS,
@@ -83,65 +81,15 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
 
   return (
     <View style={{ flex: 1 }}>
-      <ModalBase
-        key={modalVisible ? "open" : "closed"}
-        visible={modalVisible}
-        onClose={onCloseModal}
-        width={480}
-        label="Add a new Role"
-      >
-        <View>
-          <TextInputCustom<RolesSettingFormType>
-            control={control}
-            noBrokenCorners
-            name={`roles.${rolesIndexes.length}.name`}
-            label="Role name"
-            placeholder="Role name"
-            rules={{ required: true }}
-            placeHolder="Role name"
-          />
-          <SpacerColumn size={2.5} />
-          <TextInputCustom<RolesSettingFormType>
-            control={control}
-            noBrokenCorners
-            name={`roles.${rolesIndexes.length}.color`}
-            label="Role color"
-            placeholder="Role color"
-            placeHolder="Role color"
-          />
-        </View>
-        <SpacerColumn size={2.5} />
-        <View>
-          <Label>Features & Permissions</Label>
-          <Box
-            style={{
-              borderWidth: 1,
-              borderColor: neutral33,
-              borderRadius: 8,
-              padding: 10,
-            }}
-          >
-            <ScrollView style={{ maxHeight: 180 }}>
-              {/* TODO: Refactor Checkbox to make it a global component instead of Dapp!*/}
-              {resources.map((resource, index) => (
-                <View style={{ flex: 1, flexDirection: "row" }}>
-                  <TouchableOpacity onPress={() => onCheckboxChange(index)}>
-                    <CheckboxDappStore isChecked={resource.value} />
-                  </TouchableOpacity>
-                  <SpacerRow size={1} />
-                  <BrandText style={fontSemibold18}>{resource.name}</BrandText>
-                  <SpacerColumn size={4} />
-                </View>
-              ))}
-            </ScrollView>
-          </Box>
-        </View>
-        <SpacerColumn size={2.5} />
-        <View style={{ alignItems: "center" }}>
-          <PrimaryButton size="SM" text="Add New Role" onPress={addRoleField} />
-        </View>
-        <SpacerColumn size={2.5} />
-      </ModalBase>
+      <RolesModalCreateRole
+        modalVisible={modalVisible}
+        rolesIndexes={rolesIndexes}
+        resources={resources}
+        control={control}
+        onCloseModal={onCloseModal}
+        onCheckboxChange={onCheckboxChange}
+        addRoleField={addRoleField}
+      />
       <ScrollView
         style={{
           padding: layout.contentSpacing,
