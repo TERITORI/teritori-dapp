@@ -61,7 +61,7 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
       }}
     >
       {/* ==== Toolbar */}
-      <Toolbar setMode={setMode} />
+      <Toolbar setMode={setMode} mode={mode} />
       <SpacerColumn size={2} />
 
       {/* ==== Edition and preview */}

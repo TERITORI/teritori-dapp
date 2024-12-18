@@ -29,6 +29,15 @@ export const markdownTagStyles: MixedStyleRecord = {
     fontFamily: "Exo_500Medium",
     fontWeight: "500",
   },
+  ul: {
+    marginVertical: 4,
+    color: neutralA3,
+    fontSize: 14,
+    letterSpacing: -(14 * 0.04),
+    lineHeight: 20,
+    fontFamily: "Exo_500Medium",
+    fontWeight: "500",
+  },
   code: {
     color: neutralA3,
     fontSize: 13,

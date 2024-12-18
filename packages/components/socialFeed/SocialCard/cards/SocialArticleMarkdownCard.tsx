@@ -68,11 +68,7 @@ export const SocialArticleMarkdownCard: FC<{
       setLocalPost(post);
     }, [post]);
 
-    const thumbnailURI = thumbnailImage?.url
-      ? thumbnailImage.url.includes("://")
-        ? thumbnailImage.url
-        : "ipfs://" + thumbnailImage.url // we need this hack because ipfs "urls" in feed are raw CIDs
-      : defaultThumbnailImage;
+    const thumbnailURI = thumbnailImage?.url || defaultThumbnailImage;
 
     return (
       <SocialCardWrapper
