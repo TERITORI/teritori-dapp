@@ -14,7 +14,7 @@ import { useAppMode } from "../../hooks/useAppMode";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature } from "../../networks";
 import { zodTryParseJSON } from "../../utils/sanitize";
-import { fontRegular20, fontSemibold20 } from "../../utils/style/fonts";
+import { fontRegular20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { ZodSocialFeedVideoMetadata } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
