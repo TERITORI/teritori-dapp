@@ -15,7 +15,7 @@ import { useAppMode } from "../../hooks/useAppMode";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature } from "../../networks";
 import { zodTryParseJSON } from "../../utils/sanitize";
-import { fontSemibold20 } from "../../utils/style/fonts";
+import { fontRegular20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import {
   PostCategory,
@@ -108,7 +108,7 @@ export const FeedMusicList: React.FC<{
   return (
     <View style={[containerCStyle, style]}>
       <View style={oneLineCStyle}>
-        <BrandText style={fontSemibold20}>{title}</BrandText>
+        <BrandText style={fontRegular20}>{title}</BrandText>
         <View style={buttonGroupCStyle}>
           {allowUpload && <UploadMusicButton onPress={onPressUploadMusic} />}
         </View>
