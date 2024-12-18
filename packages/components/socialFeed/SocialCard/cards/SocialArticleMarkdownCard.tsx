@@ -68,8 +68,6 @@ export const SocialArticleMarkdownCard: FC<{
       setLocalPost(post);
     }, [post]);
 
-    const thumbnailURI = thumbnailImage?.url || defaultThumbnailImage;
-
     return (
       <SocialCardWrapper
         post={localPost}
@@ -176,7 +174,7 @@ export const SocialArticleMarkdownCard: FC<{
           <OptimizedImage
             width={thumbnailImageWidth}
             height={articleCardHeight - 2}
-            sourceURI={thumbnailURI}
+            sourceURI={thumbnailImage?.url}
             fallbackURI={defaultThumbnailImage}
             style={{
               zIndex: -1,
