@@ -3,7 +3,7 @@ import { TextStyle, TouchableOpacity, ViewStyle } from "react-native";
 
 import Upload from "../../../assets/icons/upload_alt.svg";
 import { neutral30, primaryColor } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import { fontRegular14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -42,7 +42,6 @@ const buttonContainerStyle: ViewStyle = {
   borderRadius: 999,
 };
 const buttonTextStyle: TextStyle = {
-  ...fontSemibold14,
-
+  ...fontRegular14,
   color: primaryColor,
 };
