@@ -23,19 +23,15 @@ import {
   useFetchFeed,
 } from "../../../hooks/feed/useFetchFeed";
 import { useIsMobile } from "../../../hooks/useIsMobile";
-import { useMaxResolution } from "../../../hooks/useMaxResolution";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import {
-  layout,
-  RESPONSIVE_BREAKPOINT_S,
-  screenContentMaxWidth,
-} from "../../../utils/style/layout";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "../../../utils/style/layout";
 import { PostCategory } from "../../../utils/types/feed";
 import { SpacerColumn, SpacerRow } from "../../spacer";
 import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
 import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
 import { SocialVideoCard } from "../SocialCard/cards/SocialVideoCard";
 
+import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { DeepPartial } from "@/utils/typescript";
 
 const OFFSET_Y_LIMIT_FLOATING = 224;
@@ -63,7 +59,7 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
 }) => {
   const isMobile = useIsMobile();
   const { width: windowWidth } = useWindowDimensions();
-  const { width } = useMaxResolution();
+  const { width } = useMaxResolution({ isLarge: true });
   const selectedWallet = useSelectedWallet();
   const reqWithQueryUser = { ...req, queryUserId: selectedWallet?.userId };
   const { data, isFetching, refetch, hasNextPage, fetchNextPage, isLoading } =
@@ -179,7 +175,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         <View
           style={{
             width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-            maxWidth: screenContentMaxWidth,
           }}
         >
           {post.category === PostCategory.Article ? (
@@ -210,21 +205,21 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     [windowWidth, width, isFlagged, refetch, cardStyle],
   );
 
+  // We have to keep the first fragment here to don't have a loop of re-renders
   return (
     <>
       <Animated.FlatList
         data={posts}
         renderItem={({ item: post }) => RenderItem(post)}
-        ListHeaderComponentStyle={{
-          zIndex: 1,
-          width: windowWidth,
-          maxWidth: screenContentMaxWidth,
-        }}
+        ListHeaderComponentStyle={{ zIndex: 1 }}
         ListHeaderComponent={
           <>
             <View
               onLayout={onHeaderLayout}
-              style={{ width, alignSelf: "center", alignItems: "center" }}
+              style={{
+                alignSelf: "center",
+                alignItems: "center",
+              }}
             >
               <Header />
             </View>
@@ -233,7 +228,17 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         }
         keyExtractor={(post) => post.id}
         onScroll={scrollHandler}
-        contentContainerStyle={contentCStyle}
+        contentContainerStyle={
+          isMobile
+            ? {
+                alignItems: "center",
+                width: "100%",
+              }
+            : {
+                alignSelf: "center",
+                width,
+              }
+        }
         onEndReachedThreshold={4}
         onEndReached={onEndReached}
       />
@@ -262,11 +267,6 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   );
 };
 
-const contentCStyle: ViewStyle = {
-  alignItems: "center",
-  alignSelf: "center",
-  width: "100%",
-};
 const floatingActionsCStyle: ViewStyle = {
   position: "absolute",
   justifyContent: "center",

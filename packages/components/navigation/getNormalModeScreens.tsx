@@ -1,7 +1,7 @@
 import React from "react";
 
-import { platformScreens } from "./platformSpecific";
-import { getNav, screenTitle } from "./util";
+import { getPlatformScreens } from "./platformSpecific";
+import { getNav } from "./util";
 
 import { BurnCapitalScreen } from "@/screens/BurnCapital/BurnCapitalScreen";
 import { ComingSoonScreen } from "@/screens/ComingSoon/ComingSoon";
@@ -55,6 +55,7 @@ import { ProjectsMakeRequestScreen } from "@/screens/Projects/ProjectsMakeReques
 import { ProjectsManagerScreen } from "@/screens/Projects/ProjectsManagerScreen";
 import { ProjectsPaymentScreen } from "@/screens/Projects/ProjectsPaymentScreen";
 import { ProjectsScreen } from "@/screens/Projects/ProjectsScreen";
+import { RakkiScreen } from "@/screens/Rakki/RakkiScreen";
 import { RiotGameBreedingScreen } from "@/screens/RiotGame/RiotGameBreedingScreen";
 import { RiotGameEnrollScreen } from "@/screens/RiotGame/RiotGameEnrollScreen";
 import { RiotGameFightScreen } from "@/screens/RiotGame/RiotGameFightScreen";
@@ -76,8 +77,16 @@ import { WalletManagerScreen } from "@/screens/WalletManager/WalletManagerScreen
 import { WalletManagerWalletsScreen } from "@/screens/WalletManager/WalletsScreen";
 import { AppMode } from "@/utils/types/app-mode";
 
-export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
+export const getNormalModeScreens = ({
+  appMode,
+  browserTabsPrefix,
+}: {
+  appMode: AppMode;
+  browserTabsPrefix: string;
+}) => {
   const { Nav } = getNav(appMode);
+
+  const screenTitle = (title: string) => browserTabsPrefix + title;
 
   return (
     <>
@@ -598,7 +607,12 @@ export const getNormalModeScreens = ({ appMode }: { appMode: AppMode }) => {
         component={BurnCapitalScreen}
         options={{ header: () => null, title: screenTitle("Burn Capital") }}
       />
-      {platformScreens}
+      <Nav.Screen
+        name="Rakki"
+        component={RakkiScreen}
+        options={{ header: () => null, title: screenTitle("Rakki") }}
+      />
+      {getPlatformScreens(screenTitle)}
     </>
   );
 };

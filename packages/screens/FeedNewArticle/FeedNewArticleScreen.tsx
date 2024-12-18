@@ -8,8 +8,9 @@ import priceSVG from "@/assets/icons/price.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
-import { WalletStatusBox } from "@/components/WalletStatusBox";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
+import { DAOSelector } from "@/components/dao/DAOSelector";
 import { Label, TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { FileUploader } from "@/components/inputs/fileUploader";
 import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgressBar";
@@ -43,7 +44,7 @@ import {
   neutral77,
   secondaryColor,
 } from "@/utils/style/colors";
-import { fontSemibold13, fontSemibold20 } from "@/utils/style/fonts";
+import { fontSemibold13 } from "@/utils/style/fonts";
 import { layout, screenContentMaxWidth } from "@/utils/style/layout";
 import {
   CustomLatLngExpression,
@@ -58,8 +59,9 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const isMobile = useIsMobile();
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
-  const userId = wallet?.userId;
   const userIPFSKey = useSelector(selectNFTStorageAPI);
+  const [selectedDaoId, setSelectedDAOId] = useState<string>();
+  const userId = selectedDaoId || wallet?.userId;
   const { uploadFilesToPinata, ipfsUploadProgress } = useIpfs();
   const [isUploadLoading, setIsUploadLoading] = useState(false);
   const [isProgressBarShown, setIsProgressBarShown] = useState(false);
@@ -231,6 +233,13 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       scrollViewRef.current?.scrollToEnd();
   }, [step, isLoading]);
 
+  // Reset DAOSelector when the user selects another wallet
+  const [daoSelectorKey, setDaoSelectorKey] = useState(0);
+  useEffect(() => {
+    setSelectedDAOId(undefined);
+    setDaoSelectorKey((key) => key + 1);
+  }, [wallet]);
+
   // // OpenGraph URL preview
   // useEffect(() => {
   //   addedUrls.forEach(url => {
@@ -247,7 +256,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       responsive
       mobileTitle="NEW ARTICLE"
       fullWidth
-      headerChildren={<BrandText style={fontSemibold20}>New Article</BrandText>}
+      headerChildren={<ScreenTitle>New Article</ScreenTitle>}
       onBackPress={navigateBack}
       footerChildren
       noScroll
@@ -263,7 +272,12 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           alignSelf: "center",
         }}
       >
-        <WalletStatusBox />
+        <DAOSelector
+          onSelect={setSelectedDAOId}
+          userId={wallet?.userId}
+          style={{ width: "100%" }}
+          key={daoSelectorKey}
+        />
         <SpacerColumn size={3} />
 
         <TertiaryBox
@@ -393,6 +407,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
                   !formValues.shortDescription ||
                   !wallet
                 }
+                publishText={selectedDaoId ? "Propose" : "Publish"}
                 onPublish={onPublish}
                 authorId={userId || ""}
                 postId=""

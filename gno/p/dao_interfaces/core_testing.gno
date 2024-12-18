@@ -14,6 +14,10 @@ func (d *dummyCore) VotingModule() IVotingModule {
 	panic("not implemented")
 }
 
+func (d *dummyCore) RolesModule() IRolesModule {
+	panic("not implemented")
+}
+
 func (d *dummyCore) ProposalModules() []ActivableProposalModule {
 	panic("not implemented")
 }
@@ -31,5 +35,9 @@ func (d *dummyCore) UpdateVotingModule(newVotingModule IVotingModule) {
 }
 
 func (d *dummyCore) UpdateProposalModules(toAdd []IProposalModule, toDisable []int) {
+	panic("not implemented")
+}
+
+func (d *dummyCore) GetMembersJSON(start, end string, limit uint64, height int64) string {
 	panic("not implemented")
 }

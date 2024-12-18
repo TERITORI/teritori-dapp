@@ -44,7 +44,7 @@ import { web3ToWeb2URI } from "@/utils/ipfs";
 import { prettyMediaDuration } from "@/utils/mediaPlayer";
 import { SOCIAl_CARD_BORDER_RADIUS } from "@/utils/social-feed";
 import { neutral00, neutralA3, secondaryColor } from "@/utils/style/colors";
-import { fontSemibold13 } from "@/utils/style/fonts";
+import { fontRegular13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { SocialFeedVideoMetadata } from "@/utils/types/feed";
 import { Media } from "@/utils/types/mediaPlayer";
@@ -392,7 +392,7 @@ function MediaPlayerController({
             )}
 
             {/* Display time */}
-            <BrandText style={fontSemibold13}>
+            <BrandText style={fontRegular13}>
               {`${prettyMediaDuration(
                 playbackStatus?.positionMillis,
               )} / ${prettyMediaDuration(playbackStatus?.durationMillis)}`}

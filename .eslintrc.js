@@ -46,6 +46,7 @@ module.exports = {
       "error",
       { "ts-expect-error": "allow-with-description" },
     ],
+    "no-fallthrough": "error",
     "no-restricted-syntax": [
       "error",
       {

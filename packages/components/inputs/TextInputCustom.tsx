@@ -40,7 +40,7 @@ import {
   neutralA3,
   secondaryColor,
 } from "../../utils/style/colors";
-import { fontMedium10, fontSemibold14 } from "../../utils/style/fonts";
+import { fontRegular10, fontRegular14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { ErrorText } from "../ErrorText";
@@ -100,7 +100,7 @@ export const Label: React.FC<{
     <BrandText
       style={[
         styles.labelText,
-        fontSemibold14,
+        fontRegular14,
         style,
         hovered && { color: secondaryColor },
       ]}
@@ -111,7 +111,7 @@ export const Label: React.FC<{
       <BrandText
         style={[
           styles.labelText,
-          fontSemibold14,
+          fontRegular14,
           { color: additionalRed, marginLeft: layout.spacing_x0_5 },
         ]}
       >
@@ -284,9 +284,23 @@ export const TextInputCustom = <T extends FieldValues>({
               (variant !== "labelOutside" && !hideLabel && (
                 <>
                   <BrandText
-                    style={[styles.labelText, fontMedium10, labelStyle]}
+                    style={[styles.labelText, fontRegular10, labelStyle]}
                   >
                     {label}
+                    {rules?.required && (
+                      <BrandText
+                        style={[
+                          styles.labelText,
+                          fontRegular10,
+                          {
+                            color: additionalRed,
+                            marginLeft: layout.spacing_x0_5,
+                          },
+                        ]}
+                      >
+                        *
+                      </BrandText>
+                    )}
                   </BrandText>
                   <SpacerColumn size={0.5} />
                 </>

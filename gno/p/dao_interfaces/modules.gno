@@ -16,6 +16,7 @@ func (mi ModuleInfo) String() string {
 type IVotingModule interface {
 	Info() ModuleInfo
 	ConfigJSON() string
+	GetMembersJSON(start, end string, limit uint64, height int64) string
 	Render(path string) string
 	VotingPowerAtHeight(address std.Address, height int64) (power uint64)
 	TotalPowerAtHeight(height int64) uint64
@@ -36,3 +37,17 @@ type IProposalModule interface {
 }
 
 type ProposalModuleFactory func(core IDAOCore) IProposalModule
+
+type IRolesModule interface {
+	Info() ModuleInfo
+	ConfigJSON() string
+	Render(path string) string
+	GetMemberRoles(address std.Address) []string
+	HasRole(address std.Address, role string) bool
+	NewRole(roleName string)
+	DeleteRole(roleName string)
+	GrantRole(address std.Address, role string)
+	RevokeRole(address std.Address, role string)
+}
+
+type RolesModuleFactory func(core IDAOCore) IRolesModule

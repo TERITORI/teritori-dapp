@@ -9,7 +9,7 @@ import { SidebarButtonProps } from "./SidebarButton";
 import { useSidebar } from "../../../context/SidebarProvider";
 import { useRoute } from "../../../hooks/navigation/useRoute";
 import { neutralA3, primaryColor } from "../../../utils/style/colors";
-import { fontSemibold12 } from "../../../utils/style/fonts";
+import { fontRegular12 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
@@ -59,7 +59,7 @@ export const SidebarNestedButton: React.FC<SidebarNestedButtonProps> = ({
           <Animated.View style={opacityStyle}>
             <BrandText
               style={[
-                fontSemibold12,
+                fontRegular12,
                 (!isSelected || isComingSoon) && { color: neutralA3 },
               ]}
             >

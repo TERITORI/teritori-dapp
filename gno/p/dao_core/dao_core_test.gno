@@ -30,6 +30,10 @@ func (vm *votingModule) ConfigJSON() string {
 	return "{}"
 }
 
+func (vm *votingModule) GetMembersJSON(start, end string, limit uint64, height int64) string {
+	return "[]"
+}
+
 func (vm *votingModule) Render(path string) string {
 	return "# Test Voting Module"
 }
@@ -40,6 +44,53 @@ func (vm *votingModule) VotingPowerAtHeight(address std.Address, height int64) u
 
 func (vm *votingModule) TotalPowerAtHeight(height int64) uint64 {
 	return 0
+}
+
+type rolesModule struct {
+	core dao_interfaces.IDAOCore
+}
+
+func rolesModuleFactory(core dao_interfaces.IDAOCore) dao_interfaces.IRolesModule {
+	return &rolesModule{core: core}
+}
+
+func (rm *rolesModule) Info() dao_interfaces.ModuleInfo {
+	return dao_interfaces.ModuleInfo{
+		Kind:    "TestRoles",
+		Version: "42.21",
+	}
+}
+
+func (rm *rolesModule) ConfigJSON() string {
+	return "{}"
+}
+
+func (rm *rolesModule) Render(path string) string {
+	return "# Test Roles Module"
+}
+
+func (rm *rolesModule) HasRole(address std.Address, role string) bool {
+	return false
+}
+
+func (rm *rolesModule) NewRole(roleName string) {
+	panic("not implemented")
+}
+
+func (rm *rolesModule) DeleteRole(roleName string) {
+	panic("not implemented")
+}
+
+func (rm *rolesModule) GrantRole(address std.Address, role string) {
+	panic("not implemented")
+}
+
+func (rm *rolesModule) RevokeRole(address std.Address, role string) {
+	panic("not implemented")
+}
+
+func (rm *rolesModule) GetMemberRoles(address std.Address) []string {
+	return []string{}
 }
 
 type proposalModule struct {
@@ -96,7 +147,7 @@ func TestDAOCore(t *testing.T) {
 		return handler
 	}
 
-	core := NewDAOCore(votingModuleFactory, []dao_interfaces.ProposalModuleFactory{proposalModuleFactory}, []dao_interfaces.MessageHandlerFactory{handlerFactory})
+	core := NewDAOCore(votingModuleFactory, rolesModuleFactory, []dao_interfaces.ProposalModuleFactory{proposalModuleFactory}, []dao_interfaces.MessageHandlerFactory{handlerFactory})
 	if core == nil {
 		t.Fatal("core is nil")
 	}
@@ -112,6 +163,15 @@ func TestDAOCore(t *testing.T) {
 
 	if votingMod.Info().Kind != "TestVoting" {
 		t.Fatal("voting module has wrong kind")
+	}
+
+	rolesMod := core.RolesModule()
+	if rolesMod == nil {
+		t.Fatal("roles module is nil")
+	}
+
+	if rolesMod.Info().Kind != "TestRoles" {
+		t.Fatal("roles module has wrong kind")
 	}
 
 	propMods := core.ProposalModules()

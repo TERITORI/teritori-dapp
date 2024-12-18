@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ExecuteMsg",
+  "anyOf": [
+    {
+      "$ref": "#/definitions/ExecMsg"
+    }
+  ],
+  "definitions": {
+    "ExecMsg": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "buy_tickets"
+          ],
+          "properties": {
+            "buy_tickets": {
+              "type": "object",
+              "required": [
+                "count"
+              ],
+              "properties": {
+                "count": {
+                  "type": "integer",
+                  "format": "uint16",
+                  "minimum": 0.0
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "withdraw_fees"
+          ],
+          "properties": {
+            "withdraw_fees": {
+              "type": "object",
+              "required": [
+                "destination"
+              ],
+              "properties": {
+                "destination": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "stop"
+          ],
+          "properties": {
+            "stop": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "refund"
+          ],
+          "properties": {
+            "refund": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "change_owner"
+          ],
+          "properties": {
+            "change_owner": {
+              "type": "object",
+              "required": [
+                "new_owner"
+              ],
+              "properties": {
+                "new_owner": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

@@ -173,6 +173,7 @@ export type RootStackParamList = {
   MiniChatCreateAccount: undefined;
   MiniGroupActions: { conversationId: string };
   BurnCapital: { network?: string };
+  Rakki: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -352,6 +353,7 @@ const getNavConfig: (homeScreen: keyof RootStackParamList) => NavConfig = (
       MiniChatProfile: "mini-chat-profile",
       MiniGroupActions: "mini-group-actions",
       BurnCapital: "burn-capital",
+      Rakki: "rakki",
     },
   };
   if (homeScreen === "Home") {

@@ -4522,6 +4522,7 @@
     "modboardsPkgPath": "gno.land/r/teritori/modboards",
     "groupsPkgPath": "gno.land/r/teritori/groups",
     "votingGroupPkgPath": "gno.land/p/teritori/dao_voting_group",
+    "rolesGroupPkgPath": "gno.land/p/teritori/dao_roles_group",
     "daoProposalSinglePkgPath": "gno.land/p/teritori/dao_proposal_single",
     "profilePkgPath": "gno.land/r/demo/profile",
     "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
@@ -4573,6 +4574,7 @@
     "socialFeedsDAOPkgPath": "gno.land/r/teritori/social_feeds_dao",
     "groupsPkgPath": "gno.land/r/teritori/groups",
     "votingGroupPkgPath": "gno.land/p/teritori/dao_voting_group",
+    "rolesGroupPkgPath": "gno.land/p/teritori/dao_roles_group",
     "daoProposalSinglePkgPath": "gno.land/p/teritori/dao_proposal_single",
     "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
     "daoCorePkgPath": "gno.land/p/teritori/dao_core",
@@ -11429,12 +11431,18 @@
       "BurnTokens",
       "CosmWasmNFTLaunchpad",
       "NFTMarketplaceLeaderboard",
-      "CosmWasmNFTsBurner"
+      "CosmWasmNFTsBurner",
+      "CosmWasmRakki"
     ],
     "featureObjects": [
       {
         "type": "CosmWasmNFTsBurner",
         "burnerContractAddress": "tori16tlfw7uq73d5n8j5tl0zl367c58f032j50jgxr3e7f09gez3xq5qvcrxy7"
+      },
+      {
+        "type": "CosmWasmRakki",
+        "codeId": 39,
+        "contractAddress": "tori1v38u97f66zajd3qftr9zue96arw7jztngln5ftzmccjqdq3cml2s7549lg"
       }
     ],
     "registryName": "teritori",
@@ -11460,6 +11468,16 @@
         "sourceChannelId": "channel-431",
         "destinationChannelPort": "transfer",
         "destinationChannelId": "channel-10"
+      },
+      {
+        "kind": "ibc",
+        "denom": "ibc/35357FE55D81D88054E135529BB2AEB1BB20D207292775A19BD82D83F27BE9B4",
+        "sourceNetwork": "cosmos-registry:noble",
+        "sourceDenom": "uusdc",
+        "sourceChannelPort": "transfer",
+        "sourceChannelId": "channel-118",
+        "destinationChannelPort": "transfer",
+        "destinationChannelId": "channel-64"
       }
     ],
     "txExplorer": "https://www.mintscan.io/teritori/txs/$hash",
@@ -11605,7 +11623,8 @@
       "CosmWasmNFTLaunchpad",
       "CosmWasmPremiumFeed",
       "NFTMarketplaceLeaderboard",
-      "CosmWasmNFTsBurner"
+      "CosmWasmNFTsBurner",
+      "CosmWasmRakki"
     ],
     "featureObjects": [
       {
@@ -11637,6 +11656,11 @@
         "nftTr721CodeId": 60,
         "codeId": 71,
         "defaultMintDenom": "utori"
+      },
+      {
+        "type": "CosmWasmRakki",
+        "codeId": 81,
+        "contractAddress": "tori1ycw04kktq9l0ywqr85suuvg9t80h3nr94juxxkuxhh4sha7r8fuses8de3"
       }
     ],
     "currencies": [

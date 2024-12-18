@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 import { useNSUserInfo } from "../../../hooks/useNSUserInfo";
 import { neutral77 } from "../../../utils/style/colors";
-import { fontSemibold12, fontSemibold9 } from "../../../utils/style/fonts";
+import { fontMedium10, fontMedium12 } from "../../../utils/style/fonts";
 import { fullSidebarWidth, layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { OmniLink } from "../../OmniLink";
@@ -50,11 +50,11 @@ export const SidebarProfileButton: React.FC<{
           ]}
         >
           {!!tokenId && (
-            <BrandText style={fontSemibold12} numberOfLines={1}>
+            <BrandText style={fontMedium12} numberOfLines={1}>
               {`@${tokenId}`}
             </BrandText>
           )}
-          <BrandText style={[fontSemibold9, { color: neutral77 }]}>
+          <BrandText style={[fontMedium10, { color: neutral77 }]}>
             My Profile
           </BrandText>
         </View>

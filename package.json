@@ -1,7 +1,7 @@
 {
   "name": "teritori-dapp",
   "version": "1.0.0",
-  "main": "apps/teritori-dapp/index.js",
+  "main": "app-selector.js",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
@@ -14,7 +14,8 @@
     "unused-exports": "ts-unused-exports ./tsconfig.json --excludePathsFromReport=\"packages/api;packages/contracts-clients;packages/evm-contracts-clients;packages/screens/RiotGame/RiotGameBridgeScreen.tsx;packages/components/socialFeed/RichText/inline-toolbar;app.config.js;weshd;./App.tsx;./cypress.config.ts;packages/modules/FileSystem/index.ts;.*\\.web|.electron|.native|.d.ts\"",
     "validate-networks": "tsx packages/scripts/validateNetworks.ts",
     "postinstall": "patch-package",
-    "install-gno": "tsx packages/scripts/install-gno"
+    "install-gno": "tsx packages/scripts/install-gno",
+    "switch-app": "tsx packages/scripts/switch-app"
   },
   "engines": {
     "node": "v18.1.0"

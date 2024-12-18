@@ -9,6 +9,7 @@ import { ScreenContainer } from "@/components/ScreenContainer";
 import { NFTMainInfo } from "@/components/nftDetails/NFTMainInfo";
 import { SpacerColumn } from "@/components/spacer";
 import { Tabs } from "@/components/tabs/Tabs";
+import { useAppConfig } from "@/context/AppConfigProvider";
 import { initialToast, useFeedbacks } from "@/context/FeedbacksProvider";
 import { Wallet } from "@/context/WalletsProvider";
 import { NftMarketplaceClient } from "@/contracts-clients/nft-marketplace/NftMarketplace.client";
@@ -265,12 +266,13 @@ export const NFTDetailScreen: ScreenFC<"NFTDetail"> = ({
   const [network] = parseNftId(id);
   const { info } = useNFTInfo(id);
   const navigation = useAppNavigation();
+  const { browserTabsPrefix } = useAppConfig();
 
   useEffect(() => {
     navigation.setOptions({
-      title: `Teritori - NFT: ${info?.name}`,
+      title: `${browserTabsPrefix}NFT: ${info?.name}`,
     });
-  }, [info?.name, navigation]);
+  }, [info?.name, navigation, browserTabsPrefix]);
 
   return (
     <ScreenContainer

@@ -17,6 +17,7 @@ export enum NetworkFeature {
   LaunchpadERC20 = "LaunchpadERC20",
   NFTMarketplaceLeaderboard = "NFTMarketplaceLeaderboard",
   CosmWasmNFTsBurner = "CosmWasmNFTsBurner",
+  CosmWasmRakki = "CosmWasmRakki",
 }
 
 // Marketplace
@@ -48,13 +49,6 @@ const zodCosmWasmNFTsBurner = z.object({
 
 export type CosmWasmNFTsBurner = z.infer<typeof zodCosmWasmNFTsBurner>;
 
-// CosmWasm Social Feed
-
-type CosmWasmSocialFeed = {
-  type: NetworkFeature.SocialFeed;
-  feedContractAddress: string;
-};
-
 // CosmWasm Launchpad
 
 const zodCosmWasmNFTLaunchpad = z.object({
@@ -76,8 +70,6 @@ const zodGnoProjectManager = z.object({
   paymentsDenom: z.string(),
 });
 
-type GnoProjectManager = z.infer<typeof zodGnoProjectManager>;
-
 // Launchpad ERC20
 
 const zodLaunchpadERC20 = z.object({
@@ -86,7 +78,15 @@ const zodLaunchpadERC20 = z.object({
   paymentsDenom: z.string(),
 });
 
-type LaunchpadERC20 = z.infer<typeof zodLaunchpadERC20>;
+// Rakki
+
+const zodCosmWasmRakki = z.object({
+  type: z.literal(NetworkFeature.CosmWasmRakki),
+  codeId: z.number().int().positive(),
+  contractAddress: z.string(),
+});
+
+export type CosmWasmRakki = z.infer<typeof zodCosmWasmRakki>;
 
 // Registry
 
@@ -97,13 +97,7 @@ export const allFeatureObjects = [
   zodGnoProjectManager,
   zodLaunchpadERC20,
   zodNFTMarketplace,
+  zodCosmWasmRakki,
 ];
 
-export type NetworkFeatureObject =
-  | CosmWasmPremiumFeed
-  | CosmWasmSocialFeed
-  | CosmWasmNFTLaunchpad
-  | CosmWasmNFTsBurner
-  | GnoProjectManager
-  | LaunchpadERC20
-  | NFTMarketplace;
+export type NetworkFeatureObject = z.infer<(typeof allFeatureObjects)[0]>;
