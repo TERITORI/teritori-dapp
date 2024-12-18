@@ -14,7 +14,7 @@ import { useAppMode } from "../../hooks/useAppMode";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { NetworkFeature } from "../../networks";
 import { zodTryParseJSON } from "../../utils/sanitize";
-import { fontSemibold20 } from "../../utils/style/fonts";
+import { fontRegular20, fontSemibold20 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { ZodSocialFeedVideoMetadata } from "../../utils/types/feed";
 import { BrandText } from "../BrandText";
@@ -93,7 +93,7 @@ export const FeedVideosList: React.FC<{
   return (
     <View style={[containerCStyle, style]}>
       <View style={oneLineCStyle}>
-        <BrandText style={fontSemibold20} numberOfLines={1}>
+        <BrandText style={fontRegular20} numberOfLines={1}>
           {title}
         </BrandText>
 
