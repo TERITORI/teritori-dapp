@@ -14,7 +14,8 @@ import (
 const LENGTH_LAST_TOKENS_CACHE = 10
 
 type Token struct {
-	banker         *grc20.Banker
+	privateLedger  *grc20.PrivateLedger
+	token          *grc20.Token
 	admin          *ownable.Ownable
 	image          string
 	totalSupplyCap uint64
@@ -24,7 +25,7 @@ type Token struct {
 	SalesIDs       []seqid.ID
 }
 
-var _ grc20.Token = (*Token)(nil)
+var _ grc20.Teller = (*Token)(nil)
 
 var (
 	tokens            *avl.Tree // name -> token
@@ -54,7 +55,7 @@ func NewToken(name, symbol, image string, decimals uint, initialSupply, totalSup
 		panic("decimals must be 18 or less")
 	}
 
-	banker := grc20.NewBanker(name, symbol, decimals)
+	token, banker := grc20.NewToken(name, symbol, decimals)
 
 	fee := initialSupply * 25 / 1000
 	netSupply := initialSupply - fee
@@ -66,7 +67,8 @@ func NewToken(name, symbol, image string, decimals uint, initialSupply, totalSup
 	}
 
 	inst := Token{
-		banker:         banker,
+		token:          token,
+		privateLedger:  banker,
 		admin:          ownable.NewWithAddress(admin),
 		image:          image,
 		totalSupplyCap: totalSupplyCap,
@@ -99,7 +101,7 @@ func Mint(name string, to std.Address, amount uint64) {
 		}
 	}
 
-	checkErr(token.banker.Mint(to, amount))
+	checkErr(token.privateLedger.Mint(to, amount))
 }
 
 func Burn(name string, from std.Address, amount uint64) {
@@ -108,7 +110,7 @@ func Burn(name string, from std.Address, amount uint64) {
 	if !token.allowBurn {
 		panic("burning is not allowed")
 	}
-	checkErr(token.banker.Burn(from, amount))
+	checkErr(token.privateLedger.Burn(from, amount))
 }
 
 func TotalSupply(name string) uint64 {
@@ -141,33 +143,32 @@ func TransferFrom(name string, from, to std.Address, amount uint64) {
 	checkErr(token.TransferFrom(from, to, amount))
 }
 
-func (token Token) Token() grc20.Token                 { return token.banker.Token() }
-func (token Token) GetName() string                    { return token.banker.GetName() }
-func (token Token) GetSymbol() string                  { return token.banker.GetSymbol() }
-func (token Token) GetDecimals() uint                  { return token.banker.GetDecimals() }
-func (token Token) TotalSupply() uint64                { return token.Token().TotalSupply() }
-func (token Token) BalanceOf(owner std.Address) uint64 { return token.Token().BalanceOf(owner) }
+func (token Token) GetName() string                    { return token.token.GetName() }
+func (token Token) GetSymbol() string                  { return token.token.GetSymbol() }
+func (token Token) GetDecimals() uint                  { return token.token.GetDecimals() }
+func (token Token) TotalSupply() uint64                { return token.token.TotalSupply() }
+func (token Token) BalanceOf(owner std.Address) uint64 { return token.token.BalanceOf(owner) }
 func (token Token) Transfer(to std.Address, amount uint64) error {
-	return token.Token().Transfer(to, amount)
+	return token.token.CallerTeller().Transfer(to, amount)
 }
 
 func (token Token) Allowance(owner, spender std.Address) uint64 {
-	return token.Token().Allowance(owner, spender)
+	return token.token.Allowance(owner, spender)
 }
 
 func (token Token) Approve(spender std.Address, amount uint64) error {
-	return token.Token().Approve(spender, amount)
+	return token.token.CallerTeller().Approve(spender, amount)
 }
 
 func (token Token) TransferFrom(from, to std.Address, amount uint64) error {
-	return token.Token().TransferFrom(from, to, amount)
+	return token.token.CallerTeller().TransferFrom(from, to, amount)
 }
 
 func (token Token) ToJSON() *json.Node {
 	return json.ObjectNode("", map[string]*json.Node{
-		"name":           json.StringNode("", token.banker.GetName()),
-		"symbol":         json.StringNode("", token.banker.GetSymbol()),
-		"decimals":       json.StringNode("", strconv.FormatUint(uint64(token.banker.GetDecimals()), 10)),
+		"name":           json.StringNode("", token.GetName()),
+		"symbol":         json.StringNode("", token.GetSymbol()),
+		"decimals":       json.StringNode("", strconv.FormatUint(uint64(token.GetDecimals()), 10)),
 		"admin":          json.StringNode("", token.admin.Owner().String()),
 		"image":          json.StringNode("", token.image),
 		"totalSupply":    json.StringNode("", strconv.FormatInt(int64(token.TotalSupply()), 10)),

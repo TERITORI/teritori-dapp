@@ -341,8 +341,8 @@ func TestClaim(t *testing.T) {
 				if !airdrop.hasAlreadyClaimed(test.input.addr) {
 					t.Errorf("Expected address be set as claimed, but it is not")
 				}
-				if airdrop.token.banker.BalanceOf(test.input.addr) != test.expected.balance {
-					t.Errorf("Expected balance to be %d, got %d", test.expected.balance, airdrop.token.banker.BalanceOf(test.input.addr))
+				if airdrop.token.BalanceOf(test.input.addr) != test.expected.balance {
+					t.Errorf("Expected balance to be %d, got %d", test.expected.balance, airdrop.token.BalanceOf(test.input.addr))
 				}
 			}
 		})
