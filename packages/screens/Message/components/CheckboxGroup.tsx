@@ -3,38 +3,38 @@ import { TouchableOpacity, View } from "react-native";
 import { Avatar } from "react-native-paper";
 
 import FlexRow from "../../../components/FlexRow";
-import { CheckboxDappStore } from "../../DAppStore/components/CheckboxDappStore";
 
 import { BrandText } from "@/components/BrandText";
+import { Checkbox } from "@/components/Checkbox";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { neutral77, secondaryColor } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-export interface CheckboxItem {
+export interface CheckboxMessageItem {
   id: string;
   name: string;
   avatar: string;
   checked: boolean;
 }
-interface CheckboxGroupProps {
-  items: CheckboxItem[];
-  onChange: (items: CheckboxItem[]) => void;
+interface CheckboxMessageGroupProps {
+  items: CheckboxMessageItem[];
+  onChange: (items: CheckboxMessageItem[]) => void;
   searchText: string;
 }
 
-const Checkbox = ({
+const CheckboxMessage = ({
   item,
   onPress,
 }: {
-  item: CheckboxItem;
+  item: CheckboxMessageItem;
   onPress: () => void;
 }) => {
   return (
     <>
       <FlexRow>
         <TouchableOpacity onPress={onPress}>
-          <CheckboxDappStore isChecked={item.checked} />
+          <Checkbox isChecked={item.checked} />
         </TouchableOpacity>
         <SpacerRow size={2} />
         <Avatar.Image size={40} source={{ uri: item.avatar || "" }} />
@@ -49,12 +49,13 @@ const Checkbox = ({
   );
 };
 
-export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
+export const CheckboxGroup: React.FC<CheckboxMessageGroupProps> = ({
   items,
   onChange,
   searchText,
 }) => {
-  const [checkboxItems, setCheckboxItems] = useState<CheckboxItem[]>(items);
+  const [checkboxItems, setCheckboxItems] =
+    useState<CheckboxMessageItem[]>(items);
   const handleCheckboxPress = (id: string) => {
     const newItems = checkboxItems;
     const itemIndex = newItems.findIndex((item) => item.id === id);
@@ -86,7 +87,7 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
       )}
       {!searchText.length &&
         checkboxItems.map((item, index) => (
-          <Checkbox
+          <CheckboxMessage
             key={item.id}
             item={item}
             onPress={() => handleCheckboxPress(item.id)}
@@ -94,7 +95,7 @@ export const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
         ))}
       {!!searchText.length &&
         searchItems.map((item, index) => (
-          <Checkbox
+          <CheckboxMessage
             key={item.id}
             item={item}
             onPress={() => handleCheckboxPress(item.id)}

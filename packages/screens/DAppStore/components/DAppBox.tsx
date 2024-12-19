@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Pressable, StyleProp, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { CheckboxDappStore } from "./CheckboxDappStore";
-
 import { BrandText } from "@/components/BrandText";
+import { Checkbox } from "@/components/Checkbox";
 import { SVGorImageIcon } from "@/components/SVG/SVGorImageIcon";
 import { Box, BoxStyle } from "@/components/boxes/Box";
 import { selectCheckedApps, setCheckedApp } from "@/store/slices/dapps-store";
@@ -95,7 +94,7 @@ export const DAppBox: React.FC<{
           </BrandText>
         </View>
 
-        {!alwaysOn && <CheckboxDappStore isChecked={isChecked} />}
+        {!alwaysOn && <Checkbox isChecked={isChecked} />}
       </Box>
     </Pressable>
   );
