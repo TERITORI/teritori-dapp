@@ -52,11 +52,11 @@ func renderTokenPage(res *mux.ResponseWriter, req *mux.Request) {
 		res.Write("## Last tokens created\n")
 
 		for _, token := range lastTokensCreated {
-			res.Write(ufmt.Sprintf("### Name: %s - Symbol: %s\n", token.banker.GetName(), token.banker.GetSymbol()))
-			res.Write(ufmt.Sprintf("#### Total Supply: %d %s\n", token.banker.TotalSupply(), token.banker.GetSymbol()))
-			res.Write(ufmt.Sprintf("#### Decimals: %d\n", token.banker.GetDecimals()))
+			res.Write(ufmt.Sprintf("### Name: %s - Symbol: %s\n", token.GetName(), token.GetSymbol()))
+			res.Write(ufmt.Sprintf("#### Total Supply: %d %s\n", token.TotalSupply(), token.GetSymbol()))
+			res.Write(ufmt.Sprintf("#### Decimals: %d\n", token.GetDecimals()))
 			res.Write(ufmt.Sprintf("#### Admin: %s\n\n", token.admin.Owner().String()))
-			res.Write(ufmt.Sprintf("> Link: [:token/%s](launchpad_grc20:token/%s)\n\n", token.banker.GetName(), token.banker.GetName()))
+			res.Write(ufmt.Sprintf("> Link: [:token/%s](launchpad_grc20:token/%s)\n\n", token.GetName(), token.GetName()))
 		}
 	}
 	renderFooter(res, "")
@@ -68,11 +68,11 @@ func renderTokenDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 
 	res.Write("# 🪙 Token Details 🪙\n")
 
-	res.Write(ufmt.Sprintf("### Name: %s - Symbol: %s\n", token.banker.GetName(), token.banker.GetSymbol()))
-	res.Write(ufmt.Sprintf("#### Total Supply: %d %s\n", token.banker.TotalSupply(), token.banker.GetSymbol()))
-	res.Write(ufmt.Sprintf("#### Decimals: %d\n", token.banker.GetDecimals()))
+	res.Write(ufmt.Sprintf("### Name: %s - Symbol: %s\n", token.GetName(), token.GetSymbol()))
+	res.Write(ufmt.Sprintf("#### Total Supply: %d %s\n", token.TotalSupply(), token.GetSymbol()))
+	res.Write(ufmt.Sprintf("#### Decimals: %d\n", token.GetDecimals()))
 	res.Write(ufmt.Sprintf("#### Admin: %s\n\n", token.admin.Owner().String()))
-	res.Write(ufmt.Sprintf("#### Total Supply Cap (0 = unlimited): %d %s\n\n", token.totalSupplyCap, token.banker.GetSymbol()))
+	res.Write(ufmt.Sprintf("#### Total Supply Cap (0 = unlimited): %d %s\n\n", token.totalSupplyCap, token.GetSymbol()))
 
 	if token.allowMint {
 		res.Write("#### Mintable: true\n\n")
@@ -107,7 +107,7 @@ func renderTokenDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 		sale := mustGetSale(uint64(id))
 		res.Write(ufmt.Sprintf("### Sale #%d\n", uint64(id)))
 		res.Write(ufmt.Sprintf("#### Price per token: %d $GNOT\n", sale.pricePerToken))
-		res.Write(ufmt.Sprintf("#### Limit per address: %d $%s\n", sale.limitPerAddr, token.banker.GetSymbol()))
+		res.Write(ufmt.Sprintf("#### Limit per address: %d $%s\n", sale.limitPerAddr, token.GetSymbol()))
 		res.Write(ufmt.Sprintf("#### Min goal: %d $GNOT\n", sale.minGoal))
 		res.Write(ufmt.Sprintf("#### Max goal: %d $GNOT\n", sale.maxGoal))
 		res.Write(ufmt.Sprintf("#### Already sold: %d $GNOT\n\n", sale.alreadySold))
@@ -120,10 +120,10 @@ func renderTokenBalancePage(res *mux.ResponseWriter, req *mux.Request) {
 	tokenName := req.GetVar("name")
 	address := req.GetVar("address")
 	token := mustGetToken(tokenName)
-	balance := token.banker.BalanceOf(std.Address(address))
+	balance := token.BalanceOf(std.Address(address))
 
 	res.Write("# 🪙 Token Balance 🪙\n")
-	res.Write(ufmt.Sprintf("### 📍 Address: %s\n ### 🏦 Balance: %d %s\n", address, balance, token.banker.GetSymbol()))
+	res.Write(ufmt.Sprintf("### 📍 Address: %s\n ### 🏦 Balance: %d %s\n", address, balance, token.GetSymbol()))
 	renderFooter(res, "../../../")
 }
 
@@ -144,7 +144,7 @@ func renderAirdropPage(res *mux.ResponseWriter, req *mux.Request) {
 			}
 			airdrop := mustGetAirdrop(uint64(i))
 			res.Write(ufmt.Sprintf("### Airdrop #%d\n", i))
-			res.Write(ufmt.Sprintf("#### Token: %s\n", airdrop.token.banker.GetName()))
+			res.Write(ufmt.Sprintf("#### Token: %s\n", airdrop.token.GetName()))
 			if airdrop.isOnGoing() {
 				res.Write("#### Status: Ongoing\n")
 			} else {
@@ -175,7 +175,7 @@ func renderAirdropDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 
 	res.Write(ufmt.Sprintf("# 🎁 Airdrop #%d Details 🎁\n", airdropID))
 
-	res.Write(ufmt.Sprintf("### Token: %s\n", airdrop.token.banker.GetName()))
+	res.Write(ufmt.Sprintf("### Token: %s\n", airdrop.token.GetName()))
 	if airdrop.isOnGoing() {
 		res.Write("### Status: Ongoing\n")
 	} else {
@@ -234,7 +234,7 @@ func renderSalePage(res *mux.ResponseWriter, req *mux.Request) {
 			}
 			sale := mustGetSale(uint64(i))
 			res.Write(ufmt.Sprintf("### Sale #%d\n", i))
-			res.Write(ufmt.Sprintf("#### Token: %s\n", sale.token.banker.GetName()))
+			res.Write(ufmt.Sprintf("#### Token: %s\n", sale.token.GetName()))
 			if sale.isOnGoing() {
 				res.Write("#### Status: Ongoing\n")
 			} else {
@@ -252,7 +252,7 @@ func renderSalePage(res *mux.ResponseWriter, req *mux.Request) {
 				res.Write("#### Sale is public\n")
 			}
 			res.Write(ufmt.Sprintf("#### Price per token: %d $GNOT\n", sale.pricePerToken))
-			res.Write(ufmt.Sprintf("#### Limit per address: %d $%s\n", sale.limitPerAddr, sale.token.banker.GetSymbol()))
+			res.Write(ufmt.Sprintf("#### Limit per address: %d $%s\n", sale.limitPerAddr, sale.token.GetSymbol()))
 			res.Write(ufmt.Sprintf("#### Min goal: %d $GNOT\n", sale.minGoal))
 			res.Write(ufmt.Sprintf("#### Max goal: %d $GNOT\n", sale.maxGoal))
 			res.Write(ufmt.Sprintf("#### Already sold: %d $GNOT\n\n", sale.alreadySold))
@@ -272,7 +272,7 @@ func renderSaleDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 
 	res.Write(ufmt.Sprintf("# 🛒 Sale #%d Details 🛒\n", saleID))
 
-	res.Write(ufmt.Sprintf("### Token: %s\n", sale.token.banker.GetName()))
+	res.Write(ufmt.Sprintf("### Token: %s\n", sale.token.GetName()))
 	if sale.isOnGoing() {
 		res.Write("### Status: Ongoing\n")
 	} else {
@@ -290,7 +290,7 @@ func renderSaleDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 		res.Write("### Sale is public\n")
 	}
 	res.Write(ufmt.Sprintf("### Price per token: %d $GNOT\n", sale.pricePerToken))
-	res.Write(ufmt.Sprintf("### Limit per address: %d $%s\n", sale.limitPerAddr, sale.token.banker.GetSymbol()))
+	res.Write(ufmt.Sprintf("### Limit per address: %d $%s\n", sale.limitPerAddr, sale.token.GetSymbol()))
 	res.Write(ufmt.Sprintf("### Min goal: %d $GNOT\n", sale.minGoal))
 	res.Write(ufmt.Sprintf("### Max goal: %d $GNOT\n", sale.maxGoal))
 	res.Write(ufmt.Sprintf("### Already sold: %d $GNOT\n\n", sale.alreadySold))
@@ -312,7 +312,7 @@ func renderSaleBalancePage(res *mux.ResponseWriter, req *mux.Request) {
 
 	res.Write("# 🛒 Sale Balance 🛒\n")
 	res.Write(ufmt.Sprintf("### 🛒 Sale ID: %d\n", saleID))
-	res.Write(ufmt.Sprintf("### 📍 Address: %s\n ### 🏦 Balance (Tokens from this sale only): %d %s\n", address, balance, sale.token.banker.GetSymbol()))
+	res.Write(ufmt.Sprintf("### 📍 Address: %s\n ### 🏦 Balance (Tokens from this sale only): %d %s\n", address, balance, sale.token.GetSymbol()))
 
 	res.Write("> ⚠️ *The tokens will be transfered or refunded after the sale ends depending if the sale reached the min goal or not* ⚠️\n")
 	renderFooter(res, "../../../")
