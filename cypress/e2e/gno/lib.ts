@@ -21,12 +21,12 @@ export const resetChain = () => {
 
 export const connectWallet = () => {
   // NOTE: Wait a little bit to ensure that Connect wallet exist and clickable
-  cy.wait(500);
+  cy.wait(2000);
 
   cy.contains("Connect wallet").click({ force: true });
 
   cy.get("div[data-testid=connect-gnotest-wallet]", {
     timeout: 5_000,
-  }).click({ force: true });
+  }).should('exist').click({ force: true });
   cy.contains("Connect wallet").should("not.exist");
 };
