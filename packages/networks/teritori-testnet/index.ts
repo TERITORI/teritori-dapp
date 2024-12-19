@@ -35,7 +35,7 @@ const cosmwasmNftLaunchpadFeature: CosmWasmNFTLaunchpad = {
   type: NetworkFeature.CosmWasmNFTLaunchpad,
   launchpadContractAddress:
     "tori1te7ku4de0k4rl8lhyuvpmhygaq7k7vy5zpsjq9y638efxsnx3aaqck2utf",
-  launchpadEndpoint: "https://dapp-backend.testnet.teritori.com",
+  launchpadEndpoint: "http://192.168.10.121:9080",
   nftTr721CodeId: 60,
   codeId: 71,
   defaultMintDenom: "utori",
@@ -49,7 +49,7 @@ const rakkiFeature: CosmWasmRakki = {
 };
 
 const riotContractAddressGen0 =
-  "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0";
+  "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc";
 const riotContractAddressGen1 = "";
 
 export const teritoriTestnetNetwork: CosmosNetworkInfo = {
@@ -88,7 +88,7 @@ export const teritoriTestnetNetwork: CosmosNetworkInfo = {
     "https://explorer.teritori.com/teritori-testnet/account/$address",
   idPrefix: "testori",
   testnet: true,
-  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
+  backendEndpoint: "http://192.168.1.78:9090",
   addressPrefix: "tori",
   restEndpoint: "https://rest.testnet.teritori.com",
   rpcEndpoint: "https://rpc.testnet.teritori.com",

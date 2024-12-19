@@ -1,9 +1,8 @@
 import { bech32 } from "bech32";
 import { ValidationRule } from "react-hook-form";
 
-import { LETTERS_REGEXP, NUMBERS_REGEXP } from "./regex";
-
 import { DEFAULT_FORM_ERRORS } from "@/utils/errors";
+import { LETTERS_REGEXP, NUMBERS_REGEXP } from "@/utils/regex";
 
 // validator should return false or string to trigger error
 export const validateAddress = (value: string) => {
@@ -31,4 +30,11 @@ export const validateMaxNumber = (value: string, max: number) => {
     return "Max input value is " + max;
   }
   return true;
+};
+
+export const validateFloatWithDecimals = (value: string, decimals: number) => {
+  const regexp = new RegExp(
+    `^([0-9]+[.]?[0-9]{0,${decimals}}|[.][0-9]{1,${decimals}})$`,
+  );
+  return regexp.test(value);
 };
