@@ -11637,14 +11637,6 @@
         "burnerContractAddress": "tori1qyl0j7a24amk8k8gcmvv07y2zjx7nkcwpk73js24euh64hkja6esd2p2xp"
       },
       {
-        "type": "NFTLaunchpad",
-        "launchpadContractAddress": "tori1te7ku4de0k4rl8lhyuvpmhygaq7k7vy5zpsjq9y638efxsnx3aaqck2utf",
-        "launchpadEndpoint": "https://dapp-backend.testnet.teritori.com",
-        "nftTr721CodeId": 60,
-        "codeId": 71,
-        "defaultMintDenom": "utori"
-      },
-      {
         "type": "NFTMarketplace",
         "cwAddressListCodeId": 63,
         "cwAddressListContractAddress": "tori1x72plnprsjnmszylmdm3cnvu5h6u55fyf0pe02lye9p6q2ws05ps33qmft"
