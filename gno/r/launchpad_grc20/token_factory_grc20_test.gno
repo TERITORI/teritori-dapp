@@ -118,20 +118,20 @@ func TestNewToken(t *testing.T) {
 			NewToken(test.input.name, test.input.symbol, test.input.image, test.input.decimals, test.input.initial, test.input.maximum, test.input.allowMint, test.input.allowBurn)
 
 			inst := mustGetToken(test.input.name)
-			if inst.banker.GetName() != test.expected.name {
-				t.Errorf("name = %v, want %v", inst.banker.GetName(), test.expected.name)
+			if inst.GetName() != test.expected.name {
+				t.Errorf("name = %v, want %v", inst.GetName(), test.expected.name)
 			}
-			if inst.banker.GetSymbol() != test.expected.symbol {
-				t.Errorf("symbol = %v, want %v", inst.banker.GetSymbol(), test.expected.symbol)
+			if inst.GetSymbol() != test.expected.symbol {
+				t.Errorf("symbol = %v, want %v", inst.GetSymbol(), test.expected.symbol)
 			}
 			if inst.image != test.expected.image {
 				t.Errorf("image = %v, want %v", inst.image, test.expected.image)
 			}
-			if inst.banker.GetDecimals() != test.expected.decimals {
-				t.Errorf("decimals = %v, want %v", inst.banker.GetDecimals(), test.expected.decimals)
+			if inst.GetDecimals() != test.expected.decimals {
+				t.Errorf("decimals = %v, want %v", inst.GetDecimals(), test.expected.decimals)
 			}
-			if inst.banker.TotalSupply() != test.expected.initial {
-				t.Errorf("initial = %v, want %v", inst.banker.TotalSupply(), test.expected.initial)
+			if inst.TotalSupply() != test.expected.initial {
+				t.Errorf("initial = %v, want %v", inst.TotalSupply(), test.expected.initial)
 			}
 			if inst.totalSupplyCap != test.expected.maximum {
 				t.Errorf("maximum = %v, want %v", inst.totalSupplyCap, test.expected.maximum)
@@ -238,8 +238,8 @@ func TestMint(t *testing.T) {
 			Mint(test.input.name, test.input.to, test.input.amount)
 
 			inst := mustGetToken(test.input.name)
-			if inst.banker.TotalSupply() != test.expected.totalSupply {
-				t.Errorf("totalSupply = %v, want %v", inst.banker.TotalSupply(), test.expected.totalSupply)
+			if inst.TotalSupply() != test.expected.totalSupply {
+				t.Errorf("totalSupply = %v, want %v", inst.TotalSupply(), test.expected.totalSupply)
 			}
 		})
 	}
@@ -338,8 +338,8 @@ func TestBurn(t *testing.T) {
 
 			inst := mustGetToken(test.input.name)
 			if !test.expected.panic {
-				if inst.banker.TotalSupply() != test.expected.totalSupply {
-					t.Errorf("totalSupply = %v, want %v", inst.banker.TotalSupply(), test.expected.totalSupply)
+				if inst.TotalSupply() != test.expected.totalSupply {
+					t.Errorf("totalSupply = %v, want %v", inst.TotalSupply(), test.expected.totalSupply)
 				}
 			}
 		})

@@ -77,7 +77,7 @@ func (h *MintToriHandler) Instantiate() dao_interfaces.ExecutableMessage {
 type ExecutableMessageBurnTori struct {
 	dao_interfaces.ExecutableMessage
 
-	Target users.AddressOrName
+	Target std.Address
 	Amount uint64
 }
 
@@ -101,13 +101,13 @@ func (msg *ExecutableMessageBurnTori) String() string {
 
 func (msg *ExecutableMessageBurnTori) FromJSON(ast *json.Node) {
 	obj := ast.MustObject()
-	msg.Target = jsonutil.MustAddressOrName(obj["target"])
+	msg.Target = jsonutil.MustAddress(obj["target"])
 	msg.Amount = jsonutil.MustUint64(obj["amount"])
 }
 
 func (msg *ExecutableMessageBurnTori) ToJSON() *json.Node {
 	return json.ObjectNode("", map[string]*json.Node{
-		"target": jsonutil.AddressOrNameNode(msg.Target),
+		"target": jsonutil.AddressNode(msg.Target),
 		"amount": jsonutil.Uint64Node(msg.Amount),
 	})
 }
@@ -124,7 +124,7 @@ func NewBurnToriHandler() *BurnToriHandler {
 
 func (h *BurnToriHandler) Execute(imsg dao_interfaces.ExecutableMessage) {
 	msg := imsg.(*ExecutableMessageBurnTori)
-	Burn(msg.Target, msg.Amount)
+	Burn(users.AddressOrName(msg.Target), msg.Amount)
 }
 
 func (h BurnToriHandler) Type() string {
