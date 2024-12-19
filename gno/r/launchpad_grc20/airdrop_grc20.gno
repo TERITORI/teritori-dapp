@@ -110,7 +110,7 @@ func Claim(airdropID uint64, proofs []merkle.Node) {
 		panic("invalid proof")
 	}
 
-	airdrop.token.banker.Mint(caller, airdrop.amountPerAddr)
+	airdrop.token.privateLedger.Mint(caller, airdrop.amountPerAddr)
 
 	airdrop.alreadyClaimed.Set(caller.String(), true)
 }

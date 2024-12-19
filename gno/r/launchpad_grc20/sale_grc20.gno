@@ -74,9 +74,9 @@ func NewSale(tokenName, merkleRoot string, startTimestamp, endTimestamp int64, p
 
 	realmAddr := std.CurrentRealm().Addr()
 	if mintToken {
-		token.banker.Mint(realmAddr, maxGoal)
+		token.privateLedger.Mint(realmAddr, maxGoal)
 	} else {
-		err := token.banker.Transfer(owner, realmAddr, maxGoal)
+		err := token.privateLedger.Transfer(owner, realmAddr, maxGoal)
 		if err != nil {
 			panic("error while transferring tokens to the realm, " + err.Error())
 		}
@@ -152,7 +152,7 @@ func Finalize(saleID uint64) {
 	// If the min goal is not reached, refund all the buyers and send the tokens back to the owner
 	if sale.alreadySold < sale.minGoal {
 		sale.refundAllBuyers()
-		err := sale.token.banker.Transfer(realmAddr, sale.owner, sale.alreadySold)
+		err := sale.token.privateLedger.Transfer(realmAddr, sale.owner, sale.alreadySold)
 		if err != nil {
 			panic("error while transferring back tokens to the owner, " + err.Error())
 		}
@@ -259,7 +259,7 @@ func (s *Sale) payAllBuyers() {
 	s.buyers.Iterate("", "", func(key string, value interface{}) bool {
 		buyer := std.Address(key)
 		amount := value.(uint64)
-		err := s.token.banker.Transfer(realmAddr, buyer, amount)
+		err := s.token.privateLedger.Transfer(realmAddr, buyer, amount)
 		if err != nil {
 			panic("error while transferring tokens to the buyer, " + err.Error())
 		}

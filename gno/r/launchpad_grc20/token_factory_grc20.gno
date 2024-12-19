@@ -14,7 +14,7 @@ import (
 const LENGTH_LAST_TOKENS_CACHE = 10
 
 type Token struct {
-	banker         *grc20.PrivateLedger
+	privateLedger  *grc20.PrivateLedger
 	token          *grc20.Token
 	admin          *ownable.Ownable
 	image          string
@@ -68,7 +68,7 @@ func NewToken(name, symbol, image string, decimals uint, initialSupply, totalSup
 
 	inst := Token{
 		token:          token,
-		banker:         banker,
+		privateLedger:  banker,
 		admin:          ownable.NewWithAddress(admin),
 		image:          image,
 		totalSupplyCap: totalSupplyCap,
@@ -101,7 +101,7 @@ func Mint(name string, to std.Address, amount uint64) {
 		}
 	}
 
-	checkErr(token.banker.Mint(to, amount))
+	checkErr(token.privateLedger.Mint(to, amount))
 }
 
 func Burn(name string, from std.Address, amount uint64) {
@@ -110,7 +110,7 @@ func Burn(name string, from std.Address, amount uint64) {
 	if !token.allowBurn {
 		panic("burning is not allowed")
 	}
-	checkErr(token.banker.Burn(from, amount))
+	checkErr(token.privateLedger.Burn(from, amount))
 }
 
 func TotalSupply(name string) uint64 {
