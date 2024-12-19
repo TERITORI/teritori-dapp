@@ -284,8 +284,6 @@ func TestNewSale(t *testing.T) {
 }
 
 func TestBuy(t *testing.T) {
-	println("realm addr", std.DerivePkgAddr("gno.land/r/teritori/launchpad_grc20"))
-
 	type testBuyInput struct {
 		saleID uint64
 		amount uint64
