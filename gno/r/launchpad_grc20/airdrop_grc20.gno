@@ -128,8 +128,8 @@ func (a *Airdrop) isOnGoing() bool {
 func (a *Airdrop) ToJSON() *json.Node {
 	return json.ObjectNode("", map[string]*json.Node{
 		"id":             json.StringNode("", ufmt.Sprintf("%d", uint64(a.id))),
-		"tokenName":      json.StringNode("", a.token.banker.GetName()),
-		"tokenSymbol":    json.StringNode("", a.token.banker.GetSymbol()),
+		"tokenName":      json.StringNode("", a.token.GetName()),
+		"tokenSymbol":    json.StringNode("", a.token.GetSymbol()),
 		"amountPerAddr":  json.StringNode("", strconv.FormatUint(a.amountPerAddr, 10)),
 		"startTimestamp": json.StringNode("", strconv.FormatInt(a.startTimestamp, 10)),
 		"endTimestamp":   json.StringNode("", strconv.FormatInt(a.endTimestamp, 10)),

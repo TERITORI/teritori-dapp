@@ -270,7 +270,7 @@ func (s *Sale) payAllBuyers() {
 func (s *Sale) ToJSON() *json.Node {
 	return json.ObjectNode("", map[string]*json.Node{
 		"id":             json.StringNode("", ufmt.Sprintf("%d", uint64(s.id))),
-		"tokenName":      json.StringNode("", s.token.banker.GetName()),
+		"tokenName":      json.StringNode("", s.token.GetName()),
 		"pricePerToken":  json.StringNode("", strconv.FormatUint(s.pricePerToken, 10)),
 		"limitPerAddr":   json.StringNode("", strconv.FormatUint(s.limitPerAddr, 10)),
 		"minGoal":        json.StringNode("", strconv.FormatUint(s.minGoal, 10)),
