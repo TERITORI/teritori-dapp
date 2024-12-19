@@ -202,6 +202,7 @@ func (s *Sale) buy(buyer std.Address, amount uint64, proofs []merkle.Node) {
 	sentCoin := sentCoins[0]
 
 	banker := std.GetBanker(std.BankerTypeOrigSend)
+
 	realmAddr := std.CurrentRealm().Addr()
 
 	total := amount
