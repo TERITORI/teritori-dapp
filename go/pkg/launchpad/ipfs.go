@@ -15,7 +15,8 @@ import (
 type Provider string
 
 const (
-	Pinata Provider = "pinata"
+	Pinata    Provider = "pinata"
+	PinataUrl string   = "https://api.pinata.cloud/psa"
 )
 
 type PinningService struct {
@@ -29,7 +30,7 @@ func NewPinningService(provider Provider, bearerToken string) (*PinningService, 
 
 	switch provider {
 	case Pinata:
-		url = "https://api.pinata.cloud/psa"
+		url = PinataUrl
 	default:
 		return nil, errors.New(fmt.Sprintf("unknown provider: %s", provider))
 	}

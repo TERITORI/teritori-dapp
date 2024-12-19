@@ -144,7 +144,7 @@ func (h *Handler) handleExecuteUpdateMerkleRoot(e *Message, execMsg *wasmtypes.M
 	return nil
 }
 
-func (h *Handler) DeployCollectionMsg(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
+func (h *Handler) handleExecuteDeployCollection(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
 	var deployCollectionMsg DeployCollectionMsg
 
 	if err := json.Unmarshal(execMsg.Msg, &deployCollectionMsg); err != nil {
