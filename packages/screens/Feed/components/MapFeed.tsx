@@ -7,17 +7,13 @@ import { MobileTitle } from "@/components/ScreenContainer/ScreenContainerMobile"
 import { Map } from "@/components/socialFeed/Map";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
-import {
-  headerHeight,
-  RESPONSIVE_BREAKPOINT_S,
-  screenContentMaxWidth,
-} from "@/utils/style/layout";
+import { headerHeight, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 
 export const MapFeed: FC<{
   consultedPostId?: string;
 }> = ({ consultedPostId }) => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
-  const { width, height } = useMaxResolution();
+  const { width, height } = useMaxResolution({ isLarge: true });
   const isMobile = useIsMobile();
 
   return (
@@ -29,7 +25,6 @@ export const MapFeed: FC<{
           style={{
             height: windowHeight - (headerHeight + 110),
             width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-            maxWidth: screenContentMaxWidth,
           }}
           consultedPostId={consultedPostId}
         />

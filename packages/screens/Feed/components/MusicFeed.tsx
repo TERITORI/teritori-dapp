@@ -8,14 +8,11 @@ import { FeedMusicList } from "@/components/music/FeedMusicList";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import {
-  RESPONSIVE_BREAKPOINT_S,
-  screenContentMaxWidth,
-} from "@/utils/style/layout";
+import { RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 
 export const MusicFeed: FC = () => {
   const { width: windowWidth } = useWindowDimensions();
-  const { width, height } = useMaxResolution();
+  const { width, height } = useMaxResolution({ isLarge: true });
   const isMobile = useIsMobile();
   const selectedNetworkId = useSelectedNetworkId();
   return (
@@ -30,7 +27,6 @@ export const MusicFeed: FC = () => {
         style={{
           alignSelf: "center",
           width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-          maxWidth: screenContentMaxWidth,
         }}
       />
     </ScrollView>
