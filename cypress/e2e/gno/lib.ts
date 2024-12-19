@@ -27,6 +27,8 @@ export const connectWallet = () => {
 
   cy.get("div[data-testid=connect-gnotest-wallet]", {
     timeout: 5_000,
-  }).should('exist').click({ force: true });
+  })
+    .should("exist")
+    .click({ force: true });
   cy.contains("Connect wallet").should("not.exist");
 };
