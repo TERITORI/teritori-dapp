@@ -4,4 +4,5 @@ export interface Media {
   duration?: number;
   postId?: string;
   isVideo?: boolean;
+  thumbnailURI: string;
 }
