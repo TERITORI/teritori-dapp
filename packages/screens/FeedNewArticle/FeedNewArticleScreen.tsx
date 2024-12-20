@@ -34,7 +34,7 @@ import { ArticleContentEditor } from "@/screens/FeedNewArticle/components/Articl
 import { NewArticleLocationButton } from "@/screens/FeedNewArticle/components/NewArticleLocationButton";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
-import { generateArticleMetadata } from "@/utils/feed/queries";
+import { generateArticleMarkdownMetadata } from "@/utils/feed/queries";
 import { generateIpfsKey } from "@/utils/ipfs";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
@@ -56,7 +56,7 @@ import {
   CustomLatLngExpression,
   NewArticleFormValues,
   PostCategory,
-  SocialFeedArticleMetadata,
+  SocialFeedArticleMarkdownMetadata,
 } from "@/utils/types/feed";
 
 export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
@@ -123,7 +123,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   });
 
   const formValues = newArticleForm.watch();
-  const previewMetadata: SocialFeedArticleMetadata = {
+  const previewMetadata: SocialFeedArticleMarkdownMetadata = {
     title: formValues.title,
     shortDescription: formValues.shortDescription || "",
     thumbnailImage: formValues.thumbnailImage,
@@ -182,7 +182,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           )[0]
         : undefined;
 
-      const metadata = generateArticleMetadata({
+      const metadata = generateArticleMarkdownMetadata({
         ...formValues,
         thumbnailImage: remoteThumbnail,
         gifs: [],

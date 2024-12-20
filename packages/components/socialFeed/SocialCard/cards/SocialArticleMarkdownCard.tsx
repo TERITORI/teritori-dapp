@@ -31,7 +31,7 @@ import {
   RESPONSIVE_BREAKPOINT_S,
   SOCIAL_FEED_BREAKPOINT_M,
 } from "@/utils/style/layout";
-import { ZodSocialFeedArticleMetadata } from "@/utils/types/feed";
+import { ZodSocialFeedArticleMarkdownMetadata } from "@/utils/types/feed";
 
 const ARTICLE_CARD_PADDING_VERTICAL = layout.spacing_x2;
 const ARTICLE_CARD_PADDING_HORIZONTAL = layout.spacing_x2_5;
@@ -57,7 +57,7 @@ export const SocialArticleMarkdownCard: FC<{
       windowWidth < RESPONSIVE_BREAKPOINT_S ? 0 : SOCIAl_CARD_BORDER_RADIUS;
 
     const metadata = zodTryParseJSON(
-      ZodSocialFeedArticleMetadata,
+      ZodSocialFeedArticleMarkdownMetadata,
       localPost.metadata,
     );
     const thumbnailImage = metadata?.thumbnailImage;

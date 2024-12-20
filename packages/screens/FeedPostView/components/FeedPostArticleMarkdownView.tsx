@@ -50,7 +50,7 @@ import {
   OnPressReplyType,
   PostCategory,
   ReplyToType,
-  ZodSocialFeedArticleMetadata,
+  ZodSocialFeedArticleMarkdownMetadata,
 } from "@/utils/types/feed";
 
 const contentPaddingHorizontal = layout.spacing_x2;
@@ -96,7 +96,7 @@ export const FeedPostArticleMarkdownView: FC<{
   const isNextPageAvailable = useSharedValue(hasNextPage);
 
   const articleMetadata = zodTryParseJSON(
-    ZodSocialFeedArticleMetadata,
+    ZodSocialFeedArticleMarkdownMetadata,
     post.metadata,
   );
   const message = articleMetadata?.message;
