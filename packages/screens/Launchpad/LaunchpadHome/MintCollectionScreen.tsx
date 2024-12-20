@@ -15,17 +15,14 @@ import {
 import ConfettiCannon from "react-native-confetti-cannon";
 import CountDown from "react-native-countdown-component";
 
-import { NUMBERS_REGEXP } from "./../../utils/regex";
-import balanceSVG from "../../../assets/icons/balance.svg";
-import minusSVG from "../../../assets/icons/minus.svg";
-import plusSVG from "../../../assets/icons/plus.svg";
-import sigmaSVG from "../../../assets/icons/sigma.svg";
-import FlexRow from "../../components/FlexRow";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-
 import { Coin } from "@/api/teritori-chain/cosmos/base/v1beta1/coin";
+import balanceSVG from "@/assets/icons/balance.svg";
+import minusSVG from "@/assets/icons/minus.svg";
+import plusSVG from "@/assets/icons/plus.svg";
+import sigmaSVG from "@/assets/icons/sigma.svg";
 import { BrandText } from "@/components/BrandText";
 import { ExternalLink } from "@/components/ExternalLink";
+import FlexRow from "@/components/FlexRow";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
@@ -45,6 +42,7 @@ import { TeritoriMinter__factory } from "@/evm-contracts-clients/teritori-bunker
 import { useBalances } from "@/hooks/useBalances";
 import { useCanPay } from "@/hooks/useCanPay";
 import { useCollectionInfo } from "@/hooks/useCollectionInfo";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import {
   CosmosNetworkInfo,
   EthereumNetworkInfo,
@@ -61,6 +59,7 @@ import { prettyPrice } from "@/utils/coins";
 import { MintPhase } from "@/utils/collection";
 import { getMetaMaskEthereumSigner } from "@/utils/ethereum";
 import { ScreenFC } from "@/utils/navigation";
+import { NUMBERS_REGEXP } from "@/utils/regex";
 import {
   neutral17,
   neutral22,
