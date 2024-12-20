@@ -13,9 +13,9 @@ import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
-import { DAOSelector } from "@/components/dao/DAOSelector";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { DAOSelector } from "@/components/dao/DAOSelector";
 import { Label, TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { FileUploader } from "@/components/inputs/fileUploader";
 import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgressBar";
@@ -206,7 +206,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       });
     }
   };
-  
+
   // Reset DAOSelector when the user selects another wallet
   const [daoSelectorKey, setDaoSelectorKey] = useState(0);
   useEffect(() => {
@@ -244,13 +244,13 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
             width,
           }}
         >
-        <DAOSelector
-          onSelect={setSelectedDAOId}
-          userId={wallet?.userId}
-          style={{ width: "100%" }}
-          key={daoSelectorKey}
-        />
-                  <SpacerColumn size={3} />
+          <DAOSelector
+            onSelect={setSelectedDAOId}
+            userId={wallet?.userId}
+            style={{ width: "100%" }}
+            key={daoSelectorKey}
+          />
+          <SpacerColumn size={3} />
 
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <TertiaryBox
@@ -294,8 +294,8 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
 
             <SpacerRow size={2} />
             <PrimaryButton
-                text={selectedDaoId ? "Propose" : "Publish"}
-                width={120}
+              text={selectedDaoId ? "Propose" : "Publish"}
+              width={120}
               disabled={
                 !formValues.title ||
                 !formValues.shortDescription ||
