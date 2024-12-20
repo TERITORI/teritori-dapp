@@ -15,7 +15,7 @@ var (
 
 func TestRolesVotingGroup(t *testing.T) {
 	rm := dao_roles_group.NewRolesGroup()
-	var j dao_interfaces.IRolesModule
+	var j *dao_roles_group.RolesGroup
 	j = rm
 	rv := NewRolesVotingGroup(j)
 	var i dao_interfaces.IVotingModule

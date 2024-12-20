@@ -2,6 +2,8 @@ package dao_interfaces
 
 type dummyCore struct{}
 
+var _ IDAOCore = (*dummyCore)(nil)
+
 func NewDummyCore() IDAOCore {
 	return &dummyCore{}
 }
@@ -11,10 +13,6 @@ func (d *dummyCore) Render(path string) string {
 }
 
 func (d *dummyCore) VotingModule() IVotingModule {
-	panic("not implemented")
-}
-
-func (d *dummyCore) RolesModule() IRolesModule {
 	panic("not implemented")
 }
 
@@ -35,9 +33,5 @@ func (d *dummyCore) UpdateVotingModule(newVotingModule IVotingModule) {
 }
 
 func (d *dummyCore) UpdateProposalModules(toAdd []IProposalModule, toDisable []int) {
-	panic("not implemented")
-}
-
-func (d *dummyCore) GetMembersJSON(start, end string, limit uint64, height int64) string {
 	panic("not implemented")
 }

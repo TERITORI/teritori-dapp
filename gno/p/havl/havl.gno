@@ -13,7 +13,7 @@ type Tree struct {
 	initialHeight int64
 }
 
-var Latest = int64(0)
+const Latest = int64(0)
 
 // FIXME: this is not optimized at all, we make a full copy on write
 

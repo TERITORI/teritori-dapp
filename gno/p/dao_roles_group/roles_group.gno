@@ -11,8 +11,6 @@ import (
 )
 
 type RolesGroup struct {
-	dao_interfaces.IRolesModule
-
 	rm              *role_manager.RoleManager
 	resourcesVPower *avl.Tree // roles -> ResourceVPower[]
 }

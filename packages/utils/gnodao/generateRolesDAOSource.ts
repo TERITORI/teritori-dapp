@@ -9,6 +9,7 @@ export const generateRolesDAOSource = (
   return `package ${conf.name}
 
   import (
+    "std"
     "time"
 
     dao_core "${network.daoCorePkgPath}"
@@ -16,10 +17,12 @@ export const generateRolesDAOSource = (
     proposal_single "${network.daoProposalSinglePkgPath}"
     "${network.rolesGroupPkgPath}"
     "${network.daoUtilsPkgPath}"
+    "gno.land/p/teritori/jsonutil"
     "${network.profilePkgPath}"
     voting_group "${network.rolesVotingGroupPkgPath}"
     "${network.daoRegistryPkgPath}"
     "${network.socialFeedsPkgPath}"
+    "gno.land/p/demo/json"
   )
   
 var (
@@ -30,32 +33,29 @@ var (
 )
 
 func init() {
-  rolesModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IRolesModule {
-		roles = dao_roles_group.NewRolesGroup()
-    ${(conf.roles ?? [])
-      .map(
-        (role) =>
-          `roles.NewRoleJSON("${role.name}", "[${(role.resources ?? [])
-            .map(
-              (resource) =>
-                `{\\"resource\\": \\"${resource}\\", \\"power\\": \\"999\\"}`,
-            )
-            .join(", ")}]")`,
-      )
-      .join("\n\t")}
-    ${conf.initialMembers
-      .filter((member) => member.roles.length > 0)
-      .map((member) =>
-        member.roles
-          .map((role) => `roles.GrantRole("${member.address}", "${role}")`)
-          .join("\n\t"),
-      )
-      .join("\n\t")}
-		return roles
-	}
+  roles = dao_roles_group.NewRolesGroup()
+  ${(conf.roles ?? [])
+    .map(
+      (role) =>
+        `roles.NewRoleJSON("${role.name}", "[${(role.resources ?? [])
+          .map(
+            (resource) =>
+              `{\\"resource\\": \\"${resource}\\", \\"power\\": \\"999\\"}`,
+          )
+          .join(", ")}]")`,
+    )
+    .join("\n\t")}
+  ${conf.initialMembers
+    .filter((member) => member.roles.length > 0)
+    .map((member) =>
+      member.roles
+        .map((role) => `roles.GrantRole("${member.address}", "${role}")`)
+        .join("\n\t"),
+    )
+    .join("\n\t")}
 
 	votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
-		group = voting_group.NewRolesVotingGroup(core.RolesModule())
+		group = voting_group.NewRolesVotingGroup(roles)
       ${conf.initialMembers
         .map(
           (member) =>
@@ -100,7 +100,7 @@ func init() {
 		},
 	}
 
-	daoCore = dao_core.NewDAOCore(votingModuleFactory, rolesModuleFactory, proposalModulesFactories, messageHandlersFactories)
+	daoCore = dao_core.NewDAOCore(votingModuleFactory, proposalModulesFactories, messageHandlersFactories)
 
   // Register the DAO profile
 	profile.SetStringField(profile.DisplayName, "${conf.displayName}")
@@ -154,6 +154,29 @@ func init() {
     // move logic in dao core
     module := dao_core.GetProposalModule(daoCore, moduleIndex)
     return module.Module.ProposalJSON(proposalIndex)
+  }
+
+
+  func getMembersJSON(start, end string, limit uint64) string {
+    vMembers := daoCore.VotingModule().GetMembersJSON(start, end, limit, std.GetHeight())
+    nodes, err := json.Unmarshal([]byte(vMembers))
+    if err != nil {
+      panic("failed to unmarshal voting module members")
+    }
+    vals := nodes.MustArray()
+    for i, val := range vals {
+      obj := val.MustObject()
+      addr := jsonutil.MustAddress(obj["address"])
+      roles := roles.GetMemberRoles(addr)
+      rolesJSON := make([]*json.Node, len(roles))
+      for j, role := range roles {
+        rolesJSON[j] = json.StringNode("", role)
+      }
+      obj["roles"] = json.ArrayNode("", rolesJSON)
+      vals[i] = json.ObjectNode("", obj)
+
+    }
+    return json.ArrayNode("", vals).String()
   }
 `;
 };

@@ -56,12 +56,12 @@ func (opts DAOProposalSingleOpts) ToJSON() *json.Node {
 }
 
 type DAOProposalSingle struct {
-	dao_interfaces.IProposalModule
-
 	core      dao_interfaces.IDAOCore
 	opts      *DAOProposalSingleOpts
 	proposals []*Proposal
 }
+
+var _ dao_interfaces.IProposalModule = (*DAOProposalSingle)(nil)
 
 func NewDAOProposalSingle(core dao_interfaces.IDAOCore, opts *DAOProposalSingleOpts) *DAOProposalSingle {
 	if core == nil {
@@ -236,10 +236,6 @@ func (d *DAOProposalSingle) Render(path string) string {
 	}
 
 	return sb.String()
-}
-
-func (d *DAOProposalSingle) Core() dao_interfaces.IDAOCore {
-	return d.core
 }
 
 func (d *DAOProposalSingle) Info() dao_interfaces.ModuleInfo {

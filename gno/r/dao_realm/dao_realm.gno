@@ -38,11 +38,6 @@ func init() {
 		return group
 	}
 
-	rolesModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IRolesModule {
-		roles = dao_roles_group.NewRolesGroup()
-		return roles
-	}
-
 	// TODO: consider using factories that return multiple modules and handlers
 
 	proposalModulesFactories := []dao_interfaces.ProposalModuleFactory{
@@ -82,7 +77,7 @@ func init() {
 		},
 	}
 
-	daoCore = dao_core.NewDAOCore(votingModuleFactory, rolesModuleFactory, proposalModulesFactories, messageHandlersFactories)
+	daoCore = dao_core.NewDAOCore(votingModuleFactory, proposalModulesFactories, messageHandlersFactories)
 
 	// Register the DAO profile
 	profile.SetStringField(profile.DisplayName, "DAO Realm")
@@ -147,4 +142,8 @@ func getProposalJSON(moduleIndex int, proposalIndex int) string {
 	// move logic in dao core
 	module := dao_core.GetProposalModule(daoCore, moduleIndex)
 	return module.Module.ProposalJSON(proposalIndex)
+}
+
+func getMembersJSON(start, end string, limit uint64) string {
+	return daoCore.VotingModule().GetMembersJSON(start, end, limit, std.GetHeight())
 }
