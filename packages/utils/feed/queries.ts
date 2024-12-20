@@ -14,8 +14,8 @@ import {
   NewArticleFormValues,
   NewPostFormValues,
   PostCategory,
-  SocialFeedArticleMetadata,
-  SocialFeedPostMetadata,
+  SocialFeedArticleMarkdownMetadata,
+  SocialFeedPostMetadata, ZodSocialFeedArticleMarkdownMetadata,
   ZodSocialFeedArticleMetadata,
   ZodSocialFeedPostMetadata,
 } from "../types/feed";
@@ -112,7 +112,7 @@ interface GeneratePostMetadataParams extends Omit<NewPostFormValues, "files"> {
   location?: CustomLatLngExpression;
 }
 
-interface GenerateArticleMetadataParams
+interface GenerateArticleMarkdownMetadataParams
   extends Omit<
     NewArticleFormValues,
     "files" | "thumbnailImage" | "coverImage"
@@ -147,7 +147,7 @@ export const generatePostMetadata = ({
   return m;
 };
 
-export const generateArticleMetadata = ({
+export const generateArticleMarkdownMetadata = ({
   title,
   message,
   files,
@@ -159,8 +159,8 @@ export const generateArticleMetadata = ({
   coverImage,
   shortDescription,
   location,
-}: GenerateArticleMetadataParams): SocialFeedArticleMetadata => {
-  const m = ZodSocialFeedArticleMetadata.parse({
+}: GenerateArticleMarkdownMetadataParams): SocialFeedArticleMarkdownMetadata => {
+  const m = ZodSocialFeedArticleMarkdownMetadata.parse({
     title,
     message,
     files,
