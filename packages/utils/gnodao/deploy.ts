@@ -51,7 +51,7 @@ export const adenaDeployGnoDAO = async (
         files: [{ name: `${conf.name}.gno`, body: source }],
       },
     },
-    { gasWanted: 20000000 },
+    { gasWanted: 50000000, gasFee: 5000000 },
   );
   return pkgPath;
 };

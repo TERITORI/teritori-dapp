@@ -146,7 +146,7 @@ const useGnotestStore = create<GnotestState>((set, get) => ({
         value: MsgSend.encode(msg).finish(),
       })),
       fee: {
-        gasFee: "1ugnot",
+        gasFee: "100000ugnot",
         gasWanted: Long.fromNumber(1000000),
       },
       memo: "",
@@ -177,7 +177,7 @@ const useGnotestStore = create<GnotestState>((set, get) => ({
             send,
             {
               gasWanted: Long.fromNumber(10000000),
-              gasFee: "1ugnot",
+              gasFee: "100000ugnot",
             },
           );
 
@@ -191,7 +191,7 @@ const useGnotestStore = create<GnotestState>((set, get) => ({
               undefined,
               {
                 gasWanted: Long.fromNumber(1000000),
-                gasFee: "1ugnot",
+                gasFee: "100000ugnot",
               },
             );
             await wallet.callMethod(
@@ -202,7 +202,7 @@ const useGnotestStore = create<GnotestState>((set, get) => ({
               undefined,
               {
                 gasWanted: Long.fromNumber(1000000),
-                gasFee: "1ugnot",
+                gasFee: "100000ugnot",
               },
             );
             await wallet.callMethod(
@@ -213,7 +213,7 @@ const useGnotestStore = create<GnotestState>((set, get) => ({
               undefined,
               {
                 gasWanted: Long.fromNumber(1000000),
-                gasFee: "1ugnot",
+                gasFee: "100000ugnot",
               },
             );
           }
