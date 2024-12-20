@@ -1,10 +1,14 @@
 import { FC } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
+import { grossMaxPrizeAmount, netMaxPrizeAmount } from "../utils";
+
 import { BrandText } from "@/components/BrandText";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
 import { GridList } from "@/components/layout/GridList";
+import { Info } from "@/contracts-clients/rakki/Rakki.types";
 import { gameBoxLabelCStyle } from "@/screens/Rakki/styles";
+import { prettyPrice } from "@/utils/coins";
 import { neutral33, neutral77 } from "@/utils/style/colors";
 import {
   fontMedium10,
@@ -18,12 +22,31 @@ interface HelpBoxDefinition {
   description: string;
 }
 
-export const Help: FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => {
+export const Help: FC<{
+  info: Info;
+  networkId: string;
+  style?: StyleProp<ViewStyle>;
+}> = ({ info, style, networkId }) => {
+  const prettyTicketPrice = prettyPrice(
+    networkId,
+    info.config.ticket_price.amount,
+    info.config.ticket_price.denom,
+  );
+  const prettyNetMaxPrize = prettyPrice(
+    networkId,
+    netMaxPrizeAmount(info),
+    info.config.ticket_price.denom,
+  );
+  const prettyMaxPrize = prettyPrice(
+    networkId,
+    grossMaxPrizeAmount(info),
+    info.config.ticket_price.denom,
+  );
+
   const helpBoxes: HelpBoxDefinition[] = [
     {
       title: "Buy Tickets",
-      description:
-        "Prices are $10 USDC per ticket.\nGamblers can buy multiple tickets.",
+      description: `Prices are ${prettyTicketPrice} per ticket.\nGamblers can buy multiple tickets.`,
     },
     {
       title: "Wait for the Draw",
@@ -32,15 +55,15 @@ export const Help: FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => {
     },
     {
       title: "Check for Prizes",
-      description:
-        "Once the cashprize pool is reached, the winner receive the $10,000 transaction directly!",
+      description: `Once the cashprize pool is reached, the winner receive the ${prettyNetMaxPrize} transaction directly!`,
     },
   ];
+
   return (
     <View style={[{ alignItems: "center", gap: layout.spacing_x3 }, style]}>
       <BrandText style={fontSemibold28}>How to Play RAKKi</BrandText>
       <BrandText style={[{ maxWidth: 302 }, gameBoxLabelCStyle]}>
-        {`When the community lottery pool reaches the 10k USDC amount, only one will be the winner!\nSimple!`}
+        {`When the community lottery pool reaches the ${prettyMaxPrize} amount, only one will be the winner!\nSimple!`}
       </BrandText>
       <View style={{ width: "100%" }}>
         <GridList<HelpBoxDefinition>
@@ -51,7 +74,7 @@ export const Help: FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => {
           data={helpBoxes}
           renderItem={({ item, index }, width) => {
             return (
-              <TertiaryBox style={{ width, minHeight: 116 }}>
+              <TertiaryBox style={{ width }}>
                 <View
                   style={{
                     flexDirection: "row",
@@ -73,7 +96,6 @@ export const Help: FC<{ style?: StyleProp<ViewStyle> }> = ({ style }) => {
                       letterSpacing: -(12 * 0.01),
                       textAlign: "left",
                       padding: layout.spacing_x1_5,
-                      height: 56,
                     },
                   ]}
                 >

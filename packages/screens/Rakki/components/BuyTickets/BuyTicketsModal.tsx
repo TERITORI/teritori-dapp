@@ -65,6 +65,22 @@ export const BuyTicketsModal: FC<{
   const canBuy = ticketAmountNumber.gt(0) && canPay;
   const { wrapWithFeedback } = useFeedbacks();
 
+  const prettyTicketPrice = prettyPrice(
+    networkId,
+    info.config.ticket_price.amount,
+    info.config.ticket_price.denom,
+  );
+  const prettyTotalPrice = prettyPrice(
+    networkId,
+    totalPrice.toString(),
+    info.config.ticket_price.denom,
+  );
+  const prettyAvailableBalance = prettyPrice(
+    networkId,
+    ticketDenomBalance,
+    info.config.ticket_price.denom,
+  );
+
   const onPressBuyTickets = wrapWithFeedback(async () => {
     if (!selectedWallet?.address) {
       throw new Error("No wallet with valid address selected");
@@ -166,11 +182,7 @@ export const BuyTicketsModal: FC<{
                 ]}
                 gradientType="yellow"
               >
-                {prettyPrice(
-                  networkId,
-                  info.config.ticket_price.amount,
-                  info.config.ticket_price.denom,
-                )}
+                {prettyTicketPrice}
               </GradientText>
             </BrandText>
           </Box>
@@ -236,11 +248,7 @@ export const BuyTicketsModal: FC<{
                   Total price
                 </BrandText>
                 <GradientText gradientType="yellow" style={fontSemibold14}>
-                  {prettyPrice(
-                    networkId,
-                    totalPrice.toString(),
-                    info.config.ticket_price.denom,
-                  )}
+                  {prettyTotalPrice}
                 </GradientText>
               </View>
             </View>
@@ -286,11 +294,7 @@ export const BuyTicketsModal: FC<{
                     },
                   ]}
                 >
-                  {prettyPrice(
-                    networkId,
-                    ticketDenomBalance,
-                    info.config.ticket_price.denom,
-                  )}
+                  {prettyAvailableBalance}
                 </BrandText>
               </BrandText>
             )}

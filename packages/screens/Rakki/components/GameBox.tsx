@@ -2,6 +2,8 @@ import Long from "long";
 import { FC } from "react";
 import { StyleProp, View } from "react-native";
 
+import { netCurrentPrizeAmount } from "./../utils";
+
 import { BrandText } from "@/components/BrandText";
 import { Box, BoxStyle } from "@/components/boxes/Box";
 import { Info } from "@/contracts-clients/rakki/Rakki.types";
@@ -23,16 +25,21 @@ export const GameBox: FC<{
   const { ticketsCount: userTicketsCount } = useRakkiTicketsCountByUser(
     selectedWallet?.userId,
   );
-  const totalPrizeAmount = Long.fromString(info.config.ticket_price.amount).mul(
-    info.current_tickets_count,
-  );
   const userAmount = userTicketsCount
     ? Long.fromString(info.config.ticket_price.amount).mul(userTicketsCount)
     : 0;
-  const feePrizeAmount = totalPrizeAmount
-    .mul(info.config.fee_per10k)
-    .div(10000);
-  const winnerPrizeAmount = totalPrizeAmount.sub(feePrizeAmount);
+
+  const prettyCurrentPrizeAmount = prettyPrice(
+    networkId,
+    netCurrentPrizeAmount(info),
+    info.config.ticket_price.denom,
+  );
+  const prettyUserTicketsPriceAmount = prettyPrice(
+    networkId,
+    userAmount.toString(),
+    info.config.ticket_price.denom,
+  );
+
   return (
     <Box notched style={[{ backgroundColor: neutral22 }, style]}>
       <Box
@@ -70,11 +77,7 @@ export const GameBox: FC<{
       >
         <BrandText style={gameBoxLabelCStyle}>Prize Pot</BrandText>
         <TicketsAndPrice
-          price={prettyPrice(
-            networkId,
-            winnerPrizeAmount.toString(),
-            info.config.ticket_price.denom,
-          )}
+          price={prettyCurrentPrizeAmount}
           ticketsCount={info.current_tickets_count}
         />
       </View>
@@ -90,11 +93,7 @@ export const GameBox: FC<{
         <BrandText style={gameBoxLabelCStyle}>Your tickets</BrandText>
         {userTicketsCount !== null ? (
           <TicketsAndPrice
-            price={prettyPrice(
-              networkId,
-              userAmount.toString(),
-              info.config.ticket_price.denom,
-            )}
+            price={prettyUserTicketsPriceAmount}
             ticketsCount={userTicketsCount}
           />
         ) : (

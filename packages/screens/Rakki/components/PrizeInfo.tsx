@@ -1,6 +1,7 @@
-import Long from "long";
 import { FC } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
+
+import { netMaxPrizeAmount } from "../utils";
 
 import { BrandText } from "@/components/BrandText";
 import { GradientText } from "@/components/gradientText";
@@ -19,13 +20,12 @@ export const PrizeInfo: FC<{
   networkId: string;
   style?: StyleProp<ViewStyle>;
 }> = ({ info, networkId, style }) => {
-  const totalPrizeAmount = Long.fromString(info.config.ticket_price.amount).mul(
-    info.config.max_tickets,
+  const prettyMaxPrizeAmount = prettyPrice(
+    networkId,
+    netMaxPrizeAmount(info),
+    info.config.ticket_price.denom,
   );
-  const feePrizeAmount = totalPrizeAmount
-    .mul(info.config.fee_per10k)
-    .div(10000);
-  const winnerPrizeAmount = totalPrizeAmount.sub(feePrizeAmount);
+
   return (
     <View style={[{ alignItems: "center" }, style]}>
       <BrandText
@@ -40,11 +40,7 @@ export const PrizeInfo: FC<{
         Automated Lottery
       </BrandText>
       <GradientText style={fontSemibold28} gradientType="yellow">
-        {prettyPrice(
-          networkId,
-          winnerPrizeAmount.toString(),
-          info.config.ticket_price.denom,
-        )}
+        {prettyMaxPrizeAmount}
       </GradientText>
       <BrandText
         style={[
