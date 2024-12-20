@@ -30,7 +30,7 @@ import {
   neutralFF,
   primaryColor,
 } from "@/utils/style/colors";
-import { fontMedium13, fontSemibold14 } from "@/utils/style/fonts";
+import { fontRegular13, fontRegular14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { ZodSocialFeedTrackMetadata } from "@/utils/types/feed";
 import { Media } from "@/utils/types/mediaPlayer";
@@ -124,7 +124,7 @@ export const TrackCard: React.FC<{
             </View>
           )}
         </CustomPressable>
-        <BrandText style={[fontSemibold14, { height: 40 }]} numberOfLines={2}>
+        <BrandText style={[fontRegular14, { height: 40 }]} numberOfLines={2}>
           {track?.title || ""}
         </BrandText>
         <SpacerColumn size={0.5} />
@@ -176,11 +176,11 @@ const positionButtonBoxStyle: ViewStyle = {
 };
 
 const contentDescriptionStyle: TextStyle = {
-  ...fontMedium13,
+  ...fontRegular13,
   color: neutral77,
 };
 
 const contentNameStyle: TextStyle = {
-  ...fontSemibold14,
+  ...fontRegular14,
   color: primaryColor,
 };

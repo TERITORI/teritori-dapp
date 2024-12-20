@@ -38,7 +38,6 @@ import { useWalletControl } from "@/context/WalletControlProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
 import { useAppMode } from "@/hooks/useAppMode";
 import { useIpfs } from "@/hooks/useIpfs";
-import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature, getNetworkFeature } from "@/networks";
@@ -133,7 +132,6 @@ export const NewsFeedInput = React.forwardRef<
   ) => {
     const [appMode] = useAppMode();
     const { width: windowWidth } = useWindowDimensions();
-    const { width } = useMaxResolution();
     const [viewWidth, setViewWidth] = useState(0);
     const { uploadFilesToPinata, ipfsUploadProgress } = useIpfs();
     const inputMaxHeight = 400;
@@ -355,7 +353,7 @@ export const NewsFeedInput = React.forwardRef<
 
     return (
       <View
-        style={[{ width }, style]}
+        style={[{ width: "100%" }, style]}
         onLayout={(e) => setViewWidth(e.nativeEvent.layout.width)}
       >
         {isMapShown && (
