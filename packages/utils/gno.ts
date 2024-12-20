@@ -36,8 +36,8 @@ export const adenaDoContract = async (
   const height = await client.getBlockNumber();
   const req: RequestDocontractMessage = {
     messages,
-    gasFee: opts?.gasFee === undefined ? 1 : opts.gasFee,
-    gasWanted: opts?.gasWanted === undefined ? 10000000 : opts.gasWanted,
+    gasFee: opts?.gasFee === undefined ? 2000000 : opts.gasFee,
+    gasWanted: opts?.gasWanted === undefined ? 20000000 : opts.gasWanted,
     memo: opts?.memo,
   };
   const res = await adena.DoContract(req);
