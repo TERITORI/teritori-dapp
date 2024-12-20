@@ -63,7 +63,7 @@ export const useEscrowContract = (
     func: string,
     args: string[],
     send: string = "",
-    gasWanted: number = 2_000_000,
+    gasWanted: number = 5_000_000,
   ) => {
     try {
       if (!networkId) {
@@ -84,7 +84,7 @@ export const useEscrowContract = (
           func,
           args,
         },
-        { gasWanted },
+        { gasWanted, gasFee: gasWanted / 10 },
       );
 
       return true;
