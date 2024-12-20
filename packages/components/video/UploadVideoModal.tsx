@@ -30,7 +30,7 @@ import {
   primaryColor,
   secondaryColor,
 } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import { fontRegular14, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import {
   CustomLatLngExpression,
@@ -274,7 +274,7 @@ export const UploadVideoModal: FC<{
                       <View style={uploadButtonStyle}>
                         <SVG source={Img} width={16} height={16} />
                         <SpacerRow size={1} />
-                        <BrandText style={fontSemibold14}>
+                        <BrandText style={fontRegular14}>
                           Video Thumbnail
                         </BrandText>
                       </View>
@@ -434,14 +434,7 @@ export const UploadVideoModal: FC<{
         </TouchableOpacity>
 
         <SpacerColumn size={3} />
-        <BrandText
-          style={[
-            fontSemibold14,
-            {
-              color: neutral77,
-            },
-          ]}
-        >
+        <BrandText style={[fontRegular14, { color: neutral77 }]}>
           Provide 2k video for highest video quality.
         </BrandText>
         <SpacerColumn size={2.5} />
@@ -506,7 +499,7 @@ const buttonContainerStyle: ViewStyle = {
   backgroundColor: neutral30,
 };
 const buttonTextStyle: TextStyle = {
-  ...fontSemibold14,
+  ...fontRegular14,
   color: primaryColor,
 };
 const imgStyle: ImageStyle = {
@@ -527,7 +520,7 @@ const footerStyle: ViewStyle = {
   paddingVertical: layout.spacing_x2,
 };
 const footerTextStyle: TextStyle = {
-  ...fontSemibold14,
+  ...fontRegular14,
 
   color: neutral77,
   width: "55%",
