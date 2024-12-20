@@ -23,6 +23,7 @@ import { getDuration, getPercent } from "@/utils/gnodao/helpers";
 import {
   ConfigureVotingFormType,
   CreateDaoFormType,
+  DaoType,
   LAUNCHING_PROCESS_STEPS,
   TOKEN_ORGANIZATION_DEPLOYER_STEPS,
   TokenSettingFormType,
@@ -61,6 +62,7 @@ export const TokenDeployerSteps: React.FC<{
           const pkgPath = await adenaDeployGnoDAO(
             network.id,
             selectedWallet?.address!,
+            DaoType.TOKEN_BASED,
             {
               name,
               maxVotingPeriodSeconds:

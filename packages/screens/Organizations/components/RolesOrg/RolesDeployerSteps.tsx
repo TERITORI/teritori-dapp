@@ -62,7 +62,11 @@ export const RolesDeployerSteps: React.FC<{
         case NetworkKind.Gno: {
           const name = organizationData?.associatedHandle!;
           const roles =
-            rolesSettingsFormData?.roles?.map((role) => role.name.trim()) || [];
+            rolesSettingsFormData?.roles?.map((role) => ({
+              name: role.name.trim(),
+              color: role.color,
+              resources: role.resources,
+            })) || [];
           const initialMembers = (memberSettingsFormData?.members || []).map(
             (member) => ({
               address: member.addr,
@@ -75,6 +79,7 @@ export const RolesDeployerSteps: React.FC<{
           const pkgPath = await adenaDeployGnoDAO(
             network.id,
             selectedWallet?.address!,
+            organizationData?.structure!,
             {
               name,
               maxVotingPeriodSeconds:

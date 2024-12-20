@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { StyleProp, TouchableOpacity, View, ViewStyle } from "react-native";
 import { useSelector } from "react-redux";
 
-import { CheckboxDappStore } from "./CheckboxDappStore";
 import chevronDownSVG from "../../../../assets/icons/chevron-down.svg";
 import chevronUpSVG from "../../../../assets/icons/chevron-up.svg";
 
 import { BrandText } from "@/components/BrandText";
+import { Checkbox } from "@/components/Checkbox";
 import { SVG } from "@/components/SVG";
 import { SecondaryBox } from "@/components/boxes/SecondaryBox";
 import { useDropdowns } from "@/hooks/useDropdowns";
@@ -47,7 +47,7 @@ const SelectableOption: React.FC<{
       onPress={handleClick}
       style={[{ flexDirection: "row", alignItems: "center" }, style]}
     >
-      <CheckboxDappStore isChecked={isChecked} />
+      <Checkbox isChecked={isChecked} />
       <BrandText style={[fontSemibold13, { marginLeft: 12, color: neutralA3 }]}>
         {name}
       </BrandText>
