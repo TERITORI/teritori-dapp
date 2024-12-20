@@ -458,7 +458,7 @@ func TestBuy(t *testing.T) {
 				panic: true,
 			},
 		},
-		// FIXME: the realm does not seem to receive coins and so can't refund the excess
+		// FIXME: the realm does not seem to receive coins, see: https://github.com/gnolang/gno/issues/3381
 		/*
 			"Send too many coins": {
 				input: testBuyInput{
