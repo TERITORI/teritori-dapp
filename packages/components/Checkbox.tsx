@@ -1,6 +1,6 @@
 import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
-import checkSVG from "../../../../assets/icons/check.svg";
+import checkSVG from "../../assets/icons/check.svg";
 
 import { SVG } from "@/components/SVG";
 import {
@@ -10,7 +10,7 @@ import {
   secondaryColor,
 } from "@/utils/style/colors";
 
-export const CheckboxDappStore: React.FC<{
+export const Checkbox: React.FC<{
   isChecked?: boolean;
   style?: StyleProp<ViewStyle>;
 }> = ({ isChecked = false, style }) => {

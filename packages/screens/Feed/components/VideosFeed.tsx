@@ -9,15 +9,12 @@ import { FeedVideosList } from "@/components/video/FeedVideosList";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import {
-  RESPONSIVE_BREAKPOINT_S,
-  screenContentMaxWidth,
-} from "@/utils/style/layout";
+import { RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 import { PostCategory } from "@/utils/types/feed";
 
 export const VideosFeed: FC = () => {
   const { width: windowWidth } = useWindowDimensions();
-  const { width, height } = useMaxResolution();
+  const { width, height } = useMaxResolution({ isLarge: true });
   const isMobile = useIsMobile();
   const selectedNetworkId = useSelectedNetworkId();
 
@@ -50,7 +47,6 @@ export const VideosFeed: FC = () => {
         style={{
           alignSelf: "center",
           width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-          maxWidth: screenContentMaxWidth,
         }}
       />
     </ScrollView>
