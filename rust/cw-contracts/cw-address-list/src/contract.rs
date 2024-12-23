@@ -69,12 +69,14 @@ impl AddressListContract {
         let addr = ctx.deps.api.addr_validate(addr.as_str())?;
 
         self.addresses
-            .update(ctx.deps.storage, addr, |value| match value {
-                Some(_) => Err(ContractError::AddressAlreadyRegistered),
+            .update(ctx.deps.storage, addr.clone(), |value| match value {
+                Some(_) => return Err(ContractError::AddressAlreadyRegistered),
                 None => Ok(()),
             })?;
 
-        Ok(Response::default())
+        return Ok(Response::new()
+            .add_attribute("action", "add")
+            .add_attribute("added_addr", addr));
     }
 
     #[msg(exec)]
@@ -87,9 +89,11 @@ impl AddressListContract {
             return Err(ContractError::AddressNotRegistered);
         }
 
-        self.addresses.remove(ctx.deps.storage, addr);
+        self.addresses.remove(ctx.deps.storage, addr.clone());
 
-        Ok(Response::default())
+        return Ok(Response::new()
+            .add_attribute("action", "remove")
+            .add_attribute("removed_addr", addr));
     }
 
     #[msg(exec)]

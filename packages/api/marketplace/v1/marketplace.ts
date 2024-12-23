@@ -197,6 +197,7 @@ export interface Collection {
   numOwners: number;
   denom: string;
   volumeCompare: number;
+  whitelisted: boolean;
 }
 
 export interface CollectionStats {
@@ -956,6 +957,7 @@ function createBaseCollection(): Collection {
     numOwners: 0,
     denom: "",
     volumeCompare: 0,
+    whitelisted: false,
   };
 }
 
@@ -1023,6 +1025,9 @@ export const Collection = {
     }
     if (message.volumeCompare !== 0) {
       writer.uint32(181).float(message.volumeCompare);
+    }
+    if (message.whitelisted === true) {
+      writer.uint32(184).bool(message.whitelisted);
     }
     return writer;
   },
@@ -1181,6 +1186,13 @@ export const Collection = {
 
           message.volumeCompare = reader.float();
           continue;
+        case 23:
+          if (tag !== 184) {
+            break;
+          }
+
+          message.whitelisted = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1213,6 +1225,7 @@ export const Collection = {
       numOwners: isSet(object.numOwners) ? globalThis.Number(object.numOwners) : 0,
       denom: isSet(object.denom) ? globalThis.String(object.denom) : "",
       volumeCompare: isSet(object.volumeCompare) ? globalThis.Number(object.volumeCompare) : 0,
+      whitelisted: isSet(object.whitelisted) ? globalThis.Boolean(object.whitelisted) : false,
     };
   },
 
@@ -1281,6 +1294,9 @@ export const Collection = {
     if (message.volumeCompare !== 0) {
       obj.volumeCompare = message.volumeCompare;
     }
+    if (message.whitelisted === true) {
+      obj.whitelisted = message.whitelisted;
+    }
     return obj;
   },
 
@@ -1310,6 +1326,7 @@ export const Collection = {
     message.numOwners = object.numOwners ?? 0;
     message.denom = object.denom ?? "";
     message.volumeCompare = object.volumeCompare ?? 0;
+    message.whitelisted = object.whitelisted ?? false;
     return message;
   },
 };
