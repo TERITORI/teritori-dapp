@@ -6865,7 +6865,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/markdown-it@npm:^14, @types/markdown-it@npm:^14.1.2":
+"@types/markdown-it-footnote@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "@types/markdown-it-footnote@npm:3.0.4"
+  dependencies:
+    "@types/markdown-it": "*"
+  checksum: 84d38790e1911eaf94bd3418a8782de1dd2543963f282849fe3fde7089f3ed6c3f5d07defd2ba51ad8d1cf3b32eeddfb21262e230bf8baddce5154f6735ed9d6
+  languageName: node
+  linkType: hard
+
+"@types/markdown-it@npm:*, @types/markdown-it@npm:^14, @types/markdown-it@npm:^14.1.2":
   version: 14.1.2
   resolution: "@types/markdown-it@npm:14.1.2"
   dependencies:
@@ -15354,6 +15363,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"markdown-it-footnote@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "markdown-it-footnote@npm:4.0.0"
+  checksum: 75543f8c81d7ba9620f5b2bc3fcbb5130ad7b4e3afbec19da3bdf3417dfb885582c66ccb0b39e3847bdf2876a110378095260477084fe0e7c29a887b4404401e
+  languageName: node
+  linkType: hard
+
 "markdown-it@npm:^14.1.0":
   version: 14.1.0
   resolution: "markdown-it@npm:14.1.0"
@@ -20396,6 +20412,7 @@ __metadata:
     "@types/leaflet.markercluster": ^1.5.4
     "@types/markdown-it": ^14.1.2
     "@types/markdown-it-emoji": ^3.0.1
+    "@types/markdown-it-footnote": ^3.0.4
     "@types/node": ^20.9.1
     "@types/papaparse": ^5.3.14
     "@types/pluralize": ^0.0.33
@@ -20458,6 +20475,7 @@ __metadata:
     lottie-react-native: 6.5.1
     markdown-it: ^14.1.0
     markdown-it-emoji: ^3.0.0
+    markdown-it-footnote: ^4.0.0
     merkletreejs: ^0.4.0
     metamask-react: ^2.4.1
     moment: ^2.29.4

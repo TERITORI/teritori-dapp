@@ -15,8 +15,8 @@ import {
   NewPostFormValues,
   PostCategory,
   SocialFeedArticleMarkdownMetadata,
-  SocialFeedPostMetadata, ZodSocialFeedArticleMarkdownMetadata,
-  ZodSocialFeedArticleMetadata,
+  SocialFeedPostMetadata,
+  ZodSocialFeedArticleMarkdownMetadata,
   ZodSocialFeedPostMetadata,
 } from "../types/feed";
 import { RemoteFileData } from "../types/files";

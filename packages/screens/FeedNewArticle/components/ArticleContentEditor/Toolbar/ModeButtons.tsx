@@ -6,8 +6,9 @@ import splittedSquareSVG from "@/assets/icons/splitted-square.svg";
 import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerRow } from "@/components/spacer";
+import { toolbarBackgroundColor } from "@/screens/FeedNewArticle/components/ArticleContentEditor/Toolbar/Toolbar";
 import { ContentMode } from "@/utils/feed/markdown";
-import { neutral11, neutral33, neutralFF } from "@/utils/style/colors";
+import { neutral33, neutralFF } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
 
 interface Props {
@@ -23,11 +24,13 @@ export const ModeButtons: FC<Props> = ({ setMode, mode }) => {
       <CustomPressable
         onPress={() => setMode("EDITION")}
         style={{
-          backgroundColor: mode === "EDITION" ? neutral33 : neutral11,
+          backgroundColor:
+            mode === "EDITION" ? neutral33 : toolbarBackgroundColor,
           padding: layout.spacing_x0_5,
           borderRadius: 6,
           borderWidth: 1,
-          borderColor: hoveredButton === "EDITION" ? neutralFF : neutral11,
+          borderColor:
+            hoveredButton === "EDITION" ? neutralFF : toolbarBackgroundColor,
         }}
         onHoverIn={() => setHoveredButton("EDITION")}
         onHoverOut={() => setHoveredButton(null)}
@@ -38,11 +41,12 @@ export const ModeButtons: FC<Props> = ({ setMode, mode }) => {
       <CustomPressable
         onPress={() => setMode("BOTH")}
         style={{
-          backgroundColor: mode === "BOTH" ? neutral33 : neutral11,
+          backgroundColor: mode === "BOTH" ? neutral33 : toolbarBackgroundColor,
           padding: layout.spacing_x0_5,
           borderRadius: 6,
           borderWidth: 1,
-          borderColor: hoveredButton === "BOTH" ? neutralFF : neutral11,
+          borderColor:
+            hoveredButton === "BOTH" ? neutralFF : toolbarBackgroundColor,
         }}
         onHoverIn={() => setHoveredButton("BOTH")}
         onHoverOut={() => setHoveredButton(null)}
@@ -58,11 +62,13 @@ export const ModeButtons: FC<Props> = ({ setMode, mode }) => {
       <CustomPressable
         onPress={() => setMode("PREVIEW")}
         style={{
-          backgroundColor: mode === "PREVIEW" ? neutral33 : neutral11,
+          backgroundColor:
+            mode === "PREVIEW" ? neutral33 : toolbarBackgroundColor,
           padding: layout.spacing_x0_5,
           borderRadius: 6,
           borderWidth: 1,
-          borderColor: hoveredButton === "PREVIEW" ? neutralFF : neutral11,
+          borderColor:
+            hoveredButton === "PREVIEW" ? neutralFF : toolbarBackgroundColor,
         }}
         onHoverIn={() => setHoveredButton("PREVIEW")}
         onHoverOut={() => setHoveredButton(null)}

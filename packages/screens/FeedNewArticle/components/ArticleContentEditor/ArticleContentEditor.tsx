@@ -15,8 +15,8 @@ import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { Toolbar } from "@/screens/FeedNewArticle/components/ArticleContentEditor/Toolbar/Toolbar";
 import {
   ContentMode,
-  markdownTagStyles,
   articleMd as md,
+  renderHtmlTagStyles,
 } from "@/utils/feed/markdown";
 import { ARTICLE_MAX_WIDTH } from "@/utils/social-feed";
 import {
@@ -178,7 +178,7 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
             >
               <RenderHtml
                 source={{ html }}
-                tagsStyles={markdownTagStyles}
+                tagsStyles={renderHtmlTagStyles}
                 contentWidth={
                   renderHtmlWidth - responsiveTextInputContainerPadding * 2
                 }
