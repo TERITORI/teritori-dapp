@@ -123,6 +123,8 @@ const gradient = (type: GradientType): LinearGradientProps => {
       return getMapPostTextGradient(PostCategory.Normal);
     case getMapPostTextGradientType(PostCategory.Article):
       return getMapPostTextGradient(PostCategory.Article);
+    case getMapPostTextGradientType(PostCategory.ArticleMarkdown):
+      return getMapPostTextGradient(PostCategory.Article);
     case getMapPostTextGradientType(PostCategory.Video):
       return getMapPostTextGradient(PostCategory.Video);
     case getMapPostTextGradientType(PostCategory.Picture):

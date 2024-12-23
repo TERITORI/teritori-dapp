@@ -10,6 +10,7 @@ import { ScreenContainer } from "@/components/ScreenContainer";
 import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { usePost } from "@/hooks/feed/usePost";
 import { parseNetworkObjectId } from "@/networks";
+import { FeedPostArticleMarkdownView } from "@/screens/FeedPostView/components/FeedPostArticleMarkdownView";
 import { convertLegacyPostId } from "@/utils/feed/queries";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { primaryColor } from "@/utils/style/colors";
@@ -76,6 +77,14 @@ export const FeedPostView: ScreenFC<"FeedPostView"> = ({
 
   if (post.category === PostCategory.Video) {
     return <FeedPostVideoView post={post} refetchPost={refetch} />;
+  } else if (post.category === PostCategory.ArticleMarkdown) {
+    return (
+      <FeedPostArticleMarkdownView
+        post={post}
+        refetchPost={refetch}
+        isLoadingPost={isLoading}
+      />
+    );
   } else if (post.category === PostCategory.Article) {
     return (
       <FeedPostArticleView
