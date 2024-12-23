@@ -55,7 +55,7 @@ export const useDAOMembers = (daoId: string | undefined) => {
           const res: GnoDAOMember[] = extractGnoJSONString(
             await provider.evaluateExpression(
               daoAddress,
-              `getMembersJSON("", "", 0, 0)`,
+              `getMembersJSON("", "", 0)`,
             ),
           );
           return res.map((member) => ({
