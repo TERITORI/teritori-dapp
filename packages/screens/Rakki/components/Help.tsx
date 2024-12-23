@@ -42,6 +42,7 @@ export const Help: FC<{
     grossMaxPrizeAmount(info),
     info.config.ticket_price.denom,
   );
+  const feePercent = (info.config.fee_per10k / 10000) * 100;
 
   const helpBoxes: HelpBoxDefinition[] = [
     {
@@ -115,8 +116,8 @@ export const Help: FC<{
             fontSemibold12,
           ]}
         >
-          *On the total amount, 10% are sent to a multisig wallet to buyback and
-          burn $TORI token.
+          *On the total amount, {feePercent}% are sent to a multisig wallet to
+          buyback and burn $TORI token.
         </BrandText>
       </View>
     </View>
