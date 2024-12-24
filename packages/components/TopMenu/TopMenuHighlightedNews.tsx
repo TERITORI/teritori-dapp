@@ -1,37 +1,80 @@
-import React from "react";
-import { Image } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { TouchableOpacity, View } from "react-native";
+import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 
 import { TopMenuSection } from "./TopMenuSection";
-import { useBanners } from "../../hooks/marketing/useBanners";
+import chevronLeftSVG from "../../../assets/icons/chevron-left.svg";
+import chevronRightSVG from "../../../assets/icons/chevron-right.svg";
 import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
-import { web3ToWeb2URI } from "../../utils/ipfs";
-import FlexCol from "../FlexCol";
-import { Link } from "../Link";
-import { PrimaryBox } from "../boxes/PrimaryBox";
+import { FullWidthSeparator } from "../FullWidthSeparator";
+import { SVG } from "../SVG";
+import { Section } from "../Section";
+import { NewsBox } from "../hub/NewsBox";
 
-export const TopMenuHighlightedNews: React.FC = () => {
+import { News } from "@/api/marketplace/v1/marketplace";
+import { useNews } from "@/hooks/marketing/useNews";
+import { fontSemibold10, fontSemibold14 } from "@/utils/style/fonts";
+
+export const SmallNewsCarouselSection: React.FC = () => {
+  const width = 298;
+  const carouselRef = useRef<ICarouselInstance | null>(null);
+  const renderItem = (props: { item: News }) => (
+    <NewsBox
+      news={props.item}
+      imageHeight={210}
+      imageWidth={210}
+      titleTextStyle={fontSemibold14}
+      subtitleTextStyle={fontSemibold10}
+      boxWidth={298}
+    />
+  );
   const networkId = useSelectedNetworkId();
-  const banners = useBanners(networkId);
-  const banner = banners?.length ? banners[0] : undefined;
+  const news = useNews(networkId);
+
+  const topRightChild = (
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <TouchableOpacity
+        onPress={() => carouselRef.current?.prev()}
+        style={{ marginRight: 24 }}
+      >
+        <SVG width={16} height={16} source={chevronLeftSVG} />
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => carouselRef.current?.next()}>
+        <SVG width={16} height={16} source={chevronRightSVG} />
+      </TouchableOpacity>
+    </View>
+  );
+
+  useEffect(() => {
+    carouselRef.current?.next();
+  }, [width]);
 
   return (
+    <Section topRightChild={topRightChild}>
+      {/*TODO: Async fetchMore for these data ?*/}
+
+      <Carousel
+        width={width}
+        data={news || []}
+        ref={carouselRef}
+        onConfigurePanGesture={(g) => g.enableTrackpadTwoFingerGesture(true)}
+        height={650}
+        pagingEnabled
+        loop
+        autoPlay
+        autoPlayInterval={3000}
+        renderItem={renderItem}
+      />
+      <FullWidthSeparator />
+    </Section>
+  );
+};
+
+export const TopMenuHighlightedNews: React.FC = () => {
+  return (
     <TopMenuSection title="Highlighted News">
-      <FlexCol>
-        <Link to={banner?.url || ""}>
-          <PrimaryBox>
-            <Image
-              source={{
-                uri: web3ToWeb2URI(banner?.image),
-              }}
-              style={{
-                height: 94,
-                width: 298,
-                borderRadius: 7,
-              }}
-            />
-          </PrimaryBox>
-        </Link>
-      </FlexCol>
+      <SmallNewsCarouselSection />
     </TopMenuSection>
   );
 };
