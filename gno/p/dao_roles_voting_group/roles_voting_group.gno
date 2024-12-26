@@ -7,6 +7,7 @@ import (
 
 	"gno.land/p/demo/json"
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
+	"gno.land/p/teritori/dao_roles_group"
 	"gno.land/p/teritori/havl"
 	"gno.land/p/teritori/jsonutil"
 )
@@ -30,15 +31,15 @@ func (m *Member) FromJSON(ast *json.Node) {
 }
 
 type RolesVotingGroup struct {
-	dao_interfaces.IVotingModule
-
 	powerByAddr *havl.Tree // std.Address -> uint64
 	totalPower  *havl.Tree // "" -> uint64
 	memberCount *havl.Tree // "" -> uint32
-	rolesModule dao_interfaces.IRolesModule
+	rolesModule *dao_roles_group.RolesGroup
 }
 
-func NewRolesVotingGroup(rm dao_interfaces.IRolesModule) *RolesVotingGroup {
+var _ dao_interfaces.IVotingModule = (*RolesVotingGroup)(nil)
+
+func NewRolesVotingGroup(rm *dao_roles_group.RolesGroup) *RolesVotingGroup {
 	return &RolesVotingGroup{
 		powerByAddr: havl.NewTree(),
 		totalPower:  havl.NewTree(),

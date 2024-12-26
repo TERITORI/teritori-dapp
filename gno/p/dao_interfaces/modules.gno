@@ -25,7 +25,6 @@ type IVotingModule interface {
 type VotingModuleFactory func(core IDAOCore) IVotingModule
 
 type IProposalModule interface {
-	Core() IDAOCore
 	Info() ModuleInfo
 	ConfigJSON() string
 	Render(path string) string
@@ -37,18 +36,3 @@ type IProposalModule interface {
 }
 
 type ProposalModuleFactory func(core IDAOCore) IProposalModule
-
-type IRolesModule interface {
-	Info() ModuleInfo
-	ConfigJSON() string
-	Render(path string) string
-	GetMemberRoles(address std.Address) []string
-	GetMemberResourceVPower(address std.Address, resource string) uint64
-	HasRole(address std.Address, role string) bool
-	NewRoleJSON(roleName, resourcesJSON string)
-	DeleteRole(roleName string)
-	GrantRole(address std.Address, role string)
-	RevokeRole(address std.Address, role string)
-}
-
-type RolesModuleFactory func(core IDAOCore) IRolesModule
