@@ -31,7 +31,11 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
-import { renderHtmlTagStyles, articleMd as md } from "@/utils/feed/markdown";
+import {
+  renderHtmlTagStyles,
+  articleMd as md,
+  renderHtmlDomVisitors,
+} from "@/utils/feed/markdown";
 import { zodTryParseJSON } from "@/utils/sanitize";
 import {
   ARTICLE_MAX_WIDTH,
@@ -250,6 +254,7 @@ export const FeedPostArticleMarkdownView: FC<{
                   <RenderHtml
                     source={{ html }}
                     tagsStyles={renderHtmlTagStyles}
+                    domVisitors={renderHtmlDomVisitors}
                     contentWidth={renderHtmlWidth}
                   />
                 </ScrollView>

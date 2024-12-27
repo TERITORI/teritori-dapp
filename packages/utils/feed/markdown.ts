@@ -1,3 +1,4 @@
+import { Element as DomHandlerElement } from "domhandler";
 import markdownit from "markdown-it";
 import { full as emoji } from "markdown-it-emoji/dist/index.cjs";
 import footnote_plugin from "markdown-it-footnote";
@@ -22,7 +23,28 @@ export const articleMd = markdownit({
   .use(emoji)
   .use(footnote_plugin);
 
-// HTML tags styles used by RenderHtml
+// DOM modifications on document, texts, or elements from react-native-render-html.
+// Because react-native-render-html doesn't allow common CSS selectors, we need to style tags using domVisitors callbacks
+export const renderHtmlDomVisitors = {
+  onElement: (element: DomHandlerElement) => {
+    // Removing marginBottom from the child p of blockquote
+    if (
+      element.name === "blockquote" &&
+      element.children &&
+      element.children.length > 0
+    ) {
+      const tagChild = element.children.find((child) => child.type === "tag");
+      // tagChild is a domhandler Node. It doesn't have attribs, but it has attribs in fact (wtf ?)
+      if (tagChild && "attribs" in tagChild) {
+        tagChild.attribs = {
+          style: "margin-bottom: 0",
+        };
+      }
+    }
+  },
+};
+
+// HTML tags styles used by RenderHtml from react-native-render-html
 export const renderHtmlTagStyles: MixedStyleRecord = {
   body: {
     color: neutralA3,
@@ -34,7 +56,7 @@ export const renderHtmlTagStyles: MixedStyleRecord = {
   },
   p: {
     marginTop: 0,
-    marginBottom: 16,
+    // marginBottom: 16,
 
     fontSize: 14,
     letterSpacing: -(14 * 0.04),
@@ -118,10 +140,10 @@ export const renderHtmlTagStyles: MixedStyleRecord = {
     fontFamily: "Exo_500Medium",
     fontWeight: "500",
   },
+
   blockquote: {
     marginTop: 0,
-    marginBottom: 16,
-    paddingBottom: -16,
+    paddingBottom: 0,
 
     color: neutral67,
     fontSize: 14,
@@ -135,6 +157,13 @@ export const renderHtmlTagStyles: MixedStyleRecord = {
     borderLeftWidth: 3,
     borderLeftColor: neutral67,
   },
+  "ol > :first-child": {
+    backgroundColor: "red",
+  },
+  "blockquote > :first-child": {
+    marginBottom: 0,
+  },
+
   code: {
     color: neutralA3,
     fontSize: 13,

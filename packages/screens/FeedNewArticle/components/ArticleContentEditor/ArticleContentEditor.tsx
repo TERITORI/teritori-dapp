@@ -17,6 +17,7 @@ import {
   ContentMode,
   articleMd as md,
   renderHtmlTagStyles,
+  renderHtmlDomVisitors,
 } from "@/utils/feed/markdown";
 import { ARTICLE_MAX_WIDTH } from "@/utils/social-feed";
 import {
@@ -179,6 +180,7 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
               <RenderHtml
                 source={{ html }}
                 tagsStyles={renderHtmlTagStyles}
+                domVisitors={renderHtmlDomVisitors}
                 contentWidth={
                   renderHtmlWidth - responsiveTextInputContainerPadding * 2
                 }
