@@ -1,8 +1,7 @@
-import { Element as DomHandlerElement } from "domhandler";
 import markdownit from "markdown-it";
 import { full as emoji } from "markdown-it-emoji/dist/index.cjs";
 import footnote_plugin from "markdown-it-footnote";
-import { MixedStyleRecord } from "react-native-render-html";
+import { MixedStyleRecord, Element } from "react-native-render-html";
 
 import {
   neutral17,
@@ -26,7 +25,7 @@ export const articleMd = markdownit({
 // DOM modifications on document, texts, or elements from react-native-render-html.
 // Because react-native-render-html doesn't allow common CSS selectors, we need to style tags using domVisitors callbacks
 export const renderHtmlDomVisitors = {
-  onElement: (element: DomHandlerElement) => {
+  onElement: (element: Element) => {
     // Removing marginBottom from the child p of blockquote
     if (
       element.name === "blockquote" &&
@@ -34,7 +33,7 @@ export const renderHtmlDomVisitors = {
       element.children.length > 0
     ) {
       const tagChild = element.children.find((child) => child.type === "tag");
-      // tagChild is a domhandler Node. It doesn't have attribs, but it has attribs in fact (wtf ?)
+      // tagChild is a react-native-render-html Node. It doesn't have attribs, but it has attribs in fact (wtf ?)
       if (tagChild && "attribs" in tagChild) {
         tagChild.attribs = {
           style: "margin-bottom: 0",
