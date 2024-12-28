@@ -57,6 +57,8 @@ import {
   ZodSocialFeedArticleMarkdownMetadata,
 } from "@/utils/types/feed";
 
+// TODO: It's a copy of FeedPostArticleView.tsx, just made waiting for a posts UI (and data) refacto
+
 const contentPaddingHorizontal = layout.spacing_x2;
 
 export const FeedPostArticleMarkdownView: FC<{

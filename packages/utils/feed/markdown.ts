@@ -45,24 +45,36 @@ export const renderHtmlDomVisitors = {
 };
 
 // HTML tags styles used by RenderHtml from react-native-render-html
+type HtmlTagStyle = Record<string, string | number>;
+const baseTextStyle: HtmlTagStyle = {
+  color: neutralA3,
+  fontSize: 14,
+  letterSpacing: -(14 * 0.04),
+  lineHeight: 22,
+  fontFamily: "Exo_500Medium",
+  fontWeight: "500",
+};
+const baseBlockStyle: HtmlTagStyle = {
+  marginTop: 0,
+  marginBottom: 16,
+};
+const baseCodeStyle: HtmlTagStyle = {
+  ...baseTextStyle,
+  fontSize: 13,
+  letterSpacing: -(13 * 0.04),
+  backgroundColor: neutral17,
+  borderRadius: 4,
+};
+const baseTableChildrenStyle: HtmlTagStyle = {
+  borderColor: neutral33,
+};
 export const renderHtmlTagStyles: MixedStyleRecord = {
   body: {
-    color: neutralA3,
-    fontSize: 14,
-    letterSpacing: -(14 * 0.04),
-    lineHeight: 22,
-    fontFamily: "Exo_500Medium",
-    fontWeight: "500",
+    ...baseTextStyle,
   },
   p: {
-    marginTop: 0,
-    // marginBottom: 16,
-
-    fontSize: 14,
-    letterSpacing: -(14 * 0.04),
-    lineHeight: 22,
-    fontFamily: "Exo_500Medium",
-    fontWeight: "500",
+    ...baseBlockStyle,
+    ...baseTextStyle,
   },
   strong: { fontWeight: "700" },
   a: {
@@ -71,157 +83,106 @@ export const renderHtmlTagStyles: MixedStyleRecord = {
   },
   hr: { backgroundColor: neutralA3 },
   h1: {
+    ...baseTextStyle,
     color: neutralFF,
     fontSize: 28,
     letterSpacing: -(28 * 0.02),
     lineHeight: 37,
-    fontFamily: "Exo_500Medium",
-    fontWeight: "500",
   },
   h2: {
+    ...baseTextStyle,
     color: neutralFF,
     fontSize: 21,
     letterSpacing: -(21 * 0.02),
     lineHeight: 28,
-    fontFamily: "Exo_500Medium",
-    fontWeight: "500",
   },
   h3: {
+    ...baseTextStyle,
     color: neutralFF,
     fontSize: 16,
     letterSpacing: -(16 * 0.02),
     lineHeight: 23,
-    fontFamily: "Exo_500Medium",
-    fontWeight: "500",
   },
   h4: {
+    ...baseTextStyle,
     color: neutralFF,
-    fontSize: 14,
-    letterSpacing: -(14 * 0.04),
     lineHeight: 20,
-    fontFamily: "Exo_500Medium",
-    fontWeight: "500",
   },
   h5: {
-    color: neutralA3,
-    fontSize: 14,
-    letterSpacing: -(14 * 0.04),
+    ...baseTextStyle,
     lineHeight: 20,
-    fontFamily: "Exo_500Medium",
-    fontWeight: "500",
   },
   h6: {
-    color: neutralA3,
+    ...baseTextStyle,
     fontSize: 12,
     letterSpacing: -(12 * 0.04),
     lineHeight: 16,
-    fontFamily: "Exo_500Medium",
-    fontWeight: "500",
   },
   ul: {
-    marginTop: 0,
-    marginBottom: 16,
-
-    color: neutralA3,
-    fontSize: 14,
-    letterSpacing: -(14 * 0.04),
+    ...baseBlockStyle,
+    ...baseTextStyle,
     lineHeight: 20,
-    fontFamily: "Exo_500Medium",
-    fontWeight: "500",
   },
   ol: {
-    marginTop: 0,
-    marginBottom: 16,
-
-    color: neutralA3,
-    fontSize: 14,
-    letterSpacing: -(14 * 0.04),
+    ...baseBlockStyle,
+    ...baseTextStyle,
     lineHeight: 20,
-    fontFamily: "Exo_500Medium",
-    fontWeight: "500",
   },
 
   blockquote: {
-    marginTop: 0,
-    paddingBottom: 0,
-
+    ...baseBlockStyle,
+    ...baseTextStyle,
     color: neutral67,
-    fontSize: 14,
-    letterSpacing: -(14 * 0.04),
     lineHeight: 20,
-    fontFamily: "Exo_500Medium",
-    fontWeight: "500",
-
     marginLeft: 0,
     paddingLeft: 14,
     borderLeftWidth: 3,
     borderLeftColor: neutral67,
   },
-  "ol > :first-child": {
-    backgroundColor: "red",
-  },
-  "blockquote > :first-child": {
-    marginBottom: 0,
-  },
 
   code: {
-    color: neutralA3,
-    fontSize: 13,
-    letterSpacing: -(13 * 0.04),
-    lineHeight: 22,
-    fontFamily: "Exo_500Medium",
-    fontWeight: "500",
-
-    backgroundColor: neutral17,
+    ...baseCodeStyle,
     marginVertical: 4,
     paddingHorizontal: 4,
     paddingVertical: 2,
-    borderRadius: 4,
     alignSelf: "flex-start",
   },
   pre: {
-    fontSize: 13,
-    letterSpacing: -(13 * 0.04),
-    fontFamily: "Exo_500Medium",
-    fontWeight: "500",
-
-    backgroundColor: neutral17,
+    ...baseBlockStyle,
+    ...baseCodeStyle,
     paddingHorizontal: 8,
-    borderRadius: 4,
-
-    marginTop: 0,
-    marginBottom: 16,
   },
+
   table: {
     marginBottom: 16,
   },
   thead: {
+    ...baseTableChildrenStyle,
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4,
-    borderColor: neutral33,
     borderLeftWidth: 1,
     borderTopWidth: 1,
     borderRightWidth: 1,
     backgroundColor: neutral17,
   },
   th: {
-    borderColor: neutral33,
+    ...baseTableChildrenStyle,
     padding: 8,
   },
   tbody: {
+    ...baseTableChildrenStyle,
     borderBottomLeftRadius: 4,
     borderBottomRightRadius: 4,
-    borderColor: neutral33,
     borderLeftWidth: 1,
     borderBottomWidth: 1,
     borderRightWidth: 1,
   },
   tr: {
-    borderColor: neutral33,
+    ...baseTableChildrenStyle,
   },
   td: {
+    ...baseTableChildrenStyle,
     borderTopWidth: 0.5,
-    borderColor: neutral33,
     padding: 8,
   },
 };

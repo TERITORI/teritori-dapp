@@ -36,6 +36,8 @@ import { ZodSocialFeedArticleMarkdownMetadata } from "@/utils/types/feed";
 const ARTICLE_CARD_PADDING_VERTICAL = layout.spacing_x2;
 const ARTICLE_CARD_PADDING_HORIZONTAL = layout.spacing_x2_5;
 
+// TODO: It's a copy of SocialArticleCard.tsx, just made waiting for a posts UI (and data) refacto. => Merge them in the future
+
 export const SocialArticleMarkdownCard: FC<{
   post: Post;
   isPostConsultation?: boolean;
