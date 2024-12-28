@@ -37,7 +37,7 @@ export const useRakkiTicketsCountByUser = (userId?: string) => {
       );
       return await client.ticketsCountByUser({ userAddr: userAddress });
     },
-    { staleTime: Infinity, refetchInterval: 10000 },
+    { staleTime: Infinity, refetchInterval: 10000, enabled: !!userId },
   );
   return { ticketsCount, ...other };
 };

@@ -1,5 +1,4 @@
-import Long from "long";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
@@ -16,14 +15,6 @@ export const BuyTicketsButton: FC<{ networkId: string; info: Info }> = ({
 }) => {
   const [isButtonHovered, setButtonHovered] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
-  const remainingTickets = info.config.max_tickets - info.current_tickets_count;
-  const [ticketAmount, setTicketAmount] = useState("1");
-  const ticketAmountNumber = Long.fromString(ticketAmount || "0");
-  useEffect(() => {
-    if (remainingTickets > 0 && ticketAmountNumber.gt(remainingTickets)) {
-      setTicketAmount(remainingTickets.toString());
-    }
-  }, [ticketAmountNumber, remainingTickets]);
 
   return (
     <View style={{ flexDirection: "row" }}>
