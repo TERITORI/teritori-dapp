@@ -105,7 +105,7 @@ func RegisterSelf() {
 		panic("already registered")
 	}
 
-	dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "DAO Realm", "Default testing DAO", "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1080&fit=max")
+	dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "DAO Realm", "Default testing DAO", "roles", "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1080&fit=max")
 	registered = true
 }
 

@@ -1,5 +1,5 @@
-import { GnoDAOConfig } from "./deploy";
 import { mustGetGnoNetwork } from "../../networks";
+import { GnoDAOConfig } from "./deploy";
 
 export const generateRolesDAOSource = (
   networkId: string,
@@ -35,33 +35,33 @@ var (
 func init() {
   roles = dao_roles_group.NewRolesGroup()
   ${(conf.roles ?? [])
-    .map(
-      (role) =>
-        `roles.NewRoleJSON("${role.name}", "[${(role.resources ?? [])
-          .map(
-            (resource) =>
-              `{\\"resource\\": \\"${resource}\\", \\"power\\": \\"999\\"}`,
-          )
-          .join(", ")}]")`,
-    )
-    .join("\n\t")}
+      .map(
+        (role) =>
+          `roles.NewRoleJSON("${role.name}", "[${(role.resources ?? [])
+            .map(
+              (resource) =>
+                `{\\"resource\\": \\"${resource}\\", \\"power\\": \\"999\\"}`,
+            )
+            .join(", ")}]")`,
+      )
+      .join("\n\t")}
   ${conf.initialMembers
-    .filter((member) => member.roles.length > 0)
-    .map((member) =>
-      member.roles
-        .map((role) => `roles.GrantRole("${member.address}", "${role}")`)
-        .join("\n\t"),
-    )
-    .join("\n\t")}
+      .filter((member) => member.roles.length > 0)
+      .map((member) =>
+        member.roles
+          .map((role) => `roles.GrantRole("${member.address}", "${role}")`)
+          .join("\n\t"),
+      )
+      .join("\n\t")}
 
 	votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
 		group = voting_group.NewRolesVotingGroup(roles)
       ${conf.initialMembers
-        .map(
-          (member) =>
-            `group.SetMemberPower("${member.address}", ${member.weight})`,
-        )
-        .join("\n\t")}
+      .map(
+        (member) =>
+          `group.SetMemberPower("${member.address}", ${member.weight})`,
+      )
+      .join("\n\t")}
 		return group
 	}
 
@@ -71,11 +71,11 @@ func init() {
     proposalModulesFactories := []dao_interfaces.ProposalModuleFactory{
       func(core dao_interfaces.IDAOCore) dao_interfaces.IProposalModule {
         tt := proposal_single.PercentageThresholdPercent(${Math.ceil(
-          conf.thresholdPercent * 100,
-        )}) // ${Math.ceil(conf.thresholdPercent * 100) / 100}%
+        conf.thresholdPercent * 100,
+      )}) // ${Math.ceil(conf.thresholdPercent * 100) / 100}%
         tq := proposal_single.PercentageThresholdPercent(${Math.ceil(
-          conf.quorumPercent * 100,
-        )}) // ${Math.ceil(conf.quorumPercent * 100) / 100}%
+        conf.quorumPercent * 100,
+      )}) // ${Math.ceil(conf.quorumPercent * 100) / 100}%
         return proposal_single.NewDAOProposalSingle(core, &proposal_single.DAOProposalSingleOpts{
           MaxVotingPeriod: dao_utils.DurationTime(time.Second * ${conf.maxVotingPeriodSeconds}),
           Threshold: &proposal_single.ThresholdThresholdQuorum{
@@ -107,7 +107,7 @@ func init() {
 	profile.SetStringField(profile.Bio, "${conf.description}")
 	profile.SetStringField(profile.Avatar, "${conf.imageURI}")
 
-  dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "${conf.displayName}", "${conf.description}", "${conf.imageURI}")
+  dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "${conf.displayName}", "${conf.description}", "roles", "${conf.imageURI}")
   }
   
   func Render(path string) string {
