@@ -211,14 +211,13 @@ func (d *DAOProposalSingle) Render(path string) string {
 		sb.WriteString(strconv.FormatUint(p.Votes.Total(), 10))
 		sb.WriteString("\n\n")
 
-		sb.WriteString("  Messages:")
+		sb.WriteString("  Message:")
 		sb.WriteString("\n\n")
-		for _, m := range p.Messages {
-			sb.WriteString(m.(dao_interfaces.ExecutableMessage).Type())
-			sb.WriteString("\n\n")
-			sb.WriteString(m.(dao_interfaces.ExecutableMessage).String())
-			sb.WriteString("\n\n")
-		}
+		m := p.Message
+		sb.WriteString(m.(dao_interfaces.ExecutableMessage).Type())
+		sb.WriteString("\n\n")
+		sb.WriteString(m.(dao_interfaces.ExecutableMessage).String())
+		sb.WriteString("\n\n")
 
 		sb.WriteString("  Votes:")
 		sb.WriteString("\n\n")
@@ -253,10 +252,15 @@ func (d *DAOProposalSingle) ConfigJSON() string {
 	return string(b)
 }
 
-func (d *DAOProposalSingle) Propose(title string, description string, messages []dao_interfaces.ExecutableMessage) int {
+func (d *DAOProposalSingle) Propose(title string, description string, message dao_interfaces.ExecutableMessage) int {
 	// TODO: creation policy
 
-	totalPower := d.core.VotingModule().TotalPowerAtHeight(0)
+	messageType := ""
+	if message != nil {
+		messageType = message.Type()
+	}
+
+	totalPower := d.core.VotingModule().TotalPowerAtHeight(messageType, std.GetHeight())
 
 	expiration := d.opts.MaxVotingPeriod.AfterCurrentBlock()
 	minVotingPeriod := dao_utils.Expiration(nil)
@@ -276,7 +280,7 @@ func (d *DAOProposalSingle) Propose(title string, description string, messages [
 		Expiration:      expiration,
 		Threshold:       d.opts.Threshold.Clone(),
 		TotalPower:      totalPower,
-		Messages:        messages,
+		Message:         message,
 		Status:          ProposalStatusOpen,
 		Ballots:         avl.NewTree(),
 		AllowRevoting:   d.opts.AllowRevoting,
@@ -327,12 +331,11 @@ func (d *DAOProposalSingle) VoteJSON(proposalID int, voteJSON string) {
 		panic("proposal is expired")
 	}
 
-	resources := make([]string, len(proposal.Messages))
-	for i, m := range proposal.Messages {
-		resources[i] = m.Type()
+	messageType := ""
+	if proposal.Message != nil {
+		messageType = proposal.Message.Type()
 	}
-
-	votePower := d.core.VotingModule().VotingPowerAtHeight(voter, proposal.StartHeight, resources)
+	votePower := d.core.VotingModule().VotingPowerAtHeight(voter, messageType, proposal.StartHeight)
 	if votePower == 0 {
 		panic("not registered")
 	}
@@ -365,9 +368,7 @@ func (d *DAOProposalSingle) Execute(proposalID int) {
 		panic("proposal is not passed")
 	}
 
-	for _, m := range prop.Messages {
-		d.core.Registry().Execute(m)
-	}
+	d.core.Registry().Execute(prop.Message)
 
 	prop.Status = ProposalStatusExecuted
 }
@@ -375,21 +376,21 @@ func (d *DAOProposalSingle) Execute(proposalID int) {
 type ProposalRequest struct {
 	Title       string
 	Description string
-	Messages    []*json.Node
+	Message     *json.Node
 }
 
 func (pr *ProposalRequest) FromJSON(ast *json.Node) {
 	obj := ast.MustObject()
 	pr.Title = obj["title"].MustString()
 	pr.Description = obj["description"].MustString()
-	pr.Messages = obj["messages"].MustArray()
+	pr.Message = obj["message"]
 }
 
 func (d *DAOProposalSingle) ProposeJSON(proposalJSON string) int {
 	var req ProposalRequest
 	req.FromJSON(json.Must(json.Unmarshal([]byte(proposalJSON))))
-	msgs := d.core.Registry().MessagesFromJSON(req.Messages)
-	return d.Propose(req.Title, req.Description, msgs)
+	msg := d.core.Registry().MessageFromJSON(req.Message)
+	return d.Propose(req.Title, req.Description, msg)
 }
 
 func (d *DAOProposalSingle) Proposals() []*Proposal {

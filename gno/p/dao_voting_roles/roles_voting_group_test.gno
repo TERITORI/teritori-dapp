@@ -1,10 +1,11 @@
-package dao_roles_voting_group
+package dao_voting_roles
 
 import (
 	"testing"
 
 	"gno.land/p/demo/testutils"
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
+	"gno.land/p/teritori/havl"
 )
 
 var (
@@ -12,13 +13,13 @@ var (
 	bob   = testutils.TestAddress("bob")
 )
 
-func TestRolesVotingGroup(t *testing.T) {
-	rv := NewRolesVotingGroup()
+func TestVotingRoles(t *testing.T) {
+	rv := NewVotingRoles()
 	var i dao_interfaces.IVotingModule
 	i = rv
 
 	{
-		got := i.TotalPowerAtHeight(0)
+		got := i.TotalPowerAtHeight("", havl.Latest)
 		expected := uint64(0)
 		if got != expected {
 			t.Fatalf("expected %s, got %s.", expected, got)
@@ -27,7 +28,7 @@ func TestRolesVotingGroup(t *testing.T) {
 
 	{
 		conf := rv.ConfigJSON()
-		expected := `{"totalPower":"0","members":"0"}`
+		expected := `{"totalPowers":{},"rolesPowers":{},"members":"0"}`
 		if conf != expected {
 			t.Fatalf("expected %s, got %s.", expected, conf)
 		}
@@ -36,7 +37,7 @@ func TestRolesVotingGroup(t *testing.T) {
 	rv.SetMemberPower(alice, 1)
 
 	{
-		got := i.TotalPowerAtHeight(0)
+		got := i.TotalPowerAtHeight("", havl.Latest)
 		expected := uint64(1)
 		if got != expected {
 			t.Fatalf("expected %s, got %s.", expected, got)
@@ -49,16 +50,24 @@ func TestRolesVotingGroup(t *testing.T) {
 	rv.GrantRole(alice, "role1")
 
 	{
-		got := i.VotingPowerAtHeight(alice, 0, []string{"resource1"})
+		got := i.VotingPowerAtHeight(alice, "resource1", havl.Latest)
 		expected := uint64(2)
 		if got != expected {
 			t.Fatalf("expected %s, got %s.", expected, got)
 		}
 
-		got = i.VotingPowerAtHeight(alice, 0, []string{"resource2"})
+		got = i.VotingPowerAtHeight(alice, "resource2", havl.Latest)
 		expected = uint64(1)
 		if got != expected {
 			t.Fatalf("expected %s, got %s.", expected, got)
+		}
+	}
+
+	{
+		conf := rv.ConfigJSON()
+		expected := `{"totalPowers":{"":"1"},"rolesPowers":{"role1":[{"resource":"resource1","power":"2"}]},"members":"1"}`
+		if conf != expected {
+			t.Fatalf("expected %s, got %s.", expected, conf)
 		}
 	}
 }

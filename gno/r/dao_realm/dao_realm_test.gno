@@ -36,8 +36,10 @@ func TestInit(t *testing.T) {
 func TestUpdateMembers(t *testing.T) {
 	var membersJSON string
 
+	println("total vp", voting.TotalPowerAtHeight("", havl.Latest))
+
 	{
-		id := ProposeJSON(0, ufmt.Sprintf(`{"title": "Test prop", "description": "A description", "messages": [{"type": "gno.land/p/teritori/dao_voting_group.UpdateMembers", "payload": [{"power": "2", "address": "g18syxa0vh0vmne90mwhtynjet0zgeqf6prh3ryy"}]}]}`))
+		id := ProposeJSON(0, ufmt.Sprintf(`{"title": "Test prop", "description": "A description", "message": {"type": "gno.land/p/teritori/dao_voting_group.UpdateMembers", "payload": [{"power": "2", "address": "g18syxa0vh0vmne90mwhtynjet0zgeqf6prh3ryy"}]}}`))
 		VoteJSON(0, id, `{"vote": "Yes", "rationale": "testing"}`)
 		Execute(0, id)
 		members := voting.GetMembers("", "", 0, havl.Latest)
@@ -52,7 +54,7 @@ func TestUpdateMembers(t *testing.T) {
 			t.Errorf("Expected:\n%s\nGot:\n%s", expected, membersJSON)
 		}
 
-		totalPower := voting.TotalPowerAtHeight(havl.Latest)
+		totalPower := voting.TotalPowerAtHeight("", havl.Latest)
 		if totalPower != 7 {
 			t.Errorf("Expected total power to be 6, got %d", totalPower)
 		}
@@ -67,7 +69,7 @@ func TestUpdateMembers(t *testing.T) {
 		var member dao_voting_group.Member
 		member.FromJSON(children[0])
 
-		id := ProposeJSON(0, ufmt.Sprintf(`{"title": "Test prop 2", "description": "A description", "messages": [{"type": "gno.land/p/teritori/dao_voting_group.UpdateMembers", "payload": [{"address": "%s", "power": "0"}]}]}`, member.Address.String()))
+		id := ProposeJSON(0, ufmt.Sprintf(`{"title": "Test prop 2", "description": "A description", "message": {"type": "gno.land/p/teritori/dao_voting_group.UpdateMembers", "payload": [{"address": "%s", "power": "0"}]}}`, member.Address.String()))
 		VoteJSON(0, id, `{"vote": "Yes", "rationale": "testing"}`)
 		Execute(0, id)
 		members := voting.GetMembers("", "", 0, havl.Latest)
@@ -82,7 +84,7 @@ func TestUpdateMembers(t *testing.T) {
 			t.Errorf("Expected:\n%s\nGot:\n%s", expected, membersJSON)
 		}
 
-		totalPower := voting.TotalPowerAtHeight(havl.Latest)
+		totalPower := voting.TotalPowerAtHeight("", havl.Latest)
 		if totalPower != 6 {
 			t.Errorf("Expected total power to be 6, got %d", totalPower)
 		}
@@ -93,11 +95,11 @@ func TestUpdateSettings(t *testing.T) {
 	// not sure why but in this test the proposal ids start at 3 and the voting power is 5 when all tests are run, shouldn't tests be isolated? TODO: investigate
 
 	{
-		id := ProposeJSON(0, ufmt.Sprintf(`{"title": "Test prop", "description": "A description", "messages": [{"type": "gno.land/p/teritori/dao_proposal_single.UpdateSettings", "payload": {"threshold": {"thresholdQuorum": {"threshold": {"percent": 200}, "quorum": {"percent": 200}}}}}]}`))
+		id := ProposeJSON(0, `{"title": "Test prop", "description": "A description", "message": {"type": "gno.land/p/teritori/dao_proposal_single.UpdateSettings", "payload": {"threshold": {"thresholdQuorum": {"threshold": {"percent": 200}, "quorum": {"percent": 200}}}}}}`)
 		VoteJSON(0, id, `{"vote": "Yes", "rationale": "testing"}`)
 		Execute(0, id)
 		proposalJSON := getProposalJSON(0, id)
-		expected := ufmt.Sprintf(`{"id":"%d","title":"Test prop","description":"A description","proposer":"g1wymu47drhr0kuq2098m792lytgtj2nyx77yrsm","startHeight":"123","totalPower":"6","messages":[{"type":"gno.land/p/teritori/dao_proposal_single.UpdateSettings","payload":{"threshold":{"thresholdQuorum":{"threshold":{"percent":200},"quorum":{"percent":200}}}}}],"status":"Executed","votes":{"yes":"1","no":"0","abstain":"0"},"allowRevoting":false,"ballots":{"g1wymu47drhr0kuq2098m792lytgtj2nyx77yrsm":{"power":"1","vote":"Yes","rationale":"testing"}},"expiration":{"atTime":"2009-03-27T23:31:30Z"},"threshold":{"thresholdQuorum":{"threshold":{"percent":100},"quorum":{"percent":100}}}}`, id)
+		expected := ufmt.Sprintf(`{"id":"%d","title":"Test prop","description":"A description","proposer":"g1wymu47drhr0kuq2098m792lytgtj2nyx77yrsm","startHeight":"123","totalPower":"6","message":{"type":"gno.land/p/teritori/dao_proposal_single.UpdateSettings","payload":{"threshold":{"thresholdQuorum":{"threshold":{"percent":200},"quorum":{"percent":200}}}}},"status":"Executed","votes":{"yes":"1","no":"0","abstain":"0"},"allowRevoting":false,"ballots":{"g1wymu47drhr0kuq2098m792lytgtj2nyx77yrsm":{"power":"1","vote":"Yes","rationale":"testing"}},"expiration":{"atTime":"2009-03-27T23:31:30Z"},"threshold":{"thresholdQuorum":{"threshold":{"percent":100},"quorum":{"percent":100}}}}`, id)
 		if proposalJSON != expected {
 			t.Fatalf("Expected:\n%s\nGot:\n%s", expected, proposalJSON)
 		}
@@ -105,11 +107,11 @@ func TestUpdateSettings(t *testing.T) {
 
 	{
 		// make sentiment proposal
-		id := ProposeJSON(0, ufmt.Sprintf(`{"title": "Test prop", "description": "A description", "messages": []}`))
+		id := ProposeJSON(0, `{"title": "Test prop", "description": "A description"}`)
 		VoteJSON(0, id, `{"vote": "Yes", "rationale": "testing"}`)
 		Execute(0, id)
 		proposalJSON := getProposalJSON(0, id)
-		expected := ufmt.Sprintf(`{"id":"%d","title":"Test prop","description":"A description","proposer":"g1wymu47drhr0kuq2098m792lytgtj2nyx77yrsm","startHeight":"123","totalPower":"6","messages":[],"status":"Executed","votes":{"yes":"1","no":"0","abstain":"0"},"allowRevoting":false,"ballots":{"g1wymu47drhr0kuq2098m792lytgtj2nyx77yrsm":{"power":"1","vote":"Yes","rationale":"testing"}},"expiration":{"atTime":"2009-03-27T23:31:30Z"},"threshold":{"thresholdQuorum":{"threshold":{"percent":200},"quorum":{"percent":200}}}}`, id)
+		expected := ufmt.Sprintf(`{"id":"%d","title":"Test prop","description":"A description","proposer":"g1wymu47drhr0kuq2098m792lytgtj2nyx77yrsm","startHeight":"123","totalPower":"6","message":null,"status":"Executed","votes":{"yes":"1","no":"0","abstain":"0"},"allowRevoting":false,"ballots":{"g1wymu47drhr0kuq2098m792lytgtj2nyx77yrsm":{"power":"1","vote":"Yes","rationale":"testing"}},"expiration":{"atTime":"2009-03-27T23:31:30Z"},"threshold":{"thresholdQuorum":{"threshold":{"percent":200},"quorum":{"percent":200}}}}`, id)
 		if proposalJSON != expected {
 			t.Fatalf("Expected:\n%s\nGot:\n%s", expected, proposalJSON)
 		}

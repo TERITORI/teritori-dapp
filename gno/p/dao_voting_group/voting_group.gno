@@ -37,6 +37,8 @@ type VotingGroup struct {
 	memberCount *havl.Tree // "" -> uint32
 }
 
+var _ dao_interfaces.IVotingModule = (*VotingGroup)(nil)
+
 func NewVotingGroup() *VotingGroup {
 	return &VotingGroup{
 		powerByAddr: havl.NewTree(),
@@ -54,7 +56,7 @@ func (v *VotingGroup) Info() dao_interfaces.ModuleInfo {
 
 func (v *VotingGroup) ConfigJSON() string {
 	return json.ObjectNode("", map[string]*json.Node{
-		"totalPower": jsonutil.Uint64Node(v.TotalPowerAtHeight(havl.Latest)),
+		"totalPower": jsonutil.Uint64Node(v.TotalPowerAtHeight("", havl.Latest)),
 		"members":    jsonutil.Uint32Node(v.MemberCount(havl.Latest)),
 	}).String()
 }
@@ -68,8 +70,7 @@ func (v *VotingGroup) GetMembersJSON(start, end string, limit uint64, height int
 	return json.ArrayNode("", membersJSON).String()
 }
 
-func (v *VotingGroup) VotingPowerAtHeight(addr std.Address, height int64, resources []string) uint64 {
-	_ = resources
+func (v *VotingGroup) VotingPowerAtHeight(addr std.Address, resource string, height int64) uint64 {
 	p, ok := v.powerByAddr.Get(addr.String(), height)
 	if !ok {
 		return 0
@@ -78,7 +79,7 @@ func (v *VotingGroup) VotingPowerAtHeight(addr std.Address, height int64, resour
 	return p.(uint64)
 }
 
-func (v *VotingGroup) TotalPowerAtHeight(height int64) uint64 {
+func (v *VotingGroup) TotalPowerAtHeight(resource string, height int64) uint64 {
 	p, ok := v.totalPower.Get("", height)
 	if !ok {
 		return 0
@@ -126,7 +127,7 @@ func (g *VotingGroup) RemoveMember(addr std.Address) (uint64, bool) {
 
 	g.memberCount.Set("", g.MemberCount(havl.Latest)-1)
 	power := p.(uint64)
-	g.totalPower.Set("", g.TotalPowerAtHeight(havl.Latest)-power)
+	g.totalPower.Set("", g.TotalPowerAtHeight("", havl.Latest)-power)
 	return power, true
 }
 
@@ -166,7 +167,7 @@ func (v *VotingGroup) Render(path string) string {
 	sb.WriteString(strconv.FormatUint(uint64(v.MemberCount(havl.Latest)), 10))
 	sb.WriteString("\n\n")
 	sb.WriteString("Total power: ")
-	sb.WriteString(strconv.FormatUint(v.TotalPowerAtHeight(havl.Latest), 10))
+	sb.WriteString(strconv.FormatUint(v.TotalPowerAtHeight("", havl.Latest), 10))
 	sb.WriteString("\n\n")
 	sb.WriteString("Members:\n")
 	v.powerByAddr.Iterate("", "", havl.Latest, func(k string, v interface{}) bool {

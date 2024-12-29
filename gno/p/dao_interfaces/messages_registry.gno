@@ -26,25 +26,27 @@ func (r *MessagesRegistry) Remove(t string) {
 	r.handlers.Remove(t)
 }
 
-func (r *MessagesRegistry) MessagesFromJSON(slice []*json.Node) []ExecutableMessage {
-	msgs := make([]ExecutableMessage, len(slice))
-	for i, elem := range slice {
-		messageType := json.Must(elem.GetKey("type")).MustString()
-		payload := json.Must(elem.GetKey("payload"))
-		h, ok := r.handlers.Get(messageType)
-		if !ok {
-			panic("invalid ExecutableMessage: invalid message type")
-		}
-
-		instance := h.(MessageHandler).Instantiate()
-		instance.FromJSON(payload)
-		msgs[i] = instance
+func (r *MessagesRegistry) MessageFromJSON(elem *json.Node) ExecutableMessage {
+	if elem == nil || elem.IsNull() {
+		return nil
+	}
+	messageType := json.Must(elem.GetKey("type")).MustString()
+	payload := json.Must(elem.GetKey("payload"))
+	h, ok := r.handlers.Get(messageType)
+	if !ok {
+		panic("invalid ExecutableMessage: invalid message type")
 	}
 
-	return msgs
+	instance := h.(MessageHandler).Instantiate()
+	instance.FromJSON(payload)
+	return instance
 }
 
 func (r *MessagesRegistry) Execute(msg ExecutableMessage) {
+	if msg == nil {
+		return
+	}
+
 	h, ok := r.handlers.Get(msg.Type())
 	if !ok {
 		panic("invalid ExecutableMessage: invalid message type")

@@ -10,8 +10,8 @@ import (
 	dao_core "gno.land/p/teritori/dao_core"
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
 	proposal_single "gno.land/p/teritori/dao_proposal_single"
-	roles_voting_group "gno.land/p/teritori/dao_roles_voting_group"
 	"gno.land/p/teritori/dao_utils"
+	"gno.land/p/teritori/dao_voting_roles"
 	"gno.land/p/teritori/jsonutil"
 	"gno.land/r/demo/profile"
 	"gno.land/r/teritori/dao_registry"
@@ -23,30 +23,30 @@ import (
 
 var (
 	daoCore    dao_interfaces.IDAOCore
-	voting     *roles_voting_group.RolesVotingGroup
+	voting     *dao_voting_roles.VotingRoles
 	registered bool
 )
 
 func init() {
 	votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
-		group := roles_voting_group.NewRolesVotingGroup()
+		voting = dao_voting_roles.NewVotingRoles()
 
-		group.SetMemberPower(std.GetOrigCaller(), 1)
-		group.SetMemberPower("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", 1)
-		group.SetMemberPower("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", 1)
-		group.SetMemberPower("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", 1)
-		group.SetMemberPower("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", 1)
+		voting.SetMemberPower(std.GetOrigCaller(), 1)
+		voting.SetMemberPower("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", 1)
+		voting.SetMemberPower("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", 1)
+		voting.SetMemberPower("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", 1)
+		voting.SetMemberPower("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", 1)
 
-		group.NewRoleJSON("admin", "[{\"resource\": \"social_feed\", \"power\": \"25\"}, {\"resource\": \"organizations\", \"power\": \"100\"}]")
-		group.NewRoleJSON("moderator", "[{\"resource\": \"social_feed\", \"power\": \"10\"}]")
-		group.NewRoleJSON("member", "[]")
+		voting.NewRoleJSON("admin", "[{\"resource\": \"social_feed\", \"power\": \"25\"}, {\"resource\": \"organizations\", \"power\": \"100\"}]")
+		voting.NewRoleJSON("moderator", "[{\"resource\": \"social_feed\", \"power\": \"10\"}]")
+		voting.NewRoleJSON("member", "[]")
 
-		group.GrantRole("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", "admin")
-		group.GrantRole("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", "moderator")
-		group.GrantRole("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", "member")
-		group.GrantRole("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", "member")
+		voting.GrantRole("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", "admin")
+		voting.GrantRole("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", "moderator")
+		voting.GrantRole("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", "member")
+		voting.GrantRole("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", "member")
 
-		return group
+		return voting
 	}
 
 	// TODO: consider using factories that return multiple modules and handlers
