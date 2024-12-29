@@ -246,14 +246,17 @@ func (v *VotingRoles) NewRole(roleName string, resources []ResourceVPower) {
 
 func (v *VotingRoles) DeleteRole(roleName string) {
 	v.rm.DeleteRole(roleName)
+	// FIXME: update total power for this role's resources
 }
 
 func (v *VotingRoles) GrantRole(address std.Address, role string) {
 	v.rm.AddRoleToUser(address, role)
+	// FIXME: update total power for this role's resources
 }
 
 func (v *VotingRoles) RevokeRole(address std.Address, role string) {
 	v.rm.RemoveRoleFromUser(address, role)
+	// FIXME: update total power for this role's resources
 }
 
 func (v *VotingRoles) GetMemberRoles(address std.Address) []string {
