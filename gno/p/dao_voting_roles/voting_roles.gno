@@ -57,7 +57,7 @@ func NewVotingRoles() *VotingRoles {
 
 func (v *VotingRoles) Info() dao_interfaces.ModuleInfo {
 	return dao_interfaces.ModuleInfo{
-		Kind:    "gno.land/p/teritori/roles_voting_group",
+		Kind:    "gno.land/p/teritori/dao_voting_roles",
 		Version: "0.1.0",
 	}
 }
