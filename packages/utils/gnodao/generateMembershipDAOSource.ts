@@ -25,20 +25,20 @@ export const generateMembershipDAOSource = (
   
   var (
     daoCore    dao_interfaces.IDAOCore
-    group      *voting_group.VotingGroup
+    voting      *voting_group.VotingGroup
     registered bool
   )
 
   func init() {
     votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
-      group = voting_group.NewVotingGroup()
+      voting = voting_group.NewVotingGroup()
         ${conf.initialMembers
           .map(
             (member) =>
-              `group.SetMemberPower("${member.address}", ${member.weight})`,
+              `voting.SetMemberPower("${member.address}", ${member.weight})`,
           )
           .join("\n\t")}
-      return group
+      return voting
     }
 
     // TODO: consider using factories that return multiple modules and handlers
@@ -63,7 +63,7 @@ export const generateMembershipDAOSource = (
     
     messageHandlersFactories := []dao_interfaces.MessageHandlerFactory{
       func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-        return group.UpdateMembersHandler()
+        return voting.UpdateMembersHandler()
       },
       func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
         // TODO: add a router to support multiple proposal modules

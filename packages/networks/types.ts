@@ -114,8 +114,7 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   socialFeedsPkgPath?: string;
   socialFeedsDAOPkgPath?: string;
   votingGroupPkgPath?: string;
-  rolesVotingGroupPkgPath?: string;
-  rolesGroupPkgPath?: string;
+  votingRolesPkgPath?: string;
   daoProposalSinglePkgPath?: string;
   daoInterfacesPkgPath?: string;
   daoCorePkgPath?: string;
