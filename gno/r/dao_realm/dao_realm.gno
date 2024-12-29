@@ -9,7 +9,6 @@ import (
 	dao_core "gno.land/p/teritori/dao_core"
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
 	proposal_single "gno.land/p/teritori/dao_proposal_single"
-	"gno.land/p/teritori/dao_roles_group"
 	"gno.land/p/teritori/dao_utils"
 	voting_group "gno.land/p/teritori/dao_voting_group"
 	"gno.land/r/demo/profile"
@@ -22,20 +21,19 @@ import (
 
 var (
 	daoCore    dao_interfaces.IDAOCore
-	group      *voting_group.VotingGroup
-	roles      *dao_roles_group.RolesGroup
+	voting     *voting_group.VotingGroup
 	registered bool
 )
 
 func init() {
 	votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
-		group = voting_group.NewVotingGroup()
-		group.SetMemberPower("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", 1)
-		group.SetMemberPower("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", 1)
-		group.SetMemberPower("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", 1)
-		group.SetMemberPower("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", 1)
-		group.SetMemberPower(std.GetOrigCaller(), 1)
-		return group
+		voting = voting_group.NewVotingGroup()
+		voting.SetMemberPower("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", 1)
+		voting.SetMemberPower("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", 1)
+		voting.SetMemberPower("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", 1)
+		voting.SetMemberPower("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", 1)
+		voting.SetMemberPower(std.GetOrigCaller(), 1)
+		return voting
 	}
 
 	// TODO: consider using factories that return multiple modules and handlers
@@ -56,7 +54,7 @@ func init() {
 
 	messageHandlersFactories := []dao_interfaces.MessageHandlerFactory{
 		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-			return group.UpdateMembersHandler()
+			return voting.UpdateMembersHandler()
 		},
 		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
 			// TODO: add a router to support multiple proposal modules

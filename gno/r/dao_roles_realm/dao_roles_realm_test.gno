@@ -19,7 +19,7 @@ func TestInit(t *testing.T) {
 	}
 
 	{
-		members := group.GetMembers("", "", 0, havl.Latest)
+		members := voting.GetMembers("", "", 0, havl.Latest)
 		iSlice := make([]*json.Node, len(members))
 		for i, v := range members {
 			iSlice[i] = v.ToJSON()
@@ -40,7 +40,7 @@ func TestUpdateMembers(t *testing.T) {
 		id := ProposeJSON(0, ufmt.Sprintf(`{"title": "Test prop", "description": "A description", "messages": [{"type": "gno.land/p/teritori/dao_voting_group.UpdateMembers", "payload": [{"power": "2", "address": "g18syxa0vh0vmne90mwhtynjet0zgeqf6prh3ryy"}]}]}`))
 		VoteJSON(0, id, `{"vote": "Yes", "rationale": "testing"}`)
 		Execute(0, id)
-		members := group.GetMembers("", "", 0, havl.Latest)
+		members := voting.GetMembers("", "", 0, havl.Latest)
 		iSlice := make([]*json.Node, len(members))
 		for i, v := range members {
 			iSlice[i] = v.ToJSON()
@@ -52,7 +52,7 @@ func TestUpdateMembers(t *testing.T) {
 			t.Errorf("Expected:\n%s\nGot:\n%s", expected, membersJSON)
 		}
 
-		totalPower := group.TotalPowerAtHeight(havl.Latest)
+		totalPower := voting.TotalPowerAtHeight(havl.Latest)
 		if totalPower != 7 {
 			t.Errorf("Expected total power to be 6, got %d", totalPower)
 		}
@@ -70,7 +70,7 @@ func TestUpdateMembers(t *testing.T) {
 		id := ProposeJSON(0, ufmt.Sprintf(`{"title": "Test prop 2", "description": "A description", "messages": [{"type": "gno.land/p/teritori/dao_voting_group.UpdateMembers", "payload": [{"address": "%s", "power": "0"}]}]}`, member.Address.String()))
 		VoteJSON(0, id, `{"vote": "Yes", "rationale": "testing"}`)
 		Execute(0, id)
-		members := group.GetMembers("", "", 0, havl.Latest)
+		members := voting.GetMembers("", "", 0, havl.Latest)
 		iSlice := make([]*json.Node, len(members))
 		for i, v := range members {
 			iSlice[i] = v.ToJSON()
@@ -82,7 +82,7 @@ func TestUpdateMembers(t *testing.T) {
 			t.Errorf("Expected:\n%s\nGot:\n%s", expected, membersJSON)
 		}
 
-		totalPower := group.TotalPowerAtHeight(havl.Latest)
+		totalPower := voting.TotalPowerAtHeight(havl.Latest)
 		if totalPower != 6 {
 			t.Errorf("Expected total power to be 6, got %d", totalPower)
 		}

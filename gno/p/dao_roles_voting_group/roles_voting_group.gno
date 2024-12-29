@@ -5,16 +5,22 @@ import (
 	"strconv"
 	"strings"
 
+	"gno.land/p/demo/avl"
 	"gno.land/p/demo/json"
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
-	"gno.land/p/teritori/dao_roles_group"
 	"gno.land/p/teritori/havl"
 	"gno.land/p/teritori/jsonutil"
+	"gno.land/p/teritori/role_manager"
 )
 
 type Member struct {
 	Address std.Address
 	Power   uint64
+}
+
+type ResourceVPower struct {
+	Resource string
+	Power    uint64
 }
 
 func (m Member) ToJSON() *json.Node {
@@ -31,20 +37,22 @@ func (m *Member) FromJSON(ast *json.Node) {
 }
 
 type RolesVotingGroup struct {
-	powerByAddr *havl.Tree // std.Address -> uint64
-	totalPower  *havl.Tree // "" -> uint64
-	memberCount *havl.Tree // "" -> uint32
-	rolesModule *dao_roles_group.RolesGroup
+	powerByAddr     *havl.Tree // std.Address -> uint64
+	totalPower      *havl.Tree // "" -> uint64
+	memberCount     *havl.Tree // "" -> uint32
+	rm              *role_manager.RoleManager
+	resourcesVPower *avl.Tree // roles -> ResourceVPower[]
 }
 
 var _ dao_interfaces.IVotingModule = (*RolesVotingGroup)(nil)
 
-func NewRolesVotingGroup(rm *dao_roles_group.RolesGroup) *RolesVotingGroup {
+func NewRolesVotingGroup() *RolesVotingGroup {
 	return &RolesVotingGroup{
-		powerByAddr: havl.NewTree(),
-		totalPower:  havl.NewTree(),
-		memberCount: havl.NewTree(),
-		rolesModule: rm,
+		powerByAddr:     havl.NewTree(),
+		totalPower:      havl.NewTree(),
+		memberCount:     havl.NewTree(),
+		rm:              role_manager.NewWithAddress(std.PrevRealm().Addr()),
+		resourcesVPower: avl.NewTree(),
 	}
 }
 
@@ -80,7 +88,7 @@ func (v *RolesVotingGroup) VotingPowerAtHeight(addr std.Address, height int64, r
 	// In case there is many resources involved, we take the lowest value
 	rolePower := uint64(0)
 	for _, resource := range resources {
-		tmp := v.rolesModule.GetMemberResourceVPower(addr, resource)
+		tmp := v.GetMemberResourceVPower(addr, resource)
 		if tmp < rolePower || rolePower == 0 {
 			rolePower = tmp
 		}
@@ -195,4 +203,63 @@ func (v *RolesVotingGroup) Render(path string) string {
 
 	sb.WriteRune('\n')
 	return sb.String()
+}
+
+func (r *RolesVotingGroup) HasRole(address std.Address, role string) bool {
+	return r.rm.HasRole(address, role)
+}
+
+func (r *RolesVotingGroup) NewRoleJSON(roleName, resourcesJSON string) {
+	node := json.Must(json.Unmarshal([]byte(resourcesJSON)))
+	arr := node.MustArray()
+	resources := make([]ResourceVPower, len(arr))
+	for i, n := range arr {
+		node := n.MustObject()
+		resources[i] = ResourceVPower{
+			Resource: node["resource"].MustString(),
+			Power:    jsonutil.MustUint64(node["power"]),
+		}
+	}
+	r.NewRole(roleName, resources)
+}
+
+func (r *RolesVotingGroup) NewRole(roleName string, resources []ResourceVPower) {
+	r.rm.CreateNewRole(roleName, []string{})
+	if len(resources) > 0 {
+		r.resourcesVPower.Set(roleName, resources)
+	}
+}
+
+func (r *RolesVotingGroup) DeleteRole(roleName string) {
+	r.rm.DeleteRole(roleName)
+}
+
+func (r *RolesVotingGroup) GrantRole(address std.Address, role string) {
+	r.rm.AddRoleToUser(address, role)
+}
+
+func (r *RolesVotingGroup) RevokeRole(address std.Address, role string) {
+	r.rm.RemoveRoleFromUser(address, role)
+}
+
+func (r *RolesVotingGroup) GetMemberRoles(address std.Address) []string {
+	return r.rm.GetUserRoles(address)
+}
+
+func (r *RolesVotingGroup) GetMemberResourceVPower(address std.Address, resource string) uint64 {
+	roles := r.rm.GetUserRoles(address)
+	power := uint64(0)
+	for _, role := range roles {
+		resourcesRaw, exists := r.resourcesVPower.Get(role)
+		if !exists {
+			continue
+		}
+		resources := resourcesRaw.([]ResourceVPower)
+		for _, r := range resources {
+			if r.Resource == resource && r.Power > power {
+				power = r.Power
+			}
+		}
+	}
+	return power
 }

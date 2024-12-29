@@ -5,7 +5,6 @@ import (
 
 	"gno.land/p/demo/testutils"
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
-	"gno.land/p/teritori/dao_roles_group"
 )
 
 var (
@@ -14,10 +13,7 @@ var (
 )
 
 func TestRolesVotingGroup(t *testing.T) {
-	rm := dao_roles_group.NewRolesGroup()
-	var j *dao_roles_group.RolesGroup
-	j = rm
-	rv := NewRolesVotingGroup(j)
+	rv := NewRolesVotingGroup()
 	var i dao_interfaces.IVotingModule
 	i = rv
 
@@ -47,10 +43,10 @@ func TestRolesVotingGroup(t *testing.T) {
 		}
 	}
 
-	j.NewRoleJSON("role1", `[
+	rv.NewRoleJSON("role1", `[
 		{"resource": "resource1", "power": "2"}
 	]`)
-	j.GrantRole(alice, "role1")
+	rv.GrantRole(alice, "role1")
 
 	{
 		got := i.VotingPowerAtHeight(alice, 0, []string{"resource1"})
