@@ -331,7 +331,6 @@ func TestBuy(t *testing.T) {
 	badCoin := std.NewCoins(std.NewCoin("notugnot", 100*10))
 	manyCoins := std.NewCoins(std.NewCoin("ugnot", 100*10), std.NewCoin("notugnot", 100*10))
 	notEnoughCoins := std.NewCoins(std.NewCoin("ugnot", 100*5))
-	tooManyCoins := std.NewCoins(std.NewCoin("ugnot", 100*11))
 	emptyCoins := std.NewCoins()
 	realmCoins := std.NewCoins(std.NewCoin("ugnot", 200*10))
 
@@ -535,7 +534,7 @@ func TestFinalize(t *testing.T) {
 	NewToken("TestFinalizeToken", "TestFinalizeToken", "image", 18, 21_000_000, 23_000_000, true, true)
 	saleID := NewSale("TestFinalizeToken", "", startTimestamp, endTimestamp, 100, 15, 10, 20, true)
 	onGoingSaleID := NewSale("TestFinalizeToken", "", startTimestamp, onGoingEndTimestamp, 100, 15, 10, 20, true)
-	onGoingSaleID2 := NewSale("TestFinalizeToken", "", startTimestamp, onGoingEndTimestamp2, 100, 15, 10, 20, true)
+	_ = NewSale("TestFinalizeToken", "", startTimestamp, onGoingEndTimestamp2, 100, 15, 10, 20, true)
 
 	realmCoins := std.NewCoins(std.NewCoin("ugnot", 200*10))
 
