@@ -1,4 +1,4 @@
-package dao_realm
+package dao_roles_realm
 
 // TODO: Create two dao_realm example: Membership based & Roles based
 
@@ -6,12 +6,14 @@ import (
 	"std"
 	"time"
 
+	"gno.land/p/demo/json"
 	dao_core "gno.land/p/teritori/dao_core"
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
 	proposal_single "gno.land/p/teritori/dao_proposal_single"
 	"gno.land/p/teritori/dao_roles_group"
+	roles_voting_group "gno.land/p/teritori/dao_roles_voting_group"
 	"gno.land/p/teritori/dao_utils"
-	voting_group "gno.land/p/teritori/dao_voting_group"
+	"gno.land/p/teritori/jsonutil"
 	"gno.land/r/demo/profile"
 	"gno.land/r/teritori/dao_registry"
 	"gno.land/r/teritori/social_feeds"
@@ -22,14 +24,23 @@ import (
 
 var (
 	daoCore    dao_interfaces.IDAOCore
-	group      *voting_group.VotingGroup
+	group      *roles_voting_group.RolesVotingGroup
 	roles      *dao_roles_group.RolesGroup
 	registered bool
 )
 
 func init() {
+	roles = dao_roles_group.NewRolesGroup()
+	roles.NewRoleJSON("admin", "[{\"resource\": \"social_feed\", \"power\": \"25\"}, {\"resource\": \"organizations\", \"power\": \"100\"}]")
+	roles.NewRoleJSON("moderator", "[{\"resource\": \"social_feed\", \"power\": \"10\"}]")
+	roles.NewRoleJSON("member", "[]")
+	roles.GrantRole("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", "admin")
+	roles.GrantRole("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", "moderator")
+	roles.GrantRole("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", "member")
+	roles.GrantRole("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", "member")
+
 	votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
-		group = voting_group.NewVotingGroup()
+		group = roles_voting_group.NewRolesVotingGroup(roles)
 		group.SetMemberPower("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", 1)
 		group.SetMemberPower("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", 1)
 		group.SetMemberPower("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", 1)
@@ -145,5 +156,23 @@ func getProposalJSON(moduleIndex int, proposalIndex int) string {
 }
 
 func getMembersJSON(start, end string, limit uint64) string {
-	return daoCore.VotingModule().GetMembersJSON(start, end, limit, std.GetHeight())
+	vMembers := daoCore.VotingModule().GetMembersJSON(start, end, limit, std.GetHeight())
+	nodes, err := json.Unmarshal([]byte(vMembers))
+	if err != nil {
+		panic("failed to unmarshal voting module members")
+	}
+	vals := nodes.MustArray()
+	for i, val := range vals {
+		obj := val.MustObject()
+		addr := jsonutil.MustAddress(obj["address"])
+		roles := roles.GetMemberRoles(addr)
+		rolesJSON := make([]*json.Node, len(roles))
+		for j, role := range roles {
+			rolesJSON[j] = json.StringNode("", role)
+		}
+		obj["roles"] = json.ArrayNode("", rolesJSON)
+		vals[i] = json.ObjectNode("", obj)
+
+	}
+	return json.ArrayNode("", vals).String()
 }

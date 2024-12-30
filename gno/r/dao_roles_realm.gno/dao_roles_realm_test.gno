@@ -1,4 +1,4 @@
-package dao_realm
+package dao_roles_realm
 
 import (
 	"testing"

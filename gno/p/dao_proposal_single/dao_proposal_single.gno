@@ -56,12 +56,12 @@ func (opts DAOProposalSingleOpts) ToJSON() *json.Node {
 }
 
 type DAOProposalSingle struct {
-	dao_interfaces.IProposalModule
-
 	core      dao_interfaces.IDAOCore
 	opts      *DAOProposalSingleOpts
 	proposals []*Proposal
 }
+
+var _ dao_interfaces.IProposalModule = (*DAOProposalSingle)(nil)
 
 func NewDAOProposalSingle(core dao_interfaces.IDAOCore, opts *DAOProposalSingleOpts) *DAOProposalSingle {
 	if core == nil {
@@ -238,10 +238,6 @@ func (d *DAOProposalSingle) Render(path string) string {
 	return sb.String()
 }
 
-func (d *DAOProposalSingle) Core() dao_interfaces.IDAOCore {
-	return d.core
-}
-
 func (d *DAOProposalSingle) Info() dao_interfaces.ModuleInfo {
 	return dao_interfaces.ModuleInfo{
 		Kind:    "gno.land/p/teritori/dao_proposal_single",
@@ -331,7 +327,12 @@ func (d *DAOProposalSingle) VoteJSON(proposalID int, voteJSON string) {
 		panic("proposal is expired")
 	}
 
-	votePower := d.core.VotingModule().VotingPowerAtHeight(voter, proposal.StartHeight)
+	resources := make([]string, len(proposal.Messages))
+	for i, m := range proposal.Messages {
+		resources[i] = m.Type()
+	}
+
+	votePower := d.core.VotingModule().VotingPowerAtHeight(voter, proposal.StartHeight, resources)
 	if votePower == 0 {
 		panic("not registered")
 	}

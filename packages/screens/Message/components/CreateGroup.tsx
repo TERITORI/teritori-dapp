@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import { CheckboxGroup, CheckboxItem } from "./CheckboxGroup";
+import { CheckboxGroup, CheckboxMessageItem } from "./CheckboxGroup";
 import ModalBase from "../../../components/modals/ModalBase";
 
 import { GroupInfo_Reply } from "@/api/weshnet/protocoltypes";
@@ -40,13 +40,13 @@ export const CreateGroup = ({ onClose }: CreateGroupProps) => {
   const [searchText, setSearchText] = useState("");
   const conversations = useSelector(selectConversationList);
 
-  const handleChange = (items: CheckboxItem[]) => {
+  const handleChange = (items: CheckboxMessageItem[]) => {
     setCheckedContacts(
       items.filter((item) => !item.checked).map((item) => item.id),
     );
   };
 
-  const items: CheckboxItem[] = useMemo(() => {
+  const items: CheckboxMessageItem[] = useMemo(() => {
     return conversations
       .filter((conv) => conv.type === "contact")
       .map((item) => {

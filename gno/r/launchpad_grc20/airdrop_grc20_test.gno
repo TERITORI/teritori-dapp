@@ -1,13 +1,13 @@
 package launchpad_grc20
 
 import (
-	"fmt"
 	"std"
 	"strconv"
 	"testing"
 	"time"
 
 	"gno.land/p/demo/merkle"
+	"gno.land/p/demo/ufmt"
 )
 
 func TestNewAirdrop(t *testing.T) {
@@ -175,18 +175,12 @@ func TestClaimJSON(t *testing.T) {
 	root := tree.Root()
 	proofs, _ := tree.Proof(leaves[0])
 
-	erroneousProofs := []merkle.Node{
-		{[]byte("badproof")},
-		{[]byte("badproof")},
-	}
-
-	now := time.Now().Unix()
 	NewToken("TestClaimJSONAirDropToken", "TestClaimJSONAirDropToken", "noimage", 18, 21_000_000, 23_000_000, true, true)
 	airdropID := NewAirdrop("TestClaimJSONAirDropToken", root, 100, 0, 0)
 
 	proofsJSON := "["
 	for i, proof := range proofs {
-		proofsJSON += fmt.Sprintf("{\"hash\":\"%s\", \"pos\":\"%s\"}", proof.Hash(), strconv.Itoa(int(proof.Position())))
+		proofsJSON += ufmt.Sprintf("{\"hash\":\"%s\", \"pos\":\"%s\"}", proof.Hash(), strconv.Itoa(int(proof.Position())))
 		if i != len(proofs)-1 {
 			proofsJSON += ", "
 		}
@@ -259,8 +253,8 @@ func TestClaim(t *testing.T) {
 	proofs, _ := tree.Proof(leaves[0])
 
 	erroneousProofs := []merkle.Node{
-		{[]byte("badproof")},
-		{[]byte("badproof")},
+		merkle.NewNode([]byte("badproof"), 0),
+		merkle.NewNode([]byte("badproof"), 0),
 	}
 
 	now := time.Now().Unix()
@@ -341,8 +335,8 @@ func TestClaim(t *testing.T) {
 				if !airdrop.hasAlreadyClaimed(test.input.addr) {
 					t.Errorf("Expected address be set as claimed, but it is not")
 				}
-				if airdrop.token.banker.BalanceOf(test.input.addr) != test.expected.balance {
-					t.Errorf("Expected balance to be %d, got %d", test.expected.balance, airdrop.token.banker.BalanceOf(test.input.addr))
+				if airdrop.token.BalanceOf(test.input.addr) != test.expected.balance {
+					t.Errorf("Expected balance to be %d, got %d", test.expected.balance, airdrop.token.BalanceOf(test.input.addr))
 				}
 			}
 		})

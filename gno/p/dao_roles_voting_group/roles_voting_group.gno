@@ -1,4 +1,4 @@
-package dao_voting_group
+package dao_roles_voting_group
 
 import (
 	"std"
@@ -7,6 +7,7 @@ import (
 
 	"gno.land/p/demo/json"
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
+	"gno.land/p/teritori/dao_roles_group"
 	"gno.land/p/teritori/havl"
 	"gno.land/p/teritori/jsonutil"
 )
@@ -29,37 +30,39 @@ func (m *Member) FromJSON(ast *json.Node) {
 	m.Power = jsonutil.MustUint64(obj["power"])
 }
 
-type VotingGroup struct {
-	dao_interfaces.IVotingModule
-
+type RolesVotingGroup struct {
 	powerByAddr *havl.Tree // std.Address -> uint64
 	totalPower  *havl.Tree // "" -> uint64
 	memberCount *havl.Tree // "" -> uint32
+	rolesModule *dao_roles_group.RolesGroup
 }
 
-func NewVotingGroup() *VotingGroup {
-	return &VotingGroup{
+var _ dao_interfaces.IVotingModule = (*RolesVotingGroup)(nil)
+
+func NewRolesVotingGroup(rm *dao_roles_group.RolesGroup) *RolesVotingGroup {
+	return &RolesVotingGroup{
 		powerByAddr: havl.NewTree(),
 		totalPower:  havl.NewTree(),
 		memberCount: havl.NewTree(),
+		rolesModule: rm,
 	}
 }
 
-func (v *VotingGroup) Info() dao_interfaces.ModuleInfo {
+func (v *RolesVotingGroup) Info() dao_interfaces.ModuleInfo {
 	return dao_interfaces.ModuleInfo{
 		Kind:    "gno.land/p/teritori/dao_voting_group",
 		Version: "0.1.0",
 	}
 }
 
-func (v *VotingGroup) ConfigJSON() string {
+func (v *RolesVotingGroup) ConfigJSON() string {
 	return json.ObjectNode("", map[string]*json.Node{
 		"totalPower": jsonutil.Uint64Node(v.TotalPowerAtHeight(havl.Latest)),
 		"members":    jsonutil.Uint32Node(v.MemberCount(havl.Latest)),
 	}).String()
 }
 
-func (v *VotingGroup) GetMembersJSON(start, end string, limit uint64, height int64) string {
+func (v *RolesVotingGroup) GetMembersJSON(start, end string, limit uint64, height int64) string {
 	members := v.GetMembers(start, end, limit, height)
 	membersJSON := make([]*json.Node, len(members))
 	for i, m := range members {
@@ -68,17 +71,29 @@ func (v *VotingGroup) GetMembersJSON(start, end string, limit uint64, height int
 	return json.ArrayNode("", membersJSON).String()
 }
 
-func (v *VotingGroup) VotingPowerAtHeight(addr std.Address, height int64, resources []string) uint64 {
-	_ = resources
-	p, ok := v.powerByAddr.Get(addr.String(), height)
+func (v *RolesVotingGroup) VotingPowerAtHeight(addr std.Address, height int64, resources []string) uint64 {
+	userPower, ok := v.powerByAddr.Get(addr.String(), height)
 	if !ok {
 		return 0
 	}
 
-	return p.(uint64)
+	// In case there is many resources involved, we take the lowest value
+	rolePower := uint64(0)
+	for _, resource := range resources {
+		tmp := v.rolesModule.GetMemberResourceVPower(addr, resource)
+		if tmp < rolePower || rolePower == 0 {
+			rolePower = tmp
+		}
+	}
+
+	if rolePower > userPower.(uint64) {
+		return rolePower
+	}
+
+	return userPower.(uint64)
 }
 
-func (v *VotingGroup) TotalPowerAtHeight(height int64) uint64 {
+func (v *RolesVotingGroup) TotalPowerAtHeight(height int64) uint64 {
 	p, ok := v.totalPower.Get("", height)
 	if !ok {
 		return 0
@@ -87,7 +102,7 @@ func (v *VotingGroup) TotalPowerAtHeight(height int64) uint64 {
 	return p.(uint64)
 }
 
-func (g *VotingGroup) SetMemberPower(addr std.Address, power uint64) {
+func (g *RolesVotingGroup) SetMemberPower(addr std.Address, power uint64) {
 	if power == 0 {
 		g.RemoveMember(addr)
 		return
@@ -118,7 +133,7 @@ func (g *VotingGroup) SetMemberPower(addr std.Address, power uint64) {
 	g.totalPower.Set("", (previousTotal+power)-previous)
 }
 
-func (g *VotingGroup) RemoveMember(addr std.Address) (uint64, bool) {
+func (g *RolesVotingGroup) RemoveMember(addr std.Address) (uint64, bool) {
 	p, removed := g.powerByAddr.Remove(addr.String())
 	if !removed {
 		return 0, false
@@ -130,11 +145,11 @@ func (g *VotingGroup) RemoveMember(addr std.Address) (uint64, bool) {
 	return power, true
 }
 
-func (g *VotingGroup) UpdateMembersHandler() dao_interfaces.MessageHandler {
+func (g *RolesVotingGroup) UpdateMembersHandler() dao_interfaces.MessageHandler {
 	return &updateMembersHandler{vg: g}
 }
 
-func (g *VotingGroup) MemberCount(height int64) uint32 {
+func (g *RolesVotingGroup) MemberCount(height int64) uint32 {
 	val, ok := g.memberCount.Get("", height)
 	if !ok {
 		return 0
@@ -143,7 +158,7 @@ func (g *VotingGroup) MemberCount(height int64) uint32 {
 	return val.(uint32)
 }
 
-func (g *VotingGroup) GetMembers(start, end string, limit uint64, height int64) []Member {
+func (g *RolesVotingGroup) GetMembers(start, end string, limit uint64, height int64) []Member {
 	var members []Member
 	g.powerByAddr.Iterate(start, end, height, func(k string, v interface{}) bool {
 		if limit > 0 && uint64(len(members)) >= limit {
@@ -160,7 +175,7 @@ func (g *VotingGroup) GetMembers(start, end string, limit uint64, height int64) 
 	return members
 }
 
-func (v *VotingGroup) Render(path string) string {
+func (v *RolesVotingGroup) Render(path string) string {
 	sb := strings.Builder{}
 	sb.WriteString("Member count: ")
 	sb.WriteString(strconv.FormatUint(uint64(v.MemberCount(havl.Latest)), 10))
