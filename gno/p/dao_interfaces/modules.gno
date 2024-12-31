@@ -16,15 +16,15 @@ func (mi ModuleInfo) String() string {
 type IVotingModule interface {
 	Info() ModuleInfo
 	ConfigJSON() string
+	GetMembersJSON(start, end string, limit uint64, height int64) string
 	Render(path string) string
-	VotingPowerAtHeight(address std.Address, height int64) (power uint64)
+	VotingPowerAtHeight(address std.Address, height int64, resources []string) (power uint64)
 	TotalPowerAtHeight(height int64) uint64
 }
 
 type VotingModuleFactory func(core IDAOCore) IVotingModule
 
 type IProposalModule interface {
-	Core() IDAOCore
 	Info() ModuleInfo
 	ConfigJSON() string
 	Render(path string) string

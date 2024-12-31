@@ -6,6 +6,8 @@ const TO_REMOVE_ITEMS = [
   "/weshd/ios/Frameworks/",
   "/weshd/android/libs/",
   "/ios",
+  "/app-selector.js",
+  "/app.config.js",
 ];
 
 fs.readFile(FILE_PATH, "utf8", (err, data) => {

@@ -11,6 +11,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SecondaryButton } from "@/components/buttons/SecondaryButton";
 import { SearchNSInputContainer } from "@/components/inputs/SearchNSInputContainer";
@@ -38,7 +39,6 @@ import {
 import {
   fontSemibold13,
   fontSemibold14,
-  fontSemibold20,
   fontSemibold28,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
@@ -182,9 +182,7 @@ export const MultisigCreateScreen = () => {
 
   return (
     <ScreenContainer
-      headerChildren={
-        <BrandText style={fontSemibold20}>Multisig Wallet</BrandText>
-      }
+      headerChildren={<ScreenTitle>Multisig Wallet</ScreenTitle>}
       onBackPress={() =>
         navigation.canGoBack()
           ? navigation.goBack()

@@ -163,6 +163,30 @@ func (rm *RoleManager) HasRole(user std.Address, roleName string) bool {
 	return userRoles.Has(roleName)
 }
 
+func (rm *RoleManager) RoleExists(roleName string) bool {
+	return rm.roles.Has(roleName)
+}
+
+func (rm *RoleManager) CountRoles() int {
+	return rm.roles.Size()
+}
+
+func (rm *RoleManager) GetUserRoles(user std.Address) []string {
+	userRoles, ok := rm.users.Get(user.String())
+	if !ok {
+		return []string{}
+	}
+	i := 0
+	roles := userRoles.(*avl.Tree)
+	res := make([]string, roles.Size())
+	roles.Iterate("", "", func(key string, value interface{}) bool {
+		res[i] = key
+		i++
+		return false
+	})
+	return res
+}
+
 func (rm *RoleManager) mustGetRole(roleName string) *Role {
 	role, ok := rm.roles.Get(roleName)
 	if !ok {

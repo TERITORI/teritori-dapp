@@ -118,7 +118,7 @@ func (d *daoCore) VotingModule() dao_interfaces.IVotingModule {
 }
 
 func (d *daoCore) VotingPowerAtHeight(address std.Address, height int64) uint64 {
-	return d.VotingModule().VotingPowerAtHeight(address, height)
+	return d.VotingModule().VotingPowerAtHeight(address, height, []string{})
 }
 
 func (d *daoCore) ActiveProposalModuleCount() int {
@@ -129,10 +129,12 @@ func (d *daoCore) Render(path string) string {
 	sb := strings.Builder{}
 	sb.WriteString("# DAO Core\n")
 	votingInfo := d.votingModule.Info()
+
 	sb.WriteString("## Voting Module: ")
 	sb.WriteString(votingInfo.String())
 	sb.WriteRune('\n')
 	sb.WriteString(d.votingModule.Render(""))
+
 	sb.WriteString("## Supported Messages:\n")
 	sb.WriteString(d.registry.Render())
 

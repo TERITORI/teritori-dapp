@@ -9,6 +9,7 @@ import { Assets } from "../WalletManager/Assets";
 
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { MainConnectWalletButton } from "@/components/connectWallet/MainConnectWalletButton";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
@@ -51,7 +52,7 @@ export const SwapScreen: ScreenFC<"Swap"> = () => {
 
   return (
     <ScreenContainer
-      headerChildren={<BrandText>Swap</BrandText>}
+      headerChildren={<ScreenTitle>Swap</ScreenTitle>}
       forceNetworkFeatures={[NetworkFeature.Swap]}
     >
       <View style={styles.mainContainer}>

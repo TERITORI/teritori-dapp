@@ -17,6 +17,8 @@ import {
   gradientColorPurple,
   gradientColorSalmon,
   gradientColorTurquoise,
+  gradientColorRakkiYellow,
+  gradientColorRakkiYellowLight,
 } from "../../utils/style/colors";
 import { BrandText } from "../BrandText";
 
@@ -34,6 +36,7 @@ export type GradientType =
   | "pink"
   | "gray"
   | "grayLight"
+  | "yellow"
   | "feed-map-normal-post"
   | "feed-map-article-post"
   | "feed-map-video-post"
@@ -110,9 +113,17 @@ const gradient = (type: GradientType): LinearGradientProps => {
         start,
         end,
       };
+    case "yellow":
+      return {
+        colors: [gradientColorRakkiYellow, gradientColorRakkiYellowLight],
+        start,
+        end,
+      };
     case getMapPostTextGradientType(PostCategory.Normal):
       return getMapPostTextGradient(PostCategory.Normal);
     case getMapPostTextGradientType(PostCategory.Article):
+      return getMapPostTextGradient(PostCategory.Article);
+    case getMapPostTextGradientType(PostCategory.ArticleMarkdown):
       return getMapPostTextGradient(PostCategory.Article);
     case getMapPostTextGradientType(PostCategory.Video):
       return getMapPostTextGradient(PostCategory.Video);

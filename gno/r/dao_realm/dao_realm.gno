@@ -1,5 +1,7 @@
 package dao_realm
 
+// TODO: Create two dao_realm example: Membership based & Roles based
+
 import (
 	"std"
 	"time"
@@ -7,6 +9,7 @@ import (
 	dao_core "gno.land/p/teritori/dao_core"
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
 	proposal_single "gno.land/p/teritori/dao_proposal_single"
+	"gno.land/p/teritori/dao_roles_group"
 	"gno.land/p/teritori/dao_utils"
 	voting_group "gno.land/p/teritori/dao_voting_group"
 	"gno.land/r/demo/profile"
@@ -20,6 +23,7 @@ import (
 var (
 	daoCore    dao_interfaces.IDAOCore
 	group      *voting_group.VotingGroup
+	roles      *dao_roles_group.RolesGroup
 	registered bool
 )
 
@@ -138,4 +142,8 @@ func getProposalJSON(moduleIndex int, proposalIndex int) string {
 	// move logic in dao core
 	module := dao_core.GetProposalModule(daoCore, moduleIndex)
 	return module.Module.ProposalJSON(proposalIndex)
+}
+
+func getMembersJSON(start, end string, limit uint64) string {
+	return daoCore.VotingModule().GetMembersJSON(start, end, limit, std.GetHeight())
 }

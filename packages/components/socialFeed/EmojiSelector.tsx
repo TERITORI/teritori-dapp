@@ -48,6 +48,7 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
         ) : (
           <IconBox
             icon={appMode === "mini" ? emojiSolidSVG : emojiSVG}
+            iconProps={{ height: 17, width: 17 }}
             onPress={toggleEmojiModal}
             disabled={disabled}
             style={iconStyle}

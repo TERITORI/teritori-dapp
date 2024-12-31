@@ -3,7 +3,6 @@ import { useWindowDimensions } from "react-native";
 
 import { useIsMobile } from "./useIsMobile";
 
-import { useSidebar } from "@/context/SidebarProvider";
 import {
   fullSidebarWidth,
   getMobileScreenContainerMarginHorizontal,
@@ -13,7 +12,6 @@ import {
   screenContainerContentMarginHorizontal,
   screenContentMaxWidth,
   screenContentMaxWidthLarge,
-  smallSidebarWidth,
 } from "@/utils/style/layout";
 
 export const useMaxResolution = ({
@@ -22,12 +20,13 @@ export const useMaxResolution = ({
   isLarge = false,
 } = {}) => {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
-  const { isSidebarExpanded } = useSidebar();
   const isMobile = useIsMobile();
+
+  // If we have a different width when sidebar is expanded and when it's not, the sidebar will be laggy on certain screens (like FeedScreen)
+  // So this calcul find the bigger width to have the same width no matter the sidebar state
   const contentWidth = useMemo(
-    () =>
-      windowWidth - (isSidebarExpanded ? fullSidebarWidth : smallSidebarWidth),
-    [windowWidth, isSidebarExpanded],
+    () => windowWidth - fullSidebarWidth,
+    [windowWidth],
   );
 
   const width = useMemo(() => {

@@ -2,6 +2,8 @@ package dao_interfaces
 
 type dummyCore struct{}
 
+var _ IDAOCore = (*dummyCore)(nil)
+
 func NewDummyCore() IDAOCore {
 	return &dummyCore{}
 }

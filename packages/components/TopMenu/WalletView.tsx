@@ -3,7 +3,7 @@ import { StyleProp, View, ViewStyle } from "react-native";
 
 import { Wallet } from "../../context/WalletsProvider";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
-import { fontMedium14 } from "../../utils/style/fonts";
+import { fontRegular14 } from "../../utils/style/fonts";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { WalletProviderIcon } from "../WalletProviderIcon";
@@ -20,7 +20,7 @@ export const WalletView: React.FC<{
         <WalletProviderIcon size={16} walletProvider={wallet?.provider} />
       </View>
       <BrandText
-        style={[fontMedium14, { marginLeft: 12 }]}
+        style={[fontRegular14, { marginLeft: 12 }]}
         ellipsizeMode="middle"
         testID={`selected-wallet-${wallet?.userId}`}
       >

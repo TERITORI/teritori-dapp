@@ -10,7 +10,7 @@ import { SVG } from "@/components/SVG";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { neutral33 } from "@/utils/style/colors";
-import { fontSemibold14 } from "@/utils/style/fonts";
+import { fontRegular14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { LocalFileData } from "@/utils/types/files";
 
@@ -107,7 +107,7 @@ export const SelectPicture = ({
           >
             <SVG source={Img} width={16} height={16} />
             {squareSelectorOptions.placeholder && (
-              <BrandText style={fontSemibold14}>
+              <BrandText style={fontRegular14}>
                 {squareSelectorOptions.placeholder}
               </BrandText>
             )}

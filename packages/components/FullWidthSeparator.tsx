@@ -10,6 +10,7 @@ export const FullWidthSeparator: React.FC = () => {
         height: 1,
         width: "100%",
         backgroundColor: neutral33,
+        opacity: 0.5,
       }}
     />
   );

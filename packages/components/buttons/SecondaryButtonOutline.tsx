@@ -9,11 +9,11 @@ import {
   heightButton,
 } from "../../utils/style/buttons";
 import { neutral33, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import { fontRegular14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { BoxStyle } from "../boxes/Box";
-import { TertiaryBox } from "../boxes/TertiaryBox";
+import { PrimaryBox } from "../boxes/PrimaryBox";
 
 // FIXME: make a BaseButton and only pass backgroun/border and text colors in this kind of components
 
@@ -81,7 +81,7 @@ export const SecondaryButtonOutline: React.FC<{
       disabled={disabled}
       style={[{ width: fullWidth ? "100%" : width }, touchableStyle]}
     >
-      <TertiaryBox
+      <PrimaryBox
         style={[
           style,
           {
@@ -108,7 +108,7 @@ export const SecondaryButtonOutline: React.FC<{
           />
         ) : null}
 
-        <BrandText style={[fontSemibold14, { color, textAlign: "center" }]}>
+        <BrandText style={[fontRegular14, { color, textAlign: "center" }]}>
           {text}
         </BrandText>
 
@@ -130,7 +130,7 @@ export const SecondaryButtonOutline: React.FC<{
               <ActivityIndicator color={color} size="small" />
             </View>
           ))}
-      </TertiaryBox>
+      </PrimaryBox>
     </TouchableOpacity>
   );
 };

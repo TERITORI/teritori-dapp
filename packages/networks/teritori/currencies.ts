@@ -23,4 +23,15 @@ export const teritoriCurrencies: CurrencyInfo[] = [
     destinationChannelPort: "transfer",
     destinationChannelId: "channel-10",
   },
+  {
+    kind: "ibc",
+    denom:
+      "ibc/35357FE55D81D88054E135529BB2AEB1BB20D207292775A19BD82D83F27BE9B4",
+    sourceNetwork: "cosmos-registry:noble",
+    sourceDenom: "uusdc",
+    sourceChannelPort: "transfer",
+    sourceChannelId: "channel-118",
+    destinationChannelPort: "transfer",
+    destinationChannelId: "channel-64",
+  },
 ];

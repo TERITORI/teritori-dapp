@@ -59,7 +59,17 @@ func (v *VotingGroup) ConfigJSON() string {
 	}).String()
 }
 
-func (v *VotingGroup) VotingPowerAtHeight(addr std.Address, height int64) uint64 {
+func (v *VotingGroup) GetMembersJSON(start, end string, limit uint64, height int64) string {
+	members := v.GetMembers(start, end, limit, height)
+	membersJSON := make([]*json.Node, len(members))
+	for i, m := range members {
+		membersJSON[i] = m.ToJSON()
+	}
+	return json.ArrayNode("", membersJSON).String()
+}
+
+func (v *VotingGroup) VotingPowerAtHeight(addr std.Address, height int64, resources []string) uint64 {
+	_ = resources
 	p, ok := v.powerByAddr.Get(addr.String(), height)
 	if !ok {
 		return 0

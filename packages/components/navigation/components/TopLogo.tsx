@@ -1,43 +1,35 @@
 import React from "react";
-import { View, TouchableOpacity, ViewStyle } from "react-native";
+import { View, TouchableOpacity, ViewStyle, StyleProp } from "react-native";
 
-import logoTopVersionSVG from "../../../../assets/logos/logo-hexagon-version-alpha.svg";
-import { layout } from "../../../utils/style/layout";
-import { SVG } from "../../SVG";
-
+import logoTopVersionSVG from "@/assets/logos/logo-hexagon-version-alpha.svg";
+import { SVG } from "@/components/SVG";
 import { useAppConfig } from "@/context/AppConfigProvider";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 
-export const TopLogo = () => {
+export const TopLogo: React.FC<{
+  height?: number;
+  style?: StyleProp<ViewStyle>;
+}> = ({ height = 68, style }) => {
   const navigation = useAppNavigation();
-  const { homeScreen } = useAppConfig();
+  const { homeScreen, logo: configLogo } = useAppConfig();
 
-  const logo = <SVG width={68} height={68} source={logoTopVersionSVG} />;
+  const logoSource = configLogo || logoTopVersionSVG;
+  const logo = (
+    <SVG
+      height={height}
+      preserveAspectRatio="xMinYMin meet"
+      source={logoSource}
+    />
+  );
 
-  const style: ViewStyle = {
-    marginHorizontal: layout.spacing_x0_5,
-  };
-
-  const content =
-    homeScreen === "Home" ? (
-      <TouchableOpacity
-        style={style}
-        onPress={() => navigation.navigate(homeScreen as any)}
-      >
-        {logo}
-      </TouchableOpacity>
-    ) : (
-      <View style={style}>{logo}</View>
-    );
-
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-      }}
+  return homeScreen === "Home" ? (
+    <TouchableOpacity
+      style={style}
+      onPress={() => navigation.navigate(homeScreen as any)}
     >
-      {content}
-    </View>
+      {logo}
+    </TouchableOpacity>
+  ) : (
+    <View style={style}>{logo}</View>
   );
 };

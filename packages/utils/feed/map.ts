@@ -1,3 +1,4 @@
+import { LatLngBoundsLiteral } from "leaflet";
 import { FunctionComponent } from "react";
 
 import unknownSvg from "@/assets/icons/question-gray.svg";
@@ -12,8 +13,12 @@ import { CustomLatLngExpression, PostCategory } from "@/utils/types/feed";
 
 export const MAP_LAYER_URL = `https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token=${process.env.EXPO_PUBLIC_LEAFLET_MAP_TOKEN}`;
 
-// Paris baguette
-export const DEFAULT_MAP_POSITION: CustomLatLngExpression = [48.8566, 2.3522];
+// Center of the map
+export const DEFAULT_MAP_POSITION: CustomLatLngExpression = [0, 0];
+export const MAP_MAX_BOUND: LatLngBoundsLiteral = [
+  [-90, -180], // South-West corner
+  [90, 180], // North-East corner
+];
 
 const musicPostSvgString = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <g filter="url(#filter0_di_22136_173395)">
@@ -182,6 +187,7 @@ export const getMapPostIconSVG = (
     case PostCategory.VideoNote:
       return videoPostSvg;
     case PostCategory.Article:
+    case PostCategory.ArticleMarkdown:
       return articlePostSvg;
     case PostCategory.Normal:
       return normalPostSvg;
@@ -201,6 +207,7 @@ export const getMapPostIconSVGString = (postCategory: PostCategory) => {
     case PostCategory.VideoNote:
       return videoPostSvgString;
     case PostCategory.Article:
+    case PostCategory.ArticleMarkdown:
       return articlePostSvgString;
     case PostCategory.Normal:
       return normalPostSvgString;
@@ -220,6 +227,7 @@ export const getMapPostIconColorRgba = (postCategory: PostCategory) => {
     case PostCategory.VideoNote:
       return "198,171,255,.40";
     case PostCategory.Article:
+    case PostCategory.ArticleMarkdown:
       return "255,252,207,.40";
     case PostCategory.Normal:
       return "255,178,107,.40";
@@ -239,6 +247,7 @@ export const getMapPostTextGradientType = (postCategory: PostCategory) => {
     case PostCategory.VideoNote:
       return "feed-map-video-post";
     case PostCategory.Article:
+    case PostCategory.ArticleMarkdown:
       return "feed-map-article-post";
     case PostCategory.Normal:
       return "feed-map-normal-post";
@@ -266,6 +275,7 @@ export const getMapPostTextGradient = (postCategory: PostCategory) => {
       gradientProps.colors = ["#C6ABFF", "#A57AFF"];
       break;
     case PostCategory.Article:
+    case PostCategory.ArticleMarkdown:
       gradientProps.colors = ["#FFFC6B", "#E5E13B"];
       break;
     case PostCategory.Normal:
@@ -289,6 +299,7 @@ export const getMapPostTextGradientString = (postCategory: PostCategory) => {
     case PostCategory.VideoNote:
       return `180deg, #C6ABFF 100%, #A57AFF 100%`;
     case PostCategory.Article:
+    case PostCategory.ArticleMarkdown:
       return `180deg, #FFFC6B 100%, #E5E13B 100%`;
     case PostCategory.Normal:
       return `180deg, #FFB26B 100%, #E58C3B 100%`;

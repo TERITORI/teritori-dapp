@@ -15,6 +15,7 @@ import useSelectedWallet from "../../hooks/useSelectedWallet";
 import { JoinState } from "@/api/multisig/v1/multisig";
 import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { AnimationFadeIn } from "@/components/animations/AnimationFadeIn";
 import { LoginButton } from "@/components/multisig/LoginButton";
 import { MultisigTransactions } from "@/components/multisig/MultisigTransactions";
@@ -47,7 +48,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
 
   return (
     <ScreenContainer
-      headerChildren={<BrandText>Multisig Wallets</BrandText>}
+      headerChildren={<ScreenTitle>Multisig Wallets</ScreenTitle>}
       footerChildren={<></>}
       noMargin
       fullWidth

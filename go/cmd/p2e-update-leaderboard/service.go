@@ -229,31 +229,30 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 	now := time.Now().UTC()
 	todayID := now.Format("2006-01-02")
 
-	yesterdayID := now.AddDate(0, 0, -1).Format("2006-01-02")
-	yesterdayData := indexerdb.P2eDailyReward{DayID: yesterdayID, NetworkID: s.networkId}
-	if err := s.db.First(&yesterdayData).Error; err != nil {
+	mostRecentDayData := indexerdb.P2eDailyReward{}
+	if err := s.db.Where("network_id = ? AND day_id < ?", s.networkId, todayID).Order("day_id DESC").First(&mostRecentDayData).Error; err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			return "", errors.Wrap(err, "failed to save daily rewards")
 		}
 	}
 
-	yesterdayTotalRewards := p2e.UserRewardMap{}
+	mostRecentDayTotalRewards := p2e.UserRewardMap{}
 
-	// If yesterday data is not empty then try to decode it to map
-	if yesterdayData.MerkleRoot != "" {
-		if err := mapstructure.Decode(yesterdayData.TotalRewards, &yesterdayTotalRewards); err != nil {
+	// If most recent day data is not empty then try to decode it to map
+	if mostRecentDayData.MerkleRoot != "" {
+		if err := mapstructure.Decode(mostRecentDayData.TotalRewards, &mostRecentDayTotalRewards); err != nil {
 			return "", errors.Wrap(err, "failed to decode yesterday reward to struct")
 		}
 	}
 
 	// Calculate aggregated rewards = last aggregated rewards + today rewards
 	for addr, reward := range todayRewards {
-		yesterdayAmountStr := "0"
-		if yesterdayTotalRewards[addr].Amount != "" {
-			yesterdayAmountStr = yesterdayTotalRewards[addr].Amount
+		mostRecentDayAmountStr := "0"
+		if mostRecentDayTotalRewards[addr].Amount != "" {
+			mostRecentDayAmountStr = mostRecentDayTotalRewards[addr].Amount
 		}
 
-		yesterdayAmount, err := sdk.NewDecFromStr(yesterdayAmountStr)
+		mostRecentDayAmount, err := sdk.NewDecFromStr(mostRecentDayAmountStr)
 		if err != nil {
 			return "", errors.Wrap(err, "failed to create dec from current reward amount")
 		}
@@ -263,18 +262,18 @@ func (s *LeaderboardService) ethereumSendRewardsList(
 			return "", errors.Wrap(err, "failed to create dec from daily reward amount")
 		}
 
-		newAmount := yesterdayAmount.Add(todayAmount)
+		newAmount := mostRecentDayAmount.Add(todayAmount)
 		reward.Amount = strings.Split(newAmount.String(), ".")[0]
 
-		yesterdayTotalRewards[addr] = p2e.UserReward{
+		mostRecentDayTotalRewards[addr] = p2e.UserReward{
 			Token:  reward.Token,
 			Amount: reward.Amount,
 		}
 	}
 
 	todayTotalRewards := indexerdb.ObjectJSONB{} // addr => {token, amount}
-	if err := mapstructure.Decode(yesterdayTotalRewards, &todayTotalRewards); err != nil {
-		return "", errors.Wrap(err, "failed to decode yesterday reward")
+	if err := mapstructure.Decode(mostRecentDayTotalRewards, &todayTotalRewards); err != nil {
+		return "", errors.Wrap(err, "failed to decode most recent day reward")
 	}
 
 	// Create merkle root

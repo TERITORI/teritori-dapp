@@ -7,8 +7,8 @@ import registerSVG from "../../../../assets/icons/register-neutral77.svg";
 import { TokensTable } from "../component/LaunchpadERC20TokensTable";
 import { breakpoints } from "../utils/breakpoints";
 
-import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { FlowCard } from "@/components/cards/FlowCard";
 import { SpacerColumn } from "@/components/spacer";
 import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
@@ -27,7 +27,7 @@ export const LaunchpadERC20TokensScreen: ScreenFC<"LaunchpadERC20Tokens"> = ({
 
   return (
     <ScreenContainer
-      headerChildren={<BrandText>Launchpad ERC 20</BrandText>}
+      headerChildren={<ScreenTitle>Launchpad ERC 20</ScreenTitle>}
       forceNetworkFeatures={[NetworkFeature.LaunchpadERC20]}
       forceNetworkKind={NetworkKind.Gno}
       isLarge

@@ -13,6 +13,8 @@ import {
   gradientColorLightLavender,
   gradientColorPink,
   gradientColorPurple,
+  gradientColorRakkiYellow,
+  gradientColorRakkiYellowLight,
   gradientColorSalmon,
   gradientColorTurquoise,
 } from "../../utils/style/colors";
@@ -40,9 +42,13 @@ const gradient = (type: GradientType) => {
       return `90deg, ${gradientColorGray} 0%, ${gradientColorLightGray} 100%`;
     case "grayLight":
       return `90deg, ${gradientColorLighterGray} 0%, ${gradientColorLightLavender} 100%`;
+    case "yellow":
+      return `267deg, ${gradientColorRakkiYellow} 0%, ${gradientColorRakkiYellowLight} 100%`;
     case getMapPostTextGradientType(PostCategory.Normal):
       return getMapPostTextGradientString(PostCategory.Normal);
     case getMapPostTextGradientType(PostCategory.Article):
+      return getMapPostTextGradientString(PostCategory.Article);
+    case getMapPostTextGradientType(PostCategory.ArticleMarkdown):
       return getMapPostTextGradientString(PostCategory.Article);
     case getMapPostTextGradientType(PostCategory.Video):
       return getMapPostTextGradientString(PostCategory.Video);

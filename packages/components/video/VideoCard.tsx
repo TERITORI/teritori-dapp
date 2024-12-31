@@ -23,11 +23,7 @@ import {
   neutralFF,
   withAlpha,
 } from "../../utils/style/colors";
-import {
-  fontMedium13,
-  fontSemibold13,
-  fontSemibold14,
-} from "../../utils/style/fonts";
+import { fontRegular13, fontRegular14 } from "../../utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { ZodSocialFeedVideoMetadata } from "../../utils/types/feed";
@@ -74,7 +70,7 @@ export const VideoCard: React.FC<{
 
   if (!video)
     return (
-      <BrandText style={[fontSemibold13, { color: errorColor }]}>
+      <BrandText style={[fontRegular13, { color: errorColor }]}>
         Video not found
       </BrandText>
     );
@@ -117,7 +113,7 @@ export const VideoCard: React.FC<{
           />
 
           <View style={imgDurationBoxStyle}>
-            <BrandText style={fontSemibold13}>
+            <BrandText style={fontRegular13}>
               {prettyMediaDuration(video.videoFile.videoMetadata?.duration)}
             </BrandText>
           </View>
@@ -139,7 +135,7 @@ export const VideoCard: React.FC<{
         </CustomPressable>
 
         <SpacerColumn size={1.5} />
-        <BrandText style={[fontSemibold14, { height: 40 }]} numberOfLines={2}>
+        <BrandText style={[fontRegular14, { height: 40 }]} numberOfLines={2}>
           {video?.title.trim()}
         </BrandText>
 
@@ -147,13 +143,7 @@ export const VideoCard: React.FC<{
           <>
             <SpacerColumn size={0.5} />
             <BrandText
-              style={[
-                fontMedium13,
-                {
-                  color: neutral77,
-                  height: 36,
-                },
-              ]}
+              style={[fontRegular13, { color: neutral77, height: 36 }]}
               numberOfLines={2}
             >
               {video?.description?.trim()}
@@ -231,5 +221,5 @@ const positionButtonBoxStyle: ViewStyle = {
 };
 
 const contentNameStyle: TextStyle = {
-  ...fontSemibold14,
+  ...fontRegular14,
 };
