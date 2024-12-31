@@ -246,6 +246,7 @@ const DappStoreApps: React.FC = () => {
         "teritori-staking",
         "teritori-explorer",
         "mintscan",
+        "rakki",
       ];
       delete dAppStoreValues.bookmarks;
       delete dAppStoreValues["coming-soon"];
