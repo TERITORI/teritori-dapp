@@ -48,7 +48,9 @@ export const ArticleMapPost: FC<{
   return (
     <MapPostWrapper post={post} style={{ minWidth: 185 }}>
       <View>
-        <BrandText style={fontSemibold10}>{title}</BrandText>
+        <BrandText style={fontSemibold10} numberOfLines={2}>
+          {title}
+        </BrandText>
         <SpacerColumn size={0.5} />
 
         <Separator color={withAlpha(neutralFF, 0.24)} />

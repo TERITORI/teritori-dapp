@@ -19,6 +19,7 @@ export enum PostCategory {
   Flagged,
   MusicAudio,
   Video,
+  ArticleMarkdown,
 }
 
 export interface NewArticleFormValues {
@@ -106,8 +107,20 @@ export const ZodSocialFeedArticleMetadata = z.object({
   mentions: z.array(z.string()),
   ...zodSocialFeedCommonMetadata.shape,
 });
-export type SocialFeedArticleMetadata = z.infer<
-  typeof ZodSocialFeedArticleMetadata
+
+export const ZodSocialFeedArticleMarkdownMetadata = z.object({
+  shortDescription: z.string(),
+  thumbnailImage: ZodRemoteFileData.optional(),
+  coverImage: ZodRemoteFileData.optional(),
+  message: z.string(),
+  files: MaybeFiles.optional(),
+  gifs: z.array(z.string()).optional(),
+  hashtags: z.array(z.string()),
+  mentions: z.array(z.string()),
+  ...zodSocialFeedCommonMetadata.shape,
+});
+export type SocialFeedArticleMarkdownMetadata = z.infer<
+  typeof ZodSocialFeedArticleMarkdownMetadata
 >;
 
 export const ZodSocialFeedTrackMetadata = z.object({
