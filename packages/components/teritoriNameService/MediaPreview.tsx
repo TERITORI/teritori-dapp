@@ -25,8 +25,6 @@ import { OptimizedImage } from "../OptimizedImage";
 import { SVG } from "../SVG";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 
-import { fontRegular14 } from "@/utils/style/fonts";
-
 export const MediaPreview: React.FC<{
   style?: StyleProp<ViewStyle>;
   textInputsStyle?: StyleProp<ViewStyle>;
@@ -120,7 +118,6 @@ export const MediaPreview: React.FC<{
       <TextInputCustom<Metadata>
         name="image"
         style={textInputsStyle}
-        textInputStyle={[fontRegular14]}
         label="Avatar URL"
         noBrokenCorners
         variant={variant}
@@ -141,7 +138,6 @@ export const MediaPreview: React.FC<{
       <TextInputCustom<Metadata>
         name="public_profile_header"
         style={textInputsStyle}
-        textInputStyle={[fontRegular14]}
         label="Cover Image URL"
         noBrokenCorners
         onPressChildren={onPressUploadBanner}
