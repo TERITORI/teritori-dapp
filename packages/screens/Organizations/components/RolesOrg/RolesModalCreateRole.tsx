@@ -112,10 +112,10 @@ export const RolesModalCreateRole: React.FC<RolesModalCreateRoleProps> = ({
           size="SM"
           text="Add New Role"
           onPress={handleSubmit((data: RoleFormType) => {
-            let finalResources: string[] = [];
+            let finalResources: string[] | undefined = [];
             resources.forEach((resource) => {
               if (resource.value === true) {
-                finalResources = finalResources.concat(resource.resources);
+                finalResources = finalResources?.concat(resource.resources);
               }
             });
             reset();

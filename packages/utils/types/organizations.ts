@@ -32,7 +32,7 @@ export type ConfigureVotingFormType = {
 export const ZodRoleObject = z.object({
   name: z.string().trim().min(1),
   color: z.string().trim().min(1),
-  resources: z.array(z.string().optional()).optional(),
+  resources: z.array(z.string()),
 });
 export const ZodRolesMemberObject = z.object({
   addr: z.string().trim().min(1),

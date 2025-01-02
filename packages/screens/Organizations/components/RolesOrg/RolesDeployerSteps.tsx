@@ -98,7 +98,7 @@ export const RolesDeployerSteps: React.FC<{
             rolesField?.fields?.map((role) => ({
               name: role.name.trim(),
               color: role.color,
-              resources: role.resources,
+              resources: role.resources || [],
             })) || [];
           const initialMembers = (membersField?.fields || []).map((member) => ({
             address: member.addr,
