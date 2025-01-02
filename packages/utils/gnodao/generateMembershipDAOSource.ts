@@ -82,7 +82,7 @@ export const generateMembershipDAOSource = (
     profile.SetStringField(profile.Bio, "${conf.description}")
     profile.SetStringField(profile.Avatar, "${conf.imageURI}")
 
-    dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "${conf.displayName}", "${conf.description}", "memberships based organization", "${conf.imageURI}")
+    dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "${conf.displayName}", "${conf.description}", "${conf.imageURI}")
   }
   
   func Render(path string) string {

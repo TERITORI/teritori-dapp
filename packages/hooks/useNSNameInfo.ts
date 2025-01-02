@@ -45,7 +45,6 @@ const gnoGetNSNameInfo = async (
       public_name: res.name,
       public_bio: res.description,
       image: res.imageURI,
-      dao_kind: res.kind,
     };
     const user: NftInfoResponse = {
       extension: data,

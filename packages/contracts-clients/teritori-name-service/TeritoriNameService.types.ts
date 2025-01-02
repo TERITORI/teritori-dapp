@@ -72,7 +72,6 @@ export interface Metadata {
   telegram_id?: string | null;
   twitter_id?: string | null;
   validator_operator_address?: string | null;
-  dao_kind?: string | null;
   [k: string]: unknown;
 }
 export interface AllOperatorsResponse {

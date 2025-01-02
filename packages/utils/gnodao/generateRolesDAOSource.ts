@@ -107,7 +107,7 @@ func init() {
 	profile.SetStringField(profile.Bio, "${conf.description}")
 	profile.SetStringField(profile.Avatar, "${conf.imageURI}")
 
-  dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "${conf.displayName}", "${conf.description}", "roles based organization", "${conf.imageURI}")
+  dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "${conf.displayName}", "${conf.description}", "${conf.imageURI}")
   }
   
   func Render(path string) string {

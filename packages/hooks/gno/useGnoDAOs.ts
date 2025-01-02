@@ -11,7 +11,6 @@ export type GnoDAORegistration = {
   name: string;
   description: string;
   imageURI: string;
-  kind: string;
 };
 
 export const useGnoDAOs = (networkId: string | undefined) => {

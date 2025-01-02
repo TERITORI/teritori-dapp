@@ -17,7 +17,6 @@ type Registration struct {
 	CreatedAt   time.Time   `json:"createdAt"`
 	Name        string      `json:"name"`
 	Description string      `json:"description"`
-	Kind        string      `json:"kind"`
 	ImageURI    string      `json:"imageURI"`
 	Getter      DAOGetter   `json:"-"`
 }
@@ -31,18 +30,18 @@ var (
 
 type DAOGetter func() dao_interfaces.IDAOCore
 
-func Register(getter DAOGetter, name string, description string, kind string, imageURI string) {
+func Register(getter DAOGetter, name string, description string, imageURI string) {
 	realm := std.PrevRealm()
 	pkgPath := realm.PkgPath()
 	if pkgPath == "" {
 		panic("caller is not a realm")
 	}
 
-	doRegister(getter, pkgPath, realm.Addr(), name, description, kind, imageURI)
+	doRegister(getter, pkgPath, realm.Addr(), name, description, imageURI)
 }
 
 // splitted for tests
-func doRegister(getter DAOGetter, pkgPath string, addr std.Address, name string, description string, kind string, imageURI string) {
+func doRegister(getter DAOGetter, pkgPath string, addr std.Address, name string, description string, imageURI string) {
 	if byPkgPath.Has(pkgPath) {
 		panic("already registered")
 	}
@@ -53,7 +52,6 @@ func doRegister(getter DAOGetter, pkgPath string, addr std.Address, name string,
 		CreatedAt:   time.Now(),
 		Name:        name,
 		Description: description,
-		Kind:        kind,
 		ImageURI:    imageURI,
 		Getter:      getter,
 	}
@@ -120,7 +118,6 @@ func (r Registration) ToJSON() *json.Node {
 		"createdAt":   jsonutil.TimeNode(r.CreatedAt),
 		"name":        json.StringNode("", r.Name),
 		"description": json.StringNode("", r.Description),
-		"kind":        json.StringNode("", r.Kind),
 		"imageURI":    json.StringNode("", r.ImageURI),
 	})
 }
