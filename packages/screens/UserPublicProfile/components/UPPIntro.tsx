@@ -21,6 +21,7 @@ import { SocialButton } from "@/components/buttons/SocialButton";
 import { SocialButtonSecondary } from "@/components/buttons/SocialButtonSecondary";
 import { ProfileButton } from "@/components/hub/ProfileButton";
 import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
+import { useIsDAO } from "@/hooks/cosmwasm/useCosmWasmContractInfo";
 import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
 import { usePremiumIsSubscribed } from "@/hooks/feed/usePremiumIsSubscribed";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
@@ -51,6 +52,8 @@ export const UPPIntro: React.FC<{
 }> = ({ userId, isUserOwner, setIsEditProfileModal = (val) => {} }) => {
   const selectedWallet = useSelectedWallet();
   const { metadata } = useNSUserInfo(userId);
+  console.log(metadata);
+  const { isDAO } = useIsDAO(userId);
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { margin: layout.spacing_x0_75 };
   const [network, userAddress] = parseUserId(userId);
@@ -295,6 +298,17 @@ export const UPPIntro: React.FC<{
           >
             {metadata?.public_bio}
           </BrandText>
+          {isDAO && metadata.dao_kind && (
+            <BrandText
+              style={[
+                fontMedium14,
+                { maxWidth: 735, marginTop: layout.spacing_x1 },
+              ]}
+              testID="upp-dao-kind"
+            >
+              {metadata?.dao_kind}
+            </BrandText>
+          )}
         </View>
         {/* Stats and public address */}
         <CopyToClipboardSecondary

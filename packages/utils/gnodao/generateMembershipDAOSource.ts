@@ -1,5 +1,5 @@
-import { mustGetGnoNetwork } from "../../networks";
 import { GnoDAOConfig } from "./deploy";
+import { mustGetGnoNetwork } from "../../networks";
 
 // TODO: Allow the role modules to be optional and don't use in MembershipDAO
 export const generateMembershipDAOSource = (
@@ -33,11 +33,11 @@ export const generateMembershipDAOSource = (
     votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
       group = voting_group.NewVotingGroup()
         ${conf.initialMembers
-      .map(
-        (member) =>
-          `group.SetMemberPower("${member.address}", ${member.weight})`,
-      )
-      .join("\n\t")}
+          .map(
+            (member) =>
+              `group.SetMemberPower("${member.address}", ${member.weight})`,
+          )
+          .join("\n\t")}
       return group
     }
 
@@ -46,11 +46,11 @@ export const generateMembershipDAOSource = (
     proposalModulesFactories := []dao_interfaces.ProposalModuleFactory{
       func(core dao_interfaces.IDAOCore) dao_interfaces.IProposalModule {
         tt := proposal_single.PercentageThresholdPercent(${Math.ceil(
-        conf.thresholdPercent * 100,
-      )}) // ${Math.ceil(conf.thresholdPercent * 100) / 100}%
+          conf.thresholdPercent * 100,
+        )}) // ${Math.ceil(conf.thresholdPercent * 100) / 100}%
         tq := proposal_single.PercentageThresholdPercent(${Math.ceil(
-        conf.quorumPercent * 100,
-      )}) // ${Math.ceil(conf.quorumPercent * 100) / 100}%
+          conf.quorumPercent * 100,
+        )}) // ${Math.ceil(conf.quorumPercent * 100) / 100}%
         return proposal_single.NewDAOProposalSingle(core, &proposal_single.DAOProposalSingleOpts{
           MaxVotingPeriod: dao_utils.DurationTime(time.Second * ${conf.maxVotingPeriodSeconds}),
           Threshold: &proposal_single.ThresholdThresholdQuorum{
@@ -82,7 +82,7 @@ export const generateMembershipDAOSource = (
     profile.SetStringField(profile.Bio, "${conf.description}")
     profile.SetStringField(profile.Avatar, "${conf.imageURI}")
 
-    dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "${conf.displayName}", "${conf.description}", "memberships", "${conf.imageURI}")
+    dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "${conf.displayName}", "${conf.description}", "membership", "${conf.imageURI}")
   }
   
   func Render(path string) string {
