@@ -53,7 +53,6 @@ export const UPPIntro: React.FC<{
 }> = ({ userId, isUserOwner, setIsEditProfileModal = (val) => {} }) => {
   const selectedWallet = useSelectedWallet();
   const { metadata } = useNSUserInfo(userId);
-  console.log(metadata);
   const { isDAO } = useIsDAO(userId);
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { margin: layout.spacing_x0_75 };
