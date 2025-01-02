@@ -1,26 +1,33 @@
 import React from "react";
-import { StyleSheet, View, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
 
 import SideNotchSVG from "../../../../assets/sidebar/side-notch.svg";
 import { SVG } from "../../SVG";
 
-export const SideNotch: React.FC<{ style?: ViewStyle }> = ({ style }) => {
+import { primaryColor, rakkiYellow } from "@/utils/style/colors";
+
+export const SideNotch: React.FC<{
+  sidebarItemId?: string;
+  style?: ViewStyle;
+}> = ({ sidebarItemId, style }) => {
   return (
-    <View style={[styles.container, style]}>
-      <SVG source={SideNotchSVG} />
+    <View
+      style={[
+        {
+          position: "absolute",
+          flex: 1,
+          flexDirection: "row",
+          left: 0,
+          top: 0,
+          bottom: 0,
+        },
+        style,
+      ]}
+    >
+      <SVG
+        source={SideNotchSVG}
+        color={sidebarItemId === "rakki" ? rakkiYellow : primaryColor}
+      />
     </View>
   );
 };
-
-// FIXME: remove StyleSheet.create
-// eslint-disable-next-line no-restricted-syntax
-const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
-    flex: 1,
-    flexDirection: "row",
-    left: 0,
-    top: 0,
-    bottom: 0,
-  },
-});

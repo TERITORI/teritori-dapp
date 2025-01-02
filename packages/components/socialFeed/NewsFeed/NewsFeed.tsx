@@ -31,6 +31,7 @@ import { SocialArticleCard } from "../SocialCard/cards/SocialArticleCard";
 import { SocialThreadCard } from "../SocialCard/cards/SocialThreadCard";
 import { SocialVideoCard } from "../SocialCard/cards/SocialVideoCard";
 
+import { SocialArticleMarkdownCard } from "@/components/socialFeed/SocialCard/cards/SocialArticleMarkdownCard";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { DeepPartial } from "@/utils/typescript";
 
@@ -179,6 +180,12 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
         >
           {post.category === PostCategory.Article ? (
             <SocialArticleCard
+              post={post}
+              style={cardStyle}
+              refetchFeed={refetch}
+            />
+          ) : post.category === PostCategory.ArticleMarkdown ? (
+            <SocialArticleMarkdownCard
               post={post}
               style={cardStyle}
               refetchFeed={refetch}
