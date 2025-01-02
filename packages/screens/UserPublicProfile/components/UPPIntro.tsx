@@ -37,10 +37,11 @@ import { DEFAULT_NAME } from "@/utils/social-feed";
 import {
   neutral00,
   neutral55,
+  neutralA3,
   secondaryColor,
   yellowPremium,
 } from "@/utils/style/colors";
-import { fontBold16, fontMedium14 } from "@/utils/style/fonts";
+import { fontBold16, fontMedium14, fontSemibold12 } from "@/utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
 import { normalizeTwitterId } from "@/utils/twitter";
@@ -288,7 +289,32 @@ export const UPPIntro: React.FC<{
               @{metadata.tokenId || userAddress}
             </BrandText>
           </>
-
+          {isDAO && metadata.dao_kind && (
+            <View
+              style={[
+                {
+                  marginTop: layout.spacing_x1,
+                  justifyContent: "center",
+                  borderRadius: 4,
+                  backgroundColor: "#1C1C1C",
+                  height: 18,
+                  paddingHorizontal: 4,
+                  alignSelf: "flex-start",
+                },
+              ]}
+            >
+              <BrandText
+                style={[
+                  fontSemibold12,
+                  {
+                    color: neutralA3,
+                  },
+                ]}
+              >
+                {metadata.dao_kind}
+              </BrandText>
+            </View>
+          )}
           <BrandText
             style={[
               fontMedium14,
@@ -298,17 +324,6 @@ export const UPPIntro: React.FC<{
           >
             {metadata?.public_bio}
           </BrandText>
-          {isDAO && metadata.dao_kind && (
-            <BrandText
-              style={[
-                fontMedium14,
-                { maxWidth: 735, marginTop: layout.spacing_x1 },
-              ]}
-              testID="upp-dao-kind"
-            >
-              {metadata?.dao_kind}
-            </BrandText>
-          )}
         </View>
         {/* Stats and public address */}
         <CopyToClipboardSecondary
