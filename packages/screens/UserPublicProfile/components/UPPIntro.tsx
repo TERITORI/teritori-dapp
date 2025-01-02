@@ -312,7 +312,7 @@ export const UPPIntro: React.FC<{
                   },
                 ]}
               >
-                {metadata.dao_kind}
+                {daoKind}
               </BrandText>
             </View>
           )}
