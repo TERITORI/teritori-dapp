@@ -11,6 +11,7 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 
 import { LETTERS_REGEXP } from "@/utils/regex";
+import { fontRegular14, fontRegular16 } from "@/utils/style/fonts";
 
 export const NameDataForm: React.FC<{
   isMintPath?: boolean;
@@ -34,7 +35,7 @@ export const NameDataForm: React.FC<{
     useState("");
 
   const inputStyle: ViewStyle = { marginBottom: 12, width: "100%" };
-  const profileDataTextStyle = { color: neutral77, fontSize: 16 };
+  const profileDataTextStyle = [fontRegular16, { color: neutral77 }];
 
   // Sending the input values
   const handlePressBtn = () =>
@@ -88,7 +89,9 @@ export const NameDataForm: React.FC<{
               alignSelf: "flex-start",
             }}
           >
-            <BrandText style={{ marginBottom: 8 }}>Profile data</BrandText>
+            <BrandText style={[fontRegular14, { marginBottom: 8 }]}>
+              Profile data
+            </BrandText>
             <BrandText style={profileDataTextStyle}>
               Tip: to generate a PFP URL, use a service like{" "}
               <ExternalLink

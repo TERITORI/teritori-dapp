@@ -21,7 +21,7 @@ import { useTNS } from "@/context/TNSProvider";
 import { useNSPrimaryAlias } from "@/hooks/useNSPrimaryAlias";
 import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
 import { neutral17, neutral33, neutral77 } from "@/utils/style/colors";
-import { fontSemibold14 } from "@/utils/style/fonts";
+import { fontRegular14, fontRegular16 } from "@/utils/style/fonts";
 import { nsTokenWithoutTLD } from "@/utils/tns";
 
 interface TNSManageScreenProps extends TNSModalCommonProps {}
@@ -62,13 +62,15 @@ export const TNSManageScreen: React.FC<TNSManageScreenProps> = ({
         style={{ flex: Platform.OS === "web" ? 1 : 0, alignItems: "center" }}
       >
         {!tokens.length ? (
-          <BrandText style={{ marginVertical: 40 }}>No token</BrandText>
+          <BrandText style={[fontRegular14, { marginVertical: 40 }]}>
+            No token
+          </BrandText>
         ) : (
           <>
             {/*// ---------- Tokens*/}
             <BrandText
               style={[
-                fontSemibold14,
+                fontRegular14,
                 {
                   color: neutral77,
                   alignSelf: "flex-start",
@@ -159,7 +161,7 @@ const NameCard: React.FC<{
               marginRight: 12,
             }}
           />
-          <BrandText style={{ letterSpacing: -(20 * 0.04) }}>
+          <BrandText style={[fontRegular16, { letterSpacing: -(20 * 0.04) }]}>
             {fullName}
           </BrandText>
         </View>

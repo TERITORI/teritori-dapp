@@ -24,6 +24,8 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { SeparatorGradient } from "../separators/SeparatorGradient";
 
+import { fontRegular20 } from "@/utils/style/fonts";
+
 const getModalColors = (status?: ModalBaseProps["modalStatus"]) => {
   switch (status) {
     case "danger":
@@ -162,7 +164,7 @@ const GradientModalBase: React.FC<ModalBaseProps> = ({
                 </TouchableOpacity>
               )}
               {label && (
-                <BrandText style={{ color: "white", lineHeight: 24 }}>
+                <BrandText style={[fontRegular20, { color: "white" }]}>
                   {label}
                 </BrandText>
               )}

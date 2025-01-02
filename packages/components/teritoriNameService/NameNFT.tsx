@@ -8,7 +8,7 @@ import { useSelectedNetworkId } from "../../hooks/useSelectedNetwork";
 import { getCosmosNetwork } from "../../networks";
 import { web3ToWeb2URI } from "../../utils/ipfs";
 import { neutral77 } from "../../utils/style/colors";
-import { fontSemibold16 } from "../../utils/style/fonts";
+import { fontRegular16 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { OptimizedImage } from "../OptimizedImage";
 import { SpacerColumn } from "../spacer";
@@ -70,10 +70,10 @@ export const NameNFT: React.FC<{
       ) : (
         <>
           <SpacerColumn size={1.5} />
-          <BrandText>{tokenId}</BrandText>
+          <BrandText style={[fontRegular16]}>{tokenId}</BrandText>
         </>
       )}
-      <BrandText style={[fontSemibold16, { color: neutral77 }]}>
+      <BrandText style={[fontRegular16, { color: neutral77 }]}>
         {name}
       </BrandText>
     </View>
