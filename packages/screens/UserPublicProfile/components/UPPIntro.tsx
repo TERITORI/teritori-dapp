@@ -22,6 +22,7 @@ import { SocialButtonSecondary } from "@/components/buttons/SocialButtonSecondar
 import { ProfileButton } from "@/components/hub/ProfileButton";
 import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
 import { useIsDAO } from "@/hooks/cosmwasm/useCosmWasmContractInfo";
+import { useDAOKind } from "@/hooks/dao/useDAOKind";
 import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
 import { usePremiumIsSubscribed } from "@/hooks/feed/usePremiumIsSubscribed";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
@@ -54,6 +55,7 @@ export const UPPIntro: React.FC<{
   const selectedWallet = useSelectedWallet();
   const { metadata } = useNSUserInfo(userId);
   const { isDAO } = useIsDAO(userId);
+  const { daoKind } = useDAOKind(userId);
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { margin: layout.spacing_x0_75 };
   const [network, userAddress] = parseUserId(userId);
@@ -288,7 +290,7 @@ export const UPPIntro: React.FC<{
               @{metadata.tokenId || userAddress}
             </BrandText>
           </>
-          {isDAO && metadata.dao_kind && (
+          {isDAO && daoKind && (
             <View
               style={[
                 {
