@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import { NSAvailability } from "./tns";
 
 export enum DaoType {
@@ -26,6 +28,35 @@ export type ConfigureVotingFormType = {
   hours: string;
   minutes: string;
 };
+
+export const ZodRoleObject = z.object({
+  name: z.string().trim().min(1),
+  color: z.string().trim().min(1),
+  resources: z.array(z.string().optional()).optional(),
+});
+export const ZodRolesMemberObject = z.object({
+  addr: z.string().trim().min(1),
+  weight: z.string().trim().min(1),
+  // TODO: change it to an array
+  roles: z.string(),
+});
+export const ZodRolesObject = z.object({
+  roles: z.array(ZodRoleObject),
+});
+export const ZodRolesMembersObject = z.object({
+  members: z.array(ZodRolesMemberObject),
+});
+const ZodRolesConfigObject = z.object({
+  supportPercent: z.number(),
+  minimumApprovalPercent: z.number(),
+  days: z.string().trim(),
+  hours: z.string().trim(),
+  minutes: z.string().trim(),
+});
+export type RolesConfigFormType = z.infer<typeof ZodRolesConfigObject>;
+export type RolesMembersFormType = z.infer<typeof ZodRolesMembersObject>;
+export type RolesFormType = z.infer<typeof ZodRolesObject>;
+export type RoleFormType = z.infer<typeof ZodRoleObject>;
 
 export type LaunchingProcessStepType = {
   title: string;

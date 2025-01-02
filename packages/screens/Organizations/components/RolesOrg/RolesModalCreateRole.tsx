@@ -1,4 +1,6 @@
-import { Control } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
@@ -11,50 +13,66 @@ import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold18 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { RolesSettingFormType } from "@/utils/types/organizations";
+import { RoleFormType, ZodRoleObject } from "@/utils/types/organizations";
 
 interface RolesModalCreateRoleProps {
   modalVisible: boolean;
-  rolesIndexes: number[];
-  resources: { name: string; resources: string[]; value: boolean }[];
-  control: Control<RolesSettingFormType>;
   onCloseModal: () => void;
-  onCheckboxChange: (index: number) => void;
-  addRoleField: () => void;
+  addRoleField: (name: string, color: string, resources: string[]) => void;
 }
 
 export const RolesModalCreateRole: React.FC<RolesModalCreateRoleProps> = ({
   modalVisible,
-  rolesIndexes,
-  resources,
-  control,
   onCloseModal,
-  onCheckboxChange,
   addRoleField,
 }) => {
+  const { control, handleSubmit, reset } = useForm<RoleFormType>({
+    resolver: zodResolver(ZodRoleObject),
+  });
+
+  const getInitialState = () => {
+    return fakeResources.map((fakeResource) => ({
+      ...fakeResource,
+      value: false,
+    }));
+  };
+  const [resources, setResources] =
+    useState<{ name: string; resources: string[]; value: boolean }[]>(
+      getInitialState(),
+    );
+
+  const onCheckboxChange = (index: number) => {
+    const copyResources = [...resources];
+    copyResources[index].value = !copyResources[index].value;
+    setResources(copyResources);
+  };
+
   return (
     <ModalBase
       key={modalVisible ? "open" : "closed"}
       visible={modalVisible}
-      onClose={onCloseModal}
+      onClose={() => {
+        onCloseModal();
+        setResources(getInitialState());
+      }}
       width={480}
       label="Add a new Role"
     >
       <View>
-        <TextInputCustom<RolesSettingFormType>
+        <TextInputCustom<RoleFormType>
           control={control}
+          name="name"
           noBrokenCorners
-          name={`roles.${rolesIndexes.length}.name`}
           label="Role name"
           placeholder="Role name"
           rules={{ required: true }}
           placeHolder="Role name"
         />
         <SpacerColumn size={2.5} />
-        <TextInputCustom<RolesSettingFormType>
+        <TextInputCustom<RoleFormType>
           control={control}
           noBrokenCorners
-          name={`roles.${rolesIndexes.length}.color`}
+          name="color"
           label="Role color"
           placeholder="Role color"
           placeHolder="Role color"
@@ -90,9 +108,59 @@ export const RolesModalCreateRole: React.FC<RolesModalCreateRoleProps> = ({
       </View>
       <SpacerColumn size={2.5} />
       <View style={{ alignItems: "center" }}>
-        <PrimaryButton size="SM" text="Add New Role" onPress={addRoleField} />
+        <PrimaryButton
+          size="SM"
+          text="Add New Role"
+          onPress={handleSubmit((data: RoleFormType) => {
+            let finalResources: string[] = [];
+            resources.forEach((resource) => {
+              if (resource.value === true) {
+                finalResources = finalResources.concat(resource.resources);
+              }
+            });
+            reset();
+            setResources(getInitialState());
+            addRoleField(data.name, data.color, finalResources);
+          })}
+        />
       </View>
       <SpacerColumn size={2.5} />
     </ModalBase>
   );
 };
+
+// TODO: Create a hook to get all the resources
+const fakeResources = [
+  {
+    name: "Organizations",
+    resources: [],
+  },
+  {
+    name: "Social Feed",
+    resources: ["gno.land/r/teritori/social_feeds.CreatePost"],
+  },
+  {
+    name: "Marketplace",
+    resources: [],
+  },
+  {
+    name: "Launchpad NFT",
+    resources: [],
+  },
+  {
+    name: "Launchpad ERC20",
+    resources: [],
+  },
+  {
+    name: "Name Service",
+    resources: [],
+  },
+  {
+    name: "Multisig Wallet",
+    resources: [],
+  },
+  {
+    name: "Projects",
+    resources: [],
+  },
+];
