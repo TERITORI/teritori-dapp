@@ -10,9 +10,8 @@ import (
 	dao_core "gno.land/p/teritori/dao_core"
 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
 	proposal_single "gno.land/p/teritori/dao_proposal_single"
-	"gno.land/p/teritori/dao_roles_group"
-	roles_voting_group "gno.land/p/teritori/dao_roles_voting_group"
 	"gno.land/p/teritori/dao_utils"
+	"gno.land/p/teritori/dao_voting_roles"
 	"gno.land/p/teritori/jsonutil"
 	"gno.land/r/demo/profile"
 	"gno.land/r/teritori/dao_registry"
@@ -24,29 +23,30 @@ import (
 
 var (
 	daoCore    dao_interfaces.IDAOCore
-	group      *roles_voting_group.RolesVotingGroup
-	roles      *dao_roles_group.RolesGroup
+	voting     *dao_voting_roles.VotingRoles
 	registered bool
 )
 
 func init() {
-	roles = dao_roles_group.NewRolesGroup()
-	roles.NewRoleJSON("admin", "[{\"resource\": \"social_feed\", \"power\": \"25\"}, {\"resource\": \"organizations\", \"power\": \"100\"}]")
-	roles.NewRoleJSON("moderator", "[{\"resource\": \"social_feed\", \"power\": \"10\"}]")
-	roles.NewRoleJSON("member", "[]")
-	roles.GrantRole("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", "admin")
-	roles.GrantRole("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", "moderator")
-	roles.GrantRole("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", "member")
-	roles.GrantRole("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", "member")
-
 	votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
-		group = roles_voting_group.NewRolesVotingGroup(roles)
-		group.SetMemberPower("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", 1)
-		group.SetMemberPower("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", 1)
-		group.SetMemberPower("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", 1)
-		group.SetMemberPower("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", 1)
-		group.SetMemberPower(std.GetOrigCaller(), 1)
-		return group
+		voting = dao_voting_roles.NewVotingRoles()
+
+		voting.SetMemberPower(std.GetOrigCaller(), 1)
+		voting.SetMemberPower("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", 1)
+		voting.SetMemberPower("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", 1)
+		voting.SetMemberPower("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", 1)
+		voting.SetMemberPower("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", 1)
+
+		voting.NewRoleJSON("admin", "[{\"resource\": \"social_feed\", \"power\": \"25\"}, {\"resource\": \"organizations\", \"power\": \"100\"}]")
+		voting.NewRoleJSON("moderator", "[{\"resource\": \"social_feed\", \"power\": \"10\"}]")
+		voting.NewRoleJSON("member", "[]")
+
+		voting.GrantRole("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", "admin")
+		voting.GrantRole("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", "moderator")
+		voting.GrantRole("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", "member")
+		voting.GrantRole("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", "member")
+
+		return voting
 	}
 
 	// TODO: consider using factories that return multiple modules and handlers
@@ -67,7 +67,7 @@ func init() {
 
 	messageHandlersFactories := []dao_interfaces.MessageHandlerFactory{
 		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-			return group.UpdateMembersHandler()
+			return voting.UpdateMembersHandler()
 		},
 		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
 			// TODO: add a router to support multiple proposal modules
@@ -165,7 +165,7 @@ func getMembersJSON(start, end string, limit uint64) string {
 	for i, val := range vals {
 		obj := val.MustObject()
 		addr := jsonutil.MustAddress(obj["address"])
-		roles := roles.GetMemberRoles(addr)
+		roles := voting.GetMemberRoles(addr)
 		rolesJSON := make([]*json.Node, len(roles))
 		for j, role := range roles {
 			rolesJSON[j] = json.StringNode("", role)

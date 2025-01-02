@@ -1,11 +1,11 @@
-package dao_roles_voting_group
+package dao_voting_roles
 
 import (
 	"gno.land/p/demo/json"
 	"gno.land/p/teritori/dao_interfaces"
 )
 
-const updateMembersType = "gno.land/p/teritori/dao_voting_group.UpdateMembers"
+const updateMembersType = "gno.land/p/teritori/dao_voting_roles.UpdateMembers"
 
 type UpdateMembersExecutableMessage []Member
 
@@ -37,7 +37,7 @@ func (m *UpdateMembersExecutableMessage) Type() string {
 }
 
 type updateMembersHandler struct {
-	vg *RolesVotingGroup
+	vg *VotingRoles
 }
 
 var _ dao_interfaces.MessageHandler = (*updateMembersHandler)(nil)

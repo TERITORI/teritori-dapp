@@ -16,13 +16,10 @@ func TestRegistry(t *testing.T) {
 	registerMsg := &RegisterHandlerExecutableMessage{Handler: msgHandler}
 	registry.Execute(registerMsg)
 
-	// Test messages execution
-	msgs := registry.MessagesFromJSON(json.Must(json.Unmarshal([]byte(`[{"type":"CopyMessage","payload":"Hello"}]`))).MustArray())
-	if len(msgs) != 1 {
-		t.Errorf("Expected 1 message, got %d", len(msgs))
-	}
+	// Test message execution
+	msg := registry.MessageFromJSON(json.Must(json.Unmarshal([]byte(`{"type":"CopyMessage","payload":"Hello"}`))))
 
-	registry.Execute(msgs[0])
+	registry.Execute(msg)
 	if value != "Hello" {
 		t.Errorf("Expected value to be 'Hello', got '%s'", value)
 	}

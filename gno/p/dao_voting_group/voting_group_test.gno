@@ -12,7 +12,7 @@ func TestVotingGroup(t *testing.T) {
 	i = v
 
 	{
-		got := i.TotalPowerAtHeight(0)
+		got := i.TotalPowerAtHeight("", 0)
 		expected := uint64(0)
 		if got != expected {
 			t.Fatalf("expected %s, got %s.", expected, got)

@@ -15,11 +15,10 @@ export const generateRolesDAOSource = (
     dao_core "${network.daoCorePkgPath}"
     dao_interfaces "${network.daoInterfacesPkgPath}"
     proposal_single "${network.daoProposalSinglePkgPath}"
-    "${network.rolesGroupPkgPath}"
     "${network.daoUtilsPkgPath}"
     "gno.land/p/teritori/jsonutil"
     "${network.profilePkgPath}"
-    voting_group "${network.rolesVotingGroupPkgPath}"
+    voting_roles "${network.votingRolesPkgPath}"
     "${network.daoRegistryPkgPath}"
     "${network.socialFeedsPkgPath}"
     "gno.land/p/demo/json"
@@ -27,42 +26,39 @@ export const generateRolesDAOSource = (
   
 var (
 	daoCore    dao_interfaces.IDAOCore
-	group      *voting_group.RolesVotingGroup
-  roles      *dao_roles_group.RolesGroup
+  voting      *voting_roles.VotingRoles
 	registered bool
 )
 
 func init() {
-  roles = dao_roles_group.NewRolesGroup()
-  ${(conf.roles ?? [])
-    .map(
-      (role) =>
-        `roles.NewRoleJSON("${role.name}", "[${(role.resources ?? [])
-          .map(
-            (resource) =>
-              `{\\"resource\\": \\"${resource}\\", \\"power\\": \\"999\\"}`,
-          )
-          .join(", ")}]")`,
-    )
-    .join("\n\t")}
-  ${conf.initialMembers
-    .filter((member) => member.roles.length > 0)
-    .map((member) =>
-      member.roles
-        .map((role) => `roles.GrantRole("${member.address}", "${role}")`)
-        .join("\n\t"),
-    )
-    .join("\n\t")}
-
 	votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
-		group = voting_group.NewRolesVotingGroup(roles)
+    voting = voting_roles.NewVotingRoles()
+    ${(conf.roles ?? [])
+      .map(
+        (role) =>
+          `voting.NewRoleJSON("${role.name}", "[${(role.resources ?? [])
+            .map(
+              (resource) =>
+                `{\\"resource\\": \\"${resource}\\", \\"power\\": \\"999\\"}`,
+            )
+            .join(", ")}]")`,
+      )
+      .join("\n\t")}
+    ${conf.initialMembers
+      .filter((member) => member.roles.length > 0)
+      .map((member) =>
+        member.roles
+          .map((role) => `voting.GrantRole("${member.address}", "${role}")`)
+          .join("\n\t"),
+      )
+      .join("\n\t")}
       ${conf.initialMembers
         .map(
           (member) =>
-            `group.SetMemberPower("${member.address}", ${member.weight})`,
+            `voting.SetMemberPower("${member.address}", ${member.weight})`,
         )
         .join("\n\t")}
-		return group
+		return voting
 	}
 
 
@@ -88,7 +84,7 @@ func init() {
   
 	messageHandlersFactories := []dao_interfaces.MessageHandlerFactory{
 		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-			return group.UpdateMembersHandler()
+			return voting.UpdateMembersHandler()
 		},
 		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
 			// TODO: add a router to support multiple proposal modules
@@ -167,7 +163,7 @@ func init() {
     for i, val := range vals {
       obj := val.MustObject()
       addr := jsonutil.MustAddress(obj["address"])
-      roles := roles.GetMemberRoles(addr)
+      roles := voting.GetMemberRoles(addr)
       rolesJSON := make([]*json.Node, len(roles))
       for j, role := range roles {
         rolesJSON[j] = json.StringNode("", role)

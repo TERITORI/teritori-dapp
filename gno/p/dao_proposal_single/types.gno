@@ -83,7 +83,7 @@ type Proposal struct {
 	Expiration      dao_utils.Expiration
 	Threshold       Threshold
 	TotalPower      uint64
-	Messages        []dao_interfaces.ExecutableMessage
+	Message         dao_interfaces.ExecutableMessage
 	Status          ProposalStatus
 	Votes           Votes
 	AllowRevoting   bool
@@ -105,17 +105,15 @@ func (m *messageWithType) ToJSON() *json.Node {
 	})
 }
 
-func formatMessages(messages []dao_interfaces.ExecutableMessage) []*json.Node {
-	out := make([]*json.Node, len(messages))
-	for i, m := range messages {
-		mt := messageWithType{
-			Type:    m.Type(),
-			Message: m,
-		}
-		out[i] = mt.ToJSON()
+func formatMessage(m dao_interfaces.ExecutableMessage) *json.Node {
+	if m == nil {
+		return json.NullNode("")
 	}
-
-	return out
+	mt := messageWithType{
+		Type:    m.Type(),
+		Message: m,
+	}
+	return mt.ToJSON()
 }
 
 func (p Proposal) ToJSON() *json.Node {
@@ -126,7 +124,7 @@ func (p Proposal) ToJSON() *json.Node {
 		"proposer":      jsonutil.AddressNode(p.Proposer),
 		"startHeight":   jsonutil.Int64Node(p.StartHeight),
 		"totalPower":    jsonutil.Uint64Node(p.TotalPower),
-		"messages":      json.ArrayNode("", formatMessages(p.Messages)),
+		"message":       formatMessage(p.Message),
 		"status":        p.Status.ToJSON(),
 		"votes":         p.Votes.ToJSON(),
 		"allowRevoting": json.BoolNode("", p.AllowRevoting),

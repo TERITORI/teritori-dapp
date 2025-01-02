@@ -95,7 +95,7 @@ func TestProposalJSON(t *testing.T) {
 			Proposer:    "0x1234567890",
 			Status:      ProposalStatusExecuted,
 			Expiration:  dao_utils.ExpirationAtHeight(2000),
-			Messages:    []dao_interfaces.ExecutableMessage{NoopMessage{}, NoopMessage{}, NoopMessage{}},
+			Message:     &NoopMessage{},
 		},
 	}
 
@@ -106,7 +106,7 @@ func TestProposalJSON(t *testing.T) {
 	}
 
 	str := json.ArrayNode("", iSlice).String()
-	expected := `[{"id":"0","title":"Prop #0","description":"Wolol0\n\t\r","proposer":"0x1234567890","startHeight":"0","totalPower":"0","messages":[],"status":"Open","votes":{"yes":"7","no":"21","abstain":"42"},"allowRevoting":false,"ballots":{"0x1234567890":{"power":"1","vote":"Yes","rationale":"test"}},"expiration":{"atHeight":"1000"}},{"id":"1","title":"Prop #1","description":"Wolol1\\\"","proposer":"0x1234567890","startHeight":"0","totalPower":"0","messages":[{"type":"noop-type","payload":"noop"},{"type":"noop-type","payload":"noop"},{"type":"noop-type","payload":"noop"}],"status":"Executed","votes":{"yes":"0","no":"0","abstain":"0"},"allowRevoting":false,"ballots":{},"expiration":{"atHeight":"2000"}}]`
+	expected := `[{"id":"0","title":"Prop #0","description":"Wolol0\n\t\r","proposer":"0x1234567890","startHeight":"0","totalPower":"0","message":null,"status":"Open","votes":{"yes":"7","no":"21","abstain":"42"},"allowRevoting":false,"ballots":{"0x1234567890":{"power":"1","vote":"Yes","rationale":"test"}},"expiration":{"atHeight":"1000"}},{"id":"1","title":"Prop #1","description":"Wolol1\\\"","proposer":"0x1234567890","startHeight":"0","totalPower":"0","message":{"type":"noop-type","payload":"noop"},"status":"Executed","votes":{"yes":"0","no":"0","abstain":"0"},"allowRevoting":false,"ballots":{},"expiration":{"atHeight":"2000"}}]`
 	if expected != str {
 		t.Fatalf("JSON does not match, expected %s, got %s", expected, str)
 	}
