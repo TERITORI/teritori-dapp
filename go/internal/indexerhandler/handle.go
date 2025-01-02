@@ -335,6 +335,15 @@ func (h *Handler) handleExecute(e *Message) error {
 			if err := h.handleExecutePremiumFeedSubscribe(e, &executeMsg); err != nil {
 				return errors.Wrap(err, "failed to handle premium feed subscribe")
 			}
+		// Marketplace (cw-address-list)
+		case "add":
+			if err := h.handleExecuteAddWhitelistedCollection(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle add whitelisted collection")
+			}
+		case "remove":
+			if err := h.handleExecuteRemoveWhitelistedCollection(e, &executeMsg); err != nil {
+				return errors.Wrap(err, "failed to handle remove whitelisted collection")
+			}
 		}
 	}
 
@@ -378,3 +387,4 @@ func (h *Handler) handleExecuteMint(e *Message, execMsg *wasmtypes.MsgExecuteCon
 
 	return nil
 }
+
