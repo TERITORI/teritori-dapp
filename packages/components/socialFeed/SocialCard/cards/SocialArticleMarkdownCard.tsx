@@ -1,16 +1,11 @@
 import { LinearGradient } from "expo-linear-gradient";
-import React, { FC, memo, useEffect, useMemo, useState } from "react";
+import React, { FC, memo, useEffect, useState } from "react";
 import { StyleProp, useWindowDimensions, View, ViewStyle } from "react-native";
 
 import { BrandText } from "../../../BrandText";
 import { OptimizedImage } from "../../../OptimizedImage";
 import { CustomPressable } from "../../../buttons/CustomPressable";
 import { SpacerColumn } from "../../../spacer";
-import {
-  createStateFromHTML,
-  getTruncatedArticleHTML,
-  isArticleHTMLNeedsTruncate,
-} from "../../RichText";
 import { FlaggedCardFooter } from "../FlaggedCardFooter";
 import { SocialCardFooter } from "../SocialCardFooter";
 import { SocialCardHeader } from "../SocialCardHeader";
@@ -36,15 +31,14 @@ import {
   RESPONSIVE_BREAKPOINT_S,
   SOCIAL_FEED_BREAKPOINT_M,
 } from "@/utils/style/layout";
-import {
-  ZodSocialFeedArticleMetadata,
-  ZodSocialFeedPostMetadata,
-} from "@/utils/types/feed";
+import { ZodSocialFeedArticleMarkdownMetadata } from "@/utils/types/feed";
 
 const ARTICLE_CARD_PADDING_VERTICAL = layout.spacing_x2;
 const ARTICLE_CARD_PADDING_HORIZONTAL = layout.spacing_x2_5;
 
-export const SocialArticleCard: FC<{
+// TODO: It's a copy of SocialArticleCard.tsx, just made waiting for a posts UI (and data) refacto. => Merge them in the future
+
+export const SocialArticleMarkdownCard: FC<{
   post: Post;
   isPostConsultation?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -65,49 +59,16 @@ export const SocialArticleCard: FC<{
       windowWidth < RESPONSIVE_BREAKPOINT_S ? 0 : SOCIAl_CARD_BORDER_RADIUS;
 
     const metadata = zodTryParseJSON(
-      ZodSocialFeedArticleMetadata,
+      ZodSocialFeedArticleMarkdownMetadata,
       localPost.metadata,
     );
-    const oldMetadata = zodTryParseJSON(
-      ZodSocialFeedPostMetadata,
-      localPost.metadata,
-    );
-    const thumbnailImage =
-      metadata?.thumbnailImage ||
-      // Old articles doesn't have thumbnailImage, but they have a file with a isCoverImage flag
-      oldMetadata?.files?.find((file) => file.isCoverImage);
-    const simplePostMetadata = metadata || oldMetadata;
-    const message = simplePostMetadata?.message;
-
-    const shortDescription = useMemo(() => {
-      if (metadata?.shortDescription) {
-        return metadata.shortDescription;
-      }
-      if (!message) return "";
-      if (isArticleHTMLNeedsTruncate(message, true)) {
-        const { truncatedHtml } = getTruncatedArticleHTML(message);
-        const contentState =
-          createStateFromHTML(truncatedHtml).getCurrentContent();
-        return (
-          metadata?.shortDescription ||
-          // Old articles doesn't have shortDescription, so we use the start of the html content
-          contentState.getPlainText()
-        );
-      }
-      return "";
-    }, [message, metadata?.shortDescription]);
+    const thumbnailImage = metadata?.thumbnailImage;
+    const shortDescription = metadata?.shortDescription || "";
+    const title = metadata?.title;
 
     useEffect(() => {
       setLocalPost(post);
     }, [post]);
-
-    const thumbnailURI = thumbnailImage?.url
-      ? thumbnailImage.url.includes("://")
-        ? thumbnailImage.url
-        : "ipfs://" + thumbnailImage.url // we need this hack because ipfs "urls" in feed are raw CIDs
-      : defaultThumbnailImage;
-
-    const title = simplePostMetadata?.title;
 
     return (
       <SocialCardWrapper
@@ -215,7 +176,7 @@ export const SocialArticleCard: FC<{
           <OptimizedImage
             width={thumbnailImageWidth}
             height={articleCardHeight - 2}
-            sourceURI={thumbnailURI}
+            sourceURI={thumbnailImage?.url}
             fallbackURI={defaultThumbnailImage}
             style={{
               zIndex: -1,
