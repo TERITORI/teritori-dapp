@@ -26,16 +26,16 @@ import {
   ConfigureVotingFormType,
   CreateDaoFormType,
   TokenSettingFormType,
-  ZodRoleObject,
-  ZodRolesMemberObject,
+  zodRoleObject,
+  zodRolesMemberObject,
 } from "@/utils/types/organizations";
 
 interface RolesReviewInformationSectionProps {
   organizationData?: CreateDaoFormType;
   votingSettingData?: ConfigureVotingFormType;
   tokenSettingData?: TokenSettingFormType;
-  memberSettingData?: z.infer<typeof ZodRolesMemberObject>[];
-  rolesSettingData?: z.infer<typeof ZodRoleObject>[];
+  memberSettingData?: z.infer<typeof zodRolesMemberObject>[];
+  rolesSettingData?: z.infer<typeof zodRoleObject>[];
   onSubmit: () => void;
 }
 
