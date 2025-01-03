@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import { NSAvailability } from "./tns";
 
 export enum DaoType {
@@ -41,13 +43,26 @@ export type MembershipMemberSettingFormType = {
 
 // ROLES BASED ORGANIZATION FORM TYPES
 
-export type RolesSettingFormType = {
-  roles: { name: string; color: string; resources: string[] | undefined }[];
-};
-
-export type RolesMemberSettingFormType = {
-  members: { addr: string; weight: string; roles: string | undefined }[];
-};
+export const zodRoleObject = z.object({
+  name: z.string().trim().min(1),
+  color: z.string().trim().min(1),
+  resources: z.array(z.string()).optional(),
+});
+export const zodRolesObject = z.object({
+  roles: z.array(zodRoleObject),
+});
+export const zodRolesMemberObject = z.object({
+  addr: z.string().trim().min(1),
+  weight: z.string().trim().min(1),
+  // TODO: change it to an array
+  roles: z.string(),
+});
+export const zodRolesMembersObject = z.object({
+  members: z.array(zodRolesMemberObject),
+});
+export type RolesMembersFormType = z.infer<typeof zodRolesMembersObject>;
+export type RolesFormType = z.infer<typeof zodRolesObject>;
+export type RoleFormType = z.infer<typeof zodRoleObject>;
 
 // TOKEN BASED ORGANIZATION FORM TYPES
 

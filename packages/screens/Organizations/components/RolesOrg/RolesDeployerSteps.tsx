@@ -1,5 +1,7 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
 import { View } from "react-native";
 
 import { RolesMembersSettingsSection } from "./RolesMembersSettingsSection";
@@ -25,8 +27,10 @@ import {
   CreateDaoFormType,
   LAUNCHING_PROCESS_STEPS,
   ROLES_BASED_ORGANIZATION_STEPS,
-  RolesMemberSettingFormType,
-  RolesSettingFormType,
+  RolesFormType,
+  RolesMembersFormType,
+  zodRolesMembersObject,
+  zodRolesObject,
 } from "@/utils/types/organizations";
 
 export const RolesDeployerSteps: React.FC<{
@@ -49,12 +53,37 @@ export const RolesDeployerSteps: React.FC<{
   const network = getNetwork(selectedWallet?.networkId);
   const queryClient = useQueryClient();
   const { setToast } = useFeedbacks();
+  const rolesMembersForm = useForm<RolesMembersFormType>({
+    resolver: zodResolver(zodRolesMembersObject),
+    defaultValues: {
+      members: selectedWallet?.address
+        ? [
+            {
+              addr: selectedWallet?.address,
+              weight: "0",
+              roles: "",
+            },
+          ]
+        : [],
+    },
+  });
+  const rolesForm = useForm<RolesFormType>({
+    resolver: zodResolver(zodRolesObject),
+    defaultValues: {
+      roles: [],
+    },
+  });
+  const membersField = useFieldArray({
+    control: rolesMembersForm.control,
+    name: "members",
+  });
+  const rolesField = useFieldArray({
+    control: rolesForm.control,
+    name: "roles",
+  });
+
   const [configureVotingFormData, setConfigureVotingFormData] =
     useState<ConfigureVotingFormType>();
-  const [rolesSettingsFormData, setRolesSettingsFormData] =
-    useState<RolesSettingFormType>();
-  const [memberSettingsFormData, setMemberSettingsFormData] =
-    useState<RolesMemberSettingFormType>();
 
   const createDaoContract = async (): Promise<boolean> => {
     try {
@@ -62,20 +91,18 @@ export const RolesDeployerSteps: React.FC<{
         case NetworkKind.Gno: {
           const name = organizationData?.associatedHandle!;
           const roles =
-            rolesSettingsFormData?.roles?.map((role) => ({
+            rolesField?.fields?.map((role) => ({
               name: role.name.trim(),
               color: role.color,
-              resources: role.resources,
+              resources: role.resources || [],
             })) || [];
-          const initialMembers = (memberSettingsFormData?.members || []).map(
-            (member) => ({
-              address: member.addr,
-              weight: parseInt(member.weight, 10),
-              roles: member.roles
-                ? member.roles.split(",").map((role) => role.trim())
-                : [],
-            }),
-          );
+          const initialMembers = (membersField?.fields || []).map((member) => ({
+            address: member.addr,
+            weight: parseInt(member.weight, 10),
+            roles: member.roles
+              ? member.roles.split(",").map((role) => role.trim())
+              : [],
+          }));
           const pkgPath = await adenaDeployGnoDAO(
             network.id,
             selectedWallet?.address!,
@@ -113,7 +140,7 @@ export const RolesDeployerSteps: React.FC<{
             network.cwAdminFactoryContractAddress!;
           const walletAddress = selectedWallet.address;
 
-          if (!memberSettingsFormData) return false;
+          if (!membersField.fields) return false;
           const params: CreateDaoMemberBasedParams = {
             networkId,
             sender: walletAddress,
@@ -127,7 +154,7 @@ export const RolesDeployerSteps: React.FC<{
             description: organizationData.organizationDescription,
             tns: organizationData.associatedHandle,
             imageUrl: organizationData.imageUrl,
-            members: memberSettingsFormData.members.map((value) => ({
+            members: membersField.fields.map((value) => ({
               addr: value.addr,
               weight: parseInt(value.weight, 10),
             })),
@@ -184,13 +211,11 @@ export const RolesDeployerSteps: React.FC<{
     setCurrentStep(2);
   };
 
-  const onSubmitRolesSettings = (data: RolesSettingFormType) => {
-    setRolesSettingsFormData(data);
+  const onSubmitRolesSettings = () => {
     setCurrentStep(3);
   };
 
-  const onSubmitMemberSettings = (data: RolesMemberSettingFormType) => {
-    setMemberSettingsFormData(data);
+  const onSubmitMemberSettings = () => {
     setCurrentStep(4);
   };
 
@@ -215,8 +240,8 @@ export const RolesDeployerSteps: React.FC<{
     );
     setOrganizationData(undefined);
     setConfigureVotingFormData(undefined);
-    setRolesSettingsFormData(undefined);
-    setMemberSettingsFormData(undefined);
+    rolesMembersForm.reset();
+    rolesForm.reset();
     setCurrentStep(0);
     setDAOAddress("");
     setLaunchingStep(0);
@@ -239,14 +264,25 @@ export const RolesDeployerSteps: React.FC<{
           currentStep === 2 ? { display: "flex", flex: 1 } : { display: "none" }
         }
       >
-        <RolesSettingsSection onSubmit={onSubmitRolesSettings} />
+        <RolesSettingsSection
+          remove={rolesField.remove}
+          append={rolesField.append}
+          roles={rolesField.fields}
+          handleSubmit={rolesForm.handleSubmit(onSubmitRolesSettings)}
+        />
       </View>
       <View
         style={
           currentStep === 3 ? { display: "flex", flex: 1 } : { display: "none" }
         }
       >
-        <RolesMembersSettingsSection onSubmit={onSubmitMemberSettings} />
+        <RolesMembersSettingsSection
+          members={membersField.fields}
+          append={membersField.append}
+          control={rolesMembersForm.control}
+          remove={membersField.remove}
+          handleSubmit={rolesMembersForm.handleSubmit(onSubmitMemberSettings)}
+        />
       </View>
       <View
         style={
@@ -256,8 +292,8 @@ export const RolesDeployerSteps: React.FC<{
         <RolesReviewInformationSection
           organizationData={organizationData}
           votingSettingData={configureVotingFormData}
-          rolesSettingData={rolesSettingsFormData}
-          memberSettingData={memberSettingsFormData}
+          rolesSettingData={rolesField.fields}
+          memberSettingData={membersField.fields}
           onSubmit={onStartLaunchingProcess}
         />
       </View>
