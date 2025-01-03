@@ -10,6 +10,8 @@ import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
 import { NFTView } from "../nfts/NFTView";
 
+import { fontRegular14, fontRegular20 } from "@/utils/style/fonts";
+
 export const MyNFTs: React.FC = () => {
   const selectedWallet = useSelectedWallet();
 
@@ -25,11 +27,7 @@ export const MyNFTs: React.FC = () => {
     priceRange: undefined,
   });
   return (
-    <View
-      style={{
-        paddingTop: 32,
-      }}
-    >
+    <View style={{ paddingTop: 32 }}>
       <View
         style={{
           flexDirection: "row",
@@ -38,33 +36,24 @@ export const MyNFTs: React.FC = () => {
           marginBottom: 24,
         }}
       >
-        <BrandText style={{ marginRight: 20, fontSize: 20 }}>My NFTs</BrandText>
+        <BrandText style={[fontRegular20, { marginRight: 20 }]}>
+          My NFTs
+        </BrandText>
         <OmniLink
-          to={{
-            screen: "MyCollection",
-          }}
+          to={{ screen: "MyCollection" }}
           style={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
           }}
         >
-          <BrandText
-            style={{
-              fontSize: 14,
-              marginRight: 16,
-            }}
-          >
+          <BrandText style={[fontRegular14, { marginRight: 16 }]}>
             See All
           </BrandText>
           <SVG source={chevronRightSVG} height={16} />
         </OmniLink>
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-        }}
-      >
+      <View style={{ flexDirection: "row" }}>
         <FlatList
           data={nfts}
           horizontal

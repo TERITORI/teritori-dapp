@@ -18,7 +18,11 @@ import {
   keplrCurrencyFromNativeCurrencyInfo,
 } from "../../networks";
 import { neutral77, primaryColor } from "../../utils/style/colors";
-import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
+import {
+  fontRegular13,
+  fontRegular14,
+  fontRegular16,
+} from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { capitalize, tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
@@ -83,7 +87,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
       <View style={styles.rowCenter}>
         <NetworkIcon networkId={networkId} size={32} />
         <SpacerRow size={3} />
-        <BrandText>
+        <BrandText style={[fontRegular16]}>
           {variation === "deposit" ? "Deposit on" : "Withdraw from"}{" "}
           {getNetwork(networkId)?.displayName || "Unknown"}
         </BrandText>
@@ -110,7 +114,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
       width={460}
     >
       <View style={styles.container}>
-        <BrandText style={[fontSemibold14, styles.selfCenter]}>
+        <BrandText style={[fontRegular14, styles.selfCenter]}>
           {capitalize(variation)} {nativeTargetCurrency?.displayName}
         </BrandText>
         <SpacerColumn size={1.5} />
@@ -120,7 +124,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
               <NetworkIcon size={64} networkId={sourceNetworkId || "unknown"} />
             </View>
             <SpacerColumn size={1.5} />
-            <BrandText style={fontSemibold14}>
+            <BrandText style={fontRegular14}>
               From {sourceNetwork?.displayName || "Unknown"}
             </BrandText>
             <SpacerColumn size={1} />
@@ -149,7 +153,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
               />
             </View>
             <SpacerColumn size={1.5} />
-            <BrandText style={fontSemibold14}>
+            <BrandText style={fontRegular14}>
               To {destinationNetwork?.displayName || "Unknown"}
             </BrandText>
             <SpacerColumn size={1} />
@@ -175,9 +179,9 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
             rules={{ required: true, max }}
             placeHolder="0"
             subtitle={
-              <BrandText style={[fontSemibold13, { color: neutral77 }]}>
+              <BrandText style={[fontRegular13, { color: neutral77 }]}>
                 Available:{" "}
-                <BrandText style={[fontSemibold13, { color: primaryColor }]}>
+                <BrandText style={[fontRegular13, { color: primaryColor }]}>
                   {max}
                 </BrandText>
               </BrandText>
@@ -329,12 +333,7 @@ const styles = StyleSheet.create({
   container: {
     paddingBottom: layout.spacing_x3,
   },
-  estimatedText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutral77,
-    },
-  ]),
+  estimatedText: StyleSheet.flatten([fontRegular14, { color: neutral77 }]),
 });
 
 const convertCosmosAddress = (

@@ -243,6 +243,13 @@ export const fontRegular20: TextStyle = {
   fontFamily: "Exo_400Regular",
   fontWeight: "400",
 };
+export const fontRegular18: TextStyle = {
+  fontSize: 18,
+  letterSpacing: -(18 * 0.02),
+  lineHeight: 20,
+  fontFamily: "Exo_400Regular",
+  fontWeight: "400",
+};
 export const fontRegular16: TextStyle = {
   fontSize: 16,
   letterSpacing: -(16 * 0.02),

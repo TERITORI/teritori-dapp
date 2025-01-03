@@ -29,6 +29,12 @@ import {
 } from "@/store/slices/settings";
 import { useAppDispatch } from "@/store/store";
 import { neutral33, neutral77 } from "@/utils/style/colors";
+import {
+  fontRegular12,
+  fontRegular14,
+  fontRegular16,
+  fontRegular18,
+} from "@/utils/style/fonts";
 import { modalMarginPadding } from "@/utils/style/modals";
 
 interface WalletItemProps {
@@ -75,12 +81,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
         zIndex,
       }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
         {selectable && (
           <View
             style={{
@@ -112,7 +113,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
         <WalletProviderIcon walletProvider={item.provider} size={64} />
         <View style={{ marginLeft: 16 }}>
           <View>
-            <BrandText>{item.provider}</BrandText>
+            <BrandText style={[fontRegular18]}>{item.provider}</BrandText>
             <View
               style={{
                 flexDirection: "row",
@@ -120,13 +121,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
                 marginTop: 8,
               }}
             >
-              <BrandText
-                style={{
-                  fontSize: 12,
-                }}
-              >
-                {item.address}
-              </BrandText>
+              <BrandText style={[fontRegular12]}>{item.address}</BrandText>
               <TouchableOpacity
                 onPress={() => {
                   Clipboard.setStringAsync(item.address);
@@ -149,12 +144,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
           </View>
         </View>
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
         <View
           style={{
             paddingRight: 32,
@@ -163,42 +153,24 @@ export const WalletItem: React.FC<WalletItemProps> = ({
           }}
         >
           <BrandText
-            style={{
-              fontSize: 12,
-              color: neutral77,
-              marginBottom: 2,
-              alignSelf: "flex-end",
-            }}
+            style={[
+              fontRegular12,
+              { color: neutral77, marginBottom: 2, alignSelf: "flex-end" },
+            ]}
           >
             Staked
           </BrandText>
-          <BrandText
-            style={{
-              fontSize: 14,
-            }}
-          >
+          <BrandText style={[fontRegular14]}>
             {`$${delegationsUsdBalance.toFixed(2)}`}
           </BrandText>
         </View>
-        <View
-          style={{
-            paddingHorizontal: 32,
-          }}
-        >
+        <View style={{ paddingHorizontal: 32 }}>
           <BrandText
-            style={{
-              fontSize: 12,
-              color: neutral77,
-              marginBottom: 2,
-            }}
+            style={[fontRegular12, { color: neutral77, marginBottom: 2 }]}
           >
             Pending rewards
           </BrandText>
-          <BrandText
-            style={{
-              fontSize: 14,
-            }}
-          >
+          <BrandText style={[fontRegular14]}>
             {`$${claimableUSD.toFixed(2)}`}
           </BrandText>
         </View>
@@ -272,7 +244,7 @@ const DetailsModal: React.FC<{
       visible={visible}
       onClose={onClose}
     >
-      <BrandText style={{ marginBottom: modalMarginPadding }}>
+      <BrandText style={[fontRegular16, { marginBottom: modalMarginPadding }]}>
         {JSON.stringify(wallet, null, 4)}
       </BrandText>
     </ModalBase>

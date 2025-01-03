@@ -14,6 +14,11 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { parseUserId } from "@/networks";
 import { prettyPrice } from "@/utils/coins";
 import { neutral22, neutral33 } from "@/utils/style/colors";
+import {
+  fontRegular14,
+  fontRegular18,
+  fontRegular20,
+} from "@/utils/style/fonts";
 
 const collapsedCount = 5;
 
@@ -81,7 +86,7 @@ export const Assets: React.FC<{
             alignItems: "center",
           }}
         >
-          <BrandText style={{ marginRight: 20, fontSize: 20 }}>
+          <BrandText style={[fontRegular20, { marginRight: 20 }]}>
             Assets on {network.displayName}
           </BrandText>
         </View>
@@ -92,13 +97,7 @@ export const Assets: React.FC<{
               alignItems: "center",
             }}
           >
-            <BrandText
-              style={{
-                fontSize: 14,
-                lineHeight: 16,
-                marginRight: 16,
-              }}
-            >
+            <BrandText style={[fontRegular14, { marginRight: 16 }]}>
               {expanded ? "Collapse" : "Expand"} All Items
             </BrandText>
             <TouchableOpacity
@@ -138,43 +137,31 @@ export const Assets: React.FC<{
               paddingVertical: 16,
             }}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               <CurrencyIcon
                 size={isMobile ? 32 : 64}
                 networkId={network.id}
                 denom={currency.denom}
               />
               <View style={{ marginLeft: 16 }}>
-                <BrandText numberOfLines={1} style={{ maxWidth: 600 }}>
+                <BrandText
+                  numberOfLines={1}
+                  style={[fontRegular18, { maxWidth: 600 }]}
+                >
                   {prettyPrice(
                     network.id,
                     balance?.amount || "0",
                     currency.denom,
                   )}
                 </BrandText>
-                <BrandText
-                  style={{
-                    marginTop: 8,
-                    fontSize: 14,
-                  }}
-                >
+                <BrandText style={[fontRegular14, { marginTop: 8 }]}>
                   {balance?.usdAmount
                     ? `≈ $${balance.usdAmount.toFixed(2)}`
                     : " "}
                 </BrandText>
               </View>
             </View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               {!readOnly && currency.kind === "ibc" && (
                 <>
                   {currency.deprecated || (
