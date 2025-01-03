@@ -53,9 +53,9 @@ import {
   primaryColor,
 } from "@/utils/style/colors";
 import {
-  fontMedium10,
-  fontSemibold12,
-  fontSemibold14,
+  fontRegular10,
+  fontRegular12,
+  fontRegular14,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { modalMarginPadding } from "@/utils/style/modals";
@@ -83,15 +83,8 @@ const Header: React.FC<{
           flexDirection: "row",
         }}
       >
-        <BrandText style={fontSemibold14}>Cart </BrandText>
-        <BrandText
-          style={[
-            fontSemibold14,
-            {
-              color: neutral77,
-            },
-          ]}
-        >
+        <BrandText style={fontRegular14}>Cart </BrandText>
+        <BrandText style={[fontRegular14, { color: neutral77 }]}>
           {items.length}
         </BrandText>
       </View>
@@ -111,7 +104,7 @@ const Header: React.FC<{
             paddingBottom: 2,
             paddingLeft: 6,
           },
-          fontMedium10,
+          fontRegular10,
         ]}
         onPress={onPressClear}
       >
@@ -165,7 +158,7 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
               marginRight: 6,
             }}
           />
-          <BrandText style={fontSemibold12}>{nft?.name}</BrandText>
+          <BrandText style={fontRegular12}>{nft?.name}</BrandText>
           <Pressable
             onPress={() => {
               dispatch(removeSelected(id));
@@ -184,22 +177,13 @@ const CartItems: React.FC<{ id: EntityId }> = ({ id }) => {
             marginTop: layout.spacing_x1,
           }}
         >
-          <BrandText style={[fontSemibold12, { color: primaryColor }]}>
+          <BrandText style={[fontRegular12, { color: primaryColor }]}>
             {userInfo.metadata?.tokenId ||
               shortUserAddressFromID(nft.ownerId, 10)}
           </BrandText>
-          <View
-            style={{
-              flexDirection: "row",
-            }}
-          >
+          <View style={{ flexDirection: "row" }}>
             <BrandText
-              style={[
-                fontSemibold12,
-                {
-                  marginRight: layout.spacing_x0_5,
-                },
-              ]}
+              style={[fontRegular12, { marginRight: layout.spacing_x0_5 }]}
             >
               {prettyPrice(nft.networkId, nft.price, nft.denom)}
             </BrandText>
@@ -232,7 +216,7 @@ const ItemTotal: React.FC<{
         marginTop: layout.spacing_x1,
       }}
     >
-      <BrandText style={[fontSemibold12, { color: neutralA3 }]}>
+      <BrandText style={[fontRegular12, { color: neutralA3 }]}>
         {textLeft}
       </BrandText>
       <View
@@ -243,7 +227,7 @@ const ItemTotal: React.FC<{
         }}
       >
         <BrandText
-          style={[fontSemibold12, { marginRight: layout.spacing_x0_5 }]}
+          style={[fontRegular12, { marginRight: layout.spacing_x0_5 }]}
         >
           {typeof textRight === "number" ? textRight.toFixed(2) : textRight}
         </BrandText>
@@ -404,11 +388,7 @@ const Footer: React.FC<{ items: any[] }> = ({ items }) => {
       })}
       <Separator />
 
-      <View
-        style={{
-          marginTop: layout.spacing_x1,
-        }}
-      >
+      <View style={{ marginTop: layout.spacing_x1 }}>
         <PrimaryButton
           fullWidth
           size="SM"

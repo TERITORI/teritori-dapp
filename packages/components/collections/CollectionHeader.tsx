@@ -15,7 +15,7 @@ import { contractExplorerLink, parseCollectionId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { CollectionInfo } from "../../utils/collection";
 import { codGrayColor, neutral33 } from "../../utils/style/colors";
-import { fontSemibold28 } from "../../utils/style/fonts";
+import { fontRegular28 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SocialButtonSecondary } from "../buttons/SocialButtonSecondary";
@@ -117,7 +117,7 @@ export const CollectionHeader: React.FC<{
         <View style={{ flex: 1 }}>
           <BrandText
             style={[
-              fontSemibold28,
+              fontRegular28,
               isMobile
                 ? {
                     marginTop: layout.spacing_x1,

@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import { neutral22, neutralA3 } from "../../utils/style/colors";
-import { fontSemibold12, fontSemibold14 } from "../../utils/style/fonts";
+import { fontRegular12, fontRegular14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { CurrencyIcon } from "../CurrencyIcon";
@@ -36,11 +36,8 @@ export const CollectionStat = ({
       <View style={styles.rowCenter}>
         <BrandText
           style={[
-            fontSemibold14,
-            {
-              lineHeight: 19,
-              marginRight: layout.spacing_x0_5,
-            },
+            fontRegular14,
+            { lineHeight: 19, marginRight: layout.spacing_x0_5 },
           ]}
         >
           {value}
@@ -70,12 +67,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: neutral22,
   },
-  labelText: StyleSheet.flatten([
-    fontSemibold12,
-    {
-      color: neutralA3,
-    },
-  ]),
+  labelText: StyleSheet.flatten([fontRegular12, { color: neutralA3 }]),
   rowCenter: {
     flexDirection: "row",
     justifyContent: "center",

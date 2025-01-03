@@ -59,6 +59,11 @@ import { nftBurnerUserCountQueryKey } from "@/hooks/nft-burner/useNFTBurnerUserC
 import { collectionStatsQueryKey } from "@/hooks/useCollectionStats";
 import { nftsQueryKey } from "@/hooks/useNFTs";
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
+import {
+  fontRegular10,
+  fontRegular12,
+  fontRegular14,
+} from "@/utils/style/fonts";
 
 // NOTE: we put content in a memoized component to only rerender the container when the window width changes
 
@@ -186,10 +191,7 @@ const NFTViewContent: React.FC<{
             }}
           />
           <BrandText
-            style={{
-              fontSize: 14,
-              marginBottom: 12,
-            }}
+            style={[fontRegular14, { fontSize: 14, marginBottom: 12 }]}
             ellipsizeMode="tail"
             numberOfLines={1}
           >
@@ -203,19 +205,12 @@ const NFTViewContent: React.FC<{
             }}
           >
             <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                flex: 1,
-              }}
+              style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
             >
               <NetworkIcon size={12} networkId={nft.networkId} />
               <BrandText
                 numberOfLines={1}
-                style={{
-                  fontSize: 12,
-                  marginLeft: layout.spacing_x1,
-                }}
+                style={[fontRegular12, { marginLeft: layout.spacing_x1 }]}
               >
                 {nft.collectionName}
               </BrandText>
@@ -269,20 +264,10 @@ const NFTViewHeader: React.FC<{
             params: { id: nft.ownerId },
           }}
         >
-          <BrandText
-            style={{
-              fontSize: 10,
-              color: neutral77,
-            }}
-          >
+          <BrandText style={[fontRegular10, { color: neutral77 }]}>
             Owned by
           </BrandText>
-          <BrandText
-            style={{
-              fontSize: 12,
-              lineHeight: 16,
-            }}
-          >
+          <BrandText style={[fontRegular12, { lineHeight: 16 }]}>
             {userInfo.metadata?.tokenId ||
               shortUserAddressFromID(nft.ownerId, 10)}
           </BrandText>
@@ -463,22 +448,13 @@ const NFTViewFooter: React.FC<{ nft: NFT; localSelected: boolean }> = memo(
               />
               {/* FIXME: should come from price denom */}
               <BrandText
-                style={{
-                  fontSize: 12,
-                  color: neutral77,
-                  marginLeft: 10,
-                }}
+                style={[fontRegular12, { color: neutral77, marginLeft: 10 }]}
               >
                 Price
               </BrandText>
             </>
           ) : (
-            <BrandText
-              style={{
-                fontSize: 12,
-                color: neutral77,
-              }}
-            >
+            <BrandText style={[fontRegular12, { color: neutral77 }]}>
               Not listed
             </BrandText>
           )}

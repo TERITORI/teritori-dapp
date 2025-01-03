@@ -6,7 +6,7 @@ import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
 import sortSVG from "../../../assets/icons/sort.svg";
 import { SortDirection } from "../../api/marketplace/v1/marketplace";
 import { neutral11, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import { fontRegular14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
@@ -55,7 +55,7 @@ export const SortButton: React.FC<{
             width={16}
             style={{ marginRight: 8 }}
           />
-          <BrandText style={fontSemibold14}>
+          <BrandText style={fontRegular14}>
             Price{" "}
             {sortDirection === SortDirection.SORT_DIRECTION_ASCENDING
               ? "Ascending"
