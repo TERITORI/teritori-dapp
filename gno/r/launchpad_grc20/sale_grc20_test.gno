@@ -331,7 +331,9 @@ func TestBuy(t *testing.T) {
 	badCoin := std.NewCoins(std.NewCoin("notugnot", 100*10))
 	manyCoins := std.NewCoins(std.NewCoin("ugnot", 100*10), std.NewCoin("notugnot", 100*10))
 	notEnoughCoins := std.NewCoins(std.NewCoin("ugnot", 100*5))
+	tooManyCoins := std.NewCoins(std.NewCoin("ugnot", 100*11))
 	emptyCoins := std.NewCoins()
+	realmCoins := std.NewCoins(std.NewCoin("ugnot", 200*10))
 
 	tests := testBuyTestTable{
 		"Success": {
@@ -457,22 +459,19 @@ func TestBuy(t *testing.T) {
 				panic: true,
 			},
 		},
-		// FIXME: the realm does not seem to receive coins, see: https://github.com/gnolang/gno/issues/3381
-		/*
-			"Send too many coins": {
-				input: testBuyInput{
-					saleID: saleID,
-					amount: 10,
-					coins:  tooManyCoins,
-					addr:   alice,
-					proofs: nil,
-				},
-				expected: testBuyExpected{
-					panic:   false,
-					balance: 10,
-				},
+		"Send too many coins": {
+			input: testBuyInput{
+				saleID: saleID,
+				amount: 10,
+				coins:  tooManyCoins,
+				addr:   alice,
+				proofs: nil,
 			},
-		*/
+			expected: testBuyExpected{
+				panic:   false,
+				balance: 10,
+			},
+		},
 	}
 
 	for testName, test := range tests {
@@ -487,6 +486,7 @@ func TestBuy(t *testing.T) {
 
 			std.TestSetOrigCaller(test.input.addr)
 			std.TestSetOrigSend(test.input.coins, nil)
+			std.TestIssueCoins(std.CurrentRealm().Addr(), realmCoins)
 			Buy(test.input.saleID, test.input.amount, test.input.proofs)
 			sale := mustGetSale(test.input.saleID)
 			if !test.expected.panic {
@@ -535,7 +535,9 @@ func TestFinalize(t *testing.T) {
 	NewToken("TestFinalizeToken", "TestFinalizeToken", "image", 18, 21_000_000, 23_000_000, true, true)
 	saleID := NewSale("TestFinalizeToken", "", startTimestamp, endTimestamp, 100, 15, 10, 20, true)
 	onGoingSaleID := NewSale("TestFinalizeToken", "", startTimestamp, onGoingEndTimestamp, 100, 15, 10, 20, true)
-	_ = NewSale("TestFinalizeToken", "", startTimestamp, onGoingEndTimestamp2, 100, 15, 10, 20, true)
+	onGoingSaleID2 := NewSale("TestFinalizeToken", "", startTimestamp, onGoingEndTimestamp2, 100, 15, 10, 20, true)
+
+	realmCoins := std.NewCoins(std.NewCoin("ugnot", 200*10))
 
 	tests := testFinalizeTestTable{
 		"Success with 0 tokens sold": {
@@ -582,34 +584,29 @@ func TestFinalize(t *testing.T) {
 				panic: true,
 			},
 		},
-		// FIXME: the realm does not seem to have any coins to refund
-		/*
-			"Success with min goal not reached but some token sold": {
-				input: testFinalizeInput{
-					saleID:      onGoingSaleID,
-					buyer:       alice,
-					amount:      2,
-					skipHeights: 20, // 20 blocks passed ~= 100 seconds (close the onGoingEndTimestamp1)
-				},
-				expected: testFinalizeExpected{
-					panic: false,
-				},
+		"Success with min goal not reached but some token sold": {
+			input: testFinalizeInput{
+				saleID:      onGoingSaleID,
+				buyer:       alice,
+				amount:      2,
+				skipHeights: 20, // 20 blocks passed ~= 100 seconds (close the onGoingEndTimestamp1)
 			},
-		*/
-		// FIXME: the realm has no coins
-		/*
-			"Success with min goal reached": {
-				input: testFinalizeInput{
-					saleID:      onGoingSaleID2,
-					buyer:       alice,
-					amount:      15,
-					skipHeights: 20, // 20 blocks passed ~= 100 seconds again (close the onGoingEndTimestamp2)
-				},
-				expected: testFinalizeExpected{
-					panic: false,
-				},
+			expected: testFinalizeExpected{
+				panic: false,
 			},
-		*/
+		},
+
+		"Success with min goal reached": {
+			input: testFinalizeInput{
+				saleID:      onGoingSaleID2,
+				buyer:       alice,
+				amount:      15,
+				skipHeights: 20, // 20 blocks passed ~= 100 seconds again (close the onGoingEndTimestamp2)
+			},
+			expected: testFinalizeExpected{
+				panic: false,
+			},
+		},
 	}
 
 	banker := std.GetBanker(std.BankerTypeReadonly)
@@ -631,6 +628,7 @@ func TestFinalize(t *testing.T) {
 
 			coins := std.NewCoins(std.NewCoin("ugnot", int64(test.input.amount*sale.pricePerToken)))
 			std.TestSetOrigSend(coins, nil)
+			std.TestIssueCoins(std.CurrentRealm().Addr(), realmCoins)
 
 			if test.input.amount != 0 {
 				Buy(test.input.saleID, test.input.amount, nil)

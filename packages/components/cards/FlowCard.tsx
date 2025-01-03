@@ -10,7 +10,7 @@ import {
   neutral44,
   neutral77,
 } from "../../utils/style/colors";
-import { fontSemibold14, fontSemibold20 } from "../../utils/style/fonts";
+import { fontRegular14, fontRegular20 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
@@ -45,7 +45,7 @@ export const FlowCard: React.FC<{
         <View>
           <BrandText
             style={[
-              fontSemibold14,
+              fontRegular14,
               {
                 color: neutral77,
                 marginBottom: 14,
@@ -54,7 +54,7 @@ export const FlowCard: React.FC<{
           >
             {description}
           </BrandText>
-          <BrandText style={[fontSemibold20]}>{label}</BrandText>
+          <BrandText style={[fontRegular20]}>{label}</BrandText>
         </View>
         <View
           style={{

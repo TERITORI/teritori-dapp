@@ -7,6 +7,7 @@ import { neutral17 } from "../../utils/style/colors";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 
 import { LETTERS_REGEXP } from "@/utils/regex";
+import { fontRegular14 } from "@/utils/style/fonts";
 
 // TODO: Maybe it can be a screen that is called in Register and Explore flow... TNSRegisterScreen.tsx and TNSExploreScreen.tsx have duplicated code
 
@@ -36,6 +37,7 @@ export const FindAName: React.FC<{
         name="name"
         label="NAME"
         placeHolder="Type name here"
+        textInputStyle={[fontRegular14]}
         style={{ marginBottom: 12 }}
         onChangeText={setName}
         value={name || ""}

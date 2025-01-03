@@ -3,7 +3,7 @@ import { Control, FieldValues, Path } from "react-hook-form";
 import { TextInputProps, View, ViewStyle } from "react-native";
 
 import { TextInputCustom } from "./TextInputCustom";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import { fontRegular14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 
 import { useNSAvailability } from "@/hooks/useNSAvailability";
@@ -62,7 +62,7 @@ const AvailabilityInfo: React.FC<AvailabilityInfoProps> = ({
   if (nameValue) {
     if (nameAvailability.availability === "invalid") {
       return (
-        <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
+        <BrandText style={{ color: redDefault, ...fontRegular14 }}>
           Invalid
         </BrandText>
       );
@@ -73,15 +73,15 @@ const AvailabilityInfo: React.FC<AvailabilityInfoProps> = ({
         <View style={{ flexDirection: "row" }}>
           {!!usdPrice && (
             <>
-              <BrandText style={{ color: neutral77, ...fontSemibold14 }}>
+              <BrandText style={{ color: neutral77, ...fontRegular14 }}>
                 ${usdPrice?.toFixed(2)}
               </BrandText>
-              <BrandText style={{ color: neutral33, ...fontSemibold14 }}>
+              <BrandText style={{ color: neutral33, ...fontRegular14 }}>
                 {" - "}
               </BrandText>
             </>
           )}
-          <BrandText style={{ color: primaryColor, ...fontSemibold14 }}>
+          <BrandText style={{ color: primaryColor, ...fontRegular14 }}>
             {price}
           </BrandText>
         </View>
@@ -93,7 +93,7 @@ const AvailabilityInfo: React.FC<AvailabilityInfoProps> = ({
       nameAvailability.availability === "none"
     ) {
       return (
-        <BrandText style={{ color: redDefault, ...fontSemibold14 }}>
+        <BrandText style={{ color: redDefault, ...fontRegular14 }}>
           Taken
         </BrandText>
       );
@@ -161,6 +161,7 @@ export const AvailableNamesInput = <T extends FieldValues>({
       boxMainContainerStyle={{
         backgroundColor: readOnly ? neutral17 : undefined,
       }}
+      textInputStyle={[fontRegular14]}
       control={
         control
           ? (control as unknown as Control<NameFinderFormType>)

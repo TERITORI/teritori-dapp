@@ -18,6 +18,7 @@ import osmosisSVG from "@/assets/icons/networks/osmosis.svg";
 import teritoriSVG from "@/assets/icons/networks/teritori.svg";
 import pathwar from "@/assets/icons/pathwar.svg";
 import projectsProgramSVG from "@/assets/icons/projects-program.svg";
+import rakki from "@/assets/icons/rakki-ticket.svg";
 import otherAppsIcon from "@/assets/icons/random-goods-icon.svg";
 import riot from "@/assets/icons/rioters-game.svg";
 import staking from "@/assets/icons/staking.svg";
@@ -235,6 +236,16 @@ export function getAvailableApps(): dAppGroup {
           description: "DCA into your favorite assets",
           route: "External",
           url: "https://app.calculated.fi/?chain=osmosis-1",
+          groupKey: "top-apps",
+          selectedByDefault: true,
+          alwaysOn: false,
+        },
+        rakki: {
+          id: "rakki",
+          icon: rakki,
+          title: "RAKKi",
+          description: "Automated lottery",
+          route: "Rakki",
           groupKey: "top-apps",
           selectedByDefault: true,
           alwaysOn: false,

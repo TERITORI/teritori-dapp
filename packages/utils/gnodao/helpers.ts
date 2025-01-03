@@ -16,3 +16,17 @@ export const getPercent = (num: number | undefined): string => {
   ret_num = ret_num > 100 ? 100 : ret_num;
   return (ret_num / 100).toFixed(2);
 };
+
+export const extractDaoKind = (
+  votingModuleInfo: string,
+): string | undefined => {
+  const rawDaoKind = votingModuleInfo.split("@v")[0];
+  switch (rawDaoKind) {
+    case "gno.land/p/teritori/dao_roles_voting_group":
+      return "roles based organization";
+    case "gno.land/p/teritori/dao_voting_group":
+      return "memberships based organization";
+    default:
+      return undefined;
+  }
+};

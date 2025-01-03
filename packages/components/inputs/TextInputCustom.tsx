@@ -352,9 +352,7 @@ const styles = StyleSheet.create({
     color: neutralA3,
   },
   textInput: {
-    fontSize: 14,
-    color: secondaryColor,
-    fontFamily: "Exo_600SemiBold",
+    ...fontRegular14,
     outlineStyle: "none",
   } as TextStyle,
   innerContainer: {
