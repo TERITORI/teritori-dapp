@@ -19,11 +19,11 @@ import { layout } from "@/utils/style/layout";
 import {
   ROLES_BASED_ORGANIZATION_STEPS,
   RolesMembersFormType,
-  ZodRolesMemberObject,
+  zodRolesMemberObject,
 } from "@/utils/types/organizations";
 
 interface RolesMembersSettingsSectionProps {
-  members: z.infer<typeof ZodRolesMemberObject>[];
+  members: z.infer<typeof zodRolesMemberObject>[];
   append: UseFieldArrayAppend<RolesMembersFormType>;
   control: Control<RolesMembersFormType>;
   remove: (index?: number | number[] | undefined) => void;

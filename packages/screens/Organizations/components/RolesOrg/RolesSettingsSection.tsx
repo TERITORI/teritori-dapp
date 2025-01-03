@@ -24,11 +24,11 @@ import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
 import {
   ROLES_BASED_ORGANIZATION_STEPS,
   RolesFormType,
-  ZodRoleObject,
+  zodRoleObject,
 } from "@/utils/types/organizations";
 
 interface RolesSettingsSectionProps {
-  roles: z.infer<typeof ZodRoleObject>[];
+  roles: z.infer<typeof zodRoleObject>[];
   remove: (index?: number | number[] | undefined) => void;
   append: UseFieldArrayAppend<RolesFormType>;
   handleSubmit: () => void;

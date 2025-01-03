@@ -29,8 +29,8 @@ import {
   ROLES_BASED_ORGANIZATION_STEPS,
   RolesFormType,
   RolesMembersFormType,
-  ZodRolesMembersObject,
-  ZodRolesObject,
+  zodRolesMembersObject,
+  zodRolesObject,
 } from "@/utils/types/organizations";
 
 export const RolesDeployerSteps: React.FC<{
@@ -54,7 +54,7 @@ export const RolesDeployerSteps: React.FC<{
   const queryClient = useQueryClient();
   const { setToast } = useFeedbacks();
   const rolesMembersForm = useForm<RolesMembersFormType>({
-    resolver: zodResolver(ZodRolesMembersObject),
+    resolver: zodResolver(zodRolesMembersObject),
     defaultValues: {
       members: selectedWallet?.address
         ? [
@@ -68,7 +68,7 @@ export const RolesDeployerSteps: React.FC<{
     },
   });
   const rolesForm = useForm<RolesFormType>({
-    resolver: zodResolver(ZodRolesObject),
+    resolver: zodResolver(zodRolesObject),
     defaultValues: {
       roles: [],
     },
@@ -84,10 +84,6 @@ export const RolesDeployerSteps: React.FC<{
 
   const [configureVotingFormData, setConfigureVotingFormData] =
     useState<ConfigureVotingFormType>();
-  // const [rolesSettingsFormData, setRolesSettingsFormData] =
-  //   useState<RolesSettingFormType>();
-  // const [memberSettingsFormData, setMemberSettingsFormData] =
-  //   useState<RolesMemberSettingFormType>();
 
   const createDaoContract = async (): Promise<boolean> => {
     try {
@@ -244,6 +240,8 @@ export const RolesDeployerSteps: React.FC<{
     );
     setOrganizationData(undefined);
     setConfigureVotingFormData(undefined);
+    rolesMembersForm.reset();
+    rolesForm.reset();
     setCurrentStep(0);
     setDAOAddress("");
     setLaunchingStep(0);

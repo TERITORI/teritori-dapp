@@ -13,7 +13,7 @@ import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { neutral33 } from "@/utils/style/colors";
 import { fontSemibold18 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import { RoleFormType, ZodRoleObject } from "@/utils/types/organizations";
+import { RoleFormType, zodRoleObject } from "@/utils/types/organizations";
 
 interface RolesModalCreateRoleProps {
   modalVisible: boolean;
@@ -27,7 +27,7 @@ export const RolesModalCreateRole: React.FC<RolesModalCreateRoleProps> = ({
   addRoleField,
 }) => {
   const { control, handleSubmit, reset } = useForm<RoleFormType>({
-    resolver: zodResolver(ZodRoleObject),
+    resolver: zodResolver(zodRoleObject),
   });
 
   const getInitialState = () => {
@@ -118,9 +118,9 @@ export const RolesModalCreateRole: React.FC<RolesModalCreateRoleProps> = ({
                 finalResources = finalResources?.concat(resource.resources);
               }
             });
-            reset();
             setResources(getInitialState());
             addRoleField(data.name, data.color, finalResources);
+            reset();
           })}
         />
       </View>
