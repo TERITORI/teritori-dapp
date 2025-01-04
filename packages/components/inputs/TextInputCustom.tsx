@@ -353,6 +353,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     ...fontRegular14,
+    color: secondaryColor,
     outlineStyle: "none",
   } as TextStyle,
   innerContainer: {
