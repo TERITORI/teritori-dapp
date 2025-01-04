@@ -166,7 +166,6 @@ export const TextInputCustom = <T extends FieldValues>({
   });
   const inputRef = useRef<TextInput>(null);
   const [hovered, setHovered] = useState(false);
-  const theme = useTheme();
   // Passing ref to parent since I didn't find a pattern to handle generic argument <T extends FieldValues> AND forwardRef
   useEffect(() => {
     if (inputRef.current && setRef) {
@@ -316,11 +315,7 @@ export const TextInputCustom = <T extends FieldValues>({
               onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
               placeholderTextColor={neutral77}
               value={field.value}
-              style={[
-                { color: theme.textColor },
-                styles.textInput,
-                textInputStyle,
-              ]}
+              style={[styles.textInput, textInputStyle]}
               {...restProps}
             />
           </View>
