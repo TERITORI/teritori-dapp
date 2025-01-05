@@ -32,3 +32,10 @@ export const validateMaxNumber = (value: string, max: number) => {
   }
   return true;
 };
+
+export const validateFloatWithDecimals = (value: string, decimals: number) => {
+  const regexp = new RegExp(
+    `^([0-9]+[.]?[0-9]{0,${decimals}}|[.][0-9]{1,${decimals}})$`,
+  );
+  return regexp.test(value);
+};
