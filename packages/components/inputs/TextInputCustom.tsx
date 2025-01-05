@@ -49,6 +49,8 @@ import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
+import { useTheme } from "@/hooks/useTheme";
+
 // TODO: Refacto TextInputCustom. Too much props
 
 export interface TextInputCustomProps<T extends FieldValues>
@@ -164,6 +166,8 @@ export const TextInputCustom = <T extends FieldValues>({
   });
   const inputRef = useRef<TextInput>(null);
   const [hovered, setHovered] = useState(false);
+  const theme = useTheme();
+
   // Passing ref to parent since I didn't find a pattern to handle generic argument <T extends FieldValues> AND forwardRef
   useEffect(() => {
     if (inputRef.current && setRef) {
@@ -313,7 +317,11 @@ export const TextInputCustom = <T extends FieldValues>({
               onKeyPress={(event) => handleKeyPress({ event, onPressEnter })}
               placeholderTextColor={neutral77}
               value={field.value}
-              style={[styles.textInput, textInputStyle]}
+              style={[
+                { color: theme.textColor },
+                styles.textInput,
+                textInputStyle,
+              ]}
               {...restProps}
             />
           </View>
@@ -352,9 +360,7 @@ const styles = StyleSheet.create({
     color: neutralA3,
   },
   textInput: {
-    fontSize: 14,
-    color: secondaryColor,
-    fontFamily: "Exo_600SemiBold",
+    ...fontRegular14,
     outlineStyle: "none",
   } as TextStyle,
   innerContainer: {

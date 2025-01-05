@@ -7,6 +7,8 @@ import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 
+import { fontRegular14 } from "@/utils/style/fonts";
+
 export const NameStatus: React.FC<{
   available?: boolean;
   hasError?: boolean;
@@ -32,7 +34,7 @@ export const NameStatus: React.FC<{
         height={24}
         source={available ? availableSVG : mintedSVG}
       />
-      <BrandText style={{ fontSize: 14, marginLeft: 4 }}>
+      <BrandText style={[fontRegular14, { marginLeft: 4 }]}>
         {hasError ? "error" : available ? "available" : "minted"}
       </BrandText>
     </LegacyTertiaryBox>

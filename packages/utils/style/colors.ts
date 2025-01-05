@@ -57,9 +57,7 @@ export const dangerColor = "#E44C39";
 export const trashBackground = "rgba(244, 111, 118, 0.1)";
 
 export const orangeLight = "#EAA54B";
-
-export const rakkiYellow = "#FFD83D";
-export const rakkiYellowLight = "#FFEDAE";
+export const rakkiYellow = "#FFDC5F";
 
 export const gradientColorTurquoise = "#A5FECB";
 export const gradientColorLightLavender = "#C3CFE2";
@@ -74,6 +72,8 @@ export const gradientColorPink = "#F46FBF";
 export const gradientColorGray = "#676767";
 export const gradientColorLightGray = "#B7B7B7";
 export const gradientColorLighterGray = "#F5F7FA";
+export const gradientColorRakkiYellow = "#FFD83D";
+export const gradientColorRakkiYellowLight = "#FFEDAE";
 
 export const currencyTORIcolor = primaryColor;
 export const currencyETHcolor = "#232731";

@@ -19,6 +19,7 @@ import { useNSTokensByOwner } from "@/hooks/useNSTokensByOwner";
 import { getCosmosNetwork, mustGetCosmosNetwork } from "@/networks";
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { neutral17, neutralA3 } from "@/utils/style/colors";
+import { fontRegular16, fontRegular22 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 interface TNSBurnNameScreenProps extends TNSModalCommonProps {}
@@ -121,18 +122,19 @@ export const TNSBurnNameScreen: React.FC<TNSBurnNameScreenProps> = ({
                 source={burnSVG}
                 style={{ marginRight: 16 }}
               />
-              <BrandText style={{ fontSize: 32, lineHeight: 44 }}>
+              <BrandText style={[fontRegular22, { lineHeight: 44 }]}>
                 Burn {name}
               </BrandText>
             </View>
             <BrandText
-              style={{
-                fontSize: 16,
-                lineHeight: 20,
-                color: neutralA3,
-                marginTop: 16,
-                marginBottom: 20,
-              }}
+              style={[
+                fontRegular16,
+                {
+                  color: neutralA3,
+                  marginTop: 16,
+                  marginBottom: 20,
+                },
+              ]}
             >
               This will permanently destroy the token. The token will no longer
               be visible from the name service and another token with the same

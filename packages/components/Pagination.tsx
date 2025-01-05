@@ -20,7 +20,7 @@ import {
   neutralA3,
   secondaryColor,
 } from "@/utils/style/colors";
-import { fontSemibold13, fontSemibold14 } from "@/utils/style/fonts";
+import { fontRegular13, fontRegular14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export interface PaginationProps {
@@ -64,7 +64,7 @@ export const Pagination = ({
       <View style={[sectionCStyle, { justifyContent: "flex-start" }]}>
         <BrandText
           style={[
-            fontSemibold14,
+            fontRegular14,
             {
               color: neutral77,
               paddingRight: layout.spacing_x1,
@@ -153,7 +153,7 @@ export const Pagination = ({
               }}
             >
               <BrandText
-                style={[fontSemibold14, { marginRight: layout.spacing_x1 }]}
+                style={[fontRegular14, { marginRight: layout.spacing_x1 }]}
               >
                 {itemsPerPage}
               </BrandText>
@@ -197,7 +197,7 @@ export const Pagination = ({
               >
                 <BrandText
                   style={[
-                    fontSemibold13,
+                    fontRegular13,
                     { marginLeft: layout.spacing_x1_5, color: neutralA3 },
                   ]}
                 >

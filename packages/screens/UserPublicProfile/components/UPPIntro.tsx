@@ -21,6 +21,8 @@ import { SocialButton } from "@/components/buttons/SocialButton";
 import { SocialButtonSecondary } from "@/components/buttons/SocialButtonSecondary";
 import { ProfileButton } from "@/components/hub/ProfileButton";
 import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
+import { useIsDAO } from "@/hooks/cosmwasm/useCosmWasmContractInfo";
+import { useDAOKind } from "@/hooks/dao/useDAOKind";
 import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
 import { usePremiumIsSubscribed } from "@/hooks/feed/usePremiumIsSubscribed";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
@@ -36,10 +38,11 @@ import { DEFAULT_NAME } from "@/utils/social-feed";
 import {
   neutral00,
   neutral55,
+  neutralA3,
   secondaryColor,
   yellowPremium,
 } from "@/utils/style/colors";
-import { fontBold16, fontMedium14 } from "@/utils/style/fonts";
+import { fontBold16, fontMedium14, fontSemibold12 } from "@/utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
 import { normalizeTwitterId } from "@/utils/twitter";
@@ -51,6 +54,8 @@ export const UPPIntro: React.FC<{
 }> = ({ userId, isUserOwner, setIsEditProfileModal = (val) => {} }) => {
   const selectedWallet = useSelectedWallet();
   const { metadata } = useNSUserInfo(userId);
+  const { isDAO } = useIsDAO(userId);
+  const { daoKind } = useDAOKind(userId);
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { margin: layout.spacing_x0_75 };
   const [network, userAddress] = parseUserId(userId);
@@ -285,7 +290,32 @@ export const UPPIntro: React.FC<{
               @{metadata.tokenId || userAddress}
             </BrandText>
           </>
-
+          {isDAO && daoKind && (
+            <View
+              style={[
+                {
+                  marginTop: layout.spacing_x1,
+                  justifyContent: "center",
+                  borderRadius: 4,
+                  backgroundColor: "#1C1C1C",
+                  height: 18,
+                  paddingHorizontal: 4,
+                  alignSelf: "flex-start",
+                },
+              ]}
+            >
+              <BrandText
+                style={[
+                  fontSemibold12,
+                  {
+                    color: neutralA3,
+                  },
+                ]}
+              >
+                {daoKind}
+              </BrandText>
+            </View>
+          )}
           <BrandText
             style={[
               fontMedium14,

@@ -287,6 +287,10 @@ export const Map: FC<MapProps> = ({
                 <Popup closeButton={false} className="marker-popup">
                   <PictureMapPost post={marker.post} />
                 </Popup>
+              ) : marker.post.category === PostCategory.ArticleMarkdown ? (
+                <Popup closeButton={false} className="marker-popup">
+                  <ArticleMapPost post={marker.post} />
+                </Popup>
               ) : marker.post.category === PostCategory.Article ? (
                 <Popup closeButton={false} className="marker-popup">
                   <ArticleMapPost post={marker.post} />

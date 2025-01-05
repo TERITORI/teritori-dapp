@@ -16,6 +16,7 @@ import {
   neutral33,
   neutral77,
   primaryColor,
+  rakkiYellow,
   secondaryColor,
 } from "../../../utils/style/colors";
 import { fontRegular12 } from "../../../utils/style/fonts";
@@ -33,6 +34,7 @@ import { useAppRoute } from "@/hooks/navigation/useAppRoute";
 export interface SidebarButtonProps extends SidebarType {
   onPress?: (routeName: SidebarType["route"]) => void;
   iconSize?: number;
+  id: string;
 }
 
 export const SidebarButton: React.FC<SidebarButtonProps> = ({
@@ -42,6 +44,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
   route,
   iconSize = 28,
   nested,
+  id,
 }) => {
   const { isSidebarExpanded } = useSidebar();
   const { name: currentRouteName } = useAppRoute();
@@ -104,11 +107,18 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
       {({ hovered }) => (
         <View>
           <View style={titleContainerCStyle}>
-            {isSelected && <SideNotch style={{ left: -layout.spacing_x2 }} />}
+            {isSelected && (
+              <SideNotch
+                style={{ left: -layout.spacing_x2 }}
+                sidebarItemId={id}
+              />
+            )}
             <View
               style={[
                 svgContainerCStyle,
-                isSelected && { borderColor: primaryColor },
+                isSelected && {
+                  borderColor: id === "rakki" ? rakkiYellow : primaryColor,
+                },
                 isComingSoon && { opacity: 0.5 },
               ]}
             >

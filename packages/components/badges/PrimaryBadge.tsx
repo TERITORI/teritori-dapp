@@ -11,7 +11,7 @@ import {
   secondaryColor,
   primaryTextColor,
 } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import { fontRegular14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 
 export const PrimaryBadge: React.FC<{
@@ -35,7 +35,7 @@ export const PrimaryBadge: React.FC<{
         style,
       ]}
     >
-      <BrandText style={[fontSemibold14, { color: primaryTextColor }]}>
+      <BrandText style={[fontRegular14, { color: primaryTextColor }]}>
         {label}
       </BrandText>
     </View>
