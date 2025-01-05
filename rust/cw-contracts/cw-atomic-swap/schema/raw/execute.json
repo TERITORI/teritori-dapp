@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ExecuteMsg",
+  "anyOf": [
+    {
+      "$ref": "#/definitions/ExecMsg"
+    }
+  ],
+  "definitions": {
+    "ExecMsg": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "create"
+          ],
+          "properties": {
+            "create": {
+              "type": "object",
+              "required": [
+                "destination",
+                "hashlock",
+                "timelock"
+              ],
+              "properties": {
+                "destination": {
+                  "type": "string"
+                },
+                "hashlock": {
+                  "type": "string"
+                },
+                "timelock": {
+                  "type": "integer",
+                  "format": "uint64",
+                  "minimum": 0.0
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "redeem"
+          ],
+          "properties": {
+            "redeem": {
+              "type": "object",
+              "required": [
+                "id",
+                "preimage"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "uint64",
+                  "minimum": 0.0
+                },
+                "preimage": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "refund"
+          ],
+          "properties": {
+            "refund": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "uint64",
+                  "minimum": 0.0
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "change_admin"
+          ],
+          "properties": {
+            "change_admin": {
+              "type": "object",
+              "required": [
+                "addr"
+              ],
+              "properties": {
+                "addr": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

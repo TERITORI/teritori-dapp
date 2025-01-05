@@ -1,0 +1,20 @@
+[package]
+name = "cw-atomic-swap"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+cosmwasm-std = { version = "1.5.3", features = ["staking"] }
+sylvia = "0.9.3"
+schemars = "0.8.16"
+cosmwasm-schema = "1.5.3"
+serde = "1.0.197"
+cw-storage-plus = "1.2.0"
+thiserror = "1.0.57"
+sha256 = "1.5.0"
+
+[dev-dependencies]
+sylvia = { version = "0.9.3", features = ["mt"] }
