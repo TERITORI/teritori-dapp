@@ -69,6 +69,7 @@ import { SuccessScreen } from "@/screens/Wallet/Screens/SucessScreen";
 import { WalletManagerScreen } from "@/screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "@/screens/WalletManager/WalletsScreen";
 import { AppMode } from "@/utils/types/app-mode";
+// __insert_screen_import_before_me__
 
 export const getNormalModeScreens = ({
   appMode,
@@ -550,6 +551,7 @@ export const getNormalModeScreens = ({
         component={RakkiScreen}
         options={{ header: () => null, title: screenTitle("Rakki") }}
       />
+      {/* __insert_screen_before_me__ */}
       {getPlatformScreens(screenTitle)}
     </>
   );
