@@ -113,7 +113,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
         <WalletProviderIcon walletProvider={item.provider} size={64} />
         <View style={{ marginLeft: 16 }}>
           <View>
-            <BrandText style={[fontRegular18]}>{item.provider}</BrandText>
+            <BrandText style={fontRegular18}>{item.provider}</BrandText>
             <View
               style={{
                 flexDirection: "row",
@@ -121,7 +121,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
                 marginTop: 8,
               }}
             >
-              <BrandText style={[fontRegular12]}>{item.address}</BrandText>
+              <BrandText style={fontRegular12}>{item.address}</BrandText>
               <TouchableOpacity
                 onPress={() => {
                   Clipboard.setStringAsync(item.address);
@@ -160,7 +160,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
           >
             Staked
           </BrandText>
-          <BrandText style={[fontRegular14]}>
+          <BrandText style={fontRegular14}>
             {`$${delegationsUsdBalance.toFixed(2)}`}
           </BrandText>
         </View>
@@ -170,7 +170,7 @@ export const WalletItem: React.FC<WalletItemProps> = ({
           >
             Pending rewards
           </BrandText>
-          <BrandText style={[fontRegular14]}>
+          <BrandText style={fontRegular14}>
             {`$${claimableUSD.toFixed(2)}`}
           </BrandText>
         </View>

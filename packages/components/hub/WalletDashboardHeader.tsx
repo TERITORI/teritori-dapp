@@ -44,12 +44,8 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
     <LegacyTertiaryBox
       height={116}
       width={200}
-      mainContainerStyle={{
-        backgroundColor: neutral17,
-      }}
-      style={{
-        marginLeft: 16,
-      }}
+      mainContainerStyle={{ backgroundColor: neutral17 }}
+      style={{ marginLeft: 16 }}
     >
       <View
         style={{
@@ -62,19 +58,15 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
           position: "relative",
         }}
       >
-        <BrandText style={[fontRegular12]}>{title}</BrandText>
-        <BrandText style={[fontRegular16]}>{data}</BrandText>
+        <BrandText style={fontRegular12}>{title}</BrandText>
+        <BrandText style={fontRegular16}>{data}</BrandText>
         {!!actionButton && (
           <PrimaryButton
             disabled={actionButton.disabled}
             size="XS"
             text={actionButton.label}
             onPress={actionButton.onPress}
-            touchableStyle={{
-              position: "absolute",
-              bottom: 12,
-              right: 14,
-            }}
+            touchableStyle={{ position: "absolute", bottom: 12, right: 14 }}
           />
         )}
       </View>
@@ -123,12 +115,7 @@ export const WalletDashboardHeader: React.FC = () => {
         marginTop: -layout.spacing_x3,
       }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          marginTop: layout.spacing_x3,
-        }}
-      >
+      <View style={{ flexDirection: "row", marginTop: layout.spacing_x3 }}>
         <TouchableOpacity
           style={{
             backgroundColor: neutral22,

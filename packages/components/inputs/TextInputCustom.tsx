@@ -49,8 +49,6 @@ import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
-import { useTheme } from "@/hooks/useTheme";
-
 // TODO: Refacto TextInputCustom. Too much props
 
 export interface TextInputCustomProps<T extends FieldValues>

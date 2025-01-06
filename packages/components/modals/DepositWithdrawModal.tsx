@@ -87,7 +87,7 @@ export const DepositWithdrawModal: React.FC<DepositModalProps> = ({
       <View style={styles.rowCenter}>
         <NetworkIcon networkId={networkId} size={32} />
         <SpacerRow size={3} />
-        <BrandText style={[fontRegular16]}>
+        <BrandText style={fontRegular16}>
           {variation === "deposit" ? "Deposit on" : "Withdraw from"}{" "}
           {getNetwork(networkId)?.displayName || "Unknown"}
         </BrandText>
