@@ -110,7 +110,7 @@ message LaunchpadProjectsCountsRequest {
 }
 
 message LaunchpadProjectsCountsResponse {
-  repeated StatusCount statusCounts = 1;
+  repeated StatusCount status_counts = 1;
 }
 
 message ProposeApproveProjectRequest {
@@ -159,8 +159,3 @@ message Trait {
   string trait_type = 2;
   string value = 3;
 }
-
-
-
-
-
