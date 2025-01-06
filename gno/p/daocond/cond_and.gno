@@ -14,17 +14,17 @@ type andCond struct {
 	right Condition
 }
 
-// NewState implements Expr.
+// NewState implements Condition.
 func (a *andCond) NewState() State {
 	return &andState{left: a.left.NewState(), right: a.right.NewState()}
 }
 
-// Render implements Expr.
+// Render implements Condition.
 func (a *andCond) Render() string {
 	return "[" + a.left.Render() + " AND " + a.right.Render() + "]"
 }
 
-// RenderJSON implements Expr.
+// RenderJSON implements Condition.
 func (a *andCond) RenderJSON() *json.Node {
 	return json.ObjectNode("", map[string]*json.Node{
 		"type":  json.StringNode("", "and"),

@@ -34,14 +34,15 @@ func TestDaocond(t *testing.T) {
 	publicRelationships := daocond.RoleCount(1, "public-relationships", hasRoleFn)
 	financeOfficer := daocond.RoleCount(1, "finance-officer", hasRoleFn)
 
-	urequire.Equal(t, "1 public-relationships", publicRelationships.Render())
 	urequire.Equal(t, "60% of members", membersMajority.Render())
+	urequire.Equal(t, "1 public-relationships", publicRelationships.Render())
 	urequire.Equal(t, "1 finance-officer", financeOfficer.Render())
 
 	// ressource expressions
-	ressources := map[string]daocond.Condition{}
-	ressources["social.post"] = daocond.And(publicRelationships, membersMajority)
-	ressources["finance.invest"] = daocond.Or(financeOfficer, membersMajority)
+	ressources := map[string]daocond.Condition{
+		"social.post":    daocond.And(publicRelationships, membersMajority),
+		"finance.invest": daocond.Or(financeOfficer, membersMajority),
+	}
 
 	urequire.Equal(t, "[1 public-relationships AND 60% of members]", ressources["social.post"].Render())
 	urequire.Equal(t, "[1 finance-officer OR 60% of members]", ressources["finance.invest"].Render())

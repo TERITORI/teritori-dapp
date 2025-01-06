@@ -14,17 +14,17 @@ type orCond struct {
 	right Condition
 }
 
-// NewState implements Expr.
+// NewState implements Condition.
 func (a *orCond) NewState() State {
 	return &orState{left: a.left.NewState(), right: a.right.NewState()}
 }
 
-// Render implements Expr.
+// Render implements Condition.
 func (a *orCond) Render() string {
 	return "[" + a.left.Render() + " OR " + a.right.Render() + "]"
 }
 
-// RenderJSON implements Expr.
+// RenderJSON implements Condition.
 func (a *orCond) RenderJSON() *json.Node {
 	return json.ObjectNode("", map[string]*json.Node{
 		"type":  json.StringNode("", "or"),

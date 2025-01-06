@@ -55,7 +55,7 @@ type roleCountState struct {
 	totalYes uint64
 }
 
-// Eval implements Condition.
+// Eval implements State.
 func (m *roleCountState) Eval() bool {
 	return m.totalYes >= m.cond.count
 }
