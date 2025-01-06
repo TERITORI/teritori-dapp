@@ -54,11 +54,11 @@ export const useIsUserLaunchpadAdmin = (userId?: string) => {
 
         // The Launchapd Admin DAO is the deployer set in the config of the nft-launchpad contract
         const config = await nftLaunchpadContractClient.getConfig();
-        if (!config.launchpad_admin) {
+        if (!config.admin) {
           throw new Error("No Launchpad admin set");
         }
 
-        const adminDaoId = getUserId(networkId, config.launchpad_admin);
+        const adminDaoId = getUserId(networkId, config.admin);
         const { isMember } = await daoClient.IsUserDAOMember({
           userId,
           daoId: adminDaoId,

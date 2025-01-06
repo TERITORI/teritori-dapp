@@ -35,7 +35,7 @@ const cosmwasmNftLaunchpadFeature: CosmWasmNFTLaunchpad = {
   type: NetworkFeature.CosmWasmNFTLaunchpad,
   launchpadContractAddress:
     "tori1te7ku4de0k4rl8lhyuvpmhygaq7k7vy5zpsjq9y638efxsnx3aaqck2utf",
-  launchpadEndpoint: "http://192.168.10.121:9080",
+  launchpadEndpoint: "https://dapp-backend.testnet.teritori.com",
   nftTr721CodeId: 60,
   codeId: 71,
   defaultMintDenom: "utori",
@@ -88,7 +88,7 @@ export const teritoriTestnetNetwork: CosmosNetworkInfo = {
     "https://explorer.teritori.com/teritori-testnet/account/$address",
   idPrefix: "testori",
   testnet: true,
-  backendEndpoint: "http://192.168.1.78:9090",
+  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   addressPrefix: "tori",
   restEndpoint: "https://rest.testnet.teritori.com",
   rpcEndpoint: "https://rpc.testnet.teritori.com",

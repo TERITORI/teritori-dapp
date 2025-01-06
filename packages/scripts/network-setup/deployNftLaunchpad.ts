@@ -67,7 +67,7 @@ const deployNftLaunchpad = async ({
   });
 };
 
-const instantiateNftLaunchpad = async (
+export const instantiateNftLaunchpad = async (
   opts: DeployOpts,
   deployerWallet: string,
   deployerAddr: string,

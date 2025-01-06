@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { Collection } from "@/contracts-clients/nft-launchpad";
+import { CollectionProject } from "@/contracts-clients/nft-launchpad";
 import { DEFAULT_FORM_ERRORS } from "@/utils/errors";
 import { isIpfsPathValid } from "@/utils/ipfs";
 import {
@@ -171,7 +171,7 @@ export type CollectionAssetsMetadatasFormValues = z.infer<
   typeof ZodCollectionAssetsMetadatasFormValues
 >;
 
-// ===== Shapes to build objects from api
+// ===== Shapes to build objects received from API
 const ZodCoinDataResult = z.object({
   amount: z.string(),
   denom: z.string(),
@@ -226,7 +226,8 @@ export type MintPeriodDataResult = z.infer<typeof ZodMintPeriodDataResult>;
 
 export type CollectionDataResult = z.infer<typeof ZodCollectionDataResult>;
 
+// ===== Shapes to build objects to sent to API
 export type CollectionToSubmit = Omit<
-  Collection,
+  CollectionProject,
   "deployed_address" | "base_token_uri" | "owner"
 >;

@@ -1,6 +1,8 @@
 import React, { FC, useState } from "react";
 import { TouchableOpacity, View, ViewStyle } from "react-native";
 
+import { Checkbox } from "./../../../../../../components/Checkbox";
+
 import chevronDownSVG from "@/assets/icons/chevron-down.svg";
 import chevronUpSVG from "@/assets/icons/chevron-up.svg";
 import { BrandText } from "@/components/BrandText";
@@ -12,7 +14,6 @@ import { Label } from "@/components/inputs/TextInputCustom";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { useDropdowns } from "@/hooks/useDropdowns";
-import { CheckboxDappStore } from "@/screens/DAppStore/components/CheckboxDappStore";
 import {
   neutral22,
   neutral44,
@@ -139,7 +140,7 @@ export const MultipleSelectInput: FC<Props> = ({
                   }}
                 >
                   <View style={{ flexDirection: "row" }}>
-                    <CheckboxDappStore
+                    <Checkbox
                       isChecked={items.includes(item)}
                       style={{ marginRight: layout.spacing_x1 }}
                     />
