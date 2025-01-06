@@ -191,7 +191,7 @@ const NFTViewContent: React.FC<{
             }}
           />
           <BrandText
-            style={[fontRegular14, { fontSize: 14, marginBottom: 12 }]}
+            style={[fontRegular14, { marginBottom: 12 }]}
             ellipsizeMode="tail"
             numberOfLines={1}
           >
@@ -267,7 +267,7 @@ const NFTViewHeader: React.FC<{
           <BrandText style={[fontRegular10, { color: neutral77 }]}>
             Owned by
           </BrandText>
-          <BrandText style={[fontRegular12, { lineHeight: 16 }]}>
+          <BrandText style={fontRegular12}>
             {userInfo.metadata?.tokenId ||
               shortUserAddressFromID(nft.ownerId, 10)}
           </BrandText>
