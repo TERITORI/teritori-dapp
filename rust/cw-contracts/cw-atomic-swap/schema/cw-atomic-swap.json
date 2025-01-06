@@ -37,6 +37,7 @@
                 "required": [
                   "destination",
                   "hashlock",
+                  "hint",
                   "timelock"
                 ],
                 "properties": {
@@ -44,6 +45,9 @@
                     "type": "string"
                   },
                   "hashlock": {
+                    "type": "string"
+                  },
+                  "hint": {
                     "type": "string"
                   },
                   "timelock": {
@@ -289,6 +293,7 @@
             "creator",
             "destination",
             "hashlock",
+            "hint",
             "state",
             "timelock",
             "value"
@@ -304,6 +309,9 @@
               "$ref": "#/definitions/Addr"
             },
             "hashlock": {
+              "type": "string"
+            },
+            "hint": {
               "type": "string"
             },
             "state": {

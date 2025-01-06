@@ -1,7 +1,10 @@
 use crate::error::ContractError;
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{Addr, BankMsg, Coin, CosmosMsg, Order as CwOrder, Response, StdResult, Storage, Timestamp};
+use cosmwasm_std::{
+    Addr, BankMsg, Coin, CosmosMsg, Order as CwOrder, Response, StdResult, Storage, Timestamp,
+};
 use cw_storage_plus::{Bound as CwBound, Item, Map};
+use sha2::{Digest, Sha256};
 use sylvia::types::{ExecCtx, InstantiateCtx, QueryCtx};
 use sylvia::{contract, entry_points};
 
@@ -25,7 +28,7 @@ pub struct SwapStateRefunded {
 enum SwapState {
     Created,
     Redeemed(SwapStateRedeemed),
-    Refunded(SwapStateRefunded)
+    Refunded(SwapStateRefunded),
 }
 
 #[cw_serde]
@@ -37,6 +40,7 @@ pub struct AtomicSwap {
     value: Vec<Coin>,
     state: SwapState,
     destination: Addr,
+    hint: String,
 }
 
 #[cw_serde]
@@ -52,7 +56,7 @@ impl AtomicSwapContract {
     pub const fn new() -> Self {
         Self {
             swaps: Map::new("swaps_v0"),
-            admin: Item::new("admin_v0")
+            admin: Item::new("admin_v0"),
         }
     }
 
@@ -64,57 +68,69 @@ impl AtomicSwapContract {
     }
 
     fn count_swaps(&self, storage: &dyn Storage) -> StdResult<u64> {
-       Ok(self.swaps.last(storage)?.map(|elem| elem.0).unwrap_or(0u64))
+        Ok(self.swaps.last(storage)?.map(|elem| elem.0).unwrap_or(0u64))
     }
 
     // Mutations
 
     #[msg(exec)]
-    pub fn create(&self, ctx: ExecCtx, hashlock: String, timelock: u64, destination: String) -> Result<Response, ContractError> {
+    pub fn create(
+        &self,
+        ctx: ExecCtx,
+        hashlock: String,
+        timelock: u64,
+        destination: String,
+        hint: String,
+    ) -> Result<Response, ContractError> {
         let timelock = Timestamp::from_seconds(timelock.into());
         if !timelock.gt(&ctx.env.block.time) {
-            return Err(ContractError::TimelockNotInFuture)
+            return Err(ContractError::TimelockNotInFuture);
         }
 
         let destination = ctx.deps.api.addr_validate(&destination)?;
 
         let id = self.count_swaps(ctx.deps.storage)?;
 
-        self.swaps.save(ctx.deps.storage, id, &AtomicSwap {
-            hashlock,
-            timelock,
-            destination,
-            creator: ctx.info.sender,
-            created_at: ctx.env.block.time,
-            value: ctx.info.funds,
-            state: SwapState::Created,
-        })?;
+        self.swaps.save(
+            ctx.deps.storage,
+            id,
+            &AtomicSwap {
+                hashlock,
+                timelock,
+                destination,
+                hint,
+                creator: ctx.info.sender,
+                created_at: ctx.env.block.time,
+                value: ctx.info.funds,
+                state: SwapState::Created,
+            },
+        )?;
 
         Ok(Response::default())
     }
 
     #[msg(exec)]
-    pub fn redeem(&self, ctx: ExecCtx, id:u64, preimage: String) -> Result<Response, ContractError> {
+    pub fn redeem(
+        &self,
+        ctx: ExecCtx,
+        id: u64,
+        preimage: String,
+    ) -> Result<Response, ContractError> {
         let mut swap = self.swaps.load(ctx.deps.storage, id)?;
-        
+
         match swap.state {
             SwapState::Created => {}
-            SwapState::Redeemed(_) => {
-                return Err(ContractError::AlreadyRedeemed)
-            }
-            SwapState::Refunded(_) => {
-                return Err(ContractError::AlreadyRefunded)
-            }
-
+            SwapState::Redeemed(_) => return Err(ContractError::AlreadyRedeemed),
+            SwapState::Refunded(_) => return Err(ContractError::AlreadyRefunded),
         }
 
         if swap.destination != ctx.info.sender {
-            return Err(ContractError::Unauthorized)
+            return Err(ContractError::Unauthorized);
         }
 
-        let hashlock = sha256::digest(&preimage);
+        let hashlock = hex::encode(Sha256::digest(&preimage));
         if hashlock != swap.hashlock {
-            return Err(ContractError::InvalidPreimage)
+            return Err(ContractError::InvalidPreimage);
         }
 
         swap.state = SwapState::Redeemed(SwapStateRedeemed {
@@ -124,33 +140,30 @@ impl AtomicSwapContract {
 
         self.swaps.save(ctx.deps.storage, id, &swap)?;
 
-        Ok(Response::default().add_message(CosmosMsg::Bank(BankMsg::Send {
-            to_address: swap.destination.to_string(),
-            amount: swap.value,
-        })))
+        Ok(
+            Response::default().add_message(CosmosMsg::Bank(BankMsg::Send {
+                to_address: swap.destination.to_string(),
+                amount: swap.value,
+            })),
+        )
     }
 
     #[msg(exec)]
-    pub fn refund(&self, ctx: ExecCtx, id:u64) -> Result<Response, ContractError> {
+    pub fn refund(&self, ctx: ExecCtx, id: u64) -> Result<Response, ContractError> {
         let mut swap = self.swaps.load(ctx.deps.storage, id)?;
-        
+
         match swap.state {
             SwapState::Created => {}
-            SwapState::Redeemed(_) => {
-                return Err(ContractError::AlreadyRedeemed)
-            }
-            SwapState::Refunded(_) => {
-                return Err(ContractError::AlreadyRefunded)
-            }
-
+            SwapState::Redeemed(_) => return Err(ContractError::AlreadyRedeemed),
+            SwapState::Refunded(_) => return Err(ContractError::AlreadyRefunded),
         }
 
         if !ctx.env.block.time.gt(&swap.timelock) {
-            return Err(ContractError::TimelockNotExpired)
+            return Err(ContractError::TimelockNotExpired);
         }
 
         if swap.creator != ctx.info.sender {
-            return Err(ContractError::Unauthorized)
+            return Err(ContractError::Unauthorized);
         }
 
         swap.state = SwapState::Refunded(SwapStateRefunded {
@@ -159,22 +172,19 @@ impl AtomicSwapContract {
 
         self.swaps.save(ctx.deps.storage, id, &swap)?;
 
-        Ok(Response::default().add_message(CosmosMsg::Bank(BankMsg::Send {
-            to_address: swap.creator.to_string(),
-            amount: swap.value,
-        })))
+        Ok(
+            Response::default().add_message(CosmosMsg::Bank(BankMsg::Send {
+                to_address: swap.creator.to_string(),
+                amount: swap.value,
+            })),
+        )
     }
 
-
     #[msg(exec)]
-    pub fn change_admin(
-        &self,
-        ctx: ExecCtx,
-        addr: String,
-    ) -> Result<Response, ContractError> {
+    pub fn change_admin(&self, ctx: ExecCtx, addr: String) -> Result<Response, ContractError> {
         let admin = self.admin.load(ctx.deps.storage)?;
         if admin != ctx.info.sender {
-            return Err(ContractError::Unauthorized)
+            return Err(ContractError::Unauthorized);
         }
 
         let addr = ctx.deps.api.addr_validate(&addr)?;
@@ -232,9 +242,9 @@ impl AtomicSwapContract {
                 Ok(swap)
             })
             .collect();
-        Ok(ListSwapsResult{
-          swaps: swaps?,
-          total,
+        Ok(ListSwapsResult {
+            swaps: swaps?,
+            total,
         })
     }
 }

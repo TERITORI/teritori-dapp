@@ -69,6 +69,7 @@ import { SuccessScreen } from "@/screens/Wallet/Screens/SucessScreen";
 import { WalletManagerScreen } from "@/screens/WalletManager/WalletManagerScreen";
 import { WalletManagerWalletsScreen } from "@/screens/WalletManager/WalletsScreen";
 import { AppMode } from "@/utils/types/app-mode";
+import { AtomicBridgeScreen } from "@/screens/AtomicBridge/AtomicBridgeScreen"
 // __insert_screen_import_before_me__
 
 export const getNormalModeScreens = ({
@@ -551,6 +552,11 @@ export const getNormalModeScreens = ({
         component={RakkiScreen}
         options={{ header: () => null, title: screenTitle("Rakki") }}
       />
+      <Nav.Screen
+            name="AtomicBridge"
+            component={AtomicBridgeScreen}
+            options={{ header: () => null, title: screenTitle("AtomicBridge") }}
+          />
       {/* __insert_screen_before_me__ */}
       {getPlatformScreens(screenTitle)}
     </>

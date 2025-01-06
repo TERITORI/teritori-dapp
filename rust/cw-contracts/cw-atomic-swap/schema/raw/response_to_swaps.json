@@ -32,6 +32,7 @@
         "creator",
         "destination",
         "hashlock",
+        "hint",
         "state",
         "timelock",
         "value"
@@ -47,6 +48,9 @@
           "$ref": "#/definitions/Addr"
         },
         "hashlock": {
+          "type": "string"
+        },
+        "hint": {
           "type": "string"
         },
         "state": {

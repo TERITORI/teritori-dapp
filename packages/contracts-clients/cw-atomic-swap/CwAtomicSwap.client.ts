@@ -65,10 +65,12 @@ export interface CwAtomicSwapInterface extends CwAtomicSwapReadOnlyInterface {
   create: ({
     destination,
     hashlock,
+    hint,
     timelock
   }: {
     destination: string;
     hashlock: string;
+    hint: string;
     timelock: number;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   redeem: ({
@@ -108,16 +110,19 @@ export class CwAtomicSwapClient extends CwAtomicSwapQueryClient implements CwAto
   create = async ({
     destination,
     hashlock,
+    hint,
     timelock
   }: {
     destination: string;
     hashlock: string;
+    hint: string;
     timelock: number;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       create: {
         destination,
         hashlock,
+        hint,
         timelock
       }
     }, fee, memo, _funds);

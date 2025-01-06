@@ -13,6 +13,7 @@ export type ExecMsg = {
   create: {
     destination: string;
     hashlock: string;
+    hint: string;
     timelock: number;
     [k: string]: unknown;
   };
@@ -71,6 +72,7 @@ export interface AtomicSwap {
   creator: Addr;
   destination: Addr;
   hashlock: string;
+  hint: string;
   state: SwapState;
   timelock: Timestamp;
   value: Coin[];
