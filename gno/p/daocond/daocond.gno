@@ -23,11 +23,3 @@ type State interface {
 	HandleVote(voterId string, vote Vote, previousVotes map[string]Vote)
 	RenderJSON() *json.Node
 }
-
-func NewStateSlice(conds ...Condition) []State {
-	states := make([]State, 0, len(conds))
-	for _, cond := range conds {
-		states = append(states, cond.NewState())
-	}
-	return states
-}
