@@ -60,23 +60,44 @@ func (m *roleCountState) Eval() bool {
 	return m.totalYes >= m.cond.count
 }
 
-// HandleVote implements State.
-func (m *roleCountState) HandleVote(voterId string, vote Vote, previousVotes map[string]Vote) {
-	if !m.cond.hasRoleFn(voterId, m.cond.role) {
-		return
-	}
-	previousVote, ok := previousVotes[voterId]
-	if !ok {
+// HandleEvent implements State.
+func (m *roleCountState) HandleEvent(evt Event, votes map[string]Vote) {
+	switch evt := evt.(type) {
+	case *EventVote:
+		if !m.cond.hasRoleFn(evt.VoterID, m.cond.role) {
+			return
+		}
+		previousVote := votes[evt.VoterID]
+		if previousVote == VoteYes && evt.Vote != VoteYes {
+			m.totalYes -= 1
+		}
+		if previousVote != VoteYes && evt.Vote == VoteYes {
+			m.totalYes += 1
+		}
+
+	case *EventRoleAssigned:
+		if evt.Role != m.cond.role {
+			return
+		}
+		vote := votes[evt.UserID]
 		if vote == VoteYes {
 			m.totalYes += 1
 		}
-		return
-	}
-	if previousVote == VoteYes && vote != VoteYes {
-		m.totalYes -= 1
-	}
-	if previousVote != VoteYes && vote == VoteYes {
-		m.totalYes += 1
+
+	case *EventRoleUnassigned:
+		if evt.Role != m.cond.role {
+			return
+		}
+		vote := votes[evt.UserID]
+		if vote == VoteYes {
+			m.totalYes -= 1
+		}
+
+	case *EventRoleRemoved:
+		if evt.Role != m.cond.role {
+			return
+		}
+		m.totalYes = 0
 	}
 }
 

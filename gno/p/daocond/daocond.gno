@@ -4,6 +4,25 @@ import (
 	"gno.land/p/demo/json"
 )
 
+// This model should work pretty good for small and dynamic daos.
+// For daos with a lot of members and active proposals we might need to get rid of change events.
+
+// base interfaces
+
+type Condition interface {
+	NewState() State
+
+	Render() string
+	RenderJSON() *json.Node
+}
+
+type State interface {
+	Eval() bool
+	HandleEvent(event Event, votes map[string]Vote)
+
+	RenderJSON() *json.Node
+}
+
 type Vote string
 
 const (
@@ -12,14 +31,35 @@ const (
 	VoteAbstain = "abstain"
 )
 
-type Condition interface {
-	NewState() State
-	Render() string
-	RenderJSON() *json.Node
+type Event interface {
 }
 
-type State interface {
-	Eval() bool
-	HandleVote(voterId string, vote Vote, previousVotes map[string]Vote)
-	RenderJSON() *json.Node
+// well known events
+
+type EventVote struct {
+	VoterID string
+	Vote    Vote
+}
+
+type EventMemberAdded struct {
+	MemberID string
+}
+
+type EventMemberRemoved struct {
+	MemberID string
+}
+
+type EventRoleAssigned struct {
+	UserID string
+	Role   string
+}
+
+type EventRoleUnassigned struct {
+	UserID string
+	Role   string
+}
+
+type EventRoleRemoved struct {
+	UserID string
+	Role   string
 }

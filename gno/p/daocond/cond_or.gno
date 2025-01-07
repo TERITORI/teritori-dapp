@@ -45,10 +45,10 @@ func (a *orState) Eval() bool {
 	return a.left.Eval() || a.right.Eval()
 }
 
-// HandleVote implements State.
-func (a *orState) HandleVote(voterId string, vote Vote, previousVotes map[string]Vote) {
-	a.left.HandleVote(voterId, vote, previousVotes)
-	a.right.HandleVote(voterId, vote, previousVotes)
+// HandleEvent implements State.
+func (a *orState) HandleEvent(evt Event, votes map[string]Vote) {
+	a.left.HandleEvent(evt, votes)
+	a.right.HandleEvent(evt, votes)
 }
 
 // RenderJSON implements State.

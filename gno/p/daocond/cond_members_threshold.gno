@@ -51,23 +51,29 @@ func (m *membersThresholdState) Eval() bool {
 	return float64(m.totalYes)/float64(m.cond.membersCountFn()) >= m.cond.threshold
 }
 
-// HandleVote implements State.
-func (m *membersThresholdState) HandleVote(voterId string, vote Vote, previousVotes map[string]Vote) {
-	if !m.cond.isMemberFn(voterId) {
-		return
-	}
-	previousVote, ok := previousVotes[voterId]
-	if !ok {
-		if vote == VoteYes {
+// HandleEvent implements State.
+func (m *membersThresholdState) HandleEvent(evt Event, votes map[string]Vote) {
+	switch evt := evt.(type) {
+	case *EventVote:
+		if !m.cond.isMemberFn(evt.VoterID) {
+			return
+		}
+		previousVote := votes[evt.VoterID]
+		if previousVote == VoteYes && evt.Vote != VoteYes {
+			m.totalYes -= 1
+		} else if previousVote != VoteYes && evt.Vote == VoteYes {
 			m.totalYes += 1
 		}
-		return
-	}
-	if previousVote == VoteYes && vote != VoteYes {
-		m.totalYes -= 1
-	}
-	if previousVote != VoteYes && vote == VoteYes {
-		m.totalYes += 1
+
+	case *EventMemberAdded:
+		if votes[evt.MemberID] == VoteYes {
+			m.totalYes += 1
+		}
+
+	case *EventMemberRemoved:
+		if votes[evt.MemberID] == VoteYes {
+			m.totalYes -= 1
+		}
 	}
 }
 
