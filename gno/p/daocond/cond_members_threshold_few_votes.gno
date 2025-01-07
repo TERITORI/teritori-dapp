@@ -80,7 +80,7 @@ func (m *membersThresholdFewVotesState) HandleEvent(_ Event, _ map[string]Vote) 
 	panic(errors.New("not implemented"))
 }
 
-// RenderJSON implements Condition.
+// RenderJSON implements State.
 func (m *membersThresholdFewVotesState) RenderJSON(votes map[string]Vote) *json.Node {
 	return json.ObjectNode("", map[string]*json.Node{
 		"type":     json.StringNode("", "members-threshold"),

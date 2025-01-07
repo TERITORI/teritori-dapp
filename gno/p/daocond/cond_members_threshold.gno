@@ -88,7 +88,7 @@ func (m *membersThresholdState) HandleEvent(evt Event, votes map[string]Vote) {
 	}
 }
 
-// RenderJSON implements Condition.
+// RenderJSON implements State.
 func (m *membersThresholdState) RenderJSON(_ map[string]Vote) *json.Node {
 	return json.ObjectNode("", map[string]*json.Node{
 		"type":     json.StringNode("", "members-threshold"),
