@@ -33,6 +33,8 @@ import {
   NetworkInfo,
   NetworkKind,
 } from "./types";
+import { starknetNetwork } from "./starknet";
+import { starknetSepoliaNetwork } from "./starknet-sepolia";
 
 export * from "./types";
 
@@ -55,6 +57,8 @@ const packageNetworks = [
   polygonNetwork,
   sagaTest2,
   sagaNetwork,
+  starknetNetwork,
+  starknetSepoliaNetwork,
 ];
 
 export const defaultEnabledNetworks = [
