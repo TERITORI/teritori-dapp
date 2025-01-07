@@ -7,7 +7,7 @@ import (
 	"gno.land/p/demo/ufmt"
 )
 
-// DOES IT MAKE SENSE TO HAVE A CONDITION SPECIFIC FOR MEMBERS WHEN WE COULD JUST USE A ROLE TRESHOLD
+// Should we name cond_role_treshold_few_votes.go? and use the members as the default role of any dao ?
 func MembersThresholdFewVotes(threshold float64, isMemberFn func(memberId string) bool, membersCountFn func() uint64) Condition {
 	if threshold <= 0 || threshold > 1 {
 		panic(errors.New("invalid threshold"))
