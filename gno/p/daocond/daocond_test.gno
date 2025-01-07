@@ -62,7 +62,7 @@ func TestState(t *testing.T) {
 			}},
 		},
 		{
-			name:     "post after public-relationships removed",
+			name:     "post after public-relationships changes",
 			resource: "social.post",
 			phases: []testPhase{
 				{
