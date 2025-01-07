@@ -14,6 +14,9 @@ func RoleCount(count uint64, role string, hasRoleFn func(memberId string, role s
 	if role == "" {
 		panic(errors.New("role must not be empty"))
 	}
+	if hasRoleFn == nil {
+		panic(errors.New("nil hasRoleFn"))
+	}
 	return &roleCountCond{
 		count:     count,
 		hasRoleFn: hasRoleFn,
@@ -56,7 +59,7 @@ type roleCountState struct {
 }
 
 // Eval implements State.
-func (m *roleCountState) Eval() bool {
+func (m *roleCountState) Eval(_ map[string]Vote) bool {
 	return m.totalYes >= m.cond.count
 }
 
@@ -102,7 +105,7 @@ func (m *roleCountState) HandleEvent(evt Event, votes map[string]Vote) {
 }
 
 // RenderJSON implements State.
-func (m *roleCountState) RenderJSON() *json.Node {
+func (m *roleCountState) RenderJSON(_ map[string]Vote) *json.Node {
 	return json.ObjectNode("", map[string]*json.Node{
 		"type":     json.StringNode("", "role-count"),
 		"totalYes": json.NumberNode("", float64(m.totalYes)),

@@ -17,10 +17,10 @@ type Condition interface {
 }
 
 type State interface {
-	Eval() bool
+	Eval(votes map[string]Vote) bool
 	HandleEvent(event Event, votes map[string]Vote)
 
-	RenderJSON() *json.Node
+	RenderJSON(votes map[string]Vote) *json.Node
 }
 
 type Vote string

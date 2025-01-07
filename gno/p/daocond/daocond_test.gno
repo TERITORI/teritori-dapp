@@ -32,6 +32,31 @@ func TestCondition(t *testing.T) {
 }
 
 func TestState(t *testing.T) {
+	setups := []struct {
+		name  string
+		setup func(dao *mockDAO)
+	}{
+		{name: "basic", setup: func(dao *mockDAO) {
+			membersMajority := daocond.MembersThreshold(0.6, dao.isMember, dao.membersCount)
+			publicRelationships := daocond.RoleCount(1, "public-relationships", dao.hasRole)
+			financeOfficer := daocond.RoleCount(1, "finance-officer", dao.hasRole)
+			dao.resources = map[string]daocond.Condition{
+				"social.post":    daocond.And(publicRelationships, membersMajority),
+				"finance.invest": daocond.Or(financeOfficer, membersMajority),
+			}
+		}},
+		{name: "no-events", setup: func(dao *mockDAO) {
+			dao.noEvents = true
+			membersMajority := daocond.MembersThresholdFewVotes(0.6, dao.isMember, dao.membersCount)
+			publicRelationships := daocond.RoleCountFewVotes(1, "public-relationships", dao.hasRole)
+			financeOfficer := daocond.RoleCountFewVotes(1, "finance-officer", dao.hasRole)
+			dao.resources = map[string]daocond.Condition{
+				"social.post":    daocond.And(publicRelationships, membersMajority),
+				"finance.invest": daocond.Or(financeOfficer, membersMajority),
+			}
+		}},
+	}
+
 	cases := []struct {
 		name     string
 		resource string
@@ -138,42 +163,41 @@ func TestState(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		t.Run(tc.name, func(t *testing.T) {
-			var handleEvt func(evt daocond.Event)
-			dao := newMockDAO(func(evt daocond.Event) { handleEvt(evt) })
+		for _, s := range setups {
+			t.Run(tc.name+" "+s.name, func(t *testing.T) {
+				var handleEvt func(evt daocond.Event)
+				dao := newMockDAO(func(evt daocond.Event) { handleEvt(evt) })
+				s.setup(dao)
 
-			membersMajority := daocond.MembersThreshold(0.6, dao.isMember, dao.membersCount)
-			publicRelationships := daocond.RoleCount(1, "public-relationships", dao.hasRole)
-			financeOfficer := daocond.RoleCount(1, "finance-officer", dao.hasRole)
-			ressources := map[string]daocond.Condition{
-				"social.post":    daocond.And(publicRelationships, membersMajority),
-				"finance.invest": daocond.Or(financeOfficer, membersMajority),
-			}
+				resource, ok := dao.resources[tc.resource]
+				urequire.True(t, ok)
 
-			resource, ok := ressources[tc.resource]
-			urequire.True(t, ok)
-
-			state := resource.NewState()
-			ballots := map[string]daocond.Vote{}
-			handleEvt = func(evt daocond.Event) { state.HandleEvent(evt, ballots) }
-
-			for _, phase := range tc.phases {
-				if phase.changes != nil {
-					phase.changes(dao)
+				state := resource.NewState()
+				ballots := map[string]daocond.Vote{}
+				if !dao.noEvents {
+					handleEvt = func(evt daocond.Event) { state.HandleEvent(evt, ballots) }
 				}
-				if phase.votes != nil {
-					for memberId, vote := range phase.votes {
-						state.HandleEvent(&daocond.EventVote{VoterID: memberId, Vote: vote}, ballots)
-						ballots[memberId] = vote
+
+				for _, phase := range tc.phases {
+					if phase.changes != nil {
+						phase.changes(dao)
 					}
+					if phase.votes != nil {
+						for memberId, vote := range phase.votes {
+							if !dao.noEvents {
+								state.HandleEvent(&daocond.EventVote{VoterID: memberId, Vote: vote}, ballots)
+							}
+							ballots[memberId] = vote
+						}
+					}
+					result := state.Eval(ballots)
+					if phase.result != result {
+						println("State:", state.RenderJSON(ballots))
+					}
+					urequire.Equal(t, phase.result, result)
 				}
-				result := state.Eval()
-				if phase.result != result {
-					println("State:", state.RenderJSON())
-				}
-				urequire.Equal(t, phase.result, result)
-			}
-		})
+			})
+		}
 	}
 }
 
@@ -184,8 +208,10 @@ type testPhase struct {
 }
 
 type mockDAO struct {
-	emitter func(evt daocond.Event)
-	members map[string][]string
+	emitter   func(evt daocond.Event)
+	members   map[string][]string
+	noEvents  bool
+	resources map[string]daocond.Condition
 }
 
 func newMockDAO(emitter func(evt daocond.Event)) *mockDAO {
@@ -196,6 +222,7 @@ func newMockDAO(emitter func(evt daocond.Event)) *mockDAO {
 			"bob":   []string{"public-relationships"},
 			"eve":   []string{},
 		},
+		resources: make(map[string]daocond.Condition),
 	}
 }
 
@@ -204,7 +231,9 @@ func (m *mockDAO) assignRole(userId string, role string) {
 		panic(errors.New("unknown member"))
 	}
 	m.members[userId] = strsadd(m.members[userId], role)
-	m.emitter(&daocond.EventRoleAssigned{UserID: userId, Role: role})
+	if !m.noEvents {
+		m.emitter(&daocond.EventRoleAssigned{UserID: userId, Role: role})
+	}
 }
 
 func (m *mockDAO) unassignRole(userId string, role string) {
@@ -212,7 +241,9 @@ func (m *mockDAO) unassignRole(userId string, role string) {
 		panic(errors.New("unknown member"))
 	}
 	m.members[userId] = strsrm(m.members[userId], role)
-	m.emitter(&daocond.EventRoleUnassigned{UserID: userId, Role: role})
+	if !m.noEvents {
+		m.emitter(&daocond.EventRoleUnassigned{UserID: userId, Role: role})
+	}
 }
 
 func (m *mockDAO) isMember(memberId string) bool {

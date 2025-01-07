@@ -1,11 +1,22 @@
 package daocond
 
 import (
+	"errors"
+
 	"gno.land/p/demo/json"
 	"gno.land/p/demo/ufmt"
 )
 
 func MembersThreshold(threshold float64, isMemberFn func(memberId string) bool, membersCountFn func() uint64) Condition {
+	if threshold <= 0 || threshold > 1 {
+		panic(errors.New("invalid threshold"))
+	}
+	if isMemberFn == nil {
+		panic(errors.New("nil isMemberFn"))
+	}
+	if membersCountFn == nil {
+		panic(errors.New("nil membersCountFn"))
+	}
 	return &membersThresholdCond{
 		threshold:      threshold,
 		isMemberFn:     isMemberFn,
@@ -47,7 +58,7 @@ type membersThresholdState struct {
 }
 
 // Eval implements State.
-func (m *membersThresholdState) Eval() bool {
+func (m *membersThresholdState) Eval(_ map[string]Vote) bool {
 	return float64(m.totalYes)/float64(m.cond.membersCountFn()) >= m.cond.threshold
 }
 
@@ -78,7 +89,7 @@ func (m *membersThresholdState) HandleEvent(evt Event, votes map[string]Vote) {
 }
 
 // RenderJSON implements Condition.
-func (m *membersThresholdState) RenderJSON() *json.Node {
+func (m *membersThresholdState) RenderJSON(_ map[string]Vote) *json.Node {
 	return json.ObjectNode("", map[string]*json.Node{
 		"type":     json.StringNode("", "members-threshold"),
 		"totalYes": json.NumberNode("", float64(m.totalYes)),

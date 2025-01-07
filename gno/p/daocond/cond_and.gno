@@ -5,6 +5,9 @@ import (
 )
 
 func And(left Condition, right Condition) Condition {
+	if left == nil || right == nil {
+		panic("left or right is nil")
+	}
 	return &andCond{left: left, right: right}
 }
 
@@ -41,17 +44,17 @@ type andState struct {
 }
 
 // RenderJSON implements State.
-func (a *andState) RenderJSON() *json.Node {
+func (a *andState) RenderJSON(votes map[string]Vote) *json.Node {
 	return json.ObjectNode("", map[string]*json.Node{
 		"type":  json.StringNode("", "and"),
-		"left":  a.left.RenderJSON(),
-		"right": a.right.RenderJSON(),
+		"left":  a.left.RenderJSON(votes),
+		"right": a.right.RenderJSON(votes),
 	})
 }
 
 // Eval implements State.
-func (a *andState) Eval() bool {
-	return a.left.Eval() && a.right.Eval()
+func (a *andState) Eval(votes map[string]Vote) bool {
+	return a.left.Eval(votes) && a.right.Eval(votes)
 }
 
 // HandleEvent implements State.
