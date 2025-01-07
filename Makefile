@@ -7,6 +7,9 @@ CAT := $(if $(filter $(OS),Windows_NT),type,cat)
 COSMWASM_CONTRACTS_DIR=rust/cw-contracts
 INTERNAL_COSMWASM_CONTRACTS=$(wildcard $(COSMWASM_CONTRACTS_DIR)/*)
 
+STARKNET_CONTRACTS_DIR=cairo/contracts
+INTERNAL_STARKNET_CONTRACTS=$(wildcard $(STARKNET_CONTRACTS_DIR)/*)
+
 TOKEN_REPO=teritori-nfts
 TOKEN_PACKAGE=teritori-nft
 SQUAD_STAKING_PACKAGE=teritori-squad-staking
@@ -384,6 +387,26 @@ init-weshd-go:
 .PHONY: bump-app-build-number
 bump-app-build-number:  
 	npx tsx packages/scripts/app-build/bumpBuildNumber.ts $(shell echo $$(($$(git rev-list HEAD --count) + 10)))
+
+.PHONY: test.cairo
+test.cairo:
+	set -e ; \
+	for file in $(INTERNAL_STARKNET_CONTRACTS); do \
+		echo "> Testing $${file}" ; \
+		cd $${file} ; \
+		snforge test ; \
+		cd - ; \
+	done
+
+.PHONY: build.cairo
+build.cairo:
+	set -e ; \
+	for file in $(INTERNAL_STARKNET_CONTRACTS); do \
+		echo "> Building $${file}" ; \
+		cd $${file} ; \
+		scarb build ; \
+		cd - ; \
+	done
 
 .PHONY: test.rust
 test.rust:
