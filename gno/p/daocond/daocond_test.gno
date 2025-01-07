@@ -227,21 +227,23 @@ func newMockDAO(emitter func(evt daocond.Event)) *mockDAO {
 }
 
 func (m *mockDAO) assignRole(userId string, role string) {
-	if _, ok := m.members[userId]; !ok {
+	_, ok := m.members[userId]
+	if !ok {
 		panic(errors.New("unknown member"))
 	}
-	m.members[userId] = strsadd(m.members[userId], role)
-	if !m.noEvents {
+	m.members[userId], ok = strsadd(m.members[userId], role)
+	if ok && !m.noEvents {
 		m.emitter(&daocond.EventRoleAssigned{UserID: userId, Role: role})
 	}
 }
 
 func (m *mockDAO) unassignRole(userId string, role string) {
-	if _, ok := m.members[userId]; !ok {
+	_, ok := m.members[userId]
+	if !ok {
 		panic(errors.New("unknown member"))
 	}
-	m.members[userId] = strsrm(m.members[userId], role)
-	if !m.noEvents {
+	m.members[userId], ok = strsrm(m.members[userId], role)
+	if ok && !m.noEvents {
 		m.emitter(&daocond.EventRoleUnassigned{UserID: userId, Role: role})
 	}
 }
@@ -268,22 +270,24 @@ func (m *mockDAO) hasRole(memberId string, role string) bool {
 	return false
 }
 
-func strsrm(strs []string, val string) []string {
+func strsrm(strs []string, val string) ([]string, bool) {
+	removed := false
 	res := []string{}
 	for _, str := range strs {
 		if str == val {
+			removed = true
 			continue
 		}
 		res = append(res, str)
 	}
-	return res
+	return res, removed
 }
 
-func strsadd(strs []string, val string) []string {
+func strsadd(strs []string, val string) ([]string, bool) {
 	for _, str := range strs {
 		if str == val {
-			return strs
+			return strs, false
 		}
 	}
-	return append(strs, val)
+	return append(strs, val), true
 }
