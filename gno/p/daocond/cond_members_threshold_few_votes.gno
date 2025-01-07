@@ -7,6 +7,7 @@ import (
 	"gno.land/p/demo/ufmt"
 )
 
+// DOES IT MAKE SENSE TO HAVE A CONDITION SPECIFIC FOR MEMBERS WHEN WE COULD JUST USE A ROLE TRESHOLD
 func MembersThresholdFewVotes(threshold float64, isMemberFn func(memberId string) bool, membersCountFn func() uint64) Condition {
 	if threshold <= 0 || threshold > 1 {
 		panic(errors.New("invalid threshold"))
