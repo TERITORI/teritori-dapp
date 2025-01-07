@@ -45,7 +45,7 @@ func TestState(t *testing.T) {
 				"finance.invest": daocond.Or(financeOfficer, membersMajority),
 			}
 		}},
-		{name: "no-events", setup: func(dao *mockDAO) {
+		{name: "few-votes", setup: func(dao *mockDAO) {
 			dao.noEvents = true
 			membersMajority := daocond.MembersThresholdFewVotes(0.6, dao.isMember, dao.membersCount)
 			publicRelationships := daocond.RoleCountFewVotes(1, "public-relationships", dao.hasRole)
@@ -185,7 +185,7 @@ func TestState(t *testing.T) {
 					if phase.votes != nil {
 						for memberId, vote := range phase.votes {
 							if !dao.noEvents {
-								state.HandleEvent(&daocond.EventVote{VoterID: memberId, Vote: vote}, ballots)
+								handleEvt(&daocond.EventVote{VoterID: memberId, Vote: vote})
 							}
 							ballots[memberId] = vote
 						}
@@ -227,22 +227,22 @@ func newMockDAO(emitter func(evt daocond.Event)) *mockDAO {
 }
 
 func (m *mockDAO) assignRole(userId string, role string) {
-	_, ok := m.members[userId]
+	roles, ok := m.members[userId]
 	if !ok {
 		panic(errors.New("unknown member"))
 	}
-	m.members[userId], ok = strsadd(m.members[userId], role)
+	m.members[userId], ok = strsadd(roles, role)
 	if ok && !m.noEvents {
 		m.emitter(&daocond.EventRoleAssigned{UserID: userId, Role: role})
 	}
 }
 
 func (m *mockDAO) unassignRole(userId string, role string) {
-	_, ok := m.members[userId]
+	roles, ok := m.members[userId]
 	if !ok {
 		panic(errors.New("unknown member"))
 	}
-	m.members[userId], ok = strsrm(m.members[userId], role)
+	m.members[userId], ok = strsrm(roles, role)
 	if ok && !m.noEvents {
 		m.emitter(&daocond.EventRoleUnassigned{UserID: userId, Role: role})
 	}
