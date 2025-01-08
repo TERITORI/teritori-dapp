@@ -1,11 +1,15 @@
 package dao_realm2
 
 import (
+	"gno.land/p/demo/avl"
 	"gno.land/p/teritori/dao2"
+	"gno.land/p/teritori/daocond"
 )
 
+var dao *dao2.Dao
+
 func init() {
-	dao := dao2.NewDao()
+	dao = dao2.NewDao()
 
 	dao.SetRoles([]string{"admin", "community", "financial", "member"})
 	dao.SetMembers([][]string{
@@ -15,4 +19,15 @@ func init() {
 		{"g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r", "member"},
 	})
 
+	var resourceJSON = `{"type":"AND","conditions":[{"type":"role-count","role":"public-relationships","count":"1"},{"type":"OR","conditions":[{"type":"members-threshold","threshold":"6"},{"type":"role-count","role":"finance-officer","count":"1"}]}]}`
+
+	condition := daocond.ConditionFromJSON(resourceJSON, dao.HasRoleFn, dao.IsMemberFn, dao.MembersCountFn)
+	resources := avl.NewTree()
+	resources.Set("social.publish_post", condition)
+	dao.SetResources(resources)
+
+}
+
+func Render(path string) string {
+	return dao.Render()
 }

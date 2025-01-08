@@ -11,7 +11,11 @@ func ConditionFromJSON(conditionJSON string, hasRoleFn func(memberId string, rol
 	if err != nil {
 		panic("invalid condition json format")
 	}
-	conditionObj := nodes.MustObject()
+	return conditionFromJSON(nodes, hasRoleFn, isMemberFn, membersCountFn)
+}
+
+func conditionFromJSON(condition *json.Node, hasRoleFn func(memberId string, role string) bool, isMemberFn func(memberId string) bool, membersCountFn func() uint64) Condition {
+	conditionObj := condition.MustObject()
 	conditionType := conditionObj["type"].MustString()
 	switch conditionType {
 	case "AND":
@@ -19,17 +23,17 @@ func ConditionFromJSON(conditionJSON string, hasRoleFn func(memberId string, rol
 		if len(conditions) == 0 {
 			panic("AND condition must have 2 conditions")
 		}
-		return And(ConditionFromJSON(conditions[0].MustString(), hasRoleFn, isMemberFn, membersCountFn), ConditionFromJSON(conditions[1].MustString(), hasRoleFn, isMemberFn, membersCountFn))
+		return And(conditionFromJSON(conditions[0], hasRoleFn, isMemberFn, membersCountFn), conditionFromJSON(conditions[1], hasRoleFn, isMemberFn, membersCountFn))
 	case "OR":
 		conditions := conditionObj["conditions"].MustArray()
 		if len(conditions) == 0 {
 			panic("OR condition must have 2 conditions")
 		}
-		return Or(ConditionFromJSON(conditions[0].MustString(), hasRoleFn, isMemberFn, membersCountFn), ConditionFromJSON(conditions[1].MustString(), hasRoleFn, isMemberFn, membersCountFn))
+		return Or(conditionFromJSON(conditions[0], hasRoleFn, isMemberFn, membersCountFn), conditionFromJSON(conditions[1], hasRoleFn, isMemberFn, membersCountFn))
 	case "role-count":
 		return RoleCount(uint64(jsonutil.MustInt64(conditionObj["count"])), conditionObj["role"].MustString(), hasRoleFn)
 	case "members-threshold":
-		return MembersThreshold(float64(jsonutil.MustInt64(conditionObj["threshold"])), isMemberFn, membersCountFn)
+		return MembersThreshold(float64(jsonutil.MustInt64(conditionObj["threshold"]))/100, isMemberFn, membersCountFn)
 	default:
 		panic("unknown condition type")
 	}

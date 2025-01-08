@@ -2,8 +2,11 @@ package dao2
 
 import (
 	"std"
+	"strings"
 
 	"gno.land/p/demo/avl"
+	"gno.land/p/demo/ufmt"
+	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/role_manager"
 )
 
@@ -16,7 +19,7 @@ type Dao struct {
 
 func NewDao() *Dao {
 	return &Dao{
-		roleManager: role_manager.NewWithAddress(std.CurrentRealm().Addr()),
+		roleManager: role_manager.NewWithAddress(std.PrevRealm().Addr()),
 		members:     avl.NewTree(),
 		resources:   avl.NewTree(),
 	}
@@ -51,4 +54,38 @@ func (d *Dao) IsMemberFn(memberId string) bool {
 
 func (d *Dao) MembersCountFn() uint64 {
 	return uint64(d.members.Size())
+}
+
+func (d *Dao) Render() string {
+	// DISPLAY ORG. WITH LIST OF MEMBERS AND ROLES ASSOCIATED
+	// DISPLAY CONDITIONS
+	w := strings.Builder{}
+
+	w.WriteString(ufmt.Sprintf("# Decentralized Autonomous Organization\n"))
+
+	w.WriteString(ufmt.Sprintf("## Members\n\n"))
+
+	i := 1
+	d.members.Iterate("", "", func(key string, value interface{}) bool {
+		w.WriteString(ufmt.Sprintf("**Member %d: %s**\n", i, key))
+		w.WriteString(ufmt.Sprintf("Roles:\n"))
+		roles := d.roleManager.GetUserRoles(std.Address(key))
+		for _, role := range roles {
+			w.WriteString(ufmt.Sprintf("\t%s\n", role))
+		}
+		w.WriteString(ufmt.Sprintf("\n--------------------------------\n"))
+		return false
+	})
+
+	w.WriteString(ufmt.Sprintf("## Resources\n\n"))
+
+	d.resources.Iterate("", "", func(key string, value interface{}) bool {
+		condition := value.(daocond.Condition)
+		w.WriteString(ufmt.Sprintf("**Resource: %s**\n", key))
+		w.WriteString(ufmt.Sprintf("Condition: %s\n", condition.Render()))
+		w.WriteString(ufmt.Sprintf("\n--------------------------------\n"))
+		return false
+	})
+
+	return w.String()
 }
