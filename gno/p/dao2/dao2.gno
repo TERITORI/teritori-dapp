@@ -74,6 +74,7 @@ func (d *Dao) Render() string {
 			w.WriteString(ufmt.Sprintf("\t%s\n", role))
 		}
 		w.WriteString(ufmt.Sprintf("\n--------------------------------\n"))
+		i += 1
 		return false
 	})
 
