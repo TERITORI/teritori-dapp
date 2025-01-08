@@ -4,6 +4,7 @@
     "supported_networks": ["teritori"],
     "owner": "",
     "deployer": "",
-    "nft_code_id": 0
+    "nft_code_id": 0,
+    "proposal_single_contract": ""
   } 
 }

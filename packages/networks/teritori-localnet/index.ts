@@ -1,9 +1,20 @@
 import { teritoriLocalnetCurrencies } from "./currencies";
+import { CosmWasmNFTLaunchpad } from "../features";
 import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
 
 const nameServiceContractAddress = "";
 
 const riotContractAddressGen1 = "";
+
+const cosmwasmNftLaunchpadFeature: CosmWasmNFTLaunchpad = {
+  type: NetworkFeature.CosmWasmNFTLaunchpad,
+  launchpadContractAddress: "",
+  launchpadEndpoint: "http://localhost:9090",
+  nftTr721CodeId: 0,
+  codeId: 0,
+  defaultMintDenom: "utori",
+  daoProposalSingleContractAddress: "",
+};
 
 export const teritoriLocalnetNetwork: NetworkInfo = {
   id: "teritori-localnet",
@@ -23,6 +34,7 @@ export const teritoriLocalnetNetwork: NetworkInfo = {
     NetworkFeature.RiotP2E,
     NetworkFeature.NFTMarketplaceLeaderboard,
   ],
+  featureObjects: [cosmwasmNftLaunchpadFeature],
   currencies: teritoriLocalnetCurrencies,
   txExplorer: "",
   accountExplorer: "",

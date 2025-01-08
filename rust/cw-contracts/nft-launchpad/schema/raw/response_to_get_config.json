@@ -6,7 +6,8 @@
     "admin",
     "name",
     "nft_code_id",
-    "owner"
+    "owner",
+    "proposal_single_contract"
   ],
   "properties": {
     "admin": {
@@ -21,6 +22,9 @@
       "minimum": 0.0
     },
     "owner": {
+      "$ref": "#/definitions/Addr"
+    },
+    "proposal_single_contract": {
       "$ref": "#/definitions/Addr"
     }
   },

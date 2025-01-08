@@ -37,8 +37,10 @@ const cosmwasmNftLaunchpadFeature: CosmWasmNFTLaunchpad = {
     "tori1te7ku4de0k4rl8lhyuvpmhygaq7k7vy5zpsjq9y638efxsnx3aaqck2utf",
   launchpadEndpoint: "https://dapp-backend.testnet.teritori.com",
   nftTr721CodeId: 60,
-  codeId: 71,
+  codeId: 93,
   defaultMintDenom: "utori",
+  daoProposalSingleContractAddress:
+    "tori1kprr6paf06nhwavaduasdeh7cs8z90mwg7w783kluya7aachndkqes2s7x",
 };
 
 const rakkiFeature: CosmWasmRakki = {

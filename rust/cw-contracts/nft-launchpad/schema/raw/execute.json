@@ -286,6 +286,12 @@
             "string",
             "null"
           ]
+        },
+        "proposal_single_contract": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       },
       "additionalProperties": false
