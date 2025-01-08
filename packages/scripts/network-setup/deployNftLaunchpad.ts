@@ -82,18 +82,35 @@ const instantiateNftLaunchpad = async (
   }
   let nftCodeId = featureObject.nftTr721CodeId;
   if (!nftCodeId) {
+    console.error("No NFT TR721 code ID found. Deploying NFT TR721 ...");
     nftCodeId = await deployNftTr721({
       opts,
       networkId: network.id,
       deployerWallet,
     });
   }
+
+  let daoProposalSingleContractAddress =
+    featureObject.daoProposalSingleContractAddress;
+  if (!daoProposalSingleContractAddress) {
+    console.error(
+      "No DAO Proposal Single contract address found. Instantiating DAO Proposal Single...",
+    );
+    daoProposalSingleContractAddress = await instantiateDaoProposalSingle(
+      opts,
+      deployerWallet,
+      launchpadAdmin,
+      network,
+    );
+  }
+
   const instantiateMsg: NftLaunchpadInstantiateMsg = {
     config: {
       name: "Teritori NFT Launchpad",
       owner: deployerAddr,
       admin: launchpadAdmin,
       nft_code_id: nftCodeId,
+      dao_proposal_single_contract_addr: daoProposalSingleContractAddress,
     },
   };
   return await instantiateContract(
@@ -105,6 +122,68 @@ const instantiateNftLaunchpad = async (
     "Teritori NFT Launchpad",
     instantiateMsg,
   );
+};
+
+const instantiateDaoProposalSingle = async (
+  opts: DeployOpts,
+  deployerWallet: string,
+  adminAddr: string,
+  network: CosmosNetworkInfo,
+) => {
+  let codeId = network.daoProposalSingleCodeId;
+  if (!codeId) {
+    console.error(
+      "No DAO Proposal Single code ID. Deploying DAO Proposal Single...",
+    );
+    codeId = deployDaoProposalSingle({
+      opts,
+      networkId: network.id,
+      deployerWallet,
+    });
+  }
+  return await instantiateContract(
+    opts,
+    deployerWallet,
+    network,
+    codeId,
+    adminAddr,
+    "Teritori DAO Proposal Single",
+    {},
+  );
+};
+
+const deployDaoProposalSingle = async ({
+  opts,
+  networkId,
+  deployerWallet,
+}: {
+  networkId: string;
+  deployerWallet: string;
+  opts: DeployOpts;
+}) => {
+  const { network } = await initDeploy({
+    opts,
+    networkId,
+    wallet: deployerWallet,
+  });
+  const cosmwasmLaunchpadFeature = cloneDeep(
+    getNetworkFeature(networkId, NetworkFeature.CosmWasmNFTLaunchpad),
+  );
+  if (!cosmwasmLaunchpadFeature) {
+    console.error(`Cosmwasm Launchpad feature not found on ${networkId}`);
+    process.exit(1);
+  }
+  const daoProposalSingleFilePath = path.join(
+    __dirname,
+    "dao_proposal_single.wasm",
+  );
+  const daoProposalSingleCodeId = await storeWASM(
+    opts,
+    deployerWallet,
+    network,
+    daoProposalSingleFilePath,
+  );
+  return daoProposalSingleCodeId;
 };
 
 const deployNftTr721 = async ({
