@@ -1,5 +1,4 @@
 import { useFocusEffect } from "@react-navigation/native";
-import LottieView from "lottie-react-native";
 import React, { useCallback, useMemo } from "react";
 
 import { ArticlesFeed } from "./components/ArticlesFeed";

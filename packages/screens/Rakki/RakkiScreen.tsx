@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import Long from "long";
 import LottieView from "lottie-react-native";
 import moment from "moment";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { StyleProp, TextInput, TextStyle, View, ViewStyle } from "react-native";
 
 import rakkiTicketSVG from "../../../assets/logos/rakki-ticket.svg";
@@ -78,7 +78,7 @@ export const RakkiScreen: ScreenFC<"Rakki"> = () => {
     );
   } else {
     content = (
-      <View>
+      <>
         <RakkiLogo style={{ marginTop: 100 }} />
         <PrizeInfo
           info={rakkiInfo}
@@ -99,7 +99,7 @@ export const RakkiScreen: ScreenFC<"Rakki"> = () => {
           setIsLottie={setIsLottie}
           style={{ marginTop: 50 }}
         />
-      </View>
+      </>
     );
   }
 
