@@ -58,11 +58,11 @@ func (p *ProposalModule) Render() string {
 	i := 1
 	p.proposals.Iterate("", "", func(key string, value interface{}) bool {
 		proposal := value.(*Proposal)
-		sb.WriteString((ufmt.Sprintf("**Proposal %d: %s**\n\n", i, proposal.Title)))
-		sb.WriteString((ufmt.Sprintf("Description: %s\n\n", proposal.Description)))
-		sb.WriteString((ufmt.Sprintf("Proposer: %s\n\n", proposal.Proposer)))
-		sb.WriteString((ufmt.Sprintf("Status: %s\n\n", proposal.Status.String())))
-		sb.WriteString((ufmt.Sprintf("Votes: Yes: %d, No: %d, Abstain: %d\n\n", proposal.Votes.Yes, proposal.Votes.No, proposal.Votes.Abstain)))
+		sb.WriteString((ufmt.Sprintf("**Proposal %d: %s**\n\n", i, proposal.title)))
+		sb.WriteString((ufmt.Sprintf("Description: %s\n\n", proposal.description)))
+		sb.WriteString((ufmt.Sprintf("Proposer: %s\n\n", proposal.proposer)))
+		sb.WriteString((ufmt.Sprintf("Status: %s\n\n", proposal.status.String())))
+		sb.WriteString((ufmt.Sprintf("State: %s\n\n", proposal.state.RenderJSON(proposal.votes).String())))
 		sb.WriteString((ufmt.Sprintf("\n--------------------------------\n")))
 		i += 1
 		return false

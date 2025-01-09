@@ -5,6 +5,7 @@ import (
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/seqid"
+	"gno.land/p/teritori/daocond"
 )
 
 type ProposalStatus int
@@ -28,26 +29,21 @@ func (s ProposalStatus) String() string {
 	}
 }
 
-type Votes struct {
-	Yes     uint64
-	No      uint64
-	Abstain uint64
-}
-
 type Proposal struct {
-	ID          seqid.ID
-	Title       string
-	Description string
-	Proposer    std.Address
+	id          seqid.ID
+	title       string
+	description string
+	proposer    std.Address
+	resource    string
+	state       daocond.State
 	// StartHeight int64
 	//MinVotingPeriod dao_utils.Expiration // copy here the dao_utils.Expiration type from gno/p/dao_utils/expiration.gno
 	//Expiration      dao_utils.Expiration // copy here the dao_utils.Expiration type from gno/p/dao_utils/expiration.gno
 	// Threshold Threshold: Treshold should be handle in the conditions
 	//Message dao_interfaces.ExecutableMessage // copy here the dao_interfaces.ExecutableMessage type from gno/p/dao_interfaces/messages.gno
-	Status ProposalStatus
-	Votes  Votes
+	status ProposalStatus
 	// AllowRevoting bool not handled in this proposal
-	Ballots *avl.Tree // std.Address -> Ballot
+	votes map[string]daocond.Vote
 }
 
 type ProposalModule struct {
@@ -61,16 +57,25 @@ func newProposalModule() *ProposalModule {
 	}
 }
 
-func (p *ProposalModule) newProposal(title, description string, proposer std.Address) {
+func (p *ProposalModule) newProposal(title, description string, proposer std.Address, state daocond.State) {
 	id := p.proposalIDCounter.Next()
 	proposal := &Proposal{
-		ID:          id,
-		Title:       title,
-		Description: description,
-		Proposer:    proposer,
-		Status:      ProposalStatusOpen,
-		Votes:       Votes{},
-		Ballots:     avl.NewTree(),
+		id:          id,
+		title:       title,
+		description: description,
+		proposer:    proposer,
+		status:      ProposalStatusOpen,
+		state:       state,
+		votes:       map[string]daocond.Vote{},
 	}
 	p.proposals.Set(id.String(), proposal)
+}
+
+func (p *ProposalModule) getProposal(id uint64) *Proposal {
+	value, ok := p.proposals.Get(seqid.ID(id).String())
+	if !ok {
+		return nil
+	}
+	proposal := value.(*Proposal)
+	return proposal
 }

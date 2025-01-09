@@ -16,7 +16,11 @@ func init() {
 }
 
 func Proposal(title, description string) {
-	dao.NewProposal(title, description)
+	dao.NewProposal(title, description, "social.publish_post")
+}
+
+func Vote(proposalID uint64, vote string) {
+	dao.Vote(proposalID, vote)
 }
 
 func Render(path string) string {

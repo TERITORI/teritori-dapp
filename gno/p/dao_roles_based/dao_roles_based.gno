@@ -34,11 +34,46 @@ func NewDaoRolesBasedJSON(rolesJSON, membersJSON, resourcesJSON string) *DaoRole
 	return dao
 }
 
-func (d *DaoRolesBased) NewProposal(title, description string) {
+func (d *DaoRolesBased) Vote(proposalID uint64, vote string) {
+	// 3th caller is the voter, 2nd is the dao realm, 1st is the dao_roles_based module
+	voter := std.GetCallerAt(3)
+	if !d.MemberModule.IsMember(voter.String()) {
+		panic("voter is not a member")
+	}
+
+	proposal := d.ProposalModule.getProposal(proposalID)
+	if proposal == nil {
+		panic("proposal not found")
+	}
+
+	if proposal.status != ProposalStatusOpen {
+		panic("proposal is not open")
+	}
+
+	if daocond.Vote(vote) != daocond.VoteYes && daocond.Vote(vote) != daocond.VoteNo && daocond.Vote(vote) != daocond.VoteAbstain {
+		panic("invalid vote")
+	}
+
+	e := &daocond.EventVote{
+		VoterID: voter.String(),
+		Vote:    daocond.Vote(vote),
+	}
+
+	proposal.state.HandleEvent(e, proposal.votes)
+	proposal.votes[voter.String()] = daocond.Vote(vote)
+
+}
+
+func (d *DaoRolesBased) NewProposal(title, description, resource string) {
 	// 3th caller is the proposer, 2nd is the dao realm, 1st is the dao_roles_based module
 	proposer := std.GetCallerAt(3)
 	if !d.MemberModule.IsMember(proposer.String()) {
 		panic("proposer is not a member")
+	}
+
+	condition := d.ResourcesModule.getResource(resource)
+	if condition == nil {
+		panic("resource not found")
 	}
 
 	if len(title) < 9 {
@@ -49,7 +84,7 @@ func (d *DaoRolesBased) NewProposal(title, description string) {
 		panic("description should be at least 15 characters long")
 	}
 
-	d.ProposalModule.newProposal(title, description, proposer)
+	d.ProposalModule.newProposal(title, description, proposer, condition.NewState())
 }
 
 func (d *DaoRolesBased) HasRole(memberId string, role string) bool {
