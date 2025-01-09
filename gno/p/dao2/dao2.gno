@@ -3,6 +3,7 @@ package dao2
 import (
 	"std"
 	"strings"
+	"time"
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/ufmt"
@@ -15,6 +16,12 @@ type Dao struct {
 	roleManager *role_manager.RoleManager
 	members     *avl.Tree // address -> struct{}
 	resources   *avl.Tree // string -> daocond.Condition
+}
+
+type Proposal struct {
+	resource         string
+	condition        daocond.Condition
+	ExpirationAtTime time.Time
 }
 
 func NewDao() *Dao {
@@ -39,6 +46,8 @@ func (d *Dao) SetMembers(members [][]string) {
 		}
 	}
 }
+
+func (d *Dao) NewProposal(resource string)
 
 func (d *Dao) SetResources(resources *avl.Tree) {
 	d.resources = resources
