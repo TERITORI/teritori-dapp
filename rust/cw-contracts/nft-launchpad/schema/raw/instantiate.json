@@ -19,12 +19,16 @@
       "type": "object",
       "required": [
         "admin",
+        "dao_proposal_single_contract_addr",
         "name",
         "nft_code_id",
         "owner"
       ],
       "properties": {
         "admin": {
+          "$ref": "#/definitions/Addr"
+        },
+        "dao_proposal_single_contract_addr": {
           "$ref": "#/definitions/Addr"
         },
         "name": {

@@ -267,6 +267,16 @@
             "null"
           ]
         },
+        "dao_proposal_single_contract_addr": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Addr"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "name": {
           "type": [
             "string",

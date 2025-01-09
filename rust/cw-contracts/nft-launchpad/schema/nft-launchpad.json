@@ -23,12 +23,16 @@
         "type": "object",
         "required": [
           "admin",
+          "dao_proposal_single_contract_addr",
           "name",
           "nft_code_id",
           "owner"
         ],
         "properties": {
           "admin": {
+            "$ref": "#/definitions/Addr"
+          },
+          "dao_proposal_single_contract_addr": {
             "$ref": "#/definitions/Addr"
           },
           "name": {
@@ -314,6 +318,16 @@
             "type": [
               "string",
               "null"
+            ]
+          },
+          "dao_proposal_single_contract_addr": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Addr"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "name": {
@@ -730,12 +744,16 @@
       "type": "object",
       "required": [
         "admin",
+        "dao_proposal_single_contract_addr",
         "name",
         "nft_code_id",
         "owner"
       ],
       "properties": {
         "admin": {
+          "$ref": "#/definitions/Addr"
+        },
+        "dao_proposal_single_contract_addr": {
           "$ref": "#/definitions/Addr"
         },
         "name": {
