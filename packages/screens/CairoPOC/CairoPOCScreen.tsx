@@ -4,9 +4,35 @@ import { useCairoTodos } from "./useCairoTodos";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
 import { BrandText } from "@/components/BrandText";
 import { Todo } from "./types";
+import { useBalance, useNetwork, useReadContract } from "@starknet-react/core";
+import {
+  useSelectedNetworkId,
+  useSelectedNetworkInfo,
+} from "@/hooks/useSelectedNetwork";
+import { StarknetNetworkInfo } from "@/networks";
+import abi from "./abi.json";
 
 export const CairoPOCScreen = () => {
   const { data: todos, isLoading } = useCairoTodos();
+  const selectedNetwork = useSelectedNetworkInfo();
+
+  const {
+    data,
+    error,
+    isLoading: isReadingContract,
+  } = useReadContract({
+    abi,
+    functionName: "get_balance",
+    address: (selectedNetwork as StarknetNetworkInfo).defaultContract,
+    args: [],
+  });
+
+  console.log({
+    data,
+    error,
+    isReadingContract,
+    address: (selectedNetwork as StarknetNetworkInfo).defaultContract,
+  });
 
   return (
     <ScreenContainer>

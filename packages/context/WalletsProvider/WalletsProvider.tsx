@@ -5,6 +5,7 @@ import { useGnotest } from "./gnotest";
 import { useKeplr } from "./keplr";
 import { useLeap } from "./leap";
 import { useMetamask } from "./metamask";
+import { useArgentX } from "./argentX";
 import { Wallet } from "./wallet";
 import { WalletProvider } from "../../utils/walletProvider";
 
@@ -34,6 +35,7 @@ export const WalletsProvider: React.FC<{ children: ReactNode }> = React.memo(
     const [hasLeap, leapIsReady, leapWallets] = useLeap();
     const [hasMetamask, metamaskIsReady, metamaskWallets] = useMetamask();
     const [hasAdena, adenaIsReady, adenaWallets] = useAdena();
+    const [hasArgentX, argentXIsReady, argentXWallets] = useArgentX();
     const [hasGnotest, , gnotestWallets] = useGnotest();
     const selectedNativeWallet = useSelectedNativeWallet();
     const hasNative = !!selectedNativeWallet;
@@ -124,6 +126,13 @@ export const WalletsProvider: React.FC<{ children: ReactNode }> = React.memo(
         }
       }
 
+      if (hasArgentX) {
+        walletProviders.push(WalletProvider.ArgentX);
+        if (argentXWallets?.[0]?.connected) {
+          wallets.push(argentXWallets[0]);
+        }
+      }
+
       if (hasNative) {
         walletProviders.push(WalletProvider.Native);
         if (selectedNativeWallet) {
@@ -149,9 +158,15 @@ export const WalletsProvider: React.FC<{ children: ReactNode }> = React.memo(
       return {
         wallets,
         walletProviders,
-        ready: keplrIsReady && metamaskIsReady && adenaIsReady && leapIsReady,
+        ready:
+          keplrIsReady &&
+          metamaskIsReady &&
+          adenaIsReady &&
+          leapIsReady &&
+          argentXIsReady,
       };
     }, [
+      argentXIsReady,
       adenaIsReady,
       adenaWallets,
       gnotestWallets,

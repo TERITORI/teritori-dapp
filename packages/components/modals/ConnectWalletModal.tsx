@@ -20,6 +20,7 @@ import { SeparatorGradient } from "../separators/SeparatorGradient";
 import { SpacerColumn } from "../spacer";
 
 import { ConnectGnotestButton } from "@/context/WalletsProvider/gnotest";
+import { ConnectArgentXButton } from "../connectWallet/ConnectArgentXButton";
 
 export const ConnectWalletModal: FC<{
   forceNetworkFeature?: NetworkFeature;
@@ -63,6 +64,12 @@ export const ConnectWalletModal: FC<{
       {canConnectWallet(NetworkKind.Gno) && (
         <>
           <ConnectAdenaButton onDone={onClose} />
+          <SpacerColumn size={1.5} />
+        </>
+      )}
+      {canConnectWallet(NetworkKind.Starknet) && (
+        <>
+          <ConnectArgentXButton onDone={onClose} />
           <SpacerColumn size={1.5} />
         </>
       )}

@@ -39,6 +39,7 @@ interface Settings {
   isLeapConnected: boolean;
   isNativeWalletConnected: boolean;
   isAdenaConnected: boolean;
+  isArgentXConnected: boolean;
   alreadyVisited: boolean;
   areTestnetsEnabled: boolean;
   sideBarExpanded: boolean;
@@ -58,6 +59,7 @@ const initialState: Settings = {
   isLeapConnected: false,
   isNativeWalletConnected: false,
   isAdenaConnected: false,
+  isArgentXConnected: false,
   howToBuyExapanded: true,
   alreadyVisited: false,
   areTestnetsEnabled: false,
@@ -179,6 +181,9 @@ const settingsSlice = createSlice({
     setIsAdenaConnected: (state, action: PayloadAction<boolean>) => {
       state.isAdenaConnected = action.payload;
     },
+    setIsArgentXConnected: (state, action: PayloadAction<boolean>) => {
+      state.isArgentXConnected = action.payload;
+    },
     setAreTestnetsEnabled: (state, action: PayloadAction<boolean>) => {
       state.areTestnetsEnabled = action.payload;
     },
@@ -252,6 +257,7 @@ export const {
   setIsKeplrConnected,
   setIsLeapConnected,
   setIsAdenaConnected,
+  setIsArgentXConnected,
   setAreTestnetsEnabled,
   setSidebarExpanded,
   setHowToBuyExpanded,

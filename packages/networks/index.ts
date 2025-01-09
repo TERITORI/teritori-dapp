@@ -32,6 +32,7 @@ import {
   NativeCurrencyInfo,
   NetworkInfo,
   NetworkKind,
+  StarknetNetworkInfo,
 } from "./types";
 import { starknetNetwork } from "./starknet";
 import { starknetSepoliaNetwork } from "./starknet-sepolia";
@@ -299,6 +300,35 @@ export const mustGetCosmosNetwork = (
   }
   if (network.kind !== NetworkKind.Cosmos) {
     throw new Error(`'${networkId}' is not a cosmos network`);
+  }
+  return network;
+};
+
+export const getStarknetNetwork = (
+  networkId: string | undefined,
+): StarknetNetworkInfo | undefined => {
+  const network = getNetwork(networkId);
+  if (network?.kind !== NetworkKind.Starknet) {
+    return undefined;
+  }
+  return network;
+};
+
+export const getStarknetNetworkByChainId = (chainId: string | undefined) => {
+  return allNetworks.find((n): n is StarknetNetworkInfo => {
+    if (n.kind === NetworkKind.Starknet && n.chainId === chainId) {
+      return true;
+    }
+    return false;
+  });
+};
+
+export const mustGetStarknetNetwork = (
+  networkId: string | undefined,
+): StarknetNetworkInfo => {
+  const network = mustGetNetwork(networkId);
+  if (network.kind !== NetworkKind.Starknet) {
+    throw new Error(`'${networkId}' is not a starknet network`);
   }
   return network;
 };

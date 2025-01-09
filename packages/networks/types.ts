@@ -42,6 +42,8 @@ export type StarknetNetworkInfo = NetworkInfoBase & {
   addressPrefix: string;
   restEndpoint: string;
   rpcEndpoint: string;
+
+  defaultContract?: string;
 };
 
 export type CosmosNetworkInfo = NetworkInfoBase & {
