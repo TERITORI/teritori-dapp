@@ -12,6 +12,7 @@ type MemberModule struct {
 	members     *avl.Tree // address -> struct{}
 }
 
+// TODO: FIX the owner of the role_manager is the deployer of the contract not the realm
 func newMemberModule() *MemberModule {
 	return &MemberModule{
 		roleManager: role_manager.NewWithAddress(std.PrevRealm().Addr()),

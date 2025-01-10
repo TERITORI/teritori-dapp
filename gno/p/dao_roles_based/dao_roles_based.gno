@@ -42,7 +42,7 @@ func NewDaoRolesBasedJSON(rolesJSON, membersJSON, resourcesJSON string, handlers
 
 func (d *DaoRolesBased) Vote(proposalID uint64, vote string) {
 	// 3th caller is the voter, 2nd is the dao realm, 1st is the dao_roles_based module
-	voter := std.GetCallerAt(3)
+	voter := std.PrevRealm().Addr()
 	if !d.MemberModule.IsMember(voter.String()) {
 		panic("voter is not a member")
 	}
@@ -70,11 +70,46 @@ func (d *DaoRolesBased) Vote(proposalID uint64, vote string) {
 
 }
 
-func (d *DaoRolesBased) NewProposal(title, description, resource string) {
-	// 3th caller is the proposer, 2nd is the dao realm, 1st is the dao_roles_based module
-	proposer := std.GetCallerAt(3)
+func (d *DaoRolesBased) Execute(proposalID uint64) {
+	// 3th caller is the executor, 2nd is the dao realm, 1st is the dao_roles_based module
+	executor := std.PrevRealm().Addr()
+	if !d.MemberModule.IsMember(executor.String()) {
+		panic("executor is not a member")
+	}
+
+	proposal := d.ProposalModule.getProposal(proposalID)
+	if proposal == nil {
+		panic("proposal not found")
+	}
+
+	if proposal.status != ProposalStatusOpen {
+		panic("proposal is not open")
+	}
+
+	if !proposal.state.Eval(proposal.votes) {
+		panic("proposal condition is not met")
+	}
+
+	proposal.updateStatus()
+	if proposal.status != ProposalStatusPassed {
+		panic("proposal does not meet the condition(s) or is already closed/executed")
+	}
+
+	d.MessagesRegistry.execute(proposal.message)
+	proposal.status = ProposalStatusExecuted
+}
+
+func (d *DaoRolesBased) ProposeJSON(proposalJSON string) {
+	var req ProposalRequest
+	req.fromJSON(json.Must(json.Unmarshal([]byte(proposalJSON))))
+	msg := d.MessagesRegistry.messageFromJSON(req.message)
+	d.propose(req.title, req.description, msg.Type(), msg)
+}
+
+func (d *DaoRolesBased) propose(title, description, resource string, message ExecutableMessage) {
+	proposer := std.PrevRealm().Addr()
 	if !d.MemberModule.IsMember(proposer.String()) {
-		panic("proposer is not a member")
+		panic(proposer + " proposer is not a member" + proposer)
 	}
 
 	condition := d.ResourcesModule.getResource(resource)
@@ -90,7 +125,7 @@ func (d *DaoRolesBased) NewProposal(title, description, resource string) {
 		panic("description should be at least 15 characters long")
 	}
 
-	d.ProposalModule.newProposal(title, description, proposer, condition.NewState())
+	d.ProposalModule.newProposal(title, description, proposer, message, condition.NewState())
 }
 
 func (d *DaoRolesBased) HasRole(memberId string, role string) bool {

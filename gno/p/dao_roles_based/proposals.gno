@@ -4,6 +4,7 @@ import (
 	"std"
 
 	"gno.land/p/demo/avl"
+	"gno.land/p/demo/json"
 	"gno.land/p/demo/seqid"
 	"gno.land/p/teritori/daocond"
 )
@@ -41,7 +42,7 @@ type Proposal struct {
 	// Expiration      dao_utils.Expiration // copy here the dao_utils.Expiration type from gno/p/dao_utils/expiration.gno
 	// Threshold Threshold: Treshold should be handle in the conditions
 	// Message dao_interfaces.ExecutableMessage // copy here the dao_interfaces.ExecutableMessage type from gno/p/dao_interfaces/messages.gno
-	Message ExecutableMessage
+	message ExecutableMessage
 	status  ProposalStatus
 	// AllowRevoting bool not handled in this proposal
 	votes map[string]daocond.Vote
@@ -52,13 +53,19 @@ type ProposalModule struct {
 	proposalIDCounter seqid.ID
 }
 
+type ProposalRequest struct {
+	title       string
+	description string
+	message     *json.Node
+}
+
 func newProposalModule() *ProposalModule {
 	return &ProposalModule{
 		proposals: avl.NewTree(),
 	}
 }
 
-func (p *ProposalModule) newProposal(title, description string, proposer std.Address, state daocond.State) {
+func (p *ProposalModule) newProposal(title, description string, proposer std.Address, message ExecutableMessage, state daocond.State) {
 	id := p.proposalIDCounter.Next()
 	proposal := &Proposal{
 		id:          id,
@@ -66,6 +73,7 @@ func (p *ProposalModule) newProposal(title, description string, proposer std.Add
 		description: description,
 		proposer:    proposer,
 		status:      ProposalStatusOpen,
+		message:     message,
 		state:       state,
 		votes:       map[string]daocond.Vote{},
 	}
@@ -79,4 +87,18 @@ func (p *ProposalModule) getProposal(id uint64) *Proposal {
 	}
 	proposal := value.(*Proposal)
 	return proposal
+}
+
+func (p *Proposal) updateStatus() {
+	e := p.state.Eval(p.votes)
+	if p.status == ProposalStatusOpen && e {
+		p.status = ProposalStatusPassed
+	}
+}
+
+func (pr *ProposalRequest) fromJSON(ast *json.Node) {
+	obj := ast.MustObject()
+	pr.title = obj["title"].MustString()
+	pr.description = obj["description"].MustString()
+	pr.message = obj["message"]
 }
