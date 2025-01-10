@@ -2,177 +2,177 @@ package dao_roles_realm
 
 // TODO: Create two dao_realm example: Membership based & Roles based
 
-import (
-	"std"
-	"time"
+// import (
+// 	"std"
+// 	"time"
 
-	"gno.land/p/demo/json"
-	dao_core "gno.land/p/teritori/dao_core"
-	dao_interfaces "gno.land/p/teritori/dao_interfaces"
-	proposal_single "gno.land/p/teritori/dao_proposal_single"
-	"gno.land/p/teritori/dao_roles_group"
-	roles_voting_group "gno.land/p/teritori/dao_roles_voting_group"
-	"gno.land/p/teritori/dao_utils"
-	"gno.land/p/teritori/jsonutil"
-	"gno.land/r/demo/profile"
-	"gno.land/r/teritori/dao_registry"
-	"gno.land/r/teritori/social_feeds"
-	"gno.land/r/teritori/tori"
-)
+// 	"gno.land/p/demo/json"
+// 	dao_core "gno.land/p/teritori/dao_core"
+// 	dao_interfaces "gno.land/p/teritori/dao_interfaces"
+// 	proposal_single "gno.land/p/teritori/dao_proposal_single"
+// 	"gno.land/p/teritori/dao_roles_group"
+// 	roles_voting_group "gno.land/p/teritori/dao_roles_voting_group"
+// 	"gno.land/p/teritori/dao_utils"
+// 	"gno.land/p/teritori/jsonutil"
+// 	"gno.land/r/demo/profile"
+// 	"gno.land/r/teritori/dao_registry"
+// 	"gno.land/r/teritori/social_feeds"
+// 	"gno.land/r/teritori/tori"
+// )
 
-// Example DAO realm
+// // Example DAO realm
 
-var (
-	daoCore    dao_interfaces.IDAOCore
-	group      *roles_voting_group.RolesVotingGroup
-	roles      *dao_roles_group.RolesGroup
-	registered bool
-)
+// var (
+// 	daoCore    dao_interfaces.IDAOCore
+// 	group      *roles_voting_group.RolesVotingGroup
+// 	roles      *dao_roles_group.RolesGroup
+// 	registered bool
+// )
 
-func init() {
-	roles = dao_roles_group.NewRolesGroup()
-	roles.NewRoleJSON("admin", "[{\"resource\": \"social_feed\", \"power\": \"25\"}, {\"resource\": \"organizations\", \"power\": \"100\"}]")
-	roles.NewRoleJSON("moderator", "[{\"resource\": \"social_feed\", \"power\": \"10\"}]")
-	roles.NewRoleJSON("member", "[]")
-	roles.GrantRole("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", "admin")
-	roles.GrantRole("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", "moderator")
-	roles.GrantRole("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", "member")
-	roles.GrantRole("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", "member")
+// func init() {
+// 	roles = dao_roles_group.NewRolesGroup()
+// 	roles.NewRoleJSON("admin", "[{\"resource\": \"social_feed\", \"power\": \"25\"}, {\"resource\": \"organizations\", \"power\": \"100\"}]")
+// 	roles.NewRoleJSON("moderator", "[{\"resource\": \"social_feed\", \"power\": \"10\"}]")
+// 	roles.NewRoleJSON("member", "[]")
+// 	roles.GrantRole("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", "admin")
+// 	roles.GrantRole("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", "moderator")
+// 	roles.GrantRole("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", "member")
+// 	roles.GrantRole("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", "member")
 
-	votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
-		group = roles_voting_group.NewRolesVotingGroup(roles)
-		group.SetMemberPower("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", 1)
-		group.SetMemberPower("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", 1)
-		group.SetMemberPower("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", 1)
-		group.SetMemberPower("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", 1)
-		group.SetMemberPower(std.GetOrigCaller(), 1)
-		return group
-	}
+// 	votingModuleFactory := func(core dao_interfaces.IDAOCore) dao_interfaces.IVotingModule {
+// 		group = roles_voting_group.NewRolesVotingGroup(roles)
+// 		group.SetMemberPower("g1747t5m2f08plqjlrjk2q0qld7465hxz8gkx59c", 1)
+// 		group.SetMemberPower("g108cszmcvs4r3k67k7h5zuhm4el3qhlrxzhshtv", 1)
+// 		group.SetMemberPower("g14u5eaheavy0ux4dmpykg2gvxpvqvexm9cyg58a", 1)
+// 		group.SetMemberPower("g1ckn395mpttp0vupgtratyufdaakgh8jgkmr3ym", 1)
+// 		group.SetMemberPower(std.GetOrigCaller(), 1)
+// 		return group
+// 	}
 
-	// TODO: consider using factories that return multiple modules and handlers
+// 	// TODO: consider using factories that return multiple modules and handlers
 
-	proposalModulesFactories := []dao_interfaces.ProposalModuleFactory{
-		func(core dao_interfaces.IDAOCore) dao_interfaces.IProposalModule {
-			tt := proposal_single.PercentageThresholdPercent(100)
-			tq := proposal_single.PercentageThresholdPercent(100)
-			return proposal_single.NewDAOProposalSingle(core, &proposal_single.DAOProposalSingleOpts{
-				MaxVotingPeriod: dao_utils.DurationTime(time.Hour * 24 * 42),
-				Threshold: &proposal_single.ThresholdThresholdQuorum{
-					Threshold: &tt, // 1%
-					Quorum:    &tq, // 1%
-				},
-			})
-		},
-	}
+// 	proposalModulesFactories := []dao_interfaces.ProposalModuleFactory{
+// 		func(core dao_interfaces.IDAOCore) dao_interfaces.IProposalModule {
+// 			tt := proposal_single.PercentageThresholdPercent(100)
+// 			tq := proposal_single.PercentageThresholdPercent(100)
+// 			return proposal_single.NewDAOProposalSingle(core, &proposal_single.DAOProposalSingleOpts{
+// 				MaxVotingPeriod: dao_utils.DurationTime(time.Hour * 24 * 42),
+// 				Threshold: &proposal_single.ThresholdThresholdQuorum{
+// 					Threshold: &tt, // 1%
+// 					Quorum:    &tq, // 1%
+// 				},
+// 			})
+// 		},
+// 	}
 
-	messageHandlersFactories := []dao_interfaces.MessageHandlerFactory{
-		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-			return group.UpdateMembersHandler()
-		},
-		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-			// TODO: add a router to support multiple proposal modules
-			propMod := core.ProposalModules()[0]
-			return proposal_single.NewUpdateSettingsHandler(propMod.Module.(*proposal_single.DAOProposalSingle))
-		},
-		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-			return tori.NewMintToriHandler()
-		},
-		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-			return tori.NewBurnToriHandler()
-		},
-		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-			return tori.NewChangeAdminHandler()
-		},
-		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
-			return social_feeds.NewCreatePostHandler()
-		},
-	}
+// 	messageHandlersFactories := []dao_interfaces.MessageHandlerFactory{
+// 		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
+// 			return group.UpdateMembersHandler()
+// 		},
+// 		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
+// 			// TODO: add a router to support multiple proposal modules
+// 			propMod := core.ProposalModules()[0]
+// 			return proposal_single.NewUpdateSettingsHandler(propMod.Module.(*proposal_single.DAOProposalSingle))
+// 		},
+// 		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
+// 			return tori.NewMintToriHandler()
+// 		},
+// 		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
+// 			return tori.NewBurnToriHandler()
+// 		},
+// 		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
+// 			return tori.NewChangeAdminHandler()
+// 		},
+// 		func(core dao_interfaces.IDAOCore) dao_interfaces.MessageHandler {
+// 			return social_feeds.NewCreatePostHandler()
+// 		},
+// 	}
 
-	daoCore = dao_core.NewDAOCore(votingModuleFactory, proposalModulesFactories, messageHandlersFactories)
+// 	daoCore = dao_core.NewDAOCore(votingModuleFactory, proposalModulesFactories, messageHandlersFactories)
 
-	// Register the DAO profile
-	profile.SetStringField(profile.DisplayName, "DAO Realm")
-	profile.SetStringField(profile.Bio, "Default testing DAO")
-	profile.SetStringField(profile.Avatar, "")
+// 	// Register the DAO profile
+// 	profile.SetStringField(profile.DisplayName, "DAO Realm")
+// 	profile.SetStringField(profile.Bio, "Default testing DAO")
+// 	profile.SetStringField(profile.Avatar, "")
 
-	// dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "DAO Realm", "Default testing DAO", "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1080&fit=max")
-}
+// 	// dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "DAO Realm", "Default testing DAO", "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1080&fit=max")
+// }
 
-// FIXME: the registry is currently broken in 'gno test', see https://github.com/gnolang/gno/issues/1852
-// so we're exposing a way to register after DAO instantiation
-func RegisterSelf() {
-	if registered {
-		panic("already registered")
-	}
+// // FIXME: the registry is currently broken in 'gno test', see https://github.com/gnolang/gno/issues/1852
+// // so we're exposing a way to register after DAO instantiation
+// func RegisterSelf() {
+// 	if registered {
+// 		panic("already registered")
+// 	}
 
-	dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "DAO Realm", "Default testing DAO", "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1080&fit=max")
-	registered = true
-}
+// 	dao_registry.Register(func() dao_interfaces.IDAOCore { return daoCore }, "DAO Realm", "Default testing DAO", "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1080&fit=max")
+// 	registered = true
+// }
 
-func Render(path string) string {
-	return daoCore.Render(path)
-}
+// func Render(path string) string {
+// 	return daoCore.Render(path)
+// }
 
-func VoteJSON(moduleIndex int, proposalID int, voteJSON string) {
-	// move check in dao core
-	module := dao_core.GetProposalModule(daoCore, moduleIndex)
-	if !module.Enabled {
-		panic("proposal module is not enabled")
-	}
+// func VoteJSON(moduleIndex int, proposalID int, voteJSON string) {
+// 	// move check in dao core
+// 	module := dao_core.GetProposalModule(daoCore, moduleIndex)
+// 	if !module.Enabled {
+// 		panic("proposal module is not enabled")
+// 	}
 
-	module.Module.VoteJSON(proposalID, voteJSON)
-}
+// 	module.Module.VoteJSON(proposalID, voteJSON)
+// }
 
-func Execute(moduleIndex int, proposalID int) {
-	// move check in dao core
-	module := dao_core.GetProposalModule(daoCore, moduleIndex)
-	if !module.Enabled {
-		panic("proposal module is not enabled")
-	}
+// func Execute(moduleIndex int, proposalID int) {
+// 	// move check in dao core
+// 	module := dao_core.GetProposalModule(daoCore, moduleIndex)
+// 	if !module.Enabled {
+// 		panic("proposal module is not enabled")
+// 	}
 
-	module.Module.Execute(proposalID)
-}
+// 	module.Module.Execute(proposalID)
+// }
 
-func ProposeJSON(moduleIndex int, proposalJSON string) int {
-	// move check in dao core
-	module := dao_core.GetProposalModule(daoCore, moduleIndex)
-	if !module.Enabled {
-		panic("proposal module is not enabled")
-	}
+// func ProposeJSON(moduleIndex int, proposalJSON string) int {
+// 	// move check in dao core
+// 	module := dao_core.GetProposalModule(daoCore, moduleIndex)
+// 	if !module.Enabled {
+// 		panic("proposal module is not enabled")
+// 	}
 
-	return module.Module.ProposeJSON(proposalJSON)
-}
+// 	return module.Module.ProposeJSON(proposalJSON)
+// }
 
-func getProposalsJSON(moduleIndex int, limit int, startAfter string, reverse bool) string {
-	// move logic in dao core
-	module := dao_core.GetProposalModule(daoCore, moduleIndex)
-	return module.Module.ProposalsJSON(limit, startAfter, reverse)
-}
+// func getProposalsJSON(moduleIndex int, limit int, startAfter string, reverse bool) string {
+// 	// move logic in dao core
+// 	module := dao_core.GetProposalModule(daoCore, moduleIndex)
+// 	return module.Module.ProposalsJSON(limit, startAfter, reverse)
+// }
 
-func getProposalJSON(moduleIndex int, proposalIndex int) string {
-	// move logic in dao core
-	module := dao_core.GetProposalModule(daoCore, moduleIndex)
-	return module.Module.ProposalJSON(proposalIndex)
-}
+// func getProposalJSON(moduleIndex int, proposalIndex int) string {
+// 	// move logic in dao core
+// 	module := dao_core.GetProposalModule(daoCore, moduleIndex)
+// 	return module.Module.ProposalJSON(proposalIndex)
+// }
 
-func getMembersJSON(start, end string, limit uint64) string {
-	vMembers := daoCore.VotingModule().GetMembersJSON(start, end, limit, std.GetHeight())
-	nodes, err := json.Unmarshal([]byte(vMembers))
-	if err != nil {
-		panic("failed to unmarshal voting module members")
-	}
-	vals := nodes.MustArray()
-	for i, val := range vals {
-		obj := val.MustObject()
-		addr := jsonutil.MustAddress(obj["address"])
-		roles := roles.GetMemberRoles(addr)
-		rolesJSON := make([]*json.Node, len(roles))
-		for j, role := range roles {
-			rolesJSON[j] = json.StringNode("", role)
-		}
-		obj["roles"] = json.ArrayNode("", rolesJSON)
-		vals[i] = json.ObjectNode("", obj)
+// func getMembersJSON(start, end string, limit uint64) string {
+// 	vMembers := daoCore.VotingModule().GetMembersJSON(start, end, limit, std.GetHeight())
+// 	nodes, err := json.Unmarshal([]byte(vMembers))
+// 	if err != nil {
+// 		panic("failed to unmarshal voting module members")
+// 	}
+// 	vals := nodes.MustArray()
+// 	for i, val := range vals {
+// 		obj := val.MustObject()
+// 		addr := jsonutil.MustAddress(obj["address"])
+// 		roles := roles.GetMemberRoles(addr)
+// 		rolesJSON := make([]*json.Node, len(roles))
+// 		for j, role := range roles {
+// 			rolesJSON[j] = json.StringNode("", role)
+// 		}
+// 		obj["roles"] = json.ArrayNode("", rolesJSON)
+// 		vals[i] = json.ObjectNode("", obj)
 
-	}
-	return json.ArrayNode("", vals).String()
-}
+// 	}
+// 	return json.ArrayNode("", vals).String()
+// }

@@ -15,7 +15,7 @@ type DaoRolesBased struct {
 	MessagesRegistry *MessagesRegistry
 }
 
-func NewDaoRolesBasedJSON(rolesJSON, membersJSON, resourcesJSON string) *DaoRolesBased {
+func NewDaoRolesBasedJSON(rolesJSON, membersJSON, resourcesJSON string, handlers []MessageHandler) *DaoRolesBased {
 	// parse & set roles, members, resources
 	dao := &DaoRolesBased{
 		MemberModule:     newMemberModule(),
@@ -32,6 +32,10 @@ func NewDaoRolesBasedJSON(rolesJSON, membersJSON, resourcesJSON string) *DaoRole
 
 	resources := dao.parseResourcesJSON(resourcesJSON)
 	dao.ResourcesModule.setResources(resources)
+
+	for _, handler := range handlers {
+		dao.MessagesRegistry.register(handler)
+	}
 
 	return dao
 }
