@@ -14,6 +14,7 @@ func (d *DaoRolesBased) Render() string {
 	sb.WriteString(d.MemberModule.Render())
 	sb.WriteString(d.ResourcesModule.Render())
 	sb.WriteString(d.ProposalModule.Render())
+	sb.WriteString(d.MessagesRegistry.Render())
 	return sb.String()
 }
 
@@ -65,6 +66,18 @@ func (p *ProposalModule) Render() string {
 		sb.WriteString((ufmt.Sprintf("State: %s\n\n", proposal.state.RenderJSON(proposal.votes).String())))
 		sb.WriteString((ufmt.Sprintf("\n--------------------------------\n")))
 		i += 1
+		return false
+	})
+
+	return sb.String()
+}
+
+func (mr *MessagesRegistry) Render() string {
+	sb := strings.Builder{}
+	sb.WriteString((ufmt.Sprintf("## Supported Messages\n\n")))
+
+	mr.handlers.Iterate("", "", func(key string, value interface{}) bool {
+		sb.WriteString((ufmt.Sprintf("- %s\n", value.(MessageHandler).Type())))
 		return false
 	})
 

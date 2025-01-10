@@ -9,17 +9,19 @@ import (
 )
 
 type DaoRolesBased struct {
-	MemberModule    *MemberModule
-	ResourcesModule *ResourcesModule
-	ProposalModule  *ProposalModule
+	MemberModule     *MemberModule
+	ResourcesModule  *ResourcesModule
+	ProposalModule   *ProposalModule
+	MessagesRegistry *MessagesRegistry
 }
 
 func NewDaoRolesBasedJSON(rolesJSON, membersJSON, resourcesJSON string) *DaoRolesBased {
 	// parse & set roles, members, resources
 	dao := &DaoRolesBased{
-		MemberModule:    newMemberModule(),
-		ResourcesModule: newResourcesModule(),
-		ProposalModule:  newProposalModule(),
+		MemberModule:     newMemberModule(),
+		ResourcesModule:  newResourcesModule(),
+		ProposalModule:   newProposalModule(),
+		MessagesRegistry: newMessagesRegistry(),
 	}
 
 	roles := dao.parseRolesJSON(rolesJSON)
