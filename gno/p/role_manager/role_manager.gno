@@ -171,6 +171,17 @@ func (rm *RoleManager) CountRoles() int {
 	return rm.roles.Size()
 }
 
+func (rm *RoleManager) GetRoles() []string {
+	i := 0
+	res := make([]string, rm.roles.Size())
+	rm.roles.Iterate("", "", func(key string, value interface{}) bool {
+		res[i] = key
+		i++
+		return false
+	})
+	return res
+}
+
 func (rm *RoleManager) GetUserRoles(user std.Address) []string {
 	userRoles, ok := rm.users.Get(user.String())
 	if !ok {

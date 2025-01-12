@@ -38,6 +38,14 @@ func (m *MemberModule) setRoles(roles []string) {
 	}
 }
 
+func (m *MemberModule) getRoles() []string {
+	return m.roleManager.GetRoles()
+}
+
+func (m *MemberModule) getUserRoles(memberId string) []string {
+	return m.roleManager.GetUserRoles(std.Address(memberId))
+}
+
 func (m *MemberModule) setMembers(members [][]string) {
 	for _, member := range members {
 		m.members.Set(member[0], struct{}{})

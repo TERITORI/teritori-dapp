@@ -5,24 +5,43 @@ import (
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/json"
+	"gno.land/p/demo/mux"
 	"gno.land/p/teritori/daocond"
 )
 
 type DaoRolesBased struct {
+	Name        string
+	Description string
+	RealmName   string
+
 	MemberModule     *MemberModule
 	ResourcesModule  *ResourcesModule
 	ProposalModule   *ProposalModule
 	MessagesRegistry *MessagesRegistry
+
+	renderingRouter *mux.Router
 }
 
-func NewDaoRolesBasedJSON(rolesJSON, membersJSON, resourcesJSON string, handlers []MessageHandler) *DaoRolesBased {
-	// parse & set roles, members, resources
+func NewDaoRolesBasedJSON(name, description, realmName, rolesJSON, membersJSON, resourcesJSON string, handlers []MessageHandler) *DaoRolesBased {
+	if len(name) < 5 {
+		panic("dao name should be at least 5 characters long")
+	}
+
+	if len(description) < 10 {
+		panic("dao description should be at least 10 characters long")
+	}
+
 	dao := &DaoRolesBased{
+		Name:             name,
+		Description:      description,
+		RealmName:        realmName,
 		MemberModule:     newMemberModule(),
 		ResourcesModule:  newResourcesModule(),
 		ProposalModule:   newProposalModule(),
 		MessagesRegistry: newMessagesRegistry(),
+		renderingRouter:  mux.NewRouter(),
 	}
+	dao.initRenderingRouter()
 
 	roles := dao.parseRolesJSON(rolesJSON)
 	dao.MemberModule.setRoles(roles)
@@ -36,6 +55,8 @@ func NewDaoRolesBasedJSON(rolesJSON, membersJSON, resourcesJSON string, handlers
 	for _, handler := range handlers {
 		dao.MessagesRegistry.register(handler)
 	}
+
+	//TODO: Register name & description into the profile realm
 
 	return dao
 }

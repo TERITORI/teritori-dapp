@@ -1,85 +1,137 @@
 package dao_roles_based
 
 import (
-	"std"
-	"strings"
-
+	"gno.land/p/demo/mux"
+	"gno.land/p/demo/seqid"
 	"gno.land/p/demo/ufmt"
 	"gno.land/p/teritori/daocond"
 )
 
-func (d *DaoRolesBased) Render() string {
-	sb := strings.Builder{}
-	sb.WriteString((ufmt.Sprintf("# Decentralized Autonomous Organization (DAO) Roles Based\n\n")))
-	sb.WriteString(d.MemberModule.Render())
-	sb.WriteString(d.ResourcesModule.Render())
-	sb.WriteString(d.ProposalModule.Render())
-	sb.WriteString(d.MessagesRegistry.Render())
-	return sb.String()
+const (
+	HOME_PATH             = ""
+	CONFIG_PATH           = "config"
+	PROPOSAL_HISTORY_PATH = "history"
+	MEMBER_DETAIL_PATH    = "member/{address}"
+	PROPOSAL_DETAIL_PATH  = "proposal/{id}"
+)
+
+func (d *DaoRolesBased) initRenderingRouter() {
+	d.renderingRouter.HandleFunc(HOME_PATH, d.renderHomePage)
+	d.renderingRouter.HandleFunc(CONFIG_PATH, d.renderConfigPage)
+	d.renderingRouter.HandleFunc(PROPOSAL_HISTORY_PATH, d.renderProposalHistoryPage)
+	d.renderingRouter.HandleFunc(MEMBER_DETAIL_PATH, d.renderMemberDetailPage)
+	d.renderingRouter.HandleFunc(PROPOSAL_DETAIL_PATH, d.renderProposalDetailPage)
 }
 
-func (m *MemberModule) Render() string {
-	sb := strings.Builder{}
-	sb.WriteString((ufmt.Sprintf("## Members\n\n")))
+func (d *DaoRolesBased) Render(path string) string {
+	return d.renderingRouter.Render(path)
+}
 
+func (d *DaoRolesBased) renderHomePage(res *mux.ResponseWriter, req *mux.Request) {
+	res.Write(ufmt.Sprintf("# %s\n\n", d.Name))
+	res.Write(ufmt.Sprintf("> Description: %s\n\n", d.Description))
+	res.Write(ufmt.Sprintf("Discover more about this DAO on the [configuration page ⚙️](%s:%s)\n\n", d.RealmName, CONFIG_PATH))
+
+	res.Write(ufmt.Sprintf("## Members 👤 \n\n"))
 	i := 1
-	m.members.Iterate("", "", func(key string, value interface{}) bool {
-		sb.WriteString((ufmt.Sprintf("**Member %d: %s**\n\n", i, key)))
-		sb.WriteString((ufmt.Sprintf("Roles:\n\n")))
-		roles := m.roleManager.GetUserRoles(std.Address(key))
-		for _, role := range roles {
-			sb.WriteString((ufmt.Sprintf("- %s\n\n", role)))
-		}
-		sb.WriteString((ufmt.Sprintf("\n--------------------------------\n")))
+	d.MemberModule.members.Iterate("", "", func(key string, value interface{}) bool {
+		res.Write(ufmt.Sprintf("- **Member %d: [%s](%s:%s/%s)**\n\n", i, key, d.RealmName, "member", key))
 		i += 1
 		return false
 	})
-	return sb.String()
-}
 
-func (r *ResourcesModule) Render() string {
-	sb := strings.Builder{}
-	sb.WriteString((ufmt.Sprintf("## Resources\n\n")))
+	res.Write(ufmt.Sprintf("> You can find more information about a member by clicking on their address\n\n"))
+	res.Write(ufmt.Sprintf("\n--------------------------------\n"))
 
-	r.resources.Iterate("", "", func(key string, value interface{}) bool {
-		condition := value.(daocond.Condition)
-		sb.WriteString((ufmt.Sprintf("**Resource: %s**\n\n", key)))
-		sb.WriteString((ufmt.Sprintf("Condition: %s\n", condition.Render())))
-		sb.WriteString((ufmt.Sprintf("\n--------------------------------\n")))
-		return false
-	})
-
-	return sb.String()
-}
-
-func (p *ProposalModule) Render() string {
-	sb := strings.Builder{}
-	sb.WriteString((ufmt.Sprintf("## Proposals\n\n")))
-
-	i := 1
-	p.proposals.Iterate("", "", func(key string, value interface{}) bool {
+	res.Write(ufmt.Sprintf("## Running Proposals 🗳️\n\n"))
+	i = 0
+	d.ProposalModule.proposals.Iterate("", "", func(key string, value interface{}) bool {
 		proposal := value.(*Proposal)
-		sb.WriteString((ufmt.Sprintf("**Proposal %d: %s**\n\n", i, proposal.title)))
-		sb.WriteString((ufmt.Sprintf("Description: %s\n\n", proposal.description)))
-		sb.WriteString((ufmt.Sprintf("Proposer: %s\n\n", proposal.proposer)))
-		sb.WriteString((ufmt.Sprintf("Status: %s\n\n", proposal.status.String())))
-		sb.WriteString((ufmt.Sprintf("State: %s\n\n", proposal.state.RenderJSON(proposal.votes).String())))
-		sb.WriteString((ufmt.Sprintf("\n--------------------------------\n")))
+		if proposal.status != ProposalStatusOpen {
+			return false
+		}
+		id, err := seqid.FromString(key)
+		if err != nil {
+			panic(err)
+		}
+		res.Write(ufmt.Sprintf("- **Proposal %d: [%s](%s:%s/%s)**\n\n", uint64(id), proposal.title, d.RealmName, "proposal", key))
 		i += 1
 		return false
 	})
+	if i == 0 {
+		res.Write(ufmt.Sprintf("\t⚠️ There are no running proposals at the moment\n\n"))
+	}
 
-	return sb.String()
+	res.Write(ufmt.Sprintf("> See the [proposal history 📜](%s:%s) for more information\n\n", d.RealmName, PROPOSAL_HISTORY_PATH))
 }
 
-func (mr *MessagesRegistry) Render() string {
-	sb := strings.Builder{}
-	sb.WriteString((ufmt.Sprintf("## Supported Messages\n\n")))
-
-	mr.handlers.Iterate("", "", func(key string, value interface{}) bool {
-		sb.WriteString((ufmt.Sprintf("- %s\n", value.(MessageHandler).Type())))
+func (d *DaoRolesBased) renderConfigPage(res *mux.ResponseWriter, req *mux.Request) {
+	res.Write(ufmt.Sprintf("# %s - Config ⚙️\n\n", d.Name))
+	roles := d.MemberModule.getRoles()
+	res.Write(ufmt.Sprintf("## Roles 🏷️\n\n"))
+	for _, role := range roles {
+		res.Write(ufmt.Sprintf("- %s\n\n", role))
+	}
+	res.Write(ufmt.Sprintf("\n--------------------------------\n"))
+	res.Write(ufmt.Sprintf("## Resources 📦\n\n"))
+	i := 1
+	d.ResourcesModule.resources.Iterate("", "", func(key string, value interface{}) bool {
+		resource := value.(daocond.Condition)
+		res.Write(ufmt.Sprintf("- **Resource #%d: %s**\n\n", i, key))
+		res.Write(ufmt.Sprintf("  - **Condition:** %s\n\n", resource.Render()))
+		i += 1
 		return false
 	})
+}
 
-	return sb.String()
+func (d *DaoRolesBased) renderProposalHistoryPage(res *mux.ResponseWriter, req *mux.Request) {
+	res.Write(ufmt.Sprintf("# %s - Proposal History\n\n", d.Name))
+	res.Write(ufmt.Sprintf("## Proposals 🗳️\n\n"))
+	i := 1
+	d.ProposalModule.proposals.Iterate("", "", func(key string, value interface{}) bool {
+		proposal := value.(*Proposal)
+		id, err := seqid.FromString(key)
+		if err != nil {
+			panic(err)
+		}
+		res.Write(ufmt.Sprintf("- **Proposal %d: [%s](%s:%s/%s) - %s**\n\n", uint64(id), proposal.title, d.RealmName, "proposal", key, proposal.status))
+		i += 1
+		return false
+	})
+}
+
+func (d *DaoRolesBased) renderMemberDetailPage(res *mux.ResponseWriter, req *mux.Request) {
+	res.Write(ufmt.Sprintf("# %s - Member Detail - %s\n\n", d.Name, req.GetVar("address")))
+	roles := d.MemberModule.getUserRoles(req.GetVar("address"))
+	res.Write(ufmt.Sprintf("## Roles 🏷️\n\n"))
+	for _, role := range roles {
+		res.Write(ufmt.Sprintf("- %s\n\n", role))
+	}
+}
+
+func (d *DaoRolesBased) renderProposalDetailPage(res *mux.ResponseWriter, req *mux.Request) {
+	id, err := seqid.FromString(req.GetVar("id"))
+	if err != nil {
+		panic(err)
+	}
+	res.Write(ufmt.Sprintf("# %s - Proposal #%d\n\n", d.Name, uint64(id)))
+	proposal := d.ProposalModule.getProposal(uint64(id))
+	res.Write(ufmt.Sprintf("## Title - %s 📜\n\n", proposal.title))
+	res.Write(ufmt.Sprintf("## Description 📝\n\n%s\n\n", proposal.description))
+	res.Write(ufmt.Sprintf("## Resource - %s 📦\n\n", proposal.message.Type()))
+	if proposal.status == ProposalStatusOpen {
+		res.Write(ufmt.Sprintf("## Status - Open 🟡\n\n"))
+	} else if proposal.status == ProposalStatusPassed {
+		res.Write(ufmt.Sprintf("## Status - Passed 🟢\n\n"))
+	} else if proposal.status == ProposalStatusExecuted {
+		res.Write(ufmt.Sprintf("## Status - Executed ✅\n\n"))
+	} else {
+		res.Write(ufmt.Sprintf("## Status - Closed 🔴\n\n"))
+	}
+	res.Write(ufmt.Sprintf("> proposed by %s 👤\n\n", proposal.proposer))
+
+	res.Write(ufmt.Sprintf("\n--------------------------------\n"))
+
+	res.Write(ufmt.Sprintf("## Votes 🗳️\n\n"))
+	res.Write(ufmt.Sprintf("%s\n\n", proposal.state.RenderJSON(proposal.votes)))
 }
