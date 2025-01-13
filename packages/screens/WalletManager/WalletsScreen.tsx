@@ -10,20 +10,25 @@ import { ScreenContainer } from "@/components/ScreenContainer";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { ConnectWalletModal } from "@/components/modals/ConnectWalletModal";
 import { useWallets } from "@/context/WalletsProvider";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral33, neutralA3 } from "@/utils/style/colors";
+import { fontRegular14, fontRegular20 } from "@/utils/style/fonts";
 
 export const WalletManagerWalletsScreen: ScreenFC<
   "WalletManagerWallets" | "WalletManagerChains"
 > = () => {
   const [showConnectModal, setShowConnectModal] = useState(false);
   const { wallets: allWallets } = useWallets();
+  const { width } = useMaxResolution({ isLarge: true });
 
   return (
-    <ScreenContainer headerChildren={<WalletHeader />}>
+    <ScreenContainer fullWidth headerChildren={<WalletHeader />}>
       <View
         style={{
           paddingVertical: 48,
+          width,
+          alignSelf: "center",
         }}
       >
         <View
@@ -35,15 +40,10 @@ export const WalletManagerWalletsScreen: ScreenFC<
           }}
         >
           <View>
-            <BrandText style={{ marginRight: 20, fontSize: 20 }}>
+            <BrandText style={[fontRegular20, { marginRight: 20 }]}>
               All Wallets
             </BrandText>
-            <BrandText
-              style={{
-                fontSize: 14,
-                color: neutralA3,
-              }}
-            >
+            <BrandText style={[fontRegular14, { color: neutralA3 }]}>
               Manage your wallets
             </BrandText>
           </View>
