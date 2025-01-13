@@ -6730,28 +6730,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@starknet-react/chains@npm:^3.0.0, @starknet-react/chains@npm:^3.1.1":
+"@starknet-react/chains@npm:^3.1.1":
   version: 3.1.1
   resolution: "@starknet-react/chains@npm:3.1.1"
   checksum: 1a5c55b8e9e97154ca32624c62916b5657558dea5808dadc35fc8c0b737f6a8d0058653f9c5ea6c2fc9d7ff637df37c66eccd2e753ca50c47a6848356a1a19d7
   languageName: node
   linkType: hard
 
-"@starknet-react/core@npm:next":
-  version: 3.0.1-beta.0
-  resolution: "@starknet-react/core@npm:3.0.1-beta.0"
+"@starknet-react/chains@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "@starknet-react/chains@npm:3.1.2"
+  checksum: 681af7b1db76e856cab1e2727fb941428807750218d0a7f7884e8fba3a19883e0093874e44e0994303ec294bda5f5bf3729d34cb9cf749e09ae4dba4746b5204
+  languageName: node
+  linkType: hard
+
+"@starknet-react/core@npm:^3.6.3":
+  version: 3.7.0
+  resolution: "@starknet-react/core@npm:3.7.0"
   dependencies:
     "@starknet-io/types-js": ^0.7.7
-    "@starknet-react/chains": ^3.0.0
+    "@starknet-react/chains": ^3.1.2
     "@tanstack/react-query": ^5.25.0
+    abi-wan-kanabi: ^2.2.4
     eventemitter3: ^5.0.1
-    viem: ^2.19.1
+    viem: ^2.21.1
     zod: ^3.22.4
   peerDependencies:
     get-starknet-core: ^4.0.0
     react: ^18.0
     starknet: ^6.11.0
-  checksum: 117916962d9b02481160d21c40f7d13725655ec9d9d64a5f00f37a93424f25e18e64c893f5bbc7aa93c2bf4cd065dd34c2214c63151e530a9ed4d81e80fe501d
+  checksum: 3b7a1a34a7ec8cb1b1efe5abe4408bd7fbfd9144e203e4adb295b17f9698ec6c876c56f41fcd763182459281197b23b29c136704bbf1a15162ce1c092fa3d4be
   languageName: node
   linkType: hard
 
@@ -8020,7 +8028,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"abi-wan-kanabi@npm:^2.2.3":
+"abi-wan-kanabi@npm:^2.2.3, abi-wan-kanabi@npm:^2.2.4":
   version: 2.2.4
   resolution: "abi-wan-kanabi@npm:2.2.4"
   dependencies:
@@ -21588,7 +21596,7 @@ __metadata:
     "@reduxjs/toolkit": ^1.8.3
     "@solana/web3.js": ^1.87.6
     "@starknet-react/chains": ^3.1.1
-    "@starknet-react/core": next
+    "@starknet-react/core": ^3.6.3
     "@tanstack/react-query": ^4.12.0
     "@types/crypto-js": ^4.2.2
     "@types/draft-convert": ^2.1.4
@@ -23362,9 +23370,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.19.1":
-  version: 2.22.5
-  resolution: "viem@npm:2.22.5"
+"viem@npm:^2.21.1":
+  version: 2.22.7
+  resolution: "viem@npm:2.22.7"
   dependencies:
     "@noble/curves": 1.7.0
     "@noble/hashes": 1.6.1
@@ -23380,7 +23388,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 61dc01b1549ae11fa6044a31388e876494adc46248451749eb9490f9b4a1c34302d44e0021e8c6b04a29dbcd918763fc70764206c2c78985de6b70233a9984ac
+  checksum: 1c014304d7a7cc45a3460c82c46ca662227e305b3a72a00e815ba8112aab065072b3f42a05bb6663b883e54abd921a2c464358f79fb57df426a4be4863cc2f9a
   languageName: node
   linkType: hard
 
