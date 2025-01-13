@@ -17,7 +17,7 @@ func init() {
 		{"g126gx6p6d3da4ymef35ury6874j6kys044r7zlg", "admin", "public-relationships"},
 		{"g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv", "public-relationships"},
 		{"g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", "finance-officer"},
-		{"g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r", ""},
+		{"g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r"},
 	}
 
 	messagesHandlers := []dao_roles_based.MessageHandler{
@@ -36,7 +36,7 @@ func init() {
 	}
 	resourcesJSON += `]`
 
-	dao = dao_roles_based.NewDaoRolesBasedJSON(name, description, resourcesJSON, roles, members, messagesHandlers)
+	dao = dao_roles_based.NewDaoRolesBasedJSON(name, description, roles, members, resourcesJSON, messagesHandlers)
 
 	profile.SetStringField(profile.DisplayName, name)
 	profile.SetStringField(profile.Bio, description)
