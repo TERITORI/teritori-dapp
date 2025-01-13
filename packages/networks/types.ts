@@ -43,7 +43,7 @@ export type StarknetNetworkInfo = NetworkInfoBase & {
   restEndpoint: string;
   rpcEndpoint: string;
 
-  defaultContract?: string;
+  todoListContract: string;
 };
 
 export type CosmosNetworkInfo = NetworkInfoBase & {

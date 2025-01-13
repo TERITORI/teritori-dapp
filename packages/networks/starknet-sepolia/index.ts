@@ -4,7 +4,8 @@ import { NetworkKind, StarknetNetworkInfo } from "../types";
 export const starknetSepoliaNetwork: StarknetNetworkInfo = {
   id: "starknet-sepolia",
   kind: NetworkKind.Starknet,
-  chainId: "534e5f5345504f4c4941", // SN_SEPOLIA
+  // chainId bigint: 393402133025997798000961n hex: 534e5f5345504f4c4941 string: SN_SEPOLIA
+  chainId: "SN_SEPOLIA",
   displayName: "Starknet Sepolia",
   icon: "starknet.svg",
   features: [],
@@ -19,6 +20,6 @@ export const starknetSepoliaNetwork: StarknetNetworkInfo = {
   restEndpoint: "https://alpha-sepolia.starknet.io",
   rpcEndpoint: "https://rpc.sepolia.starknet.io",
 
-  defaultContract:
-    "0x024068475e88548b0d6d06c6fbc5c691ce223ac611ca32a0a1b1c08a439d752a",
+  todoListContract:
+    "0x0203268c10434d563a4954bcd2af176095082545cd80d3c71bcd2a949ae6f46e",
 };

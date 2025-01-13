@@ -1,11 +1,8 @@
-import {
-  useAccount,
-  InjectedConnector,
-  useConnect,
-} from "@starknet-react/core";
+import { InjectedConnector, useConnect } from "@starknet-react/core";
 import React from "react";
 import { Linking } from "react-native";
 import { StarknetWindowObject, connect } from "starknetkit";
+import { shortString } from "starknet";
 
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -25,7 +22,6 @@ export const ConnectArgentXButton: React.FC<{
   const { setToast } = useFeedbacks();
   const dispatch = useAppDispatch();
 
-  const { address, status } = useAccount();
   const { connectAsync: connectViaReact } = useConnect();
 
   const handlePress = async () => {
@@ -50,7 +46,10 @@ export const ConnectArgentXButton: React.FC<{
       const { connectorData } = await connect({
         connectors: [connector],
       });
-      const chainId = connectorData?.chainId?.toString(16);
+
+      const chainId = shortString.decodeShortString(
+        "0x" + connectorData?.chainId?.toString(16) ?? "",
+      );
       const network = getStarknetNetworkByChainId(chainId);
       if (!network) throw Error("failed to get starknet network");
 
