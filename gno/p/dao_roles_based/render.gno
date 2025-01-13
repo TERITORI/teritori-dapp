@@ -65,6 +65,8 @@ func (d *DaoRolesBased) renderHomePage(res *mux.ResponseWriter, req *mux.Request
 	}
 
 	res.Write(ufmt.Sprintf("> See the [proposal history 📜](%s:%s) for more information\n\n", d.realmName, PROPOSAL_HISTORY_PATH))
+	res.Write(ufmt.Sprintf("\n--------------------------------\n"))
+	res.Write(ufmt.Sprintf("[Add a new proposal 🗳️](%s$help)\n\n", d.realmName))
 }
 
 func (d *DaoRolesBased) renderConfigPage(res *mux.ResponseWriter, req *mux.Request) {
@@ -100,6 +102,8 @@ func (d *DaoRolesBased) renderProposalHistoryPage(res *mux.ResponseWriter, req *
 		i += 1
 		return false
 	})
+	res.Write(ufmt.Sprintf("\n--------------------------------\n"))
+	res.Write(ufmt.Sprintf("[Add a new proposal 🗳️](%s$help)\n\n", d.realmName))
 }
 
 func (d *DaoRolesBased) renderMemberDetailPage(res *mux.ResponseWriter, req *mux.Request) {
@@ -123,8 +127,10 @@ func (d *DaoRolesBased) renderProposalDetailPage(res *mux.ResponseWriter, req *m
 	res.Write(ufmt.Sprintf("## Resource - %s 📦\n\n", proposal.message.Type()))
 	if proposal.status == ProposalStatusOpen {
 		res.Write(ufmt.Sprintf("## Status - Open 🟡\n\n"))
+		res.Write(ufmt.Sprintf("[Vote on this proposal 🗳️](%s$help)\n\n", d.realmName))
 	} else if proposal.status == ProposalStatusPassed {
 		res.Write(ufmt.Sprintf("## Status - Passed 🟢\n\n"))
+		res.Write(ufmt.Sprintf("[Execute this proposal 🗳️](%s$help)\n\n", d.realmName))
 	} else if proposal.status == ProposalStatusExecuted {
 		res.Write(ufmt.Sprintf("## Status - Executed ✅\n\n"))
 	} else {
