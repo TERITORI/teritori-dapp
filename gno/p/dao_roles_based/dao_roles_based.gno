@@ -23,7 +23,7 @@ type DaoRolesBased struct {
 	realmName       string
 }
 
-func NewDaoRolesBasedJSON(name, description, resourcesJSON string, roles []string, members [][]string, handlers []MessageHandler) *DaoRolesBased {
+func NewDaoRolesBasedJSON(name, description string, roles []string, members [][]string, resourcesJSON string, handlers []MessageHandler) *DaoRolesBased {
 	if len(name) < 5 {
 		panic("dao name should be at least 5 characters long")
 	}
