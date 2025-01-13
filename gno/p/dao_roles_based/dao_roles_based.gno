@@ -23,7 +23,7 @@ type DaoRolesBased struct {
 	realmName       string
 }
 
-func NewDaoRolesBasedJSON(name, description, rolesJSON, membersJSON, resourcesJSON string, handlers []MessageHandler) *DaoRolesBased {
+func NewDaoRolesBasedJSON(name, description, resourcesJSON string, roles []string, members [][]string, handlers []MessageHandler) *DaoRolesBased {
 	if len(name) < 5 {
 		panic("dao name should be at least 5 characters long")
 	}
@@ -44,10 +44,7 @@ func NewDaoRolesBasedJSON(name, description, rolesJSON, membersJSON, resourcesJS
 	}
 	dao.initRenderingRouter()
 
-	roles := dao.parseRolesJSON(rolesJSON)
 	dao.MemberModule.setRoles(roles)
-
-	members := dao.parseMembersJSON(membersJSON)
 	dao.MemberModule.setMembers(members)
 
 	resources := dao.parseResourcesJSON(resourcesJSON)
@@ -124,6 +121,18 @@ func (d *DaoRolesBased) ProposeJSON(proposalJSON string) {
 	d.propose(req.title, req.description, msg.Type(), msg)
 }
 
+func (d *DaoRolesBased) HasRole(memberId string, role string) bool {
+	return d.MemberModule.HasRole(memberId, role)
+}
+
+func (d *DaoRolesBased) IsMember(memberId string) bool {
+	return d.MemberModule.IsMember(memberId)
+}
+
+func (d *DaoRolesBased) MembersCount() uint64 {
+	return d.MemberModule.MembersCount()
+}
+
 func (d *DaoRolesBased) propose(title, description, resource string, message ExecutableMessage) {
 	proposer := std.PrevRealm().Addr()
 	if !d.MemberModule.IsMember(proposer.String()) {
@@ -144,51 +153,6 @@ func (d *DaoRolesBased) propose(title, description, resource string, message Exe
 	}
 
 	d.ProposalModule.newProposal(title, description, proposer, message, condition.NewState())
-}
-
-func (d *DaoRolesBased) HasRole(memberId string, role string) bool {
-	return d.MemberModule.HasRole(memberId, role)
-}
-
-func (d *DaoRolesBased) IsMember(memberId string) bool {
-	return d.MemberModule.IsMember(memberId)
-}
-
-func (d *DaoRolesBased) MembersCount() uint64 {
-	return d.MemberModule.MembersCount()
-}
-
-func (d *DaoRolesBased) parseRolesJSON(rolesJSON string) []string {
-	nodes, err := json.Unmarshal([]byte(rolesJSON))
-	if err != nil {
-		panic("invalid roles json format")
-	}
-	roles := nodes.MustArray()
-	rolesStr := make([]string, len(roles))
-	for i, role := range roles {
-		rolesStr[i] = role.MustString()
-	}
-	return rolesStr
-}
-
-func (d *DaoRolesBased) parseMembersJSON(membersJSON string) [][]string {
-	nodes, err := json.Unmarshal([]byte(membersJSON))
-	if err != nil {
-		panic("invalid members json format")
-	}
-	membersNodesArray := nodes.MustArray()
-	members := make([][]string, len(membersNodesArray))
-	for i, memberNode := range membersNodesArray {
-		memberObj := memberNode.MustObject()
-		memberRolesObj := memberObj["roles"].MustArray()
-		member := make([]string, len(memberRolesObj)+1)
-		member[0] = memberObj["address"].MustString()
-		for j, role := range memberRolesObj {
-			member[j+1] = role.MustString()
-		}
-		members[i] = member
-	}
-	return members
 }
 
 func (d *DaoRolesBased) parseResourcesJSON(resourcesJSON string) *avl.Tree {
