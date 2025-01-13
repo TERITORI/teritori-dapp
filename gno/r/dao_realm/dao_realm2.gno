@@ -1,4 +1,4 @@
-package dao_realm2
+package dao_realm
 
 import (
 	"gno.land/p/teritori/dao_roles_based"

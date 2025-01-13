@@ -37,15 +37,11 @@ type Proposal struct {
 	proposer    std.Address
 	resource    string
 	state       daocond.State
-	// StartHeight int64
 	// MinVotingPeriod dao_utils.Expiration // copy here the dao_utils.Expiration type from gno/p/dao_utils/expiration.gno
 	// Expiration      dao_utils.Expiration // copy here the dao_utils.Expiration type from gno/p/dao_utils/expiration.gno
-	// Threshold Threshold: Treshold should be handle in the conditions
-	// Message dao_interfaces.ExecutableMessage // copy here the dao_interfaces.ExecutableMessage type from gno/p/dao_interfaces/messages.gno
 	message ExecutableMessage
 	status  ProposalStatus
-	// AllowRevoting bool not handled in this proposal
-	votes map[string]daocond.Vote
+	votes   map[string]daocond.Vote
 }
 
 type ProposalModule struct {
