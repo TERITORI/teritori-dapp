@@ -15,7 +15,7 @@ type MemberModule struct {
 // TODO: FIX the owner of the role_manager is the deployer of the contract not the realm
 func newMemberModule() *MemberModule {
 	return &MemberModule{
-		roleManager: role_manager.NewWithAddress(std.PrevRealm().Addr()),
+		roleManager: role_manager.NewWithAddress(std.CurrentRealm().Addr()),
 		members:     avl.NewTree(),
 	}
 }
@@ -33,8 +33,9 @@ func (m *MemberModule) MembersCount() uint64 {
 }
 
 func (m *MemberModule) setRoles(roles []string) {
+	caller := std.CurrentRealm().Addr()
 	for _, role := range roles {
-		m.roleManager.CreateNewRole(role, []string{})
+		m.roleManager.CreateNewRole(role, []string{}, caller)
 	}
 }
 
@@ -47,10 +48,11 @@ func (m *MemberModule) getUserRoles(memberId string) []string {
 }
 
 func (m *MemberModule) setMembers(members [][]string) {
+	caller := std.CurrentRealm().Addr()
 	for _, member := range members {
 		m.members.Set(member[0], struct{}{})
 		for _, role := range member[1:] {
-			m.roleManager.AddRoleToUser(std.Address(member[0]), role)
+			m.roleManager.AddRoleToUser(std.Address(member[0]), role, caller)
 		}
 	}
 }

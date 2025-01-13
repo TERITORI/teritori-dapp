@@ -1,6 +1,7 @@
 package dao_roles_based
 
 import (
+	"path"
 	"std"
 
 	"gno.land/p/demo/avl"
@@ -12,7 +13,6 @@ import (
 type DaoRolesBased struct {
 	Name        string
 	Description string
-	RealmName   string
 
 	MemberModule     *MemberModule
 	ResourcesModule  *ResourcesModule
@@ -20,9 +20,10 @@ type DaoRolesBased struct {
 	MessagesRegistry *MessagesRegistry
 
 	renderingRouter *mux.Router
+	realmName       string
 }
 
-func NewDaoRolesBasedJSON(name, description, realmName, rolesJSON, membersJSON, resourcesJSON string, handlers []MessageHandler) *DaoRolesBased {
+func NewDaoRolesBasedJSON(name, description, rolesJSON, membersJSON, resourcesJSON string, handlers []MessageHandler) *DaoRolesBased {
 	if len(name) < 5 {
 		panic("dao name should be at least 5 characters long")
 	}
@@ -34,12 +35,12 @@ func NewDaoRolesBasedJSON(name, description, realmName, rolesJSON, membersJSON, 
 	dao := &DaoRolesBased{
 		Name:             name,
 		Description:      description,
-		RealmName:        realmName,
 		MemberModule:     newMemberModule(),
 		ResourcesModule:  newResourcesModule(),
 		ProposalModule:   newProposalModule(),
 		MessagesRegistry: newMessagesRegistry(),
 		renderingRouter:  mux.NewRouter(),
+		realmName:        path.Base(std.CurrentRealm().PkgPath()),
 	}
 	dao.initRenderingRouter()
 
@@ -56,13 +57,10 @@ func NewDaoRolesBasedJSON(name, description, realmName, rolesJSON, membersJSON, 
 		dao.MessagesRegistry.register(handler)
 	}
 
-	//TODO: Register name & description into the profile realm
-
 	return dao
 }
 
 func (d *DaoRolesBased) Vote(proposalID uint64, vote string) {
-	// 3th caller is the voter, 2nd is the dao realm, 1st is the dao_roles_based module
 	voter := std.PrevRealm().Addr()
 	if !d.MemberModule.IsMember(voter.String()) {
 		panic("voter is not a member")
@@ -92,7 +90,6 @@ func (d *DaoRolesBased) Vote(proposalID uint64, vote string) {
 }
 
 func (d *DaoRolesBased) Execute(proposalID uint64) {
-	// 3th caller is the executor, 2nd is the dao realm, 1st is the dao_roles_based module
 	executor := std.PrevRealm().Addr()
 	if !d.MemberModule.IsMember(executor.String()) {
 		panic("executor is not a member")

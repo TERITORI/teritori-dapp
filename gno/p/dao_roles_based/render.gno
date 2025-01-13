@@ -1,6 +1,8 @@
 package dao_roles_based
 
 import (
+	"std"
+
 	"gno.land/p/demo/mux"
 	"gno.land/p/demo/seqid"
 	"gno.land/p/demo/ufmt"
@@ -28,14 +30,14 @@ func (d *DaoRolesBased) Render(path string) string {
 }
 
 func (d *DaoRolesBased) renderHomePage(res *mux.ResponseWriter, req *mux.Request) {
-	res.Write(ufmt.Sprintf("# %s\n\n", d.Name))
+	res.Write(ufmt.Sprintf("# %s - %s\n\n", d.Name, std.CurrentRealm().Addr().String()))
 	res.Write(ufmt.Sprintf("> Description: %s\n\n", d.Description))
-	res.Write(ufmt.Sprintf("Discover more about this DAO on the [configuration page ⚙️](%s:%s)\n\n", d.RealmName, CONFIG_PATH))
+	res.Write(ufmt.Sprintf("Discover more about this DAO on the [configuration page ⚙️](%s:%s)\n\n", d.realmName, CONFIG_PATH))
 
 	res.Write(ufmt.Sprintf("## Members 👤 \n\n"))
 	i := 1
 	d.MemberModule.members.Iterate("", "", func(key string, value interface{}) bool {
-		res.Write(ufmt.Sprintf("- **Member %d: [%s](%s:%s/%s)**\n\n", i, key, d.RealmName, "member", key))
+		res.Write(ufmt.Sprintf("- **Member %d: [%s](%s:%s/%s)**\n\n", i, key, d.realmName, "member", key))
 		i += 1
 		return false
 	})
@@ -54,7 +56,7 @@ func (d *DaoRolesBased) renderHomePage(res *mux.ResponseWriter, req *mux.Request
 		if err != nil {
 			panic(err)
 		}
-		res.Write(ufmt.Sprintf("- **Proposal %d: [%s](%s:%s/%s)**\n\n", uint64(id), proposal.title, d.RealmName, "proposal", key))
+		res.Write(ufmt.Sprintf("- **Proposal %d: [%s](%s:%s/%s)**\n\n", uint64(id), proposal.title, d.realmName, "proposal", key))
 		i += 1
 		return false
 	})
@@ -62,7 +64,7 @@ func (d *DaoRolesBased) renderHomePage(res *mux.ResponseWriter, req *mux.Request
 		res.Write(ufmt.Sprintf("\t⚠️ There are no running proposals at the moment\n\n"))
 	}
 
-	res.Write(ufmt.Sprintf("> See the [proposal history 📜](%s:%s) for more information\n\n", d.RealmName, PROPOSAL_HISTORY_PATH))
+	res.Write(ufmt.Sprintf("> See the [proposal history 📜](%s:%s) for more information\n\n", d.realmName, PROPOSAL_HISTORY_PATH))
 }
 
 func (d *DaoRolesBased) renderConfigPage(res *mux.ResponseWriter, req *mux.Request) {
@@ -94,7 +96,7 @@ func (d *DaoRolesBased) renderProposalHistoryPage(res *mux.ResponseWriter, req *
 		if err != nil {
 			panic(err)
 		}
-		res.Write(ufmt.Sprintf("- **Proposal %d: [%s](%s:%s/%s) - %s**\n\n", uint64(id), proposal.title, d.RealmName, "proposal", key, proposal.status))
+		res.Write(ufmt.Sprintf("- **Proposal %d: [%s](%s:%s/%s) - %s**\n\n", uint64(id), proposal.title, d.realmName, "proposal", key, proposal.status))
 		i += 1
 		return false
 	})

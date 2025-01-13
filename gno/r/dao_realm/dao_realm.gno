@@ -2,6 +2,7 @@ package dao_realm
 
 import (
 	"gno.land/p/teritori/dao_roles_based"
+	"gno.land/r/demo/profile"
 	"gno.land/r/teritori/social_feeds"
 )
 
@@ -10,7 +11,6 @@ var dao *dao_roles_based.DaoRolesBased
 func init() {
 	name := "Demo DAO"
 	description := "This is a demo DAO"
-	realmName := "dao_realm2"
 
 	var rolesJSON = `["admin","public-relationships","finance-officer"]`
 	var membersJSON = `[{"address":"g126gx6p6d3da4ymef35ury6874j6kys044r7zlg","roles":["admin","public-relationships"]},{"address":"g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv","roles":["public-relationships"]},{"address":"g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth","roles":["finance-officer"]},{"address":"g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r","roles":[]}]`
@@ -31,7 +31,12 @@ func init() {
 	}
 	resourcesJSON += `]`
 
-	dao = dao_roles_based.NewDaoRolesBasedJSON(name, description, realmName, rolesJSON, membersJSON, resourcesJSON, messagesHandlers)
+	dao = dao_roles_based.NewDaoRolesBasedJSON(name, description, rolesJSON, membersJSON, resourcesJSON, messagesHandlers)
+
+	// Register the DAO profile
+	profile.SetStringField(profile.DisplayName, name)
+	profile.SetStringField(profile.Bio, description)
+	profile.SetStringField(profile.Avatar, "")
 }
 
 func ProposeJSON(proposalJSON string) {
