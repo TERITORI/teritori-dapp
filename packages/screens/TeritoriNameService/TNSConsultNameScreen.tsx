@@ -28,6 +28,7 @@ import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { getCosmosNetwork, getUserId, mustGetCosmosNetwork } from "@/networks";
 import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { neutral17, neutral33 } from "@/utils/style/colors";
+import { fontRegular16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 const NotOwnerActions: React.FC<{
@@ -218,7 +219,7 @@ export const TNSConsultNameScreen: React.FC<TNSConsultNameProps> = ({
         }}
       >
         {notFound ? (
-          <BrandText>Not found</BrandText>
+          <BrandText style={[fontRegular16]}>Not found</BrandText>
         ) : (
           <>
             <NameNFT

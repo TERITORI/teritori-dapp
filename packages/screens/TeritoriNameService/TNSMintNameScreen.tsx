@@ -45,7 +45,7 @@ import {
 } from "@/networks";
 import { prettyPrice } from "@/utils/coins";
 import { neutral00, neutral17, neutral33 } from "@/utils/style/colors";
-import { fontSemibold14 } from "@/utils/style/fonts";
+import { fontRegular14 } from "@/utils/style/fonts";
 import { defaultMetaData } from "@/utils/types/tns";
 
 const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
@@ -90,7 +90,7 @@ const CostContainer: React.FC<{ price: { amount: string; denom: string } }> = ({
           }}
         />
 
-        <BrandText style={[fontSemibold14]}>
+        <BrandText style={[fontRegular14]}>
           The mint cost for this token is{" "}
           {prettyPrice(networkId, price.amount, price.denom)}
         </BrandText>
@@ -302,12 +302,7 @@ export const TNSMintNameModal: React.FC<
         }}
       >
         {!!price && <CostContainer price={price} />}
-        <BrandText
-          style={{
-            fontSize: 14,
-            marginBottom: 16,
-          }}
-        >
+        <BrandText style={[fontRegular14, { marginBottom: 16 }]}>
           Available Balance:{" "}
           {prettyPrice(
             network?.id || "",

@@ -75,9 +75,9 @@ export const FeedScreen: ScreenFC<"Feed"> = ({
   return (
     <ScreenContainer
       fullWidth
-      responsive
-      noMargin
+      // noScroll is needed to let feeds FlatList handle the scroll and support infinite load
       noScroll
+      responsive
       footerChildren={<></>}
       forceNetworkFeatures={[NetworkFeature.SocialFeed]}
       headerChildren={<ScreenTitle>Social Feed</ScreenTitle>}

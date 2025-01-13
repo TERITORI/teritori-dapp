@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import { fontSemibold20 } from "../../utils/style/fonts";
+import { fontRegular20 } from "../../utils/style/fonts";
 import { tldFromNSToken, nsTokenWithoutTLD } from "../../utils/tns";
 import { BrandText } from "../BrandText";
 import { GradientText } from "../gradientText";
@@ -23,14 +23,17 @@ export const NameAndTldText: React.FC<{
     >
       {/*---- White part*/}
       <BrandText
-        style={{
-          letterSpacing: -(20 * 0.04),
-          maxWidth: "100%",
-        }}
+        style={[
+          fontRegular20,
+          {
+            letterSpacing: -(20 * 0.04),
+            maxWidth: "100%",
+          },
+        ]}
       >
         {nsTokenWithoutTLD(nameAndTldStr)}
         {/*---- Gray part*/}
-        <GradientText gradientType="gray" style={fontSemibold20}>
+        <GradientText gradientType="gray" style={fontRegular20}>
           {tldFromNSToken(nameAndTldStr)}
         </GradientText>
       </BrandText>

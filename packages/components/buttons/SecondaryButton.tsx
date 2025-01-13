@@ -15,7 +15,7 @@ import {
   heightButton,
 } from "../../utils/style/buttons";
 import { neutral30, primaryColor } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import { fontRegular14 } from "../../utils/style/fonts";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { BoxStyle } from "../boxes/Box";
@@ -117,7 +117,7 @@ export const SecondaryButton: React.FC<{
 
           <BrandText
             style={[
-              fontSemibold14,
+              fontRegular14,
               {
                 color,
                 textAlign: "center",

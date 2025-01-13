@@ -1,71 +1,79 @@
 import pluralize from "pluralize";
 import React, { useEffect, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { ScrollView, View } from "react-native";
+import { FormProvider, useForm } from "react-hook-form";
+import { ScrollView, useWindowDimensions, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import priceSVG from "../../../assets/icons/price.svg";
 import useSelectedWallet from "../../hooks/useSelectedWallet";
 
+import penSVG from "@/assets/icons/pen.svg";
+import priceSVG from "@/assets/icons/price.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
-import { WalletStatusBox } from "@/components/WalletStatusBox";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
+import { CustomPressable } from "@/components/buttons/CustomPressable";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { DAOSelector } from "@/components/dao/DAOSelector";
 import { Label, TextInputCustom } from "@/components/inputs/TextInputCustom";
 import { FileUploader } from "@/components/inputs/fileUploader";
 import { FeedPostingProgressBar } from "@/components/loaders/FeedPostingProgressBar";
-import { RichText } from "@/components/socialFeed/RichText";
-import { PublishValues } from "@/components/socialFeed/RichText/RichText.type";
+import { SocialArticleMarkdownCard } from "@/components/socialFeed/SocialCard/cards/SocialArticleMarkdownCard";
 import { MapModal } from "@/components/socialFeed/modals/MapModal/MapModal";
-import { SpacerColumn } from "@/components/spacer";
+import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { useFeedPosting } from "@/hooks/feed/useFeedPosting";
 import { useIpfs } from "@/hooks/useIpfs";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
+import { ArticleContentEditor } from "@/screens/FeedNewArticle/components/ArticleContentEditor/ArticleContentEditor";
+import { NewArticleLocationButton } from "@/screens/FeedNewArticle/components/NewArticleLocationButton";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
-import { generateArticleMetadata } from "@/utils/feed/queries";
+import { generateArticleMarkdownMetadata } from "@/utils/feed/queries";
 import { generateIpfsKey } from "@/utils/ipfs";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import {
-  ARTICLE_COVER_IMAGE_MAX_HEIGHT,
-  ARTICLE_COVER_IMAGE_RATIO,
-  ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT,
-  ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH,
-} from "@/utils/social-feed";
-import {
   neutral00,
   neutral11,
+  neutral33,
   neutral77,
+  neutralFF,
   secondaryColor,
 } from "@/utils/style/colors";
 import { fontSemibold13 } from "@/utils/style/fonts";
-import { layout, screenContentMaxWidth } from "@/utils/style/layout";
+import {
+  layout,
+  RESPONSIVE_BREAKPOINT_S,
+  screenContentMaxWidth,
+} from "@/utils/style/layout";
 import {
   CustomLatLngExpression,
   NewArticleFormValues,
   PostCategory,
+  SocialFeedArticleMarkdownMetadata,
 } from "@/utils/types/feed";
-import { RemoteFileData } from "@/utils/types/files";
-
-//TODO: In mobile : Make ActionsContainer accessible (floating button ?)
 
 export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
+  const { width } = useMaxResolution();
+  const { width: windowWidth } = useWindowDimensions();
+  const isSmallScreen = windowWidth < RESPONSIVE_BREAKPOINT_S;
   const isMobile = useIsMobile();
   const wallet = useSelectedWallet();
   const selectedNetworkId = useSelectedNetworkId();
-  const userId = wallet?.userId;
   const userIPFSKey = useSelector(selectNFTStorageAPI);
+  const [selectedDaoId, setSelectedDAOId] = useState<string>();
+  const userId = selectedDaoId || wallet?.userId;
   const { uploadFilesToPinata, ipfsUploadProgress } = useIpfs();
   const [isUploadLoading, setIsUploadLoading] = useState(false);
   const [isProgressBarShown, setIsProgressBarShown] = useState(false);
-  const postCategory = PostCategory.Article;
+  const [isMapShown, setIsMapShown] = useState(false);
+  const postCategory = PostCategory.ArticleMarkdown;
   const {
     makePost,
     isProcessing,
@@ -87,7 +95,7 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         message: "",
       });
       navigateBack();
-      reset();
+      newArticleForm.reset();
     }, 1000);
   });
   const forceNetworkFeature = NetworkFeature.SocialFeed;
@@ -97,36 +105,36 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
   const { setToast } = useFeedbacks();
   const navigation = useAppNavigation();
   const scrollViewRef = useRef<ScrollView>(null);
+  const [isThumbnailButtonHovered, setThumbnailButtonHovered] = useState(false);
   const [location, setLocation] = useState<CustomLatLngExpression>();
-  const [isMapShown, setIsMapShown] = useState(false);
-  const {
-    control,
-    setValue,
-    reset,
-    watch,
-    formState: { errors },
-  } = useForm<NewArticleFormValues>({
+  const cardStyle = isSmallScreen && {
+    borderRadius: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+  };
+  const newArticleForm = useForm<NewArticleFormValues>({
     defaultValues: {
       title: "",
       message: "",
-      files: [],
-      gifs: [],
-      hashtags: [],
-      mentions: [],
       thumbnailImage: undefined,
       shortDescription: "",
     },
     mode: "onBlur",
   });
-  //TODO: Not handled for now
-  // const { mutate: openGraphMutate, data: openGraphData } = useOpenGraph();
 
-  const formValues = watch();
+  const formValues = newArticleForm.watch();
+  const previewMetadata: SocialFeedArticleMarkdownMetadata = {
+    title: formValues.title,
+    shortDescription: formValues.shortDescription || "",
+    thumbnailImage: formValues.thumbnailImage,
+    message: "",
+    hashtags: [],
+    mentions: [],
+  };
 
-  //TODO: Keep short post formValues when returning to short post
   const navigateBack = () => navigation.navigate("Feed");
 
-  const onPublish = async (values: PublishValues) => {
+  const onPublish = async () => {
     const action = "Publish an Article";
     if (!wallet?.address || !wallet.connected) {
       showConnectWalletModal({
@@ -147,69 +155,41 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     }
     setIsUploadLoading(true);
     setIsProgressBarShown(true);
+
     try {
-      const localFiles = [
-        ...(formValues.files || []),
-        ...values.images,
-        ...values.audios,
-        ...values.videos,
-      ];
-      if (formValues.thumbnailImage) localFiles.push(formValues.thumbnailImage);
-      if (formValues.coverImage) localFiles.push(formValues.coverImage);
-
-      let pinataJWTKey = undefined;
-      if (localFiles?.length) {
-        setStep(feedPostingStep(FeedPostingStepId.GENERATING_KEY));
-
-        pinataJWTKey =
-          userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
-      }
-
-      // Upload files to IPFS
-      let remoteFiles: RemoteFileData[] = [];
-      if (pinataJWTKey) {
-        setStep(feedPostingStep(FeedPostingStepId.UPLOADING_FILES));
-
-        remoteFiles = await uploadFilesToPinata({
-          files: localFiles,
-          pinataJWTKey,
-        });
-      }
-
-      // If the user uploaded files, but they are not pinned to IPFS, it returns files with empty url, so this is an error.
-      if (formValues.files?.length && !remoteFiles.find((file) => file.url)) {
-        console.error("upload file err : Fail to pin to IPFS");
+      // Upload thumbnail to IPFS
+      const pinataJWTKey =
+        userIPFSKey || (await generateIpfsKey(selectedNetworkId, userId));
+      if (!pinataJWTKey) {
+        console.error("upload file err : No Pinata JWT");
         setToast({
-          mode: "normal",
-          type: "error",
           title: "File upload failed",
-          message: "Fail to pin to IPFS, please try to Publish again",
+          message: "No Pinata JWT",
+          type: "error",
+          mode: "normal",
         });
         setIsUploadLoading(false);
         return;
       }
+      setStep(feedPostingStep(FeedPostingStepId.UPLOADING_FILES));
 
-      let message = values.html;
-      if (remoteFiles.length) {
-        localFiles?.map((file, index) => {
-          // Audio are not in the HTML for now
-          if (remoteFiles[index]?.fileType !== "audio") {
-            message = message.replace(file.url, remoteFiles[index].url);
-          }
-        });
-      }
+      const remoteThumbnail = formValues.thumbnailImage
+        ? (
+            await uploadFilesToPinata({
+              files: [formValues.thumbnailImage],
+              pinataJWTKey,
+            })
+          )[0]
+        : undefined;
 
-      const metadata = generateArticleMetadata({
+      const metadata = generateArticleMarkdownMetadata({
         ...formValues,
-        thumbnailImage: remoteFiles.find(
-          (remoteFile) => remoteFile.isThumbnailImage,
-        ),
-        coverImage: remoteFiles.find((remoteFile) => remoteFile.isCoverImage),
-        gifs: values.gifs,
-        files: remoteFiles,
-        mentions: values.mentions,
-        hashtags: values.hashtags,
-        message,
+        thumbnailImage: remoteThumbnail,
+        gifs: [],
+        files: [],
+        mentions: [],
+        hashtags: [],
+        message: formValues.message,
         location,
       });
 
@@ -227,21 +207,12 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
     }
   };
 
-  // Scroll to bottom when the loading bar appears
+  // Reset DAOSelector when the user selects another wallet
+  const [daoSelectorKey, setDaoSelectorKey] = useState(0);
   useEffect(() => {
-    if (step.id !== "UNDEFINED" && isLoading)
-      scrollViewRef.current?.scrollToEnd();
-  }, [step, isLoading]);
-
-  // // OpenGraph URL preview
-  // useEffect(() => {
-  //   addedUrls.forEach(url => {
-  //     openGraphMutate({
-  //       url,
-  //     });
-  //
-  //   })
-  // }, [addedUrls])
+    setSelectedDAOId(undefined);
+    setDaoSelectorKey((key) => key + 1);
+  }, [wallet]);
 
   return (
     <ScreenContainer
@@ -252,12 +223,14 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
       headerChildren={<ScreenTitle>New Article</ScreenTitle>}
       onBackPress={navigateBack}
       footerChildren
+      noMargin
       noScroll
     >
       <ScrollView
         ref={scrollViewRef}
         style={{
-          marginTop: isMobile ? layout.spacing_x2 : layout.contentSpacing,
+          paddingTop: isMobile ? layout.spacing_x2 : layout.contentSpacing,
+          paddingBottom: layout.spacing_x2,
         }}
         contentContainerStyle={{
           width: "100%",
@@ -265,155 +238,199 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
           alignSelf: "center",
         }}
       >
-        <WalletStatusBox />
-        <SpacerColumn size={3} />
-
-        <TertiaryBox
+        <View
           style={{
-            paddingVertical: layout.spacing_x1,
-            paddingHorizontal: layout.spacing_x1_5,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            height: 48,
-            backgroundColor: neutral11,
+            alignSelf: "center",
+            width,
           }}
         >
-          <SVG
-            source={priceSVG}
-            height={24}
-            width={24}
-            color={secondaryColor}
+          <DAOSelector
+            onSelect={setSelectedDAOId}
+            userId={wallet?.userId}
+            style={{ width: "100%" }}
+            key={daoSelectorKey}
           />
-          <BrandText
-            style={[
-              fontSemibold13,
-              { color: neutral77, marginLeft: layout.spacing_x1 },
-            ]}
-          >
-            {freePostCount
-              ? `You have ${freePostCount} free ${pluralize(
-                  "Article",
-                  freePostCount,
-                )} left`
-              : `The cost for this Article is ${prettyPublishingFee}`}
-          </BrandText>
-        </TertiaryBox>
+          <SpacerColumn size={3} />
 
-        <FileUploader
-          label="Thumbnail image"
-          style={{
-            marginTop: layout.spacing_x3,
-          }}
-          fileImageStyle={{
-            objectFit: "cover",
-            height: ARTICLE_THUMBNAIL_IMAGE_MAX_HEIGHT,
-            maxWidth: ARTICLE_THUMBNAIL_IMAGE_MAX_WIDTH,
-          }}
-          onUpload={(files) =>
-            setValue("thumbnailImage", {
-              isThumbnailImage: true,
-              ...files[0],
-            })
-          }
-          mimeTypes={IMAGE_MIME_TYPES}
-        />
-
-        <FileUploader
-          label="Cover image"
-          style={{
-            marginTop: layout.spacing_x3,
-            width: "100%",
-          }}
-          fileImageStyle={{
-            objectFit: "cover",
-            height: "100%",
-            width: "100%",
-            maxHeight: ARTICLE_COVER_IMAGE_MAX_HEIGHT,
-            aspectRatio: ARTICLE_COVER_IMAGE_RATIO,
-          }}
-          onUpload={(files) =>
-            setValue("coverImage", {
-              isCoverImage: true,
-              ...files[0],
-            })
-          }
-          mimeTypes={IMAGE_MIME_TYPES}
-        />
-
-        <TextInputCustom<NewArticleFormValues>
-          noBrokenCorners
-          rules={{ required: true }}
-          height={48}
-          label="Title"
-          placeHolder="Type title here"
-          name="title"
-          control={control}
-          variant="labelOutside"
-          containerStyle={{ marginVertical: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
-        />
-
-        <TextInputCustom<NewArticleFormValues>
-          noBrokenCorners
-          rules={{ required: true }}
-          multiline
-          label="Short description"
-          placeHolder="Type short description here"
-          name="shortDescription"
-          control={control}
-          variant="labelOutside"
-          containerStyle={{ marginBottom: layout.spacing_x3 }}
-          boxMainContainerStyle={{
-            backgroundColor: neutral00,
-            borderRadius: 12,
-          }}
-        />
-
-        <View>
-          <Label>Article content</Label>
-          <SpacerColumn size={1} />
-          <Controller
-            name="message"
-            control={control}
-            rules={{
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur } }) => (
-              <RichText
-                onChange={onChange}
-                onBlur={onBlur}
-                initialValue={formValues.message}
-                loading={isLoading}
-                publishDisabled={
-                  errors?.message?.type === "required" ||
-                  !formValues.message ||
-                  !formValues.title ||
-                  !formValues.shortDescription ||
-                  !wallet
-                }
-                onPublish={onPublish}
-                authorId={userId || ""}
-                postId=""
-                setIsMapShown={setIsMapShown}
-                hasLocation={!!location}
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <TertiaryBox
+              style={{
+                paddingVertical: layout.spacing_x1,
+                paddingHorizontal: layout.spacing_x1_5,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                height: 48,
+                backgroundColor: neutral11,
+                flex: 1,
+              }}
+            >
+              <SVG
+                source={priceSVG}
+                height={24}
+                width={24}
+                color={secondaryColor}
               />
-            )}
+              <BrandText
+                style={[
+                  fontSemibold13,
+                  { color: neutral77, marginLeft: layout.spacing_x1 },
+                ]}
+              >
+                {freePostCount
+                  ? `You have ${freePostCount} free ${pluralize(
+                      "Article",
+                      freePostCount,
+                    )} left`
+                  : `The cost for this Article is ${prettyPublishingFee}`}
+              </BrandText>
+            </TertiaryBox>
+
+            <SpacerRow size={2} />
+            <NewArticleLocationButton
+              setIsMapShown={setIsMapShown}
+              location={location}
+            />
+
+            <SpacerRow size={2} />
+            <PrimaryButton
+              text={selectedDaoId ? "Propose" : "Publish"}
+              width={120}
+              disabled={
+                !formValues.title ||
+                !formValues.shortDescription ||
+                !formValues.message ||
+                isLoading
+              }
+              onPress={newArticleForm.handleSubmit(onPublish)}
+              loader
+              isLoading={isLoading}
+            />
+          </View>
+
+          {step.id !== "UNDEFINED" && isProgressBarShown && (
+            <>
+              <SpacerColumn size={3} />
+              <FeedPostingProgressBar
+                step={step}
+                ipfsUploadProgress={ipfsUploadProgress}
+              />
+            </>
+          )}
+
+          <TextInputCustom<NewArticleFormValues>
+            noBrokenCorners
+            rules={{ required: true }}
+            height={48}
+            label="Preview title"
+            placeHolder="Type title here"
+            name="title"
+            control={newArticleForm.control}
+            variant="labelOutside"
+            containerStyle={{ marginVertical: layout.spacing_x3 }}
+            boxMainContainerStyle={{
+              backgroundColor: neutral00,
+              borderRadius: 12,
+            }}
           />
+
+          <TextInputCustom<NewArticleFormValues>
+            noBrokenCorners
+            rules={{ required: true }}
+            multiline
+            label="Preview subtitle"
+            placeHolder="Type short description here"
+            name="shortDescription"
+            control={newArticleForm.control}
+            variant="labelOutside"
+            containerStyle={{ marginBottom: layout.spacing_x3 }}
+            boxMainContainerStyle={{
+              backgroundColor: neutral00,
+              borderRadius: 12,
+            }}
+          />
+
+          <Label>Article preview</Label>
+          <SpacerColumn size={1.5} />
         </View>
 
-        {step.id !== "UNDEFINED" && isProgressBarShown && (
-          <>
-            <FeedPostingProgressBar
-              step={step}
-              ipfsUploadProgress={ipfsUploadProgress}
+        <View
+          style={{
+            width: isSmallScreen ? windowWidth : width,
+            maxWidth: screenContentMaxWidth,
+            alignSelf: "center",
+          }}
+        >
+          <View>
+            <FileUploader
+              label="Thumbnail image"
+              onUpload={(files) =>
+                newArticleForm.setValue("thumbnailImage", {
+                  isThumbnailImage: true,
+                  ...files[0],
+                })
+              }
+              mimeTypes={IMAGE_MIME_TYPES}
+            >
+              {({ onPress }) => (
+                <CustomPressable
+                  onHoverIn={() => setThumbnailButtonHovered(true)}
+                  onHoverOut={() => setThumbnailButtonHovered(false)}
+                  onPress={onPress}
+                  style={{
+                    position: "absolute",
+                    right: 8,
+                    top: 8,
+                    zIndex: 1,
+                    backgroundColor: neutral00,
+                    borderColor: isThumbnailButtonHovered
+                      ? neutralFF
+                      : neutral33,
+                    borderWidth: 1,
+                    borderRadius: 999,
+                    height: 36,
+                    width: 36,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <SVG
+                    source={penSVG}
+                    width={24}
+                    height={24}
+                    color={neutralFF}
+                  />
+                </CustomPressable>
+              )}
+            </FileUploader>
+
+            <SocialArticleMarkdownCard
+              style={cardStyle}
+              disabled
+              post={{
+                category: PostCategory.ArticleMarkdown,
+                isDeleted: false,
+                identifier: "",
+                metadata: JSON.stringify(previewMetadata),
+                parentPostIdentifier: "",
+                subPostLength: 0,
+                authorId: userId || "",
+                createdAt: Date.parse("2024-06-17") / 1000,
+                reactions: [],
+                tipAmount: 0,
+                premiumLevel: 0,
+                id: "",
+                localIdentifier: "",
+                networkId: selectedNetworkId,
+              }}
             />
-            <SpacerColumn size={3} />
-          </>
-        )}
+          </View>
+        </View>
+        <SpacerColumn size={3} />
+
+        <FormProvider {...newArticleForm}>
+          <ArticleContentEditor width={width} />
+        </FormProvider>
       </ScrollView>
 
       {isMapShown && (

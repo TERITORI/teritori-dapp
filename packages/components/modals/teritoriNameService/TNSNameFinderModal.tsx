@@ -7,7 +7,7 @@ import {
   neutral33,
   neutral77,
 } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
+import { fontRegular14 } from "../../../utils/style/fonts";
 import { BrandText } from "../../BrandText";
 import { PrimaryButton } from "../../buttons/PrimaryButton";
 import ModalBase from "../ModalBase";
@@ -29,7 +29,7 @@ const DomainsAvailability = () => {
     >
       <BrandText
         style={[
-          fontSemibold14,
+          fontRegular14,
           {
             color: neutral77,
             lineHeight: 16,
@@ -43,7 +43,7 @@ const DomainsAvailability = () => {
           <BrandText
             key={domain}
             style={[
-              fontSemibold14,
+              fontRegular14,
               {
                 color: additionalRed,
                 lineHeight: 20,
@@ -57,7 +57,7 @@ const DomainsAvailability = () => {
       </View>
       <BrandText
         style={[
-          fontSemibold14,
+          fontRegular14,
           {
             color: neutral77,
             marginTop: 20,
@@ -71,7 +71,7 @@ const DomainsAvailability = () => {
           <BrandText
             key={domain}
             style={[
-              fontSemibold14,
+              fontRegular14,
               {
                 color: neutral77,
                 lineHeight: 20,
@@ -84,7 +84,7 @@ const DomainsAvailability = () => {
         ))}
         <BrandText
           style={[
-            fontSemibold14,
+            fontRegular14,
             {
               color: neutral77,
               lineHeight: 20,

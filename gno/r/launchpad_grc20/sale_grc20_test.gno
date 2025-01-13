@@ -251,8 +251,8 @@ func TestNewSale(t *testing.T) {
 			sale := mustGetSale(saleID)
 
 			if !test.expected.panic {
-				if sale.token.banker.GetName() != test.expected.tokenName {
-					t.Errorf("Expected tokenName to be %s, got %s", test.expected.tokenName, sale.token.banker.GetName())
+				if sale.token.GetName() != test.expected.tokenName {
+					t.Errorf("Expected tokenName to be %s, got %s", test.expected.tokenName, sale.token.GetName())
 				}
 				if sale.startTimestamp != test.expected.startTimestamp {
 					t.Errorf("Expected startTimestamp to be %d, got %d", test.expected.startTimestamp, sale.startTimestamp)
@@ -333,6 +333,7 @@ func TestBuy(t *testing.T) {
 	notEnoughCoins := std.NewCoins(std.NewCoin("ugnot", 100*5))
 	tooManyCoins := std.NewCoins(std.NewCoin("ugnot", 100*11))
 	emptyCoins := std.NewCoins()
+	realmCoins := std.NewCoins(std.NewCoin("ugnot", 200*10))
 
 	tests := testBuyTestTable{
 		"Success": {
@@ -351,14 +352,14 @@ func TestBuy(t *testing.T) {
 		"Success private sale": {
 			input: testBuyInput{
 				saleID: privateSaleID,
-				amount: 1,
+				amount: 10,
 				coins:  coins,
 				addr:   bob,
 				proofs: proofs,
 			},
 			expected: testBuyExpected{
 				panic:   false,
-				balance: 1,
+				balance: 10,
 			},
 		},
 		"Not in the tree / bad proofs": {
@@ -485,6 +486,7 @@ func TestBuy(t *testing.T) {
 
 			std.TestSetOrigCaller(test.input.addr)
 			std.TestSetOrigSend(test.input.coins, nil)
+			std.TestIssueCoins(std.CurrentRealm().Addr(), realmCoins)
 			Buy(test.input.saleID, test.input.amount, test.input.proofs)
 			sale := mustGetSale(test.input.saleID)
 			if !test.expected.panic {
@@ -534,6 +536,8 @@ func TestFinalize(t *testing.T) {
 	saleID := NewSale("TestFinalizeToken", "", startTimestamp, endTimestamp, 100, 15, 10, 20, true)
 	onGoingSaleID := NewSale("TestFinalizeToken", "", startTimestamp, onGoingEndTimestamp, 100, 15, 10, 20, true)
 	onGoingSaleID2 := NewSale("TestFinalizeToken", "", startTimestamp, onGoingEndTimestamp2, 100, 15, 10, 20, true)
+
+	realmCoins := std.NewCoins(std.NewCoin("ugnot", 200*10))
 
 	tests := testFinalizeTestTable{
 		"Success with 0 tokens sold": {
@@ -591,6 +595,7 @@ func TestFinalize(t *testing.T) {
 				panic: false,
 			},
 		},
+
 		"Success with min goal reached": {
 			input: testFinalizeInput{
 				saleID:      onGoingSaleID2,
@@ -623,6 +628,7 @@ func TestFinalize(t *testing.T) {
 
 			coins := std.NewCoins(std.NewCoin("ugnot", int64(test.input.amount*sale.pricePerToken)))
 			std.TestSetOrigSend(coins, nil)
+			std.TestIssueCoins(std.CurrentRealm().Addr(), realmCoins)
 
 			if test.input.amount != 0 {
 				Buy(test.input.saleID, test.input.amount, nil)
@@ -642,8 +648,8 @@ func TestFinalize(t *testing.T) {
 				}
 
 				if sale.alreadySold < sale.minGoal {
-					if sale.token.banker.BalanceOf(test.input.buyer) != 0 {
-						t.Errorf("Expected tokens balance to be 0 since min goal not reach, got %d", sale.token.banker.BalanceOf(test.input.buyer))
+					if sale.token.BalanceOf(test.input.buyer) != 0 {
+						t.Errorf("Expected tokens balance to be 0 since min goal not reach, got %d", sale.token.BalanceOf(test.input.buyer))
 					}
 
 					// Since coins come from nowhere in the testing context, the refund just add news coins to addr
@@ -651,8 +657,8 @@ func TestFinalize(t *testing.T) {
 						t.Errorf("Expected money to be refund and be %d since min goal not reach but got %d", buyerBalance, banker.GetCoins(test.input.buyer).AmountOf("ugnot"))
 					}
 				} else {
-					if sale.token.banker.BalanceOf(test.input.buyer) != test.input.amount {
-						t.Errorf("Expected balance to be %d, got %d", test.input.amount, sale.token.banker.BalanceOf(test.input.buyer))
+					if sale.token.BalanceOf(test.input.buyer) != test.input.amount {
+						t.Errorf("Expected balance to be %d, got %d", test.input.amount, sale.token.BalanceOf(test.input.buyer))
 					}
 				}
 			}

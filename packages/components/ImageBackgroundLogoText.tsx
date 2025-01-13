@@ -7,7 +7,7 @@ import { SpacerColumn } from "./spacer";
 
 import logoSVG from "@/assets/logos/logo-white.svg";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
-import { fontSemibold22, fontSemibold28 } from "@/utils/style/fonts";
+import { fontRegular22, fontRegular28 } from "@/utils/style/fonts";
 import { RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 
 export const ImageBackgroundLogoText: FC<{
@@ -17,7 +17,7 @@ export const ImageBackgroundLogoText: FC<{
   const { width } = useMaxResolution();
   const isSmallScreen = width < RESPONSIVE_BREAKPOINT_S;
   const logoSize = isSmallScreen ? 70 : 88;
-  const fontStyle: TextStyle = isSmallScreen ? fontSemibold22 : fontSemibold28;
+  const fontStyle: TextStyle = isSmallScreen ? fontRegular22 : fontRegular28;
   const height = 380;
 
   return (

@@ -139,6 +139,7 @@ export const RichText: React.FC<RichTextProps> = ({
   loading,
   publishDisabled,
   authorId,
+  publishText = "Publish",
   postId,
   setIsMapShown,
   hasLocation,
@@ -514,7 +515,7 @@ export const RichText: React.FC<RichTextProps> = ({
               disabled={publishDisabled}
               loader
               isLoading={loading}
-              text="Publish"
+              text={publishText}
               size="M"
               onPress={handlePublish}
             />

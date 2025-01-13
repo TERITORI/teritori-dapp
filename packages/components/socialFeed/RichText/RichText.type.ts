@@ -35,4 +35,5 @@ export interface RichTextProps {
   postId: string;
   setIsMapShown?: Dispatch<SetStateAction<boolean>>;
   hasLocation?: boolean;
+  publishText?: string;
 }

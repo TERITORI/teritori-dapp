@@ -26,7 +26,7 @@ import {
   neutral77,
   primaryColor,
 } from "../../../utils/style/colors";
-import { fontSemibold14 } from "../../../utils/style/fonts";
+import { fontRegular14, fontSemibold14 } from "../../../utils/style/fonts";
 import { layout } from "../../../utils/style/layout";
 import {
   CustomLatLngExpression,
@@ -282,14 +282,7 @@ export const UploadTrack: React.FC<Props> = ({ onUploadDone }) => {
       </TouchableOpacity>
 
       <SpacerColumn size={3} />
-      <BrandText
-        style={[
-          fontSemibold14,
-          {
-            color: neutral77,
-          },
-        ]}
-      >
+      <BrandText style={[fontRegular14, { color: neutral77 }]}>
         Provide FLAC, WAV or AIFF for highest audio quality.
       </BrandText>
       <SpacerColumn size={2.5} />
@@ -357,7 +350,7 @@ const buttonContainerStyle: ViewStyle = {
   // marginBottom: layout.spacing_x2,
 };
 const buttonTextStyle: TextStyle = {
-  ...fontSemibold14,
+  ...fontRegular14,
   color: primaryColor,
 };
 const divideLineStyle: ViewStyle = {
@@ -374,8 +367,7 @@ const footerBottomCStyle: ViewStyle = {
   marginBottom: layout.spacing_x2,
 };
 const footerTextStyle: TextStyle = {
-  ...fontSemibold14,
-
+  ...fontRegular14,
   color: neutral77,
 };
 const inputBoxStyle: ViewStyle = {

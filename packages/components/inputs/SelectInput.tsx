@@ -26,7 +26,7 @@ import {
   neutralA3,
   secondaryColor,
 } from "../../utils/style/colors";
-import { fontMedium13, fontSemibold14 } from "../../utils/style/fonts";
+import { fontRegular13, fontRegular14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -185,7 +185,7 @@ export const SelectInput: React.FC<Props> = ({
             ) : (
               <BrandText
                 style={[
-                  fontSemibold14,
+                  fontRegular14,
                   { color: selectedItem ? secondaryColor : neutral77 },
                 ]}
               >
@@ -293,7 +293,7 @@ const dropdownMenuStyle: ViewStyle = {
   maxHeight: 330,
   zIndex: 10,
 };
-const dropdownMenuTextStyle: TextStyle = fontMedium13;
+const dropdownMenuTextStyle: TextStyle = fontRegular13;
 const dropdownMenuRowStyle: ViewStyle = {
   borderRadius: 6,
   padding: layout.spacing_x1,

@@ -68,7 +68,8 @@ func (v *VotingGroup) GetMembersJSON(start, end string, limit uint64, height int
 	return json.ArrayNode("", membersJSON).String()
 }
 
-func (v *VotingGroup) VotingPowerAtHeight(addr std.Address, height int64) uint64 {
+func (v *VotingGroup) VotingPowerAtHeight(addr std.Address, height int64, resources []string) uint64 {
+	_ = resources
 	p, ok := v.powerByAddr.Get(addr.String(), height)
 	if !ok {
 		return 0
