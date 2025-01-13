@@ -1,32 +1,54 @@
-/// Interface representing `HelloContract`.
-/// This interface allows modification and retrieval of the contract balance.
-#[starknet::interface]
-pub trait IHelloStarknet<TContractState> {
-    /// Increase contract balance.
-    fn increase_balance(ref self: TContractState, amount: felt252);
-    /// Retrieve contract balance.
-    fn get_balance(self: @TContractState) -> felt252;
+#[derive(Drop, Serde, Copy)]
+pub struct Todo {
+    pub title: felt252,
+    pub done: bool,
 }
 
-/// Simple contract for managing balance.
+#[starknet::interface]
+pub trait ITodoList<TContractState> {
+    fn add_todo(ref self: TContractState, title: felt252);
+    fn set_todo_done(ref self: TContractState, index: u64);
+    fn get_todos(self: @TContractState) -> Array<Todo>;
+}
+
 #[starknet::contract]
-mod HelloStarknet {
-    use core::starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
+mod TodoList {
+    use core::starknet::storage::{
+        StoragePointerWriteAccess, StoragePointerReadAccess, VecTrait, MutableVecTrait, Vec,
+    };
+    use super::Todo;
 
     #[storage]
     struct Storage {
-        balance: felt252,
+        todos_title: Vec<felt252>,
+        todos_done: Vec<bool>,
     }
 
     #[abi(embed_v0)]
-    impl HelloStarknetImpl of super::IHelloStarknet<ContractState> {
-        fn increase_balance(ref self: ContractState, amount: felt252) {
-            assert(amount != 0, 'Amount cannot be 0');
-            self.balance.write(self.balance.read() + amount);
+    impl TodoListImpl of super::ITodoList<ContractState> {
+        fn add_todo(ref self: ContractState, title: felt252) {
+            assert(title != '', 'Title cannot be empty');
+
+            self.todos_title.append().write(title);
+            self.todos_done.append().write(false);
         }
 
-        fn get_balance(self: @ContractState) -> felt252 {
-            self.balance.read()
+        fn set_todo_done(ref self: ContractState, index: u64) {
+            // assert(index < self.todos_title.len(), 'Index out of bounds');
+
+            self.todos_done.at(index).write(true);
+        }
+
+        fn get_todos(self: @ContractState) -> Array<Todo> {
+            let mut result = ArrayTrait::new();
+
+            for i in 0..self.todos_title.len() {
+                let title = self.todos_title.at(i).read();
+                let done = self.todos_done.at(i).read();
+                result.append(Todo { title, done });
+            };
+
+            result
         }
     }
 }

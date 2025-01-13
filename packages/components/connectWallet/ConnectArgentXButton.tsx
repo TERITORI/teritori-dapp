@@ -1,22 +1,23 @@
+import {
+  useAccount,
+  InjectedConnector,
+  useConnect,
+} from "@starknet-react/core";
 import React from "react";
 import { Linking } from "react-native";
+import { StarknetWindowObject, connect } from "starknetkit";
+
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
 
 import argentSVG from "@/assets/icons/argent-x.svg";
+import { getStarknetNetworkByChainId } from "@/networks";
 import {
   setIsArgentXConnected,
   setSelectedNetworkId,
   setSelectedWalletId,
 } from "@/store/slices/settings";
 import { useAppDispatch } from "@/store/store";
-import { StarknetWindowObject, connect } from "starknetkit";
-import {
-  useAccount,
-  InjectedConnector,
-  useConnect,
-} from "@starknet-react/core";
-import { getStarknetNetworkByChainId } from "@/networks";
 
 export const ConnectArgentXButton: React.FC<{
   onDone?: (err?: unknown) => void;
@@ -50,7 +51,7 @@ export const ConnectArgentXButton: React.FC<{
         connectors: [connector],
       });
       const chainId = connectorData?.chainId?.toString(16);
-      let network = getStarknetNetworkByChainId(chainId);
+      const network = getStarknetNetworkByChainId(chainId);
       if (!network) throw Error("failed to get starknet network");
 
       // FIXME: force to connect via react, check later to link react with normal connection
