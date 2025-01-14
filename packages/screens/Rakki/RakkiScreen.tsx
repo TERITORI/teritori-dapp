@@ -22,9 +22,12 @@ import { layout } from "@/utils/style/layout";
 
 export const RakkiScreen: ScreenFC<"Rakki"> = () => {
   const networkId = useSelectedNetworkId();
-  const { height } = useMaxResolution();
+  const { height, width } = useMaxResolution();
   const { rakkiInfo } = useRakkiInfo(networkId);
   const [isLottie, setIsLottie] = useState<boolean>(false);
+
+  // Lottie animation is in a square
+  const lottieAnimationHeight = width;
 
   const launchAnimation = () => {
     setIsLottie(true);
@@ -98,19 +101,14 @@ export const RakkiScreen: ScreenFC<"Rakki"> = () => {
             source={require("../../../assets/lottie/confetti-lottie.json")}
             autoPlay
             loop
-            webStyle={{ position: "absolute", height, width: "100%", top: 0 }}
-          />
-          <LottieView
-            source={require("../../../assets/lottie/confetti-lottie.json")}
-            autoPlay
-            loop
             webStyle={{
               position: "absolute",
-              height,
+              height: lottieAnimationHeight,
               width: "100%",
-              top: height / 2,
+              top: 0,
             }}
           />
+
           <LottieView
             source={require("../../../assets/lottie/confetti-lottie.json")}
             autoPlay
@@ -118,8 +116,20 @@ export const RakkiScreen: ScreenFC<"Rakki"> = () => {
             webStyle={{
               position: "absolute",
               width: "100%",
-              height,
-              top: height,
+              height: lottieAnimationHeight,
+              top: lottieAnimationHeight / 2,
+            }}
+          />
+
+          <LottieView
+            source={require("../../../assets/lottie/confetti-lottie.json")}
+            autoPlay
+            loop
+            webStyle={{
+              position: "absolute",
+              height: lottieAnimationHeight,
+              width: "100%",
+              top: lottieAnimationHeight,
             }}
           />
         </View>
