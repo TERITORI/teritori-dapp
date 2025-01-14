@@ -19,7 +19,7 @@ import { getUserId, parseUserId } from "@/networks";
 import { validateAddress } from "@/utils/formRules";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral33 } from "@/utils/style/colors";
-import { fontSemibold28 } from "@/utils/style/fonts";
+import { fontRegular28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 type MultisigFormType = {
@@ -66,7 +66,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
             paddingTop: layout.topContentSpacingWithHeading,
           }}
         >
-          <BrandText style={fontSemibold28}>General information</BrandText>
+          <BrandText style={fontRegular28}>General information</BrandText>
           <SpacerColumn size={2.5} />
           <MultisigSection title="Multisig Address">
             <MultisigFormInput<MultisigFormType>

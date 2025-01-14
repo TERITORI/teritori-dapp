@@ -37,9 +37,9 @@ import {
   trashBackground,
 } from "@/utils/style/colors";
 import {
-  fontSemibold13,
-  fontSemibold14,
-  fontSemibold28,
+  fontRegular13,
+  fontRegular14,
+  fontRegular28,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
@@ -200,21 +200,14 @@ export const MultisigCreateScreen = () => {
           paddingTop: layout.topContentSpacingWithHeading,
         }}
       >
-        <View
-          style={{
-            height: "100%",
-            maxWidth: 793,
-          }}
-        >
-          <BrandText style={fontSemibold28}>Create a Legacy Multisig</BrandText>
+        <View style={{ height: "100%", maxWidth: 793 }}>
+          <BrandText style={fontRegular28}>Create a Legacy Multisig</BrandText>
           <SpacerColumn size={2.5} />
           <MultisigSection
             title="What is a Multisignature Wallet?"
-            containerStyle={{
-              maxWidth: 487,
-            }}
+            containerStyle={{ maxWidth: 487 }}
           >
-            <BrandText style={[fontSemibold13, { color: neutralA3 }]}>
+            <BrandText style={[fontRegular13, { color: neutralA3 }]}>
               This wallet adress is owned managed by at least 2 different
               addresses and require signatures from co-owners to execute a
               transaction.
@@ -227,9 +220,7 @@ export const MultisigCreateScreen = () => {
             variant="labelOutside"
             noBrokenCorners
             label="Multisig name"
-            rules={{
-              required: true,
-            }}
+            rules={{ required: true }}
             placeHolder="Type the name of the multisig"
             iconSVG={walletInputSVG}
           />
@@ -308,12 +299,7 @@ export const MultisigCreateScreen = () => {
               label="Number of Signatures required"
               isAsterickSign
             />
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               <TextInputCustom<CreateMultisigWalletFormType>
                 defaultValue={defaultNbSignaturesRequired}
                 control={control}
@@ -331,7 +317,7 @@ export const MultisigCreateScreen = () => {
                 errorStyle={{ paddingLeft: layout.spacing_x1_5 }}
               />
               <SpacerRow size={2} />
-              <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+              <BrandText style={[fontRegular14, { color: neutral77 }]}>
                 signatures required on total of
               </BrandText>
               <SpacerRow size={2} />
@@ -348,7 +334,7 @@ export const MultisigCreateScreen = () => {
             </View>
           </View>
 
-          <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+          <BrandText style={[fontRegular14, { color: neutral77 }]}>
             This means that each transaction this multisig makes will require{" "}
             {signatureRequiredValue || defaultNbSignaturesRequired} of the
             members to sign it for it to be accepted by the validators.

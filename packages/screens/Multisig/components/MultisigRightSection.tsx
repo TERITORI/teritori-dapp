@@ -49,7 +49,7 @@ import {
   neutral77,
   primaryColor,
 } from "@/utils/style/colors";
-import { fontSemibold12, fontSemibold13 } from "@/utils/style/fonts";
+import { fontRegular12, fontRegular13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const MultisigRightSection: React.FC = () => {
@@ -251,7 +251,7 @@ export const MultisigRightSection: React.FC = () => {
   return (
     <View style={containerCStyle}>
       <SpacerColumn size={5} />
-      <BrandText style={[fontSemibold12, { color: neutral55 }]}>
+      <BrandText style={[fontRegular12, { color: neutral55 }]}>
         ACTIONS
       </BrandText>
       <SpacerColumn size={2} />
@@ -327,9 +327,9 @@ const BurnModal: React.FC<{
         placeHolder="0"
         defaultValue=""
         subtitle={
-          <BrandText style={[fontSemibold13, { color: neutral77 }]}>
+          <BrandText style={[fontRegular13, { color: neutral77 }]}>
             Available:{" "}
-            <BrandText style={[fontSemibold13, { color: primaryColor }]}>
+            <BrandText style={[fontRegular13, { color: primaryColor }]}>
               {max}
             </BrandText>
           </BrandText>
