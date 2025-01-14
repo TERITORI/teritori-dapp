@@ -66,6 +66,7 @@ import {
 import {
   fontBold11,
   fontMedium14,
+  fontRegular14,
   fontSemibold12,
   fontSemibold14,
 } from "../utils/style/fonts";
@@ -92,7 +93,7 @@ const Header: React.FC = () => {
         marginBottom: layout.spacing_x1,
       }}
     >
-      <BrandText style={fontSemibold14}>Filters</BrandText>
+      <BrandText style={fontRegular14}>Filters</BrandText>
       <TouchableOpacity
         containerStyle={[{ marginLeft: modalMarginPadding }]}
         style={{ justifyContent: "flex-end" }}
@@ -544,7 +545,7 @@ export const SideFilters: React.FC<{
     <View style={style}>
       <Header />
       <FilterContainer>
-        <BrandText style={fontSemibold14}>Buy Now</BrandText>
+        <BrandText style={fontRegular14}>Buy Now</BrandText>
         <Switch
           value={buyNow}
           onValueChange={() => {
