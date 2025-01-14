@@ -56,12 +56,7 @@ export const CollectionScreen: ScreenFC<"Collection"> = ({ route }) => {
       onBackPress={() => navigation.navigate("Marketplace")}
       forceNetworkId={network?.id}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "nowrap",
-        }}
-      >
+      <View style={{ flexDirection: "row", flexWrap: "nowrap" }}>
         <ScrollView
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
