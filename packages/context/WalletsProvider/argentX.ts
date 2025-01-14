@@ -1,3 +1,4 @@
+import { argent, useAccount, useConnect } from "@starknet-react/core";
 import { useMemo, useEffect } from "react";
 
 import { Wallet } from "./wallet";
@@ -6,17 +7,27 @@ import { NetworkKind, getUserId } from "../../networks";
 import { setSelectedWalletId } from "../../store/slices/settings";
 import { useAppDispatch } from "../../store/store";
 import { WalletProvider } from "../../utils/walletProvider";
-import { useAccount } from "@starknet-react/core";
+
 import { starknetNetwork } from "@/networks/starknet";
 
 type UseArgentXResult = [true, boolean, Wallet[]] | [false, boolean, undefined];
 
 export const useArgentX: () => UseArgentXResult = () => {
+  // const isArgentXConnected = useSelector(selectIsArgentXConnected);
+
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const { address, status } = useAccount();
+  const { connect } = useConnect();
   const dispatch = useAppDispatch();
 
   const isConnected = status === "connected";
+
+  useEffect(() => {
+    // NOTE: try to connect to argentX if not connected
+    if (selectedNetworkInfo?.kind === NetworkKind.Starknet && !isConnected) {
+      connect({ connector: argent() });
+    }
+  }, [isConnected, connect, selectedNetworkInfo]);
 
   const wallet: Wallet | undefined = useMemo(() => {
     if (!address || !isConnected) return;

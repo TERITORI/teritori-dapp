@@ -21,7 +21,6 @@ mod TodoList {
     #[storage]
     struct Storage {
         todos_title: Vec<felt252>,
-        todos_done: Vec<bool>,
     }
 
     #[abi(embed_v0)]

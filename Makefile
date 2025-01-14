@@ -4,11 +4,13 @@ GO?=go
 GOFMT?=$(shell $(GO) env GOROOT)/bin/gofmt
 CAT := $(if $(filter $(OS),Windows_NT),type,cat)
 
+PROJECT_ROOT=$(shell pwd)
+
 COSMWASM_CONTRACTS_DIR=rust/cw-contracts
 INTERNAL_COSMWASM_CONTRACTS=$(wildcard $(COSMWASM_CONTRACTS_DIR)/*)
 
-STARKNET_CONTRACTS_DIR=cairo/contracts
-INTERNAL_STARKNET_CONTRACTS=$(wildcard $(STARKNET_CONTRACTS_DIR)/*)
+STARKNET_CONTRACTS=$(wildcard cairo/contracts/*)
+STARKNET_CONTRACT_CLIENTS=packages/starknet-contract-clients
 
 TOKEN_REPO=teritori-nfts
 TOKEN_PACKAGE=teritori-nft
@@ -388,23 +390,35 @@ init-weshd-go:
 bump-app-build-number:  
 	npx tsx packages/scripts/app-build/bumpBuildNumber.ts $(shell echo $$(($$(git rev-list HEAD --count) + 10)))
 
-.PHONY: test.cairo
-test.cairo:
+.PHONY: test.starknet
+test.starknet:
 	set -e ; \
-	for file in $(INTERNAL_STARKNET_CONTRACTS); do \
+	for file in $(STARKNET_CONTRACTS); do \
 		echo "> Testing $${file}" ; \
 		cd $${file} ; \
 		snforge test ; \
 		cd - ; \
 	done
 
-.PHONY: build.cairo
-build.cairo:
+.PHONY: build.starknet
+build.starknet:
 	set -e ; \
-	for file in $(INTERNAL_STARKNET_CONTRACTS); do \
+	for file in $(STARKNET_CONTRACTS); do \
 		echo "> Building $${file}" ; \
 		cd $${file} ; \
 		scarb build ; \
+		cd - ; \
+	done
+
+.PHONY: gen.starknet-clients
+gen.starknet-clients:
+	set -e ; \
+	for file in $(STARKNET_CONTRACTS); do \
+		echo "> Generating client for $${file}" ; \
+		cd $${file} ; \
+		output=$(PROJECT_ROOT)/$(STARKNET_CONTRACT_CLIENTS)/$$(basename $${file}) ; \
+		mkdir -p $${output} ; \
+		starknet-compile --single-file src/lib.cairo $${output}/abi.json ; \
 		cd - ; \
 	done
 

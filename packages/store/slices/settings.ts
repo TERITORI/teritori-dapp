@@ -96,6 +96,9 @@ export const selectINativeWalletConnected = (state: RootState) =>
 export const selectIsAdenaConnected = (state: RootState) =>
   state.settings.isAdenaConnected;
 
+export const selectIsArgentXConnected = (state: RootState) =>
+  state.settings.isArgentXConnected;
+
 export const selectAreTestnetsEnabled = (state: RootState) =>
   state.settings.areTestnetsEnabled;
 

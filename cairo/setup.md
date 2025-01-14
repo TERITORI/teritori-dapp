@@ -23,3 +23,11 @@
 
 ### rustc
 >>> curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+
+### install cairo compiler (install cairo to be able to run starknet-compile)
+>>> git clone https://github.com/starkware-libs/cairo.git
+>>> cd cairo
+>>> cargo build --release
+>>> export PATH=$PWD/target/release:$PATH
+>>> starknet-compile --version
+

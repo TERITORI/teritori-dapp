@@ -1,7 +1,7 @@
-import { useAccount } from "@starknet-react/core";
+import { useAccount, useContract } from "@starknet-react/core";
 import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
-import { constants, Contract, Provider, shortString } from "starknet";
+import { type Abi, shortString } from "starknet";
 
 import { Todo } from "./types";
 
@@ -11,29 +11,41 @@ import { TertiaryBox } from "@/components/boxes/TertiaryBox";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
-import { mustGetStarknetNetwork } from "@/networks";
-import todoListAbi from "@/starknet-contract-abis/todo-list/index.json";
+import { StarknetNetworkInfo } from "@/networks";
+import { abi as todoListAbi } from "@/starknet-contract-clients/todo_list/abi.json";
 
 export const CairoPOCScreen = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [currentTx, setCurrentTx] = useState<string | null>(null);
 
   const { account } = useAccount();
   const selectedNetwork = useSelectedNetworkInfo();
   const { setToast } = useFeedbacks();
 
+  const { contract } = useContract({
+    abi: todoListAbi satisfies Abi,
+    address: (selectedNetwork as StarknetNetworkInfo)
+      .todoListContract as `0x${string}`,
+  });
+
   const addTodo = async () => {
     try {
-      if (!account) throw Error("Account not connected");
-
-      const starknetNetwork = mustGetStarknetNetwork(selectedNetwork?.id);
-
-      const client = new Contract(
-        todoListAbi,
-        starknetNetwork.todoListContract,
-        account,
+      contract.connect(account);
+      const { transaction_hash } = await contract.add_todo(
+        `Todo no ${todos.length + 1}`,
       );
+      setCurrentTx(transaction_hash);
 
-      await client.functions.add_todo(`Todo no ${todos.length + 1}`);
+      const provider = contract.providerOrAccount;
+      const result = await provider.waitForTransaction(transaction_hash);
+
+      if (result.statusReceipt === "success") {
+        setCurrentTx(null);
+      } else {
+        console.error({ result });
+        throw Error("Transaction failed");
+      }
+
       setToast({
         message: "Todo added",
         mode: "mini",
@@ -41,9 +53,7 @@ export const CairoPOCScreen = () => {
         type: "success",
       });
 
-      setTimeout(() => {
-        fetchTodos();
-      }, 2000);
+      fetchTodos();
     } catch (e: any) {
       setToast({
         message: e.message,
@@ -55,47 +65,49 @@ export const CairoPOCScreen = () => {
   };
 
   const fetchTodos = useCallback(async () => {
-    const starknetNetwork = mustGetStarknetNetwork(selectedNetwork?.id);
+    if (!contract) return;
 
-    const provider = new Provider({
-      chainId: starknetNetwork.chainId as constants.StarknetChainId,
-    });
-
-    const client = new Contract(
-      todoListAbi,
-      starknetNetwork.todoListContract,
-      provider,
-    );
-
-    const todosRaw = await client.functions.get_todos();
+    const todosRaw = await contract.get_todos();
     const todos: Todo[] = todosRaw.map((todo: any) => ({
       title: shortString.decodeShortString(todo.title),
       isDone: todo.done,
     }));
 
     setTodos(todos);
-  }, [selectedNetwork]);
+  }, [contract]);
 
   const setTodoDone = async (idx: number) => {
-    const starknetNetwork = mustGetStarknetNetwork(selectedNetwork?.id);
+    try {
+      contract.connect(account);
+      const { transaction_hash } = await contract.set_todo_done(idx);
+      setCurrentTx(transaction_hash);
 
-    const client = new Contract(
-      todoListAbi,
-      starknetNetwork.todoListContract,
-      account,
-    );
+      const provider = contract.providerOrAccount;
+      const result = await provider.waitForTransaction(transaction_hash);
 
-    await client.functions.set_todo_done(idx);
-    setToast({
-      message: "Set Todo done",
-      mode: "mini",
-      showAlways: true,
-      type: "success",
-    });
+      if (result.statusReceipt === "success") {
+        setCurrentTx(null);
+      } else {
+        console.error({ result });
+        throw Error("Transaction failed");
+      }
 
-    setTimeout(() => {
+      setToast({
+        message: "Set Todo done",
+        mode: "mini",
+        showAlways: true,
+        type: "success",
+      });
+
       fetchTodos();
-    }, 2000);
+    } catch (e: any) {
+      setToast({
+        message: e.message,
+        mode: "mini",
+        showAlways: true,
+        type: "error",
+      });
+    }
   };
 
   useEffect(() => {
@@ -107,6 +119,8 @@ export const CairoPOCScreen = () => {
       <View style={{ flexDirection: "row", gap: 12 }}>
         <PrimaryButton text="Add Todo" onPress={addTodo} />
       </View>
+
+      {currentTx && <BrandText>Executing tx: {currentTx}</BrandText>}
 
       {todos?.map((todo: Todo, idx) => {
         return (

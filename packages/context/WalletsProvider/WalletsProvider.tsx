@@ -1,11 +1,11 @@
 import React, { createContext, ReactNode, useContext, useMemo } from "react";
 
 import { useAdena } from "./adena";
+import { useArgentX } from "./argentX";
 import { useGnotest } from "./gnotest";
 import { useKeplr } from "./keplr";
 import { useLeap } from "./leap";
 import { useMetamask } from "./metamask";
-import { useArgentX } from "./argentX";
 import { Wallet } from "./wallet";
 import { WalletProvider } from "../../utils/walletProvider";
 

@@ -7,10 +7,10 @@
 ### New keystore
 >>> starkli signer keystore new keystore.json 
 
-### Account address
+### Test Account address
 0x05592f41259100b2e67112545aa55f1c93007ea2a7fab02132d75fa69f268b5d
 
-### mnemonic
+### Test mnemonic
 forum ensure laugh drastic shoulder knife finger fat antenna grow post wisdom
 
 ### Deploy account

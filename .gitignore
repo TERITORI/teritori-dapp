@@ -113,5 +113,6 @@ cypress/screenshots
 /app-selector.js
 /app.config.js
 
-# starknet keystore
+# starknet / cairo
 cairo/keystore.json
+.cairo

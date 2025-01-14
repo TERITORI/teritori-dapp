@@ -1,8 +1,13 @@
-import { InjectedConnector, useConnect } from "@starknet-react/core";
-import React from "react";
+import {
+  argent,
+  useAccount,
+  useConnect,
+  useNetwork,
+} from "@starknet-react/core";
+import React, { useEffect } from "react";
 import { Linking } from "react-native";
-import { StarknetWindowObject, connect } from "starknetkit";
 import { shortString } from "starknet";
+import { StarknetWindowObject } from "starknetkit";
 
 import { ConnectWalletButton } from "./components/ConnectWalletButton";
 import { useFeedbacks } from "../../context/FeedbacksProvider";
@@ -20,9 +25,24 @@ export const ConnectArgentXButton: React.FC<{
   onDone?: (err?: unknown) => void;
 }> = ({ onDone }) => {
   const { setToast } = useFeedbacks();
+  const { account: connectedAccount } = useAccount();
   const dispatch = useAppDispatch();
+  const { connectAsync } = useConnect();
+  const { chain: connectedChain } = useNetwork();
 
-  const { connectAsync: connectViaReact } = useConnect();
+  useEffect(() => {
+    if (!connectedAccount || !connectedChain) return;
+
+    const chainId = shortString.decodeShortString(
+      "0x" + connectedChain.id.toString(16),
+    );
+    const network = getStarknetNetworkByChainId(chainId);
+    if (!network) throw Error("failed to get starknet network");
+
+    dispatch(setSelectedNetworkId(network.id));
+    dispatch(setSelectedWalletId("argentX-" + connectedAccount.address));
+    dispatch(setIsArgentXConnected(true));
+  }, [connectedAccount, connectedChain, dispatch]);
 
   const handlePress = async () => {
     // FIXME: only work with argentX for now, later we can allow to select all available wallets
@@ -34,34 +54,8 @@ export const ConnectArgentXButton: React.FC<{
       return;
     }
 
-    const connector = new InjectedConnector({
-      options: {
-        id: starknet.id,
-        name: starknet.name,
-        icon: starknet.icon,
-      },
-    });
-
     try {
-      const { connectorData } = await connect({
-        connectors: [connector],
-      });
-
-      const chainId = shortString.decodeShortString(
-        "0x" + connectorData?.chainId?.toString(16) ?? "",
-      );
-      const network = getStarknetNetworkByChainId(chainId);
-      if (!network) throw Error("failed to get starknet network");
-
-      // FIXME: force to connect via react, check later to link react with normal connection
-      await connectViaReact({ connector });
-
-      dispatch(setIsArgentXConnected(true));
-      dispatch(setSelectedNetworkId(network.id));
-      if (connectorData?.account) {
-        dispatch(setSelectedWalletId("argentX-" + connectorData?.account));
-      }
-
+      await connectAsync({ connector: argent() });
       onDone?.();
     } catch (err) {
       console.error(err);
@@ -70,7 +64,7 @@ export const ConnectArgentXButton: React.FC<{
           type: "error",
           message: err.message,
           mode: "normal",
-          title: "Failed to connect to ArgentX (1)",
+          title: "Failed to connect to ArgentX",
         });
       }
       onDone?.(err);
