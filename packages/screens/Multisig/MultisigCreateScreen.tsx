@@ -188,15 +188,11 @@ export const MultisigCreateScreen = () => {
           ? navigation.goBack()
           : navigation.navigate("Multisig")
       }
-      footerChildren={<></>}
-      noMargin
-      fullWidth
-      noScroll
+      isLarge
       forceNetworkKind={NetworkKind.Cosmos}
     >
       <ScrollView
         contentContainerStyle={{
-          padding: layout.contentSpacing,
           paddingTop: layout.topContentSpacingWithHeading,
         }}
       >

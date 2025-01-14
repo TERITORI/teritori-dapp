@@ -49,16 +49,13 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   return (
     <ScreenContainer
       headerChildren={<ScreenTitle>Multisig Wallets</ScreenTitle>}
-      footerChildren={<></>}
-      noMargin
-      fullWidth
+      isLarge
       onBackPress={() => navigation.navigate("Multisig")}
-      noScroll
       forceNetworkKind={NetworkKind.Cosmos}
     >
       <ScrollView>
         <View style={containerCStyle}>
-          <View style={horizontalContentPaddingCStyle}>
+          <View>
             <View
               style={{
                 flexDirection: "row",
@@ -119,7 +116,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
           <SpacerColumn size={3} />
           {!!invitations?.length && (
             <>
-              <View style={horizontalContentPaddingCStyle}>
+              <View>
                 <BrandText style={fontRegular28}>Invitations</BrandText>
                 <SpacerColumn size={1.5} />
                 <BrandText style={[fontRegular16, { color: neutral77 }]}>
@@ -166,7 +163,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
             </>
           )}
           {!!authToken && (
-            <View style={horizontalContentPaddingCStyle}>
+            <View>
               <Separator color={neutral33} />
               <SpacerColumn size={3} />
               <MultisigTransactions
@@ -184,10 +181,6 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
 const containerCStyle: ViewStyle = {
   flex: 1,
   paddingTop: layout.topContentSpacingWithHeading,
-};
-
-const horizontalContentPaddingCStyle: ViewStyle = {
-  paddingHorizontal: layout.contentSpacing,
 };
 
 const contentCenterCStyle: ViewStyle = {

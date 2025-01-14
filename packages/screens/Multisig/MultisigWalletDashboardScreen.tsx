@@ -43,10 +43,8 @@ export const MultisigWalletDashboardScreen: ScreenFC<
   return (
     <ScreenContainer
       headerChildren={<ScreenTitle>Dashboard {walletName}</ScreenTitle>}
+      isLarge
       onBackPress={() => navigation.navigate("Multisig")}
-      footerChildren={<></>}
-      noMargin
-      fullWidth
       forceNetworkId={network?.id}
     >
       <View
@@ -60,11 +58,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
         key={multisigUserId}
       >
         <View
-          style={{
-            flex: 1,
-            padding: layout.contentSpacing,
-            paddingTop: layout.topContentSpacingWithHeading,
-          }}
+          style={{ flex: 1, paddingTop: layout.topContentSpacingWithHeading }}
         >
           <BrandText style={fontRegular28}>General information</BrandText>
           <SpacerColumn size={2.5} />
