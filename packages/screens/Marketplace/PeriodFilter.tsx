@@ -1,5 +1,5 @@
 import React, { FC, Fragment, useState } from "react";
-import { TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
 import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
@@ -10,6 +10,7 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useDropdowns } from "@/hooks/useDropdowns";
+import { useMaxResolution } from "@/hooks/useMaxResolution";
 import {
   marketplacePeriodItems,
   PeriodItem,
@@ -18,11 +19,11 @@ import {
 } from "@/store/slices/marketplaceFilters";
 import { useAppDispatch } from "@/store/store";
 import { neutral33, secondaryColor } from "@/utils/style/colors";
-import { fontSemibold14 } from "@/utils/style/fonts";
+import { fontRegular14 } from "@/utils/style/fonts";
 import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 
 export const PeriodFilter: FC = () => {
-  const { width } = useWindowDimensions();
+  const { width } = useMaxResolution({ isLarge: true });
   const [isDropdownOpen, setDropdownState, dropdownRef] = useDropdowns();
 
   const timePeriod = useSelector(selectTimePeriod);
@@ -52,7 +53,7 @@ export const PeriodFilter: FC = () => {
         <SVG source={sortSVG} width={16} height={16} />
         <SpacerRow size={1} />
 
-        <BrandText style={fontSemibold14}>
+        <BrandText style={fontRegular14}>
           {width < RESPONSIVE_BREAKPOINT_S
             ? selectedItem.shortLabel
             : selectedItem.label}
@@ -84,7 +85,7 @@ export const PeriodFilter: FC = () => {
             .map((periodItem, index) => (
               <Fragment key={index}>
                 <TouchableOpacity onPress={() => onPressPeriodItem(periodItem)}>
-                  <BrandText style={fontSemibold14}>
+                  <BrandText style={fontRegular14}>
                     {width < RESPONSIVE_BREAKPOINT_S
                       ? periodItem.shortLabel
                       : periodItem.label}

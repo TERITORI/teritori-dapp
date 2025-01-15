@@ -2,7 +2,7 @@ import React from "react";
 import { Pressable, StyleSheet } from "react-native";
 
 import { neutral22, primaryColor } from "../../utils/style/colors";
-import { fontSemibold12 } from "../../utils/style/fonts";
+import { fontRegular12 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 
@@ -22,7 +22,7 @@ export const MaxButton = ({ onPress }: MaxButtonProps) => {
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   maxText: {
-    ...StyleSheet.flatten(fontSemibold12),
+    ...StyleSheet.flatten(fontRegular12),
     backgroundColor: primaryColor,
     color: neutral22,
     borderRadius: layout.borderRadius,
