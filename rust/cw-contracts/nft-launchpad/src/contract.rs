@@ -1,5 +1,5 @@
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{attr, to_json_binary, from_json, Addr, SubMsgResult, Binary, Reply, Response, StdResult, SubMsg, WasmMsg};
+use cosmwasm_std::{attr, to_json_binary, from_json, Addr, Reply, Response, StdResult, SubMsg, WasmMsg};
 use cw_storage_plus::{Item, Map};
 use cw_utils::{parse_reply_execute_data, parse_reply_instantiate_data};
 use sylvia::{
@@ -25,6 +25,11 @@ pub enum ExecuteMsg {
     DeployCollection {
         collection_id: String
     },
+}
+
+#[derive(serde::Deserialize)]
+pub struct MsgExecuteProposalResponseData {
+    proposal_id: String
 }
 
 // Contract states ------------------------------------------------------
@@ -145,6 +150,7 @@ impl NftLaunchpad {
     ) -> Result<Response, ContractError> {
         let storage = ctx.deps.storage;
         let config = self.config.load(storage)?;
+        let dao_proposal_single_contract_addr = config.dao_proposal_single_contract_addr;
 
         let mut collection = self
             .collections
@@ -184,7 +190,7 @@ impl NftLaunchpad {
             vote: None,
         };
         let propose_execute_msg = WasmMsg::Execute {
-            contract_addr: config.dao_proposal_single_contract_addr.to_string(),
+            contract_addr: dao_proposal_single_contract_addr.to_string(),
             msg: to_json_binary(&DaoExecuteMsg::Propose(single_choice_propose_msg))?,
             funds: vec![],
         };
@@ -283,15 +289,21 @@ impl NftLaunchpad {
 
         // dao single choice propose execute submessage
         if msg_id == EXECUTE_REPLY_ID {
-            let resp = parse_reply_execute_data(msg)?;
+            let resp = parse_reply_execute_data(msg.clone())?;
 
-            //TODO: 
-            // let proposal_id: u64 = ???
-            
-            return Ok(Response::new()
-                .add_attribute("action", "collection_proposal_created")
-                // .add_attribute("proposal_id", proposal_id)
-        );
+            if let Some(data) = resp.data {
+                let parsed: StdResult<MsgExecuteProposalResponseData> = from_json(data.as_slice());
+                match parsed {
+                    Ok(parsed_data) => {
+                        let proposal_id = parsed_data.proposal_id;
+    
+                        return Ok(Response::new()
+                        .add_attribute("action", "collection_proposal_created")
+                        .add_attribute("proposal_id", proposal_id));
+                    }
+                    Err(_) => return Err(ContractError::ParseProposalIdFailed),
+                }
+            }
         }
 
         // tr771 instantiate submessage
