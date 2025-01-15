@@ -16,7 +16,7 @@ import {
   neutralA3,
   secondaryColor,
 } from "@/utils/style/colors";
-import { fontSemibold14, fontSemibold16 } from "@/utils/style/fonts";
+import { fontRegular14, fontRegular16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 interface MultisigSectionProps {
@@ -52,7 +52,7 @@ export const MultisigSection: React.FC<MultisigSectionProps> = ({
         <View style={rowCenterCStyle}>
           <SVG source={walletSVG} height={28} width={28} />
           <SpacerRow size={2} />
-          <BrandText style={[fontSemibold16, { color: neutralA3 }]}>
+          <BrandText style={[fontRegular16, { color: neutralA3 }]}>
             {title}
           </BrandText>
         </View>
@@ -61,7 +61,7 @@ export const MultisigSection: React.FC<MultisigSectionProps> = ({
           {!isLoading && tresholdMax && (
             <>
               <View style={badgeCStyle}>
-                <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                <BrandText style={[fontRegular14, { color: neutral77 }]}>
                   Threshold: {tresholdCurrentCount}/{tresholdMax}
                 </BrandText>
               </View>
@@ -72,7 +72,7 @@ export const MultisigSection: React.FC<MultisigSectionProps> = ({
           {!isLoading && toriText && (
             <>
               <View style={badgeCStyle}>
-                <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                <BrandText style={[fontRegular14, { color: neutral77 }]}>
                   TORI
                 </BrandText>
               </View>
