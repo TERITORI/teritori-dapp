@@ -14,7 +14,7 @@ import {
 } from "@/components/inputs/TextInputCustom";
 import { SpacerRow } from "@/components/spacer";
 import { neutral55, neutral77, neutralA3 } from "@/utils/style/colors";
-import { fontSemibold14 } from "@/utils/style/fonts";
+import { fontRegular14 } from "@/utils/style/fonts";
 
 interface MultisigFormInputProps<T extends FieldValues>
   extends TextInputCustomProps<T> {
@@ -70,7 +70,7 @@ export const MultisigFormInput = <T extends FieldValues>({
           <SpacerRow size={3} />
           <BrandText
             style={[
-              fontSemibold14,
+              fontRegular14,
               { color: neutral77, textTransform: "uppercase" },
             ]}
           >

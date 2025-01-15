@@ -26,7 +26,7 @@ import { useUserMultisigs } from "@/hooks/multisig/useUserMultisigs";
 import { getUserId, NetworkKind } from "@/networks";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral33, neutral77, secondaryColor } from "@/utils/style/colors";
-import { fontSemibold16, fontSemibold28 } from "@/utils/style/fonts";
+import { fontRegular16, fontRegular28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
 
@@ -49,16 +49,13 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
   return (
     <ScreenContainer
       headerChildren={<ScreenTitle>Multisig Wallets</ScreenTitle>}
-      footerChildren={<></>}
-      noMargin
-      fullWidth
+      isLarge
       onBackPress={() => navigation.navigate("Multisig")}
-      noScroll
       forceNetworkKind={NetworkKind.Cosmos}
     >
       <ScrollView>
         <View style={containerCStyle}>
-          <View style={horizontalContentPaddingCStyle}>
+          <View>
             <View
               style={{
                 flexDirection: "row",
@@ -66,11 +63,11 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                 alignItems: "center",
               }}
             >
-              <BrandText style={fontSemibold28}>My Multisigs</BrandText>
+              <BrandText style={fontRegular28}>My Multisigs</BrandText>
               <LoginButton userId={selectedWallet?.userId} />
             </View>
             <SpacerColumn size={1.5} />
-            <BrandText style={[fontSemibold16, { color: neutral77 }]}>
+            <BrandText style={[fontRegular16, { color: neutral77 }]}>
               Overview of your Multisignatures Wallets
             </BrandText>
             <SpacerColumn size={2.5} />
@@ -119,10 +116,10 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
           <SpacerColumn size={3} />
           {!!invitations?.length && (
             <>
-              <View style={horizontalContentPaddingCStyle}>
-                <BrandText style={fontSemibold28}>Invitations</BrandText>
+              <View>
+                <BrandText style={fontRegular28}>Invitations</BrandText>
                 <SpacerColumn size={1.5} />
-                <BrandText style={[fontSemibold16, { color: neutral77 }]}>
+                <BrandText style={[fontRegular16, { color: neutral77 }]}>
                   Multisignatures Wallets you did not join yet
                 </BrandText>
                 <SpacerColumn size={2.5} />
@@ -166,7 +163,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
             </>
           )}
           {!!authToken && (
-            <View style={horizontalContentPaddingCStyle}>
+            <View>
               <Separator color={neutral33} />
               <SpacerColumn size={3} />
               <MultisigTransactions
@@ -184,10 +181,6 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
 const containerCStyle: ViewStyle = {
   flex: 1,
   paddingTop: layout.topContentSpacingWithHeading,
-};
-
-const horizontalContentPaddingCStyle: ViewStyle = {
-  paddingHorizontal: layout.contentSpacing,
 };
 
 const contentCenterCStyle: ViewStyle = {
