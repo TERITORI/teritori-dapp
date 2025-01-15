@@ -3,7 +3,7 @@ package dao_roles_based
 // Test Dao Creation (done)
 // Test Dao Has Role (done)
 // Test Dao IsMember (done)
-// Test Dao Proposal
+// Test Dao Proposal (done)
 // Test Dao Vote
 // Test Dao Execute
 
@@ -189,6 +189,230 @@ func TestProposeJSON(t *testing.T) {
 			}
 			if proposal.message.Type() != test.expected.messsageType {
 				t.Errorf("Expected message type %s, got %s", test.expected.messsageType, proposal.message.Type())
+			}
+		})
+	}
+}
+
+func TestVote(t *testing.T) {
+	name := "My DAO"
+	description := "My DAO Description"
+	roles := []string{"admin"}
+	members := [][]string{{alice.String(), "admin"}, {bob.String()}, {carol.String()}}
+
+	messagesHandlers := []MessageHandler{
+		&MockMessageHandler{},
+	}
+
+	resourcesJSON := `[{"resource":"MockExecutableMessage","condition":{"type":"members-threshold","threshold":"10"}}]`
+	std.TestSetOrigCaller(alice)
+	dao := NewDaoRolesBasedJSON(name, description, roles, members, resourcesJSON, messagesHandlers)
+	proposalJSON := `{"title":"My Proposal","description":"My Proposal Description","message":{"type":"MockExecutableMessage","payload":{}}}`
+	std.TestSetOrigCaller(alice)
+	dao.ProposeJSON(proposalJSON)
+
+	type testVoteInput struct {
+		proposalID uint64
+		vote       string
+		voter      std.Address
+	}
+
+	type testVoteExpected struct {
+		eval  bool
+		panic bool
+	}
+
+	type testVote struct {
+		input    testVoteInput
+		expected testVoteExpected
+	}
+
+	type testVoteTable map[string]testVote
+
+	tests := testVoteTable{
+		"Success no": {
+			input: testVoteInput{
+				proposalID: 1,
+				vote:       "no",
+				voter:      alice,
+			},
+			expected: testVoteExpected{
+				eval:  false,
+				panic: false,
+			},
+		},
+		"Success yes": {
+			input: testVoteInput{
+				proposalID: 1,
+				vote:       "yes",
+				voter:      alice,
+			},
+			expected: testVoteExpected{
+				eval:  true,
+				panic: false,
+			},
+		},
+		"Unknown proposal": {
+			input: testVoteInput{
+				proposalID: 2,
+				vote:       "yes",
+				voter:      alice,
+			},
+			expected: testVoteExpected{
+				eval:  false,
+				panic: true,
+			},
+		},
+		"Non-member": {
+			input: testVoteInput{
+				proposalID: 1,
+				vote:       "yes",
+				voter:      dave,
+			},
+			expected: testVoteExpected{
+				eval:  false,
+				panic: true,
+			},
+		},
+		"Invalid vote": {
+			input: testVoteInput{
+				proposalID: 1,
+				vote:       "invalid",
+				voter:      alice,
+			},
+			expected: testVoteExpected{
+				eval:  false,
+				panic: true,
+			},
+		},
+	}
+
+	for testName, test := range tests {
+		t.Run(testName, func(t *testing.T) {
+			if test.expected.panic {
+				defer func() {
+					if r := recover(); r == nil {
+						t.Errorf("Expected panic, got none")
+					}
+				}()
+			}
+
+			std.TestSetOrigCaller(test.input.voter)
+			dao.Vote(test.input.proposalID, test.input.vote)
+
+			proposal := dao.ProposalModule.getProposal(test.input.proposalID)
+			eval := proposal.state.Eval(proposal.votes)
+			if eval != test.expected.eval {
+				t.Errorf("Expected eval %t, got %t", test.expected.eval, eval)
+			}
+		})
+	}
+}
+
+func TestExecuteProposal(t *testing.T) {
+	name := "My DAO"
+	description := "My DAO Description"
+	roles := []string{"admin"}
+	members := [][]string{{alice.String(), "admin"}, {bob.String()}, {carol.String()}}
+
+	messagesHandlers := []MessageHandler{
+		&MockMessageHandler{},
+	}
+
+	resourcesJSON := `[{"resource":"MockExecutableMessage","condition":{"type":"members-threshold","threshold":"10"}}]`
+	std.TestSetOrigCaller(alice)
+	dao := NewDaoRolesBasedJSON(name, description, roles, members, resourcesJSON, messagesHandlers)
+	proposalJSON := `{"title":"My Proposal","description":"My Proposal Description","message":{"type":"MockExecutableMessage","payload":{}}}`
+	std.TestSetOrigCaller(alice)
+	dao.ProposeJSON(proposalJSON)
+
+	type testExecuteInput struct {
+		proposalID uint64
+		executor   std.Address
+		haveVote   bool
+		voter      std.Address
+	}
+
+	type testExecuteExpected struct {
+		panic bool
+	}
+
+	type testExecute struct {
+		input    testExecuteInput
+		expected testExecuteExpected
+	}
+
+	type testExecuteTable map[string]testExecute
+
+	tests := testExecuteTable{
+		"Conditions not met": {
+			input: testExecuteInput{
+				proposalID: 1,
+				executor:   alice,
+				haveVote:   false,
+				voter:      alice,
+			},
+			expected: testExecuteExpected{
+				panic: true,
+			},
+		},
+		"Success": {
+			input: testExecuteInput{
+				proposalID: 1,
+				executor:   alice,
+				haveVote:   true,
+				voter:      alice,
+			},
+			expected: testExecuteExpected{
+				panic: false,
+			},
+		},
+		"Unknown proposal": {
+			input: testExecuteInput{
+				proposalID: 2,
+				executor:   alice,
+				haveVote:   false,
+				voter:      alice,
+			},
+			expected: testExecuteExpected{
+				panic: true,
+			},
+		},
+		"Non-member": {
+			input: testExecuteInput{
+				proposalID: 1,
+				executor:   dave,
+				haveVote:   false,
+				voter:      alice,
+			},
+			expected: testExecuteExpected{
+				panic: true,
+			},
+		},
+	}
+
+	for testName, test := range tests {
+		t.Run(testName, func(t *testing.T) {
+			if test.expected.panic {
+				defer func() {
+					if r := recover(); r == nil {
+						t.Errorf("Expected panic, got none")
+					}
+				}()
+			}
+
+			if test.input.haveVote {
+				std.TestSetOrigCaller(test.input.voter)
+				dao.Vote(test.input.proposalID, "yes")
+			}
+
+			std.TestSetOrigCaller(test.input.executor)
+			dao.Execute(test.input.proposalID)
+
+			proposal := dao.ProposalModule.getProposal(test.input.proposalID)
+
+			if proposal.status != ProposalStatusExecuted {
+				t.Errorf("Expected status %s, got %s", ProposalStatusExecuted, proposal.status)
 			}
 		})
 	}
