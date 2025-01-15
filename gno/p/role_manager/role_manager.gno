@@ -38,8 +38,7 @@ func (rm *RoleManager) GetOwner() *ownable.Ownable {
 	return rm.owner
 }
 
-func (rm *RoleManager) CreateNewRole(roleName string, permissions []string) {
-	caller := std.PrevRealm().Addr()
+func (rm *RoleManager) CreateNewRole(roleName string, permissions []string, caller std.Address) {
 	if rm.owner.Owner() != caller && !rm.HasPermission(caller, PermissionWriteRole) {
 		panic("caller does not have permission")
 	}
@@ -61,8 +60,7 @@ func (rm *RoleManager) CreateNewRole(roleName string, permissions []string) {
 	rm.roles.Set(roleName, role)
 }
 
-func (rm *RoleManager) DeleteRole(roleName string) {
-	caller := std.PrevRealm().Addr()
+func (rm *RoleManager) DeleteRole(roleName string, caller std.Address) {
 	if rm.owner.Owner() != caller && !rm.HasPermission(caller, PermissionWriteRole) {
 		panic("caller does not have permission")
 	}
@@ -81,8 +79,7 @@ func (rm *RoleManager) DeleteRole(roleName string) {
 	rm.roles.Remove(roleName)
 }
 
-func (rm *RoleManager) AddPermissionToRole(permission string, roleName string) {
-	caller := std.PrevRealm().Addr()
+func (rm *RoleManager) AddPermissionToRole(permission string, roleName string, caller std.Address) {
 	if rm.owner.Owner() != caller && !rm.HasPermission(caller, PermissionWriteRole) {
 		panic("caller does not have permission")
 	}
@@ -91,8 +88,7 @@ func (rm *RoleManager) AddPermissionToRole(permission string, roleName string) {
 	role.permissions.Set(permission, struct{}{})
 }
 
-func (rm *RoleManager) RemovePermissionFromRole(permission string, roleName string) {
-	caller := std.PrevRealm().Addr()
+func (rm *RoleManager) RemovePermissionFromRole(permission string, roleName string, caller std.Address) {
 	if rm.owner.Owner() != caller && !rm.HasPermission(caller, PermissionWriteRole) {
 		panic("caller does not have permission")
 	}
@@ -101,8 +97,7 @@ func (rm *RoleManager) RemovePermissionFromRole(permission string, roleName stri
 	role.permissions.Remove(permission)
 }
 
-func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string) {
-	caller := std.PrevRealm().Addr()
+func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string, caller std.Address) {
 	if rm.owner.Owner() != caller && !rm.HasPermission(caller, PermissionWriteRole) {
 		panic("caller does not have permission")
 	}
@@ -117,8 +112,7 @@ func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string) {
 	role.users.Set(user.String(), struct{}{})
 }
 
-func (rm *RoleManager) RemoveRoleFromUser(user std.Address, roleName string) {
-	caller := std.PrevRealm().Addr()
+func (rm *RoleManager) RemoveRoleFromUser(user std.Address, roleName string, caller std.Address) {
 	if rm.owner.Owner() != caller && !rm.HasPermission(caller, PermissionWriteRole) {
 		panic("caller does not have permission")
 	}
@@ -169,6 +163,17 @@ func (rm *RoleManager) RoleExists(roleName string) bool {
 
 func (rm *RoleManager) CountRoles() int {
 	return rm.roles.Size()
+}
+
+func (rm *RoleManager) GetRoles() []string {
+	i := 0
+	res := make([]string, rm.roles.Size())
+	rm.roles.Iterate("", "", func(key string, value interface{}) bool {
+		res[i] = key
+		i++
+		return false
+	})
+	return res
 }
 
 func (rm *RoleManager) GetUserRoles(user std.Address) []string {

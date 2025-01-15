@@ -63,22 +63,26 @@ func (r *RolesGroup) NewRoleJSON(roleName, resourcesJSON string) {
 }
 
 func (r *RolesGroup) NewRole(roleName string, resources []ResourceVPower) {
-	r.rm.CreateNewRole(roleName, []string{})
+	caller := std.PrevRealm().Addr()
+	r.rm.CreateNewRole(roleName, []string{}, caller)
 	if len(resources) > 0 {
 		r.resourcesVPower.Set(roleName, resources)
 	}
 }
 
 func (r *RolesGroup) DeleteRole(roleName string) {
-	r.rm.DeleteRole(roleName)
+	caller := std.PrevRealm().Addr()
+	r.rm.DeleteRole(roleName, caller)
 }
 
 func (r *RolesGroup) GrantRole(address std.Address, role string) {
-	r.rm.AddRoleToUser(address, role)
+	caller := std.PrevRealm().Addr()
+	r.rm.AddRoleToUser(address, role, caller)
 }
 
 func (r *RolesGroup) RevokeRole(address std.Address, role string) {
-	r.rm.RemoveRoleFromUser(address, role)
+	caller := std.PrevRealm().Addr()
+	r.rm.RemoveRoleFromUser(address, role, caller)
 }
 
 func (r *RolesGroup) GetMemberRoles(address std.Address) []string {
