@@ -292,3 +292,10 @@ export const fontRegular10: TextStyle = {
   fontFamily: "Exo_400Regular",
   fontWeight: "400",
 };
+export const fontRegular9: TextStyle = {
+  fontSize: 9,
+  letterSpacing: -(9 * 0.02),
+  lineHeight: 11,
+  fontFamily: "Exo_400Regular",
+  fontWeight: "400",
+};
