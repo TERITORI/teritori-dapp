@@ -71,7 +71,7 @@ func (d *DaoRolesBased) renderHomePage(res *mux.ResponseWriter, req *mux.Request
 
 func (d *DaoRolesBased) renderConfigPage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write(ufmt.Sprintf("# %s - Config ⚙️\n\n", d.Name))
-	roles := d.MemberModule.getRoles()
+	roles := d.MemberModule.GetRoles()
 	res.Write(ufmt.Sprintf("## Roles 🏷️\n\n"))
 	for _, role := range roles {
 		res.Write(ufmt.Sprintf("- %s\n\n", role))
@@ -108,7 +108,7 @@ func (d *DaoRolesBased) renderProposalHistoryPage(res *mux.ResponseWriter, req *
 
 func (d *DaoRolesBased) renderMemberDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write(ufmt.Sprintf("# %s - Member Detail - %s\n\n", d.Name, req.GetVar("address")))
-	roles := d.MemberModule.getUserRoles(req.GetVar("address"))
+	roles := d.MemberModule.GetUserRoles(req.GetVar("address"))
 	res.Write(ufmt.Sprintf("## Roles 🏷️\n\n"))
 	for _, role := range roles {
 		res.Write(ufmt.Sprintf("- %s\n\n", role))

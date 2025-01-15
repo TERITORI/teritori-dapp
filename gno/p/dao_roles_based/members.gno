@@ -32,19 +32,19 @@ func (m *MemberModule) MembersCount() uint64 {
 	return uint64(m.members.Size())
 }
 
+func (m *MemberModule) GetRoles() []string {
+	return m.roleManager.GetRoles()
+}
+
+func (m *MemberModule) GetUserRoles(memberId string) []string {
+	return m.roleManager.GetUserRoles(std.Address(memberId))
+}
+
 func (m *MemberModule) setRoles(roles []string) {
 	caller := std.CurrentRealm().Addr()
 	for _, role := range roles {
 		m.roleManager.CreateNewRole(role, []string{}, caller)
 	}
-}
-
-func (m *MemberModule) getRoles() []string {
-	return m.roleManager.GetRoles()
-}
-
-func (m *MemberModule) getUserRoles(memberId string) []string {
-	return m.roleManager.GetUserRoles(std.Address(memberId))
 }
 
 func (m *MemberModule) setMembers(members [][]string) {
