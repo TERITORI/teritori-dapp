@@ -44,7 +44,7 @@ export type StarknetNetworkInfo = NetworkInfoBase & {
   rpcEndpoint: string;
 
   vaultContractAddress?: string;
-  todoListContract?: `0x${string}`;
+  todoListContractAddress?: `0x${string}`;
 };
 
 export type CosmosNetworkInfo = NetworkInfoBase & {
