@@ -39,6 +39,7 @@ interface Settings {
   isLeapConnected: boolean;
   isNativeWalletConnected: boolean;
   isAdenaConnected: boolean;
+  isArgentXConnected: boolean;
   alreadyVisited: boolean;
   areTestnetsEnabled: boolean;
   sideBarExpanded: boolean;
@@ -58,6 +59,7 @@ const initialState: Settings = {
   isLeapConnected: false,
   isNativeWalletConnected: false,
   isAdenaConnected: false,
+  isArgentXConnected: false,
   howToBuyExapanded: true,
   alreadyVisited: false,
   areTestnetsEnabled: false,
@@ -93,6 +95,10 @@ export const selectINativeWalletConnected = (state: RootState) =>
 
 export const selectIsAdenaConnected = (state: RootState) =>
   state.settings.isAdenaConnected;
+
+// NOTE: Not used anywhere for now but this is needed
+// export const selectIsArgentXConnected = (state: RootState) =>
+//   state.settings.isArgentXConnected;
 
 export const selectAreTestnetsEnabled = (state: RootState) =>
   state.settings.areTestnetsEnabled;
@@ -179,6 +185,9 @@ const settingsSlice = createSlice({
     setIsAdenaConnected: (state, action: PayloadAction<boolean>) => {
       state.isAdenaConnected = action.payload;
     },
+    setIsArgentXConnected: (state, action: PayloadAction<boolean>) => {
+      state.isArgentXConnected = action.payload;
+    },
     setAreTestnetsEnabled: (state, action: PayloadAction<boolean>) => {
       state.areTestnetsEnabled = action.payload;
     },
@@ -252,6 +261,7 @@ export const {
   setIsKeplrConnected,
   setIsLeapConnected,
   setIsAdenaConnected,
+  setIsArgentXConnected,
   setAreTestnetsEnabled,
   setSidebarExpanded,
   setHowToBuyExpanded,

@@ -1,0 +1,11 @@
+--- a/node_modules/starknet/package.json
++++ b/node_modules/starknet/package.json
+@@ -10,7 +10,7 @@
+   "main": "dist/index.js",
+   "module": "dist/index.mjs",
+   "types": "dist/index.d.ts",
+-  "browser": "dist/index.global.js",
++  "browser": "dist/index.js",
+   "jsdelivr": "dist/index.global.js",
+   "unpkg": "dist/index.global.js",
+   "exports": {

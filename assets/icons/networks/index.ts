@@ -13,6 +13,8 @@ import solana from "./solana.svg";
 import teritoriCircle from "./teritori-circle.svg";
 import teritori from "./teritori.svg";
 import polygon from "./polygon.svg";
+import starknet from "./starknet.svg";
+import starknetCircle from "./starknet-circle.svg";
 
 export const networks = {
   teritori,
@@ -30,4 +32,6 @@ export const networks = {
   solanaCircle,
   gno,
   polygon,
+  starknet,
+  starknetCircle,
 };

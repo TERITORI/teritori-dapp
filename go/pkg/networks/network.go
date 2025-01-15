@@ -121,3 +121,12 @@ type GnoNetwork struct {
 }
 
 var _ Network = &GnoNetwork{}
+
+type StarknetNetwork struct {
+	*NetworkBase
+
+	ChainID                 string `json:"chainId"`
+	TodoListContractAddress string `json:"todoListContractAddress"`
+}
+
+var _ Network = &StarknetNetwork{}

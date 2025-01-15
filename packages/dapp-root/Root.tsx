@@ -34,6 +34,7 @@ import { FeedbacksContextProvider } from "@/context/FeedbacksProvider";
 import { MediaPlayerContextProvider } from "@/context/MediaPlayerProvider";
 import { MessageContextProvider } from "@/context/MessageProvider";
 import { SearchBarContextProvider } from "@/context/SearchBarProvider";
+import { StarknetProvider } from "@/context/StarknetProvider";
 import { TNSMetaDataListContextProvider } from "@/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "@/context/TNSProvider";
 import { TransactionModalsProvider } from "@/context/TransactionModalsProvider";
@@ -103,43 +104,45 @@ const App: React.FC<{ config: AppConfig }> = ({ config }) => {
               <QueryClientProvider client={queryClient}>
                 <FormProvider<DefaultForm> {...methods}>
                   <MetaMaskProvider>
-                    <AppNavigationContainer>
-                      <SafeAreaProvider>
-                        <FeedbacksContextProvider>
-                          <DropdownsProvider>
-                            <WalletsProvider>
-                              <WalletSyncer />
-                              <DappStoreApps />
-                              <MultisigDeauth />
-                              <WalletControlContextProvider>
-                                <SearchBarContextProvider>
-                                  <TransactionModalsProvider>
-                                    <TNSContextProvider>
-                                      <TNSMetaDataListContextProvider>
-                                        <MenuProvider>
-                                          <MessageContextProvider>
-                                            <MediaPlayerContextProvider>
-                                              <StatusBar
-                                                style={
-                                                  Platform.OS === "android"
-                                                    ? "light"
-                                                    : "inverted"
-                                                }
-                                              />
-                                              <Navigator />
-                                            </MediaPlayerContextProvider>
-                                          </MessageContextProvider>
-                                        </MenuProvider>
-                                      </TNSMetaDataListContextProvider>
-                                    </TNSContextProvider>
-                                  </TransactionModalsProvider>
-                                </SearchBarContextProvider>
-                              </WalletControlContextProvider>
-                            </WalletsProvider>
-                          </DropdownsProvider>
-                        </FeedbacksContextProvider>
-                      </SafeAreaProvider>
-                    </AppNavigationContainer>
+                    <StarknetProvider>
+                      <AppNavigationContainer>
+                        <SafeAreaProvider>
+                          <FeedbacksContextProvider>
+                            <DropdownsProvider>
+                              <WalletsProvider>
+                                <WalletSyncer />
+                                <DappStoreApps />
+                                <MultisigDeauth />
+                                <WalletControlContextProvider>
+                                  <SearchBarContextProvider>
+                                    <TransactionModalsProvider>
+                                      <TNSContextProvider>
+                                        <TNSMetaDataListContextProvider>
+                                          <MenuProvider>
+                                            <MessageContextProvider>
+                                              <MediaPlayerContextProvider>
+                                                <StatusBar
+                                                  style={
+                                                    Platform.OS === "android"
+                                                      ? "light"
+                                                      : "inverted"
+                                                  }
+                                                />
+                                                <Navigator />
+                                              </MediaPlayerContextProvider>
+                                            </MessageContextProvider>
+                                          </MenuProvider>
+                                        </TNSMetaDataListContextProvider>
+                                      </TNSContextProvider>
+                                    </TransactionModalsProvider>
+                                  </SearchBarContextProvider>
+                                </WalletControlContextProvider>
+                              </WalletsProvider>
+                            </DropdownsProvider>
+                          </FeedbacksContextProvider>
+                        </SafeAreaProvider>
+                      </AppNavigationContainer>
+                    </StarknetProvider>
                   </MetaMaskProvider>
                 </FormProvider>
               </QueryClientProvider>

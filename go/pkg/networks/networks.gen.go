@@ -13,6 +13,7 @@ const (
 	NetworkKindCosmos   = NetworkKind("Cosmos")
 	NetworkKindSolana   = NetworkKind("Solana")
 	NetworkKindGno      = NetworkKind("Gno")
+	NetworkKindStarknet = NetworkKind("Starknet")
 )
 
 func UnmarshalNetwork(b []byte) (Network, error) {
@@ -62,6 +63,14 @@ func UnmarshalNetwork(b []byte) (Network, error) {
 		var n GnoNetwork
 		if err := json.Unmarshal(b, &n); err != nil {
 			return nil, errors.Wrap(err, "failed to unmarshal Gno network")
+		}
+		n.FeatureObjects = features
+		return &n, nil
+
+	case NetworkKindStarknet:
+		var n StarknetNetwork
+		if err := json.Unmarshal(b, &n); err != nil {
+			return nil, errors.Wrap(err, "failed to unmarshal Starknet network")
 		}
 		n.FeatureObjects = features
 		return &n, nil
@@ -145,6 +154,26 @@ func (netstore NetworkStore) GetGnoNetwork(id string) (*GnoNetwork, error) {
 
 func (netstore NetworkStore) MustGetGnoNetwork(id string) *GnoNetwork {
 	network, err := netstore.GetGnoNetwork(id)
+	if err != nil {
+		panic(err)
+	}
+	return network
+}
+
+func (netstore NetworkStore) GetStarknetNetwork(id string) (*StarknetNetwork, error) {
+	network, err := netstore.GetNetwork(id)
+	if err != nil {
+		return nil, err
+	}
+	cn, ok := network.(*StarknetNetwork)
+	if !ok {
+		return nil, ErrWrongType
+	}
+	return cn, nil
+}
+
+func (netstore NetworkStore) MustGetStarknetNetwork(id string) *StarknetNetwork {
+	network, err := netstore.GetStarknetNetwork(id)
 	if err != nil {
 		panic(err)
 	}
