@@ -12,7 +12,7 @@ import {
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral77 } from "@/utils/style/colors";
-import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
+import { fontRegular14, fontRegular28 } from "@/utils/style/fonts";
 
 const BUTTONS: LargeBoxButtonProps[] = [
   {
@@ -35,13 +35,13 @@ const BUTTONS: LargeBoxButtonProps[] = [
 
 export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
   return (
-    <ScreenContainer>
+    <ScreenContainer responsive isLarge>
       <ImageBackgroundLogoText
         backgroundImage={LaunchpadBannerImage}
         text="Apply to Launchpad"
       />
       <SpacerColumn size={2} />
-      <BrandText style={fontSemibold28}>Welcome</BrandText>
+      <BrandText style={fontRegular28}>Welcome</BrandText>
       <SpacerColumn size={2} />
       <BrandText style={styles.descriptionText}>
         Looking for a fast and efficient way to build an NFT collection?
@@ -70,14 +70,6 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
 // FIXME: remove StyleSheet.create
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
-  descriptionText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: neutral77,
-    },
-  ]),
-  buttonsContainer: {
-    flexDirection: "row",
-    flex: 1,
-  },
+  descriptionText: StyleSheet.flatten([fontRegular14, { color: neutral77 }]),
+  buttonsContainer: { flexDirection: "row", flex: 1 },
 });

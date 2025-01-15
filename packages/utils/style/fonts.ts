@@ -6,8 +6,10 @@ export const exoFontFamilyFromFontWeight = (weight: string | undefined) => {
       return "Exo_500Medium";
     case "700":
       return "Exo_700Bold";
-    default:
+    case "600":
       return "Exo_600SemiBold";
+    default:
+      return "Exo_400Regular";
   }
 };
 
@@ -282,6 +284,13 @@ export const fontRegular12: TextStyle = {
   fontSize: 12,
   letterSpacing: -(12 * 0.02),
   lineHeight: 14,
+  fontFamily: "Exo_400Regular",
+  fontWeight: "400",
+};
+export const fontRegular11: TextStyle = {
+  fontSize: 11,
+  letterSpacing: -(11 * 0.02),
+  lineHeight: 13,
   fontFamily: "Exo_400Regular",
   fontWeight: "400",
 };

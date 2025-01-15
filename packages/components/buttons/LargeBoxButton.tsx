@@ -14,7 +14,7 @@ import {
   neutral77,
   primaryColor,
 } from "@/utils/style/colors";
-import { fontSemibold12, fontSemibold14 } from "@/utils/style/fonts";
+import { fontRegular12, fontRegular14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export interface LargeBoxButtonProps {
@@ -56,9 +56,7 @@ export const LargeBoxButton: React.FC<LargeBoxButtonProps> = ({
 // FIXME: remove StyleSheet.create
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
-  fill: {
-    flex: 1,
-  },
+  fill: { flex: 1 },
   box: {
     width: "100%",
     minHeight: 156,
@@ -77,11 +75,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     backgroundColor: neutral17,
   },
-  detailContainer: {
-    flex: 1,
-    alignItems: "flex-start",
-    flexWrap: "wrap",
-  },
+  detailContainer: { flex: 1, alignItems: "flex-start", flexWrap: "wrap" },
   buttonIconTextContainer: {
     flex: 1,
     alignSelf: "flex-end",
@@ -89,19 +83,10 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
   },
-  buttonTitleText: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      color: primaryColor,
-    },
-  ]),
+  buttonTitleText: StyleSheet.flatten([fontRegular14, { color: primaryColor }]),
   descriptionText: StyleSheet.flatten([
-    fontSemibold12,
-    {
-      color: neutral77,
-      width: 200,
-      flexWrap: "wrap",
-    },
+    fontRegular12,
+    { color: neutral77, width: 200, flexWrap: "wrap" },
   ]),
   iconContainer: {
     width: layout.iconButton,
