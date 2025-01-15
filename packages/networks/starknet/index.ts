@@ -4,8 +4,8 @@ import { NetworkKind, StarknetNetworkInfo } from "../types";
 export const starknetNetwork: StarknetNetworkInfo = {
   id: "starknet",
   kind: NetworkKind.Starknet,
-  chainId: "534e5f4d41494e",  // SN_MAIN
-  displayName: "Starknet",  
+  chainId: "SN_MAIN",
+  displayName: "Starknet",
   icon: "starknet.svg",
   features: [],
   currencies: starknetCurrencies,

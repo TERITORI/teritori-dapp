@@ -12,6 +12,7 @@ import { BrandText } from "../BrandText";
 import { DisclaimerPopup } from "../PopupDisclaimer/DisclaimerPopup";
 import { TertiaryButton } from "../buttons/TertiaryButton";
 import { ConnectAdenaButton } from "../connectWallet/ConnectAdenaButton";
+import { ConnectArgentXButton } from "../connectWallet/ConnectArgentXButton";
 import { ConnectKeplrButton } from "../connectWallet/ConnectKeplrButton";
 import { ConnectLeapButton } from "../connectWallet/ConnectLeapButton";
 import { ConnectMetamaskButton } from "../connectWallet/ConnectMetamaskButton";
@@ -20,7 +21,6 @@ import { SeparatorGradient } from "../separators/SeparatorGradient";
 import { SpacerColumn } from "../spacer";
 
 import { ConnectGnotestButton } from "@/context/WalletsProvider/gnotest";
-import { ConnectArgentXButton } from "../connectWallet/ConnectArgentXButton";
 
 export const ConnectWalletModal: FC<{
   forceNetworkFeature?: NetworkFeature;

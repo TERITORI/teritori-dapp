@@ -230,8 +230,6 @@
     "rimraf": "^5.0.5",
     "ts-proto": "^1.120.0",
     "ts-unused-exports": "^10.0.1",
-    "typechain": "^8.3.2",
-    "typechain-target-starknet": "^0.0.2",
     "typescript": "^5.3.0"
   },
   "resolutions": {

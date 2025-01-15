@@ -34,6 +34,7 @@ import { FeedbacksContextProvider } from "@/context/FeedbacksProvider";
 import { MediaPlayerContextProvider } from "@/context/MediaPlayerProvider";
 import { MessageContextProvider } from "@/context/MessageProvider";
 import { SearchBarContextProvider } from "@/context/SearchBarProvider";
+import { StarknetProvider } from "@/context/StarknetProvider";
 import { TNSMetaDataListContextProvider } from "@/context/TNSMetaDataListProvider";
 import { TNSContextProvider } from "@/context/TNSProvider";
 import { TransactionModalsProvider } from "@/context/TransactionModalsProvider";
@@ -47,7 +48,6 @@ import { setSelectedWalletId } from "@/store/slices/settings";
 import { persistor, store, useAppDispatch } from "@/store/store";
 import { isElectron } from "@/utils/isElectron";
 import { getLinking } from "@/utils/navigation";
-import { StarknetProvider } from "@/context/StarknetProvider";
 
 if (!globalThis.Buffer) {
   globalThis.Buffer = require("buffer").Buffer;

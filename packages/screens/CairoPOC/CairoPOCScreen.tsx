@@ -23,9 +23,9 @@ export const CairoPOCScreen = () => {
   const { setToast } = useFeedbacks();
 
   const { contract } = useContract({
+    // @ts-expect-error: TODO: make proper type
     abi: todoListAbi satisfies Abi,
-    address: (selectedNetwork as StarknetNetworkInfo)
-      .todoListContract as `0x${string}`,
+    address: (selectedNetwork as StarknetNetworkInfo)?.todoListContract,
   });
 
   const addTodo = async () => {
