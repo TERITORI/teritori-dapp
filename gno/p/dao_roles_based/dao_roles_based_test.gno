@@ -1,19 +1,62 @@
 package dao_roles_based
 
 // Test Dao Creation (done)
-// Test Dao Has Role
-// Test Dao IsMember
+// Test Dao Has Role (done)
+// Test Dao IsMember (done)
 // Test Dao Proposal
 // Test Dao Vote
 // Test Dao Execute
 
-import "testing"
+import (
+	"std"
+	"testing"
+
+	"gno.land/p/demo/json"
+	"gno.land/p/demo/testutils"
+)
+
+var (
+	alice = testutils.TestAddress("alice")
+	bob   = testutils.TestAddress("bob")
+	carol = testutils.TestAddress("carol")
+	dave  = testutils.TestAddress("dave")
+)
+
+type MockExecutableMessage struct{}
+
+func (msg MockExecutableMessage) Type() string {
+	return "MockExecutableMessage"
+}
+
+func (msg MockExecutableMessage) ToJSON() *json.Node {
+	return json.ObjectNode("", map[string]*json.Node{})
+}
+
+func (msg MockExecutableMessage) FromJSON(ast *json.Node) {
+}
+
+func (msg MockExecutableMessage) String() string {
+	return "MockExecutableMessage"
+}
+
+type MockMessageHandler struct{}
+
+func (h MockMessageHandler) Execute(iMsg ExecutableMessage) {
+}
+
+func (h MockMessageHandler) Instantiate() ExecutableMessage {
+	return MockExecutableMessage{}
+}
+
+func (h MockMessageHandler) Type() string {
+	return MockExecutableMessage{}.Type()
+}
 
 func TestNewDaoRolesBasedJSON(t *testing.T) {
 	name := "My DAO"
 	description := "My DAO Description"
 	roles := []string{"admin"}
-	members := [][]string{{"0x1", "admin"}, {"0x2"}, {"0x3"}}
+	members := [][]string{{alice.String(), "admin"}, {bob.String()}, {carol.String()}}
 	resourcesJSON := `[]`
 	handlers := []MessageHandler{}
 
@@ -39,5 +82,114 @@ func TestNewDaoRolesBasedJSON(t *testing.T) {
 	resourcesLen := dao.ResourcesModule.resources.Size()
 	if resourcesLen != 0 {
 		t.Errorf("Expected 0 resources, got %d", resourcesLen)
+	}
+}
+
+func TestProposeJSON(t *testing.T) {
+	name := "My DAO"
+	description := "My DAO Description"
+	roles := []string{"admin"}
+	members := [][]string{{alice.String(), "admin"}, {bob.String()}, {carol.String()}}
+
+	messagesHandlers := []MessageHandler{
+		&MockMessageHandler{},
+	}
+
+	resourcesJSON := `[{"resource":"MockExecutableMessage","condition":{"type":"members-threshold","threshold":"60"}}]`
+	std.TestSetOrigCaller(alice)
+	dao := NewDaoRolesBasedJSON(name, description, roles, members, resourcesJSON, messagesHandlers)
+
+	validProposalJSON := `{"title":"My Proposal","description":"My Proposal Description","message":{"type":"MockExecutableMessage","payload":{}}}`
+
+	type testNewProposalInput struct {
+		proposalJSON string
+		proposer     std.Address
+	}
+
+	type tesNewProposalExpected struct {
+		title        string
+		description  string
+		proposer     std.Address
+		messsageType string
+		panic        bool
+	}
+
+	type testNewProposal struct {
+		input    testNewProposalInput
+		expected tesNewProposalExpected
+	}
+
+	type testNewProposalTable map[string]testNewProposal
+
+	tests := testNewProposalTable{
+		"Success": {
+			input: testNewProposalInput{
+				proposalJSON: validProposalJSON,
+				proposer:     alice,
+			},
+			expected: tesNewProposalExpected{
+				title:        "My Proposal",
+				description:  "My Proposal Description",
+				proposer:     alice,
+				messsageType: "MockExecutableMessage",
+				panic:        false,
+			},
+		},
+		"Bad JSON format": {
+			input: testNewProposalInput{
+				proposalJSON: `badjson`,
+				proposer:     alice,
+			},
+			expected: tesNewProposalExpected{
+				panic: true,
+			},
+		},
+		"Non-member": {
+			input: testNewProposalInput{
+				proposalJSON: validProposalJSON,
+				proposer:     dave,
+			},
+			expected: tesNewProposalExpected{
+				panic: true,
+			},
+		},
+		"Unknown message type": {
+			input: testNewProposalInput{
+				proposalJSON: `{"title":"My Proposal","description":"My Proposal Description","message":{"type":"UnknownMessage","payload":{""}}}`,
+				proposer:     alice,
+			},
+			expected: tesNewProposalExpected{
+				panic: true,
+			},
+		},
+	}
+
+	for testName, test := range tests {
+		t.Run(testName, func(t *testing.T) {
+			if test.expected.panic {
+				defer func() {
+					if r := recover(); r == nil {
+						t.Errorf("Expected panic, got none")
+					}
+				}()
+			}
+
+			std.TestSetOrigCaller(test.input.proposer)
+			dao.ProposeJSON(test.input.proposalJSON)
+
+			proposal := dao.ProposalModule.getProposal(1)
+			if proposal.title != test.expected.title {
+				t.Errorf("Expected title %s, got %s", test.expected.title, proposal.title)
+			}
+			if proposal.description != test.expected.description {
+				t.Errorf("Expected description %s, got %s", test.expected.description, proposal.description)
+			}
+			if proposal.proposer.String() != test.expected.proposer.String() {
+				t.Errorf("Expected proposer %s, got %s", test.expected.proposer, proposal.proposer)
+			}
+			if proposal.message.Type() != test.expected.messsageType {
+				t.Errorf("Expected message type %s, got %s", test.expected.messsageType, proposal.message.Type())
+			}
+		})
 	}
 }
