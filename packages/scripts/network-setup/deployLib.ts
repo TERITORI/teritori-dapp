@@ -6,6 +6,7 @@ import { bech32 } from "bech32";
 import _, { cloneDeep } from "lodash";
 import path from "path";
 
+import { instantiateNftLaunchpad } from "./deployNftLaunchpad";
 import { InstantiateMsg as MarketplaceVaultInstantiateMsg } from "../../contracts-clients/nft-marketplace/NftMarketplace.types";
 import {
   ExecuteMsg as NameServiceExecuteMsg,
@@ -24,7 +25,9 @@ import {
   cosmosNetworkGasPrice,
   CosmosNetworkInfo,
   getCosmosNetwork,
+  getNetworkFeature,
   mustGetNonSigningCosmWasmClient,
+  NetworkFeature,
 } from "@/networks";
 import { zodTryParseJSON } from "@/utils/sanitize";
 
@@ -131,6 +134,24 @@ export const deployTeritoriEcosystem = async (
     walletAddr,
     network,
   );
+
+  console.log("Instantiating NFT Launchpad", network.nameServiceCodeId);
+  const cosmwasmNftLaunchpadFeature = cloneDeep(
+    getNetworkFeature(networkId, NetworkFeature.CosmWasmNFTLaunchpad),
+  );
+  if (!cosmwasmNftLaunchpadFeature) {
+    console.error(`Cosmwasm Launchpad feature not found on ${networkId}`);
+  } else {
+    cosmwasmNftLaunchpadFeature.launchpadContractAddress =
+      await instantiateNftLaunchpad(
+        opts,
+        wallet,
+        walletAddr,
+        "TODO DAO address",
+        network,
+        cosmwasmNftLaunchpadFeature,
+      );
+  }
 
   if (opts.signer) {
     await registerTNSHandle(network, opts.signer);

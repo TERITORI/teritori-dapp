@@ -49,7 +49,7 @@ const rakkiFeature: CosmWasmRakki = {
 };
 
 const riotContractAddressGen0 =
-  "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0";
+  "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc";
 const riotContractAddressGen1 = "";
 
 export const teritoriTestnetNetwork: CosmosNetworkInfo = {

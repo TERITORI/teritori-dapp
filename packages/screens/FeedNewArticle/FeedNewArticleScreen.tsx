@@ -4,8 +4,6 @@ import { FormProvider, useForm } from "react-hook-form";
 import { ScrollView, useWindowDimensions, View } from "react-native";
 import { useSelector } from "react-redux";
 
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-
 import penSVG from "@/assets/icons/pen.svg";
 import priceSVG from "@/assets/icons/price.svg";
 import { BrandText } from "@/components/BrandText";
@@ -29,6 +27,7 @@ import { useIpfs } from "@/hooks/useIpfs";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
 import { ArticleContentEditor } from "@/screens/FeedNewArticle/components/ArticleContentEditor/ArticleContentEditor";
 import { NewArticleLocationButton } from "@/screens/FeedNewArticle/components/NewArticleLocationButton";
