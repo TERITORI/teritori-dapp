@@ -77,6 +77,8 @@ fn instantiate() {
     // Deploy NFT TR721 for sylvia contract
     let nft_contract = NftTr721CodeId::store_code(&app);
     let deployed_nft_code_id = nft_contract.code_id();
+    // DAO Proposal Single module
+    let proposal_single_contract = "proposal_single_contract";
 
     // Instantiate
     let config = Config {
@@ -84,6 +86,7 @@ fn instantiate() {
         nft_code_id: deployed_nft_code_id,
         admin: Addr::unchecked("admin"),
         owner: Addr::unchecked(sender),
+        proposal_single_contract: Addr::unchecked(proposal_single_contract),
     };
 
     let contract = code_id.instantiate(config).call(sender).unwrap();
@@ -105,6 +108,9 @@ fn full_flow() {
     let nft_contract = NftTr721CodeId::store_code(&app);
     let deployed_nft_code_id = nft_contract.code_id();
 
+    // DAO Proposal Single module
+    let proposal_single_contract = "proposal_single_contract";
+
     // Instantiate launchpad ---------------------------------------------------------
     let contract = LaunchpadCodeId::store_code(&app)
         .instantiate(Config {
@@ -112,6 +118,7 @@ fn full_flow() {
             nft_code_id: deployed_nft_code_id,
             admin: Addr::unchecked("admin"),
             owner: Addr::unchecked(sender),
+            proposal_single_contract: Addr::unchecked(proposal_single_contract),
         })
         .call(sender)
         .unwrap();
@@ -186,6 +193,7 @@ fn full_flow() {
                 nft_code_id: Some(deployed_nft_code_id),
                 admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
+                proposal_single_contract: Some(proposal_single_contract.to_string()),
             })
             .call("wrong_owner")
             .unwrap_err();
@@ -200,6 +208,7 @@ fn full_flow() {
                 nft_code_id: Some(deployed_nft_code_id),
                 admin: Some("deployer".to_string()),
                 owner: Some(sender.to_string()),
+                proposal_single_contract: Some(proposal_single_contract.to_string()),
             })
             .call(sender)
             .unwrap();
@@ -219,6 +228,7 @@ fn full_flow() {
                 nft_code_id: Some(deployed_nft_code_id),
                 admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
+                proposal_single_contract: Some(proposal_single_contract.to_string()),
             })
             .call(sender)
             .unwrap();
@@ -274,6 +284,7 @@ fn full_flow() {
                 nft_code_id: Some(deployed_nft_code_id),
                 admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
+                proposal_single_contract: Some(proposal_single_contract.to_string()),
             })
             .call(sender)
             .unwrap();

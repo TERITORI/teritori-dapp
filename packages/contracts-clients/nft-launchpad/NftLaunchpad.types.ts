@@ -11,7 +11,7 @@ export interface InstantiateMsg {
 }
 export interface Config {
   admin: Addr;
-  dao_proposal_single_contract_addr: Addr;
+  proposal_single_contract: Addr;
   name: string;
   nft_code_id: number;
   owner: Addr;
@@ -41,7 +41,7 @@ export type ExecuteMsg = {
 export type Uint128 = string;
 export interface ConfigChanges {
   admin?: string | null;
-  dao_proposal_single_contract_addr?: Addr | null;
+  proposal_single_contract?: Addr | null;
   name?: string | null;
   nft_code_id?: number | null;
   owner?: string | null;

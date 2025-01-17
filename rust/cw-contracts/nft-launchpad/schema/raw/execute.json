@@ -267,7 +267,7 @@
             "null"
           ]
         },
-        "dao_proposal_single_contract_addr": {
+        "proposal_single_contract": {
           "anyOf": [
             {
               "$ref": "#/definitions/Addr"

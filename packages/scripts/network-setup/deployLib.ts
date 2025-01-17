@@ -6,6 +6,8 @@ import { bech32 } from "bech32";
 import _, { cloneDeep } from "lodash";
 import path from "path";
 
+import { deployDA0DA0 } from "./DA0DA0/deployDA0DA0";
+import { deployNftLaunchpad } from "./NftLaunchpad/deployNftLaunchpad";
 import { InstantiateMsg as MarketplaceVaultInstantiateMsg } from "../../contracts-clients/nft-marketplace/NftMarketplace.types";
 import {
   ExecuteMsg as NameServiceExecuteMsg,
@@ -71,6 +73,7 @@ export const deployTeritoriEcosystem = async (
   opts: DeployOpts,
   networkId: string,
   wallet: string,
+  // launchpadAdminDAO: string
 ) => {
   const { network, walletAddr } = await initDeploy({ opts, networkId, wallet });
   console.log("Wallet address:", walletAddr);
@@ -131,6 +134,12 @@ export const deployTeritoriEcosystem = async (
     walletAddr,
     network,
   );
+
+  console.log("Deploying DA0DA0 stuff");
+  deployDA0DA0({ opts, networkId, wallet });
+
+  console.log("Deploying NFT Launchpad");
+  deployNftLaunchpad({ opts, networkId, wallet });
 
   if (opts.signer) {
     await registerTNSHandle(network, opts.signer);

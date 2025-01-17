@@ -78,6 +78,10 @@ impl NftLaunchpad {
         }
 
         // Save new config
+        if let Some(name) = changes.name {
+            config.name = name.clone();
+            attributes.push(attr("new_name", name.to_string()))
+        }
         if let Some(nft_code_id) = changes.nft_code_id {
             config.nft_code_id = nft_code_id;
             attributes.push(attr("new_nft_code_id", nft_code_id.to_string()))
@@ -89,6 +93,10 @@ impl NftLaunchpad {
         if let Some(owner) = changes.owner {
             config.owner = ctx.deps.api.addr_validate(&owner)?;
             attributes.push(attr("new_owner", owner))
+        }
+        if let Some(proposal_single_contract) = changes.proposal_single_contract {
+            config.proposal_single_contract = ctx.deps.api.addr_validate(&proposal_single_contract)?;
+            attributes.push(attr("new_name", proposal_single_contract.to_string()))
         }
         self.config.save(ctx.deps.storage, &config)?;
 
@@ -150,7 +158,7 @@ impl NftLaunchpad {
     ) -> Result<Response, ContractError> {
         let storage = ctx.deps.storage;
         let config = self.config.load(storage)?;
-        let dao_proposal_single_contract_addr = config.dao_proposal_single_contract_addr;
+        let proposal_single_contract = config.proposal_single_contract;
 
         let mut collection = self
             .collections
@@ -190,7 +198,7 @@ impl NftLaunchpad {
             vote: None,
         };
         let propose_execute_msg = WasmMsg::Execute {
-            contract_addr: dao_proposal_single_contract_addr.to_string(),
+            contract_addr: proposal_single_contract.to_string(),
             msg: to_json_binary(&DaoExecuteMsg::Propose(single_choice_propose_msg))?,
             funds: vec![],
         };
@@ -292,6 +300,9 @@ impl NftLaunchpad {
             let resp = parse_reply_execute_data(msg.clone())?;
 
             if let Some(data) = resp.data {
+
+                // TODO: If proposal_id not available in data, use dao_proposal_single hooks
+
                 let parsed: StdResult<MsgExecuteProposalResponseData> = from_json(data.as_slice());
                 match parsed {
                     Ok(parsed_data) => {
@@ -337,7 +348,7 @@ pub struct Config {
     pub nft_code_id: u64,
     pub admin: Addr,
     pub owner: Addr,
-    pub dao_proposal_single_contract_addr: Addr,
+    pub proposal_single_contract: Addr,
 }
 
 #[cw_serde]
@@ -346,7 +357,7 @@ pub struct ConfigChanges {
     pub nft_code_id: Option<u64>,
     pub admin: Option<String>,
     pub owner: Option<String>,
-    pub dao_proposal_single_contract_addr: Option<Addr>,
+    pub proposal_single_contract: Option<String>,
 }
 
 #[cw_serde]

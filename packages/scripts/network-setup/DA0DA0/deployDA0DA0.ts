@@ -1,7 +1,3 @@
-import axios from "axios";
-import { program } from "commander";
-import fs from "fs";
-import os from "os";
 import path from "path";
 
 import {
@@ -9,10 +5,9 @@ import {
   initDeploy,
   instantiateContract,
   instantiateNameService,
-  registerTNSHandle,
   storeWASM,
-  testTeritoriEcosystem,
-} from "./deployLib";
+} from "../deployLib";
+import { deployRemoteWASM } from "../deployRemoteWASM";
 
 import { CosmosNetworkInfo } from "@/networks";
 
@@ -22,13 +17,17 @@ import { CosmosNetworkInfo } from "@/networks";
  * Store these binaries
  * And deploy cw_admin_factory contract
  */
-export const deployDA0DA0 = async (
+export const deployDA0DA0 = async ({
+  opts,
+  networkId,
+  wallet,
+}: {
   opts: DeployOpts & {
     keyringBackend?: string;
-  },
-  networkId: string,
-  wallet: string,
-) => {
+  };
+  networkId: string;
+  wallet: string;
+}) => {
   const cosmWasmCwPlusVersion = "v1.1.0";
   const cosmWasmCwPlusBinariesPath = `https://github.com/CosmWasm/cw-plus/releases/download/${cosmWasmCwPlusVersion}`;
   const cw4GroupWasmFileName = "cw4_group.wasm";
@@ -124,12 +123,6 @@ export const deployDA0DA0 = async (
   );
 
   console.log(JSON.stringify(network, null, 2));
-
-  if (opts.signer) {
-    await registerTNSHandle(network, opts.signer);
-    await testTeritoriEcosystem(network);
-  }
-
   return network;
 };
 
@@ -153,42 +146,3 @@ const instantiateCwAdminFactory = async (
     {},
   );
 };
-
-const deployRemoteWASM = async (
-  opts: DeployOpts,
-  wallet: string,
-  network: CosmosNetworkInfo,
-  url: string,
-  name: string,
-) => {
-  console.log(`Fetching ${url}`);
-  const contractsDir = path.join(opts.home, "remote-wasm");
-  fs.mkdirSync(contractsDir, { recursive: true });
-  const filePath = path.join(contractsDir, name);
-  const response = await axios.get(url, { responseType: "stream" });
-  const fileStream = fs.createWriteStream(filePath);
-  await response.data.pipe(fileStream);
-  console.log(`Storing ${filePath}`);
-  return await storeWASM(opts, wallet, network, filePath);
-};
-
-const main = async () => {
-  program.argument("<network-id>", "Network id to deploy to");
-  program.argument("<wallet>", "Wallet to deploy from");
-  program.option("--keyring-backend [keyring-backend]", "Keyring backend");
-  program.parse();
-  const [networkId, wallet] = program.args;
-  const { keyringBackend } = program.opts();
-
-  await deployDA0DA0(
-    {
-      home: path.join(os.homedir(), ".teritorid"),
-      binaryPath: "teritorid",
-      keyringBackend,
-      signer: undefined,
-    },
-    networkId,
-    wallet,
-  );
-};
-main();

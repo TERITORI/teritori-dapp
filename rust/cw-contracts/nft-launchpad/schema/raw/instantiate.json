@@ -19,7 +19,7 @@
       "type": "object",
       "required": [
         "admin",
-        "dao_proposal_single_contract_addr",
+        "proposal_single_contract",
         "name",
         "nft_code_id",
         "owner"
@@ -28,7 +28,7 @@
         "admin": {
           "$ref": "#/definitions/Addr"
         },
-        "dao_proposal_single_contract_addr": {
+        "proposal_single_contract": {
           "$ref": "#/definitions/Addr"
         },
         "name": {

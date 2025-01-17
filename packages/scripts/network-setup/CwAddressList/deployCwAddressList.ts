@@ -1,7 +1,5 @@
 import { bech32 } from "bech32";
-import { program } from "commander";
 import { cloneDeep } from "lodash";
-import os from "os";
 import path from "path";
 
 import {
@@ -16,7 +14,7 @@ import {
   storeWASM,
 } from "@/scripts/network-setup/deployLib";
 
-const deployCwAddressList = async ({
+export const deployCwAddressList = async ({
   opts,
   networkId,
   wallet,
@@ -97,23 +95,3 @@ const instantiateCwAddressList = async (
     {},
   );
 };
-
-const main = async () => {
-  program.argument("<network-id>", "Network id to deploy to");
-  program.argument("<wallet>", "Wallet to deploy from");
-  program.option("--keyring-backend [keyring-backend]", "Keyring backend");
-  program.parse();
-  const [networkId, wallet] = program.args;
-  const { keyringBackend } = program.opts();
-
-  await deployCwAddressList({
-    opts: {
-      home: path.join(os.homedir(), ".teritorid"),
-      binaryPath: "teritorid",
-      keyringBackend,
-    },
-    networkId,
-    wallet,
-  });
-};
-main();
