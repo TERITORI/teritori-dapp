@@ -3,7 +3,7 @@ import fs from "fs/promises";
 
 import { buildCosmos, startCosmosLocalnet } from "./cosmos";
 import { teritoriLocalnetNetwork } from "../../networks/teritori-localnet";
-import { deployDA0DA0 } from "../network-setup/DA0DA0/deployDA0DA0Script";
+import { deployDA0DA0 } from "../network-setup/dao-dao/deployDA0DA0";
 
 const main = async () => {
   program.argument(

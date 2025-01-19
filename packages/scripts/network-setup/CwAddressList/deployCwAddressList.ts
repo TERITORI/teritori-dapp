@@ -56,14 +56,14 @@ export const deployCwAddressList = async ({
       __dirname,
       "cw_address_list.wasm",
     );
-    network.cwAdminFactoryCodeId = await storeWASM(
+    network.cwAddressListCodeId = await storeWASM(
       opts,
       wallet,
       network,
       cwAddressListWasmFilePath,
     );
 
-    console.log("Instantiating cw address list", network.cwAdminFactoryCodeId);
+    console.log("Instantiating cw address list", network.cwAddressListCodeId);
     nftMarketplaceFeature.cwAddressListContractAddress =
       await instantiateCwAddressList(opts, wallet, walletAddr, network);
 
@@ -81,7 +81,7 @@ const instantiateCwAddressList = async (
   adminAddr: string,
   network: CosmosNetworkInfo,
 ) => {
-  const codeId = network.cwAdminFactoryCodeId;
+  const codeId = network.cwAddressListCodeId;
   if (!codeId) {
     throw new Error("CW Address List code ID not found");
   }

@@ -1,8 +1,10 @@
 import { cloneDeep } from "lodash";
 import path from "path";
+import { v4 as uuidv4 } from "uuid";
 
-import { deployDA0DA0 } from "../DA0DA0/deployDA0DA0";
-import { deployDaoProposalSingle } from "../DA0DA0/deployDaoProposalSingle";
+import { deployCwAdminFactory } from "../cw-admin-factory/deployCwAdminFactory";
+import { deployDA0DA0 } from "../dao-dao/deployDA0DA0";
+import { deployDaoProposalSingle } from "../dao-dao/deployDaoProposalSingle";
 import {
   DeployOpts,
   initDeploy,
@@ -18,10 +20,14 @@ import {
 } from "@/networks";
 import { CosmWasmNFTLaunchpad } from "@/networks/features";
 import { createDaoMemberBased, CreateDaoMemberBasedParams } from "@/utils/dao";
+import { getPercent, getDuration } from "@/utils/gnodao/helpers";
 
 /**
  * Store nft-launchpad binaries
  * Deploy nft-tr721
+ * Deploy and instantiate cw-admin-factory
+ * Deploy and instantiate DAODA0 stuff (See deployDA0DA0.ts)
+ * Create the Launchpad Admin DAO
  * Deploy and instantiate DAO Proposal Single module from https://github.com/DA0-DA0/dao-contracts (We consider using the v2.2.0)
  * Deploy and instantiate nft-launchpad
  */
@@ -64,7 +70,6 @@ export const deployNftLaunchpad = async ({
     opts,
     deployerWallet,
     deployerAddr,
-    // launchpadAdminDAO,
     network,
     cosmwasmLaunchpadFeature,
   );
@@ -86,7 +91,6 @@ const instantiateNftLaunchpad = async (
   opts: DeployOpts,
   deployerWallet: string,
   deployerAddr: string,
-  // launchpadAdmin: string,
   network: CosmosNetworkInfo,
   featureObject: CosmWasmNFTLaunchpad,
 ) => {
@@ -96,7 +100,7 @@ const instantiateNftLaunchpad = async (
     process.exit(1);
   }
 
-  // nft-tr721
+  // NFT TR721
   let nftCodeId = featureObject.nftTr721CodeId;
   if (!nftCodeId) {
     console.error("No NFT TR721 code ID found. Deploying NFT TR721 ...");
@@ -104,6 +108,18 @@ const instantiateNftLaunchpad = async (
       opts,
       networkId: network.id,
       deployerWallet,
+    });
+  }
+
+  // CW ADMIN FACTORY
+  if (!network.cwAdminFactoryContractAddress) {
+    console.error(
+      "No CW ADMIN FACTORY contract found. Instantiating CW ADMIN FACTORY ...",
+    );
+    network = await deployCwAdminFactory({
+      opts,
+      networkId: network.id,
+      wallet: deployerWallet,
     });
   }
 
@@ -127,7 +143,7 @@ const instantiateNftLaunchpad = async (
   const params: CreateDaoMemberBasedParams = {
     networkId: network.id,
     sender: deployerAddr,
-    contractAddress: "??????",
+    contractAddress: network.cwAdminFactoryContractAddress!,
     daoCoreCodeId: network.daoCoreCodeId!,
     daoPreProposeSingleCodeId: network.daoPreProposeSingleCodeId!,
     daoProposalSingleCodeId: network.daoProposalSingleCodeId!,
@@ -259,14 +275,3 @@ const deployNftTr721 = async ({
   );
   return cosmwasmLaunchpadFeature.nftTr721CodeId;
 };
-
-function uuidv4() {
-  throw new Error("Function not implemented.");
-}
-function getPercent(supportPercent: any): string {
-  throw new Error("Function not implemented.");
-}
-
-function getDuration(days: any, hours: any, minutes: any): number {
-  throw new Error("Function not implemented.");
-}
