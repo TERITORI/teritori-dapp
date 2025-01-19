@@ -39,6 +39,7 @@ const cosmwasmNftLaunchpadFeature: CosmWasmNFTLaunchpad = {
   nftTr721CodeId: 60,
   codeId: 71,
   defaultMintDenom: "utori",
+  daoProposalSingleContractAddress: "",
 };
 
 const rakkiFeature: CosmWasmRakki = {

@@ -3,8 +3,7 @@ import fs from "fs/promises";
 
 import { buildCosmos, startCosmosLocalnet } from "./cosmos";
 import { teritoriLocalnetNetwork } from "../../networks/teritori-localnet";
-
-import { deployDA0DA0 } from "@/scripts/network-setup/deployDA0DA0";
+import { deployDA0DA0 } from "../network-setup/dao-dao/deployDA0DA0";
 
 const main = async () => {
   program.argument(
@@ -23,11 +22,11 @@ const main = async () => {
 
   // test cosmwasm
 
-  await deployDA0DA0(
-    { binaryPath: binary, home, signer: admSigner },
-    teritoriLocalnetNetwork.id,
-    "testnet-adm",
-  );
+  await deployDA0DA0({
+    opts: { binaryPath: binary, home, signer: admSigner },
+    networkId: teritoriLocalnetNetwork.id,
+    wallet: "testnet-adm",
+  });
 
   // clean
 

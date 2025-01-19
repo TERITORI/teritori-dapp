@@ -21,6 +21,8 @@ serde = { version = "1.0.197", features = ["derive"] }
 sylvia = "0.9.3"
 thiserror = "1.0.57"
 nft-tr721 = { workspace = true, features = ["library"] }
+dao-proposal-single = { version = "2.6.0", features = ["library"] }
+dao-voting = "2.6.0"
 
 [dev-dependencies]
 sylvia = { version = "0.9.3", features = ["mt"] }

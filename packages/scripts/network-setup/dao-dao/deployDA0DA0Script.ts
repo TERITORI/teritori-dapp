@@ -2,31 +2,25 @@ import { program } from "commander";
 import os from "os";
 import path from "path";
 
-import { deployTeritoriEcosystem } from "./deployLib";
+import { deployDA0DA0 } from "./deployDA0DA0";
 
 const main = async () => {
   program.argument("<network-id>", "Network id to deploy to");
   program.argument("<wallet>", "Wallet to deploy from");
-  // program.argument("<launchpad-admin-dao>", "The DAO wallet adress to make admin things");
+  program.option("--keyring-backend [keyring-backend]", "Keyring backend");
   program.parse();
-  const [
-    networkId,
-    wallet,
-    // , launchpadAdminDAO
-  ] = program.args;
+  const [networkId, wallet] = program.args;
+  const { keyringBackend } = program.opts();
 
-  const network = await deployTeritoriEcosystem(
-    {
+  await deployDA0DA0({
+    opts: {
       home: path.join(os.homedir(), ".teritorid"),
       binaryPath: "teritorid",
+      keyringBackend,
       signer: undefined,
     },
     networkId,
     wallet,
-    // launchpadAdminDAO
-  );
-
-  console.log(JSON.stringify(network, null, 2));
+  });
 };
-
 main();
