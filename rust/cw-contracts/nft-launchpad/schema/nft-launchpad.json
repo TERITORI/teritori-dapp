@@ -23,16 +23,13 @@
         "type": "object",
         "required": [
           "admin",
-          "proposal_single_contract",
           "name",
           "nft_code_id",
-          "owner"
+          "owner",
+          "proposal_single_contract"
         ],
         "properties": {
           "admin": {
-            "$ref": "#/definitions/Addr"
-          },
-          "proposal_single_contract": {
             "$ref": "#/definitions/Addr"
           },
           "name": {
@@ -44,6 +41,9 @@
             "minimum": 0.0
           },
           "owner": {
+            "$ref": "#/definitions/Addr"
+          },
+          "proposal_single_contract": {
             "$ref": "#/definitions/Addr"
           }
         },
@@ -320,16 +320,6 @@
               "null"
             ]
           },
-          "proposal_single_contract": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Addr"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
           "name": {
             "type": [
               "string",
@@ -345,6 +335,12 @@
             "minimum": 0.0
           },
           "owner": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "proposal_single_contract": {
             "type": [
               "string",
               "null"
@@ -744,16 +740,13 @@
       "type": "object",
       "required": [
         "admin",
-        "proposal_single_contract",
         "name",
         "nft_code_id",
-        "owner"
+        "owner",
+        "proposal_single_contract"
       ],
       "properties": {
         "admin": {
-          "$ref": "#/definitions/Addr"
-        },
-        "proposal_single_contract": {
           "$ref": "#/definitions/Addr"
         },
         "name": {
@@ -765,6 +758,9 @@
           "minimum": 0.0
         },
         "owner": {
+          "$ref": "#/definitions/Addr"
+        },
+        "proposal_single_contract": {
           "$ref": "#/definitions/Addr"
         }
       },

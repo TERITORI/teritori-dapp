@@ -267,16 +267,6 @@
             "null"
           ]
         },
-        "proposal_single_contract": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/Addr"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
         "name": {
           "type": [
             "string",
@@ -292,6 +282,12 @@
           "minimum": 0.0
         },
         "owner": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "proposal_single_contract": {
           "type": [
             "string",
             "null"

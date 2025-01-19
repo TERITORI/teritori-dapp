@@ -11547,6 +11547,17 @@
       "RiotP2E",
       "NFTMarketplaceLeaderboard"
     ],
+    "featureObjects": [
+      {
+        "type": "CosmWasmNFTLaunchpad",
+        "launchpadContractAddress": "",
+        "launchpadEndpoint": "http://localhost:9090",
+        "nftTr721CodeId": 0,
+        "codeId": 0,
+        "defaultMintDenom": "utori",
+        "daoProposalSingleContractAddress": ""
+      }
+    ],
     "currencies": [
       {
         "denom": "utori",

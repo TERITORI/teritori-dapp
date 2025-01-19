@@ -11,10 +11,10 @@ export interface InstantiateMsg {
 }
 export interface Config {
   admin: Addr;
-  proposal_single_contract: Addr;
   name: string;
   nft_code_id: number;
   owner: Addr;
+  proposal_single_contract: Addr;
 }
 export type ExecuteMsg = {
   update_config: {
@@ -41,10 +41,10 @@ export type ExecuteMsg = {
 export type Uint128 = string;
 export interface ConfigChanges {
   admin?: string | null;
-  proposal_single_contract?: Addr | null;
   name?: string | null;
   nft_code_id?: number | null;
   owner?: string | null;
+  proposal_single_contract?: string | null;
 }
 export interface CollectionProject {
   artwork_desc: string;
