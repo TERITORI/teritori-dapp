@@ -22,6 +22,8 @@ import { polygonNetwork } from "./polygon";
 import { polygonMumbaiNetwork } from "./polygon-mumbai";
 import { sagaNetwork } from "./saga";
 import { sagaTest2 } from "./saga-test2";
+import { starknetNetwork } from "./starknet";
+import { starknetSepoliaNetwork } from "./starknet-sepolia";
 import { teritoriNetwork } from "./teritori";
 import { teritoriLocalnetNetwork } from "./teritori-localnet";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
@@ -34,8 +36,6 @@ import {
   NetworkKind,
   StarknetNetworkInfo,
 } from "./types";
-import { starknetNetwork } from "./starknet";
-import { starknetSepoliaNetwork } from "./starknet-sepolia";
 
 export * from "./types";
 
@@ -304,15 +304,16 @@ export const mustGetCosmosNetwork = (
   return network;
 };
 
-export const getStarknetNetwork = (
-  networkId: string | undefined,
-): StarknetNetworkInfo | undefined => {
-  const network = getNetwork(networkId);
-  if (network?.kind !== NetworkKind.Starknet) {
-    return undefined;
-  }
-  return network;
-};
+// NOTE: Not used anywhere for now but this is needed
+// export const getStarknetNetwork = (
+//   networkId: string | undefined,
+// ): StarknetNetworkInfo | undefined => {
+//   const network = getNetwork(networkId);
+//   if (network?.kind !== NetworkKind.Starknet) {
+//     return undefined;
+//   }
+//   return network;
+// };
 
 export const getStarknetNetworkByChainId = (chainId: string | undefined) => {
   return allNetworks.find((n): n is StarknetNetworkInfo => {
@@ -323,15 +324,16 @@ export const getStarknetNetworkByChainId = (chainId: string | undefined) => {
   });
 };
 
-export const mustGetStarknetNetwork = (
-  networkId: string | undefined,
-): StarknetNetworkInfo => {
-  const network = mustGetNetwork(networkId);
-  if (network.kind !== NetworkKind.Starknet) {
-    throw new Error(`'${networkId}' is not a starknet network`);
-  }
-  return network;
-};
+// NOTE: Not used anywhere for now but this is needed
+// export const mustGetStarknetNetwork = (
+//   networkId: string | undefined,
+// ): StarknetNetworkInfo => {
+//   const network = mustGetNetwork(networkId);
+//   if (network.kind !== NetworkKind.Starknet) {
+//     throw new Error(`'${networkId}' is not a starknet network`);
+//   }
+//   return network;
+// };
 
 export const getGnoNetwork = (
   networkId: string | undefined,

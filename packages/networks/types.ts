@@ -43,7 +43,8 @@ export type StarknetNetworkInfo = NetworkInfoBase & {
   restEndpoint: string;
   rpcEndpoint: string;
 
-  todoListContract: string;
+  vaultContractAddress?: string;
+  todoListContractAddress?: `0x${string}`;
 };
 
 export type CosmosNetworkInfo = NetworkInfoBase & {
@@ -141,7 +142,8 @@ export type GnoNetworkInfo = NetworkInfoBase & {
 export type NetworkInfo =
   | CosmosNetworkInfo
   | EthereumNetworkInfo
-  | GnoNetworkInfo;
+  | GnoNetworkInfo
+  | StarknetNetworkInfo;
 
 export type NativeCurrencyInfo = {
   kind: "native";
