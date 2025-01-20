@@ -1,3 +1,5 @@
+import LottieView from "lottie-react-native";
+import { useState } from "react";
 import { View } from "react-native";
 
 import { NetworkFeature } from "../../networks";
@@ -20,8 +22,17 @@ import { layout } from "@/utils/style/layout";
 
 export const RakkiScreen: ScreenFC<"Rakki"> = () => {
   const networkId = useSelectedNetworkId();
-  const { height } = useMaxResolution();
+  const { height, width } = useMaxResolution();
   const { rakkiInfo } = useRakkiInfo(networkId);
+  const [isLottie, setIsLottie] = useState<boolean>(false);
+
+  // Lottie animation is in a square
+  const lottieAnimationHeight = width;
+
+  const launchAnimation = () => {
+    setIsLottie(true);
+  };
+
   let content;
   if (rakkiInfo === undefined) {
     content = (
@@ -52,6 +63,7 @@ export const RakkiScreen: ScreenFC<"Rakki"> = () => {
         <PrizeInfo
           info={rakkiInfo}
           networkId={networkId}
+          onSuccess={launchAnimation}
           style={{ marginTop: 50 }}
         />
         <TicketsRemaining
@@ -71,19 +83,58 @@ export const RakkiScreen: ScreenFC<"Rakki"> = () => {
         <RakkiHistory
           info={rakkiInfo}
           networkId={networkId}
+          onSuccess={launchAnimation}
           style={{ marginTop: 60 }}
         />
       </>
     );
   }
+
   return (
     <ScreenContainer
       footerChildren={rakkiInfo === undefined ? <></> : undefined}
       forceNetworkFeatures={[NetworkFeature.CosmWasmRakki]}
     >
-      <View style={{ width: "100%", maxWidth: 664, alignSelf: "center" }}>
-        {content}
-      </View>
+      {isLottie && (
+        <View style={{ zIndex: 1000 }}>
+          <LottieView
+            source={require("../../../assets/lottie/confetti-lottie.json")}
+            autoPlay
+            loop
+            webStyle={{
+              position: "absolute",
+              height: lottieAnimationHeight,
+              width: "100%",
+              top: 0,
+            }}
+          />
+
+          <LottieView
+            source={require("../../../assets/lottie/confetti-lottie.json")}
+            autoPlay
+            loop
+            webStyle={{
+              position: "absolute",
+              width: "100%",
+              height: lottieAnimationHeight,
+              top: lottieAnimationHeight / 2,
+            }}
+          />
+
+          <LottieView
+            source={require("../../../assets/lottie/confetti-lottie.json")}
+            autoPlay
+            loop
+            webStyle={{
+              position: "absolute",
+              height: lottieAnimationHeight,
+              width: "100%",
+              top: lottieAnimationHeight,
+            }}
+          />
+        </View>
+      )}
+      {content}
     </ScreenContainer>
   );
 };

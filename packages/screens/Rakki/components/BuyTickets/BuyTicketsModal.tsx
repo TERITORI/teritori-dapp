@@ -38,12 +38,21 @@ import {
 import { layout } from "@/utils/style/layout";
 import { modalMarginPadding } from "@/utils/style/modals";
 
-export const BuyTicketsModal: FC<{
+interface BuyTicketsModalProps {
   visible: boolean;
   setModalVisible: Dispatch<SetStateAction<boolean>>;
   info: Info;
   networkId: string;
-}> = ({ visible, setModalVisible, info, networkId }) => {
+  onSuccess: () => void;
+}
+
+export const BuyTicketsModal: FC<BuyTicketsModalProps> = ({
+  visible,
+  setModalVisible,
+  info,
+  networkId,
+  onSuccess,
+}) => {
   const selectedWallet = useSelectedWallet();
   const remainingTickets = info.config.max_tickets - info.current_tickets_count;
   const [ticketAmount, setTicketAmount] = useState("1");
@@ -120,6 +129,7 @@ export const BuyTicketsModal: FC<{
       queryClient.invalidateQueries(["rakkiHistory", networkId]),
     ]);
     setModalVisible(false);
+    onSuccess();
   });
 
   return (

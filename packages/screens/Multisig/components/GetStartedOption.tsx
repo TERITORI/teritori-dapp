@@ -12,9 +12,9 @@ import {
   secondaryColor,
 } from "@/utils/style/colors";
 import {
-  fontSemibold12,
-  fontSemibold14,
-  fontSemibold9,
+  fontRegular12,
+  fontRegular14,
+  fontRegular9,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
@@ -61,7 +61,7 @@ export const GetStartedOption: React.FC<GetStartedOptionProps> = ({
       <View>
         <BrandText
           style={[
-            fontSemibold14,
+            fontRegular14,
             { color: styleDarker ? neutral55 : secondaryColor },
             variant === "small" && smallTextCStyle,
             titleStyle,
@@ -73,7 +73,7 @@ export const GetStartedOption: React.FC<GetStartedOptionProps> = ({
         {subtitle && (
           <BrandText
             style={[
-              fontSemibold9,
+              fontRegular9,
               { color: neutral55 },
               variant === "small" && smallTextCStyle,
             ]}
@@ -111,7 +111,7 @@ const smallContainerCStyle: ViewStyle = {
 const smallTextCStyle: TextStyle = { textAlign: "center" };
 
 const topTextCStyle: TextStyle = {
-  ...fontSemibold12,
+  ...fontRegular12,
   position: "absolute",
   top: 0,
   right: 0,
