@@ -73,7 +73,12 @@ import {
   secondaryColor,
   yellowDefault,
 } from "@/utils/style/colors";
-import { fontMedium14, fontMedium16 } from "@/utils/style/fonts";
+import {
+  fontMedium12,
+  fontMedium14,
+  fontMedium16,
+  fontMedium20,
+} from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 const maxImageSize = 532;
@@ -512,10 +517,10 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     <SpacerRow size={2} />
 
                     <View style={{ justifyContent: "center" }}>
-                      <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                      <BrandText style={[fontMedium14, { color: neutral77 }]}>
                         Available balance:
                       </BrandText>
-                      <BrandText style={fontSemibold16}>
+                      <BrandText style={fontMedium16}>
                         {prettyPrice(
                           network?.id,
                           balance?.amount || "0",
@@ -566,7 +571,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                             width: 20,
                             textAlign: "center",
                           },
-                          fontSemibold14,
+                          fontMedium14,
                         ]}
                       />
                       <SpacerRow size={2} />
@@ -641,7 +646,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 >
                   <BrandText
                     style={[
-                      fontSemibold14,
+                      fontMedium14,
                       {
                         color: neutralA3,
                         textDecorationLine: "none",
@@ -654,7 +659,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     gradientType="gray"
                     externalUrl={mintTermsConditionsURL}
                     style={[
-                      fontSemibold14,
+                      fontMedium14,
                       {
                         color: neutral67,
                         textDecorationLine: "none",
@@ -731,7 +736,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
               </TertiaryBox>
 
               <BrandText
-                style={[fontSemibold20, { marginBottom: layout.spacing_x3 }]}
+                style={[fontMedium20, { marginBottom: layout.spacing_x3 }]}
               >
                 Activity
               </BrandText>
@@ -787,7 +792,7 @@ const AttributesCard: FC<{
     >
       <BrandText
         style={[
-          fontSemibold12,
+          fontMedium12,
           { color: neutral77, marginBottom: layout.spacing_x0_75 },
         ]}
       >
@@ -816,13 +821,13 @@ const PresaleActivity: FC<{
       >
         <TertiaryBadge label="Presale" />
         {running ? (
-          <BrandText style={[fontSemibold16, { color: primaryColor }]}>
+          <BrandText style={[fontMedium16, { color: primaryColor }]}>
             IN PROGRESS
           </BrandText>
         ) : incoming ? (
           <PhaseCountdown startsAt={info.start.toNumber()} />
         ) : (
-          <BrandText style={[fontSemibold16, { color: yellowDefault }]}>
+          <BrandText style={[fontMedium16, { color: yellowDefault }]}>
             ENDED
           </BrandText>
         )}
@@ -848,13 +853,13 @@ const PresaleActivity: FC<{
         >
           <BrandText
             style={[
-              fontSemibold16,
+              fontMedium16,
               { color: neutral77, marginRight: layout.spacing_x0_5 },
             ]}
           >
             Whitelist
           </BrandText>
-          <BrandText style={fontSemibold16}>{info.size.toString()}</BrandText>
+          <BrandText style={fontMedium16}>{info.size.toString()}</BrandText>
 
           <View
             style={{
@@ -870,16 +875,16 @@ const PresaleActivity: FC<{
             <>
               <BrandText
                 style={[
-                  fontSemibold16,
+                  fontMedium16,
                   { color: neutral77, marginRight: layout.spacing_x0_5 },
                 ]}
               >
                 Max
               </BrandText>
-              <BrandText style={fontSemibold16}>{maxPerAddress}</BrandText>
+              <BrandText style={fontMedium16}>{maxPerAddress}</BrandText>
               <BrandText
                 style={[
-                  fontSemibold16,
+                  fontMedium16,
                   { color: neutral77, marginLeft: layout.spacing_x0_5 },
                 ]}
               >
@@ -889,7 +894,7 @@ const PresaleActivity: FC<{
           ) : (
             <BrandText
               style={[
-                fontSemibold16,
+                fontMedium16,
                 { color: neutral77, marginRight: layout.spacing_x0_5 },
               ]}
             >
@@ -908,7 +913,7 @@ const PhaseCountdown: FC<{
 }> = ({ onCountdownEnd, startsAt }) => {
   const now = Date.now() / 1000;
   return (
-    <BrandText style={[fontSemibold16, { color: pinkDefault }]}>
+    <BrandText style={[fontMedium16, { color: pinkDefault }]}>
       STARTS IN
       <CountDown
         until={(startsAt || now) - now}
@@ -958,11 +963,11 @@ const PublicSaleActivity: FC<{
       {!started && !ended ? (
         <PhaseCountdown onCountdownEnd={onCountdownEnd} startsAt={startsAt} />
       ) : running ? (
-        <BrandText style={[fontSemibold16, { color: primaryColor }]}>
+        <BrandText style={[fontMedium16, { color: primaryColor }]}>
           IN PROGRESS
         </BrandText>
       ) : (
-        <BrandText style={[fontSemibold16, { color: yellowDefault }]}>
+        <BrandText style={[fontMedium16, { color: yellowDefault }]}>
           ENDED
         </BrandText>
       )}
