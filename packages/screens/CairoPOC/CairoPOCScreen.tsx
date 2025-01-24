@@ -1,7 +1,7 @@
 import { useAccount, useContract } from "@starknet-react/core";
 import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
-import { type Abi, shortString } from "starknet";
+import { Abi, shortString } from "starknet";
 
 import { Todo } from "./types";
 
