@@ -13,8 +13,6 @@ import { starknetNetwork } from "@/networks/starknet";
 type UseArgentXResult = [true, boolean, Wallet[]] | [false, boolean, undefined];
 
 export const useArgentX: () => UseArgentXResult = () => {
-  // const isArgentXConnected = useSelector(selectIsArgentXConnected);
-
   const selectedNetworkInfo = useSelectedNetworkInfo();
   const { address, status } = useAccount();
   const { connect } = useConnect();

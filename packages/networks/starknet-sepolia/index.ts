@@ -4,7 +4,6 @@ import { NetworkKind, StarknetNetworkInfo } from "../types";
 export const starknetSepoliaNetwork: StarknetNetworkInfo = {
   id: "starknet-sepolia",
   kind: NetworkKind.Starknet,
-  // chainId bigint: 393402133025997798000961n hex: 534e5f5345504f4c4941 string: SN_SEPOLIA
   chainId: "SN_SEPOLIA",
   displayName: "Starknet Sepolia",
   icon: "starknet.svg",
