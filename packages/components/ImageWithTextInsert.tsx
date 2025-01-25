@@ -4,6 +4,8 @@ import { View, ViewStyle, StyleProp, StyleSheet } from "react-native";
 import { BrandText } from "./BrandText";
 import { OptimizedImage } from "./OptimizedImage";
 
+import { fontRegular16 } from "@/utils/style/fonts";
+
 export const ImageWithTextInsert: React.FC<{
   imageURL?: string;
   textInsert?: string;
@@ -26,13 +28,15 @@ export const ImageWithTextInsert: React.FC<{
       />
       {!!textInsert && (
         <BrandText
-          style={{
-            position: "absolute",
-            fontSize: sourceSize * 0.063,
-            right: padding,
-            bottom: padding,
-            maxWidth: sourceSize - padding,
-          }}
+          style={[
+            fontRegular16,
+            {
+              position: "absolute",
+              right: padding,
+              bottom: padding,
+              maxWidth: sourceSize - padding,
+            },
+          ]}
         >
           {textInsert}
         </BrandText>

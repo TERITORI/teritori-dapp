@@ -7,7 +7,7 @@ import { SVG } from "./SVG";
 import { CustomPressable } from "./buttons/CustomPressable";
 import { SpacerRow } from "./spacer";
 import { secondaryColor } from "../utils/style/colors";
-import { fontSemibold14 } from "../utils/style/fonts";
+import { fontRegular14 } from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 
 interface DropdownOptionProps {
@@ -32,7 +32,7 @@ export const DropdownOption: React.FC<DropdownOptionProps> = ({
         <>
           <SVG source={icon} width={20} height={20} color={secondaryColor} />
           <SpacerRow size={1.5} />
-          <BrandText style={fontSemibold14}>
+          <BrandText style={fontRegular14}>
             {hovered && isComingSoon ? "Coming Soon" : label}
           </BrandText>
         </>

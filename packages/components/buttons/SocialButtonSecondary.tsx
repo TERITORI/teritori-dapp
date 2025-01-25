@@ -13,7 +13,7 @@ import {
   primaryTextColor,
   withAlpha,
 } from "@/utils/style/colors";
-import { fontMedium14 } from "@/utils/style/fonts";
+import { fontRegular14 } from "@/utils/style/fonts";
 
 export const SocialButtonSecondary: React.FC<{
   text?: string;
@@ -53,7 +53,7 @@ export const SocialButtonSecondary: React.FC<{
         {!!text && (
           <BrandText
             style={[
-              fontMedium14,
+              fontRegular14,
               { color: primaryColor, marginLeft: innerGap },
             ]}
           >
