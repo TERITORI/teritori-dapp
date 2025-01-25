@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useFormContext } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
@@ -11,9 +11,10 @@ import { fontMedium14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { CollectionFormValues } from "@/utils/types/launchpad";
 
-export const UriTab: FC = () => {
-  const collectionForm = useFormContext<CollectionFormValues>();
-
+interface Props {
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}
+export const UriTab: FC<Props> = ({ collectionForm }) => {
   return (
     <View style={{ width: "100%", marginTop: layout.spacing_x2 }}>
       <View

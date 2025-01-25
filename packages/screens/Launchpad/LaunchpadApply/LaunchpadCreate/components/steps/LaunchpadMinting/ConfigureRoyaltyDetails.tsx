@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useFormContext } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
@@ -10,9 +10,11 @@ import { neutral55, neutral77 } from "@/utils/style/colors";
 import { fontMedium13, fontMedium14, fontMedium20 } from "@/utils/style/fonts";
 import { CollectionFormValues } from "@/utils/types/launchpad";
 
-export const ConfigureRoyaltyDetails: FC = () => {
-  const collectionForm = useFormContext<CollectionFormValues>();
+interface Props {
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}
 
+export const ConfigureRoyaltyDetails: FC<Props> = ({ collectionForm }) => {
   return (
     <View style={{ maxWidth: launchpadCreateFormMaxWidth }}>
       <SpacerColumn size={2} />

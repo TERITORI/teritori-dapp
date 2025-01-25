@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useFormContext } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
@@ -25,14 +25,21 @@ import {
   CollectionAssetsMetadatasFormValues,
 } from "@/utils/types/launchpad";
 
-export const AssetModal: FC<{
+interface Props {
   onClose: () => void;
   isVisible: boolean;
   elem: CollectionAssetsMetadataFormValues;
   elemIndex: number;
-}> = ({ onClose, isVisible, elem, elemIndex }) => {
-  const assetsMetadatasForm =
-    useFormContext<CollectionAssetsMetadatasFormValues>();
+  assetsMetadatasForm: UseFormReturn<CollectionAssetsMetadatasFormValues>;
+}
+
+export const AssetModal: FC<Props> = ({
+  onClose,
+  isVisible,
+  elem,
+  elemIndex,
+  assetsMetadatasForm,
+}) => {
   const namePath = `assetsMetadatas.${elemIndex}.name` as const;
   const descriptionPath = `assetsMetadatas.${elemIndex}.description` as const;
   const externalUrlPath = `assetsMetadatas.${elemIndex}.externalUrl` as const;

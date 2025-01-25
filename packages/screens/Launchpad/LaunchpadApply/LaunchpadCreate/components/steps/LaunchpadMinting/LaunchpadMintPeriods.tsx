@@ -1,5 +1,5 @@
 import { FC, Fragment, useCallback } from "react";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
 
 import addSVG from "@/assets/icons/add-secondary.svg";
@@ -15,10 +15,13 @@ import { fontMedium14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { CollectionFormValues } from "@/utils/types/launchpad";
 
-export const LaunchpadMintPeriods: FC = () => {
+interface Props {
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}
+
+export const LaunchpadMintPeriods: FC<Props> = ({ collectionForm }) => {
   const selectedWallet = useSelectedWallet();
   const networkId = selectedWallet?.networkId || "";
-  const collectionForm = useFormContext<CollectionFormValues>();
   const selectedNetwork = useSelectedNetworkInfo();
 
   const { update, append, remove } = useFieldArray({

@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
@@ -12,8 +12,11 @@ import { neutral55, neutral77 } from "@/utils/style/colors";
 import { fontMedium13, fontMedium14, fontMedium20 } from "@/utils/style/fonts";
 import { CollectionFormValues } from "@/utils/types/launchpad";
 
-export const LaunchpadAdditional: FC = () => {
-  const collectionForm = useFormContext<CollectionFormValues>();
+interface Props {
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}
+
+export const LaunchpadAdditional: FC<Props> = ({ collectionForm }) => {
   const escrowMintProceedsPeriod = collectionForm.watch(
     "escrowMintProceedsPeriod",
   );

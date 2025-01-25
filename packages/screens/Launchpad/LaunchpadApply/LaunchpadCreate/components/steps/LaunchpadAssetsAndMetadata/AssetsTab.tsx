@@ -1,7 +1,7 @@
 import { parse } from "papaparse";
 import pluralize from "pluralize";
 import { FC, useEffect, useRef, useState } from "react";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { SafeAreaView, TouchableOpacity, View } from "react-native";
 
 import { AssetModal } from "./AssetModal";
@@ -36,12 +36,14 @@ import {
   CollectionAssetsMetadatasFormValues,
 } from "@/utils/types/launchpad";
 
-export const AssetsTab: React.FC = () => {
+interface Props {
+  assetsMetadatasForm: UseFormReturn<CollectionAssetsMetadatasFormValues>;
+}
+
+export const AssetsTab: React.FC<Props> = ({ assetsMetadatasForm }) => {
   const isMobile = useIsMobile();
   const { setToast } = useFeedbacks();
   const [selectedElemIndex, setSelectedElemIndex] = useState<number>();
-  const assetsMetadatasForm =
-    useFormContext<CollectionAssetsMetadatasFormValues>();
   const { fields, remove } = useFieldArray({
     control: assetsMetadatasForm.control,
     name: "assetsMetadatas",

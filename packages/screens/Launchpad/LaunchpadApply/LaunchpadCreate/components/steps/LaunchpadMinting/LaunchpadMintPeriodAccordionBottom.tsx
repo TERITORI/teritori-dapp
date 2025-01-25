@@ -3,7 +3,7 @@ import {
   Controller,
   UseFieldArrayRemove,
   UseFieldArrayUpdate,
-  useFormContext,
+  UseFormReturn,
 } from "react-hook-form";
 import { View, TouchableOpacity } from "react-native";
 
@@ -27,15 +27,23 @@ import {
   CollectionMintPeriodFormValues,
 } from "@/utils/types/launchpad";
 
-export const LaunchpadMintPeriodAccordionBottom: FC<{
+interface Props {
   elem: CollectionMintPeriodFormValues;
   update: UseFieldArrayUpdate<CollectionFormValues, "mintPeriods">;
   remove: UseFieldArrayRemove;
   elemIndex: number;
-}> = ({ elem, elemIndex, remove, update }) => {
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}
+
+export const LaunchpadMintPeriodAccordionBottom: FC<Props> = ({
+  elem,
+  elemIndex,
+  remove,
+  update,
+  collectionForm,
+}) => {
   // Since the Collection network is the selected network, we use useSelectedNetworkId (See LaunchpadBasic.tsx)
   const networkId = useSelectedNetworkId();
-  const collectionForm = useFormContext<CollectionFormValues>();
   const amountPath = `mintPeriods.${elemIndex}.price.amount` as const;
   const startTimePath = `mintPeriods.${elemIndex}.startTime` as const;
   const endTimePath = `mintPeriods.${elemIndex}.endTime` as const;

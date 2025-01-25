@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMemo, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { useCallback, useState } from "react";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -62,24 +62,27 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const [isLoading, setLoading] = useState(false);
   const { setLoadingFullScreen } = useFeedbacks();
 
-  const stepContent = useMemo(() => {
-    switch (selectedStepKey) {
-      case 1:
-        return <LaunchpadBasic />;
-      case 2:
-        return <LaunchpadDetails />;
-      case 3:
-        return <LaunchpadTeamAndInvestment />;
-      case 4:
-        return <LaunchpadAdditional />;
-      case 5:
-        return <LaunchpadMinting />;
-      case 6:
-        return <LaunchpadAssetsAndMetadata />;
-      default:
-        return <LaunchpadBasic />;
-    }
-  }, [selectedStepKey]);
+  const stepContent = useCallback(
+    (collectionForm: UseFormReturn<CollectionFormValues>) => {
+      switch (selectedStepKey) {
+        case 1:
+          return <LaunchpadBasic collectionForm={collectionForm} />;
+        case 2:
+          return <LaunchpadDetails collectionForm={collectionForm} />;
+        case 3:
+          return <LaunchpadTeamAndInvestment collectionForm={collectionForm} />;
+        case 4:
+          return <LaunchpadAdditional collectionForm={collectionForm} />;
+        case 5:
+          return <LaunchpadMinting collectionForm={collectionForm} />;
+        case 6:
+          return <LaunchpadAssetsAndMetadata collectionForm={collectionForm} />;
+        default:
+          return <LaunchpadBasic collectionForm={collectionForm} />;
+      }
+    },
+    [selectedStepKey],
+  );
 
   const onValid = async () => {
     setLoading(true);
@@ -128,14 +131,13 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
           height: "100%",
         }}
       >
-        <FormProvider {...collectionForm}>
-          <LaunchpadStepper
-            selectedStepKey={selectedStepKey}
-            setSelectedStepKey={setSelectedStepKey}
-          />
-          <SpacerColumn size={4} />
-          {stepContent}
-        </FormProvider>
+        <LaunchpadStepper
+          collectionForm={collectionForm}
+          selectedStepKey={selectedStepKey}
+          setSelectedStepKey={setSelectedStepKey}
+        />
+        <SpacerColumn size={4} />
+        {stepContent(collectionForm)}
 
         <View
           style={{

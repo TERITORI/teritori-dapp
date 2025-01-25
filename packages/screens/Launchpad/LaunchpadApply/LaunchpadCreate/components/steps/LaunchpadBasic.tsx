@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
@@ -16,8 +16,11 @@ import { fontMedium13, fontMedium14, fontMedium28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { CollectionFormValues } from "@/utils/types/launchpad";
 
-export const LaunchpadBasic: FC = () => {
-  const collectionForm = useFormContext<CollectionFormValues>();
+interface Props {
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}
+
+export const LaunchpadBasic: FC<Props> = ({ collectionForm }) => {
   const coverImage = collectionForm.watch("coverImage");
 
   return (

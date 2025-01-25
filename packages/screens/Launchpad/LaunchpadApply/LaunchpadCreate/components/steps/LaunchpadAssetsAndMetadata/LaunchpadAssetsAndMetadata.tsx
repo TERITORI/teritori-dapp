@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FC, useEffect, useState } from "react";
-import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
 import { AssetsTab } from "./AssetsTab";
@@ -28,12 +28,15 @@ const AssetsAndMetadataTabItems = {
   },
 };
 
-export const LaunchpadAssetsAndMetadata: FC = () => {
+interface Props {
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}
+
+export const LaunchpadAssetsAndMetadata: FC<Props> = ({ collectionForm }) => {
   const isMobile = useIsMobile();
   const [selectedTab, setSelectedTab] =
     useState<keyof typeof AssetsAndMetadataTabItems>("assets");
-  const { watch, setValue } = useFormContext<CollectionFormValues>();
-  const collectionAssetsMetadatas = watch("assetsMetadatas");
+  const collectionAssetsMetadatas = collectionForm.watch("assetsMetadatas");
   const assetsMetadatasForm = useForm<CollectionAssetsMetadatasFormValues>({
     mode: "all",
     defaultValues: collectionAssetsMetadatas, // Retrieve assetsMetadatas from collectionForm
@@ -43,8 +46,8 @@ export const LaunchpadAssetsAndMetadata: FC = () => {
 
   // Plug assetsMetadatas from assetsMetadatasForm to collectionForm
   useEffect(() => {
-    setValue("assetsMetadatas.assetsMetadatas", assetsMetadatas);
-  }, [assetsMetadatas, setValue]);
+    collectionForm.setValue("assetsMetadatas.assetsMetadatas", assetsMetadatas);
+  }, [assetsMetadatas, collectionForm]);
 
   return (
     <View
@@ -97,9 +100,7 @@ export const LaunchpadAssetsAndMetadata: FC = () => {
         onSelect={setSelectedTab}
       />
       {selectedTab === "assets" && (
-        <FormProvider {...assetsMetadatasForm}>
-          <AssetsTab />
-        </FormProvider>
+        <AssetsTab assetsMetadatasForm={assetsMetadatasForm} />
       )}
 
       {/*TODO: Handle this ?*/}

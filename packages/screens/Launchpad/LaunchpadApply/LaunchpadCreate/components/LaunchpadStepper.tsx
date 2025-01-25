@@ -1,5 +1,5 @@
 import { Dispatch, FC, SetStateAction, useRef } from "react";
-import { useFormContext } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import {
   LayoutChangeEvent,
   ScrollView,
@@ -29,6 +29,7 @@ export type LaunchpadCreateStepKey = number;
 interface LaunchpadStepperProps {
   selectedStepKey: LaunchpadCreateStepKey;
   setSelectedStepKey: Dispatch<SetStateAction<LaunchpadCreateStepKey>>;
+  collectionForm: UseFormReturn<CollectionFormValues>;
 }
 
 interface LaunchpadCreateStep {
@@ -66,11 +67,11 @@ const steps: LaunchpadCreateStep[] = [
 export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
   selectedStepKey,
   setSelectedStepKey,
+  collectionForm,
 }) => {
   const { width: windowWidth } = useWindowDimensions();
   const scrollViewRef = useRef<ScrollView>(null);
   const isMobile = useIsMobile();
-  const collectionForm = useFormContext<CollectionFormValues>();
 
   const hasErrors = (stepKey: number) => {
     if (

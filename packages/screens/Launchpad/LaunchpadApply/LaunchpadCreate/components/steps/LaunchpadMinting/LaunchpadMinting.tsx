@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
 import { ConfigureRoyaltyDetails } from "./ConfigureRoyaltyDetails";
@@ -15,8 +15,11 @@ import { fontMedium14, fontMedium20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { CollectionFormValues } from "@/utils/types/launchpad";
 
-export const LaunchpadMinting: FC = () => {
-  const collectionForm = useFormContext<CollectionFormValues>();
+interface Props {
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}
+
+export const LaunchpadMinting: FC<Props> = ({ collectionForm }) => {
   const revealTime = collectionForm.watch("revealTime");
   return (
     <View
