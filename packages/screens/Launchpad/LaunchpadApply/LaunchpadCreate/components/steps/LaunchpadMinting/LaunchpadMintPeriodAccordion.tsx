@@ -1,5 +1,9 @@
 import { FC } from "react";
-import { UseFieldArrayRemove, UseFieldArrayUpdate } from "react-hook-form";
+import {
+  UseFieldArrayRemove,
+  UseFieldArrayUpdate,
+  UseFormReturn,
+} from "react-hook-form";
 
 import { LaunchpadMintPeriodAccordionBottom } from "./LaunchpadMintPeriodAccordionBottom";
 import { LaunchpadMintPeriodAccordionTop } from "./LaunchpadMintPeriodAccordionTop";
@@ -11,13 +15,23 @@ import {
   CollectionMintPeriodFormValues,
 } from "@/utils/types/launchpad";
 
-export const LaunchpadMintPeriodAccordion: FC<{
+interface Props {
   elem: CollectionMintPeriodFormValues;
   elemIndex: number;
   remove: UseFieldArrayRemove;
   update: UseFieldArrayUpdate<CollectionFormValues, "mintPeriods">;
   closeAll: () => void;
-}> = ({ elem, elemIndex, remove, update, closeAll }) => {
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}
+
+export const LaunchpadMintPeriodAccordion: FC<Props> = ({
+  elem,
+  elemIndex,
+  remove,
+  update,
+  closeAll,
+  collectionForm,
+}) => {
   return (
     <PrimaryBox
       style={{
@@ -39,6 +53,7 @@ export const LaunchpadMintPeriodAccordion: FC<{
           remove={remove}
           elem={elem}
           elemIndex={elemIndex}
+          collectionForm={collectionForm}
         />
       )}
     </PrimaryBox>
