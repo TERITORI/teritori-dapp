@@ -60,11 +60,11 @@ export const LaunchpadMinting: FC<Props> = ({ collectionForm }) => {
           Configure the minting periods, a whitelist can be applied
         </BrandText>
 
-        <LaunchpadMintPeriods />
+        <LaunchpadMintPeriods collectionForm={collectionForm} />
 
         <SpacerColumn size={1} />
         <Separator />
-        <ConfigureRoyaltyDetails />
+        <ConfigureRoyaltyDetails collectionForm={collectionForm} />
       </View>
     </View>
   );
