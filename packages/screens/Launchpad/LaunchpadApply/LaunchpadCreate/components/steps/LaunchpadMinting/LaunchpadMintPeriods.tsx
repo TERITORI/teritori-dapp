@@ -78,6 +78,7 @@ export const LaunchpadMintPeriods: FC<Props> = ({ collectionForm }) => {
                 closeAll={closeAll}
                 elem={elem}
                 elemIndex={index}
+                collectionForm={collectionForm}
               />
             </Fragment>
           );
