@@ -1,8 +1,8 @@
 import { parse } from "papaparse";
 import pluralize from "pluralize";
-import { FC, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
-import { SafeAreaView, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, View } from "react-native";
 
 import { AssetModal } from "./AssetModal";
 import {
@@ -10,24 +10,21 @@ import {
   AssetsAndMetadataIssueObject,
 } from "./AssetsAndMetadataIssue";
 
-import trashSVG from "@/assets/icons/trash.svg";
-import { BrandText } from "@/components/BrandText";
 import { SelectedFilesPreview } from "@/components/FilePreview/SelectedFilesPreview/SelectedFilesPreview";
-import { SVG } from "@/components/SVG";
 import { FileUploaderSmall } from "@/components/inputs/FileUploaderSmall";
 import { FileUploaderSmallHandle } from "@/components/inputs/FileUploaderSmall/FileUploaderSmall.type";
 import { Separator } from "@/components/separators/Separator";
-import { SpacerColumn, SpacerRow } from "@/components/spacer";
+import { SpacerColumn } from "@/components/spacer";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { ResetAllButton } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadAssetsAndMetadata/ResetAllButton";
 import { IMAGE_MIME_TYPES, TXT_CSV_MIME_TYPES } from "@/utils/mime";
 import {
   NUMBERS_COMMA_SEPARATOR_REGEXP,
   NUMBERS_REGEXP,
   URL_REGEX,
 } from "@/utils/regex";
-import { errorColor, neutral33 } from "@/utils/style/colors";
-import { fontMedium14 } from "@/utils/style/fonts";
+import { neutral33 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
 import { LocalFileData } from "@/utils/types/files";
 import {
@@ -138,7 +135,7 @@ export const AssetsTab: React.FC<Props> = ({ assetsMetadatasForm }) => {
   }, [fields.length]);
 
   // On upload attributes CSV mapping file
-  const onUploadAttributesMapingFile = (files: LocalFileData[]) => {
+  const onUploadAttributesMappingFile = (files: LocalFileData[]) => {
     resetAllIssues();
     setAssetsMappingDataRows([]);
     assetsMetadatasForm.setValue("assetsMetadatas", []);
@@ -367,7 +364,7 @@ export const AssetsTab: React.FC<Props> = ({ assetsMetadatasForm }) => {
               if (hasWrongExternalUrl || hasWrongYoutubeUrl) {
                 wrongUrlsRowsInAssets.push(assetDataRow);
               }
-              // Warning if unknow attributes ids in asset (No incidence)
+              // Warning if unknown attributes ids in asset (No incidence)
               const assetAttributesIds = cleanAssetAttributesIds(
                 assetDataRow[attributesColIndex],
               );
@@ -619,7 +616,7 @@ export const AssetsTab: React.FC<Props> = ({ assetsMetadatasForm }) => {
               <FileUploaderSmall
                 label="Attributes mapping file"
                 filesCount={attributesMappingDataRows.length ? 1 : 0}
-                onUpload={onUploadAttributesMapingFile}
+                onUpload={onUploadAttributesMappingFile}
                 mimeTypes={TXT_CSV_MIME_TYPES}
                 boxStyle={{ minHeight: 40 }}
                 ref={assetsUploaderRef}
@@ -704,40 +701,10 @@ export const AssetsTab: React.FC<Props> = ({ assetsMetadatasForm }) => {
             isVisible={assetModalVisible}
             elem={selectedElem}
             elemIndex={selectedElemIndex}
+            assetsMetadatasForm={assetsMetadatasForm}
           />
         )}
       </View>
     </SafeAreaView>
-  );
-};
-
-const ResetAllButton: FC<{
-  onPress: () => void;
-}> = ({ onPress }) => {
-  return (
-    <TouchableOpacity
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        height: 32,
-        paddingHorizontal: layout.spacing_x2,
-        borderRadius: 999,
-        borderWidth: 1,
-        borderColor: errorColor,
-      }}
-      onPress={onPress}
-    >
-      <SVG source={trashSVG} width={16} height={16} />
-      <SpacerRow size={1} />
-      <BrandText
-        style={[
-          fontMedium14,
-          { color: errorColor, lineHeight: layout.spacing_x2 },
-        ]}
-      >
-        Remove all files
-      </BrandText>
-    </TouchableOpacity>
   );
 };
