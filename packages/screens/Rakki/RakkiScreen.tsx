@@ -5,7 +5,9 @@ import { View } from "react-native";
 import { NetworkFeature } from "../../networks";
 
 import { BrandText } from "@/components/BrandText";
+import { ExternalLink } from "@/components/ExternalLink";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { Footer } from "@/components/footers/Footer";
 import { LoaderFullSize } from "@/components/loaders/LoaderFullScreen";
 import { useRakkiInfo } from "@/hooks/rakki/useRakkiInfo";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
@@ -18,6 +20,7 @@ import { RakkiLogo } from "@/screens/Rakki/components/RakkiLogo";
 import { TicketsRemaining } from "@/screens/Rakki/components/TicketsRamaining";
 import { sectionLabelCStyle } from "@/screens/Rakki/styles";
 import { ScreenFC } from "@/utils/navigation";
+import { fontRegular14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const RakkiScreen: ScreenFC<"Rakki"> = () => {
@@ -92,7 +95,20 @@ export const RakkiScreen: ScreenFC<"Rakki"> = () => {
 
   return (
     <ScreenContainer
-      footerChildren={rakkiInfo === undefined ? <></> : undefined}
+      footerChildren={
+        <Footer>
+          <View style={{ flex: 1, alignItems: "flex-end" }}>
+            <ExternalLink
+              gradientType="yellow"
+              externalUrl="https://nxtpop.notion.site/Rakki-Promotional-Lottery-Terms-and-Conditions-1737d8c95c2b80ea80b6d9034ac52bc3"
+              style={[fontRegular14, { marginRight: layout.spacing_x1 }]}
+              numberOfLines={1}
+            >
+              RAKKi Terms & Conditions
+            </ExternalLink>
+          </View>
+        </Footer>
+      }
       forceNetworkFeatures={[NetworkFeature.CosmWasmRakki]}
     >
       {isLottie && (
