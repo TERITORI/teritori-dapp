@@ -1,4 +1,4 @@
-package dao_roles_based
+package daokit
 
 import (
 	"std"
@@ -61,7 +61,7 @@ func newProposalModule() *ProposalModule {
 	}
 }
 
-func (p *ProposalModule) newProposal(title, description string, proposer std.Address, message ExecutableMessage, state daocond.State) {
+func (p *ProposalModule) newProposal(title, description string, proposer std.Address, message ExecutableMessage, state daocond.State) *Proposal {
 	id := p.proposalIDCounter.Next()
 	proposal := &Proposal{
 		id:          id,
@@ -74,6 +74,7 @@ func (p *ProposalModule) newProposal(title, description string, proposer std.Add
 		votes:       map[string]daocond.Vote{},
 	}
 	p.proposals.Set(id.String(), proposal)
+	return proposal
 }
 
 func (p *ProposalModule) getProposal(id uint64) *Proposal {

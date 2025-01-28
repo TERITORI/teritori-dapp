@@ -165,10 +165,31 @@ func (rm *RoleManager) CountRoles() int {
 	return rm.roles.Size()
 }
 
+func (rm *RoleManager) CountUserRoles(user std.Address) int {
+	userRoles := rm.getUser(user)
+	if userRoles == nil {
+		return 0
+	}
+	return userRoles.Size()
+}
+
 func (rm *RoleManager) GetRoles() []string {
 	i := 0
 	res := make([]string, rm.roles.Size())
 	rm.roles.Iterate("", "", func(key string, value interface{}) bool {
+		res[i] = key
+		i++
+		return false
+	})
+	return res
+}
+
+func (rm *RoleManager) GetRoleUsers(roleName string) []string {
+	role := rm.mustGetRole(roleName)
+	i := 0
+	users := role.users
+	res := make([]string, users.Size())
+	users.Iterate("", "", func(key string, value interface{}) bool {
 		res[i] = key
 		i++
 		return false
@@ -190,6 +211,23 @@ func (rm *RoleManager) GetUserRoles(user std.Address) []string {
 		return false
 	})
 	return res
+}
+
+func (rm *RoleManager) RemoveAllRolesFromUser(user std.Address, caller std.Address) {
+	if rm.owner.Owner() != caller && !rm.HasPermission(caller, PermissionWriteRole) {
+		panic("caller does not have permission")
+	}
+
+	userRoles := rm.getUser(user)
+	if userRoles == nil {
+		return
+	}
+	userRoles.Iterate("", "", func(key string, value interface{}) bool {
+		role := value.(*Role)
+		role.users.Remove(user.String())
+		return false
+	})
+	rm.users.Remove(user.String())
 }
 
 func (rm *RoleManager) mustGetRole(roleName string) *Role {

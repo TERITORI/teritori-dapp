@@ -247,3 +247,37 @@ func TestHasRole(t *testing.T) {
 		t.Fatalf("expected user to not have role4")
 	}
 }
+
+func TestRemoveAllRolesFromUser(t *testing.T) {
+	std.TestSetOrigCaller(alice)
+	rm := NewWithAddress(alice)
+	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
+	rm.CreateNewRole("role2", []string{"perm3", "perm4"}, alice)
+	rm.CreateNewRole("role3", []string{"perm5", "perm6"}, alice)
+
+	rm.AddRoleToUser(alice, "role1", alice)
+	rm.AddRoleToUser(alice, "role2", alice)
+	rm.AddRoleToUser(alice, "role3", alice)
+
+	rm.RemoveAllRolesFromUser(alice, alice)
+
+	aliceRoles := rm.getUser(alice)
+	if aliceRoles != nil {
+		t.Fatalf("expected user to have no roles")
+	}
+
+	rm.AddRoleToUser(alice, "role1", alice)
+
+	aliceRoles = rm.getUser(alice)
+	if !aliceRoles.Has("role1") {
+		t.Fatalf("expected user to have role1")
+	}
+
+	if aliceRoles.Has("role2") {
+		t.Fatalf("expected user to not have role2")
+	}
+
+	if aliceRoles.Has("role3") {
+		t.Fatalf("expected user to not have role3")
+	}
+}

@@ -1,4 +1,4 @@
-package dao_roles_based
+package daokit
 
 import (
 	"gno.land/p/demo/avl"

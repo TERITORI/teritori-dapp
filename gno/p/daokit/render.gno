@@ -1,4 +1,4 @@
-package dao_roles_based
+package daokit
 
 import (
 	"std"
@@ -17,7 +17,7 @@ const (
 	PROPOSAL_DETAIL_PATH  = "proposal/{id}"
 )
 
-func (d *DaoRolesBased) initRenderingRouter() {
+func (d *Dao) initRenderingRouter() {
 	d.renderingRouter.HandleFunc(HOME_PATH, d.renderHomePage)
 	d.renderingRouter.HandleFunc(CONFIG_PATH, d.renderConfigPage)
 	d.renderingRouter.HandleFunc(PROPOSAL_HISTORY_PATH, d.renderProposalHistoryPage)
@@ -25,11 +25,11 @@ func (d *DaoRolesBased) initRenderingRouter() {
 	d.renderingRouter.HandleFunc(PROPOSAL_DETAIL_PATH, d.renderProposalDetailPage)
 }
 
-func (d *DaoRolesBased) Render(path string) string {
+func (d *Dao) Render(path string) string {
 	return d.renderingRouter.Render(path)
 }
 
-func (d *DaoRolesBased) renderHomePage(res *mux.ResponseWriter, req *mux.Request) {
+func (d *Dao) renderHomePage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write(ufmt.Sprintf("# %s - %s\n\n", d.Name, std.CurrentRealm().Addr().String()))
 	res.Write(ufmt.Sprintf("> Description: %s\n\n", d.Description))
 	res.Write(ufmt.Sprintf("Discover more about this DAO on the [configuration page ⚙️](%s:%s)\n\n", d.realmName, CONFIG_PATH))
@@ -69,7 +69,7 @@ func (d *DaoRolesBased) renderHomePage(res *mux.ResponseWriter, req *mux.Request
 	res.Write(ufmt.Sprintf("[Add a new proposal 🗳️](%s$help)\n\n", d.realmName))
 }
 
-func (d *DaoRolesBased) renderConfigPage(res *mux.ResponseWriter, req *mux.Request) {
+func (d *Dao) renderConfigPage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write(ufmt.Sprintf("# %s - Config ⚙️\n\n", d.Name))
 	roles := d.MemberModule.GetRoles()
 	res.Write(ufmt.Sprintf("## Roles 🏷️\n\n"))
@@ -88,7 +88,7 @@ func (d *DaoRolesBased) renderConfigPage(res *mux.ResponseWriter, req *mux.Reque
 	})
 }
 
-func (d *DaoRolesBased) renderProposalHistoryPage(res *mux.ResponseWriter, req *mux.Request) {
+func (d *Dao) renderProposalHistoryPage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write(ufmt.Sprintf("# %s - Proposal History\n\n", d.Name))
 	res.Write(ufmt.Sprintf("## Proposals 🗳️\n\n"))
 	i := 1
@@ -106,16 +106,16 @@ func (d *DaoRolesBased) renderProposalHistoryPage(res *mux.ResponseWriter, req *
 	res.Write(ufmt.Sprintf("[Add a new proposal 🗳️](%s$help)\n\n", d.realmName))
 }
 
-func (d *DaoRolesBased) renderMemberDetailPage(res *mux.ResponseWriter, req *mux.Request) {
+func (d *Dao) renderMemberDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write(ufmt.Sprintf("# %s - Member Detail - %s\n\n", d.Name, req.GetVar("address")))
-	roles := d.MemberModule.GetUserRoles(req.GetVar("address"))
+	roles := d.MemberModule.GetMemberRoles(req.GetVar("address"))
 	res.Write(ufmt.Sprintf("## Roles 🏷️\n\n"))
 	for _, role := range roles {
 		res.Write(ufmt.Sprintf("- %s\n\n", role))
 	}
 }
 
-func (d *DaoRolesBased) renderProposalDetailPage(res *mux.ResponseWriter, req *mux.Request) {
+func (d *Dao) renderProposalDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 	id, err := seqid.FromString(req.GetVar("id"))
 	if err != nil {
 		panic(err)

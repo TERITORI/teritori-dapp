@@ -1,12 +1,11 @@
 package dao_realm
 
 import (
-	"gno.land/p/teritori/dao_roles_based"
+	"gno.land/p/teritori/daokit"
 	"gno.land/r/demo/profile"
-	"gno.land/r/teritori/social_feeds"
 )
 
-var dao *dao_roles_based.DaoRolesBased
+var dao *daokit.Dao
 
 func init() {
 	name := "Demo DAO"
@@ -20,23 +19,10 @@ func init() {
 		{"g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r"},
 	}
 
-	messagesHandlers := []dao_roles_based.MessageHandler{
-		social_feeds.NewCreatePostHandler(),
-	}
+	messagesHandlers := []daokit.MessageHandler{}
+	resourcesJSON := `[{"resource":"init","condition":{"type":"members-threshold","threshold":"60"}}]`
 
-	conditions := make(map[string]string)
-	conditions[messagesHandlers[0].Type()] = `"condition":{"type":"AND","conditions":[{"type":"members-threshold","threshold":"60"},{"type":"role-count","role":"public-relationships","count":"1"}]}`
-
-	var resourcesJSON = `[`
-	for i, mh := range messagesHandlers {
-		resourcesJSON += `{"resource":"` + mh.Type() + `",` + conditions[mh.Type()] + `}`
-		if i < len(messagesHandlers)-1 {
-			resourcesJSON += `,`
-		}
-	}
-	resourcesJSON += `]`
-
-	dao = dao_roles_based.NewDaoRolesBasedJSON(name, description, roles, members, resourcesJSON, messagesHandlers)
+	dao = daokit.NewDaoJSON(name, description, roles, members, resourcesJSON, messagesHandlers)
 
 	profile.SetStringField(profile.DisplayName, name)
 	profile.SetStringField(profile.Bio, description)

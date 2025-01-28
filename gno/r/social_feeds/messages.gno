@@ -6,7 +6,7 @@ import (
 
 	"gno.land/p/demo/json"
 	"gno.land/p/teritori/dao_interfaces"
-	"gno.land/p/teritori/dao_roles_based"
+	"gno.land/p/teritori/daokit"
 	"gno.land/p/teritori/jsonutil"
 )
 
@@ -80,7 +80,7 @@ func (h *BanPostHandler) Execute(iMsg dao_interfaces.ExecutableMessage) {
 
 func (h BanPostHandler) Type() string {
 	return ExecutableMessageBanPost{}.Type()
-
+}
 
 func (h BanPostHandler) Instantiate() dao_interfaces.ExecutableMessage {
 	return &ExecutableMessageBanPost{}
@@ -95,7 +95,7 @@ type ExecutableMessageCreatePost struct {
 	Metadata string
 }
 
-var _ dao_roles_based.ExecutableMessage = (*ExecutableMessageCreatePost)(nil)
+var _ daokit.ExecutableMessage = (*ExecutableMessageCreatePost)(nil)
 
 func (msg ExecutableMessageCreatePost) Type() string {
 	return "gno.land/r/teritori/social_feeds.CreatePost"
@@ -141,13 +141,13 @@ func (msg *ExecutableMessageCreatePost) String() string {
 
 type CreatePostHandler struct{}
 
-var _ dao_roles_based.MessageHandler = (*CreatePostHandler)(nil)
+var _ daokit.MessageHandler = (*CreatePostHandler)(nil)
 
 func NewCreatePostHandler() *CreatePostHandler {
 	return &CreatePostHandler{}
 }
 
-func (h *CreatePostHandler) Execute(iMsg dao_roles_based.ExecutableMessage) {
+func (h *CreatePostHandler) Execute(iMsg daokit.ExecutableMessage) {
 	msg := iMsg.(*ExecutableMessageCreatePost)
 	CreatePost(msg.FeedID, msg.ParentID, msg.Category, msg.Metadata)
 }
@@ -156,6 +156,6 @@ func (h CreatePostHandler) Type() string {
 	return ExecutableMessageCreatePost{}.Type()
 }
 
-func (h CreatePostHandler) Instantiate() dao_roles_based.ExecutableMessage {
+func (h CreatePostHandler) Instantiate() daokit.ExecutableMessage {
 	return &ExecutableMessageCreatePost{}
 }
