@@ -8,7 +8,7 @@ import Animated, {
 
 import { BrandText } from "./BrandText";
 import { errorColor } from "../utils/style/colors";
-import { fontSemibold14 } from "../utils/style/fonts";
+import { fontRegular14 } from "../utils/style/fonts";
 
 interface ErrorTextProps extends TextProps {
   center?: boolean;
@@ -66,10 +66,7 @@ export const ErrorText: React.FC<ErrorTextProps> = ({
 // eslint-disable-next-line no-restricted-syntax
 const styles = StyleSheet.create({
   text: StyleSheet.flatten([
-    fontSemibold14,
-    {
-      marginTop: 6,
-      color: errorColor,
-    },
+    fontRegular14,
+    { marginTop: 6, color: errorColor },
   ]),
 });

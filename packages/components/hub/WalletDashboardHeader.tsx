@@ -18,6 +18,12 @@ import { LegacyTertiaryBox } from "../boxes/LegacyTertiaryBox";
 import { PrimaryButton } from "../buttons/PrimaryButton";
 
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import {
+  fontRegular12,
+  fontRegular13,
+  fontRegular16,
+  fontRegular20,
+} from "@/utils/style/fonts";
 
 interface WalletDashboardHeaderProps {
   title: string;
@@ -38,12 +44,8 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
     <LegacyTertiaryBox
       height={116}
       width={200}
-      mainContainerStyle={{
-        backgroundColor: neutral17,
-      }}
-      style={{
-        marginLeft: 16,
-      }}
+      mainContainerStyle={{ backgroundColor: neutral17 }}
+      style={{ marginLeft: 16 }}
     >
       <View
         style={{
@@ -56,31 +58,15 @@ const WalletDashboardHeaderCard: React.FC<WalletDashboardHeaderProps> = ({
           position: "relative",
         }}
       >
-        <BrandText
-          style={{
-            fontSize: 12,
-          }}
-        >
-          {title}
-        </BrandText>
-        <BrandText
-          style={{
-            fontSize: 16,
-          }}
-        >
-          {data}
-        </BrandText>
+        <BrandText style={fontRegular12}>{title}</BrandText>
+        <BrandText style={fontRegular16}>{data}</BrandText>
         {!!actionButton && (
           <PrimaryButton
             disabled={actionButton.disabled}
             size="XS"
             text={actionButton.label}
             onPress={actionButton.onPress}
-            touchableStyle={{
-              position: "absolute",
-              bottom: 12,
-              right: 14,
-            }}
+            touchableStyle={{ position: "absolute", bottom: 12, right: 14 }}
           />
         )}
       </View>
@@ -129,12 +115,7 @@ export const WalletDashboardHeader: React.FC = () => {
         marginTop: -layout.spacing_x3,
       }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          marginTop: layout.spacing_x3,
-        }}
-      >
+      <View style={{ flexDirection: "row", marginTop: layout.spacing_x3 }}>
         <TouchableOpacity
           style={{
             backgroundColor: neutral22,
@@ -150,19 +131,11 @@ export const WalletDashboardHeader: React.FC = () => {
           <SVG width={24} height={24} source={penSVG} />
         </TouchableOpacity>
         <View>
-          <BrandText
-            style={{
-              color: neutralA3,
-              fontSize: 14,
-            }}
-          >
+          <BrandText style={[fontRegular13, { color: neutralA3 }]}>
             Hello
           </BrandText>
           <BrandText
-            style={{
-              fontSize: 20,
-              maxWidth: 324,
-            }}
+            style={[fontRegular20, { maxWidth: 324 }]}
             numberOfLines={1}
           >
             {userInfo.metadata?.tokenId ||

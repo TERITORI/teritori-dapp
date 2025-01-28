@@ -16,11 +16,19 @@ import { neutral22, neutral33, neutral77 } from "@/utils/style/colors";
 import { fontMedium10, fontSemibold12 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-export const RakkiHistory: FC<{
+interface RakkiHistoryProps {
   style?: StyleProp<ViewStyle>;
   networkId: string;
   info: Info;
-}> = ({ style, networkId, info }) => {
+  onSuccess: () => void;
+}
+
+export const RakkiHistory: FC<RakkiHistoryProps> = ({
+  style,
+  networkId,
+  info,
+  onSuccess,
+}) => {
   const { width } = useMaxResolution();
   const isSmallScreen = width < 400;
   const { rakkiHistory } = useRakkiHistory(networkId);
@@ -122,7 +130,11 @@ export const RakkiHistory: FC<{
             justifyContent: "center",
           }}
         >
-          <BuyTicketsButton networkId={networkId} info={info} />
+          <BuyTicketsButton
+            networkId={networkId}
+            info={info}
+            onSuccess={onSuccess}
+          />
         </View>
       </Box>
     </View>

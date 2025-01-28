@@ -8,7 +8,11 @@ import { GradientText } from "./gradientText";
 import { Collection, MintState } from "../api/marketplace/v1/marketplace";
 import { useCollectionThumbnailInfo } from "../hooks/collection/useCollectionThumbnailInfo";
 import { useNavigateToCollection } from "../hooks/useNavigateToCollection";
-import { fontBold11, fontMedium10, fontSemibold14 } from "../utils/style/fonts";
+import {
+  fontRegular10,
+  fontRegular11,
+  fontRegular14,
+} from "../utils/style/fonts";
 import { layout } from "../utils/style/layout";
 
 type CollectionViewSize = "XL" | "XS";
@@ -162,13 +166,13 @@ const styles = {
       marginTop: layout.spacing_x2,
     },
     collectionName: {
-      ...fontSemibold14,
+      ...fontRegular14,
     },
     percentage: {
-      ...fontSemibold14,
+      ...fontRegular14,
     },
     creatorName: {
-      ...fontSemibold14,
+      ...fontRegular14,
     },
   },
 
@@ -190,13 +194,13 @@ const styles = {
       marginTop: layout.spacing_x1,
     },
     collectionName: {
-      ...fontBold11,
+      ...fontRegular11,
     },
     percentage: {
-      ...fontBold11,
+      ...fontRegular11,
     },
     creatorName: {
-      ...fontMedium10,
+      ...fontRegular10,
     },
   },
 };
