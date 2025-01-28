@@ -80,7 +80,7 @@ func (h *BanPostHandler) Execute(iMsg dao_interfaces.ExecutableMessage) {
 
 func (h BanPostHandler) Type() string {
 	return ExecutableMessageBanPost{}.Type()
-}
+
 
 func (h BanPostHandler) Instantiate() dao_interfaces.ExecutableMessage {
 	return &ExecutableMessageBanPost{}
