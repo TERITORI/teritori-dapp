@@ -2,7 +2,6 @@ import { z } from "zod";
 
 import { CollectionProject } from "@/contracts-clients/nft-launchpad";
 import { DEFAULT_FORM_ERRORS } from "@/utils/errors";
-import { isIpfsPathValid } from "@/utils/ipfs";
 import {
   EMAIL_REGEXP,
   LETTERS_REGEXP,
@@ -93,37 +92,21 @@ export const ZodCollectionFormValues = z.object({
   websiteLink: z
     .string()
     .trim()
-    .min(1, DEFAULT_FORM_ERRORS.required)
-    .refine((value) => URL_REGEX.test(value), DEFAULT_FORM_ERRORS.onlyUrl),
+    .refine((value) => URL_REGEX.test(value), DEFAULT_FORM_ERRORS.onlyUrl)
+    .optional(),
   email: z
     .string()
     .trim()
-    .min(1, DEFAULT_FORM_ERRORS.required)
-    .refine((value) => EMAIL_REGEXP.test(value), DEFAULT_FORM_ERRORS.onlyEmail),
+    .refine((value) => EMAIL_REGEXP.test(value), DEFAULT_FORM_ERRORS.onlyEmail)
+    .optional(),
   projectTypes: z.array(z.string().trim()).min(1, DEFAULT_FORM_ERRORS.required),
   revealTime: z.number().optional(),
-  teamDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
-  partnersDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
-  investDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
-  investLink: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
-  artworkDescription: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
+  teamDescription: z.string().trim().optional(),
+  partnersDescription: z.string().trim().optional(),
+  investDescription: z.string().trim().optional(),
+  investLink: z.string().trim().optional(),
+  artworkDescription: z.string().trim().optional(),
   coverImage: ZodLocalFileData,
-  isPreviouslyApplied: z.boolean(),
-  isDerivativeProject: z.boolean(),
-  isReadyForMint: z.boolean(),
-  isDox: z.boolean(),
-  escrowMintProceedsPeriod: z
-    .string()
-    .trim()
-    .min(1, DEFAULT_FORM_ERRORS.required),
-  daoWhitelistCount: z
-    .string()
-    .trim()
-    .min(1, DEFAULT_FORM_ERRORS.required)
-    .refine(
-      (value) => NUMBERS_REGEXP.test(value),
-      DEFAULT_FORM_ERRORS.onlyNumbers,
-    ),
   mintPeriods: z.array(ZodCollectionMintPeriodFormValues).nonempty(),
   royaltyAddress: z.string().trim().optional(),
   royaltyPercentage: z
@@ -135,22 +118,6 @@ export const ZodCollectionFormValues = z.object({
     )
     .optional(),
   assetsMetadatas: ZodCollectionAssetsMetadatasFormValues.optional(),
-  baseTokenUri: z
-    .string()
-    .trim()
-    .refine(
-      (value) => !value || isIpfsPathValid(value),
-      DEFAULT_FORM_ERRORS.onlyIpfsUri,
-    )
-    .optional(),
-  coverImageUri: z
-    .string()
-    .trim()
-    .refine(
-      (value) => !value || isIpfsPathValid(value),
-      DEFAULT_FORM_ERRORS.onlyIpfsUri,
-    )
-    .optional(),
 });
 
 export type CollectionFormValues = z.infer<typeof ZodCollectionFormValues>;

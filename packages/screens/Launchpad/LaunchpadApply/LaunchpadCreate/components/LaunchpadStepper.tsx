@@ -56,9 +56,9 @@ const steps: LaunchpadCreateStep[] = [
     title: "Details",
     fields: [
       "websiteLink",
-      "isDerivativeProject",
+      // "isDerivativeProject",
       "projectTypes",
-      "isPreviouslyApplied",
+      // "isPreviouslyApplied",
       "email",
     ],
   },
@@ -72,24 +72,24 @@ const steps: LaunchpadCreateStep[] = [
       "investLink",
     ],
   },
+  // {
+  //   key: 4,
+  //   title: "Additional",
+  //   fields: [
+  //     "artworkDescription",
+  //     "isReadyForMint",
+  //     "isDox",
+  //     "daoWhitelistCount",
+  //     "escrowMintProceedsPeriod",
+  //   ],
+  // },
   {
     key: 4,
-    title: "Additional",
-    fields: [
-      "artworkDescription",
-      "isReadyForMint",
-      "isDox",
-      "daoWhitelistCount",
-      "escrowMintProceedsPeriod",
-    ],
-  },
-  {
-    key: 5,
     title: "Minting",
     fields: ["mintPeriods", "royaltyAddress", "royaltyPercentage"],
   },
   {
-    key: 6,
+    key: 5,
     title: "Assets & Metadata",
     fields: ["assetsMetadatas"],
   },

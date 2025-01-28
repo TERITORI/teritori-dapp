@@ -43,7 +43,7 @@ export const MultipleSelectInput: FC<Props> = ({
   label,
   onPressItem,
   sublabel,
-  required = true,
+  required,
 }) => {
   const [isDropdownOpen, setDropdownState, ref] = useDropdowns();
   const [hovered, setHovered] = useState(false);

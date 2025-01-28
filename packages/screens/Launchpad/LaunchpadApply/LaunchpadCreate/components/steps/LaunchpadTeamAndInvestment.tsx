@@ -21,7 +21,7 @@ export const LaunchpadTeamAndInvestment: FC<Props> = ({ collectionForm }) => {
         <BrandText style={fontMedium20}>Team & Investments</BrandText>
         <SpacerColumn size={1} />
         <BrandText style={[fontMedium14, { color: neutral77 }]}>
-          Fill the information about the team and investors
+          Information about the team and investors
         </BrandText>
         <SpacerColumn size={2} />
 

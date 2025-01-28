@@ -156,18 +156,6 @@ export const useCreateCollection = () => {
           investment_link: collectionFormValues.investLink,
           artwork_desc: collectionFormValues.artworkDescription,
           cover_img_uri: "ipfs://" + fileIpfsHash,
-          is_applied_previously: collectionFormValues.isPreviouslyApplied,
-          is_project_derivative: collectionFormValues.isDerivativeProject,
-          is_ready_for_mint: collectionFormValues.isReadyForMint,
-          is_dox: collectionFormValues.isDox,
-          escrow_mint_proceeds_period: parseInt(
-            collectionFormValues.escrowMintProceedsPeriod,
-            10,
-          ),
-          dao_whitelist_count: parseInt(
-            collectionFormValues.daoWhitelistCount,
-            10,
-          ),
           mint_periods,
           royalty_address: collectionFormValues.royaltyAddress,
           royalty_percentage: collectionFormValues.royaltyPercentage

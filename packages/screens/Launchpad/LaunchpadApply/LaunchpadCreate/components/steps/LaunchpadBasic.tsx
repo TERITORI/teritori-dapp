@@ -60,6 +60,7 @@ export const LaunchpadBasic: FC<Props> = ({ collectionForm }) => {
           placeHolder="My Awesome Collection"
           name="name"
           form={collectionForm}
+          required
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -80,6 +81,7 @@ export const LaunchpadBasic: FC<Props> = ({ collectionForm }) => {
           placeHolder="Describe here..."
           name="description"
           form={collectionForm}
+          required
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -88,6 +90,7 @@ export const LaunchpadBasic: FC<Props> = ({ collectionForm }) => {
           name="symbol"
           form={collectionForm}
           valueModifier={(value) => value.toUpperCase()}
+          required
         />
 
         <Controller<CollectionFormValues>
@@ -124,6 +127,7 @@ export const LaunchpadBasic: FC<Props> = ({ collectionForm }) => {
           placeHolder="My Awesome Collection"
           name="assetsMetadatas.nftApiKey"
           form={collectionForm}
+          required
         />
 
         <NetworkSelectorWithLabel

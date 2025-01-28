@@ -17,7 +17,6 @@ import {
   LaunchpadCreateStepKey,
   LaunchpadStepper,
 } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/LaunchpadStepper";
-import { LaunchpadAdditional } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadAdditional";
 import { LaunchpadAssetsAndMetadata } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadAssetsAndMetadata/LaunchpadAssetsAndMetadata";
 import { LaunchpadBasic } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadBasic";
 import { LaunchpadDetails } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadDetails";
@@ -72,10 +71,8 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
         case 3:
           return <LaunchpadTeamAndInvestment collectionForm={collectionForm} />;
         case 4:
-          return <LaunchpadAdditional collectionForm={collectionForm} />;
-        case 5:
           return <LaunchpadMinting collectionForm={collectionForm} />;
-        case 6:
+        case 5:
           return <LaunchpadAssetsAndMetadata collectionForm={collectionForm} />;
         default:
           return <LaunchpadBasic collectionForm={collectionForm} />;

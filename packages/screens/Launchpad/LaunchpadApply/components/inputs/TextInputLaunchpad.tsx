@@ -36,7 +36,7 @@ export const TextInputLaunchpad = <T extends FieldValues>({
   sublabel,
   valueModifier,
   disabled,
-  required = true,
+  required,
   ...restProps
 }: TextInputLaunchpadProps<T>) => {
   const inputRef = useRef<TextInput>(null);
@@ -45,6 +45,7 @@ export const TextInputLaunchpad = <T extends FieldValues>({
     name,
     control: form.control,
   });
+
   return (
     <CustomPressable
       onHoverIn={() => setHovered(true)}

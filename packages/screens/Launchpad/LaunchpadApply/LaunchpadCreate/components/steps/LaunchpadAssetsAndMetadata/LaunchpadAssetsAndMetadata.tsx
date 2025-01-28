@@ -1,16 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
-import { AssetsTab } from "./AssetsTab";
-import { UriTab } from "./UriTab";
+import { AssetsAndMetadataInputs } from "./AssetsAndMetadataInputs";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
-import { Tabs } from "@/components/tabs/Tabs";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { neutral33, neutral77, primaryColor } from "@/utils/style/colors";
+import { neutral77, primaryColor } from "@/utils/style/colors";
 import { fontMedium14, fontMedium28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
@@ -19,23 +17,12 @@ import {
   ZodCollectionAssetsMetadatasFormValues,
 } from "@/utils/types/launchpad";
 
-const AssetsAndMetadataTabItems = {
-  assets: {
-    name: "Upload assets & metadata",
-  },
-  uri: {
-    name: "Use an existing base URI",
-  },
-};
-
 interface Props {
   collectionForm: UseFormReturn<CollectionFormValues>;
 }
 
 export const LaunchpadAssetsAndMetadata: FC<Props> = ({ collectionForm }) => {
   const isMobile = useIsMobile();
-  const [selectedTab, setSelectedTab] =
-    useState<keyof typeof AssetsAndMetadataTabItems>("assets");
   const collectionAssetsMetadatas = collectionForm.watch("assetsMetadatas");
   const assetsMetadatasForm = useForm<CollectionAssetsMetadatasFormValues>({
     mode: "all",
@@ -88,30 +75,7 @@ export const LaunchpadAssetsAndMetadata: FC<Props> = ({ collectionForm }) => {
 
       <SpacerColumn size={2} />
 
-      <Tabs
-        items={AssetsAndMetadataTabItems}
-        selected={selectedTab}
-        style={{
-          height: 64,
-          width: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        onSelect={setSelectedTab}
-      />
-      {selectedTab === "assets" && (
-        <AssetsTab assetsMetadatasForm={assetsMetadatasForm} />
-      )}
-
-      {/*TODO: Handle this ?*/}
-      {selectedTab === "uri" && <UriTab />}
-
-      <View
-        style={{
-          borderBottomColor: neutral33,
-          borderBottomWidth: 1,
-        }}
-      />
+      <AssetsAndMetadataInputs assetsMetadatasForm={assetsMetadatasForm} />
     </View>
   );
 };

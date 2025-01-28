@@ -45,34 +45,28 @@ export interface ConfigChanges {
   owner?: string | null;
 }
 export interface CollectionProject {
-  artwork_desc: string;
+  artwork_desc?: string | null;
   base_token_uri?: string | null;
-  contact_email: string;
+  contact_email?: string | null;
   cover_img_uri: string;
-  dao_whitelist_count: number;
   deployed_address?: string | null;
   desc: string;
-  escrow_mint_proceeds_period: number;
-  investment_desc: string;
-  investment_link: string;
-  is_applied_previously: boolean;
-  is_dox: boolean;
-  is_project_derivative: boolean;
-  is_ready_for_mint: boolean;
+  investment_desc?: string | null;
+  investment_link?: string | null;
   metadatas_merkle_root?: string | null;
   mint_periods: MintPeriod[];
   name: string;
   owner?: string | null;
-  partners: string;
-  project_type: string;
+  partners?: string | null;
+  project_type?: string | null;
   reveal_time?: number | null;
   royalty_address?: Addr | null;
   royalty_percentage?: number | null;
   symbol: string;
   target_network: string;
-  team_desc: string;
+  team_desc?: string | null;
   tokens_count: number;
-  website_link: string;
+  website_link?: string | null;
 }
 export interface MintPeriod {
   end_time?: number | null;

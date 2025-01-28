@@ -24,7 +24,6 @@ import {
   NUMBERS_REGEXP,
   URL_REGEX,
 } from "@/utils/regex";
-import { neutral33 } from "@/utils/style/colors";
 import { layout } from "@/utils/style/layout";
 import { LocalFileData } from "@/utils/types/files";
 import {
@@ -37,7 +36,9 @@ interface Props {
   assetsMetadatasForm: UseFormReturn<CollectionAssetsMetadatasFormValues>;
 }
 
-export const AssetsTab: React.FC<Props> = ({ assetsMetadatasForm }) => {
+export const AssetsAndMetadataInputs: React.FC<Props> = ({
+  assetsMetadatasForm,
+}) => {
   const isMobile = useIsMobile();
   const { setToast } = useFeedbacks();
   const [selectedElemIndex, setSelectedElemIndex] = useState<number>();
@@ -665,15 +666,15 @@ export const AssetsTab: React.FC<Props> = ({ assetsMetadatasForm }) => {
         </View>
 
         {/* ---- Separator*/}
-        <View
-          style={[
-            {
-              backgroundColor: neutral33,
-              margin: isMobile ? 0 : layout.spacing_x2,
-            },
-            isMobile ? { height: 1 } : { width: 1 },
-          ]}
-        />
+        {/*<View*/}
+        {/*  style={[*/}
+        {/*    {*/}
+        {/*      backgroundColor: neutral33,*/}
+        {/*      margin: isMobile ? 0 : layout.spacing_x2,*/}
+        {/*    },*/}
+        {/*    isMobile ? { height: 1 } : { width: 1 },*/}
+        {/*  ]}*/}
+        {/*/>*/}
 
         {/* ===== Right container */}
         <View
