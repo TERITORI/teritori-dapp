@@ -85,6 +85,7 @@ func (h BanPostHandler) Instantiate() dao_interfaces.ExecutableMessage {
 	return &ExecutableMessageBanPost{}
 }
 
+// Create a new post
 type ExecutableMessageCreatePost struct {
 	FeedID   FeedID
 	ParentID PostID
