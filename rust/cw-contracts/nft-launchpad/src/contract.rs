@@ -299,7 +299,7 @@ pub struct CollectionProject {
     pub project_type: Option<String>,
     pub artwork_desc: Option<String>,
     // Team info --------------------------------------
-    pub team_desc:Option<String>,
+    pub team_desc: Option<String>,
     pub partners: Option<String>,
     pub investment_desc: Option<String>,
     pub investment_link: Option<String>,
