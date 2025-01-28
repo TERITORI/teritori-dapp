@@ -15,19 +15,22 @@ import { useAreThereWallets } from "@/hooks/useAreThereWallets";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral33 } from "@/utils/style/colors";
+import { fontRegular20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
   const selectedWallet = useSelectedWallet();
   const areThereWallets = useAreThereWallets();
-  const { height } = useMaxResolution();
+  const { height, width } = useMaxResolution({ isLarge: true });
 
   return (
-    <ScreenContainer headerChildren={<WalletHeader />}>
+    <ScreenContainer fullWidth headerChildren={<WalletHeader />}>
       {areThereWallets ? (
         <View
           style={{
             flex: 1,
+            width,
+            alignSelf: "center",
             paddingBottom: layout.contentSpacing,
           }}
         >
@@ -49,7 +52,7 @@ export const WalletManagerScreen: ScreenFC<"WalletManager"> = () => {
               zIndex: 99,
             }}
           >
-            <BrandText style={{ marginRight: 20, fontSize: 20 }}>
+            <BrandText style={[fontRegular20, { marginRight: 20 }]}>
               Wallet
             </BrandText>
             {!!selectedWallet && (

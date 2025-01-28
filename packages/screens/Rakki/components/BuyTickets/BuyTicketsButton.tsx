@@ -9,9 +9,16 @@ import { BuyTicketsModal } from "@/screens/Rakki/components/BuyTickets/BuyTicket
 import { neutral00, neutralFF, rakkiYellow } from "@/utils/style/colors";
 import { fontSemibold14 } from "@/utils/style/fonts";
 
-export const BuyTicketsButton: FC<{ networkId: string; info: Info }> = ({
+interface BuyTicketsButtonProps {
+  networkId: string;
+  info: Info;
+  onSuccess: () => void;
+}
+
+export const BuyTicketsButton: FC<BuyTicketsButtonProps> = ({
   networkId,
   info,
+  onSuccess,
 }) => {
   const [isButtonHovered, setButtonHovered] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -43,6 +50,7 @@ export const BuyTicketsButton: FC<{ networkId: string; info: Info }> = ({
       </CustomPressable>
 
       <BuyTicketsModal
+        onSuccess={onSuccess}
         visible={isModalVisible}
         setModalVisible={setModalVisible}
         info={info}

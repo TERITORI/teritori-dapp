@@ -18,7 +18,7 @@ import { NetworkFeature } from "@/networks";
 import { CollectionsTable } from "@/screens/Marketplace/CollectionsTable";
 import { selectTimePeriod } from "@/store/slices/marketplaceFilters";
 import { ScreenFC } from "@/utils/navigation";
-import { fontSemibold28 } from "@/utils/style/fonts";
+import { fontRegular28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { arrayIncludes } from "@/utils/typescript";
 
@@ -65,11 +65,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
       headerChildren={<ScreenTitle>NFT Marketplace</ScreenTitle>}
       responsive
     >
-      <View
-        style={{
-          marginTop: layout.spacing_x4,
-        }}
-      >
+      <View style={{ marginTop: layout.spacing_x4 }}>
         <View
           style={{
             flexDirection: isMobile ? "column" : "row",
@@ -78,7 +74,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
             alignItems: "center",
           }}
         >
-          <BrandText style={fontSemibold28}>Popular Collections</BrandText>
+          <BrandText style={fontRegular28}>Popular Collections</BrandText>
           <Tabs
             items={tabs}
             selected={selectedTab}
@@ -98,9 +94,7 @@ export const MarketplaceScreen: ScreenFC<"Marketplace"> = () => {
           }}
         >
           <SearchInput
-            style={{
-              flex: 7,
-            }}
+            style={{ flex: 7 }}
             handleChangeText={handleChangeText}
           />
           <SpacerRow size={2} />

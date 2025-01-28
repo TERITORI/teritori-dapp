@@ -15,7 +15,7 @@ import { useCollections } from "../../hooks/useCollections";
 import { useMaxResolution } from "../../hooks/useMaxResolution";
 import { useNavigateToCollection } from "../../hooks/useNavigateToCollection";
 import { getNetwork } from "../../networks";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import { fontRegular14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { OptimizedImage } from "../OptimizedImage";
@@ -58,10 +58,7 @@ const CarouselCollectionItem: React.FC<{
     >
       {/* Left container */}
       <View
-        style={{
-          justifyContent: "flex-start",
-          padding: layout.spacing_x2,
-        }}
+        style={{ justifyContent: "flex-start", padding: layout.spacing_x2 }}
       >
         <BrandText style={{ marginBottom: layout.spacing_x1_5 }}>
           {collection.collectionName}
@@ -70,11 +67,8 @@ const CarouselCollectionItem: React.FC<{
         <GradientText
           gradientType="blueReversed"
           style={[
-            fontSemibold14,
-            {
-              marginBottom: layout.spacing_x3,
-              marginRight: layout.spacing_x3,
-            },
+            fontRegular14,
+            { marginBottom: layout.spacing_x3, marginRight: layout.spacing_x3 },
           ]}
         >
           {`${getNetwork(networkId)?.displayName} Collections`}
@@ -94,11 +88,7 @@ const CarouselCollectionItem: React.FC<{
             sourceURI={collection.imageUri}
             width={HERO_SIZE}
             height={HERO_SIZE}
-            style={{
-              height: HERO_SIZE,
-              width: HERO_SIZE,
-              borderRadius: 8,
-            }}
+            style={{ height: HERO_SIZE, width: HERO_SIZE, borderRadius: 8 }}
           />
         ) : (
           <ActivityIndicator size="large" style={{ margin: 40 }} />

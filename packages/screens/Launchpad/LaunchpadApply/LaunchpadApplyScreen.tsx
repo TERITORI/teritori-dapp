@@ -41,7 +41,7 @@ const BUTTONS: LargeBoxButtonProps[] = [
 export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
   const { width } = useMaxResolution();
   return (
-    <ScreenContainer>
+    <ScreenContainer responsive isLarge>
       <ImageBackgroundLogoText
         backgroundImage={LaunchpadBannerImage}
         text="Apply to Launchpad"
