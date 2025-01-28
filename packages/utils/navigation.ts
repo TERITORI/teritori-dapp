@@ -56,11 +56,11 @@ export type RootStackParamList = {
     post?: string;
   };
   FeedNewArticle:
-    | (NewPostFormValues & {
-        additionalMention?: string;
-        additionalHashtag?: string;
-      })
-    | undefined;
+  | (NewPostFormValues & {
+    additionalMention?: string;
+    additionalHashtag?: string;
+  })
+  | undefined;
   FeedPostView: { id: string };
   HashtagFeed: { hashtag: string };
 
@@ -167,6 +167,9 @@ export type RootStackParamList = {
   MiniGroupActions: { conversationId: string };
   BurnCapital: { network?: string };
   Rakki: undefined;
+  AtomicBridge: undefined;
+  // __insert_screen_props_before_me__
+  // NOTE: the previous line tells the create-screen script where to add the new screen, do not delete
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -340,6 +343,10 @@ const getNavConfig: (homeScreen: keyof RootStackParamList) => NavConfig = (
       MiniGroupActions: "mini-group-actions",
       BurnCapital: "burn-capital",
       Rakki: "rakki",
+
+      AtomicBridge: "atomic-bridge"
+      // __insert_screen_nav_before_me__
+      // NOTE: the previous line tells the create-screen script where to add the new screen, do not delete
     },
   };
   if (homeScreen === "Home") {
