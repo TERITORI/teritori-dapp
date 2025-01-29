@@ -87,8 +87,8 @@ func (p *ProposalModule) getProposal(id uint64) *Proposal {
 }
 
 func (p *Proposal) updateStatus() {
-	e := p.state.Eval(p.votes)
-	if p.status == ProposalStatusOpen && e {
+	conditionsAreMet := p.state.Eval(p.votes)
+	if p.status == ProposalStatusOpen && conditionsAreMet {
 		p.status = ProposalStatusPassed
 	}
 }
