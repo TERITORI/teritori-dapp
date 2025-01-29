@@ -222,6 +222,10 @@ func newMockDAO(emitter func(evt daocond.Event)) *mockDAO {
 			"bob":   []string{"public-relationships"},
 			"eve":   []string{},
 		},
+		roles: map[string][]string{
+			"finance-officer": []string{"alice"},
+			"public-relationships":   []string{"bob"},
+		} // roles to users
 		resources: make(map[string]daocond.Condition),
 	}
 }
@@ -268,6 +272,16 @@ func (m *mockDAO) hasRole(memberId string, role string) bool {
 		}
 	}
 	return false
+}
+
+func (m *mockDAO) addUser(memberId string, roles []string) {
+	m.members[memberId] = roles
+	for _, memberRole := range roles {
+		role, ok := strsrm(role, memberRole)
+	}
+}
+func (m *mockDAO) usersWithRoleCount(role string) uint64 {
+	return len(m.roles[role])
 }
 
 func strsrm(strs []string, val string) ([]string, bool) {
