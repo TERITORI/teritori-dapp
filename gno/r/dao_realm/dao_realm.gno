@@ -19,26 +19,13 @@ func init() {
 		{"g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r"},
 	}
 
-	messagesHandlers := []daokit.MessageHandler{}
 	resourcesJSON := `[{"resource":"init","condition":{"type":"members-threshold","threshold":"60"}}]`
 
-	dao = daokit.NewDaoJSON(name, description, roles, members, resourcesJSON, messagesHandlers)
+	dao = daokit.NewDaoJSON(name, description, roles, members, resourcesJSON, []daokit.MessageHandler{})
 
 	profile.SetStringField(profile.DisplayName, name)
 	profile.SetStringField(profile.Bio, description)
 	profile.SetStringField(profile.Avatar, "")
-}
-
-func ProposeJSON(proposalJSON string) {
-	dao.ProposeJSON(proposalJSON)
-}
-
-func Execute(proposalID uint64) {
-	dao.Execute(proposalID)
-}
-
-func Vote(proposalID uint64, vote string) {
-	dao.Vote(proposalID, vote)
 }
 
 func Render(path string) string {
