@@ -4,7 +4,6 @@ import (
 	"std"
 
 	"gno.land/p/demo/avl"
-	"gno.land/p/demo/json"
 	"gno.land/p/demo/seqid"
 	"gno.land/p/teritori/daocond"
 )
@@ -31,12 +30,12 @@ func (s ProposalStatus) String() string {
 }
 
 type Proposal struct {
-	id          seqid.ID
-	title       string
-	description string
-	proposer    std.Address
-	resource    string
-	state       daocond.State
+	id             seqid.ID
+	title          string
+	description    string
+	proposer       std.Address
+	resource       string
+	conditionState daocond.State
 	// MinVotingPeriod dao_utils.Expiration // copy here the dao_utils.Expiration type from gno/p/dao_utils/expiration.gno
 	// Expiration      dao_utils.Expiration // copy here the dao_utils.Expiration type from gno/p/dao_utils/expiration.gno
 	message ExecutableMessage
@@ -50,9 +49,10 @@ type ProposalModule struct {
 }
 
 type ProposalRequest struct {
-	title       string
-	description string
-	message     *json.Node
+	Title       string
+	Description string
+	Type        string
+	Payload     map[string]interface{}
 }
 
 func newProposalModule() *ProposalModule {
@@ -61,17 +61,17 @@ func newProposalModule() *ProposalModule {
 	}
 }
 
-func (p *ProposalModule) newProposal(title, description string, proposer std.Address, message ExecutableMessage, state daocond.State) *Proposal {
+func (p *ProposalModule) newProposal(title, description string, proposer std.Address, message ExecutableMessage, conditionState daocond.State) *Proposal {
 	id := p.proposalIDCounter.Next()
 	proposal := &Proposal{
-		id:          id,
-		title:       title,
-		description: description,
-		proposer:    proposer,
-		status:      ProposalStatusOpen,
-		message:     message,
-		state:       state,
-		votes:       map[string]daocond.Vote{},
+		id:             id,
+		title:          title,
+		description:    description,
+		proposer:       proposer,
+		status:         ProposalStatusOpen,
+		message:        message,
+		conditionState: conditionState,
+		votes:          map[string]daocond.Vote{},
 	}
 	p.proposals.Set(id.String(), proposal)
 	return proposal
@@ -87,15 +87,8 @@ func (p *ProposalModule) getProposal(id uint64) *Proposal {
 }
 
 func (p *Proposal) updateStatus() {
-	conditionsAreMet := p.state.Eval(p.votes)
+	conditionsAreMet := p.conditionState.Eval(p.votes)
 	if p.status == ProposalStatusOpen && conditionsAreMet {
 		p.status = ProposalStatusPassed
 	}
-}
-
-func (pr *ProposalRequest) fromJSON(ast *json.Node) {
-	obj := ast.MustObject()
-	pr.title = obj["title"].MustString()
-	pr.description = obj["description"].MustString()
-	pr.message = obj["message"]
 }

@@ -4,7 +4,6 @@ import (
 	"path"
 	"std"
 
-	"gno.land/p/demo/json"
 	"gno.land/p/demo/mux"
 	"gno.land/p/teritori/daocond"
 )
@@ -84,7 +83,7 @@ func (d *DAO) Vote(proposalID uint64, vote string) {
 		Vote:    daocond.Vote(vote),
 	}
 
-	proposal.state.HandleEvent(e, proposal.votes)
+	proposal.conditionState.HandleEvent(e, proposal.votes)
 	proposal.votes[voter.String()] = daocond.Vote(vote)
 
 }
@@ -104,7 +103,7 @@ func (d *DAO) Execute(proposalID uint64) {
 		panic("proposal is not open")
 	}
 
-	if !proposal.state.Eval(proposal.votes) {
+	if !proposal.conditionState.Eval(proposal.votes) {
 		panic("proposal condition is not met")
 	}
 
@@ -117,40 +116,37 @@ func (d *DAO) Execute(proposalID uint64) {
 	proposal.status = ProposalStatusExecuted
 }
 
-func (d *DAO) ProposeJSON(proposalJSON string) {
-	var req ProposalRequest
-	req.fromJSON(json.Must(json.Unmarshal([]byte(proposalJSON))))
-	msg := d.MessagesRegistry.messageFromJSON(req.message)
-	d.propose(req.title, req.description, msg.Type(), msg)
+func (d *DAO) Propose(req ProposalRequest) {
+	d.propose(req.Title, req.Description, req.Type, req.Payload)
 }
 
-func (d *DAO) InstantExecute(proposalJSON string) {
-	var req ProposalRequest
-	req.fromJSON(json.Must(json.Unmarshal([]byte(proposalJSON))))
-	msg := d.MessagesRegistry.messageFromJSON(req.message)
-	proposal := d.propose(req.title, req.description, msg.Type(), msg)
+func (d *DAO) InstantExecute(req ProposalRequest) {
+	proposal := d.propose(req.Title, req.Description, req.Type, req.Payload)
 	d.Vote(uint64(proposal.id), "yes")
 	d.Execute(uint64(proposal.id))
 }
 
-func (d *DAO) propose(title, description, resource string, message ExecutableMessage) *Proposal {
+func (d *DAO) propose(title string, description string, messageType string, payload map[string]interface{}) *Proposal {
 	proposer := std.PrevRealm().Addr()
 	if !d.MemberModule.IsMember(proposer.String()) {
 		panic(proposer + " proposer is not a member" + proposer)
 	}
 
-	condition := d.ResourcesModule.getResource(resource)
+	condition := d.ResourcesModule.getResource(messageType)
 	if condition == nil {
-		panic("resource not found")
+		panic("message type is not registered as a resource")
 	}
 
-	if len(title) < 3 {
-		panic("title should be at least 9 characters long")
+	if len(title) == 0 || len(description) == 0 {
+		panic("title or description is empty")
 	}
 
-	if len(description) < 3 {
-		panic("description should be at least 15 characters long")
+	handler, ok := d.MessagesRegistry.handlers.Get(messageType)
+	if !ok {
+		panic("message type is not registered as a resource")
 	}
+
+	message := handler.(MessageHandler).Instantiate(payload)
 
 	return d.ProposalModule.newProposal(title, description, proposer, message, condition.NewState())
 }

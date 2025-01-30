@@ -141,5 +141,5 @@ func (d *DAO) renderProposalDetailPage(res *mux.ResponseWriter, req *mux.Request
 	res.Write(ufmt.Sprintf("\n--------------------------------\n"))
 
 	res.Write(ufmt.Sprintf("## Votes 🗳️\n\n"))
-	res.Write(ufmt.Sprintf("%s\n\n", proposal.state.RenderJSON(proposal.votes)))
+	res.Write(ufmt.Sprintf("%s\n\n", proposal.conditionState.RenderJSON(proposal.votes)))
 }

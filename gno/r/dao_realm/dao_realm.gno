@@ -30,6 +30,22 @@ func init() {
 	profile.SetStringField(profile.Avatar, "")
 }
 
+func Propose(proposal daokit.ProposalRequest) {
+	dao.Propose(proposal)
+}
+
+func Vote(proposalID uint64, vote string) {
+	dao.Vote(proposalID, vote)
+}
+
+func Execute(proposalID uint64) {
+	dao.Execute(proposalID)
+}
+
+func InstantExecute(proposal daokit.ProposalRequest) {
+	dao.InstantExecute(proposal)
+}
+
 func Render(path string) string {
 	return dao.Render(path)
 }
