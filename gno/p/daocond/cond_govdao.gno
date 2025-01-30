@@ -91,17 +91,19 @@ func (m *govDaoCondThresholdState) getUserTier(userID string) string{
 	panic("No role found for user")
 }
 
-func (m *govDaoCondThresholdState) computeVotingPowers() (votingPowers map[string]float64,totalPower float64) {
+func (m *govDaoCondThresholdState) computeVotingPowers() (map[string]float64, float64) {
 	totalT1s := float64(m.cond.usersWithRoleCountFn(roleT1))
 	totalT2s := float64(m.cond.usersWithRoleCountFn(roleT2))
 	totalT3s := float64(m.cond.usersWithRoleCountFn(roleT3))
-	votingPowers = map[string]float64{
+	votingPowers := map[string]float64{
 		roleT1: 3.0,
 		roleT2: min(2.0, totalT1s/totalT2s*2.0),
 		roleT3: min(1.0, totalT1s/totalT3s),
 	}
 
-	return votingPowers, votingPowers[roleT1]*totalT1s + votingPowers[roleT2]*totalT2s + votingPowers[roleT3]*totalT3s
+	totalPower := votingPowers[roleT1]*totalT1s + votingPowers[roleT2]*totalT2s + votingPowers[roleT3]*totalT3s
+
+	return votingPowers, totalPower
 }
 
 func min(a,b float64) float64{

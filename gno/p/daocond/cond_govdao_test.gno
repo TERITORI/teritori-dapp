@@ -3,6 +3,7 @@ package daocond
 import (
 	"testing"
 	"fmt"
+	"gno.land/p/demo/urequire"
 )
 /*
 	Example 1:
@@ -103,6 +104,86 @@ func TestComputeVotingPowers(t *testing.T){
 		})
 	}
 }
+
+func TestEval(t *testing.T){
+	type govDaoVotes struct {
+		votesT1 []Vote
+		votesT2 []Vote
+		votesT3 []Vote
+		threshold float64
+		expectedEval bool
+	}
+	tests:= map[string]govDaoVotes{
+		"40% Yes": {
+			votesT1: []Vote{VoteNo}, // 3 voting power
+			votesT2: []Vote{VoteYes,VoteYes,VoteYes,VoteYes}, // 2 voting power combined
+			votesT3: []Vote{VoteNo},
+			expectedEval: false,
+			threshold:0.45,
+		},
+		"50% Yes": {
+			votesT1: []Vote{VoteNo}, // 3 voting power
+			votesT2: []Vote{VoteYes,VoteYes,VoteYes,VoteYes}, // 2 voting power combined
+			votesT3: []Vote{VoteYes},
+			expectedEval: true,
+			threshold:0.45,
+		},
+		"several T2 & T3": {
+			votesT1: []Vote{VoteNo,VoteNo}, // 6 voting power
+			// 10 T2 total power (2/3) powerT1 = 4, 4/10 0.4 each
+			votesT2: []Vote{VoteYes,VoteYes,VoteYes,VoteYes,VoteYes,VoteYes,VoteYes,VoteYes,VoteYes,VoteYes}, 
+			// 4 T3 total power (1/3) powerT1 = 2, 2/5 0.5 each
+			votesT3: []Vote{VoteYes,VoteNo,VoteYes,VoteNo},
+			expectedEval: false,
+			threshold:0.42, //total power = 6+4+2 T3yes = 1, T2yes = 4 T1yes = 0 totalYes = 0.41666666666 (5/12)
+		},
+		"several T2 & T3 eval true": {
+			votesT1: []Vote{VoteNo,VoteNo}, // 6 voting power
+			// 10 T2 total power (2/3) powerT1 = 4, 4/10 0.4 each
+			votesT2: []Vote{VoteYes,VoteYes,VoteYes,VoteYes,VoteYes,VoteYes,VoteYes,VoteYes,VoteYes,VoteYes}, 
+			// 4 T3 total power (1/3) powerT1 = 2, 2/5 0.5 each
+			votesT3: []Vote{VoteYes,VoteYes,VoteYes,VoteNo},
+			expectedEval: true,
+			threshold:0.42, //total power = 6+4+2 T3yes = 1.5, T2yes = 4 T1yes = 0 totalYes = 0.45833333333 (5.5/12)
+		},
+	}
+
+	for name,tdata := range tests{
+		t.Run(name, func(t *testing.T){
+			defer func(){
+				err:=recover()
+				if err!=nil{
+					t.Error(err)
+				}
+			}()
+			votes := map[string]Vote{}
+			dao := newMockDAO()
+			for i,vote:= range tdata.votesT1 {
+				userID:=fmt.Sprint(i)+"_T1"
+				dao.addUser(userID,[]string{"T1"})
+				votes[userID] = vote
+			}
+
+			for i,vote:= range tdata.votesT2 {
+				userID:=fmt.Sprint(i)+"_T2"
+				dao.addUser(userID,[]string{"T2"})
+				votes[userID] = vote
+			}
+
+			for i,vote:= range tdata.votesT3 {
+				userID:=fmt.Sprint(i)+"_T3"
+				dao.addUser(userID,[]string{"T3"})
+				votes[userID] = vote
+			}
+			cond := GovDaoCondThreshold(tdata.threshold, dao.hasRole, dao.usersWithRoleCount)
+			state := cond.NewState()
+
+			urequire.Equal(t, tdata.expectedEval, state.Eval(votes))
+		})
+	}
+}
+
+
 type mockDAO struct {
 	members   map[string][]string
 	roles 	  map[string][]string
