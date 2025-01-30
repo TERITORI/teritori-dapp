@@ -6,7 +6,13 @@ import (
 )
 
 type ResourcesModule struct {
-	resources *avl.Tree // string -> *daocond.Condition
+	resources *avl.Tree // string -> daocond.Condition
+}
+
+type Resource struct {
+	Resource  string
+	Handler   MessageHandler
+	Condition daocond.Condition
 }
 
 func newResourcesModule() *ResourcesModule {
@@ -15,8 +21,8 @@ func newResourcesModule() *ResourcesModule {
 	}
 }
 
-func (r *ResourcesModule) setResources(resources *avl.Tree) {
-	r.resources = resources
+func (r *ResourcesModule) setResource(resources Resource) {
+	r.resources.Set(resources.Resource, resources.Condition)
 }
 
 func (r *ResourcesModule) getResource(name string) daocond.Condition {

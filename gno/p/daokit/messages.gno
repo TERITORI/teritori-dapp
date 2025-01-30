@@ -28,7 +28,7 @@ func newMessagesRegistry() *MessagesRegistry {
 	return &MessagesRegistry{handlers: avl.NewTree()}
 }
 
-func (dao *Dao) initMessagesRegistry() {
+func (dao *DAO) initMessagesRegistry() {
 	dao.MessagesRegistry.register(NewRegisterHandlerExecutableMessageHandler(dao.MessagesRegistry))
 	dao.MessagesRegistry.register(NewRemoveHandlerExecutableMessageHandler(dao.MessagesRegistry))
 	dao.MessagesRegistry.register(NewAddNewMemberMessageHandler(dao))
@@ -191,10 +191,10 @@ func (m *AddNewMemberMessage) String() string {
 }
 
 type AddNewMemberMessageHandler struct {
-	dao *Dao
+	dao *DAO
 }
 
-func NewAddNewMemberMessageHandler(dao *Dao) *AddNewMemberMessageHandler {
+func NewAddNewMemberMessageHandler(dao *DAO) *AddNewMemberMessageHandler {
 	return &AddNewMemberMessageHandler{dao: dao}
 }
 
@@ -234,10 +234,10 @@ func (m *RemoveMemberMessage) String() string {
 }
 
 type RemoveMemberMessageHandler struct {
-	dao *Dao
+	dao *DAO
 }
 
-func NewRemoveMemberMessageHandler(dao *Dao) *RemoveMemberMessageHandler {
+func NewRemoveMemberMessageHandler(dao *DAO) *RemoveMemberMessageHandler {
 	return &RemoveMemberMessageHandler{dao: dao}
 }
 
@@ -283,10 +283,10 @@ func (m *AddRoleToUserMessage) String() string {
 }
 
 type AddRoleToUserMessageHandler struct {
-	dao *Dao
+	dao *DAO
 }
 
-func NewAddRoleToUserMessageHandler(dao *Dao) *AddRoleToUserMessageHandler {
+func NewAddRoleToUserMessageHandler(dao *DAO) *AddRoleToUserMessageHandler {
 	return &AddRoleToUserMessageHandler{dao: dao}
 }
 
@@ -332,10 +332,10 @@ func (m *RemoveRoleFromUserMessage) String() string {
 }
 
 type RemoveRoleFromUserMessageHandler struct {
-	dao *Dao
+	dao *DAO
 }
 
-func NewRemoveRoleFromUserMessageHandler(dao *Dao) *RemoveRoleFromUserMessageHandler {
+func NewRemoveRoleFromUserMessageHandler(dao *DAO) *RemoveRoleFromUserMessageHandler {
 	return &RemoveRoleFromUserMessageHandler{dao: dao}
 }
 

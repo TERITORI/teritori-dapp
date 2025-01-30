@@ -13,7 +13,7 @@ func TestInit(t *testing.T) {
 	if len(roles) != len(expectedRoles) {
 		t.Fatalf("Expected %d roles, got %d", len(expectedRoles), len(roles))
 	}
-	for i, role := range roles {
+	for _, role := range roles {
 		err := true
 		for _, expectedRole := range expectedRoles {
 			if role == expectedRole {

@@ -4,13 +4,12 @@ import (
 	"path"
 	"std"
 
-	"gno.land/p/demo/avl"
 	"gno.land/p/demo/json"
 	"gno.land/p/demo/mux"
 	"gno.land/p/teritori/daocond"
 )
 
-type Dao struct {
+type DAO struct {
 	Name        string
 	Description string
 
@@ -23,16 +22,12 @@ type Dao struct {
 	realmName       string
 }
 
-func NewDaoJSON(name, description string, roles []string, members [][]string, resourcesJSON string, handlers []MessageHandler) *Dao {
-	if len(name) < 1 {
-		panic("dao name should be at least 1 characters long")
+func NewDAO(name, description string, roles []string, members []Member, resources []Resource, initCond daocond.Condition) *DAO {
+	if len(name) < 1 || len(description) < 1 {
+		panic("name or description is empty")
 	}
 
-	if len(description) < 1 {
-		panic("dao description should be at least 1 characters long")
-	}
-
-	dao := &Dao{
+	dao := &DAO{
 		Name:             name,
 		Description:      description,
 		MemberModule:     newMemberModule(),
@@ -48,28 +43,24 @@ func NewDaoJSON(name, description string, roles []string, members [][]string, re
 	dao.MemberModule.setRoles(roles)
 	dao.MemberModule.setMembers(members)
 
-	resources := dao.parseResourcesJSON(resourcesJSON)
-	conditionRaw, ok := resources.Get("init")
-	if !ok {
-		panic("resources should have an 'init' condition")
-	}
-	condition := conditionRaw.(daocond.Condition)
 	dao.MessagesRegistry.handlers.Iterate("", "", func(key string, value interface{}) bool {
-		resources.Set(key, condition)
+		dao.ResourcesModule.setResource(Resource{
+			Resource:  key,
+			Handler:   value.(MessageHandler),
+			Condition: initCond,
+		})
 		return false
 	})
-	resources.Remove("init")
 
-	dao.ResourcesModule.setResources(resources)
-
-	for _, handler := range handlers {
-		dao.MessagesRegistry.register(handler)
+	for _, resource := range resources {
+		dao.ResourcesModule.setResource(resource)
+		dao.MessagesRegistry.register(resource.Handler)
 	}
 
 	return dao
 }
 
-func (d *Dao) Vote(proposalID uint64, vote string) {
+func (d *DAO) Vote(proposalID uint64, vote string) {
 	voter := std.PrevRealm().Addr()
 	if !d.MemberModule.IsMember(voter.String()) {
 		panic("voter is not a member")
@@ -98,7 +89,7 @@ func (d *Dao) Vote(proposalID uint64, vote string) {
 
 }
 
-func (d *Dao) Execute(proposalID uint64) {
+func (d *DAO) Execute(proposalID uint64) {
 	executor := std.PrevRealm().Addr()
 	if !d.MemberModule.IsMember(executor.String()) {
 		panic("executor is not a member")
@@ -126,14 +117,14 @@ func (d *Dao) Execute(proposalID uint64) {
 	proposal.status = ProposalStatusExecuted
 }
 
-func (d *Dao) ProposeJSON(proposalJSON string) {
+func (d *DAO) ProposeJSON(proposalJSON string) {
 	var req ProposalRequest
 	req.fromJSON(json.Must(json.Unmarshal([]byte(proposalJSON))))
 	msg := d.MessagesRegistry.messageFromJSON(req.message)
 	d.propose(req.title, req.description, msg.Type(), msg)
 }
 
-func (d *Dao) InstantExecute(proposalJSON string) {
+func (d *DAO) InstantExecute(proposalJSON string) {
 	var req ProposalRequest
 	req.fromJSON(json.Must(json.Unmarshal([]byte(proposalJSON))))
 	msg := d.MessagesRegistry.messageFromJSON(req.message)
@@ -142,7 +133,7 @@ func (d *Dao) InstantExecute(proposalJSON string) {
 	d.Execute(uint64(proposal.id))
 }
 
-func (d *Dao) propose(title, description, resource string, message ExecutableMessage) *Proposal {
+func (d *DAO) propose(title, description, resource string, message ExecutableMessage) *Proposal {
 	proposer := std.PrevRealm().Addr()
 	if !d.MemberModule.IsMember(proposer.String()) {
 		panic(proposer + " proposer is not a member" + proposer)
@@ -162,19 +153,4 @@ func (d *Dao) propose(title, description, resource string, message ExecutableMes
 	}
 
 	return d.ProposalModule.newProposal(title, description, proposer, message, condition.NewState())
-}
-
-func (d *Dao) parseResourcesJSON(resourcesJSON string) *avl.Tree {
-	nodes, err := json.Unmarshal([]byte(resourcesJSON))
-	if err != nil {
-		panic("invalid resources json format")
-	}
-	resourcesNodesArray := nodes.MustArray()
-	resources := avl.NewTree()
-	for _, resourceNode := range resourcesNodesArray {
-		resourceObj := resourceNode.MustObject()
-		condition := daocond.ConditionFromJSON(resourceObj["condition"], d.MemberModule.HasRole, d.MemberModule.IsMember, d.MemberModule.MembersCount)
-		resources.Set(resourceObj["resource"].MustString(), condition)
-	}
-	return resources
 }

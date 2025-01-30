@@ -12,6 +12,11 @@ type MemberModule struct {
 	members     *avl.Tree // address -> struct{}
 }
 
+type Member struct {
+	Address string
+	Roles   []string
+}
+
 // TODO: FIX the owner of the role_manager is the deployer of the contract not the realm
 func newMemberModule() *MemberModule {
 	return &MemberModule{
@@ -64,12 +69,12 @@ func (m *MemberModule) setRoles(roles []string) {
 	}
 }
 
-func (m *MemberModule) setMembers(members [][]string) {
+func (m *MemberModule) setMembers(members []Member) {
 	caller := std.CurrentRealm().Addr()
 	for _, member := range members {
-		m.members.Set(member[0], struct{}{})
-		for _, role := range member[1:] {
-			m.roleManager.AddRoleToUser(std.Address(member[0]), role, caller)
+		m.members.Set(member.Address, struct{}{})
+		for _, role := range member.Roles {
+			m.roleManager.AddRoleToUser(std.Address(member.Address), role, caller)
 		}
 	}
 }

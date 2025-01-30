@@ -45,15 +45,32 @@ func (h MockMessageHandler) Type() string {
 	return MockExecutableMessage{}.Type()
 }
 
-func TestNewDaoJSON(t *testing.T) {
+func TestNewDAO(t *testing.T) {
 	name := "My DAO"
 	description := "My DAO Description"
 	roles := []string{"admin"}
-	members := [][]string{{alice.String(), "admin"}, {bob.String()}, {carol.String()}}
-	resourcesJSON := `[{"resource":"init","condition":{"type":"members-threshold","threshold":"60"}}]`
-	handlers := []MessageHandler{}
+	members := []Member{
+		{
+			alice.String(),
+			[]string{"admin"},
+		},
+		{
+			bob.String(),
+			[]string{},
+		},
+		{
+			carol.String(),
+			[]string{},
+		},
+	}
 
-	dao := NewDaoJSON(name, description, roles, members, resourcesJSON, handlers)
+	dao := &DAO{}
+
+	condition := CreateCondition("members-treshold", &dao, 0.2)
+	resources := []Resource{}
+
+	std.TestSetOrigCaller(alice)
+	dao = NewDAO(name, description, roles, members, resources, condition)
 	roles = dao.MemberModule.GetRoles()
 	if len(roles) != 1 {
 		t.Errorf("Expected 1 role, got %d", len(roles))
@@ -63,12 +80,12 @@ func TestNewDaoJSON(t *testing.T) {
 	}
 
 	for _, member := range members {
-		address := member[0]
+		address := member.Address
 		if !dao.MemberModule.IsMember(address) {
 			t.Errorf("Expected member %s to be a member", address)
 		}
-		if len(member) == 2 && !dao.MemberModule.HasRole(address, member[1]) {
-			t.Errorf("Expected member %s to have role %s", address, member[1])
+		if len(member.Roles) == 1 && !dao.MemberModule.HasRole(address, member.Roles[0]) {
+			t.Errorf("Expected member %s to have role %s", address, member.Roles[0])
 		}
 	}
 
@@ -82,15 +99,34 @@ func TestProposeJSON(t *testing.T) {
 	name := "My DAO"
 	description := "My DAO Description"
 	roles := []string{"admin"}
-	members := [][]string{{alice.String(), "admin"}, {bob.String()}, {carol.String()}}
-
-	messagesHandlers := []MessageHandler{
-		&MockMessageHandler{},
+	members := []Member{
+		{
+			alice.String(),
+			[]string{"admin"},
+		},
+		{
+			bob.String(),
+			[]string{},
+		},
+		{
+			carol.String(),
+			[]string{},
+		},
 	}
 
-	resourcesJSON := `[{"resource":"MockExecutableMessage","condition":{"type":"members-threshold","threshold":"60"}},{"resource":"init","condition":{"type":"members-threshold","threshold":"60"}}]`
+	dao := &DAO{}
+
+	condition := CreateCondition("members-treshold", &dao, 0.2)
+	resources := []Resource{
+		{
+			"MockExecutableMessage",
+			MockMessageHandler{},
+			condition,
+		},
+	}
+
 	std.TestSetOrigCaller(alice)
-	dao := NewDaoJSON(name, description, roles, members, resourcesJSON, messagesHandlers)
+	dao = NewDAO(name, description, roles, members, resources, condition)
 
 	validProposalJSON := `{"title":"My Proposal","description":"My Proposal Description","message":{"type":"MockExecutableMessage","payload":{}}}`
 
@@ -191,15 +227,34 @@ func TestVote(t *testing.T) {
 	name := "My DAO"
 	description := "My DAO Description"
 	roles := []string{"admin"}
-	members := [][]string{{alice.String(), "admin"}, {bob.String()}, {carol.String()}}
-
-	messagesHandlers := []MessageHandler{
-		&MockMessageHandler{},
+	members := []Member{
+		{
+			alice.String(),
+			[]string{"admin"},
+		},
+		{
+			bob.String(),
+			[]string{},
+		},
+		{
+			carol.String(),
+			[]string{},
+		},
 	}
 
-	resourcesJSON := `[{"resource":"MockExecutableMessage","condition":{"type":"members-threshold","threshold":"20"}},{"resource":"init","condition":{"type":"members-threshold","threshold":"60"}}]`
+	dao := &DAO{}
+
+	condition := CreateCondition("members-treshold", &dao, 0.2)
+	resources := []Resource{
+		{
+			"MockExecutableMessage",
+			MockMessageHandler{},
+			condition,
+		},
+	}
+
 	std.TestSetOrigCaller(alice)
-	dao := NewDaoJSON(name, description, roles, members, resourcesJSON, messagesHandlers)
+	dao = NewDAO(name, description, roles, members, resources, condition)
 	proposalJSON := `{"title":"My Proposal","description":"My Proposal Description","message":{"type":"MockExecutableMessage","payload":{}}}`
 	std.TestSetOrigCaller(alice)
 	dao.ProposeJSON(proposalJSON)
@@ -306,15 +361,34 @@ func TestExecuteProposal(t *testing.T) {
 	name := "My DAO"
 	description := "My DAO Description"
 	roles := []string{"admin"}
-	members := [][]string{{alice.String(), "admin"}, {bob.String()}, {carol.String()}}
-
-	messagesHandlers := []MessageHandler{
-		&MockMessageHandler{},
+	members := []Member{
+		{
+			alice.String(),
+			[]string{"admin"},
+		},
+		{
+			bob.String(),
+			[]string{},
+		},
+		{
+			carol.String(),
+			[]string{},
+		},
 	}
 
-	resourcesJSON := `[{"resource":"MockExecutableMessage","condition":{"type":"members-threshold","threshold":"20"}},{"resource":"init","condition":{"type":"members-threshold","threshold":"60"}}]`
+	dao := &DAO{}
+
+	condition := CreateCondition("members-treshold", &dao, 0.2)
+	resources := []Resource{
+		{
+			"MockExecutableMessage",
+			MockMessageHandler{},
+			condition,
+		},
+	}
+
 	std.TestSetOrigCaller(alice)
-	dao := NewDaoJSON(name, description, roles, members, resourcesJSON, messagesHandlers)
+	dao = NewDAO(name, description, roles, members, resources, condition)
 	proposalJSON := `{"title":"My Proposal","description":"My Proposal Description","message":{"type":"MockExecutableMessage","payload":{}}}`
 	std.TestSetOrigCaller(alice)
 	dao.ProposeJSON(proposalJSON)
@@ -415,15 +489,34 @@ func TestInstantExecute(t *testing.T) {
 	name := "My DAO"
 	description := "My DAO Description"
 	roles := []string{"admin"}
-	members := [][]string{{alice.String(), "admin"}, {bob.String()}, {carol.String()}}
-
-	messagesHandlers := []MessageHandler{
-		&MockMessageHandler{},
+	members := []Member{
+		{
+			alice.String(),
+			[]string{"admin"},
+		},
+		{
+			bob.String(),
+			[]string{},
+		},
+		{
+			carol.String(),
+			[]string{},
+		},
 	}
 
-	resourcesJSON := `[{"resource":"MockExecutableMessage","condition":{"type":"members-threshold","threshold":"20"}},{"resource":"init","condition":{"type":"members-threshold","threshold":"60"}}]`
+	dao := &DAO{}
+
+	condition := CreateCondition("members-treshold", &dao, 0.2)
+	resources := []Resource{
+		{
+			"MockExecutableMessage",
+			MockMessageHandler{},
+			condition,
+		},
+	}
+
 	std.TestSetOrigCaller(alice)
-	dao := NewDaoJSON(name, description, roles, members, resourcesJSON, messagesHandlers)
+	dao = NewDAO(name, description, roles, members, resources, condition)
 
 	proposalJSON := `{"title":"My Proposal","description":"My Proposal Description","message":{"type":"MockExecutableMessage","payload":{}}}`
 	std.TestSetOrigCaller(alice)
@@ -495,15 +588,34 @@ func TestGetMembers(t *testing.T) {
 	name := "My DAO"
 	description := "My DAO Description"
 	roles := []string{"admin"}
-	members := [][]string{{alice.String(), "admin"}, {bob.String()}, {carol.String()}}
-
-	messagesHandlers := []MessageHandler{
-		&MockMessageHandler{},
+	members := []Member{
+		{
+			alice.String(),
+			[]string{"admin"},
+		},
+		{
+			bob.String(),
+			[]string{},
+		},
+		{
+			carol.String(),
+			[]string{},
+		},
 	}
 
-	resourcesJSON := `[{"resource":"MockExecutableMessage","condition":{"type":"members-threshold","threshold":"60"}},{"resource":"init","condition":{"type":"members-threshold","threshold":"60"}}]`
+	dao := &DAO{}
+
+	condition := CreateCondition("members-treshold", &dao, 0.2)
+	resources := []Resource{
+		{
+			"MockExecutableMessage",
+			MockMessageHandler{},
+			condition,
+		},
+	}
+
 	std.TestSetOrigCaller(alice)
-	dao := NewDaoJSON(name, description, roles, members, resourcesJSON, messagesHandlers)
+	dao = NewDAO(name, description, roles, members, resources, condition)
 
 	expectedMembers := []string{alice.String(), bob.String(), carol.String()}
 	m := dao.MemberModule.GetMembers()
@@ -522,16 +634,26 @@ func TestAddMemberProposal(t *testing.T) {
 	name := "My DAO"
 	description := "My DAO Description"
 	roles := []string{"admin"}
-	members := [][]string{{alice.String(), "admin"}}
-
-	messagesHandlers := []MessageHandler{
-		&MockMessageHandler{},
+	members := []Member{
+		{
+			alice.String(),
+			[]string{"admin"},
+		},
 	}
 
-	resourcesJSON := `[{"resource":"MockExecutableMessage","condition":{"type":"members-threshold","threshold":"60"}},{"resource":"init","condition":{"type":"members-threshold","threshold":"60"}}]`
+	dao := &DAO{}
+
+	condition := CreateCondition("members-treshold", &dao, 0.2)
+	resources := []Resource{
+		{
+			"MockExecutableMessage",
+			MockMessageHandler{},
+			condition,
+		},
+	}
 
 	std.TestSetOrigCaller(alice)
-	dao := NewDaoJSON(name, description, roles, members, resourcesJSON, messagesHandlers)
+	dao = NewDAO(name, description, roles, members, resources, condition)
 
 	proposalJSON := `{"title":"Add Member Proposal","description":"Add Member Proposal Description","message":{"type":"gno.land/p/zenao/dao_roles_based.AddNewMember","payload":{"address":"` + bob.String() + `","roles":["admin"]}}}`
 
@@ -566,16 +688,30 @@ func TestRemoveMemberProposal(t *testing.T) {
 	name := "My DAO"
 	description := "My DAO Description"
 	roles := []string{"admin"}
-	members := [][]string{{alice.String(), "admin"}, {bob.String(), "admin"}}
-
-	messagesHandlers := []MessageHandler{
-		&MockMessageHandler{},
+	members := []Member{
+		{
+			alice.String(),
+			[]string{"admin"},
+		},
+		{
+			bob.String(),
+			[]string{"admin"},
+		},
 	}
 
-	resourcesJSON := `[{"resource":"MockExecutableMessage","condition":{"type":"members-threshold","threshold":"60"}},{"resource":"init","condition":{"type":"members-threshold","threshold":"20"}}]`
+	dao := &DAO{}
+
+	condition := CreateCondition("members-treshold", &dao, 0.2)
+	resources := []Resource{
+		{
+			"MockExecutableMessage",
+			MockMessageHandler{},
+			condition,
+		},
+	}
 
 	std.TestSetOrigCaller(alice)
-	dao := NewDaoJSON(name, description, roles, members, resourcesJSON, messagesHandlers)
+	dao = NewDAO(name, description, roles, members, resources, condition)
 
 	proposalJSON := `{"title":"Remove Member Proposal","description":"Remove Member Proposal Description","message":{"type":"gno.land/p/zenao/dao_roles_based.RemoveMember","payload": "` + bob.String() + `"}}`
 
@@ -604,16 +740,30 @@ func TestAddRoleToUserProposal(t *testing.T) {
 	name := "My DAO"
 	description := "My DAO Description"
 	roles := []string{"admin"}
-	members := [][]string{{alice.String(), "admin"}, {bob.String()}}
-
-	messagesHandlers := []MessageHandler{
-		&MockMessageHandler{},
+	members := []Member{
+		{
+			alice.String(),
+			[]string{"admin"},
+		},
+		{
+			bob.String(),
+			[]string{},
+		},
 	}
 
-	resourcesJSON := `[{"resource":"MockExecutableMessage","condition":{"type":"members-threshold","threshold":"60"}},{"resource":"init","condition":{"type":"members-threshold","threshold":"20"}}]`
+	dao := &DAO{}
+
+	condition := CreateCondition("members-treshold", &dao, 0.2)
+	resources := []Resource{
+		{
+			"MockExecutableMessage",
+			MockMessageHandler{},
+			condition,
+		},
+	}
 
 	std.TestSetOrigCaller(alice)
-	dao := NewDaoJSON(name, description, roles, members, resourcesJSON, messagesHandlers)
+	dao = NewDAO(name, description, roles, members, resources, condition)
 
 	proposalJSON := `{"title":"Add Role To User Proposal","description":"Add Role To User Proposal Description","message":{"type":"gno.land/p/zenao/dao_roles_based.AddRoleToUser","payload":{"address":"` + bob.String() + `","role":"admin"}}}`
 
@@ -664,16 +814,30 @@ func TestRemoveRoleFromUserProposal(t *testing.T) {
 	name := "My DAO"
 	description := "My DAO Description"
 	roles := []string{"admin"}
-	members := [][]string{{alice.String(), "admin"}, {bob.String(), "admin"}}
-
-	messagesHandlers := []MessageHandler{
-		&MockMessageHandler{},
+	members := []Member{
+		{
+			alice.String(),
+			[]string{"admin"},
+		},
+		{
+			bob.String(),
+			[]string{"admin"},
+		},
 	}
 
-	resourcesJSON := `[{"resource":"MockExecutableMessage","condition":{"type":"members-threshold","threshold":"60"}},{"resource":"init","condition":{"type":"members-threshold","threshold":"20"}}]`
+	dao := &DAO{}
+
+	condition := CreateCondition("members-treshold", &dao, 0.2)
+	resources := []Resource{
+		{
+			"MockExecutableMessage",
+			MockMessageHandler{},
+			condition,
+		},
+	}
 
 	std.TestSetOrigCaller(alice)
-	dao := NewDaoJSON(name, description, roles, members, resourcesJSON, messagesHandlers)
+	dao = NewDAO(name, description, roles, members, resources, condition)
 
 	proposalJSON := `{"title":"Remove Role From User Proposal","description":"Remove Role From User Proposal Description","message":{"type":"gno.land/p/zenao/dao_roles_based.RemoveRoleFromUser","payload":{"address":"` + bob.String() + `","role":"admin"}}}`
 
