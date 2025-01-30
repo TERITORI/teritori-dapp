@@ -1,4 +1,4 @@
-package govdao
+package daocond
 
 import (
 	"errors"
@@ -11,7 +11,7 @@ func GovDaoCondThreshold(threshold float64, hasRoleFn func(memberId string, role
 	if threshold <= 0 || threshold > 1 {
 		panic(errors.New("invalid threshold"))
 	}
-	if usersWithRoleCountFn == "" {
+	if usersWithRoleCountFn == nil {
 		panic(errors.New("nil usersWithRoleCountFn"))
 	}
 	if hasRoleFn == nil {
@@ -31,7 +31,7 @@ type govDaoCondThreshold struct {
 }
 
 func (m *govDaoCondThreshold) NewState() State {
-	return &roleCountFewVotesState {
+	return &govDaoCondThresholdState {
 		cond: m,
 	}
 }
@@ -54,7 +54,7 @@ type govDaoCondThresholdState struct {
 }
 
 func (m *govDaoCondThresholdState) Eval(votes map[string]Vote) bool{
-	return m.yesRatio() >= m.cond.threshold
+	return m.yesRatio(votes) >= m.cond.threshold
 }
 func (m *govDaoCondThresholdState) HandleEvent(_ Event, _ map[string]Vote) {
 	panic(errors.New("not implemented"))
@@ -69,8 +69,9 @@ func (m *govDaoCondThresholdState) RenderJSON(votes map[string]Vote) *json.Node 
 var _ State = (*govDaoCondThresholdState)(nil)
 
 func (m *govDaoCondThresholdState) yesRatio(votes map[string]Vote) float64 {
+	var totalYes float64
 	votingPowersByTier, totalPower := m.computeVotingPowers()
-	for userId, vote := range votes {
+	for userID, vote := range votes {
 		if vote != VoteYes {
 			continue
 		}
@@ -82,8 +83,8 @@ func (m *govDaoCondThresholdState) yesRatio(votes map[string]Vote) float64 {
 }
 
 func (m *govDaoCondThresholdState) getUserTier(userID string) string{
-	for _,role := range []string{T1, T2, T3}{
-		if m.cond.hasRoleFn(role){
+	for _,role := range []string{roleT1, roleT2, roleT3}{
+		if m.cond.hasRoleFn(userID, role){
 			return role
 		}
 	}
@@ -91,19 +92,19 @@ func (m *govDaoCondThresholdState) getUserTier(userID string) string{
 }
 
 func (m *govDaoCondThresholdState) computeVotingPowers() (votingPowers map[string]float64,totalPower float64) {
-	totalT1s := float64(m.usersWithRoleCountFn(roleT1))
-	totalT2s := float64(m.usersWithRoleCountFn(roleT2))
-	totalT3s := float64(m.usersWithRoleCountFn(roleT3))
+	totalT1s := float64(m.cond.usersWithRoleCountFn(roleT1))
+	totalT2s := float64(m.cond.usersWithRoleCountFn(roleT2))
+	totalT3s := float64(m.cond.usersWithRoleCountFn(roleT3))
 	votingPowers = map[string]float64{
-		T1: 3.0,
-		T2: min(2.0, totalT1s/totalT2s*2.0)
-		T3: min(1.0, totalT1s/totalT3s)
+		roleT1: 3.0,
+		roleT2: min(2.0, totalT1s/totalT2s*2.0),
+		roleT3: min(1.0, totalT1s/totalT3s),
 	}
 
-	return votingPowers, votingPowers[T1]*totalT1s + votingPowers[T2]*totalT2s + votingPowers[T3]*totalT3s +
+	return votingPowers, votingPowers[roleT1]*totalT1s + votingPowers[roleT2]*totalT2s + votingPowers[roleT3]*totalT3s
 }
 
-func min(a,b float64){
+func min(a,b float64) float64{
 	if a > b{
 		return b
 	}

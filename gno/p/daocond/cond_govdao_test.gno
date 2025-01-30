@@ -4,38 +4,8 @@ import (
 	"testing"
 	"fmt"
 )
-
-
-
-func TestComputeVotingPowers(t *testing.T){
-	type govDaoComposition struct {
-		t1s int
-		t2s int
-		t3s int
-	}
-	tests:= map[string]govDaoComposition{
-		"example 1": {
-			t1s: 100,
-			t2s: 100,
-			t3s: 100,
-		}
-	}
-
-	for name,composition range tests{
-		t.run(name, func(t *testing.T){
-			dao := newMockDAO()
-			for idx:= range t1s{
-				dao.addUser(fmt.Sprint(idx)+"_T1")
-			}
-			for idx:= range t2s{
-				dao.addUser(fmt.Sprint(idx)+"_T2")
-			}
-			for idx:= range t3s{
-				dao.addUser(fmt.Sprint(idx)+"_T3")
-			}
-		})
-	}
-	/*Example 1:
+/*
+	Example 1:
 	T1 100 members --> 300 VP, 3 votes per member
 	T2 100 members --> 200 VP, 2 votes per member
 	T3 100 members --> 100 VP, 1 votes per member
@@ -54,5 +24,119 @@ func TestComputeVotingPowers(t *testing.T){
 	T1 100 members --> 300 VP, 3 votes per member
 	T2 200 members --> 200 VP, 1 votes per member *
 	T3 1000 members --> 100 VP, 0.1 votes per member */
-	
+func TestComputeVotingPowers(t *testing.T){
+	type govDaoComposition struct {
+		t1s int
+		t2s int
+		t3s int
+		expectedPowers map[string] float64
+	}
+	tests:= map[string]govDaoComposition{
+		"example 1": {
+			t1s: 100,
+			t2s: 100,
+			t3s: 100,
+			expectedPowers: map[string]float64{
+				"T1":3.0,	
+				"T2":2.0,
+				"T3":1.0,	
+			},
+		},
+		"example 2": {
+			t1s: 100,
+			t2s: 50,
+			t3s: 10,
+			expectedPowers: map[string]float64{
+				"T1":3.0,	
+				"T2":2.0,
+				"T3":1.0,	
+			},
+		},
+		"example 3": {
+			t1s: 100,
+			t2s: 200,
+			t3s: 100,
+			expectedPowers: map[string]float64{
+				"T1":3.0,	
+				"T2":1.0,
+				"T3":1.0,	
+			},
+		},
+		"example 4": {
+			t1s: 100,
+			t2s: 200,
+			t3s: 1000,
+			expectedPowers: map[string]float64{
+				"T1":3.0,	
+				"T2":1.0,
+				"T3":0.1,	
+			},
+		},
+	}
+
+	for name,composition := range tests{
+		t.Run(name, func(t *testing.T){
+			dao := newMockDAO()
+			for i:=0;i<composition.t1s;i++{
+				dao.addUser(fmt.Sprint(i)+"_T1",[]string{"T1"})
+			}
+			for i:=0;i<composition.t2s;i++{
+				dao.addUser(fmt.Sprint(i)+"_T2",[]string{"T2"})
+			}
+			for i:=0;i<composition.t3s;i++{
+				dao.addUser(fmt.Sprint(i)+"_T3",[]string{"T3"})
+			}
+
+			state := &govDaoCondThresholdState{
+				cond: &govDaoCondThreshold{
+					threshold: 0.6,
+					hasRoleFn: dao.hasRole,
+					usersWithRoleCountFn: dao.usersWithRoleCount,
+				},
+			}
+			votingPowers,_:=state.computeVotingPowers()
+			for tier,expectedPower := range composition.expectedPowers{
+				if votingPowers[tier] != expectedPower {
+					t.Fail()
+				}
+			}	
+		})
+	}
+}
+type mockDAO struct {
+	members   map[string][]string
+	roles 	  map[string][]string
+}
+
+func newMockDAO() *mockDAO {
+	return &mockDAO{
+		members: map[string][]string{
+		},
+		roles: map[string][]string{
+		}, // roles to users
+	}
+}
+
+
+func (m *mockDAO) addUser(memberId string, roles []string) {
+	m.members[memberId] = roles
+	for _, memberRole := range roles {
+		m.roles[memberRole]= append(m.roles[memberRole], memberId)
+	}
+}
+func (m *mockDAO) usersWithRoleCount(role string) uint64 {
+	return uint64(len(m.roles[role]))
+}
+
+func (m *mockDAO) hasRole(memberId string, role string) bool {
+	roles, ok := m.members[memberId]
+	if !ok {
+		return false
+	}
+	for _, memberRole := range roles {
+		if memberRole == role {
+			return true
+		}
+	}
+	return false
 }
