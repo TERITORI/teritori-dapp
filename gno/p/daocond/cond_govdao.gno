@@ -61,8 +61,8 @@ func (m *govDaoCondThresholdState) HandleEvent(_ Event, _ map[string]Vote) {
 }
 func (m *govDaoCondThresholdState) RenderJSON(votes map[string]Vote) *json.Node {
 	return json.ObjectNode("", map[string]*json.Node{
-		"type":     json.StringNode("", "members-threshold"),
-		"yesRatio": json.NumberNode("", float64(m.yesRatio(votes))),
+		"type":     json.StringNode("", "govdao-threshold"),
+		"totalYes": json.NumberNode("", m.yesRatio(votes)),
 	})
 }
 
