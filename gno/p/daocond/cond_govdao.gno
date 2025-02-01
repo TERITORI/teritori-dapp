@@ -71,7 +71,7 @@ var _ State = (*govDaoCondThresholdState)(nil)
 func (m *govDaoCondThresholdState) yesRatio(votes map[string]Vote) float64 {
 	var totalYes float64
 	votingPowersByTier, totalPower := m.computeVotingPowers()
-	// There are zero T1s
+	// Case when there are zero T1s
 	if totalPower == 0.0 {
 		return totalPower
 	}
@@ -111,14 +111,21 @@ func (m *govDaoCondThresholdState) computeVotingPowers() (map[string]float64, fl
 	return votingPowers, totalPower
 }
 
-
+// max power here is the number of votes each tier gets when we have
+// the same number of member on each tier
+// T2 = 2.0 and T1 = 1.0 with the ration T1/Tn
+// we compute the actual ratio
 func computePower(T1, Tn, maxPower  float64) float64{
+	// If there are 0 Tn (T2, T3) just return the max power
+	// we could also return 0.0 as voting power
 	if Tn <= 0.0{
 		return maxPower
 	}
 
 	computedPower := (T1/Tn)*maxPower
 	if computedPower >= maxPower{
+		// If computed power is bigger than the max, this happens if Tn is lower than T1
+		// cap the max power to max power.
 		return maxPower
 	}
 	return computedPower
