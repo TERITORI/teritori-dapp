@@ -151,6 +151,18 @@ func TestEval(t *testing.T){
 			threshold:0.42, //total power = 6+4+2 T3yes = 1.5, T2yes = 4 T1yes = 0 totalYes = 0.45833333333 (5.5/12)
 			expectedYes: 5.5/12.0,
 		},
+		"only T1s": {
+			votesT1: []Vote{VoteYes,VoteNo}, // 6 voting power
+			expectedEval: false,
+			threshold:0.6, 
+			expectedYes: 3.0/6.0,
+		},
+		"only T3s": { // as T2 & T3 power is capped as power of T1, in this case the power will be 0 everywhere
+			votesT3: []Vote{VoteYes,VoteYes,VoteYes,VoteYes}, // voting power = 0, 0 each
+			expectedEval: false,
+			threshold:0.6, 
+			expectedYes: 0.0,
+		},
 	}
 
 	for name,tdata := range tests{
@@ -187,7 +199,7 @@ func TestEval(t *testing.T){
 			renderData:=state.RenderJSON(votes)
 			totalYesNode,err:=renderData.GetKey("totalYes")
 			urequire.NoError(t, err)
-			
+			println(totalYesNode.MustNumeric())
 			urequire.Equal(t, tdata.expectedEval, state.Eval(votes))
 			// require totalYes to be equal to expected
 			urequire.Equal(t, tdata.expectedYes, totalYesNode.MustNumeric())

@@ -71,6 +71,11 @@ var _ State = (*govDaoCondThresholdState)(nil)
 func (m *govDaoCondThresholdState) yesRatio(votes map[string]Vote) float64 {
 	var totalYes float64
 	votingPowersByTier, totalPower := m.computeVotingPowers()
+	// There are zero T1s
+	if totalPower == 0.0 {
+		return totalPower
+	}
+
 	for userID, vote := range votes {
 		if vote != VoteYes {
 			continue
@@ -97,8 +102,8 @@ func (m *govDaoCondThresholdState) computeVotingPowers() (map[string]float64, fl
 	totalT3s := float64(m.cond.usersWithRoleCountFn(roleT3))
 	votingPowers := map[string]float64{
 		roleT1: 3.0,
-		roleT2: min(2.0, totalT1s/totalT2s*2.0),
-		roleT3: min(1.0, totalT1s/totalT3s),
+		roleT2: computePower(totalT1s, totalT2s, 2.0),
+		roleT3: computePower(totalT1s, totalT3s, 1.0),
 	}
 
 	totalPower := votingPowers[roleT1]*totalT1s + votingPowers[roleT2]*totalT2s + votingPowers[roleT3]*totalT3s
@@ -106,11 +111,17 @@ func (m *govDaoCondThresholdState) computeVotingPowers() (map[string]float64, fl
 	return votingPowers, totalPower
 }
 
-func min(a,b float64) float64{
-	if a > b{
-		return b
+
+func computePower(T1, Tn, maxPower  float64) float64{
+	if Tn <= 0.0{
+		return maxPower
 	}
-	return a
+
+	computedPower := (T1/Tn)*maxPower
+	if computedPower >= maxPower{
+		return maxPower
+	}
+	return computedPower
 }
 
 const (
