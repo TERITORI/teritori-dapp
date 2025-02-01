@@ -99,13 +99,13 @@ func TestComputeVotingPowers(t *testing.T){
 		t.Run(name, func(t *testing.T){
 			dao := newMockDAO()
 			for i:=0;i<composition.t1s;i++{
-				dao.addUser(fmt.Sprint(i)+"_T1",[]string{"T1"})
+				dao.addUser(fmt.Sprint(i)+"_T1",[]string{roleT1})
 			}
 			for i:=0;i<composition.t2s;i++{
-				dao.addUser(fmt.Sprint(i)+"_T2",[]string{"T2"})
+				dao.addUser(fmt.Sprint(i)+"_T2",[]string{roleT2})
 			}
 			for i:=0;i<composition.t3s;i++{
-				dao.addUser(fmt.Sprint(i)+"_T3",[]string{"T3"})
+				dao.addUser(fmt.Sprint(i)+"_T3",[]string{roleT3})
 			}
 
 			state := &govDaoCondThresholdState{
@@ -197,19 +197,19 @@ func TestEval(t *testing.T){
 			dao := newMockDAO()
 			for i,vote:= range tdata.votesT1 {
 				userID:=fmt.Sprint(i)+"_T1"
-				dao.addUser(userID,[]string{"T1"})
+				dao.addUser(userID,[]string{roleT1})
 				votes[userID] = vote
 			}
 
 			for i,vote:= range tdata.votesT2 {
 				userID:=fmt.Sprint(i)+"_T2"
-				dao.addUser(userID,[]string{"T2"})
+				dao.addUser(userID,[]string{roleT2})
 				votes[userID] = vote
 			}
 
 			for i,vote:= range tdata.votesT3 {
 				userID:=fmt.Sprint(i)+"_T3"
-				dao.addUser(userID,[]string{"T3"})
+				dao.addUser(userID,[]string{roleT3})
 				votes[userID] = vote
 			}
 			cond := GovDaoCondThreshold(tdata.threshold, dao.hasRole, dao.usersWithRoleCount)
