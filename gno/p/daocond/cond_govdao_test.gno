@@ -73,6 +73,26 @@ func TestComputeVotingPowers(t *testing.T){
 				"T3":0.1,	
 			},
 		},
+		"0 -T1s": {
+			t1s: 0,
+			t2s: 100,
+			t3s: 100,
+			expectedPowers: map[string]float64{
+				"T1":3.0,	
+				"T2":0.0,
+				"T3":0.0,	
+			},
+		},
+		"100 T1, 1 T2, 1 T3": {
+			t1s: 100,
+			t2s: 1,
+			t3s: 1,
+			expectedPowers: map[string]float64{
+				"T1":3.0,	
+				"T2":2.0,
+				"T3":1.0,	
+			},
+		},
 	}
 
 	for name,composition := range tests{
