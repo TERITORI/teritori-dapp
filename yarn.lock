@@ -11676,12 +11676,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-blur@npm:~12.9.2":
-  version: 12.9.2
-  resolution: "expo-blur@npm:12.9.2"
+"expo-blur@npm:~13.0.3":
+  version: 13.0.3
+  resolution: "expo-blur@npm:13.0.3"
   peerDependencies:
     expo: "*"
-  checksum: 56be7adc400d01a541ba92a8f35efa4295e57750f0736c73b2890a006ce873f646df3b08c822073fc7b34c984cb213aef135f133b0fc97a28c4eb89afb4676bd
+  checksum: 1bc73b8dca9a98273427dfe39a59ba667b73b1a78cb277602ecbc25176e24477cdc75541319806179a0a7f728f9d7734715a59be6aae39710a2ee2a3a7df02b5
   languageName: node
   linkType: hard
 
@@ -20447,7 +20447,7 @@ __metadata:
     ethers: ^5.7.2
     expo: ~50.0.20
     expo-av: ~13.10.6
-    expo-blur: ~12.9.2
+    expo-blur: ~13.0.3
     expo-clipboard: ~5.0.1
     expo-dev-client: ~3.3.12
     expo-doctor: ^1.1.3

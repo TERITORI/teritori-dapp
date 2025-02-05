@@ -98,7 +98,7 @@
     "ethers": "^5.7.2",
     "expo": "~50.0.20",
     "expo-av": "~13.10.6",
-    "expo-blur": "~12.9.2",
+    "expo-blur": "~13.0.3",
     "expo-clipboard": "~5.0.1",
     "expo-document-picker": "~11.10.1",
     "expo-file-system": "~16.0.9",
