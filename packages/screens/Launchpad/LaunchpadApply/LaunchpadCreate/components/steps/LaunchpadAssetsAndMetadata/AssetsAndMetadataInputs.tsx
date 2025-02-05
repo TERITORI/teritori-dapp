@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { SafeAreaView, View } from "react-native";
 
+import { findDuplicates } from "./../../../../../../../utils/arrays";
 import { AssetModal } from "./AssetModal";
 import {
   AssetsAndMetadataIssue,
@@ -19,11 +20,7 @@ import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { ResetAllButton } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadAssetsAndMetadata/ResetAllButton";
 import { IMAGE_MIME_TYPES, TXT_CSV_MIME_TYPES } from "@/utils/mime";
-import {
-  NUMBERS_COMMA_SEPARATOR_REGEXP,
-  NUMBERS_REGEXP,
-  URL_REGEX,
-} from "@/utils/regex";
+import { NUMBERS_COMMA_SEPARATOR_REGEXP, URL_REGEX } from "@/utils/regex";
 import { layout } from "@/utils/style/layout";
 import { LocalFileData } from "@/utils/types/files";
 import {
@@ -121,6 +118,7 @@ export const AssetsAndMetadataInputs: React.FC<Props> = ({
     ids
       ?.split(attributesIdsSeparator)
       .map((id) => id.trim())
+      .map((id) => id.trim())
       .filter((id) => NUMBERS_COMMA_SEPARATOR_REGEXP.test(id)) || [];
 
   // On remove image manually
@@ -173,17 +171,17 @@ export const AssetsAndMetadataInputs: React.FC<Props> = ({
           const missingIdRows: string[][] = [];
           const missingTypeRows: string[][] = [];
           const missingValueRows: string[][] = [];
-          const wrongIdRows: string[][] = [];
+          const duplicateIds = findDuplicates(
+            attributesDataRows.map((dataRow) => dataRow[idColIndex]?.trim()),
+          );
           const rowsIndexesToRemove: number[] = [];
 
           // Controlling attributes
           cleanDataRows(attributesDataRows).forEach((dataRow, dataRowIndex) => {
-            const hasNoId = !dataRow[idColIndex]?.trim();
+            const hasNoId = !dataRow[typeColIndex]?.trim();
             const hasNoValue = !dataRow[valueColIndex]?.trim();
             const hasNoType = !dataRow[typeColIndex]?.trim();
-            const hasWrongId =
-              dataRow[idColIndex]?.trim() &&
-              !NUMBERS_REGEXP.test(dataRow[idColIndex].trim());
+            const hasDuplicateIds = !!duplicateIds.length;
 
             // Warning if no id in attribute (Ignore attribute)
             if (hasNoId) {
@@ -197,12 +195,10 @@ export const AssetsAndMetadataInputs: React.FC<Props> = ({
             if (hasNoType) {
               missingTypeRows.push(dataRow);
             }
-            // Warning if id is not a digit (Ignore attribute)
-            if (hasWrongId) {
-              wrongIdRows.push(dataRow);
-            }
+            // Also, warning if duplicate ids in attribute (Ignore attribute)
+
             // We get the invalidated rows to remove
-            if (hasNoId || hasNoValue || hasNoType || hasWrongId) {
+            if (hasNoId || hasNoValue || hasNoType || hasDuplicateIds) {
               rowsIndexesToRemove.push(dataRowIndex);
             }
           });
@@ -254,9 +250,9 @@ export const AssetsAndMetadataInputs: React.FC<Props> = ({
               },
             ]);
           }
-          if (wrongIdRows.length) {
-            const title = `Wrong id`;
-            const message = `${pluralize("attribute", wrongIdRows.length, true)} ${pluralize("has", wrongIdRows.length)} a wrong "id" value and ${pluralize("has", wrongIdRows.length)} beed ignored. Only a number is allowed.\nCheck the description for more information.`;
+          if (duplicateIds.length) {
+            const title = `Duplicate ids found`;
+            const message = `${pluralize("id", duplicateIds.length, true)} ${pluralize("is", duplicateIds.length)} not unique (The ${pluralize("duplicate", duplicateIds.length)} ${pluralize("is", duplicateIds.length)} ignored): ${duplicateIds.map((id) => `${id}; `)}\nPlease provide unique values in the "id" column.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
             setAttributesIssues((issues) => [
               ...issues,
