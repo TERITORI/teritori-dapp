@@ -16,7 +16,7 @@ export const LegacyPrimaryBox: React.FC<{
   style?: StyleProp<ViewStyle>;
   mainContainerStyle?: StyleProp<ViewStyle>;
   noBrokenCorners?: boolean;
-  colors?: string[];
+  colors?: [string, string, ...string[]];
   noRightBrokenBorder?: boolean;
   children: ReactNode;
 }> = ({
@@ -74,7 +74,7 @@ export const LegacyPrimaryBox: React.FC<{
               disabled
                 ? [neutral67, "#B7B7B7"]
                 : colors
-                  ? colors
+                  ? [colors[0], colors[0]]
                   : ["#01B7C5", "#782C96"]
             }
           >

@@ -14,7 +14,7 @@ type GradientBoxProps = {
   size?: number;
   radius?: number;
   direction?: GradientDirectionEnum;
-  colors: string[];
+  colors?: [string, string, ...string[]];
   style?: StyleProp<ViewStyle>;
 };
 
@@ -22,7 +22,7 @@ export default function GradientBox({
   size,
   radius,
   direction = GradientDirectionEnum.topBottom,
-  colors = [],
+  colors,
   style,
 }: GradientBoxProps) {
   const startEnd = gradientPositionGenerator(direction);
@@ -42,7 +42,7 @@ export default function GradientBox({
       <LinearGradient
         start={startEnd.start}
         end={startEnd.end}
-        colors={colors.length ? colors : [primaryColor, secondaryColor]}
+        colors={colors?.length ? colors : [primaryColor, secondaryColor]}
         style={{ flex: 1, borderRadius: radius ?? 6 }}
       />
     </View>

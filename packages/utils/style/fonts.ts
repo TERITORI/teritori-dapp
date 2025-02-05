@@ -1,12 +1,24 @@
 import { TextStyle } from "react-native";
 
-export const exoFontFamilyFromFontWeight = (weight: string | undefined) => {
+export const exoFontFamilyFromFontWeight = (
+  weight: string | number | undefined,
+) => {
   switch (weight) {
+    case "400":
+    case 400:
+    case "regular":
+      return "Exo_400Regular";
     case "500":
+    case 500:
+    case "medium":
       return "Exo_500Medium";
     case "700":
+    case 700:
+    case "bold":
       return "Exo_700Bold";
     case "600":
+    case 600:
+    case "semibold":
       return "Exo_600SemiBold";
     default:
       return "Exo_400Regular";

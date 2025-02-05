@@ -1,3 +1,4 @@
+import { LinearGradientProps } from "expo-linear-gradient";
 import { LatLngBoundsLiteral } from "leaflet";
 import { FunctionComponent } from "react";
 
@@ -257,7 +258,7 @@ export const getMapPostTextGradientType = (postCategory: PostCategory) => {
 };
 
 export const getMapPostTextGradient = (postCategory: PostCategory) => {
-  const gradientProps = {
+  const gradientProps: LinearGradientProps = {
     colors: ["#FFFFFF", "#AAAAAA"],
     start: { x: 0, y: 1 },
     end: { x: 0, y: 0 },

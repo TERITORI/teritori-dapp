@@ -1,4 +1,4 @@
-import { LinearGradient } from "expo-linear-gradient";
+import { LinearGradient, LinearGradientProps } from "expo-linear-gradient";
 import React, { ComponentType } from "react";
 import {
   Modal,
@@ -26,17 +26,26 @@ import { SeparatorGradient } from "../separators/SeparatorGradient";
 
 import { fontRegular20 } from "@/utils/style/fonts";
 
-const getModalColors = (status?: ModalBaseProps["modalStatus"]) => {
+const getModalGradient = (status?: ModalBaseProps["modalStatus"]) => {
+  const gradientProps: LinearGradientProps = {
+    start: { x: 0, y: 0 },
+    end: { x: 0, y: 1 },
+    colors: [neutral00, neutral00],
+  };
   switch (status) {
     case "danger":
-      return [neutral00, errorColor];
+      gradientProps.colors = [neutral00, errorColor];
+      break;
     case "success":
-      return [neutral00, successColor];
+      gradientProps.colors = [neutral00, successColor];
+      break;
     case "dark":
-      return [neutral00, neutral33];
+      gradientProps.colors = [neutral00, neutral33];
+      break;
     default:
-      return [neutral00];
+      gradientProps.colors = [neutral00, neutral00];
   }
+  return gradientProps;
 };
 // TODO: Simplify this component (Useless childrenBottom ?. Better to let the parent totally decides which children to use ? Used in WalletManager.tsx, be careful !)
 
@@ -118,8 +127,6 @@ const GradientModalBase: React.FC<ModalBaseProps> = ({
           ]}
         >
           <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
             style={{
               position: "absolute",
               top: "40%",
@@ -127,7 +134,7 @@ const GradientModalBase: React.FC<ModalBaseProps> = ({
               bottom: 0,
               right: 0,
             }}
-            colors={getModalColors(modalStatus)}
+            {...getModalGradient(modalStatus)}
           />
 
           {/*------ Modal header */}

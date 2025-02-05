@@ -121,7 +121,7 @@ type ExpoAvVideoType = {
   containerHeight: number;
   isControlsShown: boolean;
   videoMetadata: SocialFeedVideoMetadata;
-  borderRadius?: AnimatableNumericValue | number;
+  borderRadius?: AnimatableNumericValue | string;
   postId?: string;
   resizeMode?: ResizeMode;
   id: string;
