@@ -94,10 +94,10 @@ export const BlurScreenContainer = ({
         },
       }
     : {
-        scrollEnabled: false,
+        // scrollEnabled: false,
         contentContainerStyle: {
           backgroundColor: background,
-          flex: 1,
+          flexGrow: 1,
         },
       };
 
