@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import React from "react";
+import { Control, UseFieldArrayAppend } from "react-hook-form";
 import { Pressable, ScrollView, View, ViewStyle } from "react-native";
+import { z } from "zod";
 
 import trashSVG from "../../../../../assets/icons/trash.svg";
 import walletInputSVG from "../../../../../assets/icons/wallet-input.svg";
-import useSelectedWallet from "../../../../hooks/useSelectedWallet";
 
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
@@ -18,50 +18,31 @@ import { fontSemibold28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
   ROLES_BASED_ORGANIZATION_STEPS,
-  RolesMemberSettingFormType,
+  RolesMembersFormType,
+  zodRolesMemberObject,
 } from "@/utils/types/organizations";
 
 interface RolesMembersSettingsSectionProps {
-  onSubmit: (form: RolesMemberSettingFormType) => void;
+  members: z.infer<typeof zodRolesMemberObject>[];
+  append: UseFieldArrayAppend<RolesMembersFormType>;
+  control: Control<RolesMembersFormType>;
+  remove: (index?: number | number[] | undefined) => void;
+  handleSubmit: () => void;
 }
 
 export const RolesMembersSettingsSection: React.FC<
   RolesMembersSettingsSectionProps
-> = ({ onSubmit }) => {
-  const { handleSubmit, control, resetField, unregister } =
-    useForm<RolesMemberSettingFormType>();
-
-  // this effect put the selected wallet address in the first field only on initial load
-  const selectedWallet = useSelectedWallet();
-  const [initialReset, setInitialReset] = useState(false);
-  useEffect(() => {
-    if (initialReset) {
-      return;
-    }
-    if (!selectedWallet?.address) {
-      return;
-    }
-    resetField("members.0.addr", {
-      defaultValue: selectedWallet?.address,
-    });
-    setInitialReset(true);
-  }, [selectedWallet?.address, resetField, initialReset]);
-
-  const [addressIndexes, setAddressIndexes] = useState<number[]>([0]);
-
-  // functions
-  const removeAddressField = (id: number, index: number) => {
-    unregister(`members.${index}.addr`);
-    unregister(`members.${index}.weight`);
-    unregister(`members.${index}.roles`);
-    if (addressIndexes.length > 1) {
-      const copyIndex = [...addressIndexes].filter((i) => i !== id);
-      setAddressIndexes(copyIndex);
-    }
+> = ({ handleSubmit, append, remove, members, control }) => {
+  const removeAddressField = (index: number) => {
+    remove(index);
   };
 
   const addAddressField = () => {
-    setAddressIndexes([...addressIndexes, Math.floor(Math.random() * 200000)]);
+    append({
+      addr: "",
+      weight: "",
+      roles: "",
+    });
   };
 
   return (
@@ -70,10 +51,10 @@ export const RolesMembersSettingsSection: React.FC<
         <BrandText style={fontSemibold28}>Members</BrandText>
         <SpacerColumn size={2.5} />
 
-        {addressIndexes.map((id, index) => (
-          <View style={inputContainerCStyle} key={id.toString()}>
+        {members.map((member, index) => (
+          <View style={inputContainerCStyle} key={member.addr}>
             <View style={leftInputCStyle}>
-              <TextInputCustom<RolesMemberSettingFormType>
+              <TextInputCustom<RolesMembersFormType>
                 name={`members.${index}.addr`}
                 noBrokenCorners
                 label="Member Address"
@@ -85,7 +66,7 @@ export const RolesMembersSettingsSection: React.FC<
               >
                 <Pressable
                   style={trashContainerCStyle}
-                  onPress={() => removeAddressField(id, index)}
+                  onPress={() => removeAddressField(index)}
                 >
                   <SVG source={trashSVG} width={12} height={12} />
                 </Pressable>
@@ -93,7 +74,7 @@ export const RolesMembersSettingsSection: React.FC<
             </View>
             <SpacerRow size={2.5} />
             <View style={rightInputCStyle}>
-              <TextInputCustom<RolesMemberSettingFormType>
+              <TextInputCustom<RolesMembersFormType>
                 name={`members.${index}.weight`}
                 noBrokenCorners
                 label="Weight"
@@ -106,7 +87,7 @@ export const RolesMembersSettingsSection: React.FC<
             </View>
             <SpacerRow size={2.5} />
             <View style={rightInputCStyle}>
-              <TextInputCustom<RolesMemberSettingFormType>
+              <TextInputCustom<RolesMembersFormType>
                 name={`members.${index}.roles`}
                 noBrokenCorners
                 label="Roles - separate with a comma"
@@ -125,7 +106,7 @@ export const RolesMembersSettingsSection: React.FC<
         <PrimaryButton
           size="M"
           text={`Next: ${ROLES_BASED_ORGANIZATION_STEPS[4]}`}
-          onPress={handleSubmit(onSubmit)}
+          onPress={handleSubmit}
           testID="member-settings-next"
         />
       </View>
