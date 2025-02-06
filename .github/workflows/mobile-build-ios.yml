@@ -82,7 +82,7 @@ jobs:
         run: eas submit --platform=ios --path=${{ env.IPA_FILE }}  --profile=production
 
       - name: Upload IPA
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: teritori-${{ github.sha }}.ipa
           path: ${{ env.IPA_FILE }}
