@@ -93,7 +93,7 @@ jobs:
         run: eas submit --platform=android --path=${{ env.AAB_FILE }} --profile=production
 
       - name: Upload aab
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: teritori-${{ github.sha }}.aab
           path: ${{ env.AAB_FILE }}
