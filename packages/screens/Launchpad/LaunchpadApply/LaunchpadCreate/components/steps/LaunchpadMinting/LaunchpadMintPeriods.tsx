@@ -6,8 +6,10 @@ import addSVG from "@/assets/icons/add-secondary.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
-import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
-import useSelectedWallet from "@/hooks/useSelectedWallet";
+import {
+  useSelectedNetworkId,
+  useSelectedNetworkInfo,
+} from "@/hooks/useSelectedNetwork";
 import { getNetworkFeature, NetworkFeature } from "@/networks";
 import { LaunchpadMintPeriodAccordion } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadMinting/LaunchpadMintPeriodAccordion";
 import { secondaryColor } from "@/utils/style/colors";
@@ -20,8 +22,7 @@ interface Props {
 }
 
 export const LaunchpadMintPeriods: FC<Props> = ({ collectionForm }) => {
-  const selectedWallet = useSelectedWallet();
-  const networkId = selectedWallet?.networkId || "";
+  const networkId = useSelectedNetworkId();
   const selectedNetwork = useSelectedNetworkInfo();
 
   const { update, append, remove } = useFieldArray({
