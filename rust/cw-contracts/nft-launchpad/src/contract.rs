@@ -96,7 +96,7 @@ impl NftLaunchpad {
         }
         if let Some(proposal_single_contract) = changes.proposal_single_contract {
             config.proposal_single_contract = ctx.deps.api.addr_validate(&proposal_single_contract)?;
-            attributes.push(attr("new_name", proposal_single_contract.to_string()))
+            attributes.push(attr("new_proposal_single_contract", proposal_single_contract.to_string()))
         }
         self.config.save(ctx.deps.storage, &config)?;
 
