@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { SafeAreaView, View } from "react-native";
 
-import { findDuplicates } from "./../../../../../../../utils/arrays";
 import { AssetModal } from "./AssetModal";
 import {
   AssetsAndMetadataIssue,
@@ -171,17 +170,28 @@ export const AssetsAndMetadataInputs: React.FC<Props> = ({
           const missingIdRows: string[][] = [];
           const missingTypeRows: string[][] = [];
           const missingValueRows: string[][] = [];
-          const duplicateIds = findDuplicates(
-            attributesDataRows.map((dataRow) => dataRow[idColIndex]?.trim()),
-          );
+          // The rows indexes that will be removed
           const rowsIndexesToRemove: number[] = [];
+          // All the rows that have the same id
+          const duplicateRows: string[][] = [];
+          const seenRows = new Set();
 
-          // Controlling attributes
+          // Controlling attributes (Values presents? Unique ids?)
           cleanDataRows(attributesDataRows).forEach((dataRow, dataRowIndex) => {
-            const hasNoId = !dataRow[typeColIndex]?.trim();
+            const id = dataRow[idColIndex]?.trim();
+            const hasNoId = !id.trim();
             const hasNoValue = !dataRow[valueColIndex]?.trim();
             const hasNoType = !dataRow[typeColIndex]?.trim();
-            const hasDuplicateIds = !!duplicateIds.length;
+            let isDuplicate = false;
+
+            // Found rows that have the same id
+            // Warning if duplicate ids in attribute (Ignore attribute)
+            if (seenRows.has(id)) {
+              duplicateRows.push(dataRow);
+              isDuplicate = true;
+            } else {
+              seenRows.add(id);
+            }
 
             // Warning if no id in attribute (Ignore attribute)
             if (hasNoId) {
@@ -195,10 +205,9 @@ export const AssetsAndMetadataInputs: React.FC<Props> = ({
             if (hasNoType) {
               missingTypeRows.push(dataRow);
             }
-            // Also, warning if duplicate ids in attribute (Ignore attribute)
 
             // We get the invalidated rows to remove
-            if (hasNoId || hasNoValue || hasNoType || hasDuplicateIds) {
+            if (hasNoId || hasNoValue || hasNoType || isDuplicate) {
               rowsIndexesToRemove.push(dataRowIndex);
             }
           });
@@ -209,6 +218,11 @@ export const AssetsAndMetadataInputs: React.FC<Props> = ({
           );
           // Soring the final result
           setAttributesMappingDataRows(result);
+
+          // One occurence of each id that have duplicates (Used for the warning display)
+          const idsThatHaveDuplicates = new Set(
+            duplicateRows.map((dataRow) => dataRow[idColIndex]),
+          );
 
           // Handling warnings
           if (missingIdRows.length) {
@@ -250,9 +264,9 @@ export const AssetsAndMetadataInputs: React.FC<Props> = ({
               },
             ]);
           }
-          if (duplicateIds.length) {
+          if (idsThatHaveDuplicates.size) {
             const title = `Duplicate ids found`;
-            const message = `${pluralize("id", duplicateIds.length, true)} ${pluralize("is", duplicateIds.length)} not unique (The ${pluralize("duplicate", duplicateIds.length)} ${pluralize("is", duplicateIds.length)} ignored): ${duplicateIds.map((id) => `${id}; `)}\nPlease provide unique values in the "id" column.\nCheck the description for more information.`;
+            const message = `${pluralize("id", idsThatHaveDuplicates.size, true)} ${pluralize("is", idsThatHaveDuplicates.size)} not unique (The ${pluralize("duplicate", idsThatHaveDuplicates.size)} ${pluralize("is", idsThatHaveDuplicates.size)} ignored): ${Array.from(idsThatHaveDuplicates).map((id) => `${id}; `)}\nPlease provide unique values in the "id" column.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
             setAttributesIssues((issues) => [
               ...issues,
