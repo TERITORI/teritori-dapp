@@ -15,11 +15,19 @@ import {
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-export const PrizeInfo: FC<{
+interface PrizeInfoProps {
   info: Info;
   networkId: string;
   style?: StyleProp<ViewStyle>;
-}> = ({ info, networkId, style }) => {
+  onSuccess: () => void;
+}
+
+export const PrizeInfo: FC<PrizeInfoProps> = ({
+  info,
+  networkId,
+  style,
+  onSuccess,
+}) => {
   const prettyMaxPrizeAmount = prettyPrice(
     networkId,
     netMaxPrizeAmount(info),
@@ -55,7 +63,11 @@ export const PrizeInfo: FC<{
         in prizes!
       </BrandText>
 
-      <IntroTicketImageButton networkId={networkId} info={info} />
+      <IntroTicketImageButton
+        networkId={networkId}
+        info={info}
+        onSuccess={onSuccess}
+      />
     </View>
   );
 };

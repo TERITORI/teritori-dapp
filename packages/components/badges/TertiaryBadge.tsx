@@ -8,7 +8,7 @@ import {
   paddingHorizontalBadge,
 } from "../../utils/style/badges";
 import { neutral33 } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
+import { fontRegular14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
@@ -34,7 +34,7 @@ export const TertiaryBadge: React.FC<{
         style,
       ]}
     >
-      <BrandText style={[fontSemibold14, { color: textColor }]}>
+      <BrandText style={[fontRegular14, { color: textColor }]}>
         {label}
       </BrandText>
       {!!iconSVG && (

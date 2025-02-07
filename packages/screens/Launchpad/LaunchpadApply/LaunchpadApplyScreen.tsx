@@ -16,7 +16,7 @@ import { SpacerColumn } from "@/components/spacer";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { ScreenFC } from "@/utils/navigation";
 import { neutral77 } from "@/utils/style/colors";
-import { fontSemibold14, fontSemibold28 } from "@/utils/style/fonts";
+import { fontRegular14, fontRegular28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 const MD_BREAKPOINT = 720;
@@ -43,13 +43,13 @@ const BUTTONS: LargeBoxButtonProps[] = [
 export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
   const { width } = useMaxResolution();
   return (
-    <ScreenContainer>
+    <ScreenContainer responsive isLarge>
       <ImageBackgroundLogoText
         backgroundImage={LaunchpadBannerImage}
         text="Apply to Launchpad"
       />
       <SpacerColumn size={2} />
-      <BrandText style={fontSemibold28}>Welcome</BrandText>
+      <BrandText style={fontRegular28}>Welcome</BrandText>
       <SpacerColumn size={2} />
       <BrandText style={descriptionTextCStyle}>
         Looking for a fast and efficient way to build an NFT collection?
@@ -101,6 +101,6 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
 };
 
 const descriptionTextCStyle: TextStyle = {
-  ...fontSemibold14,
+  ...fontRegular14,
   color: neutral77,
 };
