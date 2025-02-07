@@ -1,4 +1,12 @@
 use cosmwasm_std::{Addr, Attribute, Coin, Uint128};
+use cw_utils::Duration;
+use dao_proposal_single::contract::{
+    execute as dao_execute, instantiate as dao_instantiate, query as dao_query,
+};
+use dao_proposal_single::msg::InstantiateMsg as DaoInstantiateMsg;
+use dao_voting::pre_propose::PreProposeInfo;
+use dao_voting::threshold::Threshold;
+use sylvia::cw_multi_test::{ContractWrapper, Executor};
 use sylvia::multitest::App;
 
 use crate::{
@@ -69,6 +77,8 @@ fn get_default_collection() -> CollectionProject {
     }
 }
 
+const PROPOSAL_SINGLE_CONTRACT: &str = "contract1";
+
 #[test]
 fn instantiate() {
     let app = App::default();
@@ -77,6 +87,8 @@ fn instantiate() {
     // Deploy NFT TR721 for sylvia contract
     let nft_contract = NftTr721CodeId::store_code(&app);
     let deployed_nft_code_id = nft_contract.code_id();
+    // DAO Proposal Single module
+    let proposal_single_contract: &str = PROPOSAL_SINGLE_CONTRACT;
 
     // Instantiate
     let config = Config {
@@ -84,6 +96,7 @@ fn instantiate() {
         nft_code_id: deployed_nft_code_id,
         admin: Addr::unchecked("admin"),
         owner: Addr::unchecked(sender),
+        proposal_single_contract: Addr::unchecked(proposal_single_contract),
     };
 
     let contract = code_id.instantiate(config).call(sender).unwrap();
@@ -112,6 +125,7 @@ fn full_flow() {
             nft_code_id: deployed_nft_code_id,
             admin: Addr::unchecked("admin"),
             owner: Addr::unchecked(sender),
+            proposal_single_contract: Addr::unchecked(PROPOSAL_SINGLE_CONTRACT),
         })
         .call(sender)
         .unwrap();
@@ -119,6 +133,39 @@ fn full_flow() {
     // Check instantiated launchpad
     let config = contract.get_config().unwrap();
     assert_eq!(config.name, "teritori launchpad".to_string());
+
+    // Instantiate DAO contract ---------------------------------------------------------
+    // Store DAO contract
+    let dao_contract = Box::new(ContractWrapper::new(
+        dao_execute,
+        dao_instantiate,
+        dao_query,
+    ));
+    let dao_code_id = app.app_mut().store_code(dao_contract);
+
+    // Instantiate the contract
+    let proposal_single_contract = app
+        .app_mut()
+        .instantiate_contract(
+            dao_code_id,
+            Addr::unchecked("admin"),
+            &DaoInstantiateMsg {
+                threshold: Threshold::AbsoluteCount {
+                    threshold: Uint128::new(1),
+                },
+                max_voting_period: Duration::Height(1),
+                min_voting_period: Some(Duration::Height(1)),
+                only_members_execute: true,
+                allow_revoting: true,
+                close_proposal_on_execution_failure: true,
+                pre_propose_info: PreProposeInfo::AnyoneMayPropose {},
+                veto: None,
+            },
+            &[],
+            "DaoContract",
+            None, // No admin
+        )
+        .unwrap();
 
     // Create collection without period -----------------------------------------
     {
@@ -186,6 +233,7 @@ fn full_flow() {
                 nft_code_id: Some(deployed_nft_code_id),
                 admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
+                proposal_single_contract: Some(proposal_single_contract.to_string()),
             })
             .call("wrong_owner")
             .unwrap_err();
@@ -200,6 +248,7 @@ fn full_flow() {
                 nft_code_id: Some(deployed_nft_code_id),
                 admin: Some("deployer".to_string()),
                 owner: Some(sender.to_string()),
+                proposal_single_contract: Some(proposal_single_contract.to_string()),
             })
             .call(sender)
             .unwrap();
@@ -219,6 +268,7 @@ fn full_flow() {
                 nft_code_id: Some(deployed_nft_code_id),
                 admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
+                proposal_single_contract: Some(proposal_single_contract.to_string()),
             })
             .call(sender)
             .unwrap();
@@ -274,6 +324,7 @@ fn full_flow() {
                 nft_code_id: Some(deployed_nft_code_id),
                 admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
+                proposal_single_contract: Some(proposal_single_contract.to_string()),
             })
             .call(sender)
             .unwrap();
@@ -300,6 +351,6 @@ fn full_flow() {
 
         // Check deployed contract
         let collection = contract.get_collection_by_id(collection_id).unwrap();
-        assert_eq!(collection.deployed_address, Some("contract1".to_string()));
+        assert_eq!(collection.deployed_address, Some("contract2".to_string()));
     }
 }

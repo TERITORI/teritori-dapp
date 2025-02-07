@@ -58,6 +58,7 @@ const zodCosmWasmNFTLaunchpad = z.object({
   launchpadEndpoint: z.string(),
   codeId: z.number(),
   nftTr721CodeId: z.number(),
+  daoProposalSingleContractAddress: z.string(),
 });
 
 export type CosmWasmNFTLaunchpad = z.infer<typeof zodCosmWasmNFTLaunchpad>;

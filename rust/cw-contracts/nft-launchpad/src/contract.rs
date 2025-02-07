@@ -1,20 +1,36 @@
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{attr, to_json_binary, Addr, Reply, Response, StdResult, SubMsg, WasmMsg};
+use cosmwasm_std::{attr, to_json_binary, from_json, Addr, Reply, Response, StdResult, SubMsg, WasmMsg};
 use cw_storage_plus::{Item, Map};
-use cw_utils::parse_reply_instantiate_data;
+use cw_utils::{parse_reply_execute_data, parse_reply_instantiate_data};
 use sylvia::{
     contract, entry_points,
     types::{ExecCtx, InstantiateCtx, QueryCtx, ReplyCtx},
 };
 
 use crate::error::ContractError;
-
 use nft_tr721::{
     contract::sv::InstantiateMsg as Tr721InstantiateMsg,
     contract::{MintInfo as Tr721MintInfo, MintPeriod as Tr721MintPeriod},
 };
 
+use dao_proposal_single::msg::ExecuteMsg as DaoExecuteMsg;
+use dao_voting::proposal::SingleChoiceProposeMsg;
+
 const INSTANTIATE_REPLY_ID: u64 = 1u64;
+const EXECUTE_REPLY_ID: u64 = 2u64;
+
+
+#[derive(serde::Serialize)]
+pub enum ExecuteMsg {
+    DeployCollection {
+        collection_id: String
+    },
+}
+
+#[derive(serde::Deserialize)]
+pub struct MsgExecuteProposeResponseData {
+    proposal_id: String
+}
 
 // Contract states ------------------------------------------------------
 pub struct NftLaunchpad {
@@ -62,6 +78,10 @@ impl NftLaunchpad {
         }
 
         // Save new config
+        if let Some(name) = changes.name {
+            config.name = name.clone();
+            attributes.push(attr("new_name", name.to_string()))
+        }
         if let Some(nft_code_id) = changes.nft_code_id {
             config.nft_code_id = nft_code_id;
             attributes.push(attr("new_nft_code_id", nft_code_id.to_string()))
@@ -73,6 +93,10 @@ impl NftLaunchpad {
         if let Some(owner) = changes.owner {
             config.owner = ctx.deps.api.addr_validate(&owner)?;
             attributes.push(attr("new_owner", owner))
+        }
+        if let Some(proposal_single_contract) = changes.proposal_single_contract {
+            config.proposal_single_contract = ctx.deps.api.addr_validate(&proposal_single_contract)?;
+            attributes.push(attr("new_proposal_single_contract", proposal_single_contract.to_string()))
         }
         self.config.save(ctx.deps.storage, &config)?;
 
@@ -133,6 +157,8 @@ impl NftLaunchpad {
         merkle_root: String,
     ) -> Result<Response, ContractError> {
         let storage = ctx.deps.storage;
+        let config = self.config.load(storage)?;
+        let proposal_single_contract = config.proposal_single_contract;
 
         let mut collection = self
             .collections
@@ -153,10 +179,35 @@ impl NftLaunchpad {
         collection.metadatas_merkle_root = Some(merkle_root.clone());
 
         // Update collection
-        self.collections.save(storage, collection_id, &collection)?;
+        self.collections.save(storage, collection_id.clone(), &collection)?;
+
+        // Create the deploy_collection proposal message
+        let deploy_collection_msg = cosmwasm_std::CosmosMsg::Wasm(WasmMsg::Execute {
+            contract_addr: ctx.env.contract.address.to_string(),
+            msg: to_json_binary(&ExecuteMsg::DeployCollection {collection_id: collection_id.clone()})?,
+            funds: vec![],
+        });
+        let single_choice_propose_msg = SingleChoiceProposeMsg {
+            title: format!("Propose to deploy collection {}", collection_id),
+            description: format!(
+                "Requesting approval to deploy the collection {} with ID {}",
+                collection.name, collection_id
+            ),
+            msgs: vec![deploy_collection_msg],
+            proposer: None,
+            vote: None,
+        };
+        let propose_execute_msg = WasmMsg::Execute {
+            contract_addr: proposal_single_contract.to_string(),
+            msg: to_json_binary(&DaoExecuteMsg::Propose(single_choice_propose_msg))?,
+            funds: vec![],
+        };
+
+        let submessage = SubMsg::reply_on_success(propose_execute_msg, EXECUTE_REPLY_ID);
 
         Ok(Response::new()
-            .add_attribute("action", "update_merkle_root")
+            .add_submessage(submessage)
+            .add_attribute("action", "merkle_root_updated")
             .add_attribute("merkle_root", merkle_root))
     }
 
@@ -244,6 +295,29 @@ impl NftLaunchpad {
         let msg_id = msg.id;
         let storage = ctx.deps.storage;
 
+        // dao single choice propose execute submessage
+        if msg_id == EXECUTE_REPLY_ID {
+            let resp = parse_reply_execute_data(msg.clone())?;
+
+            if let Some(data) = resp.data {
+
+                // TODO: If proposal_id not available in data, use dao_proposal_single hooks
+
+                let parsed: StdResult<MsgExecuteProposeResponseData> = from_json(data.as_slice());
+                match parsed {
+                    Ok(parsed_data) => {
+                        let proposal_id = parsed_data.proposal_id;
+    
+                        return Ok(Response::new()
+                        .add_attribute("action", "collection_proposal_created")
+                        .add_attribute("proposal_id", proposal_id));
+                    }
+                    Err(_) => return Err(ContractError::ParseProposalIdFailed),
+                }
+            }
+        }
+
+        // tr771 instantiate submessage
         if msg_id == INSTANTIATE_REPLY_ID {
             let resp = parse_reply_instantiate_data(msg).unwrap();
             let deployed_addr = resp.contract_address;
@@ -274,6 +348,7 @@ pub struct Config {
     pub nft_code_id: u64,
     pub admin: Addr,
     pub owner: Addr,
+    pub proposal_single_contract: Addr,
 }
 
 #[cw_serde]
@@ -282,6 +357,7 @@ pub struct ConfigChanges {
     pub nft_code_id: Option<u64>,
     pub admin: Option<String>,
     pub owner: Option<String>,
+    pub proposal_single_contract: Option<String>,
 }
 
 #[cw_serde]
