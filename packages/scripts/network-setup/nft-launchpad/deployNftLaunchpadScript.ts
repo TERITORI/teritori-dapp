@@ -36,7 +36,6 @@ const main = async () => {
     const signer = await Secp256k1HdWallet.fromMnemonic(mnemonic, {
       prefix: network.addressPrefix,
     });
-    console.log("Restored signer:", signer);
 
     // Getting deployer wallet address from signer accounts
     const signerAddress = (await signer.getAccounts())[0].address;

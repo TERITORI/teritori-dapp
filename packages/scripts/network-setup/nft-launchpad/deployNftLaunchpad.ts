@@ -61,7 +61,7 @@ export const deployNftLaunchpad = async ({
   }
 
   // Optimizing contract and getting WASM binaries
-  console.log("Storing nft launchpad");
+  console.log("Storing NFT Launchpad");
   const nftLaunchpadWasmFilePath = path.join(
     __dirname,
     "../../../../artifacts/nft_launchpad.wasm",
@@ -74,7 +74,7 @@ export const deployNftLaunchpad = async ({
   );
 
   // Next steps
-  console.log("Instantiating nft launchpad", cosmwasmLaunchpadFeature.codeId);
+  console.log("Instantiating NFT Launchpad", cosmwasmLaunchpadFeature.codeId);
   const launchpadContractAddress = await instantiateNftLaunchpad({
     signingCosmWasmClient,
     nameServiceClient,
@@ -87,6 +87,7 @@ export const deployNftLaunchpad = async ({
   if (launchpadContractAddress)
     cosmwasmLaunchpadFeature.launchpadContractAddress =
       launchpadContractAddress;
+  console.log("NFT Launchpad instantiated:", launchpadContractAddress);
 
   // Updating the network with the updated feature
   network.featureObjects = network.featureObjects?.map((featureObject) => {
@@ -118,10 +119,10 @@ const instantiateNftLaunchpad = async ({
 }) => {
   const codeId = featureObject.codeId;
   if (!codeId) {
-    console.error("Nft Launchpad code ID not found");
+    console.error("NFT Launchpad code ID not found");
     process.exit(1);
   }
-  console.log("Nft Launchpad code ID found:", codeId);
+  console.log("NFT Launchpad code ID found:", codeId);
 
   // NFT TR721
   let nftCodeId = featureObject.nftTr721CodeId;
@@ -147,7 +148,7 @@ const instantiateNftLaunchpad = async ({
     });
   }
   console.log(
-    "CW ADMIN FACTORY deployed:",
+    "CW ADMIN FACTORY instantiated:",
     network.cwAdminFactoryContractAddress,
   );
 
