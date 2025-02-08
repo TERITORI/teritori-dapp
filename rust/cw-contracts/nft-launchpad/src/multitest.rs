@@ -1,12 +1,15 @@
-use cosmwasm_std::{Addr, Attribute, Coin, Uint128};
+use cosmwasm_std::{to_json_binary, Addr, Attribute, Coin, Empty, Uint128};
 use cw_utils::Duration;
+use dao_interface::msg::InstantiateMsg as DaoDaoInstantiateMsg;
+use dao_interface::state::{Admin, ModuleInstantiateInfo};
 use dao_proposal_single::contract::{
     execute as dao_execute, instantiate as dao_instantiate, query as dao_query,
 };
 use dao_proposal_single::msg::InstantiateMsg as DaoInstantiateMsg;
+use dao_testing::contracts::{dao_dao_contract, native_staked_balances_voting_contract};
 use dao_voting::pre_propose::PreProposeInfo;
 use dao_voting::threshold::Threshold;
-use sylvia::cw_multi_test::{ContractWrapper, Executor};
+use sylvia::cw_multi_test::{Contract, ContractWrapper, Executor};
 use sylvia::multitest::App;
 
 use crate::{
@@ -106,6 +109,85 @@ fn instantiate() {
     assert_eq!(config.name, "teritori launchpad".to_string());
 }
 
+const DENOM: &str = "utori";
+
+fn single_proposal_contract() -> Box<dyn Contract<Empty>> {
+    let contract = ContractWrapper::new(dao_execute, dao_instantiate, dao_query);
+    Box::new(contract)
+}
+
+fn instantiate_dao_contract(app: &App<sylvia::cw_multi_test::App>, sender: &str) -> Addr {
+    let voting_id = app
+        .app_mut()
+        .store_code(native_staked_balances_voting_contract());
+    let dao_id = app.app_mut().store_code(dao_dao_contract());
+    let gov_id = app.app_mut().store_code(single_proposal_contract());
+
+    let gov_init_msg = DaoInstantiateMsg {
+        threshold: Threshold::AbsoluteCount {
+            threshold: Uint128::new(1),
+        },
+        max_voting_period: Duration::Height(1),
+        min_voting_period: Some(Duration::Height(1)),
+        only_members_execute: true,
+        allow_revoting: true,
+        close_proposal_on_execution_failure: true,
+        pre_propose_info: PreProposeInfo::AnyoneMayPropose {},
+        veto: None,
+    };
+
+    let voting_init_msg = dao_voting_token_staked::msg::InstantiateMsg {
+        token_info: dao_voting_token_staked::msg::TokenInfo::Existing {
+            denom: DENOM.to_string(),
+        },
+        unstaking_duration: Some(Duration::Height(5)),
+        active_threshold: None,
+    };
+
+    let dao_init_msg = DaoDaoInstantiateMsg {
+        dao_uri: None,
+        admin: None,
+        name: "DAO DAO".to_string(),
+        description: "A DAO that builds DAOs.".to_string(),
+        image_url: None,
+        automatically_add_cw20s: true,
+        automatically_add_cw721s: true,
+        voting_module_instantiate_info: ModuleInstantiateInfo {
+            code_id: voting_id,
+            msg: to_json_binary(&voting_init_msg).unwrap(),
+            admin: Some(Admin::Address {
+                addr: sender.to_string(),
+            }),
+            funds: vec![],
+            label: "voting module".to_string(),
+        },
+        proposal_modules_instantiate_info: vec![ModuleInstantiateInfo {
+            code_id: gov_id,
+            msg: to_json_binary(&gov_init_msg).unwrap(),
+            admin: Some(Admin::Address {
+                addr: sender.to_string(),
+            }),
+            funds: vec![],
+            label: "single proposal module".to_string(),
+        }],
+        initial_items: None,
+    };
+
+    let dao_addr = app
+        .app_mut()
+        .instantiate_contract(
+            dao_id,
+            Addr::unchecked(sender),
+            &dao_init_msg,
+            &[],
+            "Dao dao",
+            None,
+        )
+        .unwrap();
+
+    return dao_addr;
+}
+
 #[test]
 fn full_flow() {
     // 1. Create
@@ -134,38 +216,20 @@ fn full_flow() {
     let config = contract.get_config().unwrap();
     assert_eq!(config.name, "teritori launchpad".to_string());
 
-    // Instantiate DAO contract ---------------------------------------------------------
-    // Store DAO contract
-    let dao_contract = Box::new(ContractWrapper::new(
-        dao_execute,
-        dao_instantiate,
-        dao_query,
-    ));
-    let dao_code_id = app.app_mut().store_code(dao_contract);
+    // Instantiate DAO contract with Single Proposal module ---------------------------------------------------------
+    let _ = instantiate_dao_contract(&app, sender);
 
-    // Instantiate the contract
-    let proposal_single_contract = app
+    // FIXME: By order of execution, contract3 is the single proposal contract
+    // We should find a way to get that address dynamically
+    // For now, we just hardcode it
+    const SINGLE_PROPOSAL_CONTRACT_ADDR: &str = "contract3";
+    let contract_data = app
         .app_mut()
-        .instantiate_contract(
-            dao_code_id,
-            Addr::unchecked("admin"),
-            &DaoInstantiateMsg {
-                threshold: Threshold::AbsoluteCount {
-                    threshold: Uint128::new(1),
-                },
-                max_voting_period: Duration::Height(1),
-                min_voting_period: Some(Duration::Height(1)),
-                only_members_execute: true,
-                allow_revoting: true,
-                close_proposal_on_execution_failure: true,
-                pre_propose_info: PreProposeInfo::AnyoneMayPropose {},
-                veto: None,
-            },
-            &[],
-            "DaoContract",
-            None, // No admin
-        )
+        .contract_data(&Addr::unchecked(SINGLE_PROPOSAL_CONTRACT_ADDR))
         .unwrap();
+    assert_eq!(contract_data.label, "single proposal module".to_string());
+
+    let single_proposal_contract_addr = SINGLE_PROPOSAL_CONTRACT_ADDR;
 
     // Create collection without period -----------------------------------------
     {
@@ -233,7 +297,7 @@ fn full_flow() {
                 nft_code_id: Some(deployed_nft_code_id),
                 admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
-                proposal_single_contract: Some(proposal_single_contract.to_string()),
+                proposal_single_contract: Some(single_proposal_contract_addr.to_string()),
             })
             .call("wrong_owner")
             .unwrap_err();
@@ -248,7 +312,7 @@ fn full_flow() {
                 nft_code_id: Some(deployed_nft_code_id),
                 admin: Some("deployer".to_string()),
                 owner: Some(sender.to_string()),
-                proposal_single_contract: Some(proposal_single_contract.to_string()),
+                proposal_single_contract: Some(single_proposal_contract_addr.to_string()),
             })
             .call(sender)
             .unwrap();
@@ -268,7 +332,7 @@ fn full_flow() {
                 nft_code_id: Some(deployed_nft_code_id),
                 admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
-                proposal_single_contract: Some(proposal_single_contract.to_string()),
+                proposal_single_contract: Some(single_proposal_contract_addr.to_string()),
             })
             .call(sender)
             .unwrap();
@@ -324,7 +388,7 @@ fn full_flow() {
                 nft_code_id: Some(deployed_nft_code_id),
                 admin: Some(sender.to_string()),
                 owner: Some(sender.to_string()),
-                proposal_single_contract: Some(proposal_single_contract.to_string()),
+                proposal_single_contract: Some(single_proposal_contract_addr.to_string()),
             })
             .call(sender)
             .unwrap();
