@@ -28,7 +28,7 @@ pub enum ExecuteMsg {
 }
 
 #[derive(serde::Deserialize)]
-pub struct MsgExecuteProposalResponseData {
+pub struct MsgExecuteProposeResponseData {
     proposal_id: String
 }
 
@@ -303,7 +303,7 @@ impl NftLaunchpad {
 
                 // TODO: If proposal_id not available in data, use dao_proposal_single hooks
 
-                let parsed: StdResult<MsgExecuteProposalResponseData> = from_json(data.as_slice());
+                let parsed: StdResult<MsgExecuteProposeResponseData> = from_json(data.as_slice());
                 match parsed {
                     Ok(parsed_data) => {
                         let proposal_id = parsed_data.proposal_id;
