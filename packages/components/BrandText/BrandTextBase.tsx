@@ -12,7 +12,7 @@ export const BrandTextBase: React.FC<TextProps & { isTicker?: boolean }> = (
   const baseStyle: TextStyle = {
     color: theme.textColor,
     fontSize: 20,
-    fontWeight: "600",
+    fontWeight: "400",
   };
 
   if (isTicker)
