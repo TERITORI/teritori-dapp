@@ -16,6 +16,13 @@ jobs:
         with:
           scarb-version: "2.9.2"
 
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install cairo-lint
+        run: cargo install scarb-cairo-lint --git https://github.com/software-mansion/cairo-lint
+
       - name: Format
         run: make fmt.cairo
 
