@@ -390,8 +390,8 @@ init-weshd-go:
 bump-app-build-number:  
 	npx tsx packages/scripts/app-build/bumpBuildNumber.ts $(shell echo $$(($$(git rev-list HEAD --count) + 10)))
 
-.PHONY: test.starknet
-test.starknet:
+.PHONY: test.cairo
+test.cairo:
 	set -e ; \
 	for file in $(STARKNET_CONTRACTS); do \
 		echo "> Testing $${file}" ; \
@@ -400,13 +400,33 @@ test.starknet:
 		cd - ; \
 	done
 
-.PHONY: build.starknet
-build.starknet:
+.PHONY: build.cairo
+build.cairo:
 	set -e ; \
 	for file in $(STARKNET_CONTRACTS); do \
 		echo "> Building $${file}" ; \
 		cd $${file} ; \
 		scarb build ; \
+		cd - ; \
+	done
+
+.PHONY: fmt.cairo
+fmt.cairo:
+	set -e ; \
+	for file in $(STARKNET_CONTRACTS); do \
+		echo "> Building $${file}" ; \
+		cd $${file} ; \
+		scarb fmt ; \
+		cd - ; \
+	done
+
+.PHONY: lint.cairo
+lint.cairo:
+	set -e ; \
+	for file in $(STARKNET_CONTRACTS); do \
+		echo "> Building $${file}" ; \
+		cd $${file} ; \
+		scarb cairo-lint ; \
 		cd - ; \
 	done
 

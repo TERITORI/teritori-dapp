@@ -48,12 +48,11 @@ fn test_cannot_set_todo_done_with_invalid_index() {
     let safe_dispatcher = ITodoListSafeDispatcher { contract_address };
 
     safe_dispatcher.add_todo('Do Teritori task').unwrap();
-
     // TODO: Fix this test
-    // match safe_dispatcher.set_todo_done(2) {
-    //     Result::Ok(_) => core::panic_with_felt252('Should have panicked'),
-    //     Result::Err(panic_data) => {
-    //         assert(*panic_data.at(0) == 'Index out of bounds', *panic_data.at(0));
-    //     },
-    // };
+// match safe_dispatcher.set_todo_done(2) {
+//     Result::Ok(_) => core::panic_with_felt252('Should have panicked'),
+//     Result::Err(panic_data) => {
+//         assert(*panic_data.at(0) == 'Index out of bounds', *panic_data.at(0));
+//     },
+// };
 }

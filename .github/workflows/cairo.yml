@@ -1,0 +1,29 @@
+name: Cairo
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  merge_group:
+
+jobs:
+  check-cairo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Format
+        run: make fmt.cairo
+
+      - name: Lint
+        run: make lint.cairo
+
+      - name: Test
+        run: make test.cairo
+
+      - name: Build
+        run: make build.cairo
+
+      - name: Check diff
+        run: git diff --exit-code
