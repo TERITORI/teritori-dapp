@@ -9,6 +9,7 @@ export enum NetworkKind {
   Cosmos = "Cosmos",
   Solana = "Solana",
   Gno = "Gno",
+  Starknet = "Starknet",
 }
 
 interface NetworkInfoBase {
@@ -34,6 +35,17 @@ interface NetworkInfoBase {
   riotContractAddressGen1?: string;
   overrides?: string;
 }
+
+export type StarknetNetworkInfo = NetworkInfoBase & {
+  kind: NetworkKind.Starknet;
+  chainId: string;
+  addressPrefix: string;
+  restEndpoint: string;
+  rpcEndpoint: string;
+
+  vaultContractAddress?: string;
+  todoListContractAddress?: `0x${string}`;
+};
 
 export type CosmosNetworkInfo = NetworkInfoBase & {
   kind: NetworkKind.Cosmos;
@@ -130,7 +142,8 @@ export type GnoNetworkInfo = NetworkInfoBase & {
 export type NetworkInfo =
   | CosmosNetworkInfo
   | EthereumNetworkInfo
-  | GnoNetworkInfo;
+  | GnoNetworkInfo
+  | StarknetNetworkInfo;
 
 export type NativeCurrencyInfo = {
   kind: "native";
