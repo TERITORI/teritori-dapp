@@ -416,7 +416,7 @@ fmt.cairo:
 	for file in $(STARKNET_CONTRACTS); do \
 		echo "> Building $${file}" ; \
 		cd $${file} ; \
-		scarb fmt ; \
+		scarb fmt --check; \
 		cd - ; \
 	done
 
