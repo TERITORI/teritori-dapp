@@ -107,10 +107,10 @@ export const AssetsAndMetadataInputs: React.FC<Props> = ({
   };
 
   // We ignore the first row since it's the table headings
-  // We ignore unwanted empty lines from the CSV
+  // We ignore empty rows
   const cleanDataRows = (array: string[][]) =>
     array.filter(
-      (dataRow, dataRowIndex) => dataRow[0] !== "" && dataRowIndex > 0,
+      (dataRow, dataRowIndex) => dataRow.length > 1 && dataRowIndex > 0,
     );
   // Converts attributes ids as string to array of ids
   const cleanAssetAttributesIds = (ids?: string) =>
@@ -179,14 +179,14 @@ export const AssetsAndMetadataInputs: React.FC<Props> = ({
           // Controlling attributes (Values presents? Unique ids?)
           cleanDataRows(attributesDataRows).forEach((dataRow, dataRowIndex) => {
             const id = dataRow[idColIndex]?.trim();
-            const hasNoId = !id.trim();
+            const hasNoId = !id;
             const hasNoValue = !dataRow[valueColIndex]?.trim();
             const hasNoType = !dataRow[typeColIndex]?.trim();
             let isDuplicate = false;
 
             // Found rows that have the same id
             // Warning if duplicate ids in attribute (Ignore attribute)
-            if (seenRows.has(id)) {
+            if (!hasNoId && seenRows.has(id)) {
               duplicateRows.push(dataRow);
               isDuplicate = true;
             } else {
@@ -335,7 +335,6 @@ export const AssetsAndMetadataInputs: React.FC<Props> = ({
           const missingNameRows: string[][] = [];
           const missingAttributesRows: string[][] = [];
           const unknownAttributesRowsInAssets: string[][] = [];
-          const wrongAttributesRowsInAssets: string[][] = [];
           const wrongUrlsRowsInAssets: string[][] = [];
           const rowsIndexesToRemove: number[] = [];
 
@@ -344,9 +343,6 @@ export const AssetsAndMetadataInputs: React.FC<Props> = ({
             (assetDataRow, assetDataRowIndex) => {
               const hasNoName = !assetDataRow[nameColIndex]?.trim();
               const hasNoAttribute = !assetDataRow[attributesColIndex]?.trim();
-              const hasWrongAttribute = !NUMBERS_COMMA_SEPARATOR_REGEXP.test(
-                assetDataRow[attributesColIndex],
-              );
               const hasWrongExternalUrl =
                 assetDataRow[externalURLColIndex]?.trim() &&
                 !URL_REGEX.test(assetDataRow[externalURLColIndex].trim());
@@ -362,12 +358,8 @@ export const AssetsAndMetadataInputs: React.FC<Props> = ({
               if (hasNoAttribute) {
                 missingAttributesRows.push(assetDataRow);
               }
-              // Else, warning if wrong attributes ids in asset. We want numbers with comma separators (Ignore asset)
-              else if (hasWrongAttribute) {
-                wrongAttributesRowsInAssets.push(assetDataRow);
-              }
               // We get unvalidated rows to remove
-              if (hasNoName || hasNoAttribute || hasWrongAttribute) {
+              if (hasNoName || hasNoAttribute) {
                 rowsIndexesToRemove.push(assetDataRowIndex);
               }
 
@@ -417,19 +409,6 @@ export const AssetsAndMetadataInputs: React.FC<Props> = ({
           if (missingAttributesRows.length) {
             const title = `Incomplete ${pluralize("asset", missingAttributesRows.length)}`;
             const message = `Missing "attributes" in ${pluralize("asset", missingAttributesRows.length, true)} that ${pluralize("has", missingAttributesRows.length)} been ignored.\nPlease complete properly your assets mapping file.\nCheck the description for more information.`;
-            console.warn(title + ".\n" + message);
-            setAssetsIssues((issues) => [
-              ...issues,
-              {
-                title,
-                message,
-                type: "warning",
-              },
-            ]);
-          }
-          if (wrongAttributesRowsInAssets.length) {
-            const title = `Wrong attributes`;
-            const message = `${pluralize("asset", wrongAttributesRowsInAssets.length, true)} ${pluralize("has", wrongAttributesRowsInAssets.length)} a wrong "attributes" value and ${pluralize("has", wrongAttributesRowsInAssets.length)} been ignored. Only numbers with comma separator are allwowed.\nCheck the description for more information.`;
             console.warn(title + ".\n" + message);
             setAssetsIssues((issues) => [
               ...issues,
