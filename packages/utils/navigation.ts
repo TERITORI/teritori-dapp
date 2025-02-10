@@ -33,6 +33,13 @@ export type RootStackParamList = {
 
   Launchpad: undefined;
   LaunchpadApply: undefined;
+  LaunchpadCreate: undefined;
+  LaunchpadComplete: { id: string };
+  LaunchpadMyCollections: undefined;
+  LaunchpadAdministrationOverview: undefined;
+  LaunchpadApplications: undefined;
+  LaunchpadApplicationReview: { id: string };
+  LaunchpadReadyApplications: undefined;
 
   LaunchpadERC20: undefined;
   LaunchpadERC20Tokens?: { network?: string };
@@ -218,6 +225,13 @@ const getNavConfig: (homeScreen: keyof RootStackParamList) => NavConfig = (
       // ==== Launchpad
       Launchpad: "launchpad",
       LaunchpadApply: "launchpad/apply",
+      LaunchpadCreate: "launchpad/create",
+      LaunchpadComplete: "launchpad/complete/:id",
+      LaunchpadMyCollections: "launchpad/my-collections",
+      LaunchpadAdministrationOverview: "launchpad/admin",
+      LaunchpadApplications: "launchpad/admin/applications",
+      LaunchpadApplicationReview: "launchpad/review/:id",
+      LaunchpadReadyApplications: "launchpad/admin/ready-applications",
 
       // ==== Launchpad ERC20
       LaunchpadERC20: "launchpad-erc20",

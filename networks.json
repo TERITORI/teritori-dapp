@@ -11606,6 +11606,17 @@
       "RiotP2E",
       "NFTMarketplaceLeaderboard"
     ],
+    "featureObjects": [
+      {
+        "type": "CosmWasmNFTLaunchpad",
+        "launchpadContractAddress": "tori1l07lh669x8wg2rh3pxzpatrr2npf5ql7y6kusaup53fu2xr68p5qglyy9t",
+        "launchpadEndpoint": "http://localhost:9090",
+        "nftTr721CodeId": 60,
+        "codeId": 95,
+        "defaultMintDenom": "utori",
+        "daoProposalSingleContractAddress": "tori1tj2uked2zfq958w6cugnm44qlllnrpaaxk09j39qqdqhhedjpljszjyhx6"
+      }
+    ],
     "currencies": [
       {
         "denom": "utori",
@@ -11703,11 +11714,12 @@
       },
       {
         "type": "CosmWasmNFTLaunchpad",
-        "launchpadContractAddress": "tori1te7ku4de0k4rl8lhyuvpmhygaq7k7vy5zpsjq9y638efxsnx3aaqck2utf",
+        "launchpadContractAddress": "tori1l07lh669x8wg2rh3pxzpatrr2npf5ql7y6kusaup53fu2xr68p5qglyy9t",
         "launchpadEndpoint": "https://dapp-backend.testnet.teritori.com",
         "nftTr721CodeId": 60,
-        "codeId": 71,
-        "defaultMintDenom": "utori"
+        "codeId": 95,
+        "defaultMintDenom": "utori",
+        "daoProposalSingleContractAddress": "tori1tj2uked2zfq958w6cugnm44qlllnrpaaxk09j39qqdqhhedjpljszjyhx6"
       },
       {
         "type": "CosmWasmRakki",
@@ -11763,7 +11775,7 @@
     "nameServiceDefaultImage": "ipfs://bafkreieqcwmjcb64r42ygs6a4dswz63djzgayjn3rhzjber3e42cknawlm",
     "nameServiceTLD": ".tori",
     "vaultContractAddress": "tori1wn625s4jcmvk0szpl85rj5azkfc6suyvf75q6vrddscjdphtve8s2f76jm",
-    "riotContractAddressGen0": "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0",
+    "riotContractAddressGen0": "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc",
     "riotContractAddressGen1": "",
     "riotSquadStakingContractAddressV1": "",
     "riotSquadStakingContractAddressV2": "",
@@ -11771,7 +11783,7 @@
     "secondaryDuringMintList": [
       "",
       "tori1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgsjscd88",
-      "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0",
+      "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc",
       ""
     ],
     "excludeFromLaunchpadList": [

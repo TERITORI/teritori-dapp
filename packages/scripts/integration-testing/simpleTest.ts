@@ -20,18 +20,12 @@ const main = async () => {
     throw new Error("adm signer is undefined");
   }
 
-  // test cosmwasm
-
   await deployTeritoriEcosystem(
     { binaryPath: binary, home, signer: admSigner },
     teritoriLocalnetNetwork.id,
     "testnet-adm",
   );
-
-  // clean
-
   await kill();
-
   await fs.rm(home, { recursive: true, force: true });
 };
 
