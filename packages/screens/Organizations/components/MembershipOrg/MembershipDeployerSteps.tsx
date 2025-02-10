@@ -8,6 +8,7 @@ import { LaunchingOrganizationSection } from "../LaunchingOrganizationSection";
 
 import { ConfigureVotingSection } from "@/components/dao/ConfigureVotingSection";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
+import { TeritoriNameServiceClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { nsNameInfoQueryKey } from "@/hooks/useNSNameInfo";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import {
@@ -16,6 +17,7 @@ import {
   mustGetCosmosNetwork,
   NetworkKind,
 } from "@/networks";
+import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 import { createDaoMemberBased, CreateDaoMemberBasedParams } from "@/utils/dao";
 import { adenaDeployGnoDAO } from "@/utils/gnodao/deploy";
 import { getDuration, getPercent } from "@/utils/gnodao/helpers";
@@ -100,8 +102,23 @@ export const MembershipDeployerSteps: React.FC<{
             network.cwAdminFactoryContractAddress!;
           const walletAddress = selectedWallet.address;
 
+          const signingCosmWasmClient =
+            await getKeplrSigningCosmWasmClient(networkId);
+
+          if (!network.nameServiceContractAddress) {
+            throw new Error("no name service contract address");
+          }
+
+          const nameServiceClient = new TeritoriNameServiceClient(
+            signingCosmWasmClient,
+            walletAddress,
+            network.nameServiceContractAddress,
+          );
+
           if (!memberSettingsFormData) return false;
           const params: CreateDaoMemberBasedParams = {
+            signingCosmWasmClient,
+            nameServiceClient,
             networkId,
             sender: walletAddress,
             contractAddress: cwAdminFactoryContractAddress,

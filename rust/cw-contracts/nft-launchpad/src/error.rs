@@ -43,6 +43,9 @@ pub enum ContractError {
     #[error("Already deployed.")]
     AlreadyDeployed,
 
+    #[error("Failed to parse proposal ID.")]
+    ParseProposalIdFailed,
+
     #[error("Unable to parse reply.")]
     ParseReplyError(#[from] ParseReplyError),
 

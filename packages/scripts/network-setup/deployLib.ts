@@ -6,6 +6,8 @@ import { bech32 } from "bech32";
 import _, { cloneDeep } from "lodash";
 import path from "path";
 
+import { deployDA0DA0 } from "./dao-dao/deployDA0DA0";
+import { deployNftLaunchpad } from "./nft-launchpad/deployNftLaunchpad";
 import { InstantiateMsg as MarketplaceVaultInstantiateMsg } from "../../contracts-clients/nft-marketplace/NftMarketplace.types";
 import {
   ExecuteMsg as NameServiceExecuteMsg,
@@ -132,8 +134,22 @@ export const deployTeritoriEcosystem = async (
     network,
   );
 
+  console.log("Deploying DA0DA0 stuff");
+  await deployDA0DA0({ opts, networkId, wallet });
+
   if (opts.signer) {
-    await registerTNSHandle(network, opts.signer);
+    const { signingCosmWasmClient, nameServiceClient } =
+      await registerTNSHandle(network, opts.signer);
+
+    console.log("Deploying NFT Launchpad");
+    await deployNftLaunchpad({
+      opts,
+      networkId,
+      wallet,
+      signingCosmWasmClient,
+      nameServiceClient,
+    });
+
     await testTeritoriEcosystem(network);
   }
 
@@ -160,7 +176,7 @@ const goldenMetadata: Metadata = {
   validator_operator_address: null,
 };
 
-export const registerTNSHandle = async (
+const registerTNSHandle = async (
   network: CosmosNetworkInfo,
   signer: OfflineSigner,
 ) => {
@@ -185,6 +201,8 @@ export const registerTNSHandle = async (
     owner: senderAddress,
   });
   console.log("✅ TNS handle registered");
+
+  return { signingCosmWasmClient: cosmWasmClient, nameServiceClient };
 };
 
 export const testTeritoriEcosystem = async (network: CosmosNetworkInfo) => {

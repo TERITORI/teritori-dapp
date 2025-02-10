@@ -25,7 +25,8 @@
           "admin",
           "name",
           "nft_code_id",
-          "owner"
+          "owner",
+          "proposal_single_contract"
         ],
         "properties": {
           "admin": {
@@ -40,6 +41,9 @@
             "minimum": 0.0
           },
           "owner": {
+            "$ref": "#/definitions/Addr"
+          },
+          "proposal_single_contract": {
             "$ref": "#/definitions/Addr"
           }
         },
@@ -331,6 +335,12 @@
             "minimum": 0.0
           },
           "owner": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "proposal_single_contract": {
             "type": [
               "string",
               "null"
@@ -732,7 +742,8 @@
         "admin",
         "name",
         "nft_code_id",
-        "owner"
+        "owner",
+        "proposal_single_contract"
       ],
       "properties": {
         "admin": {
@@ -747,6 +758,9 @@
           "minimum": 0.0
         },
         "owner": {
+          "$ref": "#/definitions/Addr"
+        },
+        "proposal_single_contract": {
           "$ref": "#/definitions/Addr"
         }
       },
