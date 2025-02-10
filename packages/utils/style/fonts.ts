@@ -168,10 +168,24 @@ export const fontMedium32: TextStyle = {
   fontFamily: "Exo_500Medium",
   fontWeight: "500",
 };
+export const fontMedium28: TextStyle = {
+  fontSize: 28,
+  letterSpacing: -(28 * 0.04),
+  lineHeight: 32,
+  fontFamily: "Exo_500Medium",
+  fontWeight: "500",
+};
 export const fontMedium24: TextStyle = {
   fontSize: 24,
   letterSpacing: -(24 * 0.02),
   lineHeight: 34,
+  fontFamily: "Exo_500Medium",
+  fontWeight: "500",
+};
+export const fontMedium20: TextStyle = {
+  fontSize: 20,
+  letterSpacing: -(20 * 0.04),
+  lineHeight: 24,
   fontFamily: "Exo_500Medium",
   fontWeight: "500",
 };

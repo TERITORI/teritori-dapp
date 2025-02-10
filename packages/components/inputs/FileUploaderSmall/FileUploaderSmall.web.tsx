@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import {
   FileUploaderSmallHandle,
@@ -56,6 +56,8 @@ export const FileUploaderSmall = forwardRef<
     const hiddenFileInputRef = useRef<HTMLInputElement>(null);
     const [hovered, setHovered] = useState(false);
     const [addedFiles, setAddedFiles] = useState<LocalFileData[]>([]);
+    const flatBoxStyle = StyleSheet.flatten(boxStyle);
+    const minHeight = flatBoxStyle.minHeight || 80;
 
     useImperativeHandle(forwardRef, () => ({
       resetFiles: () => {
@@ -163,12 +165,9 @@ export const FileUploaderSmall = forwardRef<
             style={[
               {
                 width: "100%",
-                minHeight: 80,
+                minHeight,
                 flex: 1,
                 paddingHorizontal: layout.spacing_x1_5,
-                alignItems: "center",
-                flexDirection: "row",
-                justifyContent: "center",
                 borderRadius: 12,
                 borderWidth: 1,
               },
@@ -176,28 +175,37 @@ export const FileUploaderSmall = forwardRef<
               boxStyle,
             ]}
           >
-            <View style={{ height: 32, width: 32 }}>
-              <SVGorImageIcon
-                icon={filesCount > 0 ? filesSVG : addSVG}
-                iconSize={32}
-              />
-            </View>
-
-            <SpacerRow size={1} />
-            <BrandText
-              style={[fontSemibold14, { color: secondaryColor }]}
-              numberOfLines={1}
+            <View
+              style={{
+                alignItems: "center",
+                flexDirection: "row",
+                justifyContent: "center",
+                minHeight,
+              }}
             >
-              {!multiple && filesCount && filesCount === addedFiles.length
-                ? addedFiles[0].file.name
-                : !multiple && !filesCount
-                  ? "Select file"
-                  : multiple && filesCount
-                    ? `${pluralize("file", filesCount, true)} selected`
-                    : multiple && !filesCount
-                      ? "Select files"
-                      : ""}
-            </BrandText>
+              <View style={{ height: 32, width: 32 }}>
+                <SVGorImageIcon
+                  icon={filesCount > 0 ? filesSVG : addSVG}
+                  iconSize={32}
+                />
+              </View>
+
+              <SpacerRow size={1} />
+              <BrandText
+                style={[fontSemibold14, { color: secondaryColor }]}
+                numberOfLines={1}
+              >
+                {!multiple && filesCount && filesCount === addedFiles.length
+                  ? addedFiles[0].file.name
+                  : !multiple && !filesCount
+                    ? "Select file"
+                    : multiple && filesCount
+                      ? `${pluralize("file", filesCount, true)} selected`
+                      : multiple && !filesCount
+                        ? "Select files"
+                        : ""}
+              </BrandText>
+            </View>
           </PrimaryBox>
         )}
 

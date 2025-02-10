@@ -33,6 +33,7 @@ export type RootStackParamList = {
 
   Launchpad: undefined;
   LaunchpadApply: undefined;
+  LaunchpadCreate: undefined;
 
   LaunchpadERC20: undefined;
   LaunchpadERC20Tokens?: { network?: string };
@@ -218,6 +219,7 @@ const getNavConfig: (homeScreen: keyof RootStackParamList) => NavConfig = (
       // ==== Launchpad
       Launchpad: "launchpad",
       LaunchpadApply: "launchpad/apply",
+      LaunchpadCreate: "launchpad/create",
 
       // ==== Launchpad ERC20
       LaunchpadERC20: "launchpad-erc20",

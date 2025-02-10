@@ -18,8 +18,9 @@ import { GuardiansScreen } from "@/screens/Guardians/GuardiansScreen";
 import { HashtagFeedScreen } from "@/screens/HashtagFeed/HashtagFeedScreen";
 import { HomeScreen } from "@/screens/Home/HomeScreen";
 import { LaunchpadApplyScreen } from "@/screens/Launchpad/LaunchpadApply/LaunchpadApplyScreen";
+import { LaunchpadCreateScreen } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/LaunchpadCreateScreen";
 import { LaunchpadScreen } from "@/screens/Launchpad/LaunchpadHome/LaunchpadScreen";
-import { MintCollectionScreen } from "@/screens/Launchpad/MintCollectionScreen";
+import { MintCollectionScreen } from "@/screens/Launchpad/LaunchpadHome/MintCollectionScreen";
 import { LaunchpadERC20CreateSaleScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Sales/LaunchpadERC20CreateSaleScreen";
 import { LaunchpadERC20SalesScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Sales/LaunchpadERC20SalesScreen";
 import { LaunchpadERC20Screen } from "@/screens/LaunchpadERC20/LaunchpadERC20Screen";
@@ -228,6 +229,14 @@ export const getNormalModeScreens = ({
         options={{
           header: () => null,
           title: screenTitle("Launchpad (Apply)"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadCreate"
+        component={LaunchpadCreateScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Create Collection"),
         }}
       />
 
