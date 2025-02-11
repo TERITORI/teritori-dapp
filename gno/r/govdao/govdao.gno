@@ -7,6 +7,14 @@ import (
 
 var dao *daokit.DAO
 
+// HOW HANDLE DEFAULT MESSAGES (ADD NEW MEMBER, REMOVE MEMBER, ADD ROLE, REMOVE ROLE)
+// WE WANT TO BE ABLE TO JUST ADD TIER1, TIER2, TIER3 MEMBERS NOT OTHER MESSAGE TYPES
+// OPTIONS:
+// - CREATE A NEW CONDITION THAT RESPOND ALWAYS FALSE AND BLOCK THESE MESSAGES (the messages still exist and people can create proposal that will never be executed)
+// - ALLOW USERS TO SELECT AT THE CREATION WHICH DEFAULT MESSAGES THEY WANT TO USE (list of strings)
+// - REMOVE DEFAULT MESSAGES FROM THE MESSAGES REGISTRY AND GIVE THE TASK TO THE USER TO SET THEM AT THE CREATION (can import the default messages from daokit)
+// I like the last option, it gives more flexibility to the user and the user can still use the default messages if he wants to
+
 func init() {
 	dao = &daokit.DAO{}
 	name := "GovDAO"
@@ -19,7 +27,8 @@ func init() {
 		{Address: "g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", Roles: []string{"tier1"}},
 	}
 
-	condition := daokit.CreateCondition("members-treshold", &dao, 0.6)
+	t1condition := daokit.CreateCondition("members-treshold", &dao, 0.66) // rework for a treshold_roles condition
+	t2condition := daokit.CreateCondition("members-treshold", &dao, 0.5)  // use the govdao condition
 	resources := []daokit.Resource{}
 
 	dao = daokit.NewDAO(name, description, roles, members, resources, condition)
@@ -27,24 +36,4 @@ func init() {
 	profile.SetStringField(profile.DisplayName, name)
 	profile.SetStringField(profile.Bio, description)
 	profile.SetStringField(profile.Avatar, "")
-}
-
-func Propose(proposal daokit.ProposalRequest) {
-	dao.Propose(proposal)
-}
-
-func Vote(proposalID uint64, vote string) {
-	dao.Vote(proposalID, vote)
-}
-
-func Execute(proposalID uint64) {
-	dao.Execute(proposalID)
-}
-
-func InstantExecute(proposal daokit.ProposalRequest) {
-	dao.InstantExecute(proposal)
-}
-
-func Render(path string) string {
-	return dao.Render(path)
 }
