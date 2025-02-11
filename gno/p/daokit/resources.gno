@@ -21,11 +21,11 @@ func newResourcesModule() *ResourcesModule {
 	}
 }
 
-func (r *ResourcesModule) setResource(resources Resource) {
+func (r *ResourcesModule) SetResource(resources Resource) {
 	r.resources.Set(resources.Resource, resources.Condition)
 }
 
-func (r *ResourcesModule) getResource(name string) daocond.Condition {
+func (r *ResourcesModule) GetResource(name string) daocond.Condition {
 	value, ok := r.resources.Get(name)
 	if !ok {
 		return nil
