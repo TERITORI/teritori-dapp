@@ -19,25 +19,30 @@ func (m *AddNewT1MemberMessage) String() string {
 }
 
 type AddNewT1MemberMessageHandler struct {
-	dao *daokit.DAO
+	dao **daokit.DAO
 }
 
-func NewAddNewT1MemberMessageHandler(dao *daokit.DAO) *AddNewT1MemberMessageHandler {
+func NewAddNewT1MemberMessageHandler(dao **daokit.DAO) *AddNewT1MemberMessageHandler {
 	return &AddNewT1MemberMessageHandler{dao: dao}
 }
 
 func (h AddNewT1MemberMessageHandler) Execute(msg daokit.ExecutableMessage) {
 	message := msg.(*AddNewT1MemberMessage)
-	if h.dao.MemberModule.HasRole(message.Address, "tier1") {
+	dao := *h.dao
+	if dao.MemberModule.HasRole(message.Address, "tier1") {
 		panic("member is already a tier1 member")
 	}
-	if h.dao.MemberModule.HasRole(message.Address, "tier2") {
-		h.dao.MemberModule.RemoveRoleFromMember(message.Address, "tier2")
+	if dao.MemberModule.HasRole(message.Address, "tier2") {
+		dao.MemberModule.RemoveRoleFromMember(message.Address, "tier2")
 	}
-	if h.dao.MemberModule.HasRole(message.Address, "tier3") {
-		h.dao.MemberModule.RemoveRoleFromMember(message.Address, "tier3")
+	if dao.MemberModule.HasRole(message.Address, "tier3") {
+		dao.MemberModule.RemoveRoleFromMember(message.Address, "tier3")
 	}
-	h.dao.MemberModule.AddRoleToMember(message.Address, "tier1")
+	if dao.MemberModule.IsMember(message.Address) {
+		dao.MemberModule.AddRoleToMember(message.Address, "tier1")
+	} else {
+		dao.MemberModule.AddMember(message.Address, []string{"tier1"})
+	}
 }
 
 func (h AddNewT1MemberMessageHandler) Type() string {
@@ -69,25 +74,30 @@ func (m *AddNewT2MemberMessage) String() string {
 }
 
 type AddNewT2MemberMessageHandler struct {
-	dao *daokit.DAO
+	dao **daokit.DAO
 }
 
-func NewAddNewT2MemberMessageHandler(dao *daokit.DAO) *AddNewT2MemberMessageHandler {
+func NewAddNewT2MemberMessageHandler(dao **daokit.DAO) *AddNewT2MemberMessageHandler {
 	return &AddNewT2MemberMessageHandler{dao: dao}
 }
 
 func (h AddNewT2MemberMessageHandler) Execute(msg daokit.ExecutableMessage) {
 	message := msg.(*AddNewT2MemberMessage)
-	if h.dao.MemberModule.HasRole(message.Address, "tier1") {
+	dao := *h.dao
+	if dao.MemberModule.HasRole(message.Address, "tier1") {
 		panic("member is already a tier1 member")
 	}
-	if h.dao.MemberModule.HasRole(message.Address, "tier2") {
+	if dao.MemberModule.HasRole(message.Address, "tier2") {
 		panic("member is already a tier2 member")
 	}
-	if h.dao.MemberModule.HasRole(message.Address, "tier3") {
-		h.dao.MemberModule.RemoveRoleFromMember(message.Address, "tier3")
+	if dao.MemberModule.HasRole(message.Address, "tier3") {
+		dao.MemberModule.RemoveRoleFromMember(message.Address, "tier3")
 	}
-	h.dao.MemberModule.AddRoleToMember(message.Address, "tier2")
+	if dao.MemberModule.IsMember(message.Address) {
+		dao.MemberModule.AddRoleToMember(message.Address, "tier2")
+	} else {
+		dao.MemberModule.AddMember(message.Address, []string{"tier2"})
+	}
 }
 
 func (h AddNewT2MemberMessageHandler) Type() string {

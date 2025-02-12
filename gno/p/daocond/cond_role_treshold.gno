@@ -108,8 +108,11 @@ func (m *roleThresholdState) HandleEvent(evt Event, votes map[string]Vote) {
 // RenderJSON implements State.
 func (m *roleThresholdState) RenderJSON(_ map[string]Vote) *json.Node {
 	return json.ObjectNode("", map[string]*json.Node{
-		"type":     json.StringNode("", "role-threshold"),
-		"totalYes": json.NumberNode("", float64(m.totalYes)),
+		"type":      json.StringNode("", "role-threshold"),
+		"role":      json.StringNode("", m.cond.role),
+		"threshold": json.NumberNode("", m.cond.threshold),
+		"yes":       json.NumberNode("", float64(m.totalYes)),
+		"total":     json.NumberNode("", float64(m.cond.usersRoleCountFn(m.cond.role))),
 	})
 }
 

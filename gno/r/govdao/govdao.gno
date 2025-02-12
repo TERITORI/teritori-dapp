@@ -34,12 +34,12 @@ func init() {
 	resources := []daokit.Resource{
 		{
 			Resource:  "gno.land/r/teritori/govdao.AddNewT1Member",
-			Handler:   NewAddNewT1MemberMessageHandler(dao), // add a pointer of the dao to the handler
+			Handler:   NewAddNewT1MemberMessageHandler(&dao), // add a pointer of the dao to the handler
 			Condition: t1condition,
 		},
 		{
 			Resource:  "gno.land/r/teritori/govdao.AddNewT2Member",
-			Handler:   NewAddNewT2MemberMessageHandler(dao), // add a pointer of the dao to the handler
+			Handler:   NewAddNewT2MemberMessageHandler(&dao), // add a pointer of the dao to the handler
 			Condition: t2condition,
 		},
 	}
