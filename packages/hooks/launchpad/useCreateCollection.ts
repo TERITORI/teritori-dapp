@@ -97,9 +97,9 @@ export const useCreateCollection = () => {
           pinataJWTKey,
           files: whitelistAddressesFilesToUpload,
         });
-        const mint_periods: MintPeriod[] = collectionFormValues.mintPeriods.map(
+        const mintPeriods: MintPeriod[] = collectionFormValues.mintPeriods.map(
           (mintPeriod: CollectionMintPeriodFormValues, index) => {
-            let whitelist_info: WhitelistInfo | null = null;
+            let whitelistInfo: WhitelistInfo | null = null;
             if (
               mintPeriod.whitelistAddresses?.length &&
               remoteWhitelistAddressesFiles[index].url
@@ -108,7 +108,7 @@ export const useCreateCollection = () => {
               const leaves = addresses.map(keccak256);
               const tree = new MerkleTree(leaves, keccak256);
               const merkleRoot = tree.getRoot().toString("hex");
-              whitelist_info = {
+              whitelistInfo = {
                 addresses_count: addresses.length,
                 addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
                 addresses_merkle_root: merkleRoot,
@@ -130,7 +130,7 @@ export const useCreateCollection = () => {
                 ? parseInt(mintPeriod.perAddressLimit, 10)
                 : 0,
               start_time: mintPeriod.startTime,
-              whitelist_info,
+              whitelist_info: whitelistInfo,
             };
           },
         );
@@ -156,7 +156,7 @@ export const useCreateCollection = () => {
           investment_link: collectionFormValues.investLink,
           artwork_desc: collectionFormValues.artworkDescription,
           cover_img_uri: "ipfs://" + fileIpfsHash,
-          mint_periods,
+          mint_periods: mintPeriods,
           royalty_address: collectionFormValues.royaltyAddress,
           royalty_percentage: collectionFormValues.royaltyPercentage
             ? parseInt(collectionFormValues.royaltyPercentage, 10)
