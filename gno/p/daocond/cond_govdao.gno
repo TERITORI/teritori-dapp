@@ -18,26 +18,27 @@ func GovDaoCondThreshold(threshold float64, hasRoleFn func(memberId string, role
 		panic(errors.New("nil hasRoleFn"))
 	}
 	return &govDaoCondThreshold{
-		threshold: threshold,
-		hasRoleFn: hasRoleFn,
+		threshold:            threshold,
+		hasRoleFn:            hasRoleFn,
 		usersWithRoleCountFn: usersWithRoleCountFn,
 	}
 }
 
 type govDaoCondThreshold struct {
-	threshold float64
-	hasRoleFn func(memberId string, role string) bool 
+	threshold            float64
+	hasRoleFn            func(memberId string, role string) bool
 	usersWithRoleCountFn func(role string) uint64
 }
 
 func (m *govDaoCondThreshold) NewState() State {
-	return &govDaoCondThresholdState {
+	return &govDaoCondThresholdState{
 		cond: m,
 	}
 }
 
+// {threshold}% of {totalvotingpower} total voting power following these ({t1power} - T1, {t2power} T2, {t3power} T3)
 func (m *govDaoCondThreshold) Render() string {
-	return ufmt.Sprintf("%g%% of members", m.threshold*100)
+	return ufmt.Sprintf("%g%% of total voting power (3.0 / T1, 2.0 / T2, 1.0 / T3)*", m.threshold*100)
 }
 
 func (m *govDaoCondThreshold) RenderJSON() *json.Node {
@@ -53,7 +54,7 @@ type govDaoCondThresholdState struct {
 	cond *govDaoCondThreshold
 }
 
-func (m *govDaoCondThresholdState) Eval(votes map[string]Vote) bool{
+func (m *govDaoCondThresholdState) Eval(votes map[string]Vote) bool {
 	return m.yesRatio(votes) >= m.cond.threshold
 }
 func (m *govDaoCondThresholdState) HandleEvent(_ Event, _ map[string]Vote) {
@@ -81,15 +82,15 @@ func (m *govDaoCondThresholdState) yesRatio(votes map[string]Vote) float64 {
 			continue
 		}
 		tier := m.getUserTier(userID)
-		
+
 		totalYes += votingPowersByTier[tier]
 	}
-	return totalYes/totalPower
+	return totalYes / totalPower
 }
 
-func (m *govDaoCondThresholdState) getUserTier(userID string) string{
-	for _,role := range []string{roleT1, roleT2, roleT3}{
-		if m.cond.hasRoleFn(userID, role){
+func (m *govDaoCondThresholdState) getUserTier(userID string) string {
+	for _, role := range []string{roleT1, roleT2, roleT3} {
+		if m.cond.hasRoleFn(userID, role) {
 			return role
 		}
 	}
@@ -115,15 +116,15 @@ func (m *govDaoCondThresholdState) computeVotingPowers() (map[string]float64, fl
 // the same number of member on each tier
 // T2 = 2.0 and T1 = 1.0 with the ration T1/Tn
 // we compute the actual ratio
-func computePower(T1, Tn, maxPower  float64) float64{
+func computePower(T1, Tn, maxPower float64) float64 {
 	// If there are 0 Tn (T2, T3) just return the max power
 	// we could also return 0.0 as voting power
-	if Tn <= 0.0{
+	if Tn <= 0.0 {
 		return maxPower
 	}
 
-	computedPower := (T1/Tn)*maxPower
-	if computedPower >= maxPower{
+	computedPower := (T1 / Tn) * maxPower
+	if computedPower >= maxPower {
 		// If computed power is bigger than the max, this happens if Tn is lower than T1
 		// cap the max power to max power.
 		return maxPower
@@ -132,7 +133,7 @@ func computePower(T1, Tn, maxPower  float64) float64{
 }
 
 const (
-	roleT1= "T1"
-	roleT2= "T2"
-	roleT3= "T3"
+	roleT1 = "T1"
+	roleT2 = "T2"
+	roleT3 = "T3"
 )

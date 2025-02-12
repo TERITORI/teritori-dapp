@@ -3,7 +3,6 @@ package daocond_test
 import (
 	"errors"
 	"testing"
-	"fmt"
 
 	"gno.land/p/demo/urequire"
 	"gno.land/p/teritori/daocond"
@@ -211,7 +210,7 @@ type testPhase struct {
 type mockDAO struct {
 	emitter   func(evt daocond.Event)
 	members   map[string][]string
-	roles 	  map[string][]string
+	roles     map[string][]string
 	noEvents  bool
 	resources map[string]daocond.Condition
 }
@@ -225,8 +224,8 @@ func newMockDAO(emitter func(evt daocond.Event)) *mockDAO {
 			"eve":   []string{},
 		},
 		roles: map[string][]string{
-			"finance-officer": []string{"alice"},
-			"public-relationships":   []string{"bob"},
+			"finance-officer":      []string{"alice"},
+			"public-relationships": []string{"bob"},
 		}, // roles to users
 		resources: make(map[string]daocond.Condition),
 	}
@@ -274,6 +273,14 @@ func (m *mockDAO) hasRole(memberId string, role string) bool {
 		}
 	}
 	return false
+}
+
+func (m *mockDAO) usersRoleCount(role string) uint64 {
+	users, ok := m.roles[role]
+	if !ok {
+		return 0
+	}
+	return uint64(len(users))
 }
 
 func strsrm(strs []string, val string) ([]string, bool) {
