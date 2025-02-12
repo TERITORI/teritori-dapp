@@ -27,7 +27,7 @@ export const ConfigureRoyaltyDetails: FC<Props> = ({ collectionForm }) => {
 
       <TextInputLaunchpad<CollectionFormValues>
         label="Payment Address "
-        placeHolder="teritori123456789qwertyuiopasdfghjklzxcvbnm"
+        placeHolder="toriz3fa8e6lc9uusqqmlsw6g3erpvun5pjagfs7d9l"
         name="royaltyAddress"
         sublabel={
           <View>

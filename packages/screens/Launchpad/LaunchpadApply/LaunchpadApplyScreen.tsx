@@ -40,6 +40,9 @@ const BUTTONS: LargeBoxButtonProps[] = [
 
 export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
   const { width } = useMaxResolution();
+  const candidateLink = "https://airtable.com/shr1kU7kXW0267gNV";
+  const isSmallScreen = width < MD_BREAKPOINT;
+
   return (
     <ScreenContainer responsive isLarge>
       <ImageBackgroundLogoText
@@ -62,13 +65,11 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
 
       <View
         style={{
-          flexDirection: width < MD_BREAKPOINT ? "column" : "row",
+          flexDirection: isSmallScreen ? "column" : "row",
         }}
       >
         <CustomPressable
-          onPress={() =>
-            Linking.openURL("https://airtable.com/shr1kU7kXW0267gNV")
-          }
+          onPress={() => Linking.openURL(candidateLink)}
           style={{ flex: 1 }}
         >
           <LargeBoxButton {...BUTTONS[0]} />
@@ -79,8 +80,8 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
           to={{ screen: "LaunchpadCreate" }}
           style={{
             flex: 1,
-            marginHorizontal: width >= MD_BREAKPOINT ? layout.spacing_x1_5 : 0,
-            marginVertical: width >= MD_BREAKPOINT ? 0 : layout.spacing_x1_5,
+            marginHorizontal: isSmallScreen ? 0 : layout.spacing_x1_5,
+            marginVertical: isSmallScreen ? layout.spacing_x1_5 : 0,
           }}
         >
           <LargeBoxButton {...BUTTONS[1]} />
