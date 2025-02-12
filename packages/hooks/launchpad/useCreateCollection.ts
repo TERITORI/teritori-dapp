@@ -42,47 +42,35 @@ export const useCreateCollection = () => {
       const userId = selectedWallet.userId;
       const walletAddress = selectedWallet.address;
 
-      const signingComswasmClient =
-        await getKeplrSigningCosmWasmClient(selectedNetworkId);
-      const cosmwasmNftLaunchpadFeature = getNetworkFeature(
-        selectedNetworkId,
-        NetworkFeature.CosmWasmNFTLaunchpad,
-      );
-      if (!cosmwasmNftLaunchpadFeature) return false;
-
-      const nftLaunchpadContractClient = new NftLaunchpadClient(
-        signingComswasmClient,
-        walletAddress,
-        cosmwasmNftLaunchpadFeature.launchpadContractAddress,
-      );
-      const pinataJWTKey =
-        collectionFormValues.assetsMetadatas?.nftApiKey ||
-        userIPFSKey ||
-        (await generateIpfsKey(selectedNetworkId, userId));
-      if (!pinataJWTKey) {
-        console.error("Project creation error: No Pinata JWT");
-        setToast({
-          mode: "normal",
-          type: "error",
-          title: "Project creation error: No Pinata JWT",
-        });
-        return false;
-      }
-
       try {
+        const signingComswasmClient =
+          await getKeplrSigningCosmWasmClient(selectedNetworkId);
+        const cosmwasmNftLaunchpadFeature = getNetworkFeature(
+          selectedNetworkId,
+          NetworkFeature.CosmWasmNFTLaunchpad,
+        );
+        if (!cosmwasmNftLaunchpadFeature) return false;
+
+        const nftLaunchpadContractClient = new NftLaunchpadClient(
+          signingComswasmClient,
+          walletAddress,
+          cosmwasmNftLaunchpadFeature.launchpadContractAddress,
+        );
+        const pinataJWTKey =
+          collectionFormValues.assetsMetadatas?.nftApiKey ||
+          userIPFSKey ||
+          (await generateIpfsKey(selectedNetworkId, userId));
+        if (!pinataJWTKey) {
+          throw new Error("No Pinata JWT");
+        }
+
         // ========== Cover image
         const fileIpfsHash = await pinataPinFileToIPFS({
           pinataJWTKey,
           file: collectionFormValues.coverImage,
         } as PinataFileProps);
         if (!fileIpfsHash) {
-          console.error("Project creation error: Pin to Pinata failed");
-          setToast({
-            mode: "normal",
-            type: "error",
-            title: "Project creation error: Pin to Pinata failed",
-          });
-          return false;
+          throw new Error("Pin to Pinata failed");
         }
 
         // ========== Whitelists
@@ -213,6 +201,7 @@ export const useCreateCollection = () => {
           title: "Error creating a NFT Collection in the Launchpad",
           message: e.message,
         });
+        return false;
       }
     },
     [
