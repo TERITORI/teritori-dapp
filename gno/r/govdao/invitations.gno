@@ -67,7 +67,7 @@ func Delegate(target string) {
 	invitationsReceivedTree.Set(target, invitationsReceived)
 
 	if len(invitationsReceived) == 2 && !dao.MemberModule.IsMember(target) {
-		dao.MemberModule.AddMember(target, []string{"T3"})
+		dao.MemberModule.AddMember(target, []string{Tier3})
 	}
 }
 
@@ -103,13 +103,13 @@ func Withdraw(target string) {
 	if !found {
 		panic("target has not received an invitation from the caller, should not happen at this point")
 	}
+	invitationsReceivedTree.Set(target, invitationsReceived)
 
 	if len(invitationsReceived) == 1 && dao.MemberModule.HasRole(target, Tier3) {
 		invitationsSent = getInvitationsSent(target)
 		for _, addr := range getInvitationsSent(target) {
 			Withdraw(addr.String())
 		}
-
 		dao.MemberModule.RemoveMember(target)
 	}
 }
