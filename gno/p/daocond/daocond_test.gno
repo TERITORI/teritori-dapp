@@ -275,14 +275,6 @@ func (m *mockDAO) hasRole(memberId string, role string) bool {
 	return false
 }
 
-func (m *mockDAO) usersRoleCount(role string) uint64 {
-	users, ok := m.roles[role]
-	if !ok {
-		return 0
-	}
-	return uint64(len(users))
-}
-
 func strsrm(strs []string, val string) ([]string, bool) {
 	removed := false
 	res := []string{}

@@ -42,14 +42,14 @@ func NewDAO(name, description string, roles []string, members []Member, resource
 	dao.MemberModule.SetRoles(roles)
 	dao.MemberModule.SetMembers(members)
 
-	// dao.MessagesRegistry.handlers.Iterate("", "", func(key string, value interface{}) bool {
-	// 	dao.ResourcesModule.SetResource(Resource{
-	// 		Resource:  key,
-	// 		Handler:   value.(MessageHandler),
-	// 		Condition: initCond,
-	// 	})
-	// 	return false
-	// })
+	dao.MessagesRegistry.handlers.Iterate("", "", func(key string, value interface{}) bool {
+		dao.ResourcesModule.SetResource(Resource{
+			Resource:  key,
+			Handler:   value.(MessageHandler),
+			Condition: initCond,
+		})
+		return false
+	})
 
 	for _, resource := range resources {
 		dao.ResourcesModule.SetResource(resource)
