@@ -61,9 +61,16 @@ func (m *govDaoCondThresholdState) HandleEvent(_ Event, _ map[string]Vote) {
 	panic(errors.New("not implemented"))
 }
 func (m *govDaoCondThresholdState) RenderJSON(votes map[string]Vote) *json.Node {
+	vPowers, totalPower := m.computeVotingPowers()
 	return json.ObjectNode("", map[string]*json.Node{
-		"type":     json.StringNode("", "govdao-threshold"),
-		"totalYes": json.NumberNode("", m.yesRatio(votes)),
+		"type":              json.StringNode("", "govdao-threshold"),
+		"treshold":          json.NumberNode("", m.cond.threshold),
+		"tier1VotingPower":  json.NumberNode("", vPowers[roleT1]),
+		"tier2VotingPower":  json.NumberNode("", vPowers[roleT2]),
+		"tier3VotingPower":  json.NumberNode("", vPowers[roleT3]),
+		"totalYes":          json.NumberNode("", m.yesRatio(votes)),
+		"votingPowerNeeded": json.NumberNode("", m.cond.threshold*totalPower),
+		"totalVotingPower":  json.NumberNode("", totalPower),
 	})
 }
 
