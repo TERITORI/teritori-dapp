@@ -11,7 +11,7 @@ import (
 
 type DAO struct {
 	Core             *daokit.Core
-	Members          *membersStore
+	Members          *MembersStore
 	RenderRouter     *mux.Router
 	GetProfileString ProfileStringGetter
 	Realm            std.Realm
@@ -21,8 +21,7 @@ type Config struct {
 	Name              string
 	Description       string
 	ImageURI          string
-	Roles             []string
-	Members           []Member
+	Members           *MembersStore
 	NoDefaultHandlers bool
 	InitialCondition  daocond.Condition
 	SetProfileString  ProfileStringSetter
@@ -33,9 +32,10 @@ type ProfileStringSetter func(field string, value string) bool
 type ProfileStringGetter func(addr std.Address, field string, def string) string
 
 func New(conf *Config) *DAO {
-	members := newMembersStore()
-	members.setRoles(conf.Roles)
-	members.setMembers(conf.Members)
+	members := conf.Members
+	if members == nil {
+		members = NewMembersStore(nil, nil)
+	}
 
 	if conf.GetProfileString == nil {
 		panic(errors.New("GetProfileString is required"))

@@ -1,10 +1,10 @@
 package role_manager
 
 import (
-	"std"
 	"testing"
 
 	"gno.land/p/demo/testutils"
+	"gno.land/p/demo/urequire"
 )
 
 var (
@@ -13,25 +13,13 @@ var (
 )
 
 func TestNewWithAddress(t *testing.T) {
-	rm := NewWithAddress(alice)
-	if rm.owner.Owner() != alice {
-		t.Fatalf("expected owner to be %s, got %s", alice, rm.owner.Owner())
-	}
-}
-
-func TestDropOwnership(t *testing.T) {
-	rm := NewWithAddress(alice)
-	std.TestSetOrigCaller(alice)
-	rm.GetOwner().DropOwnership()
-
-	if rm.GetOwner().Owner() != std.Address("") {
-		t.Fatalf("expected owner to be empty")
-	}
+	urequire.NotPanics(t, func() {
+		_ = New()
+	})
 }
 
 func TestCreateNewRole(t *testing.T) {
-	std.TestSetOrigCaller(alice)
-	rm := NewWithAddress(alice)
+	rm := New()
 	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
 	rm.CreateNewRole("role2", []string{"perm3", "perm4"}, alice)
 
@@ -68,8 +56,7 @@ func TestCreateNewRole(t *testing.T) {
 }
 
 func TestDeleteRole(t *testing.T) {
-	std.TestSetOrigCaller(alice)
-	rm := NewWithAddress(alice)
+	rm := New()
 	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
 	rm.CreateNewRole("role2", []string{"perm3", "perm4"}, alice)
 
@@ -92,8 +79,7 @@ func TestDeleteRole(t *testing.T) {
 }
 
 func TestAddPermissionToRole(t *testing.T) {
-	std.TestSetOrigCaller(alice)
-	rm := NewWithAddress(alice)
+	rm := New()
 	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
 	rm.AddPermissionToRole("perm3", "role1", alice)
 	rm.AddRoleToUser(alice, "role1", alice)
@@ -119,8 +105,7 @@ func TestAddPermissionToRole(t *testing.T) {
 }
 
 func TestRemovePermissionFromRole(t *testing.T) {
-	std.TestSetOrigCaller(alice)
-	rm := NewWithAddress(alice)
+	rm := New()
 	rm.CreateNewRole("role1", []string{"perm1", "perm2", "perm3"}, alice)
 
 	rm.AddRoleToUser(alice, "role1", alice)
@@ -148,8 +133,7 @@ func TestRemovePermissionFromRole(t *testing.T) {
 }
 
 func TestAddRoleToUser(t *testing.T) {
-	std.TestSetOrigCaller(alice)
-	rm := NewWithAddress(alice)
+	rm := New()
 	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
 	rm.CreateNewRole("role2", []string{"perm3", "perm4"}, alice)
 	rm.CreateNewRole("role3", []string{"perm5", "perm6"}, alice)
@@ -173,8 +157,7 @@ func TestAddRoleToUser(t *testing.T) {
 }
 
 func TestRemoveRoleFromUser(t *testing.T) {
-	std.TestSetOrigCaller(alice)
-	rm := NewWithAddress(alice)
+	rm := New()
 	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
 	rm.CreateNewRole("role2", []string{"perm3", "perm4"}, alice)
 	rm.CreateNewRole("role3", []string{"perm5", "perm6"}, alice)
@@ -199,8 +182,7 @@ func TestRemoveRoleFromUser(t *testing.T) {
 }
 
 func TestHasPermission(t *testing.T) {
-	std.TestSetOrigCaller(alice)
-	rm := NewWithAddress(alice)
+	rm := New()
 	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
 	rm.CreateNewRole("role2", []string{"perm3", "perm4"}, alice)
 	rm.CreateNewRole("role3", []string{"perm5", "perm6"}, alice)
@@ -224,8 +206,7 @@ func TestHasPermission(t *testing.T) {
 }
 
 func TestHasRole(t *testing.T) {
-	std.TestSetOrigCaller(alice)
-	rm := NewWithAddress(alice)
+	rm := New()
 	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
 	rm.CreateNewRole("role2", []string{"perm3", "perm4"}, alice)
 	rm.CreateNewRole("role3", []string{"perm5", "perm6"}, alice)
@@ -249,8 +230,7 @@ func TestHasRole(t *testing.T) {
 }
 
 func TestRemoveAllRolesFromUser(t *testing.T) {
-	std.TestSetOrigCaller(alice)
-	rm := NewWithAddress(alice)
+	rm := New()
 	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
 	rm.CreateNewRole("role2", []string{"perm3", "perm4"}, alice)
 	rm.CreateNewRole("role3", []string{"perm5", "perm6"}, alice)

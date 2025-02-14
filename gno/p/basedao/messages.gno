@@ -94,8 +94,8 @@ func (m *MsgUnassignRole) String() string {
 }
 
 func NewUnassignRoleHandler(dao *DAO) daokit.MessageHandler {
-	return daokit.NewMessageHandler(MsgAssignRoleKind, func(i interface{}) {
-		payload, ok := i.(*MsgAssignRole)
+	return daokit.NewMessageHandler(MsgUnassignRoleKind, func(i interface{}) {
+		payload, ok := i.(*MsgUnassignRole)
 		if !ok {
 			panic(errors.New("invalid payload type"))
 		}

@@ -10,19 +10,20 @@ import (
 var dao *basedao.DAO
 
 func init() {
+	initialRoles := []string{"T1", "T2", "T3"}
+	initialMembers := []basedao.Member{
+		{Address: "g126gx6p6d3da4ymef35ury6874j6kys044r7zlg", Roles: []string{"T1"}},
+		{Address: "g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv", Roles: []string{"T2"}},
+		{Address: "g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", Roles: []string{"T2"}},
+		{Address: "g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r", Roles: []string{"T3"}},
+		{Address: "g1ctt28t7sdyp28qzkvlfyx0hyxuz6vz7nplwm9c", Roles: []string{"T3"}},
+	}
 	dao = basedao.New(&basedao.Config{
 		Name:              "GovDAO",
 		Description:       "This is a GovDAO demo",
 		NoDefaultHandlers: true,
-		Roles:             []string{"T1", "T2", "T3"},
-		Members: []basedao.Member{
-			{Address: "g126gx6p6d3da4ymef35ury6874j6kys044r7zlg", Roles: []string{"T1"}},
-			{Address: "g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv", Roles: []string{"T2"}},
-			{Address: "g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", Roles: []string{"T2"}},
-			{Address: "g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r", Roles: []string{"T3"}},
-			{Address: "g1ctt28t7sdyp28qzkvlfyx0hyxuz6vz7nplwm9c", Roles: []string{"T3"}},
-		},
-		GetProfileString: profile.GetStringField,
+		Members:           basedao.NewMembersStore(initialRoles, initialMembers),
+		GetProfileString:  profile.GetStringField,
 	})
 
 	t1Supermajority := daocond.RoleThreshold(0.66, "T1", dao.Members.HasRole, dao.Members.CountMembersWithRole)

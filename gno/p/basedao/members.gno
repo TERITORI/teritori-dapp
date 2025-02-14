@@ -7,9 +7,9 @@ import (
 	"gno.land/p/teritori/role_manager"
 )
 
-type membersStore struct {
-	roleManager *role_manager.RoleManager
-	members     *avl.Tree // address -> struct{}
+type MembersStore struct {
+	RoleManager *role_manager.RoleManager
+	Members     *avl.Tree // address -> struct{}
 }
 
 type Member struct {
@@ -18,113 +18,116 @@ type Member struct {
 }
 
 // TODO: FIX the owner of the role_manager is the deployer of the contract not the realm
-func newMembersStore() *membersStore {
-	return &membersStore{
-		roleManager: role_manager.NewWithAddress(std.CurrentRealm().Addr()),
-		members:     avl.NewTree(),
+func NewMembersStore(initialRoles []string, initialMembers []Member) *MembersStore {
+	res := &MembersStore{
+		RoleManager: role_manager.New(),
+		Members:     avl.NewTree(),
 	}
+	res.setRoles(initialRoles)
+	res.setMembers(initialMembers)
+	return res
 }
 
-func (m *membersStore) HasRole(memberId string, role string) bool {
-	return m.roleManager.HasRole(std.Address(memberId), role)
+func (m *MembersStore) HasRole(memberId string, role string) bool {
+	return m.RoleManager.HasRole(std.Address(memberId), role)
 }
 
-func (m *membersStore) IsMember(memberId string) bool {
-	return m.members.Has(memberId)
+func (m *MembersStore) IsMember(memberId string) bool {
+	return m.Members.Has(memberId)
 }
 
-func (m *membersStore) MembersCount() uint64 {
-	return uint64(m.members.Size())
+func (m *MembersStore) MembersCount() uint64 {
+	return uint64(m.Members.Size())
 }
 
-func (m *membersStore) GetMembers() []string {
-	members := make([]string, 0, m.members.Size())
-	m.members.Iterate("", "", func(key string, value interface{}) bool {
+func (m *MembersStore) GetMembers() []string {
+	members := make([]string, 0, m.Members.Size())
+	m.Members.Iterate("", "", func(key string, value interface{}) bool {
 		members = append(members, key)
 		return false
 	})
 	return members
 }
 
-func (m *membersStore) GetRoles() []string {
-	return m.roleManager.GetRoles()
+func (m *MembersStore) GetRoles() []string {
+	return m.RoleManager.GetRoles()
 }
 
-func (m *membersStore) GetMemberRoles(memberId string) []string {
-	return m.roleManager.GetUserRoles(std.Address(memberId))
+func (m *MembersStore) GetMemberRoles(memberId string) []string {
+	return m.RoleManager.GetUserRoles(std.Address(memberId))
 }
 
-func (m *membersStore) CountMemberRoles(memberId string) int {
-	return m.roleManager.CountUserRoles(std.Address(memberId))
+func (m *MembersStore) CountMemberRoles(memberId string) int {
+	return m.RoleManager.CountUserRoles(std.Address(memberId))
 }
 
-func (m *membersStore) GetMembersWithRole(role string) []string {
-	return m.roleManager.GetRoleUsers(role)
+func (m *MembersStore) GetMembersWithRole(role string) []string {
+	return m.RoleManager.GetRoleUsers(role)
 }
 
-func (m *membersStore) CountMembersWithRole(role string) uint32 {
-	return uint32(len(m.roleManager.GetRoleUsers(role)))
+func (m *MembersStore) CountMembersWithRole(role string) uint32 {
+	return uint32(len(m.RoleManager.GetRoleUsers(role)))
 }
 
-func (m *membersStore) setRoles(roles []string) {
+func (m *MembersStore) setRoles(roles []string) {
 	caller := std.CurrentRealm().Addr()
 	for _, role := range roles {
-		m.roleManager.CreateNewRole(role, []string{}, caller)
+		m.RoleManager.CreateNewRole(role, []string{}, caller)
 	}
 }
 
-func (m *membersStore) setMembers(members []Member) {
+func (m *MembersStore) setMembers(members []Member) {
 	caller := std.CurrentRealm().Addr()
 	for _, member := range members {
-		m.members.Set(member.Address, struct{}{})
+		m.Members.Set(member.Address, struct{}{})
 		for _, role := range member.Roles {
-			m.roleManager.AddRoleToUser(std.Address(member.Address), role, caller)
+			m.RoleManager.AddRoleToUser(std.Address(member.Address), role, caller)
 		}
 	}
 }
 
 // TODO: add test for this kind of proposals
-func (m *membersStore) AddMember(member string, roles []string) {
+func (m *MembersStore) AddMember(member string, roles []string) {
 	if m.IsMember(member) {
 		panic("member already exists")
 	}
 	caller := std.CurrentRealm().Addr()
-	m.members.Set(member, struct{}{})
+	m.Members.Set(member, struct{}{})
 	for _, role := range roles {
-		m.roleManager.AddRoleToUser(std.Address(member), role, caller)
+		m.RoleManager.AddRoleToUser(std.Address(member), role, caller)
 	}
 }
 
-func (m *membersStore) RemoveMember(member string) {
+func (m *MembersStore) RemoveMember(member string) {
 	if !m.IsMember(member) {
 		panic("member does not exist")
 	}
-	m.members.Remove(member)
-	m.roleManager.RemoveAllRolesFromUser(std.Address(member), std.CurrentRealm().Addr())
+	m.Members.Remove(member)
+	m.RoleManager.RemoveAllRolesFromUser(std.Address(member), std.CurrentRealm().Addr())
 }
 
-func (m *membersStore) AddRoleToMember(member string, role string) {
+func (m *MembersStore) AddRoleToMember(member string, role string) {
 	if !m.IsMember(member) {
 		panic("member does not exist")
 	}
-	if !m.roleManager.RoleExists(role) {
+	if !m.RoleManager.RoleExists(role) {
 		panic("role does not exist")
 	}
 	if m.HasRole(member, role) {
 		panic("member already has the role")
 	}
-	m.roleManager.AddRoleToUser(std.Address(member), role, std.CurrentRealm().Addr())
+	m.RoleManager.AddRoleToUser(std.Address(member), role, std.CurrentRealm().Addr())
 }
 
-func (m *membersStore) RemoveRoleFromMember(member string, role string) {
+func (m *MembersStore) RemoveRoleFromMember(member string, role string) {
 	if !m.IsMember(member) {
 		panic("member does not exist")
 	}
-	if !m.roleManager.RoleExists(role) {
+	if !m.RoleManager.RoleExists(role) {
 		panic("role does not exist")
 	}
 	if !m.HasRole(member, role) {
 		panic("member does not have the role")
 	}
-	m.roleManager.RemoveRoleFromUser(std.Address(member), role, std.CurrentRealm().Addr())
+	m.RoleManager.RemoveRoleFromUser(std.Address(member), role, std.CurrentRealm().Addr())
 }

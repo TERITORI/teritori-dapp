@@ -49,7 +49,7 @@ func (d *DAO) renderHomePage(res *mux.ResponseWriter, req *mux.Request) {
 
 	res.Write(ufmt.Sprintf("## Members 👤 \n\n"))
 	i := 1
-	d.Members.members.Iterate("", "", func(key string, value interface{}) bool {
+	d.Members.Members.Iterate("", "", func(key string, value interface{}) bool {
 		res.Write(ufmt.Sprintf("- **Member %d: [%s](%s:%s/%s)**\n\n", i, key, linkPath, "member", key))
 		i += 1
 		return false
