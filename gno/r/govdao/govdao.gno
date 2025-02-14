@@ -17,13 +17,13 @@ func init() {
 	dao = &daokit.DAO{}
 	name := "GovDAO"
 	description := "This is a govDAO demo"
+	roles := []string{"T1", "T2", "T3"}
 
 	// ⚠️ No T3 member should be initially added to the DAO since we want to add them only with invitations (see invitations.gno)
-	roles := []string{"T1", "T2", "T3"}
 	members := []daokit.Member{
 		{Address: "g126gx6p6d3da4ymef35ury6874j6kys044r7zlg", Roles: []string{Tier1}},
 		{Address: "g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv", Roles: []string{Tier2}},
-		{Address: "g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", Roles: []string{Tier3}},
+		{Address: "g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", Roles: []string{Tier2}},
 	}
 
 	t1condition := daokit.CreateCondition("role-treshold", &dao, "T1", 0.66) // rework for a treshold_roles condition
