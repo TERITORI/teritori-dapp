@@ -49,9 +49,11 @@ func New(conf *Config) *DAO {
 	}
 	dao.initRenderingRouter()
 
-	conf.SetProfileString("DisplayName", conf.Name)
-	conf.SetProfileString("Bio", conf.Description)
-	conf.SetProfileString("Avatar", conf.ImageURI)
+	if conf.SetProfileString != nil {
+		conf.SetProfileString("DisplayName", conf.Name)
+		conf.SetProfileString("Bio", conf.Description)
+		conf.SetProfileString("Avatar", conf.ImageURI)
+	}
 
 	if !conf.NoDefaultHandlers {
 		if conf.SetProfileString == nil {
@@ -62,10 +64,12 @@ func New(conf *Config) *DAO {
 			conf.InitialCondition = daocond.MembersThreshold(0.6, members.IsMember, members.MembersCount)
 		}
 
-		dao.Core.SetResource(&daokit.Resource{
-			Handler:   NewEditProfileHandler(conf.SetProfileString, []string{"DisplayName", "Bio", "Avatar"}),
-			Condition: conf.InitialCondition,
-		})
+		if conf.SetProfileString != nil {
+			dao.Core.SetResource(&daokit.Resource{
+				Handler:   NewEditProfileHandler(conf.SetProfileString, []string{"DisplayName", "Bio", "Avatar"}),
+				Condition: conf.InitialCondition,
+			})
+		}
 
 		// register management handlers
 		for _, m := range []daokit.MessageHandler{
