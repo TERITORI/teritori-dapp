@@ -1,14 +1,15 @@
 package dao_realm
 
 import (
+	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/daokit"
 	"gno.land/r/demo/profile"
 )
 
-var dao *daokit.DAO
+var dao *daokit.Core
 
 func init() {
-	dao = &daokit.DAO{}
+	dao = &daokit.Core{}
 	name := "Demo DAO"
 	description := "This is a demo DAO"
 
@@ -20,14 +21,20 @@ func init() {
 		{Address: "g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r", Roles: []string{}},
 	}
 
-	condition := daokit.CreateCondition("members-treshold", &dao, 0.6)
-	resources := []daokit.Resource{}
+	initCondition := daocond.MembersThreshold(0.6, dao.MemberModule.IsMember, dao.MemberModule.MembersCount)
 
-	dao = daokit.NewDAO(name, description, roles, members, resources, condition)
-
+	editProfile := daokit.NewEditProfileResource(profile.SetStringField, []string{
+		profile.DisplayName,
+		profile.Avatar,
+		profile.Bio,
+	})
+	editProfile.Condition = initCondition
 	profile.SetStringField(profile.DisplayName, name)
 	profile.SetStringField(profile.Bio, description)
 	profile.SetStringField(profile.Avatar, "")
+
+	resources := []daokit.Resource{*editProfile}
+	dao = daokit.NewCore(roles, members, resources, initCondition)
 }
 
 func Propose(proposal daokit.ProposalRequest) {

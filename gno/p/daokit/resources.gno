@@ -5,31 +5,30 @@ import (
 	"gno.land/p/teritori/daocond"
 )
 
-type ResourcesModule struct {
+type resourcesStore struct {
 	resources *avl.Tree // string -> daocond.Condition
 }
 
 type Resource struct {
-	Resource  string
 	Handler   MessageHandler
 	Condition daocond.Condition
 }
 
-func newResourcesModule() *ResourcesModule {
-	return &ResourcesModule{
+func newResourcesStore() *resourcesStore {
+	return &resourcesStore{
 		resources: avl.NewTree(),
 	}
 }
 
-func (r *ResourcesModule) setResource(resources Resource) {
-	r.resources.Set(resources.Resource, resources.Condition)
+func (r *resourcesStore) setResource(resource *Resource) {
+	r.resources.Set(resource.Handler.Type(), resource)
 }
 
-func (r *ResourcesModule) getResource(name string) daocond.Condition {
+func (r *resourcesStore) getResource(name string) *Resource {
 	value, ok := r.resources.Get(name)
 	if !ok {
 		return nil
 	}
-	condition := value.(daocond.Condition)
-	return condition
+	res := value.(*Resource)
+	return res
 }

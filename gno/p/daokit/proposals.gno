@@ -1,7 +1,7 @@
 package daokit
 
 import (
-	"std"
+	"time"
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/seqid"
@@ -33,14 +33,17 @@ type Proposal struct {
 	id             seqid.ID
 	title          string
 	description    string
-	proposer       std.Address
-	resource       string
+	createdAt      time.Time
+	proposerID     string
+	resourceType   string
 	conditionState daocond.State
 	// MinVotingPeriod dao_utils.Expiration // copy here the dao_utils.Expiration type from gno/p/dao_utils/expiration.gno
 	// Expiration      dao_utils.Expiration // copy here the dao_utils.Expiration type from gno/p/dao_utils/expiration.gno
-	message ExecutableMessage
-	status  ProposalStatus
-	votes   map[string]daocond.Vote
+	message    ExecutableMessage
+	status     ProposalStatus
+	executorID string
+	executedAt time.Time
+	votes      map[string]daocond.Vote
 }
 
 type ProposalModule struct {
@@ -51,8 +54,7 @@ type ProposalModule struct {
 type ProposalRequest struct {
 	Title       string
 	Description string
-	Type        string
-	Payload     map[string]interface{}
+	Message     ExecutableMessage
 }
 
 func newProposalModule() *ProposalModule {
@@ -61,17 +63,18 @@ func newProposalModule() *ProposalModule {
 	}
 }
 
-func (p *ProposalModule) newProposal(title, description string, proposer std.Address, message ExecutableMessage, conditionState daocond.State) *Proposal {
+func (p *ProposalModule) newProposal(proposer string, req ProposalRequest, conditionState daocond.State) *Proposal {
 	id := p.proposalIDCounter.Next()
 	proposal := &Proposal{
 		id:             id,
-		title:          title,
-		description:    description,
-		proposer:       proposer,
+		title:          req.Title,
+		description:    req.Description,
+		proposerID:     proposer,
 		status:         ProposalStatusOpen,
-		message:        message,
+		message:        req.Message,
 		conditionState: conditionState,
 		votes:          map[string]daocond.Vote{},
+		createdAt:      time.Now(),
 	}
 	p.proposals.Set(id.String(), proposal)
 	return proposal

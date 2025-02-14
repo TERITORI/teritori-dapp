@@ -3,68 +3,37 @@ package daokit
 import (
 	"path"
 	"std"
+	"time"
 
 	"gno.land/p/demo/mux"
 	"gno.land/p/teritori/daocond"
 )
 
-type DAO struct {
-	Name        string
-	Description string
-
-	MemberModule     *MemberModule
-	ResourcesModule  *ResourcesModule
-	ProposalModule   *ProposalModule
-	MessagesRegistry *MessagesRegistry
+type Core struct {
+	resources      *resourcesStore
+	ProposalModule *ProposalModule
 
 	renderingRouter *mux.Router
 	realmName       string
 }
 
-func NewDAO(name, description string, roles []string, members []Member, resources []Resource, initCond daocond.Condition) *DAO {
-	if len(name) < 1 || len(description) < 1 {
-		panic("name or description is empty")
+func NewCore() *Core {
+	dao := &Core{
+		resources:       newResourcesStore(),
+		ProposalModule:  newProposalModule(),
+		renderingRouter: mux.NewRouter(),
+		realmName:       path.Base(std.CurrentRealm().PkgPath()),
 	}
-
-	dao := &DAO{
-		Name:             name,
-		Description:      description,
-		MemberModule:     newMemberModule(),
-		ResourcesModule:  newResourcesModule(),
-		ProposalModule:   newProposalModule(),
-		MessagesRegistry: newMessagesRegistry(),
-		renderingRouter:  mux.NewRouter(),
-		realmName:        path.Base(std.CurrentRealm().PkgPath()),
-	}
-	dao.initMessagesRegistry()
 	dao.initRenderingRouter()
-
-	dao.MemberModule.setRoles(roles)
-	dao.MemberModule.setMembers(members)
-
-	dao.MessagesRegistry.handlers.Iterate("", "", func(key string, value interface{}) bool {
-		dao.ResourcesModule.setResource(Resource{
-			Resource:  key,
-			Handler:   value.(MessageHandler),
-			Condition: initCond,
-		})
-		return false
-	})
-
-	for _, resource := range resources {
-		dao.ResourcesModule.setResource(resource)
-		dao.MessagesRegistry.register(resource.Handler)
-	}
 
 	return dao
 }
 
-func (d *DAO) Vote(proposalID uint64, vote string) {
-	voter := std.PrevRealm().Addr()
-	if !d.MemberModule.IsMember(voter.String()) {
-		panic("voter is not a member")
-	}
+func (d *Core) SetResource(res *Resource) {
+	d.resources.setResource(res)
+}
 
+func (d *Core) Vote(voterID string, proposalID uint64, vote daocond.Vote) {
 	proposal := d.ProposalModule.getProposal(proposalID)
 	if proposal == nil {
 		panic("proposal not found")
@@ -74,26 +43,17 @@ func (d *DAO) Vote(proposalID uint64, vote string) {
 		panic("proposal is not open")
 	}
 
-	if daocond.Vote(vote) != daocond.VoteYes && daocond.Vote(vote) != daocond.VoteNo && daocond.Vote(vote) != daocond.VoteAbstain {
-		panic("invalid vote")
-	}
-
 	e := &daocond.EventVote{
-		VoterID: voter.String(),
+		VoterID: voterID,
 		Vote:    daocond.Vote(vote),
 	}
 
 	proposal.conditionState.HandleEvent(e, proposal.votes)
-	proposal.votes[voter.String()] = daocond.Vote(vote)
+	proposal.votes[voterID] = daocond.Vote(vote)
 
 }
 
-func (d *DAO) Execute(proposalID uint64) {
-	executor := std.PrevRealm().Addr()
-	if !d.MemberModule.IsMember(executor.String()) {
-		panic("executor is not a member")
-	}
-
+func (d *Core) Execute(proposalID uint64) {
 	proposal := d.ProposalModule.getProposal(proposalID)
 	if proposal == nil {
 		panic("proposal not found")
@@ -112,41 +72,32 @@ func (d *DAO) Execute(proposalID uint64) {
 		panic("proposal does not meet the condition(s) or is already closed/executed")
 	}
 
-	d.MessagesRegistry.execute(proposal.message)
+	d.resources.getResource(proposal.resourceType).Handler.Execute(proposal.message)
 	proposal.status = ProposalStatusExecuted
+	proposal.executedAt = time.Now()
 }
 
-func (d *DAO) Propose(req ProposalRequest) {
-	d.propose(req.Title, req.Description, req.Type, req.Payload)
+func (d *Core) Propose(proposerID string, req ProposalRequest) {
+	d.propose(proposerID, req)
 }
 
-func (d *DAO) InstantExecute(req ProposalRequest) {
-	proposal := d.propose(req.Title, req.Description, req.Type, req.Payload)
-	d.Vote(uint64(proposal.id), "yes")
+func (d *Core) InstantExecute(executorID string, req ProposalRequest) {
+	proposal := d.propose(executorID, req)
+	d.Vote(executorID, uint64(proposal.id), "yes")
 	d.Execute(uint64(proposal.id))
 }
 
-func (d *DAO) propose(title string, description string, messageType string, payload map[string]interface{}) *Proposal {
-	proposer := std.PrevRealm().Addr()
-	if !d.MemberModule.IsMember(proposer.String()) {
-		panic(proposer + " proposer is not a member" + proposer)
-	}
+func (d *Core) ResourcesCount() int {
+	return d.resources.resources.Size()
+}
 
-	condition := d.ResourcesModule.getResource(messageType)
-	if condition == nil {
+func (d *Core) propose(proposer string, req ProposalRequest) *Proposal {
+	messageType := req.Message.Type()
+
+	resource := d.resources.getResource(messageType)
+	if resource == nil {
 		panic("message type is not registered as a resource")
 	}
 
-	if len(title) == 0 || len(description) == 0 {
-		panic("title or description is empty")
-	}
-
-	handler, ok := d.MessagesRegistry.handlers.Get(messageType)
-	if !ok {
-		panic("message type is not registered as a resource")
-	}
-
-	message := handler.(MessageHandler).Instantiate(payload)
-
-	return d.ProposalModule.newProposal(title, description, proposer, message, condition.NewState())
+	return d.ProposalModule.newProposal(proposer, req, resource.Condition.NewState())
 }
