@@ -69,18 +69,16 @@ func (m *MembersStore) CountMembersWithRole(role string) uint32 {
 }
 
 func (m *MembersStore) setRoles(roles []string) {
-	caller := std.CurrentRealm().Addr()
 	for _, role := range roles {
-		m.RoleManager.CreateNewRole(role, []string{}, caller)
+		m.RoleManager.CreateNewRole(role, []string{})
 	}
 }
 
 func (m *MembersStore) setMembers(members []Member) {
-	caller := std.CurrentRealm().Addr()
 	for _, member := range members {
 		m.Members.Set(member.Address, struct{}{})
 		for _, role := range member.Roles {
-			m.RoleManager.AddRoleToUser(std.Address(member.Address), role, caller)
+			m.RoleManager.AddRoleToUser(std.Address(member.Address), role)
 		}
 	}
 }
@@ -89,10 +87,9 @@ func (m *MembersStore) AddMember(member string, roles []string) {
 	if m.IsMember(member) {
 		panic("member already exists")
 	}
-	caller := std.CurrentRealm().Addr()
 	m.Members.Set(member, struct{}{})
 	for _, role := range roles {
-		m.RoleManager.AddRoleToUser(std.Address(member), role, caller)
+		m.RoleManager.AddRoleToUser(std.Address(member), role)
 	}
 }
 
@@ -101,7 +98,7 @@ func (m *MembersStore) RemoveMember(member string) {
 		panic("member does not exist")
 	}
 	m.Members.Remove(member)
-	m.RoleManager.RemoveAllRolesFromUser(std.Address(member), std.CurrentRealm().Addr())
+	m.RoleManager.RemoveAllRolesFromUser(std.Address(member))
 }
 
 func (m *MembersStore) AddRoleToMember(member string, role string) {
@@ -114,7 +111,7 @@ func (m *MembersStore) AddRoleToMember(member string, role string) {
 	if m.HasRole(member, role) {
 		panic("member already has the role")
 	}
-	m.RoleManager.AddRoleToUser(std.Address(member), role, std.CurrentRealm().Addr())
+	m.RoleManager.AddRoleToUser(std.Address(member), role)
 }
 
 func (m *MembersStore) RemoveRoleFromMember(member string, role string) {
@@ -127,5 +124,5 @@ func (m *MembersStore) RemoveRoleFromMember(member string, role string) {
 	if !m.HasRole(member, role) {
 		panic("member does not have the role")
 	}
-	m.RoleManager.RemoveRoleFromUser(std.Address(member), role, std.CurrentRealm().Addr())
+	m.RoleManager.RemoveRoleFromUser(std.Address(member), role)
 }

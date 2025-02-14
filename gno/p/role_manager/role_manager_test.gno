@@ -20,8 +20,8 @@ func TestNewWithAddress(t *testing.T) {
 
 func TestCreateNewRole(t *testing.T) {
 	rm := New()
-	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
-	rm.CreateNewRole("role2", []string{"perm3", "perm4"}, alice)
+	rm.CreateNewRole("role1", []string{"perm1", "perm2"})
+	rm.CreateNewRole("role2", []string{"perm3", "perm4"})
 
 	v, ok := rm.roles.Get("role1")
 	if !ok {
@@ -57,12 +57,12 @@ func TestCreateNewRole(t *testing.T) {
 
 func TestDeleteRole(t *testing.T) {
 	rm := New()
-	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
-	rm.CreateNewRole("role2", []string{"perm3", "perm4"}, alice)
+	rm.CreateNewRole("role1", []string{"perm1", "perm2"})
+	rm.CreateNewRole("role2", []string{"perm3", "perm4"})
 
-	rm.AddRoleToUser(alice, "role1", alice)
+	rm.AddRoleToUser(alice, "role1")
 
-	rm.DeleteRole("role1", alice)
+	rm.DeleteRole("role1")
 
 	if _, ok := rm.roles.Get("role1"); ok {
 		t.Fatalf("expected role1 to be deleted")
@@ -80,9 +80,9 @@ func TestDeleteRole(t *testing.T) {
 
 func TestAddPermissionToRole(t *testing.T) {
 	rm := New()
-	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
-	rm.AddPermissionToRole("perm3", "role1", alice)
-	rm.AddRoleToUser(alice, "role1", alice)
+	rm.CreateNewRole("role1", []string{"perm1", "perm2"})
+	rm.AddPermissionToRole("perm3", "role1")
+	rm.AddRoleToUser(alice, "role1")
 
 	v, ok := rm.roles.Get("role1")
 	if !ok {
@@ -106,11 +106,11 @@ func TestAddPermissionToRole(t *testing.T) {
 
 func TestRemovePermissionFromRole(t *testing.T) {
 	rm := New()
-	rm.CreateNewRole("role1", []string{"perm1", "perm2", "perm3"}, alice)
+	rm.CreateNewRole("role1", []string{"perm1", "perm2", "perm3"})
 
-	rm.AddRoleToUser(alice, "role1", alice)
+	rm.AddRoleToUser(alice, "role1")
 
-	rm.RemovePermissionFromRole("perm3", "role1", alice)
+	rm.RemovePermissionFromRole("perm3", "role1")
 
 	v, ok := rm.roles.Get("role1")
 	if !ok {
@@ -134,15 +134,15 @@ func TestRemovePermissionFromRole(t *testing.T) {
 
 func TestAddRoleToUser(t *testing.T) {
 	rm := New()
-	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
-	rm.CreateNewRole("role2", []string{"perm3", "perm4"}, alice)
-	rm.CreateNewRole("role3", []string{"perm5", "perm6"}, alice)
+	rm.CreateNewRole("role1", []string{"perm1", "perm2"})
+	rm.CreateNewRole("role2", []string{"perm3", "perm4"})
+	rm.CreateNewRole("role3", []string{"perm5", "perm6"})
 
-	rm.AddRoleToUser(alice, "role1", alice)
-	rm.AddRoleToUser(alice, "role2", alice)
-	rm.AddRoleToUser(alice, "role3", alice)
+	rm.AddRoleToUser(alice, "role1")
+	rm.AddRoleToUser(alice, "role2")
+	rm.AddRoleToUser(alice, "role3")
 
-	rm.RemoveRoleFromUser(alice, "role2", alice)
+	rm.RemoveRoleFromUser(alice, "role2")
 
 	aliceRoles := rm.getUser(alice)
 	if !aliceRoles.Has("role1") {
@@ -158,16 +158,16 @@ func TestAddRoleToUser(t *testing.T) {
 
 func TestRemoveRoleFromUser(t *testing.T) {
 	rm := New()
-	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
-	rm.CreateNewRole("role2", []string{"perm3", "perm4"}, alice)
-	rm.CreateNewRole("role3", []string{"perm5", "perm6"}, alice)
+	rm.CreateNewRole("role1", []string{"perm1", "perm2"})
+	rm.CreateNewRole("role2", []string{"perm3", "perm4"})
+	rm.CreateNewRole("role3", []string{"perm5", "perm6"})
 
-	rm.AddRoleToUser(alice, "role1", alice)
-	rm.AddRoleToUser(alice, "role2", alice)
-	rm.AddRoleToUser(alice, "role3", alice)
+	rm.AddRoleToUser(alice, "role1")
+	rm.AddRoleToUser(alice, "role2")
+	rm.AddRoleToUser(alice, "role3")
 
-	rm.RemoveRoleFromUser(alice, "role2", alice)
-	rm.RemoveRoleFromUser(alice, "role1", alice)
+	rm.RemoveRoleFromUser(alice, "role2")
+	rm.RemoveRoleFromUser(alice, "role1")
 
 	aliceRoles := rm.getUser(alice)
 	if aliceRoles.Has("role1") {
@@ -183,13 +183,13 @@ func TestRemoveRoleFromUser(t *testing.T) {
 
 func TestHasPermission(t *testing.T) {
 	rm := New()
-	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
-	rm.CreateNewRole("role2", []string{"perm3", "perm4"}, alice)
-	rm.CreateNewRole("role3", []string{"perm5", "perm6"}, alice)
+	rm.CreateNewRole("role1", []string{"perm1", "perm2"})
+	rm.CreateNewRole("role2", []string{"perm3", "perm4"})
+	rm.CreateNewRole("role3", []string{"perm5", "perm6"})
 
-	rm.AddRoleToUser(alice, "role1", alice)
-	rm.AddRoleToUser(alice, "role2", alice)
-	rm.AddRoleToUser(alice, "role3", alice)
+	rm.AddRoleToUser(alice, "role1")
+	rm.AddRoleToUser(alice, "role2")
+	rm.AddRoleToUser(alice, "role3")
 
 	if !rm.HasPermission(alice, "perm1") {
 		t.Fatalf("expected user to have perm1")
@@ -207,13 +207,13 @@ func TestHasPermission(t *testing.T) {
 
 func TestHasRole(t *testing.T) {
 	rm := New()
-	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
-	rm.CreateNewRole("role2", []string{"perm3", "perm4"}, alice)
-	rm.CreateNewRole("role3", []string{"perm5", "perm6"}, alice)
+	rm.CreateNewRole("role1", []string{"perm1", "perm2"})
+	rm.CreateNewRole("role2", []string{"perm3", "perm4"})
+	rm.CreateNewRole("role3", []string{"perm5", "perm6"})
 
-	rm.AddRoleToUser(alice, "role1", alice)
-	rm.AddRoleToUser(alice, "role2", alice)
-	rm.AddRoleToUser(alice, "role3", alice)
+	rm.AddRoleToUser(alice, "role1")
+	rm.AddRoleToUser(alice, "role2")
+	rm.AddRoleToUser(alice, "role3")
 
 	if !rm.HasRole(alice, "role1") {
 		t.Fatalf("expected user to have role1")
@@ -231,22 +231,22 @@ func TestHasRole(t *testing.T) {
 
 func TestRemoveAllRolesFromUser(t *testing.T) {
 	rm := New()
-	rm.CreateNewRole("role1", []string{"perm1", "perm2"}, alice)
-	rm.CreateNewRole("role2", []string{"perm3", "perm4"}, alice)
-	rm.CreateNewRole("role3", []string{"perm5", "perm6"}, alice)
+	rm.CreateNewRole("role1", []string{"perm1", "perm2"})
+	rm.CreateNewRole("role2", []string{"perm3", "perm4"})
+	rm.CreateNewRole("role3", []string{"perm5", "perm6"})
 
-	rm.AddRoleToUser(alice, "role1", alice)
-	rm.AddRoleToUser(alice, "role2", alice)
-	rm.AddRoleToUser(alice, "role3", alice)
+	rm.AddRoleToUser(alice, "role1")
+	rm.AddRoleToUser(alice, "role2")
+	rm.AddRoleToUser(alice, "role3")
 
-	rm.RemoveAllRolesFromUser(alice, alice)
+	rm.RemoveAllRolesFromUser(alice)
 
 	aliceRoles := rm.getUser(alice)
 	if aliceRoles != nil {
 		t.Fatalf("expected user to have no roles")
 	}
 
-	rm.AddRoleToUser(alice, "role1", alice)
+	rm.AddRoleToUser(alice, "role1")
 
 	aliceRoles = rm.getUser(alice)
 	if !aliceRoles.Has("role1") {

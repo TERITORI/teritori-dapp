@@ -31,7 +31,7 @@ func New() *RoleManager {
 	return rm
 }
 
-func (rm *RoleManager) CreateNewRole(roleName string, permissions []string, caller std.Address) {
+func (rm *RoleManager) CreateNewRole(roleName string, permissions []string) {
 	if rm.roles.Has(roleName) {
 		panic("role already exists")
 	}
@@ -49,7 +49,7 @@ func (rm *RoleManager) CreateNewRole(roleName string, permissions []string, call
 	rm.roles.Set(roleName, role)
 }
 
-func (rm *RoleManager) DeleteRole(roleName string, caller std.Address) {
+func (rm *RoleManager) DeleteRole(roleName string) {
 	if !rm.roles.Has(roleName) {
 		panic("role does not exist")
 	}
@@ -64,17 +64,17 @@ func (rm *RoleManager) DeleteRole(roleName string, caller std.Address) {
 	rm.roles.Remove(roleName)
 }
 
-func (rm *RoleManager) AddPermissionToRole(permission string, roleName string, caller std.Address) {
+func (rm *RoleManager) AddPermissionToRole(permission string, roleName string) {
 	role := rm.mustGetRole(roleName)
 	role.permissions.Set(permission, struct{}{})
 }
 
-func (rm *RoleManager) RemovePermissionFromRole(permission string, roleName string, caller std.Address) {
+func (rm *RoleManager) RemovePermissionFromRole(permission string, roleName string) {
 	role := rm.mustGetRole(roleName)
 	role.permissions.Remove(permission)
 }
 
-func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string, caller std.Address) {
+func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string) {
 	role := rm.mustGetRole(roleName)
 	userRoles := rm.getUser(user)
 	if userRoles == nil {
@@ -85,7 +85,7 @@ func (rm *RoleManager) AddRoleToUser(user std.Address, roleName string, caller s
 	role.users.Set(user.String(), struct{}{})
 }
 
-func (rm *RoleManager) RemoveRoleFromUser(user std.Address, roleName string, caller std.Address) {
+func (rm *RoleManager) RemoveRoleFromUser(user std.Address, roleName string) {
 	role := rm.mustGetRole(roleName)
 	userRoles := rm.getUser(user)
 	if userRoles == nil {
@@ -182,7 +182,7 @@ func (rm *RoleManager) GetUserRoles(user std.Address) []string {
 	return res
 }
 
-func (rm *RoleManager) RemoveAllRolesFromUser(user std.Address, caller std.Address) {
+func (rm *RoleManager) RemoveAllRolesFromUser(user std.Address) {
 	userRoles := rm.getUser(user)
 	if userRoles == nil {
 		return
