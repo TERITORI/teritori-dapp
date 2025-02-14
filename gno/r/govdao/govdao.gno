@@ -31,12 +31,12 @@ func init() {
 	resources := []daokit.Resource{
 		{
 			Resource:  "gno.land/r/teritori/govdao.AddNewT1Member",
-			Handler:   NewAddNewT1MemberMessageHandler(&dao),
+			Handler:   NewAddT1MemberMessageHandler(&dao),
 			Condition: t1condition,
 		},
 		{
 			Resource:  "gno.land/r/teritori/govdao.AddNewT2Member",
-			Handler:   NewAddNewT2MemberMessageHandler(&dao),
+			Handler:   NewAddT2MemberMessageHandler(&dao),
 			Condition: t2condition,
 		},
 	}

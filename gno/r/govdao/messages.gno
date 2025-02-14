@@ -4,30 +4,30 @@ import (
 	"gno.land/p/teritori/daokit"
 )
 
-type AddNewT1MemberMessage struct {
+type AddT1MemberMessage struct {
 	Address string
 }
 
-var _ daokit.ExecutableMessage = &AddNewT1MemberMessage{}
+var _ daokit.ExecutableMessage = &AddT1MemberMessage{}
 
-func (m AddNewT1MemberMessage) Type() string {
-	return "gno.land/r/teritori/govdao.AddNewT1Member"
+func (m AddT1MemberMessage) Type() string {
+	return "gno.land/r/teritori/govdao.AddT1Member"
 }
 
-func (m *AddNewT1MemberMessage) String() string {
+func (m *AddT1MemberMessage) String() string {
 	return m.Address
 }
 
-type AddNewT1MemberMessageHandler struct {
+type AddT1MemberMessageHandler struct {
 	dao **daokit.DAO
 }
 
-func NewAddNewT1MemberMessageHandler(dao **daokit.DAO) *AddNewT1MemberMessageHandler {
-	return &AddNewT1MemberMessageHandler{dao: dao}
+func NewAddT1MemberMessageHandler(dao **daokit.DAO) *AddT1MemberMessageHandler {
+	return &AddT1MemberMessageHandler{dao: dao}
 }
 
-func (h AddNewT1MemberMessageHandler) Execute(msg daokit.ExecutableMessage) {
-	message := msg.(*AddNewT1MemberMessage)
+func (h AddT1MemberMessageHandler) Execute(msg daokit.ExecutableMessage) {
+	message := msg.(*AddT1MemberMessage)
 	dao := *h.dao
 	if dao.MemberModule.HasRole(message.Address, Tier1) {
 		panic("member is already a tier1 member")
@@ -45,44 +45,44 @@ func (h AddNewT1MemberMessageHandler) Execute(msg daokit.ExecutableMessage) {
 	}
 }
 
-func (h AddNewT1MemberMessageHandler) Type() string {
-	return AddNewT1MemberMessage{}.Type()
+func (h AddT1MemberMessageHandler) Type() string {
+	return AddT1MemberMessage{}.Type()
 }
 
-func (h *AddNewT1MemberMessageHandler) Instantiate(payload map[string]interface{}) daokit.ExecutableMessage {
+func (h *AddT1MemberMessageHandler) Instantiate(payload map[string]interface{}) daokit.ExecutableMessage {
 	address, ok := payload["address"].(string)
 	if !ok {
 		panic("invalid payload format: expected to have a 'address' key with a string value")
 	}
-	return &AddNewT1MemberMessage{
+	return &AddT1MemberMessage{
 		Address: address,
 	}
 }
 
-type AddNewT2MemberMessage struct {
+type AddT2MemberMessage struct {
 	Address string
 }
 
-var _ daokit.ExecutableMessage = &AddNewT2MemberMessage{}
+var _ daokit.ExecutableMessage = &AddT2MemberMessage{}
 
-func (m AddNewT2MemberMessage) Type() string {
-	return "gno.land/r/teritori/govdao.AddNewT2Member"
+func (m AddT2MemberMessage) Type() string {
+	return "gno.land/r/teritori/govdao.AddT2Member"
 }
 
-func (m *AddNewT2MemberMessage) String() string {
+func (m *AddT2MemberMessage) String() string {
 	return m.Address
 }
 
-type AddNewT2MemberMessageHandler struct {
+type AddT2MemberMessageHandler struct {
 	dao **daokit.DAO
 }
 
-func NewAddNewT2MemberMessageHandler(dao **daokit.DAO) *AddNewT2MemberMessageHandler {
-	return &AddNewT2MemberMessageHandler{dao: dao}
+func NewAddT2MemberMessageHandler(dao **daokit.DAO) *AddT2MemberMessageHandler {
+	return &AddT2MemberMessageHandler{dao: dao}
 }
 
-func (h AddNewT2MemberMessageHandler) Execute(msg daokit.ExecutableMessage) {
-	message := msg.(*AddNewT2MemberMessage)
+func (h AddT2MemberMessageHandler) Execute(msg daokit.ExecutableMessage) {
+	message := msg.(*AddT2MemberMessage)
 	dao := *h.dao
 	if dao.MemberModule.HasRole(message.Address, Tier1) {
 		panic("member is already a tier1 member")
@@ -105,16 +105,16 @@ func (h AddNewT2MemberMessageHandler) Execute(msg daokit.ExecutableMessage) {
 	}
 }
 
-func (h AddNewT2MemberMessageHandler) Type() string {
-	return AddNewT2MemberMessage{}.Type()
+func (h AddT2MemberMessageHandler) Type() string {
+	return AddT2MemberMessage{}.Type()
 }
 
-func (h *AddNewT2MemberMessageHandler) Instantiate(payload map[string]interface{}) daokit.ExecutableMessage {
+func (h *AddT2MemberMessageHandler) Instantiate(payload map[string]interface{}) daokit.ExecutableMessage {
 	address, ok := payload["address"].(string)
 	if !ok {
 		panic("invalid payload format: expected to have a 'address' key with a string value")
 	}
-	return &AddNewT2MemberMessage{
+	return &AddT2MemberMessage{
 		Address: address,
 	}
 }
