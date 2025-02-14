@@ -80,7 +80,7 @@ func (p *ProposalModule) newProposal(proposer string, req ProposalRequest, condi
 	return proposal
 }
 
-func (p *ProposalModule) getProposal(id uint64) *Proposal {
+func (p *ProposalModule) GetProposal(id uint64) *Proposal {
 	value, ok := p.proposals.Get(seqid.ID(id).String())
 	if !ok {
 		return nil
@@ -89,7 +89,7 @@ func (p *ProposalModule) getProposal(id uint64) *Proposal {
 	return proposal
 }
 
-func (p *Proposal) updateStatus() {
+func (p *Proposal) UpdateStatus() {
 	conditionsAreMet := p.conditionState.Eval(p.votes)
 	if p.status == ProposalStatusOpen && conditionsAreMet {
 		p.status = ProposalStatusPassed

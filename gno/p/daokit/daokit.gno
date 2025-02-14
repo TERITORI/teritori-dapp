@@ -67,7 +67,7 @@ func (d *Core) Execute(proposalID uint64) {
 		panic("proposal condition is not met")
 	}
 
-	proposal.updateStatus()
+	proposal.UpdateStatus()
 	if proposal.status != ProposalStatusPassed {
 		panic("proposal does not meet the condition(s) or is already closed/executed")
 	}

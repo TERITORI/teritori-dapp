@@ -178,7 +178,7 @@ func TestPropose(t *testing.T) {
 			std.TestSetOrigCaller(test.input.proposer)
 			dao.Propose(test.input.proposalReq)
 
-			proposal := dao.ProposalModule.getProposal(1)
+			proposal := dao.ProposalModule.GetProposal(1)
 			if proposal.title != test.expected.title {
 				t.Errorf("Expected title %s, got %s", test.expected.title, proposal.title)
 			}
@@ -326,7 +326,7 @@ func TestVote(t *testing.T) {
 			std.TestSetOrigCaller(test.input.voter)
 			dao.Vote(test.input.proposalID, test.input.vote)
 
-			proposal := dao.ProposalModule.getProposal(test.input.proposalID)
+			proposal := dao.ProposalModule.GetProposal(test.input.proposalID)
 			eval := proposal.conditionState.Eval(proposal.votes)
 			if eval != test.expected.eval {
 				t.Errorf("Expected eval %t, got %t", test.expected.eval, eval)
@@ -459,7 +459,7 @@ func TestExecuteProposal(t *testing.T) {
 			std.TestSetOrigCaller(test.input.executor)
 			dao.Execute(test.input.proposalID)
 
-			proposal := dao.ProposalModule.getProposal(test.input.proposalID)
+			proposal := dao.ProposalModule.GetProposal(test.input.proposalID)
 
 			if proposal.status != ProposalStatusExecuted {
 				t.Errorf("Expected status %s, got %s", ProposalStatusExecuted, proposal.status)
