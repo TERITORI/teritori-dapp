@@ -1,0 +1,40 @@
+name: Cairo
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  merge_group:
+
+jobs:
+  check-cairo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: foundry-rs/setup-snfoundry@v4
+      - uses: software-mansion/setup-scarb@v1
+        with:
+          scarb-version: "2.9.2"
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install cairo-lint
+        run: cargo install scarb-cairo-lint --git https://github.com/software-mansion/cairo-lint
+
+      - name: Format
+        run: make fmt.cairo
+
+      - name: Lint
+        run: make lint.cairo
+
+      - name: Test
+        run: make test.cairo
+
+      - name: Build
+        run: make build.cairo
+
+      - name: Check diff
+        run: git diff --exit-code
