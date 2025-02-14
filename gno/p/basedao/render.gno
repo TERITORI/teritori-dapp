@@ -19,6 +19,9 @@ const (
 )
 
 func (d *DAO) initRenderingRouter() {
+	if d.RenderRouter == nil {
+		d.RenderRouter = mux.NewRouter()
+	}
 	d.RenderRouter.HandleFunc(HOME_PATH, d.renderHomePage)
 	d.RenderRouter.HandleFunc(CONFIG_PATH, d.renderConfigPage)
 	d.RenderRouter.HandleFunc(PROPOSAL_HISTORY_PATH, d.renderProposalHistoryPage)
