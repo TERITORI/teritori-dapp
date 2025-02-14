@@ -16,10 +16,6 @@ import (
 // A member can only delegate one invitation to another user
 
 const (
-	Tier1 = "T1"
-	Tier2 = "T2"
-	Tier3 = "T3"
-
 	T1Invitations = 3
 	T2Invitations = 2
 	T3Invitations = 1

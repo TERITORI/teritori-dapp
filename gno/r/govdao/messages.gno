@@ -29,19 +29,19 @@ func NewAddNewT1MemberMessageHandler(dao **daokit.DAO) *AddNewT1MemberMessageHan
 func (h AddNewT1MemberMessageHandler) Execute(msg daokit.ExecutableMessage) {
 	message := msg.(*AddNewT1MemberMessage)
 	dao := *h.dao
-	if dao.MemberModule.HasRole(message.Address, "tier1") {
+	if dao.MemberModule.HasRole(message.Address, Tier1) {
 		panic("member is already a tier1 member")
 	}
-	if dao.MemberModule.HasRole(message.Address, "tier2") {
-		dao.MemberModule.RemoveRoleFromMember(message.Address, "tier2")
+	if dao.MemberModule.HasRole(message.Address, Tier2) {
+		dao.MemberModule.RemoveRoleFromMember(message.Address, Tier2)
 	}
-	if dao.MemberModule.HasRole(message.Address, "tier3") {
-		dao.MemberModule.RemoveRoleFromMember(message.Address, "tier3")
+	if dao.MemberModule.HasRole(message.Address, Tier3) {
+		dao.MemberModule.RemoveRoleFromMember(message.Address, Tier3)
 	}
 	if dao.MemberModule.IsMember(message.Address) {
-		dao.MemberModule.AddRoleToMember(message.Address, "tier1")
+		dao.MemberModule.AddRoleToMember(message.Address, Tier1)
 	} else {
-		dao.MemberModule.AddMember(message.Address, []string{"tier1"})
+		dao.MemberModule.AddMember(message.Address, []string{Tier1})
 	}
 }
 
@@ -84,19 +84,24 @@ func NewAddNewT2MemberMessageHandler(dao **daokit.DAO) *AddNewT2MemberMessageHan
 func (h AddNewT2MemberMessageHandler) Execute(msg daokit.ExecutableMessage) {
 	message := msg.(*AddNewT2MemberMessage)
 	dao := *h.dao
-	if dao.MemberModule.HasRole(message.Address, "tier1") {
+	if dao.MemberModule.HasRole(message.Address, Tier1) {
 		panic("member is already a tier1 member")
 	}
-	if dao.MemberModule.HasRole(message.Address, "tier2") {
+	if dao.MemberModule.HasRole(message.Address, Tier2) {
 		panic("member is already a tier2 member")
 	}
-	if dao.MemberModule.HasRole(message.Address, "tier3") {
-		dao.MemberModule.RemoveRoleFromMember(message.Address, "tier3")
+	t2MaxSize := dao.MemberModule.CountMembersWithRole(Tier1) * 2
+	if dao.MemberModule.CountMembersWithRole(Tier2) >= t2MaxSize {
+		panic("tier2 members limit that is twice the number of tier1 members has been reached")
+	}
+
+	if dao.MemberModule.HasRole(message.Address, Tier3) {
+		dao.MemberModule.RemoveRoleFromMember(message.Address, Tier3)
 	}
 	if dao.MemberModule.IsMember(message.Address) {
-		dao.MemberModule.AddRoleToMember(message.Address, "tier2")
+		dao.MemberModule.AddRoleToMember(message.Address, Tier2)
 	} else {
-		dao.MemberModule.AddMember(message.Address, []string{"tier2"})
+		dao.MemberModule.AddMember(message.Address, []string{Tier2})
 	}
 }
 
