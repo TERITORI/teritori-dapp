@@ -7,7 +7,7 @@ import (
 	"gno.land/p/demo/ufmt"
 )
 
-func RoleThreshold(threshold float64, role string, hasRoleFn func(memberId string, role string) bool, usersRoleCountFn func(role string) uint64) Condition {
+func RoleThreshold(threshold float64, role string, hasRoleFn func(memberId string, role string) bool, usersRoleCountFn func(role string) uint32) Condition {
 	if threshold <= 0 || threshold > 1 {
 		panic(errors.New("invalid threshold"))
 	}
@@ -27,7 +27,7 @@ func RoleThreshold(threshold float64, role string, hasRoleFn func(memberId strin
 
 type roleThresholdCond struct {
 	hasRoleFn        func(memberId string, role string) bool
-	usersRoleCountFn func(role string) uint64
+	usersRoleCountFn func(role string) uint32
 	threshold        float64
 	role             string
 }

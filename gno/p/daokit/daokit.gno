@@ -1,45 +1,34 @@
 package daokit
 
 import (
-	"path"
-	"std"
 	"time"
 
-	"gno.land/p/demo/mux"
 	"gno.land/p/teritori/daocond"
 )
 
 type Core struct {
-	resources      *resourcesStore
+	Resources      *resourcesStore
 	ProposalModule *ProposalModule
-
-	renderingRouter *mux.Router
-	realmName       string
 }
 
 func NewCore() *Core {
-	dao := &Core{
-		resources:       newResourcesStore(),
-		ProposalModule:  newProposalModule(),
-		renderingRouter: mux.NewRouter(),
-		realmName:       path.Base(std.CurrentRealm().PkgPath()),
+	return &Core{
+		Resources:      newResourcesStore(),
+		ProposalModule: newProposalModule(),
 	}
-	dao.initRenderingRouter()
-
-	return dao
 }
 
 func (d *Core) SetResource(res *Resource) {
-	d.resources.setResource(res)
+	d.Resources.setResource(res)
 }
 
 func (d *Core) Vote(voterID string, proposalID uint64, vote daocond.Vote) {
-	proposal := d.ProposalModule.getProposal(proposalID)
+	proposal := d.ProposalModule.GetProposal(proposalID)
 	if proposal == nil {
 		panic("proposal not found")
 	}
 
-	if proposal.status != ProposalStatusOpen {
+	if proposal.Status != ProposalStatusOpen {
 		panic("proposal is not open")
 	}
 
@@ -48,33 +37,33 @@ func (d *Core) Vote(voterID string, proposalID uint64, vote daocond.Vote) {
 		Vote:    daocond.Vote(vote),
 	}
 
-	proposal.conditionState.HandleEvent(e, proposal.votes)
-	proposal.votes[voterID] = daocond.Vote(vote)
+	proposal.ConditionState.HandleEvent(e, proposal.Votes)
+	proposal.Votes[voterID] = daocond.Vote(vote)
 
 }
 
 func (d *Core) Execute(proposalID uint64) {
-	proposal := d.ProposalModule.getProposal(proposalID)
+	proposal := d.ProposalModule.GetProposal(proposalID)
 	if proposal == nil {
 		panic("proposal not found")
 	}
 
-	if proposal.status != ProposalStatusOpen {
+	if proposal.Status != ProposalStatusOpen {
 		panic("proposal is not open")
 	}
 
-	if !proposal.conditionState.Eval(proposal.votes) {
+	if !proposal.ConditionState.Eval(proposal.Votes) {
 		panic("proposal condition is not met")
 	}
 
 	proposal.UpdateStatus()
-	if proposal.status != ProposalStatusPassed {
+	if proposal.Status != ProposalStatusPassed {
 		panic("proposal does not meet the condition(s) or is already closed/executed")
 	}
 
-	d.resources.getResource(proposal.resourceType).Handler.Execute(proposal.message)
-	proposal.status = ProposalStatusExecuted
-	proposal.executedAt = time.Now()
+	d.Resources.getResource(proposal.Message.Type()).Handler.Execute(proposal.Message)
+	proposal.Status = ProposalStatusExecuted
+	proposal.ExecutedAt = time.Now()
 }
 
 func (d *Core) Propose(proposerID string, req ProposalRequest) {
@@ -83,18 +72,18 @@ func (d *Core) Propose(proposerID string, req ProposalRequest) {
 
 func (d *Core) InstantExecute(executorID string, req ProposalRequest) {
 	proposal := d.propose(executorID, req)
-	d.Vote(executorID, uint64(proposal.id), "yes")
-	d.Execute(uint64(proposal.id))
+	d.Vote(executorID, uint64(proposal.ID), "yes")
+	d.Execute(uint64(proposal.ID))
 }
 
 func (d *Core) ResourcesCount() int {
-	return d.resources.resources.Size()
+	return d.Resources.Resources.Size()
 }
 
 func (d *Core) propose(proposer string, req ProposalRequest) *Proposal {
 	messageType := req.Message.Type()
 
-	resource := d.resources.getResource(messageType)
+	resource := d.Resources.getResource(messageType)
 	if resource == nil {
 		panic("message type is not registered as a resource")
 	}

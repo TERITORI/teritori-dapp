@@ -7,7 +7,7 @@ import (
 	"gno.land/p/demo/ufmt"
 )
 
-func GovDaoCondThreshold(threshold float64, hasRoleFn func(memberId string, role string) bool, usersWithRoleCountFn func(role string) uint64) Condition {
+func GovDaoCondThreshold(threshold float64, hasRoleFn func(memberId string, role string) bool, usersWithRoleCountFn func(role string) uint32) Condition {
 	if threshold <= 0 || threshold > 1 {
 		panic(errors.New("invalid threshold"))
 	}
@@ -27,7 +27,7 @@ func GovDaoCondThreshold(threshold float64, hasRoleFn func(memberId string, role
 type govDaoCondThreshold struct {
 	threshold            float64
 	hasRoleFn            func(memberId string, role string) bool
-	usersWithRoleCountFn func(role string) uint64
+	usersWithRoleCountFn func(role string) uint32
 }
 
 func (m *govDaoCondThreshold) NewState() State {

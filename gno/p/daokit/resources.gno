@@ -6,7 +6,7 @@ import (
 )
 
 type resourcesStore struct {
-	resources *avl.Tree // string -> daocond.Condition
+	Resources *avl.Tree // string -> daocond.Condition
 }
 
 type Resource struct {
@@ -16,16 +16,16 @@ type Resource struct {
 
 func newResourcesStore() *resourcesStore {
 	return &resourcesStore{
-		resources: avl.NewTree(),
+		Resources: avl.NewTree(),
 	}
 }
 
 func (r *resourcesStore) setResource(resource *Resource) {
-	r.resources.Set(resource.Handler.Type(), resource)
+	r.Resources.Set(resource.Handler.Type(), resource)
 }
 
 func (r *resourcesStore) getResource(name string) *Resource {
-	value, ok := r.resources.Get(name)
+	value, ok := r.Resources.Get(name)
 	if !ok {
 		return nil
 	}

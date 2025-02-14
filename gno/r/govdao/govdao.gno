@@ -1,62 +1,58 @@
 package govdao
 
 import (
+	"gno.land/p/teritori/basedao"
+	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/daokit"
 	"gno.land/r/demo/profile"
 )
 
-var dao *daokit.DAO
-
-// HOW HANDLE DEFAULT MESSAGES (ADD NEW MEMBER, REMOVE MEMBER, ADD ROLE, REMOVE ROLE)
-// WE WANT TO BE ABLE TO JUST ADD TIER1, TIER2, TIER3 MEMBERS NOT OTHER MESSAGE TYPES
-// OPTIONS:
-// - CREATE A NEW CONDITION THAT RESPOND ALWAYS FALSE AND BLOCK THESE MESSAGES (the messages still exist and people can create proposal that will never be executed)
-// - ALLOW USERS TO SELECT AT THE CREATION WHICH DEFAULT MESSAGES THEY WANT TO USE (list of strings)
-// - REMOVE DEFAULT MESSAGES FROM THE MESSAGES REGISTRY AND GIVE THE TASK TO THE USER TO SET THEM AT THE CREATION (can import the default messages from daokit)
-// I like the last option, it gives more flexibility to the user and the user can still use the default messages if he wants to
+var dao *basedao.DAO
 
 func init() {
-	dao = &daokit.DAO{}
-	name := "GovDAO"
-	description := "This is a govDAO demo"
+	dao = basedao.New(&basedao.Config{
+		Name:              "GovDAO",
+		Description:       "This is a GovDAO demo",
+		NoDefaultHandlers: true,
+		Roles:             []string{"T1", "T2", "T3"},
+		Members: []basedao.Member{
+			{Address: "g126gx6p6d3da4ymef35ury6874j6kys044r7zlg", Roles: []string{"T1"}},
+			{Address: "g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv", Roles: []string{"T2"}},
+			{Address: "g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", Roles: []string{"T2"}},
+			{Address: "g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r", Roles: []string{"T3"}},
+			{Address: "g1ctt28t7sdyp28qzkvlfyx0hyxuz6vz7nplwm9c", Roles: []string{"T3"}},
+		},
+		GetProfileString: profile.GetStringField,
+	})
 
-	roles := []string{"T1", "T2", "T3"}
-	members := []daokit.Member{
-		{Address: "g126gx6p6d3da4ymef35ury6874j6kys044r7zlg", Roles: []string{"T1"}},
-		{Address: "g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv", Roles: []string{"T2"}},
-		{Address: "g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", Roles: []string{"T1"}},
-		{Address: "g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r", Roles: []string{"T3"}},
-		{Address: "g1ctt28t7sdyp28qzkvlfyx0hyxuz6vz7nplwm9c", Roles: []string{"T3"}},
-	}
+	t1Supermajority := daocond.RoleThreshold(0.66, "T1", dao.Members.HasRole, dao.Members.CountMembersWithRole)
+	supermajority := daocond.GovDaoCondThreshold(0.66, dao.Members.HasRole, dao.Members.CountMembersWithRole)
+	majority := daocond.GovDaoCondThreshold(0.5, dao.Members.HasRole, dao.Members.CountMembersWithRole)
 
-	t1condition := daokit.CreateCondition("role-treshold", &dao, "T1", 0.66) // rework for a treshold_roles condition
-	t2condition := daokit.CreateCondition("gov-dao", &dao, 0.5)              // use the govdao condition
-	resources := []daokit.Resource{
+	resources := []*daokit.Resource{
 		{
-			Resource:  "gno.land/r/teritori/govdao.AddNewT1Member",
-			Handler:   NewAddNewT1MemberMessageHandler(&dao),
-			Condition: t1condition,
+			Handler:   NewAddT1MemberHandler(dao),
+			Condition: t1Supermajority,
 		},
 		{
-			Resource:  "gno.land/r/teritori/govdao.AddNewT2Member",
-			Handler:   NewAddNewT2MemberMessageHandler(&dao),
-			Condition: t2condition,
+			Handler:   NewAddT2MemberHandler(dao),
+			Condition: majority,
+		},
+		{
+			Handler:   basedao.NewEditProfileHandler(profile.SetStringField, nil),
+			Condition: supermajority,
 		},
 	}
-	initCondition := daokit.CreateCondition("members-treshold", &dao, 0.5)
-
-	dao = daokit.NewDAO(name, description, roles, members, resources, initCondition)
-
-	profile.SetStringField(profile.DisplayName, name)
-	profile.SetStringField(profile.Bio, description)
-	profile.SetStringField(profile.Avatar, "")
+	for _, r := range resources {
+		dao.Core.SetResource(r)
+	}
 }
 
 func Propose(proposal daokit.ProposalRequest) {
 	dao.Propose(proposal)
 }
 
-func Vote(proposalID uint64, vote string) {
+func Vote(proposalID uint64, vote daocond.Vote) {
 	dao.Vote(proposalID, vote)
 }
 

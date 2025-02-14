@@ -62,49 +62,12 @@ func TestNewDAO(t *testing.T) {
 }
 
 func TestPropose(t *testing.T) {
-	conf := &Config{
-		Name:        "My DAO",
-		Description: "My DAO Description",
-		Roles:       []string{"admin"},
-		Members: []Member{
-			{
-				alice.String(),
-				[]string{"admin"},
-			},
-			{
-				bob.String(),
-				[]string{},
-			},
-			{
-				carol.String(),
-				[]string{},
-			},
-		},
+	members := []Member{
+		{alice.String(), []string{"admin"}},
+		{bob.String(), []string{}},
+		{carol.String(), []string{}},
 	}
-
-	std.TestSetOrigCaller(alice)
-	dao := New(conf)
-
-	validHandlerKind := "valid"
-
-	mockCalled := false
-	mockHandler := daokit.NewMessageHandler("valid", func(_ interface{}) { mockCalled = true })
-	dao.Core.SetResource(&daokit.Resource{
-		Handler:   mockHandler,
-		Condition: daocond.MembersThreshold(0.2, dao.Members.IsMember, dao.Members.MembersCount),
-	})
-
-	validProposalRequest := daokit.ProposalRequest{
-		Title:       "My Proposal",
-		Description: "My Proposal Description",
-		Message:     mockHandler.Instantiate(),
-	}
-
-	unknownProposalRequest := daokit.ProposalRequest{
-		Title:       "My Proposal",
-		Description: "My Proposal Description",
-		Message:     &MockExecutableMessage{kind: "unknown"},
-	}
+	tdao := newTestingDAO(t, members)
 
 	type testNewProposalInput struct {
 		proposalReq daokit.ProposalRequest
@@ -129,7 +92,7 @@ func TestPropose(t *testing.T) {
 	tests := testNewProposalTable{
 		"Success": {
 			input: testNewProposalInput{
-				proposalReq: validProposalRequest,
+				proposalReq: tdao.mockProposalRequest,
 				proposer:    alice,
 			},
 			expected: tesNewProposalExpected{
@@ -142,7 +105,7 @@ func TestPropose(t *testing.T) {
 		},
 		"Non-member": {
 			input: testNewProposalInput{
-				proposalReq: validProposalRequest,
+				proposalReq: tdao.mockProposalRequest,
 				proposer:    dave,
 			},
 			expected: tesNewProposalExpected{
@@ -151,7 +114,7 @@ func TestPropose(t *testing.T) {
 		},
 		"Unknown message type": {
 			input: testNewProposalInput{
-				proposalReq: unknownProposalRequest,
+				proposalReq: tdao.unknownProposalRequest,
 				proposer:    alice,
 			},
 			expected: tesNewProposalExpected{
@@ -171,72 +134,42 @@ func TestPropose(t *testing.T) {
 			}
 
 			std.TestSetOrigCaller(test.input.proposer)
-			dao.Propose(test.input.proposalReq)
 
-			proposal := dao.Core.ProposalModule.GetProposal(1)
-			if proposal.title != test.expected.title {
-				t.Errorf("Expected title %s, got %s", test.expected.title, proposal.title)
+			*tdao.mockHandlerCalled = false
+			tdao.dao.Propose(test.input.proposalReq)
+			urequire.False(t, *tdao.mockHandlerCalled, "execute should not be called")
+
+			proposal := tdao.dao.Core.ProposalModule.GetProposal(1)
+			if proposal.Title != test.expected.title {
+				t.Errorf("Expected title %s, got %s", test.expected.title, proposal.Title)
 			}
-			if proposal.description != test.expected.description {
-				t.Errorf("Expected description %s, got %s", test.expected.description, proposal.description)
+			if proposal.Description != test.expected.description {
+				t.Errorf("Expected description %s, got %s", test.expected.description, proposal.Description)
 			}
-			if proposal.proposer.String() != test.expected.proposer.String() {
-				t.Errorf("Expected proposer %s, got %s", test.expected.proposer, proposal.proposer)
+			if proposal.ProposerID != test.expected.proposer.String() {
+				t.Errorf("Expected proposer %s, got %s", test.expected.proposer, proposal.ProposerID)
 			}
-			if proposal.message.Type() != test.expected.messsageType {
-				t.Errorf("Expected message type %s, got %s", test.expected.messsageType, proposal.message.Type())
+			if proposal.Message.Type() != test.expected.messsageType {
+				t.Errorf("Expected message type %s, got %s", test.expected.messsageType, proposal.Message.Type())
 			}
 		})
 	}
 }
 
 func TestVote(t *testing.T) {
-	conf := &Config{
-		Name:        "My DAO",
-		Description: "My DAO Description",
-		Roles:       []string{"admin"},
-		Members: []Member{
-			{
-				alice.String(),
-				[]string{"admin"},
-			},
-			{
-				bob.String(),
-				[]string{},
-			},
-			{
-				carol.String(),
-				[]string{},
-			},
-		},
+	members := []Member{
+		{alice.String(), []string{"admin"}},
+		{bob.String(), []string{}},
+		{carol.String(), []string{}},
 	}
-
-	dao := &DAO{}
-
-	condition := CreateCondition("members-treshold", &dao, 0.2)
-	resources := []Resource{
-		{
-			"MockExecutableMessage",
-			MockMessageHandler{t: t, kind: "valid"},
-			condition,
-		},
-	}
+	tdao := newTestingDAO(t, members)
 
 	std.TestSetOrigCaller(alice)
-	dao = New(name, description, roles, members, resources, condition)
-	validProposalRequest := ProposalRequest{
-		Title:       "My Proposal",
-		Description: "My Proposal Description",
-		Type:        "MockExecutableMessage",
-		Payload:     map[string]interface{}{},
-	}
-
-	std.TestSetOrigCaller(alice)
-	dao.Propose(validProposalRequest)
+	tdao.dao.Propose(tdao.mockProposalRequest)
 
 	type testVoteInput struct {
 		proposalID uint64
-		vote       string
+		vote       daocond.Vote
 		voter      std.Address
 	}
 
@@ -321,10 +254,13 @@ func TestVote(t *testing.T) {
 			}
 
 			std.TestSetOrigCaller(test.input.voter)
-			dao.Vote(test.input.proposalID, test.input.vote)
 
-			proposal := dao.ProposalModule.getProposal(test.input.proposalID)
-			eval := proposal.conditionState.Eval(proposal.votes)
+			*tdao.mockHandlerCalled = false
+			tdao.dao.Vote(test.input.proposalID, test.input.vote)
+			urequire.False(t, *tdao.mockHandlerCalled, "execute should not be called")
+
+			proposal := tdao.dao.Core.ProposalModule.GetProposal(test.input.proposalID)
+			eval := proposal.ConditionState.Eval(proposal.Votes)
 			if eval != test.expected.eval {
 				t.Errorf("Expected eval %t, got %t", test.expected.eval, eval)
 			}
@@ -333,45 +269,15 @@ func TestVote(t *testing.T) {
 }
 
 func TestExecuteProposal(t *testing.T) {
-	name := "My DAO"
-	description := "My DAO Description"
-	roles := []string{"admin"}
 	members := []Member{
-		{
-			alice.String(),
-			[]string{"admin"},
-		},
-		{
-			bob.String(),
-			[]string{},
-		},
-		{
-			carol.String(),
-			[]string{},
-		},
+		{alice.String(), []string{"admin"}},
+		{bob.String(), []string{}},
+		{carol.String(), []string{}},
 	}
-
-	dao := &DAO{}
-
-	condition := CreateCondition("members-treshold", &dao, 0.2)
-	resources := []Resource{
-		{
-			"MockExecutableMessage",
-			MockMessageHandler{},
-			condition,
-		},
-	}
+	tdao := newTestingDAO(t, members)
 
 	std.TestSetOrigCaller(alice)
-	dao = New(name, description, roles, members, resources, condition)
-	validProposalRequest := ProposalRequest{
-		Title:       "My Proposal",
-		Description: "My Proposal Description",
-		Type:        "MockExecutableMessage",
-		Payload:     map[string]interface{}{},
-	}
-	std.TestSetOrigCaller(alice)
-	dao.Propose(validProposalRequest)
+	tdao.dao.Propose(tdao.mockProposalRequest)
 
 	type testExecuteInput struct {
 		proposalID uint64
@@ -450,72 +356,33 @@ func TestExecuteProposal(t *testing.T) {
 
 			if test.input.haveVote {
 				std.TestSetOrigCaller(test.input.voter)
-				dao.Vote(test.input.proposalID, "yes")
+				tdao.dao.Vote(test.input.proposalID, "yes")
 			}
 
 			std.TestSetOrigCaller(test.input.executor)
-			dao.Execute(test.input.proposalID)
+			tdao.dao.Execute(test.input.proposalID)
 
-			proposal := dao.ProposalModule.getProposal(test.input.proposalID)
+			proposal := tdao.dao.Core.ProposalModule.GetProposal(test.input.proposalID)
 
-			if proposal.status != ProposalStatusExecuted {
-				t.Errorf("Expected status %s, got %s", ProposalStatusExecuted, proposal.status)
+			if proposal.Status != daokit.ProposalStatusExecuted {
+				t.Errorf("Expected status %s, got %s", daokit.ProposalStatusExecuted, proposal.Status)
 			}
 		})
 	}
 }
 
 func TestInstantExecute(t *testing.T) {
-	name := "My DAO"
-	description := "My DAO Description"
-	roles := []string{"admin"}
 	members := []Member{
-		{
-			alice.String(),
-			[]string{"admin"},
-		},
-		{
-			bob.String(),
-			[]string{},
-		},
-		{
-			carol.String(),
-			[]string{},
-		},
+		{alice.String(), []string{"admin"}},
+		{bob.String(), []string{}},
+		{carol.String(), []string{}},
 	}
-
-	dao := &DAO{}
-
-	condition := CreateCondition("members-treshold", &dao, 0.2)
-	resources := []Resource{
-		{
-			"MockExecutableMessage",
-			MockMessageHandler{},
-			condition,
-		},
-	}
-
-	std.TestSetOrigCaller(alice)
-	dao = New(name, description, roles, members, resources, condition)
-
-	validProposalRequest := ProposalRequest{
-		Title:       "My Proposal",
-		Description: "My Proposal Description",
-		Type:        "MockExecutableMessage",
-		Payload:     map[string]interface{}{},
-	}
-
-	unknownProposalRequest := ProposalRequest{
-		Title:       "My Proposal",
-		Description: "My Proposal Description",
-		Type:        "UnknownMessage",
-		Payload:     map[string]interface{}{},
-	}
+	tdao := newTestingDAO(t, members)
 
 	std.TestSetOrigCaller(alice)
 
 	type testInstantExecuteInput struct {
-		proposalReq ProposalRequest
+		proposalReq daokit.ProposalRequest
 		executor    std.Address
 	}
 
@@ -533,7 +400,7 @@ func TestInstantExecute(t *testing.T) {
 	tests := testInstantExecuteTable{
 		"Success": {
 			input: testInstantExecuteInput{
-				proposalReq: validProposalRequest,
+				proposalReq: tdao.mockProposalRequest,
 				executor:    alice,
 			},
 			expected: testInstantExecuteExpected{
@@ -542,7 +409,7 @@ func TestInstantExecute(t *testing.T) {
 		},
 		"Unknown message type": {
 			input: testInstantExecuteInput{
-				proposalReq: unknownProposalRequest,
+				proposalReq: tdao.unknownProposalRequest,
 				executor:    alice,
 			},
 			expected: testInstantExecuteExpected{
@@ -551,7 +418,7 @@ func TestInstantExecute(t *testing.T) {
 		},
 		"Non-member": {
 			input: testInstantExecuteInput{
-				proposalReq: validProposalRequest,
+				proposalReq: tdao.mockProposalRequest,
 				executor:    dave,
 			},
 			expected: testInstantExecuteExpected{
@@ -571,105 +438,57 @@ func TestInstantExecute(t *testing.T) {
 			}
 
 			std.TestSetOrigCaller(test.input.executor)
-			dao.InstantExecute(test.input.proposalReq)
+			tdao.dao.InstantExecute(test.input.proposalReq)
 		})
 	}
 }
 
 func TestGetMembers(t *testing.T) {
-	name := "My DAO"
-	description := "My DAO Description"
-	roles := []string{"admin"}
 	members := []Member{
-		{
-			alice.String(),
-			[]string{"admin"},
-		},
-		{
-			bob.String(),
-			[]string{},
-		},
-		{
-			carol.String(),
-			[]string{},
-		},
+		{alice.String(), []string{"admin"}},
+		{bob.String(), []string{}},
+		{carol.String(), []string{}},
 	}
-
-	dao := &DAO{}
-
-	condition := CreateCondition("members-treshold", &dao, 0.2)
-	resources := []Resource{
-		{
-			"MockExecutableMessage",
-			MockMessageHandler{},
-			condition,
-		},
-	}
-
-	std.TestSetOrigCaller(alice)
-	dao = New(name, description, roles, members, resources, condition)
+	tdao := newTestingDAO(t, members)
 
 	expectedMembers := []string{alice.String(), bob.String(), carol.String()}
-	m := dao.Members.GetMembers()
+	m := tdao.dao.Members.GetMembers()
 	if len(m) != len(expectedMembers) {
 		t.Errorf("Expected %d members, got %d", len(expectedMembers), len(m))
 	}
 
 	for _, eMember := range expectedMembers {
-		if !dao.Members.IsMember(eMember) {
+		if !tdao.dao.Members.IsMember(eMember) {
 			t.Errorf("Expected member %s to be a member", eMember)
 		}
 	}
 }
 
 func TestAddMemberProposal(t *testing.T) {
-	name := "My DAO"
-	description := "My DAO Description"
-	roles := []string{"admin"}
 	members := []Member{
-		{
-			alice.String(),
-			[]string{"admin"},
-		},
+		{alice.String(), []string{"admin"}},
 	}
+	tdao := newTestingDAO(t, members)
 
-	dao := &DAO{}
-
-	condition := CreateCondition("members-treshold", &dao, 0.2)
-	resources := []Resource{
-		{
-			"MockExecutableMessage",
-			MockMessageHandler{},
-			condition,
-		},
-	}
-
-	std.TestSetOrigCaller(alice)
-	dao = New(name, description, roles, members, resources, condition)
-
-	validProposalRequest := ProposalRequest{
-		Title:       "My Proposal",
-		Description: "My Proposal Description",
-		Type:        "gno.land/p/teritori/daokit.AddNewMember",
-		Payload: map[string]interface{}{
-			"address": bob.String(),
-			"roles":   []string{"admin"},
-		},
-	}
-
-	std.TestSetOrigCaller(alice)
-
-	if dao.Members.IsMember(bob.String()) {
+	if tdao.dao.Members.IsMember(bob.String()) {
 		t.Errorf("Expected member %s to not be a member", bob.String())
 	}
 
-	dao.InstantExecute(validProposalRequest)
+	std.TestSetOrigCaller(alice)
+	tdao.dao.InstantExecute(daokit.ProposalRequest{
+		Title:       "My Proposal",
+		Description: "My Proposal Description",
+		Message: NewAddMemberMsg(&MsgAddMember{
+			Address: bob,
+			Roles:   []string{"admin"},
+		}),
+	})
 
-	if !dao.Members.IsMember(bob.String()) {
+	if !tdao.dao.Members.IsMember(bob.String()) {
 		t.Errorf("Expected member %s to be a member", bob.String())
 	}
 
-	if !dao.Members.HasRole(bob.String(), "admin") {
+	if !tdao.dao.Members.HasRole(bob.String(), "admin") {
 		t.Errorf("Expected member %s to have role 'admin'", bob.String())
 	}
 
@@ -679,145 +498,85 @@ func TestAddMemberProposal(t *testing.T) {
 		}
 	}()
 
-	proposalWithUnknowkRole := ProposalRequest{
+	proposalWithUnknownRole := daokit.ProposalRequest{
 		Title:       "My Proposal",
 		Description: "My Proposal Description",
-		Type:        "gno.land/p/teritori/daokit.AddNewMember",
-		Payload: map[string]interface{}{
-			"address": bob.String(),
-			"roles":   []string{"unknown"},
-		},
+		Message: NewAddMemberMsg(&MsgAddMember{
+			Address: bob,
+			Roles:   []string{"unknown"},
+		}),
 	}
 	std.TestSetOrigCaller(alice)
-	dao.InstantExecute(proposalWithUnknowkRole)
+	tdao.dao.InstantExecute(proposalWithUnknownRole)
 }
 
 func TestRemoveMemberProposal(t *testing.T) {
-	name := "My DAO"
-	description := "My DAO Description"
-	roles := []string{"admin"}
 	members := []Member{
-		{
-			alice.String(),
-			[]string{"admin"},
-		},
-		{
-			bob.String(),
-			[]string{"admin"},
-		},
+		{alice.String(), []string{"admin"}},
+		{bob.String(), []string{"admin"}},
 	}
+	tdao := newTestingDAO(t, members)
 
-	dao := &DAO{}
-
-	condition := CreateCondition("members-treshold", &dao, 0.2)
-	resources := []Resource{
-		{
-			"MockExecutableMessage",
-			MockMessageHandler{},
-			condition,
-		},
-	}
-
-	std.TestSetOrigCaller(alice)
-	dao = New(name, description, roles, members, resources, condition)
-
-	validProposalRequest := ProposalRequest{
-		Title:       "My Proposal",
-		Description: "My Proposal Description",
-		Type:        "gno.land/p/teritori/daokit.RemoveMember",
-		Payload: map[string]interface{}{
-			"address": bob.String(),
-		},
-	}
-
-	std.TestSetOrigCaller(alice)
-
-	if !dao.Members.IsMember(bob.String()) {
+	if !tdao.dao.Members.IsMember(bob.String()) {
 		t.Errorf("Expected member %s to be a member", bob.String())
 	}
 
-	if !dao.Members.HasRole(bob.String(), "admin") {
+	if !tdao.dao.Members.HasRole(bob.String(), "admin") {
 		t.Errorf("Expected member %s to have role 'admin'", bob.String())
 	}
 
-	dao.InstantExecute(validProposalRequest)
+	std.TestSetOrigCaller(alice)
+	tdao.dao.InstantExecute(daokit.ProposalRequest{
+		Title:       "My Proposal",
+		Description: "My Proposal Description",
+		Message:     NewRemoveMemberMsg(bob),
+	})
 
-	if dao.Members.IsMember(bob.String()) {
+	if tdao.dao.Members.IsMember(bob.String()) {
 		t.Errorf("Expected user %s to not be a member", bob.String())
 	}
 
-	if dao.Members.HasRole(bob.String(), "admin") {
+	if tdao.dao.Members.HasRole(bob.String(), "admin") {
 		t.Errorf("Expected user %s to not have role 'admin'", bob.String())
 	}
 }
 
 func TestAddRoleToUserProposal(t *testing.T) {
-	name := "My DAO"
-	description := "My DAO Description"
-	roles := []string{"admin"}
 	members := []Member{
-		{
-			alice.String(),
-			[]string{"admin"},
-		},
-		{
-			bob.String(),
-			[]string{},
-		},
+		{alice.String(), []string{"admin"}},
+		{bob.String(), []string{}},
 	}
-
-	dao := &DAO{}
-
-	condition := CreateCondition("members-treshold", &dao, 0.2)
-	resources := []Resource{
-		{
-			"MockExecutableMessage",
-			MockMessageHandler{},
-			condition,
-		},
-	}
+	tdao := newTestingDAO(t, members)
 
 	std.TestSetOrigCaller(alice)
-	dao = New(name, description, roles, members, resources, condition)
 
-	validProposalRequest := ProposalRequest{
-		Title:       "My Proposal",
-		Description: "My Proposal Description",
-		Type:        "gno.land/p/teritori/daokit.AddRoleToUser",
-		Payload: map[string]interface{}{
-			"address": bob.String(),
-			"role":    "admin",
-		},
-	}
-	std.TestSetOrigCaller(alice)
-
-	if dao.Members.HasRole(bob.String(), "admin") {
+	if tdao.dao.Members.HasRole(bob.String(), "admin") {
 		t.Errorf("Expected member %s to not have role 'admin'", bob.String())
 	}
 
-	dao.InstantExecute(validProposalRequest)
+	tdao.dao.InstantExecute(daokit.ProposalRequest{
+		Title:       "My Proposal",
+		Description: "My Proposal Description",
+		Message:     NewAssignRoleMsg(&MsgAssignRole{Address: bob, Role: "admin"}),
+	})
 
-	if !dao.Members.HasRole(bob.String(), "admin") {
+	if !tdao.dao.Members.HasRole(bob.String(), "admin") {
 		t.Errorf("Expected member %s to have role 'admin'", bob.String())
 	}
 
 	defer func() {
+		// FIXME: this will pass if any other steps panics
 		if r := recover(); r == nil {
 			t.Errorf("Expected panic, got none")
 		}
 	}()
 
-	proposalWithUnknowkRole := ProposalRequest{
+	std.TestSetOrigCaller(alice)
+	tdao.dao.InstantExecute(daokit.ProposalRequest{
 		Title:       "My Proposal",
 		Description: "My Proposal Description",
-		Type:        "gno.land/p/teritori/daokit.AddRoleToUser",
-		Payload: map[string]interface{}{
-			"address": alice.String(),
-			"role":    "unknown",
-		},
-	}
-	std.TestSetOrigCaller(alice)
-	dao.InstantExecute(proposalWithUnknowkRole)
+		Message:     NewAssignRoleMsg(&MsgAssignRole{Address: alice, Role: "unknown"}),
+	})
 
 	defer func() {
 		if r := recover(); r == nil {
@@ -825,17 +584,12 @@ func TestAddRoleToUserProposal(t *testing.T) {
 		}
 	}()
 
-	proposalWithNonMember := ProposalRequest{
+	std.TestSetOrigCaller(alice)
+	tdao.dao.InstantExecute(daokit.ProposalRequest{
 		Title:       "My Proposal",
 		Description: "My Proposal Description",
-		Type:        "gno.land/p/teritori/daokit.AddRoleToUser",
-		Payload: map[string]interface{}{
-			"address": carol.String(),
-			"role":    "admin",
-		},
-	}
-	std.TestSetOrigCaller(alice)
-	dao.InstantExecute(proposalWithNonMember)
+		Message:     NewAssignRoleMsg(&MsgAssignRole{Address: carol, Role: "admin"}),
+	})
 
 	defer func() {
 		if r := recover(); r == nil {
@@ -843,23 +597,15 @@ func TestAddRoleToUserProposal(t *testing.T) {
 		}
 	}()
 
-	proposalWithAlreadyRole := ProposalRequest{
+	std.TestSetOrigCaller(alice)
+	tdao.dao.InstantExecute(daokit.ProposalRequest{
 		Title:       "My Proposal",
 		Description: "My Proposal Description",
-		Type:        "gno.land/p/teritori/daokit.AddRoleToUser",
-		Payload: map[string]interface{}{
-			"address": bob.String(),
-			"role":    "admin",
-		},
-	}
-	std.TestSetOrigCaller(alice)
-	dao.InstantExecute(proposalWithAlreadyRole)
+		Message:     NewAssignRoleMsg(&MsgAssignRole{Address: bob, Role: "admin"}),
+	})
 }
 
 func TestRemoveRoleFromUserProposal(t *testing.T) {
-	name := "My DAO"
-	description := "My DAO Description"
-	roles := []string{"admin"}
 	members := []Member{
 		{
 			alice.String(),
@@ -870,39 +616,19 @@ func TestRemoveRoleFromUserProposal(t *testing.T) {
 			[]string{"admin"},
 		},
 	}
+	tdao := newTestingDAO(t, members)
 
-	dao := &DAO{}
-
-	condition := CreateCondition("members-treshold", &dao, 0.2)
-	resources := []Resource{
-		{
-			"MockExecutableMessage",
-			MockMessageHandler{},
-			condition,
-		},
-	}
-
-	std.TestSetOrigCaller(alice)
-	dao = New(name, description, roles, members, resources, condition)
-
-	validProposalRequest := ProposalRequest{
-		Title:       "My Proposal",
-		Description: "My Proposal Description",
-		Type:        "gno.land/p/teritori/daokit.RemoveRoleFromUser",
-		Payload: map[string]interface{}{
-			"address": bob.String(),
-			"role":    "admin",
-		},
-	}
-	std.TestSetOrigCaller(alice)
-
-	if !dao.Members.HasRole(bob.String(), "admin") {
+	if !tdao.dao.Members.HasRole(bob.String(), "admin") {
 		t.Errorf("Expected member %s to have role 'admin'", bob.String())
 	}
 
-	dao.InstantExecute(validProposalRequest)
+	tdao.dao.InstantExecute(daokit.ProposalRequest{
+		Title:       "My Proposal",
+		Description: "My Proposal Description",
+		Message:     NewUnassignRoleMsg(&MsgUnassignRole{Address: bob, Role: "admin"}),
+	})
 
-	if dao.Members.HasRole(bob.String(), "admin") {
+	if tdao.dao.Members.HasRole(bob.String(), "admin") {
 		t.Errorf("Expected member %s to not have role 'admin'", bob.String())
 	}
 
@@ -912,17 +638,13 @@ func TestRemoveRoleFromUserProposal(t *testing.T) {
 		}
 	}()
 
-	proposalWithUnknowkRole := ProposalRequest{
+	proposalWithUnknowkRole := daokit.ProposalRequest{
 		Title:       "My Proposal",
 		Description: "My Proposal Description",
-		Type:        "gno.land/p/teritori/daokit.RemoveRoleFromUser",
-		Payload: map[string]interface{}{
-			"address": alice.String(),
-			"role":    "unknown",
-		},
+		Message:     NewUnassignRoleMsg(&MsgUnassignRole{Address: alice, Role: "unknown"}),
 	}
 	std.TestSetOrigCaller(alice)
-	dao.InstantExecute(proposalWithUnknowkRole)
+	tdao.dao.InstantExecute(proposalWithUnknowkRole)
 
 	defer func() {
 		if r := recover(); r == nil {
@@ -930,17 +652,13 @@ func TestRemoveRoleFromUserProposal(t *testing.T) {
 		}
 	}()
 
-	proposalWithNonMember := ProposalRequest{
+	proposalWithNonMember := daokit.ProposalRequest{
 		Title:       "My Proposal",
 		Description: "My Proposal Description",
-		Type:        "gno.land/p/teritori/daokit.RemoveRoleFromUser",
-		Payload: map[string]interface{}{
-			"address": carol.String(),
-			"role":    "admin",
-		},
+		Message:     NewUnassignRoleMsg(&MsgUnassignRole{Address: carol, Role: "admin"}),
 	}
 	std.TestSetOrigCaller(alice)
-	dao.InstantExecute(proposalWithNonMember)
+	tdao.dao.InstantExecute(proposalWithNonMember)
 
 	defer func() {
 		if r := recover(); r == nil {
@@ -948,15 +666,58 @@ func TestRemoveRoleFromUserProposal(t *testing.T) {
 		}
 	}()
 
-	proposalWithNonRole := ProposalRequest{
+	proposalWithNonRole := daokit.ProposalRequest{
 		Title:       "My Proposal",
 		Description: "My Proposal Description",
-		Type:        "gno.land/p/teritori/daokit.RemoveRoleFromUser",
-		Payload: map[string]interface{}{
-			"address": bob.String(),
-			"role":    "admin",
-		},
+		Message:     NewUnassignRoleMsg(&MsgUnassignRole{Address: bob, Role: "admin"}),
 	}
 	std.TestSetOrigCaller(alice)
-	dao.InstantExecute(proposalWithNonRole)
+	tdao.dao.InstantExecute(proposalWithNonRole)
+}
+
+type testingDAOContext struct {
+	dao                    *DAO
+	mockHandlerCalled      *bool
+	mockHandler            daokit.MessageHandler
+	mockProposalRequest    daokit.ProposalRequest
+	unknownProposalRequest daokit.ProposalRequest
+}
+
+func newTestingDAO(t *testing.T, members []Member) *testingDAOContext {
+	conf := &Config{
+		Name:        "My DAO",
+		Description: "My DAO Description",
+		Roles:       []string{"admin"},
+		Members:     members,
+	}
+
+	std.TestSetOrigCaller(alice)
+	dao := New(conf)
+
+	mockHandlerCalled := false
+	mockHandler := daokit.NewMessageHandler("valid", func(_ interface{}) { mockHandlerCalled = true })
+	dao.Core.SetResource(&daokit.Resource{
+		Handler:   mockHandler,
+		Condition: daocond.MembersThreshold(0.2, dao.Members.IsMember, dao.Members.MembersCount),
+	})
+
+	mockProposalRequest := daokit.ProposalRequest{
+		Title:       "My Proposal",
+		Description: "My Proposal Description",
+		Message:     daokit.NewMessage("valid", nil),
+	}
+
+	unknownProposalRequest := daokit.ProposalRequest{
+		Title:       "My Proposal",
+		Description: "My Proposal Description",
+		Message:     daokit.NewMessage("unknown", nil),
+	}
+
+	return &testingDAOContext{
+		dao:                    dao,
+		mockHandlerCalled:      &mockHandlerCalled,
+		mockHandler:            mockHandler,
+		mockProposalRequest:    mockProposalRequest,
+		unknownProposalRequest: unknownProposalRequest,
+	}
 }

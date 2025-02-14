@@ -9,64 +9,73 @@ import (
 	"gno.land/p/teritori/daokit"
 )
 
-// XXX: todo:
-
-type SubAddr struct {
-	Base std.Address
-	Path string
-}
-
-// end todo
-
 type DAO struct {
-	Core         *daokit.Core
-	Members      *membersStore
-	RenderRouter *mux.Router
+	Core             *daokit.Core
+	Members          *membersStore
+	RenderRouter     *mux.Router
+	GetProfileString ProfileStringGetter
+	Realm            std.Realm
 }
 
 type Config struct {
-	Name             string
-	Description      string
-	ImageURI         string
-	Roles            []string
-	Members          []Member
-	InitialCondition daocond.Condition
-	SetProfileString ProfileStringSetter
+	Name              string
+	Description       string
+	ImageURI          string
+	Roles             []string
+	Members           []Member
+	NoDefaultHandlers bool
+	InitialCondition  daocond.Condition
+	SetProfileString  ProfileStringSetter
+	GetProfileString  ProfileStringGetter
 }
+
+type ProfileStringSetter func(field string, value string) bool
+type ProfileStringGetter func(addr std.Address, field string, def string) string
 
 func New(conf *Config) *DAO {
 	members := newMembersStore()
+	members.setRoles(conf.Roles)
 	members.setMembers(conf.Members)
 
+	if conf.GetProfileString == nil {
+		panic(errors.New("GetProfileString is required"))
+	}
+
 	dao := &DAO{
-		Core:    daokit.NewCore(),
-		Members: members,
+		Core:             daokit.NewCore(),
+		Members:          members,
+		GetProfileString: conf.GetProfileString,
+		Realm:            std.CurrentRealm(),
 	}
+	dao.initRenderingRouter()
 
-	if conf.InitialCondition == nil {
-		conf.InitialCondition = daocond.MembersThreshold(0.6, members.IsMember, members.MembersCount)
-	}
+	conf.SetProfileString("DisplayName", conf.Name)
+	conf.SetProfileString("Bio", conf.Description)
+	conf.SetProfileString("Avatar", conf.ImageURI)
 
-	// register management messages
-	for _, m := range []daokit.MessageHandler{
-		NewAddMemberHandler(dao),
-		NewRemoveMemberHandler(dao),
-		NewAssignRoleHandler(dao),
-		NewUnassignRoleHandler(dao),
-	} {
-		dao.Core.SetResource(&daokit.Resource{Handler: m, Condition: conf.InitialCondition})
-	}
+	if !conf.NoDefaultHandlers {
+		if conf.SetProfileString == nil {
+			panic(errors.New("SetProfileString is required"))
+		}
 
-	dao.Members.setRoles(conf.Roles)
-	dao.Members.setMembers(conf.Members)
+		if conf.InitialCondition == nil {
+			conf.InitialCondition = daocond.MembersThreshold(0.6, members.IsMember, members.MembersCount)
+		}
 
-	if conf.SetProfileString != nil {
-		conf.SetProfileString("DisplayName", conf.Name)
-		conf.SetProfileString("Bio", conf.Description)
-		conf.SetProfileString("Avatar", conf.ImageURI)
+		dao.Core.SetResource(&daokit.Resource{
+			Handler:   NewEditProfileHandler(conf.SetProfileString, []string{"DisplayName", "Bio", "Avatar"}),
+			Condition: conf.InitialCondition,
+		})
 
-		epr := NewEditProfileResource(conf.SetProfileString, []string{"DisplayName", "Bio", "Avatar"}, conf.InitialCondition)
-		dao.Core.SetResource(epr)
+		// register management handlers
+		for _, m := range []daokit.MessageHandler{
+			NewAddMemberHandler(dao),
+			NewRemoveMemberHandler(dao),
+			NewAssignRoleHandler(dao),
+			NewUnassignRoleHandler(dao),
+		} {
+			dao.Core.SetResource(&daokit.Resource{Handler: m, Condition: conf.InitialCondition})
+		}
 	}
 
 	return dao
