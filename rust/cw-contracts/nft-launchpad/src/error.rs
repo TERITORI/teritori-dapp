@@ -1,4 +1,4 @@
-use cosmwasm_std::{Instantiate2AddressError, StdError};
+use cosmwasm_std::StdError;
 use cw_utils::ParseReplyError;
 use thiserror::Error;
 
@@ -7,14 +7,8 @@ pub enum ContractError {
     #[error("{0}")]
     Std(#[from] StdError),
 
-    #[error("NFT Code id missing.")]
-    NftCodeIdMissing,
-
     #[error("Merkle root missing.")]
     MerkleRootMissing,
-
-    #[error("Deployer missing.")]
-    DeployerMissing,
 
     #[error("Unauthorized.")]
     Unauthorized,
@@ -31,9 +25,6 @@ pub enum ContractError {
     #[error("Collection not found.")]
     CollectionNotFound,
 
-    #[error("Collection not deployed.")]
-    CollectionNotDeployed,
-
     #[error("Wrong collection owner.")]
     WrongCollectionOwner,
 
@@ -43,8 +34,8 @@ pub enum ContractError {
     #[error("Already deployed.")]
     AlreadyDeployed,
 
-    #[error("Failed to parse proposal ID.")]
-    ParseProposalIdFailed,
+    #[error("No result in reply.")]
+    NoResultInReply,
 
     #[error("Unable to parse reply.")]
     ParseReplyError(#[from] ParseReplyError),
@@ -52,6 +43,6 @@ pub enum ContractError {
     #[error("Unknown reply id {reply_id}.")]
     UnknownReply { reply_id: u64 },
 
-    #[error("{0}")]
-    Instantiate2AddressError(#[from] Instantiate2AddressError),
+    #[error("Event value not found for path '{0}.{1}'.")]
+    EventValueNotFound(String, String),
 }

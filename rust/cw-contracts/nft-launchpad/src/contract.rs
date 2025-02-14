@@ -1,13 +1,15 @@
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::{attr, to_json_binary, from_json, Addr, Reply, Response, StdResult, SubMsg, WasmMsg};
+use cosmwasm_std::{
+    attr, to_json_binary, Addr, Reply, Response, StdResult, SubMsg, SubMsgResult, WasmMsg,
+};
 use cw_storage_plus::{Item, Map};
-use cw_utils::{parse_reply_execute_data, parse_reply_instantiate_data};
+use cw_utils::parse_reply_instantiate_data;
 use sylvia::{
     contract, entry_points,
     types::{ExecCtx, InstantiateCtx, QueryCtx, ReplyCtx},
 };
 
-use crate::error::ContractError;
+use crate::{error::ContractError, utils::get_events_values};
 use nft_tr721::{
     contract::sv::InstantiateMsg as Tr721InstantiateMsg,
     contract::{MintInfo as Tr721MintInfo, MintPeriod as Tr721MintPeriod},
@@ -19,17 +21,9 @@ use dao_voting::proposal::SingleChoiceProposeMsg;
 const INSTANTIATE_REPLY_ID: u64 = 1u64;
 const EXECUTE_REPLY_ID: u64 = 2u64;
 
-
 #[derive(serde::Serialize)]
 pub enum ExecuteMsg {
-    DeployCollection {
-        collection_id: String
-    },
-}
-
-#[derive(serde::Deserialize)]
-pub struct MsgExecuteProposeResponseData {
-    proposal_id: String
+    DeployCollection { collection_id: String },
 }
 
 // Contract states ------------------------------------------------------
@@ -95,7 +89,8 @@ impl NftLaunchpad {
             attributes.push(attr("new_owner", owner))
         }
         if let Some(proposal_single_contract) = changes.proposal_single_contract {
-            config.proposal_single_contract = ctx.deps.api.addr_validate(&proposal_single_contract)?;
+            config.proposal_single_contract =
+                ctx.deps.api.addr_validate(&proposal_single_contract)?;
             attributes.push(attr("new_name", proposal_single_contract.to_string()))
         }
         self.config.save(ctx.deps.storage, &config)?;
@@ -179,12 +174,15 @@ impl NftLaunchpad {
         collection.metadatas_merkle_root = Some(merkle_root.clone());
 
         // Update collection
-        self.collections.save(storage, collection_id.clone(), &collection)?;
+        self.collections
+            .save(storage, collection_id.clone(), &collection)?;
 
         // Create the deploy_collection proposal message
         let deploy_collection_msg = cosmwasm_std::CosmosMsg::Wasm(WasmMsg::Execute {
             contract_addr: ctx.env.contract.address.to_string(),
-            msg: to_json_binary(&ExecuteMsg::DeployCollection {collection_id: collection_id.clone()})?,
+            msg: to_json_binary(&ExecuteMsg::DeployCollection {
+                collection_id: collection_id.clone(),
+            })?,
             funds: vec![],
         });
         let single_choice_propose_msg = SingleChoiceProposeMsg {
@@ -207,7 +205,7 @@ impl NftLaunchpad {
 
         Ok(Response::new()
             .add_submessage(submessage)
-            .add_attribute("action", "merkle_root_updated")
+            .add_attribute("action", "update_merkle_root")
             .add_attribute("merkle_root", merkle_root))
     }
 
@@ -270,7 +268,7 @@ impl NftLaunchpad {
 
         Ok(Response::new()
             .add_submessage(submessage)
-            .add_attribute("action", "collection_deployed")
+            .add_attribute("action", "deploy_collection")
             .add_attribute("collection_id", collection_id))
     }
 
@@ -295,46 +293,50 @@ impl NftLaunchpad {
         let msg_id = msg.id;
         let storage = ctx.deps.storage;
 
-        // dao single choice propose execute submessage
+        // dao single execute (propose) submessage
         if msg_id == EXECUTE_REPLY_ID {
-            let resp = parse_reply_execute_data(msg.clone())?;
+            if let SubMsgResult::Ok(resp) = msg.result {
+                // Get proposal id from dao-proposal-single execute_propose response attributes
+                let proposal_id = get_events_values(&resp.events, "wasm", "proposal_id")
+                    .first()
+                    .ok_or(ContractError::EventValueNotFound(
+                        "wasm".to_string(),
+                        "proposal_id".to_string(),
+                    ))?
+                    .to_owned();
 
-            if let Some(data) = resp.data {
-
-                // TODO: If proposal_id not available in data, use dao_proposal_single hooks
-
-                let parsed: StdResult<MsgExecuteProposeResponseData> = from_json(data.as_slice());
-                match parsed {
-                    Ok(parsed_data) => {
-                        let proposal_id = parsed_data.proposal_id;
-    
-                        return Ok(Response::new()
-                        .add_attribute("action", "collection_proposal_created")
-                        .add_attribute("proposal_id", proposal_id));
-                    }
-                    Err(_) => return Err(ContractError::ParseProposalIdFailed),
-                }
+                return Ok(Response::new()
+                    .add_attribute("action", "execute_propose")
+                    .add_attribute("proposal_id", proposal_id));
+                // About these attributes, we could just get the ones from dao-proposal-single execute_propose,
+                // but it's better to emit ourselves and so centralise proposal_id handling here
             }
+            return Err(ContractError::NoResultInReply);
         }
 
-        // tr771 instantiate submessage
+        // tr271 instantiate submessage
         if msg_id == INSTANTIATE_REPLY_ID {
-            let resp = parse_reply_instantiate_data(msg).unwrap();
-            let deployed_addr = resp.contract_address;
+            let parse_reply_result = parse_reply_instantiate_data(msg);
+            match parse_reply_result {
+                Ok(parse_reply_data) => {
+                    let deployed_addr = parse_reply_data.contract_address;
+                    // Get instantiating collection id
+                    let collection_id = self.instantiating_collection_id.load(storage)?;
+                    // Update collection states
+                    let mut collection =
+                        self.collections.load(storage, collection_id.to_owned())?;
+                    collection.deployed_address = Some(deployed_addr.clone());
+                    self.collections
+                        .save(storage, collection_id.to_owned(), &collection)?;
 
-            // Get instantiating collection id
-            let collection_id = self.instantiating_collection_id.load(storage)?;
-
-            // Update collection states
-            let mut collection = self.collections.load(storage, collection_id.to_owned())?;
-            collection.deployed_address = Some(deployed_addr.clone());
-            self.collections
-                .save(storage, collection_id.to_owned(), &collection)?;
-
-            return Ok(Response::new()
-                .add_attribute("action", "collection_instantiated")
-                .add_attribute("collection_id", collection_id)
-                .add_attribute("collection_addr", deployed_addr));
+                    return Ok(Response::new()
+                        .add_attribute("action", "instantiate_collection")
+                        .add_attribute("collection_addr", deployed_addr));
+                }
+                Err(parse_reply_error) => {
+                    return Err(ContractError::ParseReplyError(parse_reply_error.into()))
+                }
+            }
         }
 
         Err(ContractError::UnknownReply { reply_id: msg_id })
