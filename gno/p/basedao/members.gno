@@ -17,7 +17,6 @@ type Member struct {
 	Roles   []string
 }
 
-// TODO: FIX the owner of the role_manager is the deployer of the contract not the realm
 func NewMembersStore(initialRoles []string, initialMembers []Member) *MembersStore {
 	res := &MembersStore{
 		RoleManager: role_manager.New(),
@@ -86,7 +85,6 @@ func (m *MembersStore) setMembers(members []Member) {
 	}
 }
 
-// TODO: add test for this kind of proposals
 func (m *MembersStore) AddMember(member string, roles []string) {
 	if m.IsMember(member) {
 		panic("member already exists")
