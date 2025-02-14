@@ -26,8 +26,8 @@ func init() {
 		{Address: "g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", Roles: []string{Tier2}},
 	}
 
-	t1condition := daokit.CreateCondition("role-treshold", &dao, "T1", 0.66) // rework for a treshold_roles condition
-	t2condition := daokit.CreateCondition("gov-dao", &dao, 0.5)              // use the govdao condition
+	t1condition := daokit.CreateCondition("role-treshold", &dao, "T1", 0.66)                   // rework for a treshold_roles condition
+	t2condition := daokit.CreateCondition("gov-dao", &dao, 0.5, []string{Tier1, Tier2, Tier3}) // use the govdao condition
 	resources := []daokit.Resource{
 		{
 			Resource:  "gno.land/r/teritori/govdao.AddNewT1Member",

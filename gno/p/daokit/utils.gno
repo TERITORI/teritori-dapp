@@ -61,14 +61,15 @@ func CreateCondition(conditionType string, dao **DAO, args ...interface{}) daoco
 			return (*dao).MemberModule.MembersCount()
 		})
 	case "gov-dao":
-		if len(args) != 1 {
-			panic("gov-dao condition expects exactly 1 argument: (threshold float64)")
+		if len(args) != 2 {
+			panic("gov-dao condition expects exactly 2 argument: (threshold float64, roles []string)")
 		}
 		threshold, ok := args[0].(float64)
-		if !ok {
-			panic("Invalid argument for gov-dao condition: expected (threshold float64)")
+		roles, ok2 := args[1].([]string)
+		if !ok || !ok2 {
+			panic("Invalid argument for gov-dao condition: expected (threshold float64, roles []string)")
 		}
-		return daocond.GovDaoCondThreshold(threshold, func(memberId string, role string) bool {
+		return daocond.GovDaoCondThreshold(threshold, roles, func(memberId string, role string) bool {
 			return (*dao).MemberModule.HasRole(memberId, role)
 		}, func(role string) uint64 {
 			return uint64((*dao).MemberModule.CountMembersWithRole(role))
