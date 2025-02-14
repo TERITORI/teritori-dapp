@@ -4,6 +4,7 @@ import (
 	"gno.land/p/teritori/basedao"
 	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/daokit"
+	"gno.land/r/demo/profile"
 )
 
 var dao *basedao.DAO
@@ -19,6 +20,8 @@ func init() {
 			{Address: "g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", Roles: []string{"finance-officer"}},
 			{Address: "g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r", Roles: []string{}},
 		},
+		GetProfileString: profile.GetStringField,
+		SetProfileString: profile.SetStringField,
 	})
 }
 
