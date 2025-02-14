@@ -33,6 +33,20 @@ func CreateCondition(conditionType string, dao **DAO, args ...interface{}) daoco
 		return daocond.RoleCount(uint64(count), role, func(memberId string, role string) bool {
 			return (*dao).MemberModule.HasRole(memberId, role)
 		})
+	case "role-treshold":
+		if len(args) != 2 {
+			panic("role-treshold condition expects exactly 2 arguments: (role string, threshold float64)")
+		}
+		role, ok1 := args[0].(string)
+		threshold, ok2 := args[1].(float64)
+		if !ok1 || !ok2 {
+			panic("Invalid arguments for role-treshold condition: expected (role string, threshold float64)")
+		}
+		return daocond.RoleThreshold(threshold, role, func(memberId string, role string) bool {
+			return (*dao).MemberModule.HasRole(memberId, role)
+		}, func(role string) uint64 {
+			return uint64((*dao).MemberModule.CountMembersWithRole(role))
+		})
 	case "members-treshold":
 		if len(args) != 1 {
 			panic("members-treshold condition expects exactly 1 argument: (threshold float64)")
@@ -45,6 +59,19 @@ func CreateCondition(conditionType string, dao **DAO, args ...interface{}) daoco
 			return (*dao).MemberModule.IsMember(memberId)
 		}, func() uint64 {
 			return (*dao).MemberModule.MembersCount()
+		})
+	case "gov-dao":
+		if len(args) != 1 {
+			panic("gov-dao condition expects exactly 1 argument: (threshold float64)")
+		}
+		threshold, ok := args[0].(float64)
+		if !ok {
+			panic("Invalid argument for gov-dao condition: expected (threshold float64)")
+		}
+		return daocond.GovDaoCondThreshold(threshold, func(memberId string, role string) bool {
+			return (*dao).MemberModule.HasRole(memberId, role)
+		}, func(role string) uint64 {
+			return uint64((*dao).MemberModule.CountMembersWithRole(role))
 		})
 	default:
 		panic(ufmt.Sprintf("Unknown condition type: %s", conditionType))

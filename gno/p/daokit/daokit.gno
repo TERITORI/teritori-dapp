@@ -39,11 +39,11 @@ func NewDAO(name, description string, roles []string, members []Member, resource
 	dao.initMessagesRegistry()
 	dao.initRenderingRouter()
 
-	dao.MemberModule.setRoles(roles)
-	dao.MemberModule.setMembers(members)
+	dao.MemberModule.SetRoles(roles)
+	dao.MemberModule.SetMembers(members)
 
 	dao.MessagesRegistry.handlers.Iterate("", "", func(key string, value interface{}) bool {
-		dao.ResourcesModule.setResource(Resource{
+		dao.ResourcesModule.SetResource(Resource{
 			Resource:  key,
 			Handler:   value.(MessageHandler),
 			Condition: initCond,
@@ -52,11 +52,36 @@ func NewDAO(name, description string, roles []string, members []Member, resource
 	})
 
 	for _, resource := range resources {
-		dao.ResourcesModule.setResource(resource)
+		dao.ResourcesModule.SetResource(resource)
 		dao.MessagesRegistry.register(resource.Handler)
 	}
 
 	return dao
+}
+
+func (d *DAO) Propose(req ProposalRequest) *Proposal {
+	proposer := std.PrevRealm().Addr()
+	if !d.MemberModule.IsMember(proposer.String()) {
+		panic(proposer + " proposer is not a member" + proposer)
+	}
+
+	condition := d.ResourcesModule.GetResource(req.Type)
+	if condition == nil {
+		panic("message type is not registered as a resource")
+	}
+
+	if len(req.Title) == 0 || len(req.Description) == 0 {
+		panic("title or description is empty")
+	}
+
+	handler, ok := d.MessagesRegistry.handlers.Get(req.Type)
+	if !ok {
+		panic("message type is not registered as a resource")
+	}
+
+	message := handler.(MessageHandler).Instantiate(req.Payload)
+
+	return d.ProposalModule.newProposal(req.Title, req.Description, proposer, message, condition.NewState())
 }
 
 func (d *DAO) Vote(proposalID uint64, vote string) {
@@ -65,7 +90,7 @@ func (d *DAO) Vote(proposalID uint64, vote string) {
 		panic("voter is not a member")
 	}
 
-	proposal := d.ProposalModule.getProposal(proposalID)
+	proposal := d.ProposalModule.GetProposal(proposalID)
 	if proposal == nil {
 		panic("proposal not found")
 	}
@@ -94,7 +119,7 @@ func (d *DAO) Execute(proposalID uint64) {
 		panic("executor is not a member")
 	}
 
-	proposal := d.ProposalModule.getProposal(proposalID)
+	proposal := d.ProposalModule.GetProposal(proposalID)
 	if proposal == nil {
 		panic("proposal not found")
 	}
@@ -107,7 +132,7 @@ func (d *DAO) Execute(proposalID uint64) {
 		panic("proposal condition is not met")
 	}
 
-	proposal.updateStatus()
+	proposal.UpdateStatus()
 	if proposal.status != ProposalStatusPassed {
 		panic("proposal does not meet the condition(s) or is already closed/executed")
 	}
@@ -116,37 +141,8 @@ func (d *DAO) Execute(proposalID uint64) {
 	proposal.status = ProposalStatusExecuted
 }
 
-func (d *DAO) Propose(req ProposalRequest) {
-	d.propose(req.Title, req.Description, req.Type, req.Payload)
-}
-
 func (d *DAO) InstantExecute(req ProposalRequest) {
-	proposal := d.propose(req.Title, req.Description, req.Type, req.Payload)
+	proposal := d.Propose(req)
 	d.Vote(uint64(proposal.id), "yes")
 	d.Execute(uint64(proposal.id))
-}
-
-func (d *DAO) propose(title string, description string, messageType string, payload map[string]interface{}) *Proposal {
-	proposer := std.PrevRealm().Addr()
-	if !d.MemberModule.IsMember(proposer.String()) {
-		panic(proposer + " proposer is not a member" + proposer)
-	}
-
-	condition := d.ResourcesModule.getResource(messageType)
-	if condition == nil {
-		panic("message type is not registered as a resource")
-	}
-
-	if len(title) == 0 || len(description) == 0 {
-		panic("title or description is empty")
-	}
-
-	handler, ok := d.MessagesRegistry.handlers.Get(messageType)
-	if !ok {
-		panic("message type is not registered as a resource")
-	}
-
-	message := handler.(MessageHandler).Instantiate(payload)
-
-	return d.ProposalModule.newProposal(title, description, proposer, message, condition.NewState())
 }

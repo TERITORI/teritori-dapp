@@ -159,7 +159,7 @@ func NewAddNewMemberMessageHandler(dao *DAO) *AddNewMemberMessageHandler {
 
 func (h AddNewMemberMessageHandler) Execute(msg ExecutableMessage) {
 	message := msg.(*AddNewMemberMessage)
-	h.dao.MemberModule.addMember(message.Address, message.Roles)
+	h.dao.MemberModule.AddMember(message.Address, message.Roles)
 }
 
 func (h AddNewMemberMessageHandler) Type() string {
@@ -205,7 +205,7 @@ func NewRemoveMemberMessageHandler(dao *DAO) *RemoveMemberMessageHandler {
 
 func (h RemoveMemberMessageHandler) Execute(msg ExecutableMessage) {
 	message := msg.(*RemoveMemberMessage)
-	h.dao.MemberModule.removeMember(message.Address)
+	h.dao.MemberModule.RemoveMember(message.Address)
 }
 
 func (h RemoveMemberMessageHandler) Type() string {
@@ -247,7 +247,7 @@ func NewAddRoleToUserMessageHandler(dao *DAO) *AddRoleToUserMessageHandler {
 
 func (h AddRoleToUserMessageHandler) Execute(msg ExecutableMessage) {
 	message := msg.(*AddRoleToUserMessage)
-	h.dao.MemberModule.addRoleToMember(message.Address, message.Role)
+	h.dao.MemberModule.AddRoleToMember(message.Address, message.Role)
 }
 
 func (h AddRoleToUserMessageHandler) Type() string {
@@ -294,7 +294,7 @@ func NewRemoveRoleFromUserMessageHandler(dao *DAO) *RemoveRoleFromUserMessageHan
 
 func (h RemoveRoleFromUserMessageHandler) Execute(msg ExecutableMessage) {
 	message := msg.(*RemoveRoleFromUserMessage)
-	h.dao.MemberModule.removeRoleFromMember(message.Address, message.Role)
+	h.dao.MemberModule.RemoveRoleFromMember(message.Address, message.Role)
 }
 
 func (h RemoveRoleFromUserMessageHandler) Type() string {

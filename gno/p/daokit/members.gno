@@ -17,7 +17,6 @@ type Member struct {
 	Roles   []string
 }
 
-// TODO: FIX the owner of the role_manager is the deployer of the contract not the realm
 func newMemberModule() *MemberModule {
 	return &MemberModule{
 		roleManager: role_manager.NewWithAddress(std.CurrentRealm().Addr()),
@@ -62,14 +61,18 @@ func (m *MemberModule) GetMembersWithRole(role string) []string {
 	return m.roleManager.GetRoleUsers(role)
 }
 
-func (m *MemberModule) setRoles(roles []string) {
+func (m *MemberModule) CountMembersWithRole(role string) int {
+	return len(m.roleManager.GetRoleUsers(role))
+}
+
+func (m *MemberModule) SetRoles(roles []string) {
 	caller := std.CurrentRealm().Addr()
 	for _, role := range roles {
 		m.roleManager.CreateNewRole(role, []string{}, caller)
 	}
 }
 
-func (m *MemberModule) setMembers(members []Member) {
+func (m *MemberModule) SetMembers(members []Member) {
 	caller := std.CurrentRealm().Addr()
 	for _, member := range members {
 		m.members.Set(member.Address, struct{}{})
@@ -79,8 +82,7 @@ func (m *MemberModule) setMembers(members []Member) {
 	}
 }
 
-// TODO: add test for this kind of proposals
-func (m *MemberModule) addMember(member string, roles []string) {
+func (m *MemberModule) AddMember(member string, roles []string) {
 	if m.IsMember(member) {
 		panic("member already exists")
 	}
@@ -91,7 +93,7 @@ func (m *MemberModule) addMember(member string, roles []string) {
 	}
 }
 
-func (m *MemberModule) removeMember(member string) {
+func (m *MemberModule) RemoveMember(member string) {
 	if !m.IsMember(member) {
 		panic("member does not exist")
 	}
@@ -99,7 +101,7 @@ func (m *MemberModule) removeMember(member string) {
 	m.roleManager.RemoveAllRolesFromUser(std.Address(member), std.CurrentRealm().Addr())
 }
 
-func (m *MemberModule) addRoleToMember(member string, role string) {
+func (m *MemberModule) AddRoleToMember(member string, role string) {
 	if !m.IsMember(member) {
 		panic("member does not exist")
 	}
@@ -112,7 +114,7 @@ func (m *MemberModule) addRoleToMember(member string, role string) {
 	m.roleManager.AddRoleToUser(std.Address(member), role, std.CurrentRealm().Addr())
 }
 
-func (m *MemberModule) removeRoleFromMember(member string, role string) {
+func (m *MemberModule) RemoveRoleFromMember(member string, role string) {
 	if !m.IsMember(member) {
 		panic("member does not exist")
 	}

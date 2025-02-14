@@ -121,7 +121,7 @@ func (d *DAO) renderProposalDetailPage(res *mux.ResponseWriter, req *mux.Request
 		panic(err)
 	}
 	res.Write(ufmt.Sprintf("# %s - Proposal #%d\n\n", d.Name, uint64(id)))
-	proposal := d.ProposalModule.getProposal(uint64(id))
+	proposal := d.ProposalModule.GetProposal(uint64(id))
 	res.Write(ufmt.Sprintf("## Title - %s 📜\n\n", proposal.title))
 	res.Write(ufmt.Sprintf("## Description 📝\n\n%s\n\n", proposal.description))
 	res.Write(ufmt.Sprintf("## Resource - %s 📦\n\n", proposal.message.Type()))
