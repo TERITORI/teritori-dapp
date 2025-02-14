@@ -12,6 +12,7 @@ func init() {
 	dao = basedao.New(&basedao.Config{
 		Name:        "Demo DAO",
 		Description: "This is a demo DAO",
+		Roles:       []string{"admin", "public-relationships", "finance-officer"},
 		Members: []basedao.Member{
 			{Address: "g126gx6p6d3da4ymef35ury6874j6kys044r7zlg", Roles: []string{"admin", "public-relationships"}},
 			{Address: "g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv", Roles: []string{"public-relationships"}},
