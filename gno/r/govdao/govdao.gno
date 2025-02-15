@@ -4,13 +4,18 @@ import (
 	"gno.land/p/teritori/basedao"
 	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/daokit"
+	"gno.land/p/teritori/role_manager"
 	"gno.land/r/demo/profile"
 )
 
 var dao *basedao.DAO
 
 func init() {
-	initialRoles := []string{"T1", "T2", "T3"}
+	initialRoles := []role_manager.RoleInfo{
+		{Name: "T1", Description: "Self-selecting \"core\" with supermajority vote from T1.\nA T1 member gets 3 votes."},
+		{Name: "T2", Description: "Selected by GovDAO w/ T3 abstaining, with simple majority vote.\nA T2 member gets 2 votes."},
+		{Name: "T3", Description: "Permissionless invitation from T1 and T2.\nA T3 member gets 1 vote."},
+	}
 	initialMembers := []basedao.Member{
 		{Address: "g126gx6p6d3da4ymef35ury6874j6kys044r7zlg", Roles: []string{"T1"}},
 		{Address: "g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv", Roles: []string{"T2"}},

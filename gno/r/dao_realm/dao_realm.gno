@@ -4,13 +4,18 @@ import (
 	"gno.land/p/teritori/basedao"
 	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/daokit"
+	"gno.land/p/teritori/role_manager"
 	"gno.land/r/demo/profile"
 )
 
 var dao *basedao.DAO
 
 func init() {
-	initialRoles := []string{"admin", "public-relationships", "finance-officer"}
+	initialRoles := []role_manager.RoleInfo{
+		{Name: "admin", Description: "Admin is the superuser"},
+		{Name: "public-relationships", Description: "Responsible of communication with the public"},
+		{Name: "finance-officer", Description: "Responsible of funds management"},
+	}
 
 	initialMembers := []basedao.Member{
 		{Address: "g126gx6p6d3da4ymef35ury6874j6kys044r7zlg", Roles: []string{"admin", "public-relationships"}},

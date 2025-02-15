@@ -17,7 +17,7 @@ type Member struct {
 	Roles   []string
 }
 
-func NewMembersStore(initialRoles []string, initialMembers []Member) *MembersStore {
+func NewMembersStore(initialRoles []role_manager.RoleInfo, initialMembers []Member) *MembersStore {
 	res := &MembersStore{
 		RoleManager: role_manager.New(),
 		Members:     avl.NewTree(),
@@ -68,9 +68,9 @@ func (m *MembersStore) CountMembersWithRole(role string) uint32 {
 	return uint32(len(m.RoleManager.GetRoleUsers(role)))
 }
 
-func (m *MembersStore) setRoles(roles []string) {
+func (m *MembersStore) setRoles(roles []role_manager.RoleInfo) {
 	for _, role := range roles {
-		m.RoleManager.CreateNewRole(role, []string{})
+		m.RoleManager.CreateNewRole(role.Name, role.Description, []string{})
 	}
 }
 
