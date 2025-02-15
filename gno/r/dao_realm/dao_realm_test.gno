@@ -3,12 +3,12 @@ package dao_realm
 import "testing"
 
 func TestInit(t *testing.T) {
-	membersCount := dao.MemberModule.MembersCount()
+	membersCount := dao.Members.MembersCount()
 	if membersCount != 4 {
 		t.Fatalf("Expected 4 members, got %d", membersCount)
 	}
 
-	roles := dao.MemberModule.GetRoles()
+	roles := dao.Members.GetRoles()
 	expectedRoles := []string{"admin", "public-relationships", "finance-officer"}
 	// if len(roles) != len(expectedRoles) {
 	// 	t.Fatalf("Expected %d roles, got %d", len(expectedRoles), len(roles))

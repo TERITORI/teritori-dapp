@@ -10,7 +10,7 @@ import (
 
 var roleWeights = []float64{3.0, 2.0, 1.0}
 
-func GovDaoCondThreshold(threshold float64, roles []string, hasRoleFn func(memberId string, role string) bool, usersWithRoleCountFn func(role string) uint64) Condition {
+func GovDaoCondThreshold(threshold float64, roles []string, hasRoleFn func(memberId string, role string) bool, usersWithRoleCountFn func(role string) uint32) Condition {
 	if threshold <= 0 || threshold > 1 {
 		panic(errors.New("invalid threshold"))
 	}
@@ -35,7 +35,7 @@ type govDaoCondThreshold struct {
 	threshold            float64
 	roles                []string
 	hasRoleFn            func(memberId string, role string) bool
-	usersWithRoleCountFn func(role string) uint64
+	usersWithRoleCountFn func(role string) uint32
 }
 
 func (m *govDaoCondThreshold) NewState() State {
