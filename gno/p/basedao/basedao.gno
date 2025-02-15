@@ -94,26 +94,26 @@ func (d *DAO) Vote(proposalID uint64, vote daocond.Vote) {
 		panic("invalid vote")
 	}
 
-	voterID := d.assertCallerIsMember()
+	voterID := d.mustGetMemberCaller()
 	d.Core.Vote(voterID, proposalID, vote)
 }
 
 func (d *DAO) Execute(proposalID uint64) {
-	_ = d.assertCallerIsMember()
-	d.Core.Execute(proposalID)
+	executorID := d.mustGetMemberCaller()
+	d.Core.Execute(executorID, proposalID)
 }
 
 func (d *DAO) Propose(req daokit.ProposalRequest) {
-	proposerID := d.assertCallerIsMember()
+	proposerID := d.mustGetMemberCaller()
 	d.Core.Propose(proposerID, req)
 }
 
 func (d *DAO) InstantExecute(req daokit.ProposalRequest) {
-	executorID := d.assertCallerIsMember()
+	executorID := d.mustGetMemberCaller()
 	d.Core.InstantExecute(executorID, req)
 }
 
-func (d *DAO) assertCallerIsMember() string {
+func (d *DAO) mustGetMemberCaller() string {
 	id := std.PrevRealm().Addr().String()
 	if !d.Members.IsMember(id) {
 		panic(errors.New("caller is not a member"))
