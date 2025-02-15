@@ -7,7 +7,7 @@ import (
 )
 
 // TODO: If a member is removed from the DAO, remove all the invitations he sent and received ? (or downgrade to tier 3 if enough invitations ???)
-// TODO: if at some point with one message to downgrade user tier, we need to remove the latest invitation
+// TODO: if user downgrad e.g T1 to T2, we can remove a random invitation he send, else we would need to index the invitations by time
 // T1 => 3 invitations
 // T2 => 2 invitations
 // T3 => 1 invitation

@@ -85,7 +85,3 @@ func NewAddT2MemberHandler(dao *basedao.DAO) daokit.MessageHandler {
 func NewAddT2MemberMsg(payload *MsgAddT2Member) daokit.ExecutableMessage {
 	return daokit.NewMessage(MsgAddT2MemberKind, payload)
 }
-
-type AddT2MemberMessage struct {
-	Address string
-}

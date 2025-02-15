@@ -297,11 +297,12 @@ func setupTest() {
 	}
 
 	dao = basedao.New(&basedao.Config{
-		Name:             "test",
-		Description:      "test",
-		Members:          basedao.NewMembersStore(roles, members),
-		GetProfileString: profile.GetStringField,
-		SetProfileString: profile.SetStringField,
+		Name:              "test",
+		Description:       "test",
+		Members:           basedao.NewMembersStore(roles, members),
+		GetProfileString:  profile.GetStringField,
+		SetProfileString:  profile.SetStringField,
+		NoDefaultHandlers: true,
 	})
 
 	t1Supermajority := daocond.RoleThreshold(0.66, Tier1, dao.Members.HasRole, dao.Members.CountMembersWithRole)
