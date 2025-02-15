@@ -16,7 +16,7 @@ const (
 var dao *basedao.DAO
 
 func init() {
-	initialRoles := []string{"T1", "T2", "T3"}
+	initialRoles := []string{Tier1, Tier2, Tier3}
 
 	// ⚠️ No T3 member should be initially added to the DAO since we want to add them only with invitations (see invitations.gno)
 	initialMembers := []basedao.Member{
