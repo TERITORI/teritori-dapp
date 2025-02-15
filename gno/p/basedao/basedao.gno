@@ -28,6 +28,8 @@ type Config struct {
 	GetProfileString  ProfileStringGetter
 }
 
+const EventNewDAO = "NewDAO"
+
 type ProfileStringSetter func(field string, value string) bool
 type ProfileStringGetter func(addr std.Address, field string, def string) string
 
@@ -81,6 +83,8 @@ func New(conf *Config) *DAO {
 			dao.Core.SetResource(&daokit.Resource{Handler: m, Condition: conf.InitialCondition})
 		}
 	}
+
+	std.Emit(EventNewDAO)
 
 	return dao
 }
