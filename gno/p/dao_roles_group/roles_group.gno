@@ -22,7 +22,7 @@ type ResourceVPower struct {
 
 func NewRolesGroup() *RolesGroup {
 	return &RolesGroup{
-		rm:              role_manager.NewWithAddress(std.PrevRealm().Addr()),
+		rm:              role_manager.New(),
 		resourcesVPower: avl.NewTree(),
 	}
 }
@@ -63,26 +63,22 @@ func (r *RolesGroup) NewRoleJSON(roleName, resourcesJSON string) {
 }
 
 func (r *RolesGroup) NewRole(roleName string, resources []ResourceVPower) {
-	caller := std.PrevRealm().Addr()
-	r.rm.CreateNewRole(roleName, []string{}, caller)
+	r.rm.CreateNewRole(roleName, []string{})
 	if len(resources) > 0 {
 		r.resourcesVPower.Set(roleName, resources)
 	}
 }
 
 func (r *RolesGroup) DeleteRole(roleName string) {
-	caller := std.PrevRealm().Addr()
-	r.rm.DeleteRole(roleName, caller)
+	r.rm.DeleteRole(roleName)
 }
 
 func (r *RolesGroup) GrantRole(address std.Address, role string) {
-	caller := std.PrevRealm().Addr()
-	r.rm.AddRoleToUser(address, role, caller)
+	r.rm.AddRoleToUser(address, role)
 }
 
 func (r *RolesGroup) RevokeRole(address std.Address, role string) {
-	caller := std.PrevRealm().Addr()
-	r.rm.RemoveRoleFromUser(address, role, caller)
+	r.rm.RemoveRoleFromUser(address, role)
 }
 
 func (r *RolesGroup) GetMemberRoles(address std.Address) []string {
