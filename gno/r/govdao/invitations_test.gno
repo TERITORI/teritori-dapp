@@ -6,7 +6,10 @@ import (
 
 	"gno.land/p/demo/avl"
 	"gno.land/p/demo/testutils"
+	"gno.land/p/teritori/basedao"
+	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/daokit"
+	"gno.land/r/demo/profile"
 )
 
 var (
@@ -30,7 +33,7 @@ var (
 )
 
 func TestDelegate(t *testing.T) {
-	setupTest()
+	setupTest() // reset dao & invitations trees
 
 	type testDelegateInput struct {
 		caller std.Address
@@ -150,11 +153,11 @@ func TestDelegate(t *testing.T) {
 			std.TestSetOrigCaller(test.input.caller)
 			Delegate(test.input.target.String())
 			if test.expected.t3 {
-				if !dao.MemberModule.HasRole(test.input.target.String(), "T3") {
+				if !dao.Members.HasRole(test.input.target.String(), "T3") {
 					t.Errorf("expected T3 role: %s", names[test.input.target])
 				}
 			} else {
-				if dao.MemberModule.HasRole(test.input.target.String(), "T3") {
+				if dao.Members.HasRole(test.input.target.String(), "T3") {
 					t.Errorf("unexpected T3 role: %s", names[test.input.target])
 				}
 			}
@@ -164,17 +167,7 @@ func TestDelegate(t *testing.T) {
 }
 
 func TestWithdraw(t *testing.T) {
-	setupTest()
-
-	// Add some invitations
-
-	// Alice -> Dave & Eve
-	// Bob -> Dave
-	// Carol -> Alice & Dave
-	// Dave -> Eve
-	// Eve -> Greg
-
-	// When removing Dave, Eve should be removed as well and Greg too
+	setupTest() // reset dao & invitations trees
 
 	std.TestSetOrigCaller(alice)
 	Delegate(dave.String())
@@ -275,16 +268,16 @@ func TestWithdraw(t *testing.T) {
 			std.TestSetOrigCaller(test.input.caller)
 			Withdraw(test.input.target.String())
 			if test.expected.t3 {
-				if !dao.MemberModule.HasRole(test.input.target.String(), "T3") {
+				if !dao.Members.HasRole(test.input.target.String(), "T3") {
 					t.Errorf("expected T3 role: %s", names[test.input.target])
 				}
 			} else {
-				if dao.MemberModule.HasRole(test.input.target.String(), "T3") {
+				if dao.Members.HasRole(test.input.target.String(), "T3") {
 					t.Errorf("unexpected T3 role: %s", names[test.input.target])
 				}
 
 				for _, addr := range test.expected.chainWithdraw {
-					if dao.MemberModule.HasRole(addr.String(), "T3") {
+					if dao.Members.HasRole(addr.String(), "T3") {
 						t.Errorf("unexpected T3 role: %s", names[addr])
 					}
 				}
@@ -295,21 +288,44 @@ func TestWithdraw(t *testing.T) {
 }
 
 func setupTest() {
-	dao = &daokit.DAO{}
-	name := "test"
-	description := "test"
-
 	roles := []string{"T1", "T2", "T3"}
-	members := []daokit.Member{
+	members := []basedao.Member{
 		{Address: alice.String(), Roles: []string{"T1"}},
 		{Address: bob.String(), Roles: []string{"T2"}},
 		{Address: carol.String(), Roles: []string{"T1"}},
 		{Address: frank.String(), Roles: []string{}}, // for testing purpose but should not happen (a role should be mandatory in govdao)
 	}
-	resources := []daokit.Resource{}
-	dao = daokit.NewDAO(name, description, roles, members, resources, nil)
 
-	// reset tree
+	dao = basedao.New(&basedao.Config{
+		Name:             "test",
+		Description:      "test",
+		Members:          basedao.NewMembersStore(roles, members),
+		GetProfileString: profile.GetStringField,
+		SetProfileString: profile.SetStringField,
+	})
+
+	t1Supermajority := daocond.RoleThreshold(0.66, Tier1, dao.Members.HasRole, dao.Members.CountMembersWithRole)
+	supermajority := daocond.GovDaoCondThreshold(0.66, dao.Members.HasRole, dao.Members.CountMembersWithRole)
+	majority := daocond.GovDaoCondThreshold(0.5, dao.Members.HasRole, dao.Members.CountMembersWithRole)
+
+	resources := []*daokit.Resource{
+		{
+			Handler:   NewAddT1MemberHandler(dao),
+			Condition: t1Supermajority,
+		},
+		{
+			Handler:   NewAddT2MemberHandler(dao),
+			Condition: majority,
+		},
+		{
+			Handler:   basedao.NewEditProfileHandler(profile.SetStringField, nil),
+			Condition: supermajority,
+		},
+	}
+	for _, r := range resources {
+		dao.Core.SetResource(r)
+	}
+
 	invitationsSentTree = avl.NewTree()
 	invitationsReceivedTree = avl.NewTree()
 }

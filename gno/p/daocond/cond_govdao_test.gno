@@ -1,9 +1,9 @@
 package daocond
 
 import (
-	"fmt"
 	"testing"
 
+	"gno.land/p/demo/ufmt"
 	"gno.land/p/demo/urequire"
 )
 
@@ -102,13 +102,13 @@ func TestComputeVotingPowers(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			dao := newMockDAO()
 			for i := 0; i < composition.t1s; i++ {
-				dao.addUser(fmt.Sprint(i)+"_T1", []string{roleT1})
+				dao.addUser(ufmt.Sprintf("%d_T1", i), []string{roleT1})
 			}
 			for i := 0; i < composition.t2s; i++ {
-				dao.addUser(fmt.Sprint(i)+"_T2", []string{roleT2})
+				dao.addUser(ufmt.Sprintf("%d_T2", i), []string{roleT2})
 			}
 			for i := 0; i < composition.t3s; i++ {
-				dao.addUser(fmt.Sprint(i)+"_T3", []string{roleT3})
+				dao.addUser(ufmt.Sprintf("%d_T3", i), []string{roleT3})
 			}
 
 			state := &govDaoCondThresholdState{
@@ -199,19 +199,19 @@ func TestEval(t *testing.T) {
 			votes := map[string]Vote{}
 			dao := newMockDAO()
 			for i, vote := range tdata.votesT1 {
-				userID := fmt.Sprint(i) + "_T1"
+				userID := ufmt.Sprintf("%d_T1", i)
 				dao.addUser(userID, []string{roleT1})
 				votes[userID] = vote
 			}
 
 			for i, vote := range tdata.votesT2 {
-				userID := fmt.Sprint(i) + "_T2"
+				userID := ufmt.Sprintf("%d_T2", i)
 				dao.addUser(userID, []string{roleT2})
 				votes[userID] = vote
 			}
 
 			for i, vote := range tdata.votesT3 {
-				userID := fmt.Sprint(i) + "_T3"
+				userID := ufmt.Sprintf("%d_T3", i)
 				dao.addUser(userID, []string{roleT3})
 				votes[userID] = vote
 			}
@@ -222,7 +222,6 @@ func TestEval(t *testing.T) {
 			renderData := state.RenderJSON(votes)
 			totalYesNode, err := renderData.GetKey("totalYes")
 			urequire.NoError(t, err)
-			println(totalYesNode.MustNumeric())
 			urequire.Equal(t, tdata.expectedEval, state.Eval(votes))
 			// require totalYes to be equal to expected
 			urequire.Equal(t, tdata.expectedYes, totalYesNode.MustNumeric())
@@ -248,8 +247,8 @@ func (m *mockDAO) addUser(memberId string, roles []string) {
 		m.roles[memberRole] = append(m.roles[memberRole], memberId)
 	}
 }
-func (m *mockDAO) usersWithRoleCount(role string) uint64 {
-	return uint64(len(m.roles[role]))
+func (m *mockDAO) usersWithRoleCount(role string) uint32 {
+	return uint32(len(m.roles[role]))
 }
 
 func (m *mockDAO) hasRole(memberId string, role string) bool {

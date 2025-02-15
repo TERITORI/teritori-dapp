@@ -33,7 +33,7 @@ func Delegate(target string) {
 		panic("caller cannot delegate an invitation to themselves")
 	}
 
-	if !dao.MemberModule.IsMember(caller.String()) {
+	if !dao.Members.IsMember(caller.String()) {
 		panic("caller is not a member of the govdao")
 	}
 
@@ -44,7 +44,7 @@ func Delegate(target string) {
 		}
 	}
 
-	roles := dao.MemberModule.GetMemberRoles(caller.String())
+	roles := dao.Members.GetMemberRoles(caller.String())
 	if len(roles) == 0 {
 		panic("caller is member but has no roles, this should not happen")
 	}
@@ -62,14 +62,14 @@ func Delegate(target string) {
 	invitationsReceived = append(invitationsReceived, std.Address(caller))
 	invitationsReceivedTree.Set(target, invitationsReceived)
 
-	if len(invitationsReceived) == 2 && !dao.MemberModule.IsMember(target) {
-		dao.MemberModule.AddMember(target, []string{Tier3})
+	if len(invitationsReceived) == 2 && !dao.Members.IsMember(target) {
+		dao.Members.AddMember(target, []string{Tier3})
 	}
 }
 
 func Withdraw(target string) {
 	caller := std.PrevRealm().Addr()
-	if !dao.MemberModule.IsMember(caller.String()) {
+	if !dao.Members.IsMember(caller.String()) {
 		panic("caller is not a member of the govdao")
 	}
 
@@ -101,12 +101,12 @@ func Withdraw(target string) {
 	}
 	invitationsReceivedTree.Set(target, invitationsReceived)
 
-	if len(invitationsReceived) == 1 && dao.MemberModule.HasRole(target, Tier3) {
+	if len(invitationsReceived) == 1 && dao.Members.HasRole(target, Tier3) {
 		invitationsSent = getInvitationsSent(target)
 		for _, addr := range getInvitationsSent(target) {
 			Withdraw(addr.String())
 		}
-		dao.MemberModule.RemoveMember(target)
+		dao.Members.RemoveMember(target)
 	}
 }
 
