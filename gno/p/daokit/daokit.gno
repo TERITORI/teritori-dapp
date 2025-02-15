@@ -42,7 +42,7 @@ func (d *Core) Vote(voterID string, proposalID uint64, vote daocond.Vote) {
 
 }
 
-func (d *Core) Execute(executorID string, proposalID uint64) {
+func (d *Core) Execute(proposalID uint64) {
 	proposal := d.ProposalModule.GetProposal(proposalID)
 	if proposal == nil {
 		panic("proposal not found")
@@ -63,7 +63,6 @@ func (d *Core) Execute(executorID string, proposalID uint64) {
 
 	d.Resources.getResource(proposal.Message.Type()).Handler.Execute(proposal.Message)
 	proposal.Status = ProposalStatusExecuted
-	proposal.ExecutorID = executorID
 	proposal.ExecutedAt = time.Now()
 }
 
@@ -74,7 +73,7 @@ func (d *Core) Propose(proposerID string, req ProposalRequest) {
 func (d *Core) InstantExecute(executorID string, req ProposalRequest) {
 	proposal := d.propose(executorID, req)
 	d.Vote(executorID, uint64(proposal.ID), "yes")
-	d.Execute(executorID, uint64(proposal.ID))
+	d.Execute(uint64(proposal.ID))
 }
 
 func (d *Core) ResourcesCount() int {
