@@ -306,8 +306,8 @@ func setupTest() {
 	})
 
 	t1Supermajority := daocond.RoleThreshold(0.66, Tier1, dao.Members.HasRole, dao.Members.CountMembersWithRole)
-	supermajority := daocond.GovDaoCondThreshold(0.66, dao.Members.HasRole, dao.Members.CountMembersWithRole)
-	majority := daocond.GovDaoCondThreshold(0.5, dao.Members.HasRole, dao.Members.CountMembersWithRole)
+	supermajority := daocond.GovDaoCondThreshold(0.66, roles, dao.Members.HasRole, dao.Members.CountMembersWithRole)
+	majority := daocond.GovDaoCondThreshold(0.5, roles, dao.Members.HasRole, dao.Members.CountMembersWithRole)
 
 	resources := []*daokit.Resource{
 		{
