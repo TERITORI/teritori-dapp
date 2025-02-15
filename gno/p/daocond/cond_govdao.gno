@@ -2,10 +2,13 @@ package daocond
 
 import (
 	"errors"
+	"strings"
 
 	"gno.land/p/demo/json"
 	"gno.land/p/demo/ufmt"
 )
+
+var roleWeights = []float64{3.0, 2.0, 1.0}
 
 func GovDaoCondThreshold(threshold float64, roles []string, hasRoleFn func(memberId string, role string) bool, usersWithRoleCountFn func(role string) uint64) Condition {
 	if threshold <= 0 || threshold > 1 {
@@ -43,7 +46,11 @@ func (m *govDaoCondThreshold) NewState() State {
 
 // {threshold}% of {totalvotingpower} total voting power following these ({t1power} - T1, {t2power} T2, {t3power} T3)
 func (m *govDaoCondThreshold) Render() string {
-	return ufmt.Sprintf("%g%% of total voting power | T1 => 3.0 power | T2 => 2.0 power | T3 => 1.0 power", m.threshold*100)
+	rolePowers := []string{}
+	for i, role := range m.roles {
+		rolePowers = append(rolePowers, ufmt.Sprintf("%s => %.1f power", role, roleWeights[i]))
+	}
+	return ufmt.Sprintf("%g%% of total voting power | %s", m.threshold*100, strings.Join(rolePowers, " | "))
 }
 
 func (m *govDaoCondThreshold) RenderJSON() *json.Node {
@@ -67,16 +74,16 @@ func (m *govDaoCondThresholdState) HandleEvent(_ Event, _ map[string]Vote) {
 }
 func (m *govDaoCondThresholdState) RenderJSON(votes map[string]Vote) *json.Node {
 	vPowers, totalPower := m.computeVotingPowers()
-	return json.ObjectNode("", map[string]*json.Node{
+	powerSplit := ufmt.Sprintf("T1: %.1f, T2: %.1f, T3: %.1f", vPowers["T1"], vPowers["T2"], vPowers["T3"])
+	jsonData := json.ObjectNode("", map[string]*json.Node{
 		"type":              json.StringNode("", "govdao-threshold"),
-		"treshold":          json.NumberNode("", m.cond.threshold),
-		"tier1VotingPower":  json.NumberNode("", vPowers[m.cond.roles[0]]),
-		"tier2VotingPower":  json.NumberNode("", vPowers[m.cond.roles[1]]),
-		"tier3VotingPower":  json.NumberNode("", vPowers[m.cond.roles[2]]),
+		"threshold":         json.NumberNode("", m.cond.threshold),
+		"powerSplit":        json.StringNode("", powerSplit),
 		"totalYes":          json.NumberNode("", m.yesRatio(votes)),
 		"votingPowerNeeded": json.NumberNode("", m.cond.threshold*totalPower),
 		"totalVotingPower":  json.NumberNode("", totalPower),
 	})
+	return jsonData
 }
 
 var _ State = (*govDaoCondThresholdState)(nil)
@@ -110,17 +117,23 @@ func (m *govDaoCondThresholdState) getUserRole(userID string) string {
 }
 
 func (m *govDaoCondThresholdState) computeVotingPowers() (map[string]float64, float64) {
-	roles := m.cond.roles
-	totalT1s := float64(m.cond.usersWithRoleCountFn(roles[0]))
-	totalT2s := float64(m.cond.usersWithRoleCountFn(roles[1]))
-	totalT3s := float64(m.cond.usersWithRoleCountFn(roles[2]))
-	votingPowers := map[string]float64{
-		roles[0]: 3.0,
-		roles[1]: computePower(totalT1s, totalT2s, 2.0),
-		roles[2]: computePower(totalT1s, totalT3s, 1.0),
+	votingPowers := make(map[string]float64)
+	totalPower := 0.0
+	countsMembersPerRole := make(map[string]float64)
+
+	for _, role := range m.cond.roles {
+		countsMembersPerRole[role] = float64(m.cond.usersWithRoleCountFn(role))
 	}
 
-	totalPower := votingPowers[roles[0]]*totalT1s + votingPowers[roles[1]]*totalT2s + votingPowers[roles[2]]*totalT3s
+	roleWeights := []float64{3.0, 2.0, 1.0} // T1 = 3.0, T2 = 2.0, T3 = 1.0
+	for i, role := range m.cond.roles {
+		if i == 0 {
+			votingPowers[role] = roleWeights[0] // Highest tier always gets max power (3.0)
+		} else {
+			votingPowers[role] = computePower(countsMembersPerRole[m.cond.roles[0]], countsMembersPerRole[role], roleWeights[i])
+		}
+		totalPower += votingPowers[role] * countsMembersPerRole[role]
+	}
 
 	return votingPowers, totalPower
 }
