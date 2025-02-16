@@ -5,7 +5,10 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import { SafeAreaView, TouchableOpacity, View } from "react-native";
 
 import { AssetModal } from "./AssetModal";
-import { AssetsAndMetadataIssue } from "./AssetsAndMetadataIssue";
+import {
+  AssetsAndMetadataIssue,
+  AssetsAndMetadataIssueObject,
+} from "./AssetsAndMetadataIssue";
 
 import trashSVG from "@/assets/icons/trash.svg";
 import { BrandText } from "@/components/BrandText";
@@ -57,25 +60,13 @@ export const AssetsTab: React.FC = () => {
   const [assetModalVisible, setAssetModalVisible] = useState(false);
   const selectedElem = fields.find((_, index) => index === selectedElemIndex);
   const [attributesIssues, setAttributesIssues] = useState<
-    {
-      title: string;
-      message: string;
-      type: "error" | "warning";
-    }[]
+    AssetsAndMetadataIssueObject[]
   >([]);
   const [assetsIssues, setAssetsIssues] = useState<
-    {
-      title: string;
-      message: string;
-      type: "error" | "warning";
-    }[]
+    AssetsAndMetadataIssueObject[]
   >([]);
   const [imagesIssues, setImagesIssues] = useState<
-    {
-      title: string;
-      message: string;
-      type: "error" | "warning";
-    }[]
+    AssetsAndMetadataIssueObject[]
   >([]);
 
   const attributesIdsSeparator = ",";
