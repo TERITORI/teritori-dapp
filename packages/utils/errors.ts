@@ -1,5 +1,5 @@
 export const DEFAULT_FORM_ERRORS = {
-  required: "This field is required",
+  required: "Required",
   datetime: "Invalid",
   onlyLetters: "Only letters are allowed",
   onlyNumbers: "Only numbers are allowed",

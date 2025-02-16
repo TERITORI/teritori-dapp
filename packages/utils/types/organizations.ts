@@ -2,6 +2,8 @@ import { z } from "zod";
 
 import { NSAvailability } from "./tns";
 
+import { DEFAULT_FORM_ERRORS } from "@/utils/errors";
+
 export enum DaoType {
   MEMBER_BASED = 0,
   TOKEN_BASED = 1,
@@ -44,16 +46,16 @@ export type MembershipMemberSettingFormType = {
 // ROLES BASED ORGANIZATION FORM TYPES
 
 export const zodRoleObject = z.object({
-  name: z.string().trim().min(1),
-  color: z.string().trim().min(1),
+  name: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
+  color: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   resources: z.array(z.string()).optional(),
 });
 export const zodRolesObject = z.object({
   roles: z.array(zodRoleObject),
 });
 export const zodRolesMemberObject = z.object({
-  addr: z.string().trim().min(1),
-  weight: z.string().trim().min(1),
+  addr: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
+  weight: z.string().trim().min(1, DEFAULT_FORM_ERRORS.required),
   // TODO: change it to an array
   roles: z.string(),
 });
