@@ -237,87 +237,6 @@ func (s *Launchpad) TokenMetadata(ctx context.Context, req *launchpadpb.TokenMet
 	}, nil
 }
 
-// Get launchpad projects by creator_id
-func (s *Launchpad) LaunchpadProjectsByCreator(ctx context.Context, req *launchpadpb.LaunchpadProjectsByCreatorRequest) (*launchpadpb.LaunchpadProjectsByCreatorResponse, error) {
-	limit := req.GetLimit()
-	if limit <= 0 {
-		return nil, errors.New("limit must be a positive number")
-	}
-
-	// TODO: Handle offset for pagination
-	offset := req.GetOffset()
-	if offset < 0 {
-		return nil, errors.New("offset must be greater or equal to 0")
-	}
-
-	networkID := req.GetNetworkId()
-	if networkID == "" {
-		return nil, errors.New("missing network id")
-	}
-	_, err := s.conf.NetworkStore.GetNetwork(networkID)
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
-	}
-
-	creatorID := req.GetCreatorId()
-	if creatorID == "" {
-		return nil, errors.New("creatorID is mandatory")
-	}
-
-	status := req.GetStatus()
-	if status < 0 {
-		return nil, errors.New("invalid status")
-	}
-
-	var projects []indexerdb.LaunchpadProject
-
-	orderDirection := ""
-	switch req.GetSortDirection() {
-	case launchpadpb.SortDirection_SORT_DIRECTION_UNSPECIFIED:
-		orderDirection = ""
-	case launchpadpb.SortDirection_SORT_DIRECTION_ASCENDING:
-		orderDirection = " ASC "
-	case launchpadpb.SortDirection_SORT_DIRECTION_DESCENDING:
-		orderDirection = " DESC "
-	}
-	orderSQL := ""
-	switch req.GetSort() {
-	case launchpadpb.Sort_SORT_COLLECTION_NAME:
-		orderSQL = " ORDER BY lp.collection_data->>'name'" + orderDirection
-	case launchpadpb.Sort_SORT_UNSPECIFIED:
-		orderSQL = ""
-	}
-
-	statusFilterSQL := "AND lp.status = " + strconv.FormatInt(int64(status.Number()), 10)
-	if status == launchpadpb.Status_STATUS_UNSPECIFIED {
-		statusFilterSQL = ""
-	}
-
-	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`
-		SELECT * FROM launchpad_projects AS lp WHERE lp.creator_id = ? AND lp.network_id = ? %s %s LIMIT ?
-	`,
-		statusFilterSQL, orderSQL), creatorID, networkID, limit).Scan(&projects).Error
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to query database")
-	}
-
-	result := make([]*launchpadpb.LaunchpadProject, len(projects))
-	for idx, dbProject := range projects {
-		result[idx] = &launchpadpb.LaunchpadProject{
-			Id:             dbProject.ProjectID,
-			NetworkId:      dbProject.NetworkID,
-			CreatorId:      string(dbProject.CreatorID),
-			CollectionData: string(dbProject.CollectionData),
-			Status:         dbProject.Status,
-			ProposalId:     &dbProject.ProposalId,
-		}
-	}
-
-	return &launchpadpb.LaunchpadProjectsByCreatorResponse{
-		Projects: result,
-	}, nil
-}
-
 // Get all launchpad projects
 func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.LaunchpadProjectsRequest) (*launchpadpb.LaunchpadProjectsResponse, error) {
 	limit := req.GetLimit()
@@ -339,6 +258,8 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("unknown network id '%s'", networkID))
 	}
+
+	creatorID := req.GetCreatorId()
 
 	status := req.GetStatus()
 	if status < 0 {
@@ -369,10 +290,15 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 		statusFilterSQL = ""
 	}
 
+	creatorFilterSQL := "AND lp.creator_id = " + creatorID
+	if creatorID == "" {
+		creatorFilterSQL = ""
+	}
+
 	err = s.conf.IndexerDB.Raw(fmt.Sprintf(`
-		SELECT * FROM launchpad_projects AS lp WHERE lp.network_id = ? %s %s LIMIT ?
+		SELECT * FROM launchpad_projects AS lp WHERE lp.network_id = ? %s %s %s LIMIT ?
 	`,
-		statusFilterSQL, orderSQL), networkID, limit).Scan(&projects).Error
+		statusFilterSQL, creatorFilterSQL, orderSQL), networkID, limit).Scan(&projects).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query database")
 	}
@@ -385,7 +311,7 @@ func (s *Launchpad) LaunchpadProjects(ctx context.Context, req *launchpadpb.Laun
 			CreatorId:      string(dbProject.CreatorID),
 			CollectionData: string(dbProject.CollectionData),
 			Status:         dbProject.Status,
-			ProposalId:     &dbProject.ProposalId,
+			ProposalId:     dbProject.ProposalId,
 		}
 	}
 
@@ -424,7 +350,7 @@ func (s *Launchpad) LaunchpadProjectById(ctx context.Context, req *launchpadpb.L
 			CreatorId:      string(project.CreatorID),
 			CollectionData: string(project.CollectionData),
 			Status:         project.Status,
-			ProposalId:     &project.ProposalId,
+			ProposalId:     project.ProposalId,
 		},
 	}, nil
 }

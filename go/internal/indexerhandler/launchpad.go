@@ -6,29 +6,82 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/launchpadpb"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/friendsofgo/errors"
 	"go.uber.org/zap"
 )
 
+type WhitelistInfo struct {
+	AddressesMerkleRoot string `json:"addresses_merkle_root"`
+	AddressesCount      uint32 `json:"addresses_count"`
+	AddressesIpfs       string `json:"addresses_ipfs"`
+}
+
+type Coin struct {
+	Denom  string `json:"denom"`
+	Amount int64  `json:"amount"`
+}
+
+type MintPeriod struct {
+	Price           *Coin          `json:"price,omitempty"`
+	MaxTokens       *uint32        `json:"max_tokens,omitempty"`
+	LimitPerAddress *uint32        `json:"limit_per_address,omitempty"`
+	StartTime       uint64         `json:"start_time"`
+	EndTime         *uint64        `json:"end_time,omitempty"`
+	WhitelistInfo   *WhitelistInfo `json:"whitelist_info,omitempty"`
+}
+
+type CollectionData struct {
+	Name                     string          `json:"name"`
+	Desc                     string          `json:"desc"`
+	Symbol                   string          `json:"symbol"`
+	CoverImgURI              string          `json:"cover_img_uri"`
+	TargetNetwork            string          `json:"target_network"`
+	WebsiteLink              string          `json:"website_link"`
+	ContactEmail             string          `json:"contact_email"`
+	IsProjectDerivative      bool            `json:"is_project_derivative"`
+	ProjectType              string          `json:"project_type"`
+	IsAppliedPreviously      bool            `json:"is_applied_previously"`
+	TeamDesc                 string          `json:"team_desc"`
+	Partners                 string          `json:"partners"`
+	InvestmentDesc           string          `json:"investment_desc"`
+	InvestmentLink           string          `json:"investment_link"`
+	ArtworkDesc              string          `json:"artwork_desc"`
+	IsReadyForMint           bool            `json:"is_ready_for_mint"`
+	EscrowMintProceedsPeriod uint64          `json:"escrow_mint_proceeds_period"`
+	IsDox                    bool            `json:"is_dox"`
+	DaoWhitelistCount        uint32          `json:"dao_whitelist_count"`
+	RevealTime               *uint64         `json:"reveal_time,omitempty"`
+	TokensCount              uint64          `json:"tokens_count"`
+	MintPeriods              []MintPeriod    `json:"mint_periods"`
+	RoyaltyAddress           *sdk.AccAddress `json:"royalty_address,omitempty"`
+	RoyaltyPercentage        *uint8          `json:"royalty_percentage,omitempty"`
+	BaseTokenURI             *string         `json:"base_token_uri,omitempty"`
+	MetadatasMerkleRoot      *string         `json:"metadatas_merkle_root,omitempty"`
+	DeployedAddress          *string         `json:"deployed_address,omitempty"`
+	Owner                    *string         `json:"owner,omitempty"`
+}
+
 type SubmitCollectionMsg struct {
-	SubmitCollection struct {
-		Collection struct {
-			Name string `json:"name"`
-			Desc string `json:"desc"`
-		} `json:"collection"`
-	} `json:"submit_collection"`
+	CollectionData CollectionData
+}
+
+type UpdateMerkleRootMsg struct {
+	CollectionId string
+	MerkleRoot   string
+}
+
+type DeployCollectionMsg struct {
+	CollectionId string
 }
 
 func (h *Handler) handleExecuteSubmitCollection(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
-	var jsonData map[string]map[string]interface{}
-	if err := json.Unmarshal(execMsg.Msg.Bytes(), &jsonData); err != nil {
-		return errors.Wrap(err, "failed to unmarshal json")
-	}
+	var submitCollectionMsg SubmitCollectionMsg
 
-	collectionData := jsonData["submit_collection"]["collection"]
-	if collectionData == nil {
-		return errors.New("failed to get collection data")
+	if err := json.Unmarshal(execMsg.Msg, &submitCollectionMsg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal submit collection msg")
 	}
+	collectionData := submitCollectionMsg.CollectionData
 
 	collectionId := e.Events["wasm.collection_id"][0]
 	if collectionId == "" {
@@ -57,20 +110,13 @@ func (h *Handler) handleExecuteSubmitCollection(e *Message, execMsg *wasmtypes.M
 }
 
 func (h *Handler) handleExecuteUpdateMerkleRoot(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
-	var jsonData map[string]map[string]interface{}
-	if err := json.Unmarshal(execMsg.Msg.Bytes(), &jsonData); err != nil {
-		return errors.Wrap(err, "failed to unmarshal json")
-	}
+	var updateMerkleRootMsg UpdateMerkleRootMsg
 
-	collectionId := jsonData["update_merkle_root"]["collection_id"]
-	if collectionId == "" {
-		return errors.New("failed to get collection id")
+	if err := json.Unmarshal(execMsg.Msg, &updateMerkleRootMsg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal merkle root msg")
 	}
-
-	merkleRoot := jsonData["update_merkle_root"]["merkle_root"]
-	if merkleRoot == "" {
-		return errors.New("failed to get merkle root")
-	}
+	collectionId := updateMerkleRootMsg.CollectionId
+	merkleRoot := updateMerkleRootMsg.MerkleRoot
 
 	// Update collection_data
 	if err := h.db.Exec(`
@@ -99,14 +145,12 @@ func (h *Handler) handleExecuteUpdateMerkleRoot(e *Message, execMsg *wasmtypes.M
 }
 
 func (h *Handler) handleExecuteDeployCollection(e *Message, execMsg *wasmtypes.MsgExecuteContract) error {
-	var jsonData map[string]map[string]interface{}
-	if err := json.Unmarshal(execMsg.Msg.Bytes(), &jsonData); err != nil {
-		return errors.Wrap(err, "failed to unmarshal json")
+	var deployCollectionMsg DeployCollectionMsg
+
+	if err := json.Unmarshal(execMsg.Msg, &deployCollectionMsg); err != nil {
+		return errors.Wrap(err, "failed to unmarshal deploy collection msg")
 	}
-	collectionId, ok := jsonData["deploy_collection"]["collection_id"].(string)
-	if !ok || collectionId == "" {
-		return errors.New("failed to get collection id or collection id is not a string")
-	}
+	collectionId := deployCollectionMsg.CollectionId
 
 	deployedAddress := e.Events["instantiate._contract_address"][0]
 	if deployedAddress == "" {
