@@ -1,8 +1,6 @@
 package govdao
 
 import (
-	"std"
-
 	"gno.land/p/demo/mux"
 	"gno.land/p/demo/ufmt"
 )
@@ -18,10 +16,6 @@ func ClaimTier(handle string) {
 	address := getAddressByHandle(handle)
 	if address == "" {
 		panic("user address is not yet verified")
-	}
-
-	if address != std.PrevRealm().Addr().String() {
-		panic("caller is should be the claimer")
 	}
 
 	if dao.Members.IsMember(address) {

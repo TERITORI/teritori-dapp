@@ -45,15 +45,6 @@ func TestClaimTier(t *testing.T) {
 			getAddressByHandleFunc: nobodyVerified,
 			caller:                 someCaller,
 		},
-		"caller is not the claimer": {
-			panicError:   "caller is should be the claimer",
-			githubHandle: ghHandle,
-			seedContent: map[string]string{
-				ghHandle: "T1",
-			},
-			getAddressByHandleFunc: allVerified,
-			caller:                 someCaller,
-		},
 		"caller is already member": {
 			panicError:   "user already claimed his tier",
 			githubHandle: ghHandle,
@@ -86,6 +77,8 @@ func TestClaimTier(t *testing.T) {
 					if testData.panicError != errStr {
 						t.Error("expected error got nil")
 					}
+				} else {
+					urequire.Equal(t, "", testData.panicError)
 				}
 			}()
 			initialRoles := []string{"T1", "T2", "T3"}
