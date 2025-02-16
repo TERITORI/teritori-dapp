@@ -25,6 +25,7 @@ dao-proposal-single = { version = "2.6.0", features = ["library"] }
 dao-voting = "2.6.0"
 
 [dev-dependencies]
+cw-multi-test = "0.20.0"
 sylvia = { version = "0.9.3", features = ["mt"] }
 dao-dao-core = { version = "2.6.0", features = ["library"] }
 dao-testing = { version = "2.5.0" }

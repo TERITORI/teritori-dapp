@@ -2721,6 +2721,7 @@ version = "0.2.0"
 dependencies = [
  "cosmwasm-schema",
  "cosmwasm-std",
+ "cw-multi-test 0.20.1",
  "cw-storage-plus 1.2.0",
  "cw-utils 1.0.3",
  "cw2981-royalties",
