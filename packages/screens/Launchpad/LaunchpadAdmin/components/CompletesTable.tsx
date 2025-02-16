@@ -21,6 +21,7 @@ export const CompletesTable: FC<{
     sort: Sort.SORT_UNSPECIFIED,
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
     status: Status.STATUS_COMPLETE,
+    creatorId: "",
   });
   return <LaunchpadCollectionsTable rows={launchpadProjects} />;
 };

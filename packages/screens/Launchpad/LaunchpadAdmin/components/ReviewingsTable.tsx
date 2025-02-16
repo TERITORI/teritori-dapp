@@ -21,6 +21,7 @@ export const ReviewingsTable: FC<{
     sort: Sort.SORT_UNSPECIFIED,
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
     status: Status.STATUS_REVIEWING,
+    creatorId: "",
   });
   return <LaunchpadCollectionsTable rows={launchpadProjects} />;
 };

@@ -34,6 +34,7 @@ export const LaunchpadReadyApplicationsScreen: React.FC = () => {
     sort: Sort.SORT_UNSPECIFIED,
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
     status: Status.STATUS_COMPLETE, // TODO: Or STATUS_CONFIRMED ?
+    creatorId: "",
   });
 
   if (!isUserLaunchpadAdmin) {

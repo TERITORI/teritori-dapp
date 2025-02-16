@@ -21,6 +21,7 @@ export const ConfirmedsTable: FC<{
     sort: Sort.SORT_UNSPECIFIED,
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
     status: Status.STATUS_CONFIRMED,
+    creatorId: "",
   });
   return <LaunchpadCollectionsTable rows={launchpadProjects} />;
 };

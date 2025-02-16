@@ -1,14 +1,14 @@
 import React from "react";
 import { View } from "react-native";
 
-import { Sort, SortDirection } from "@/api/launchpad/v1/launchpad";
+import { Sort, SortDirection, Status } from "@/api/launchpad/v1/launchpad";
 import infoSVG from "@/assets/icons/info.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { Box } from "@/components/boxes/Box";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
-import { useLaunchpadProjectsByCreator } from "@/hooks/launchpad/useLaunchpadProjectsByCreator";
+import { useLaunchpadProjects } from "@/hooks/launchpad/useLaunchpadProjects";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
@@ -33,13 +33,14 @@ export const LaunchpadMyCollectionsScreen: ScreenFC<
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
   const selectedWallet = useSelectedWallet();
-  const { launchpadProjects = [] } = useLaunchpadProjectsByCreator({
+  const { launchpadProjects = [] } = useLaunchpadProjects({
     networkId: selectedNetworkId,
     creatorId: selectedWallet?.userId || "",
     offset: 0,
     limit: 100, // TODO: Pagination
     sort: Sort.SORT_UNSPECIFIED,
     sortDirection: SortDirection.SORT_DIRECTION_UNSPECIFIED,
+    status: Status.STATUS_UNSPECIFIED,
   });
 
   return (
