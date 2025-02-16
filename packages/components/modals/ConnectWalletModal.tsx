@@ -12,6 +12,7 @@ import { BrandText } from "../BrandText";
 import { DisclaimerPopup } from "../PopupDisclaimer/DisclaimerPopup";
 import { TertiaryButton } from "../buttons/TertiaryButton";
 import { ConnectAdenaButton } from "../connectWallet/ConnectAdenaButton";
+import { ConnectArgentXButton } from "../connectWallet/ConnectArgentXButton";
 import { ConnectKeplrButton } from "../connectWallet/ConnectKeplrButton";
 import { ConnectLeapButton } from "../connectWallet/ConnectLeapButton";
 import { ConnectMetamaskButton } from "../connectWallet/ConnectMetamaskButton";
@@ -63,6 +64,12 @@ export const ConnectWalletModal: FC<{
       {canConnectWallet(NetworkKind.Gno) && (
         <>
           <ConnectAdenaButton onDone={onClose} />
+          <SpacerColumn size={1.5} />
+        </>
+      )}
+      {canConnectWallet(NetworkKind.Starknet) && (
+        <>
+          <ConnectArgentXButton onDone={onClose} />
           <SpacerColumn size={1.5} />
         </>
       )}

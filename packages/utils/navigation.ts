@@ -174,6 +174,8 @@ export type RootStackParamList = {
   MiniGroupActions: { conversationId: string };
   BurnCapital: { network?: string };
   Rakki: undefined;
+
+  CairoPOC: undefined;
 };
 
 export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -354,6 +356,8 @@ const getNavConfig: (homeScreen: keyof RootStackParamList) => NavConfig = (
       MiniGroupActions: "mini-group-actions",
       BurnCapital: "burn-capital",
       Rakki: "rakki",
+
+      CairoPOC: "cairo-poc",
     },
   };
   if (homeScreen === "Home") {

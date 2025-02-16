@@ -11047,6 +11047,65 @@
     "cosmosFeatures": []
   },
   {
+    "id": "starknet",
+    "kind": "Starknet",
+    "chainId": "SN_MAIN",
+    "displayName": "Starknet",
+    "icon": "starknet.svg",
+    "features": [],
+    "currencies": [
+      {
+        "denom": "wei",
+        "displayName": "StarknetETH",
+        "decimals": 18,
+        "variant": "ethereum",
+        "coingeckoId": "ethereum",
+        "icon": "ethereum-circle.svg",
+        "kind": "native",
+        "color": "#232731"
+      }
+    ],
+    "txExplorer": "https://starkscan.co/tx/$hash",
+    "accountExplorer": "https://starkscan.co/contract/$address",
+    "contractExplorer": "https://starkscan.co/contract/$address",
+    "idPrefix": "starknet",
+    "testnet": true,
+    "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
+    "addressPrefix": "starknet",
+    "restEndpoint": "https://alpha-mainnet.starknet.io",
+    "rpcEndpoint": "https://rpc.starknet.io"
+  },
+  {
+    "id": "starknet-sepolia",
+    "kind": "Starknet",
+    "chainId": "SN_SEPOLIA",
+    "displayName": "Starknet Sepolia",
+    "icon": "starknet.svg",
+    "features": [],
+    "currencies": [
+      {
+        "denom": "wei",
+        "displayName": "SepoliaETH",
+        "decimals": 18,
+        "variant": "ethereum",
+        "coingeckoId": "ethereum",
+        "icon": "ethereum-circle.svg",
+        "kind": "native",
+        "color": "#232731"
+      }
+    ],
+    "txExplorer": "https://starkscan.co/tx/$hash",
+    "accountExplorer": "https://starkscan.co/contract/$address",
+    "contractExplorer": "https://starkscan.co/contract/$address",
+    "idPrefix": "sepolia",
+    "testnet": true,
+    "backendEndpoint": "https://dapp-backend.mainnet.teritori.com",
+    "addressPrefix": "starknet",
+    "restEndpoint": "https://alpha-sepolia.starknet.io",
+    "rpcEndpoint": "https://rpc.sepolia.starknet.io",
+    "todoListContractAddress": "0x0203268c10434d563a4954bcd2af176095082545cd80d3c71bcd2a949ae6f46e"
+  },
+  {
     "id": "cosmos-registry:starname",
     "displayName": "Starname",
     "chainId": "iov-mainnet-ibc",

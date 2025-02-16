@@ -4,6 +4,7 @@ import { getPlatformScreens } from "./platformSpecific";
 import { getNav } from "./util";
 
 import { BurnCapitalScreen } from "@/screens/BurnCapital/BurnCapitalScreen";
+import { CairoPOCScreen } from "@/screens/CairoPOC/CairoPOCScreen";
 import { ComingSoonScreen } from "@/screens/ComingSoon/ComingSoon";
 import { CoreDAOScreen } from "@/screens/CoreDAO/CoreDAOScreen";
 import { DAppStoreScreen } from "@/screens/DAppStore/DAppStoreScreen";
@@ -611,6 +612,11 @@ export const getNormalModeScreens = ({
         name="Rakki"
         component={RakkiScreen}
         options={{ header: () => null, title: screenTitle("Rakki") }}
+      />
+      <Nav.Screen
+        name="CairoPOC"
+        component={CairoPOCScreen}
+        options={{ header: () => null, title: screenTitle("Cairo POC") }}
       />
       {getPlatformScreens(screenTitle)}
     </>

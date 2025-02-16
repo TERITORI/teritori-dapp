@@ -22,6 +22,8 @@ import { polygonNetwork } from "./polygon";
 import { polygonMumbaiNetwork } from "./polygon-mumbai";
 import { sagaNetwork } from "./saga";
 import { sagaTest2 } from "./saga-test2";
+import { starknetNetwork } from "./starknet";
+import { starknetSepoliaNetwork } from "./starknet-sepolia";
 import { teritoriNetwork } from "./teritori";
 import { teritoriLocalnetNetwork } from "./teritori-localnet";
 import { teritoriTestnetNetwork } from "./teritori-testnet";
@@ -32,6 +34,7 @@ import {
   NativeCurrencyInfo,
   NetworkInfo,
   NetworkKind,
+  StarknetNetworkInfo,
 } from "./types";
 
 export * from "./types";
@@ -55,6 +58,8 @@ const packageNetworks = [
   polygonNetwork,
   sagaTest2,
   sagaNetwork,
+  starknetNetwork,
+  starknetSepoliaNetwork,
 ];
 
 export const defaultEnabledNetworks = [
@@ -298,6 +303,37 @@ export const mustGetCosmosNetwork = (
   }
   return network;
 };
+
+// NOTE: Not used anywhere for now but this is needed
+// export const getStarknetNetwork = (
+//   networkId: string | undefined,
+// ): StarknetNetworkInfo | undefined => {
+//   const network = getNetwork(networkId);
+//   if (network?.kind !== NetworkKind.Starknet) {
+//     return undefined;
+//   }
+//   return network;
+// };
+
+export const getStarknetNetworkByChainId = (chainId: string | undefined) => {
+  return allNetworks.find((n): n is StarknetNetworkInfo => {
+    if (n.kind === NetworkKind.Starknet && n.chainId === chainId) {
+      return true;
+    }
+    return false;
+  });
+};
+
+// NOTE: Not used anywhere for now but this is needed
+// export const mustGetStarknetNetwork = (
+//   networkId: string | undefined,
+// ): StarknetNetworkInfo => {
+//   const network = mustGetNetwork(networkId);
+//   if (network.kind !== NetworkKind.Starknet) {
+//     throw new Error(`'${networkId}' is not a starknet network`);
+//   }
+//   return network;
+// };
 
 export const getGnoNetwork = (
   networkId: string | undefined,
