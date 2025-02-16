@@ -63,7 +63,7 @@ func (r *RolesGroup) NewRoleJSON(roleName, resourcesJSON string) {
 }
 
 func (r *RolesGroup) NewRole(roleName string, resources []ResourceVPower) {
-	r.rm.CreateNewRole(roleName, []string{})
+	r.rm.CreateNewRole(roleName, "", []string{})
 	if len(resources) > 0 {
 		r.resourcesVPower.Set(roleName, resources)
 	}

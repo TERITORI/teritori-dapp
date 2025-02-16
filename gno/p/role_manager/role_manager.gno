@@ -13,8 +13,14 @@ const (
 
 type Role struct {
 	name        string
+	description string
 	permissions *avl.Tree // permission -> struct{}
 	users       *avl.Tree // user addr -> struct{}
+}
+
+type RoleInfo struct {
+	Name        string
+	Description string
 }
 
 type RoleManager struct {
@@ -31,13 +37,14 @@ func New() *RoleManager {
 	return rm
 }
 
-func (rm *RoleManager) CreateNewRole(roleName string, permissions []string) {
+func (rm *RoleManager) CreateNewRole(roleName string, description string, permissions []string) {
 	if rm.roles.Has(roleName) {
 		panic("role already exists")
 	}
 
 	role := &Role{
 		name:        roleName,
+		description: description,
 		permissions: avl.NewTree(),
 		users:       avl.NewTree(),
 	}
@@ -62,6 +69,16 @@ func (rm *RoleManager) DeleteRole(roleName string) {
 		return false
 	})
 	rm.roles.Remove(roleName)
+}
+
+func (rm *RoleManager) RoleInfo(roleName string) RoleInfo {
+	r := rm.mustGetRole(roleName)
+	return RoleInfo{Name: r.name, Description: r.description}
+}
+
+func (rm *RoleManager) SetRoleDescription(roleName string, description string) {
+	role := rm.mustGetRole(roleName)
+	role.description = description
 }
 
 func (rm *RoleManager) AddPermissionToRole(permission string, roleName string) {

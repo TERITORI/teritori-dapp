@@ -90,6 +90,8 @@ func (d *DAO) renderConfigPage(res *mux.ResponseWriter, req *mux.Request) {
 	res.Write(ufmt.Sprintf("## Roles 🏷️\n\n"))
 	for _, role := range roles {
 		res.Write(ufmt.Sprintf("- %s\n\n", role))
+		info := d.Members.RoleManager.RoleInfo(role)
+		res.Write("  " + info.Description + "\n")
 	}
 	res.Write(ufmt.Sprintf("\n--------------------------------\n"))
 	res.Write(ufmt.Sprintf("## Resources 📦\n\n"))

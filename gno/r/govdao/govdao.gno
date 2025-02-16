@@ -4,6 +4,7 @@ import (
 	"gno.land/p/teritori/basedao"
 	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/daokit"
+	"gno.land/p/teritori/role_manager"
 	"gno.land/r/demo/profile"
 	"gno.land/r/gnoland/ghverify"
 )
@@ -20,7 +21,11 @@ var (
 )
 
 func init() {
-	initialRoles := []string{Tier1, Tier2, Tier3}
+	initialRoles := []role_manager.RoleInfo{
+		{Name: Tier1, Description: "Self-selecting \"core\" with supermajority vote from T1. A T1 member gets 3 votes."},
+		{Name: Tier2, Description: "Selected by GovDAO w/ T3 abstaining, with simple majority vote. A T2 member gets 2 votes."},
+		{Name: Tier3, Description: "Permissionless invitation from T1 and T2. A T3 member gets 1 vote."},
+	}
 
 	// ⚠️ No T3 member should be initially added to the DAO since we want to add them only with invitations (see invitations.gno)
 	initialMembers := []basedao.Member{

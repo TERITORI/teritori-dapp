@@ -8,6 +8,7 @@ import (
 	"gno.land/p/demo/urequire"
 	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/daokit"
+	"gno.land/p/teritori/role_manager"
 )
 
 var (
@@ -18,7 +19,9 @@ var (
 )
 
 func TestNewDAO(t *testing.T) {
-	initialRoles := []string{"admin"}
+	initialRoles := []role_manager.RoleInfo{
+		{Name: "admin", Description: "Admin is the superuser"},
+	}
 	initialMembers := []Member{
 		{alice.String(), []string{"admin"}},
 		{bob.String(), []string{}},
@@ -677,7 +680,8 @@ type testingDAOContext struct {
 }
 
 func newTestingDAO(t *testing.T, threshold float64, members []Member) *testingDAOContext {
-	membersStore := NewMembersStore([]string{"admin"}, members)
+	roles := []role_manager.RoleInfo{{Name: "admin", Description: "Admin is the superuser"}}
+	membersStore := NewMembersStore(roles, members)
 	initialCondition := daocond.MembersThreshold(threshold, membersStore.IsMember, membersStore.MembersCount)
 
 	conf := &Config{
