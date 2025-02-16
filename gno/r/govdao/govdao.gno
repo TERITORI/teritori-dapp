@@ -8,20 +8,26 @@ import (
 	"gno.land/r/demo/profile"
 )
 
+const (
+	Tier1 = "T1"
+	Tier2 = "T2"
+	Tier3 = "T3"
+)
+
 var dao *basedao.DAO
 
 func init() {
 	initialRoles := []role_manager.RoleInfo{
-		{Name: "T1", Description: "Self-selecting \"core\" with supermajority vote from T1. A T1 member gets 3 votes."},
-		{Name: "T2", Description: "Selected by GovDAO w/ T3 abstaining, with simple majority vote. A T2 member gets 2 votes."},
-		{Name: "T3", Description: "Permissionless invitation from T1 and T2. A T3 member gets 1 vote."},
+		{Name: Tier1, Description: "Self-selecting \"core\" with supermajority vote from T1. A T1 member gets 3 votes."},
+		{Name: Tier2, Description: "Selected by GovDAO w/ T3 abstaining, with simple majority vote. A T2 member gets 2 votes."},
+		{Name: Tier3, Description: "Permissionless invitation from T1 and T2. A T3 member gets 1 vote."},
 	}
+
+	// ⚠️ No T3 member should be initially added to the DAO since we want to add them only with invitations (see invitations.gno)
 	initialMembers := []basedao.Member{
-		{Address: "g126gx6p6d3da4ymef35ury6874j6kys044r7zlg", Roles: []string{"T1"}},
-		{Address: "g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv", Roles: []string{"T2"}},
-		{Address: "g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", Roles: []string{"T2"}},
-		{Address: "g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r", Roles: []string{"T3"}},
-		{Address: "g1ctt28t7sdyp28qzkvlfyx0hyxuz6vz7nplwm9c", Roles: []string{"T3"}},
+		{Address: "g126gx6p6d3da4ymef35ury6874j6kys044r7zlg", Roles: []string{Tier1}},
+		{Address: "g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv", Roles: []string{Tier2}},
+		{Address: "g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", Roles: []string{Tier2}},
 	}
 	dao = basedao.New(&basedao.Config{
 		Name:              "GovDAO",
@@ -31,7 +37,7 @@ func init() {
 		GetProfileString:  profile.GetStringField,
 	})
 
-	t1Supermajority := daocond.RoleThreshold(0.66, "T1", dao.Members.HasRole, dao.Members.CountMembersWithRole)
+	t1Supermajority := daocond.RoleThreshold(0.66, Tier1, dao.Members.HasRole, dao.Members.CountMembersWithRole)
 	supermajority := daocond.GovDaoCondThreshold(0.66, dao.Members.HasRole, dao.Members.CountMembersWithRole)
 	majority := daocond.GovDaoCondThreshold(0.5, dao.Members.HasRole, dao.Members.CountMembersWithRole)
 
