@@ -9,6 +9,7 @@ import (
 	"gno.land/p/teritori/basedao"
 	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/daokit"
+	"gno.land/p/teritori/role_manager"
 	"gno.land/r/demo/profile"
 )
 
@@ -288,7 +289,11 @@ func TestWithdraw(t *testing.T) {
 }
 
 func setupTest() {
-	roles := []string{"T1", "T2", "T3"}
+	roles := []role_manager.RoleInfo{
+		{Name: Tier1, Description: "Self-selecting \"core\" with supermajority vote from T1. A T1 member gets 3 votes."},
+		{Name: Tier2, Description: "Selected by GovDAO w/ T3 abstaining, with simple majority vote. A T2 member gets 2 votes."},
+		{Name: Tier3, Description: "Permissionless invitation from T1 and T2. A T3 member gets 1 vote."},
+	}
 	members := []basedao.Member{
 		{Address: alice.String(), Roles: []string{"T1"}},
 		{Address: bob.String(), Roles: []string{"T2"}},
