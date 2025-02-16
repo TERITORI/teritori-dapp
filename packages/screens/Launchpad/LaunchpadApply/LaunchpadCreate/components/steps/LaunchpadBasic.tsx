@@ -78,7 +78,7 @@ export const LaunchpadBasic: FC = () => {
             </View>
           }
           placeHolder="Describe here..."
-          name="desc"
+          name="description"
           form={collectionForm}
         />
 
