@@ -6,6 +6,7 @@ import (
 	"gno.land/p/teritori/daokit"
 	"gno.land/p/teritori/role_manager"
 	"gno.land/r/demo/profile"
+	"gno.land/r/gnoland/ghverify"
 )
 
 const (
@@ -14,7 +15,10 @@ const (
 	Tier3 = "T3"
 )
 
-var dao *basedao.DAO
+var (
+	dao                *basedao.DAO
+	getAddressByHandle func(handle string) string
+)
 
 func init() {
 	initialRoles := []role_manager.RoleInfo{
@@ -58,6 +62,8 @@ func init() {
 	for _, r := range resources {
 		dao.Core.SetResource(r)
 	}
+	getAddressByHandle = ghverify.GetAddressByHandle
+	dao.RenderRouter.HandleFunc(CLAIM_PATH, renderClaimableTiers)
 }
 
 func Propose(proposal daokit.ProposalRequest) {
