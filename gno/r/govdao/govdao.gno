@@ -15,7 +15,7 @@ const (
 )
 
 var (
-	dao *basedao.DAO
+	dao                *basedao.DAO
 	getAddressByHandle func(handle string) string
 )
 
