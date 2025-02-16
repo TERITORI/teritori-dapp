@@ -222,7 +222,6 @@ func TestEval(t *testing.T) {
 			renderData := state.RenderJSON(votes)
 			totalYesNode, err := renderData.GetKey("totalYes")
 			urequire.NoError(t, err)
-			println(totalYesNode.MustNumeric())
 			urequire.Equal(t, tdata.expectedEval, state.Eval(votes))
 			// require totalYes to be equal to expected
 			urequire.Equal(t, tdata.expectedYes, totalYesNode.MustNumeric())
