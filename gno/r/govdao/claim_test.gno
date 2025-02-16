@@ -8,6 +8,7 @@ import (
 	"gno.land/p/demo/ufmt"
 	"gno.land/p/demo/urequire"
 	"gno.land/p/teritori/basedao"
+	"gno.land/p/teritori/role_manager"
 )
 
 var (
@@ -81,9 +82,10 @@ func TestClaimTier(t *testing.T) {
 					urequire.Equal(t, "", testData.panicError)
 				}
 			}()
-			initialRoles := []string{"T1", "T2", "T3"}
+			roles := []role_manager.RoleInfo{
+				{Name: Tier1, Description: "Self-selecting \"core\" with supermajority vote from T1. A T1 member gets 3 votes."},
+			}
 			initialMembers := []basedao.Member{}
-
 			if testData.alreadyMember {
 				initialMembers = append(initialMembers, basedao.Member{Address: addr1.String(), Roles: []string{"T1"}})
 			}
@@ -92,7 +94,7 @@ func TestClaimTier(t *testing.T) {
 				Name:              "GovDAO",
 				Description:       "This is a GovDAO demo",
 				NoDefaultHandlers: true,
-				Members:           basedao.NewMembersStore(initialRoles, initialMembers),
+				Members:           basedao.NewMembersStore(roles, initialMembers),
 				GetProfileString:  func(std.Address, string, string) string { return "" },
 			})
 
