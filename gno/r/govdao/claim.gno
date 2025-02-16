@@ -3,8 +3,11 @@ package govdao
 import (
 	"std"
 
+	"gno.land/p/demo/mux"
 	"gno.land/p/demo/ufmt"
 )
+
+const CLAIM_PATH = "claim"
 
 func ClaimTier(handle string) {
 	tier := UserTiers[handle]
@@ -31,10 +34,10 @@ func ClaimTier(handle string) {
 	delete(UserTiers, handle)
 }
 
-func RenderClaimableTiers() {
-	res.Write(ufmt.Sprintf("# GovDao Claimable tiers\n\n", name))
-	res.Write(ufmt.Sprintf("To claim you tier you first need to link your account github\n", name))
+func renderClaimableTiers(res *mux.ResponseWriter, req *mux.Request) {
+	res.Write("# GovDao Claimable tiers\n\n")
+	res.Write("To claim you tier you first need to link your account github\n")
 	for handle, tier := range UserTiers {
-		res.Write(ufmt.Sprintf("- **%s**: %s\n", i, tier))
+		res.Write(ufmt.Sprintf("- **%s**: %s\n", handle, tier))
 	}
 }

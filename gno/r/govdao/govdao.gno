@@ -58,6 +58,7 @@ func init() {
 		dao.Core.SetResource(r)
 	}
 	getAddressByHandle = ghverify.GetAddressByHandle
+	dao.RenderRouter.HandleFunc(CLAIM_PATH, renderClaimableTiers)
 }
 
 func Propose(proposal daokit.ProposalRequest) {
