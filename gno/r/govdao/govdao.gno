@@ -5,6 +5,7 @@ import (
 	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/daokit"
 	"gno.land/r/demo/profile"
+	"gno.land/r/gnoland/ghverify"
 )
 
 const (
@@ -13,7 +14,10 @@ const (
 	Tier3 = "T3"
 )
 
-var dao *basedao.DAO
+var (
+	dao *basedao.DAO
+	getAddressByHandle func(handle string) string
+)
 
 func init() {
 	initialRoles := []string{Tier1, Tier2, Tier3}
@@ -53,6 +57,7 @@ func init() {
 	for _, r := range resources {
 		dao.Core.SetResource(r)
 	}
+	getAddressByHandle = ghverify.GetAddressByHandle
 }
 
 func Propose(proposal daokit.ProposalRequest) {
