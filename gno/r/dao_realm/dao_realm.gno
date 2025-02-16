@@ -1,40 +1,43 @@
 package dao_realm
 
 import (
+	"gno.land/p/teritori/basedao"
+	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/daokit"
+	"gno.land/p/teritori/role_manager"
 	"gno.land/r/demo/profile"
 )
 
-var dao *daokit.DAO
+var dao *basedao.DAO
 
 func init() {
-	dao = &daokit.DAO{}
-	name := "Demo DAO"
-	description := "This is a demo DAO"
+	initialRoles := []role_manager.RoleInfo{
+		{Name: "admin", Description: "Admin is the superuser"},
+		{Name: "public-relationships", Description: "Responsible of communication with the public"},
+		{Name: "finance-officer", Description: "Responsible of funds management"},
+	}
 
-	roles := []string{"admin", "public-relationships", "finance-officer"}
-	members := []daokit.Member{
+	initialMembers := []basedao.Member{
 		{Address: "g126gx6p6d3da4ymef35ury6874j6kys044r7zlg", Roles: []string{"admin", "public-relationships"}},
 		{Address: "g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv", Roles: []string{"public-relationships"}},
 		{Address: "g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", Roles: []string{"finance-officer"}},
 		{Address: "g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r", Roles: []string{}},
 	}
 
-	condition := daokit.CreateCondition("members-treshold", &dao, 0.6)
-	resources := []daokit.Resource{}
-
-	dao = daokit.NewDAO(name, description, roles, members, resources, condition)
-
-	profile.SetStringField(profile.DisplayName, name)
-	profile.SetStringField(profile.Bio, description)
-	profile.SetStringField(profile.Avatar, "")
+	dao = basedao.New(&basedao.Config{
+		Name:             "Demo DAO",
+		Description:      "This is a demo DAO",
+		Members:          basedao.NewMembersStore(initialRoles, initialMembers),
+		GetProfileString: profile.GetStringField,
+		SetProfileString: profile.SetStringField,
+	})
 }
 
 func Propose(proposal daokit.ProposalRequest) {
 	dao.Propose(proposal)
 }
 
-func Vote(proposalID uint64, vote string) {
+func Vote(proposalID uint64, vote daocond.Vote) {
 	dao.Vote(proposalID, vote)
 }
 

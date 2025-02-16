@@ -1,115 +1,87 @@
 package govdao
 
 import (
+	"std"
+
+	"gno.land/p/demo/ufmt"
+	"gno.land/p/teritori/basedao"
 	"gno.land/p/teritori/daokit"
 )
 
-type AddNewT1MemberMessage struct {
-	Address string
+// XXX: rename Add -> Elect?
+
+// ADD T1 MEMBER
+
+const MsgAddT1MemberKind = "gno.land/r/teritori/govdao.AddT1Member"
+
+type MsgAddT1Member struct {
+	Address std.Address
 }
 
-var _ daokit.ExecutableMessage = &AddNewT1MemberMessage{}
-
-func (m AddNewT1MemberMessage) Type() string {
-	return "gno.land/r/teritori/govdao.AddNewT1Member"
+func (m *MsgAddT1Member) String() string {
+	return ufmt.Sprintf("Add T1 member %s", m.Address.String())
 }
 
-func (m *AddNewT1MemberMessage) String() string {
-	return m.Address
+func NewAddT1MemberHandler(dao *basedao.DAO) daokit.MessageHandler {
+	return daokit.NewMessageHandler(MsgAddT1MemberKind, func(msg interface{}) {
+		message := msg.(*MsgAddT1Member)
+		if dao.Members.HasRole(message.Address.String(), Tier1) {
+			panic("member is already a tier1 member")
+		}
+		if dao.Members.HasRole(message.Address.String(), Tier2) {
+			dao.Members.RemoveRoleFromMember(message.Address.String(), Tier2)
+		}
+		if dao.Members.HasRole(message.Address.String(), Tier3) {
+			dao.Members.RemoveRoleFromMember(message.Address.String(), Tier3)
+		}
+		if dao.Members.IsMember(message.Address.String()) {
+			dao.Members.AddRoleToMember(message.Address.String(), Tier1)
+		} else {
+			dao.Members.AddMember(message.Address.String(), []string{Tier1})
+		}
+	})
 }
 
-type AddNewT1MemberMessageHandler struct {
-	dao **daokit.DAO
+func NewAddT1MemberMsg(payload *MsgAddT1Member) daokit.ExecutableMessage {
+	return daokit.NewMessage(MsgAddT1MemberKind, payload)
 }
 
-func NewAddNewT1MemberMessageHandler(dao **daokit.DAO) *AddNewT1MemberMessageHandler {
-	return &AddNewT1MemberMessageHandler{dao: dao}
+// ADD T2 MEMBER
+
+const MsgAddT2MemberKind = "gno.land/r/teritori/govdao.AddT2Member"
+
+type MsgAddT2Member struct {
+	Address std.Address
 }
 
-func (h AddNewT1MemberMessageHandler) Execute(msg daokit.ExecutableMessage) {
-	message := msg.(*AddNewT1MemberMessage)
-	dao := *h.dao
-	if dao.MemberModule.HasRole(message.Address, "tier1") {
-		panic("member is already a tier1 member")
-	}
-	if dao.MemberModule.HasRole(message.Address, "tier2") {
-		dao.MemberModule.RemoveRoleFromMember(message.Address, "tier2")
-	}
-	if dao.MemberModule.HasRole(message.Address, "tier3") {
-		dao.MemberModule.RemoveRoleFromMember(message.Address, "tier3")
-	}
-	if dao.MemberModule.IsMember(message.Address) {
-		dao.MemberModule.AddRoleToMember(message.Address, "tier1")
-	} else {
-		dao.MemberModule.AddMember(message.Address, []string{"tier1"})
-	}
+func (m *MsgAddT2Member) String() string {
+	return ufmt.Sprintf("Add T2 member %s", m.Address.String())
 }
 
-func (h AddNewT1MemberMessageHandler) Type() string {
-	return AddNewT1MemberMessage{}.Type()
+func NewAddT2MemberHandler(dao *basedao.DAO) daokit.MessageHandler {
+	return daokit.NewMessageHandler(MsgAddT2MemberKind, func(msg interface{}) {
+		message := msg.(*MsgAddT2Member)
+		if dao.Members.HasRole(message.Address.String(), Tier1) {
+			panic("member is already a tier1 member")
+		}
+		if dao.Members.HasRole(message.Address.String(), Tier2) {
+			panic("member is already a tier2 member")
+		}
+		t2MaxSize := dao.Members.CountMembersWithRole(Tier1) * 2
+		if dao.Members.CountMembersWithRole(Tier2) >= t2MaxSize {
+			panic("tier2 members limit that is twice the number of tier1 members has been reached")
+		}
+		if dao.Members.HasRole(message.Address.String(), Tier3) {
+			dao.Members.RemoveRoleFromMember(message.Address.String(), Tier2)
+		}
+		if dao.Members.IsMember(message.Address.String()) {
+			dao.Members.AddRoleToMember(message.Address.String(), Tier2)
+		} else {
+			dao.Members.AddMember(message.Address.String(), []string{Tier2})
+		}
+	})
 }
 
-func (h *AddNewT1MemberMessageHandler) Instantiate(payload map[string]interface{}) daokit.ExecutableMessage {
-	address, ok := payload["address"].(string)
-	if !ok {
-		panic("invalid payload format: expected to have a 'address' key with a string value")
-	}
-	return &AddNewT1MemberMessage{
-		Address: address,
-	}
-}
-
-type AddNewT2MemberMessage struct {
-	Address string
-}
-
-var _ daokit.ExecutableMessage = &AddNewT2MemberMessage{}
-
-func (m AddNewT2MemberMessage) Type() string {
-	return "gno.land/r/teritori/govdao.AddNewT2Member"
-}
-
-func (m *AddNewT2MemberMessage) String() string {
-	return m.Address
-}
-
-type AddNewT2MemberMessageHandler struct {
-	dao **daokit.DAO
-}
-
-func NewAddNewT2MemberMessageHandler(dao **daokit.DAO) *AddNewT2MemberMessageHandler {
-	return &AddNewT2MemberMessageHandler{dao: dao}
-}
-
-func (h AddNewT2MemberMessageHandler) Execute(msg daokit.ExecutableMessage) {
-	message := msg.(*AddNewT2MemberMessage)
-	dao := *h.dao
-	if dao.MemberModule.HasRole(message.Address, "tier1") {
-		panic("member is already a tier1 member")
-	}
-	if dao.MemberModule.HasRole(message.Address, "tier2") {
-		panic("member is already a tier2 member")
-	}
-	if dao.MemberModule.HasRole(message.Address, "tier3") {
-		dao.MemberModule.RemoveRoleFromMember(message.Address, "tier3")
-	}
-	if dao.MemberModule.IsMember(message.Address) {
-		dao.MemberModule.AddRoleToMember(message.Address, "tier2")
-	} else {
-		dao.MemberModule.AddMember(message.Address, []string{"tier2"})
-	}
-}
-
-func (h AddNewT2MemberMessageHandler) Type() string {
-	return AddNewT2MemberMessage{}.Type()
-}
-
-func (h *AddNewT2MemberMessageHandler) Instantiate(payload map[string]interface{}) daokit.ExecutableMessage {
-	address, ok := payload["address"].(string)
-	if !ok {
-		panic("invalid payload format: expected to have a 'address' key with a string value")
-	}
-	return &AddNewT2MemberMessage{
-		Address: address,
-	}
+func NewAddT2MemberMsg(payload *MsgAddT2Member) daokit.ExecutableMessage {
+	return daokit.NewMessage(MsgAddT2MemberKind, payload)
 }
