@@ -1,5 +1,5 @@
 use cosmwasm_std::Attribute;
-use sylvia::AppResponse;
+use cw_multi_test::AppResponse;
 
 fn has_attr(given_attrs: &Vec<Attribute>, expected_attr: &Attribute) -> bool {
     let resp = given_attrs
