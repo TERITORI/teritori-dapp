@@ -31,6 +31,9 @@ jobs:
       - name: gno mod tidy
         run: make gno-mod-tidy
 
+      - name: Format gno
+        run: make fmt.gno-ci
+
       - name: Check that there is no diff
         run: |
           mrdiff=$(git status --porcelain)

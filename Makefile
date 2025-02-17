@@ -522,3 +522,11 @@ gno-mod-tidy:
 .PHONY: clean-gno
 clean-gno:
 	rm -rf gnobuild
+
+.PHONY: fmt.gno-ci
+fmt.gno-ci:
+	./gnobuild/gno/gnovm/build/gno fmt -w ./gno
+
+.PHONY: fmt.gno
+fmt.gno:
+	gno fmt -w ./gno
