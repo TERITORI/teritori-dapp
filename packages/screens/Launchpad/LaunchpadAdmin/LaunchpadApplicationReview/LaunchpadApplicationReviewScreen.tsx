@@ -16,6 +16,7 @@ import { BrandText } from "@/components/BrandText";
 import { NotFound } from "@/components/NotFound";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
+import { useGetLaunchpadAdmin } from "@/hooks/launchpad/useGetLaunchpadAdmin";
 import { useIsUserLaunchpadAdmin } from "@/hooks/launchpad/useIsUserLaunchpadAdmin";
 import { useLaunchpadProjectById } from "@/hooks/launchpad/useLaunchpadProjectById";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
@@ -27,7 +28,6 @@ import { ScreenFC } from "@/utils/navigation";
 import { errorColor } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import {useGetLaunchpadAdmin} from "@/hooks/launchpad/useGetLaunchpadAdmin";
 
 // =====> TODO: SHOW ALL DATA, MINT PERIODS, ASSETS, ETC
 
@@ -151,18 +151,18 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
           />
 
           <SpacerColumn size={3} />
-          {(daoProposal &&
-          isUserLaunchpadAdmin &&
-          launchpadProject.status !== Status.STATUS_INCOMPLETE) && (
-            <>
-              <ProposalRow
-                daoId={launchpadAdminId}
-                proposal={daoProposal}
-                style={{ borderBottomWidth: 0 }}
-              />
-              <SpacerColumn size={3} />
-            </>
-          )}
+          {daoProposal &&
+            isUserLaunchpadAdmin &&
+            launchpadProject.status !== Status.STATUS_INCOMPLETE && (
+              <>
+                <ProposalRow
+                  daoId={launchpadAdminId}
+                  proposal={daoProposal}
+                  style={{ borderBottomWidth: 0 }}
+                />
+                <SpacerColumn size={3} />
+              </>
+            )}
           <Separator />
 
           <CreatorInformation
