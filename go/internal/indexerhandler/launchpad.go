@@ -39,19 +39,12 @@ type CollectionData struct {
 	TargetNetwork            string          `json:"target_network"`
 	WebsiteLink              string          `json:"website_link"`
 	ContactEmail             string          `json:"contact_email"`
-	IsProjectDerivative      bool            `json:"is_project_derivative"`
 	ProjectType              string          `json:"project_type"`
-	IsAppliedPreviously      bool            `json:"is_applied_previously"`
 	TeamDesc                 string          `json:"team_desc"`
 	Partners                 string          `json:"partners"`
 	InvestmentDesc           string          `json:"investment_desc"`
 	InvestmentLink           string          `json:"investment_link"`
 	ArtworkDesc              string          `json:"artwork_desc"`
-	IsReadyForMint           bool            `json:"is_ready_for_mint"`
-	EscrowMintProceedsPeriod uint64          `json:"escrow_mint_proceeds_period"`
-	IsDox                    bool            `json:"is_dox"`
-	DaoWhitelistCount        uint32          `json:"dao_whitelist_count"`
-	RevealTime               *uint64         `json:"reveal_time,omitempty"`
 	TokensCount              uint64          `json:"tokens_count"`
 	MintPeriods              []MintPeriod    `json:"mint_periods"`
 	RoyaltyAddress           *sdk.AccAddress `json:"royalty_address,omitempty"`

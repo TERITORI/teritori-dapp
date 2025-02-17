@@ -30,6 +30,44 @@ export const LaunchpadDetails: FC<Props> = ({ collectionForm }) => {
         </BrandText>
         <SpacerColumn size={2} />
 
+        <Controller<CollectionFormValues>
+          name="projectTypes"
+          control={collectionForm.control}
+          render={({ field: { onChange } }) => (
+            <>
+              <MultipleSelectInput
+                dropdownOptions={[
+                  "PFP",
+                  "Utility",
+                  "Metaverse",
+                  "P2E",
+                  "Other",
+                ]}
+                placeHolder="Select Option"
+                items={projectTypes}
+                onPressItem={(item) => {
+                  const selectedProjectTypes = projectTypes.includes(item)
+                    ? projectTypes.filter((data) => data !== item)
+                    : [...projectTypes, item];
+                  onChange(selectedProjectTypes);
+                }}
+                label="Project types"
+                sublabel={
+                  <BrandText style={[fontMedium13, { color: neutral55 }]}>
+                    Multiple answers allowed
+                  </BrandText>
+                }
+                style={{ zIndex: 2 }}
+                required
+              />
+              <ErrorText>
+                {collectionForm.getFieldState("projectTypes").error?.message}
+              </ErrorText>
+            </>
+          )}
+        />
+        <SpacerColumn size={2} />
+
         <TextInputLaunchpad<CollectionFormValues>
           label="Website Link"
           sublabel={
@@ -73,43 +111,6 @@ export const LaunchpadDetails: FC<Props> = ({ collectionForm }) => {
           name="artworkDescription"
           form={collectionForm}
         />
-
-        <Controller<CollectionFormValues>
-          name="projectTypes"
-          control={collectionForm.control}
-          render={({ field: { onChange } }) => (
-            <>
-              <MultipleSelectInput
-                dropdownOptions={[
-                  "PFP",
-                  "Utility",
-                  "Metaverse",
-                  "P2E",
-                  "Other",
-                ]}
-                placeHolder="Select Option"
-                items={projectTypes}
-                onPressItem={(item) => {
-                  const selectedProjectTypes = projectTypes.includes(item)
-                    ? projectTypes.filter((data) => data !== item)
-                    : [...projectTypes, item];
-                  onChange(selectedProjectTypes);
-                }}
-                label="Project type:"
-                sublabel={
-                  <BrandText style={[fontMedium13, { color: neutral55 }]}>
-                    Multiple answers allowed
-                  </BrandText>
-                }
-                style={{ zIndex: 2 }}
-              />
-              <ErrorText>
-                {collectionForm.getFieldState("projectTypes").error?.message}
-              </ErrorText>
-            </>
-          )}
-        />
-        <SpacerColumn size={2} />
       </View>
     </View>
   );

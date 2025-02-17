@@ -2,7 +2,6 @@ import { z } from "zod";
 
 import { CollectionProject } from "@/contracts-clients/nft-launchpad";
 import { DEFAULT_FORM_ERRORS } from "@/utils/errors";
-import { isIpfsPathValid } from "@/utils/ipfs";
 import {
   EMAIL_REGEXP,
   LETTERS_REGEXP,
@@ -10,6 +9,8 @@ import {
   URL_REGEX,
 } from "@/utils/regex";
 import { ZodLocalFileData } from "@/utils/types/files";
+
+// ===== Shapes to build front objects
 const ZodCoin = z.object({
   amount: z
     .string()
@@ -25,7 +26,6 @@ const ZodCoin = z.object({
 
 export type Coin = z.infer<typeof ZodCoin>;
 
-// ===== Shapes to build front objects
 const ZodCollectionMintPeriodFormValues = z.object({
   price: ZodCoin,
   maxTokens: z
@@ -108,22 +108,6 @@ export const ZodCollectionFormValues = z.object({
   investLink: z.string().trim().optional(),
   artworkDescription: z.string().trim().optional(),
   coverImage: ZodLocalFileData,
-  isPreviouslyApplied: z.boolean(),
-  isDerivativeProject: z.boolean(),
-  isReadyForMint: z.boolean(),
-  isDox: z.boolean(),
-  escrowMintProceedsPeriod: z
-    .string()
-    .trim()
-    .min(1, DEFAULT_FORM_ERRORS.required),
-  daoWhitelistCount: z
-    .string()
-    .trim()
-    .min(1, DEFAULT_FORM_ERRORS.required)
-    .refine(
-      (value) => NUMBERS_REGEXP.test(value),
-      DEFAULT_FORM_ERRORS.onlyNumbers,
-    ),
   mintPeriods: z.array(ZodCollectionMintPeriodFormValues).nonempty(),
   royaltyAddress: z.string().trim().optional(),
   royaltyPercentage: z
@@ -135,22 +119,6 @@ export const ZodCollectionFormValues = z.object({
     )
     .optional(),
   assetsMetadatas: ZodCollectionAssetsMetadatasFormValues.optional(),
-  baseTokenUri: z
-    .string()
-    .trim()
-    .refine(
-      (value) => !value || isIpfsPathValid(value),
-      DEFAULT_FORM_ERRORS.onlyIpfsUri,
-    )
-    .optional(),
-  coverImageUri: z
-    .string()
-    .trim()
-    .refine(
-      (value) => !value || isIpfsPathValid(value),
-      DEFAULT_FORM_ERRORS.onlyIpfsUri,
-    )
-    .optional(),
 });
 
 export type CollectionFormValues = z.infer<typeof ZodCollectionFormValues>;
@@ -193,33 +161,27 @@ const ZodMintPeriodDataResult = z.object({
 });
 
 export const ZodCollectionDataResult = z.object({
-  artwork_desc: z.string(),
-  base_token_uri: z.string().nullish(), // TODO REMOVE
-  contact_email: z.string(),
-  cover_img_uri: z.string(),
-  dao_whitelist_count: z.number(),
-  deployed_address: z.string().nullish(),
+  name: z.string(),
   desc: z.string(),
-  escrow_mint_proceeds_period: z.number(),
+  symbol: z.string(),
+  cover_img_uri: z.string(),
+  target_network: z.string(),
+  website_link: z.string(),
+  contact_email: z.string(),
+  project_type: z.string(),
+  artwork_desc: z.string(),
+  team_desc: z.string(),
+  partners: z.string(),
   investment_desc: z.string(),
   investment_link: z.string(),
-  is_applied_previously: z.boolean(),
-  is_dox: z.boolean(),
-  is_project_derivative: z.boolean(),
-  is_ready_for_mint: z.boolean(),
-  metadatas_merkle_root: z.string().nullish(),
-  mint_periods: z.array(ZodMintPeriodDataResult),
-  name: z.string(),
-  partners: z.string(),
-  project_type: z.string(),
   reveal_time: z.number().nullish(),
+  tokens_count: z.number(),
+  mint_periods: z.array(ZodMintPeriodDataResult),
   royalty_address: z.string().nullish(),
   royalty_percentage: z.number().nullish(),
-  symbol: z.string(),
-  target_network: z.string(),
-  team_desc: z.string(),
-  tokens_count: z.number(),
-  website_link: z.string(),
+  base_token_uri: z.string().nullish(), // TODO REMOVE?
+  metadatas_merkle_root: z.string().nullish(),
+  deployed_address: z.string().nullish(),
 });
 
 export type MintPeriodDataResult = z.infer<typeof ZodMintPeriodDataResult>;
@@ -231,6 +193,3 @@ export type CollectionToSubmit = Omit<
   CollectionProject,
   "deployed_address" | "base_token_uri" | "owner"
 >;
-
-// ===== Shapes to build objects received from API
-// ...Coming soon
