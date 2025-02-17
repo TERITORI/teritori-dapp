@@ -5,8 +5,8 @@ import (
 	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/daokit"
 	"gno.land/p/teritori/role_manager"
+	"gno.land/r/teritori/ghverify"
 	"gno.land/r/demo/profile"
-	"gno.land/r/gnoland/ghverify"
 )
 
 const (
