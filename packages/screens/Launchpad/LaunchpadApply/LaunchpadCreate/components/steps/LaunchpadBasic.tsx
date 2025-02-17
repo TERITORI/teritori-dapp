@@ -1,5 +1,5 @@
-import React, { FC } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import { FC } from "react";
+import { Controller, UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
@@ -8,31 +8,31 @@ import { NetworkSelectorWithLabel } from "@/components/NetworkSelector/NetworkSe
 import { FileUploaderSmall } from "@/components/inputs/FileUploaderSmall";
 import { SpacerColumn } from "@/components/spacer";
 import { NetworkFeature } from "@/networks";
+import { launchpadCreateFormMaxWidth } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/LaunchpadCreateScreen";
 import { TextInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/TextInputLaunchpad";
 import { IMAGE_MIME_TYPES } from "@/utils/mime";
 import { neutral55, neutral77, primaryColor } from "@/utils/style/colors";
-import {
-  fontSemibold13,
-  fontSemibold14,
-  fontSemibold28,
-} from "@/utils/style/fonts";
+import { fontMedium13, fontMedium14, fontMedium28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { CollectionFormValues } from "@/utils/types/launchpad";
 
-export const LaunchpadBasic: FC = () => {
-  const collectionForm = useFormContext<CollectionFormValues>();
+interface Props {
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}
+
+export const LaunchpadBasic: FC<Props> = ({ collectionForm }) => {
   const coverImage = collectionForm.watch("coverImage");
 
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
       <View style={{ justifyContent: "center", alignItems: "center" }}>
-        <BrandText style={fontSemibold28}>Create Collection</BrandText>
+        <BrandText style={fontMedium28}>Create Collection</BrandText>
 
         <SpacerColumn size={2} />
 
         <BrandText
           style={[
-            fontSemibold14,
+            fontMedium14,
             {
               color: neutral77,
             },
@@ -41,7 +41,7 @@ export const LaunchpadBasic: FC = () => {
           Make sure you check out{" "}
           <BrandText
             style={[
-              fontSemibold14,
+              fontMedium14,
               {
                 color: primaryColor,
               },
@@ -52,7 +52,7 @@ export const LaunchpadBasic: FC = () => {
           on how to create your collection
         </BrandText>
       </View>
-      <View style={{ maxWidth: 416, width: "100%" }}>
+      <View style={{ maxWidth: launchpadCreateFormMaxWidth, width: "100%" }}>
         <SpacerColumn size={2} />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -60,19 +60,20 @@ export const LaunchpadBasic: FC = () => {
           placeHolder="My Awesome Collection"
           name="name"
           form={collectionForm}
+          required
         />
 
         <TextInputLaunchpad<CollectionFormValues>
           label="Describe your project: "
           sublabel={
             <View>
-              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+              <BrandText style={[fontMedium13, { color: neutral55 }]}>
                 1. What's your concept?
               </BrandText>
-              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+              <BrandText style={[fontMedium13, { color: neutral55 }]}>
                 2. How is it different?
               </BrandText>
-              <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+              <BrandText style={[fontMedium13, { color: neutral55 }]}>
                 3. What's your goal?
               </BrandText>
             </View>
@@ -80,6 +81,7 @@ export const LaunchpadBasic: FC = () => {
           placeHolder="Describe here..."
           name="description"
           form={collectionForm}
+          required
         />
 
         <TextInputLaunchpad<CollectionFormValues>
@@ -88,6 +90,7 @@ export const LaunchpadBasic: FC = () => {
           name="symbol"
           form={collectionForm}
           valueModifier={(value) => value.toUpperCase()}
+          required
         />
 
         <Controller<CollectionFormValues>
@@ -117,22 +120,15 @@ export const LaunchpadBasic: FC = () => {
         <TextInputLaunchpad<CollectionFormValues>
           label="NFT.Storage JWT"
           sublabel={
-            <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+            <BrandText style={[fontMedium13, { color: neutral55 }]}>
               Used to upload the cover image and the assets to your NFT Storage
             </BrandText>
           }
           placeHolder="My Awesome Collection"
           name="assetsMetadatas.nftApiKey"
           form={collectionForm}
+          required
         />
-
-        {/*<TextInputLaunchpad<CollectionFormValues>*/}
-        {/*  label="External Link"*/}
-        {/*  placeHolder="https://collection..."*/}
-        {/*  name="externalLink"*/}
-        {/*  form={collectionForm}*/}
-        {/*  required={false}*/}
-        {/*/>*/}
 
         <NetworkSelectorWithLabel
           forceNetworkFeatures={[NetworkFeature.CosmWasmNFTLaunchpad]}

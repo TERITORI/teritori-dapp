@@ -13,7 +13,7 @@ import {
   neutral77,
   warningColor,
 } from "@/utils/style/colors";
-import { fontSemibold13 } from "@/utils/style/fonts";
+import { fontMedium13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export interface AssetsAndMetadataIssueObject {
@@ -50,7 +50,7 @@ export const AssetsAndMetadataIssue: FC<{
           <SpacerRow size={1} />
           <BrandText
             style={[
-              fontSemibold13,
+              fontMedium13,
               {
                 color: issue.type === "error" ? errorColor : warningColor,
               },
@@ -60,7 +60,7 @@ export const AssetsAndMetadataIssue: FC<{
           </BrandText>
         </View>
         <SpacerColumn size={0.5} />
-        <BrandText style={[fontSemibold13, { color: neutral77 }]}>
+        <BrandText style={[fontMedium13, { color: neutral77 }]}>
           {issue.message}
         </BrandText>
       </View>

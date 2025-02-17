@@ -1,13 +1,13 @@
-import React from "react";
+import { FC } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
 import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { CurrencyInfo, getNativeCurrency } from "@/networks";
-import { fontSemibold14 } from "@/utils/style/fonts";
+import { fontMedium14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
-export const SelectableCurrencySmall: React.FC<{
+export const SelectableCurrencySmall: FC<{
   onPressItem: () => void;
   currency: CurrencyInfo;
   networkId: string;
@@ -31,7 +31,7 @@ export const SelectableCurrencySmall: React.FC<{
             networkId={networkId}
           />
           <View style={{ marginLeft: layout.spacing_x1 }}>
-            <BrandText style={fontSemibold14}>
+            <BrandText style={fontMedium14}>
               {getNativeCurrency(networkId, currency?.denom)?.displayName}
             </BrandText>
           </View>

@@ -1,5 +1,5 @@
-import React, { FC } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import { FC } from "react";
+import { Controller, UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
 import { ConfigureRoyaltyDetails } from "./ConfigureRoyaltyDetails";
@@ -8,14 +8,18 @@ import { BrandText } from "@/components/BrandText";
 import { DateTimeInput } from "@/components/inputs/DateTimeInput";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
+import { launchpadCreateFormMaxWidth } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/LaunchpadCreateScreen";
 import { LaunchpadMintPeriods } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadMinting/LaunchpadMintPeriods";
 import { neutral77 } from "@/utils/style/colors";
-import { fontSemibold14, fontSemibold20 } from "@/utils/style/fonts";
+import { fontMedium14, fontMedium20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { CollectionFormValues } from "@/utils/types/launchpad";
 
-export const LaunchpadMinting: FC = () => {
-  const collectionForm = useFormContext<CollectionFormValues>();
+interface Props {
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}
+
+export const LaunchpadMinting: FC<Props> = ({ collectionForm }) => {
   const revealTime = collectionForm.watch("revealTime");
   return (
     <View
@@ -25,10 +29,10 @@ export const LaunchpadMinting: FC = () => {
         marginBottom: layout.spacing_x2,
       }}
     >
-      <View style={{ maxWidth: 416, width: "100%" }}>
-        <BrandText style={fontSemibold20}>Minting details</BrandText>
+      <View style={{ maxWidth: launchpadCreateFormMaxWidth, width: "100%" }}>
+        <BrandText style={fontMedium20}>Minting details</BrandText>
         <SpacerColumn size={1} />
-        <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+        <BrandText style={[fontMedium14, { color: neutral77 }]}>
           Configure the global minting settings
         </BrandText>
         <SpacerColumn size={2} />
@@ -50,17 +54,17 @@ export const LaunchpadMinting: FC = () => {
 
         <Separator />
         <SpacerColumn size={2} />
-        <BrandText style={fontSemibold20}>Minting Periods</BrandText>
+        <BrandText style={fontMedium20}>Minting Periods</BrandText>
         <SpacerColumn size={1} />
-        <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+        <BrandText style={[fontMedium14, { color: neutral77 }]}>
           Configure the minting periods, a whitelist can be applied
         </BrandText>
 
-        <LaunchpadMintPeriods />
+        <LaunchpadMintPeriods collectionForm={collectionForm} />
 
         <SpacerColumn size={1} />
         <Separator />
-        <ConfigureRoyaltyDetails />
+        <ConfigureRoyaltyDetails collectionForm={collectionForm} />
       </View>
     </View>
   );

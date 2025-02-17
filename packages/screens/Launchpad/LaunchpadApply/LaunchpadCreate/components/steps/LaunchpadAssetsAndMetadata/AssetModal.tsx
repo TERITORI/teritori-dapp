@@ -1,5 +1,5 @@
-import React from "react";
-import { useFormContext } from "react-hook-form";
+import { FC } from "react";
+import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
@@ -18,25 +18,28 @@ import {
   neutralFF,
   secondaryColor,
 } from "@/utils/style/colors";
-import {
-  fontSemibold14,
-  fontSemibold16,
-  fontSemibold20,
-} from "@/utils/style/fonts";
+import { fontMedium14, fontMedium16, fontMedium20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
   CollectionAssetsMetadataFormValues,
   CollectionAssetsMetadatasFormValues,
 } from "@/utils/types/launchpad";
 
-export const AssetModal: React.FC<{
+interface Props {
   onClose: () => void;
   isVisible: boolean;
   elem: CollectionAssetsMetadataFormValues;
   elemIndex: number;
-}> = ({ onClose, isVisible, elem, elemIndex }) => {
-  const assetsMetadatasForm =
-    useFormContext<CollectionAssetsMetadatasFormValues>();
+  assetsMetadatasForm: UseFormReturn<CollectionAssetsMetadatasFormValues>;
+}
+
+export const AssetModal: FC<Props> = ({
+  onClose,
+  isVisible,
+  elem,
+  elemIndex,
+  assetsMetadatasForm,
+}) => {
   const namePath = `assetsMetadatas.${elemIndex}.name` as const;
   const descriptionPath = `assetsMetadatas.${elemIndex}.description` as const;
   const externalUrlPath = `assetsMetadatas.${elemIndex}.externalUrl` as const;
@@ -77,11 +80,11 @@ export const AssetModal: React.FC<{
             )}
           </PrimaryBox>
           <View style={{ marginLeft: layout.spacing_x2 }}>
-            <BrandText style={[fontSemibold20, { color: secondaryColor }]}>
+            <BrandText style={[fontMedium20, { color: secondaryColor }]}>
               Asset #{elemIndex + 1}
             </BrandText>
             <BrandText
-              style={[fontSemibold16, { color: neutral77, width: 300 }]}
+              style={[fontMedium16, { color: neutral77, width: 300 }]}
               numberOfLines={2}
             >
               File name: {elem.image?.fileName}
@@ -180,7 +183,7 @@ export const AssetModal: React.FC<{
           >
             {attributes.map((attribute, index) => (
               <View key={index}>
-                <BrandText style={[fontSemibold14, { color: neutralFF }]}>
+                <BrandText style={[fontMedium14, { color: neutralFF }]}>
                   {`${attribute.type}: ${attribute.value}`}
                 </BrandText>
               </View>

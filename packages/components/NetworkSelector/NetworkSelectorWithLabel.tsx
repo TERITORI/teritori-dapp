@@ -1,25 +1,25 @@
-import React, { useState } from "react";
+import { FC, useState } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import { NetworkSelectorMenu } from "./NetworkSelectorMenu";
-import chevronDownSVG from "../../../assets/icons/chevron-down.svg";
-import chevronUpSVG from "../../../assets/icons/chevron-up.svg";
-import { useDropdowns } from "../../hooks/useDropdowns";
-import { useSelectedNetworkInfo } from "../../hooks/useSelectedNetwork";
-import { NetworkFeature, NetworkKind } from "../../networks";
-import { neutral17, neutral77, secondaryColor } from "../../utils/style/colors";
-import { fontSemibold14 } from "../../utils/style/fonts";
-import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { SVG } from "../SVG";
 import { TertiaryBox } from "../boxes/TertiaryBox";
 import { Label } from "../inputs/TextInputCustom";
 
+import chevronDownSVG from "@/assets/icons/chevron-down.svg";
+import chevronUpSVG from "@/assets/icons/chevron-up.svg";
 import { NetworkIcon } from "@/components/NetworkIcon";
 import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { SpacerRow } from "@/components/spacer";
+import { useDropdowns } from "@/hooks/useDropdowns";
+import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { NetworkFeature, NetworkKind } from "@/networks";
+import { neutral17, neutral77, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold14 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
-export const NetworkSelectorWithLabel: React.FC<{
+export const NetworkSelectorWithLabel: FC<{
   label: string;
   style?: StyleProp<ViewStyle>;
   forceNetworkId?: string;

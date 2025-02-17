@@ -1,5 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import React, { FC, Fragment, useRef, useState } from "react";
+import { FC, Fragment, ReactElement, useRef, useState } from "react";
 import { StyleProp, TextInput, View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
@@ -26,14 +26,14 @@ import {
   neutral77,
   secondaryColor,
 } from "@/utils/style/colors";
-import { fontSemibold14 } from "@/utils/style/fonts";
+import { fontMedium14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const CurrencyInputLaunchpad: FC<{
   label?: string;
   placeHolder?: string;
-  subtitle?: React.ReactElement;
-  sublabel?: React.ReactElement;
+  subtitle?: ReactElement;
+  sublabel?: ReactElement;
   required?: boolean;
   error?: string;
   networkId: string;
@@ -176,7 +176,7 @@ export const CurrencyInputLaunchpad: FC<{
             placeholderTextColor={neutral77}
             value={value}
             style={[
-              fontSemibold14,
+              fontMedium14,
               { outlineStyle: "none" } as any,
               {
                 color: secondaryColor,

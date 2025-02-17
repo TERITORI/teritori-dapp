@@ -1,5 +1,5 @@
-import React, { FC, Fragment, useCallback } from "react";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { FC, Fragment, useCallback } from "react";
+import { useFieldArray, UseFormReturn } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
 
 import addSVG from "@/assets/icons/add-secondary.svg";
@@ -7,19 +7,20 @@ import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { SpacerColumn, SpacerRow } from "@/components/spacer";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
-import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNetworkFeature, NetworkFeature } from "@/networks";
 import { LaunchpadMintPeriodAccordion } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadMinting/LaunchpadMintPeriodAccordion";
 import { secondaryColor } from "@/utils/style/colors";
-import { fontSemibold14 } from "@/utils/style/fonts";
+import { fontMedium14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { CollectionFormValues } from "@/utils/types/launchpad";
 
-export const LaunchpadMintPeriods: FC = () => {
-  const selectedWallet = useSelectedWallet();
-  const networkId = selectedWallet?.networkId || "";
-  const collectionForm = useFormContext<CollectionFormValues>();
+interface Props {
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}
+
+export const LaunchpadMintPeriods: FC<Props> = ({ collectionForm }) => {
   const selectedNetwork = useSelectedNetworkInfo();
+  const networkId = selectedNetwork?.id;
 
   const { update, append, remove } = useFieldArray({
     control: collectionForm.control,
@@ -75,6 +76,7 @@ export const LaunchpadMintPeriods: FC = () => {
                 closeAll={closeAll}
                 elem={elem}
                 elemIndex={index}
+                collectionForm={collectionForm}
               />
             </Fragment>
           );
@@ -105,7 +107,7 @@ export const LaunchpadMintPeriods: FC = () => {
             <SpacerRow size={1} />
             <BrandText
               style={[
-                fontSemibold14,
+                fontMedium14,
                 { color: secondaryColor, lineHeight: layout.spacing_x2 },
               ]}
             >

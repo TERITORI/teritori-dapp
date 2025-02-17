@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { UseFieldArrayUpdate } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
 
@@ -9,7 +9,7 @@ import { SVG } from "@/components/SVG";
 import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { secondaryColor } from "@/utils/style/colors";
-import { fontSemibold16 } from "@/utils/style/fonts";
+import { fontMedium16 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
   CollectionFormValues,
@@ -39,7 +39,7 @@ export const LaunchpadMintPeriodAccordionTop: FC<{
         >
           <BrandText
             style={[
-              fontSemibold16,
+              fontMedium16,
               { color: secondaryColor, marginLeft: layout.spacing_x1 },
             ]}
           >
@@ -74,7 +74,7 @@ export const LaunchpadMintPeriodAccordionTop: FC<{
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <BrandText
             style={[
-              fontSemibold16,
+              fontMedium16,
               { color: secondaryColor, marginLeft: layout.spacing_x1 },
             ]}
           >

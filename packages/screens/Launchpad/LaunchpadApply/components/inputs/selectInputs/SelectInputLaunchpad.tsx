@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import { FC, useState } from "react";
 import { TouchableOpacity, View, ViewStyle } from "react-native";
 
 import chevronDownSVG from "@/assets/icons/chevron-down.svg";
@@ -19,7 +19,7 @@ import {
   neutral77,
   secondaryColor,
 } from "@/utils/style/colors";
-import { fontMedium14, fontSemibold14 } from "@/utils/style/fonts";
+import { fontMedium14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 interface Props {
@@ -137,9 +137,7 @@ export const SelectInputLaunchpad: FC<Props> = ({
                     width: "100%",
                   }}
                 >
-                  <BrandText
-                    style={[fontSemibold14, { color: secondaryColor }]}
-                  >
+                  <BrandText style={[fontMedium14, { color: secondaryColor }]}>
                     {item}
                   </BrandText>
 

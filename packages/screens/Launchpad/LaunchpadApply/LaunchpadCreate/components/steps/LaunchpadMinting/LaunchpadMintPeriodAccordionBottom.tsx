@@ -1,9 +1,9 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import {
   Controller,
   UseFieldArrayRemove,
   UseFieldArrayUpdate,
-  useFormContext,
+  UseFormReturn,
 } from "react-hook-form";
 import { View, TouchableOpacity } from "react-native";
 
@@ -20,26 +20,30 @@ import { getCurrency } from "@/networks";
 import { CurrencyInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/CurrencyInputLaunchpad/CurrencyInputLaunchpad";
 import { TextInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/TextInputLaunchpad";
 import { errorColor, neutral55, neutral77 } from "@/utils/style/colors";
-import {
-  fontSemibold13,
-  fontSemibold14,
-  fontSemibold20,
-} from "@/utils/style/fonts";
+import { fontMedium13, fontMedium14, fontMedium20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import {
   CollectionFormValues,
   CollectionMintPeriodFormValues,
 } from "@/utils/types/launchpad";
 
-export const LaunchpadMintPeriodAccordionBottom: FC<{
+interface Props {
   elem: CollectionMintPeriodFormValues;
   update: UseFieldArrayUpdate<CollectionFormValues, "mintPeriods">;
   remove: UseFieldArrayRemove;
   elemIndex: number;
-}> = ({ elem, elemIndex, remove, update }) => {
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}
+
+export const LaunchpadMintPeriodAccordionBottom: FC<Props> = ({
+  elem,
+  elemIndex,
+  remove,
+  update,
+  collectionForm,
+}) => {
   // Since the Collection network is the selected network, we use useSelectedNetworkId (See LaunchpadBasic.tsx)
   const networkId = useSelectedNetworkId();
-  const collectionForm = useFormContext<CollectionFormValues>();
   const amountPath = `mintPeriods.${elemIndex}.price.amount` as const;
   const startTimePath = `mintPeriods.${elemIndex}.startTime` as const;
   const endTimePath = `mintPeriods.${elemIndex}.endTime` as const;
@@ -55,7 +59,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
   return (
     <View
       style={{
-        marginHorizontal: 8,
+        marginHorizontal: layout.spacing_x1,
         marginTop: layout.spacing_x2,
         paddingHorizontal: layout.spacing_x1,
         paddingBottom: layout.spacing_x1,
@@ -96,7 +100,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
         name={maxTokensPath}
         sublabel={
           <View>
-            <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+            <BrandText style={[fontMedium13, { color: neutral55 }]}>
               Maximum number of mintable tokens
             </BrandText>
           </View>
@@ -111,7 +115,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
         name={perAddressLimitPath}
         sublabel={
           <View>
-            <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+            <BrandText style={[fontMedium13, { color: neutral55 }]}>
               Maximum number of mintable tokens per address
             </BrandText>
           </View>
@@ -151,9 +155,9 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
 
       <Separator />
       <SpacerColumn size={2} />
-      <BrandText style={fontSemibold20}>Whitelist Addresses</BrandText>
+      <BrandText style={fontMedium20}>Whitelist Addresses</BrandText>
       <SpacerColumn size={1} />
-      <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+      <BrandText style={[fontMedium14, { color: neutral77 }]}>
         Select a TXT or CSV file that contains the whitelisted addresses (One
         address per line)
       </BrandText>
@@ -195,12 +199,7 @@ export const LaunchpadMintPeriodAccordionBottom: FC<{
             >
               <SVG source={trashSVG} width={16} height={16} />
               <SpacerRow size={1} />
-              <BrandText
-                style={[
-                  fontSemibold14,
-                  { color: errorColor, lineHeight: layout.spacing_x2 },
-                ]}
-              >
+              <BrandText style={[fontMedium14, { color: errorColor }]}>
                 Remove Mint Period
               </BrandText>
             </TouchableOpacity>

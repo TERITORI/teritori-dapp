@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useMemo, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { useCallback, useState } from "react";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -17,7 +17,6 @@ import {
   LaunchpadCreateStepKey,
   LaunchpadStepper,
 } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/LaunchpadStepper";
-import { LaunchpadAdditional } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadAdditional";
 import { LaunchpadAssetsAndMetadata } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadAssetsAndMetadata/LaunchpadAssetsAndMetadata";
 import { LaunchpadBasic } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadBasic";
 import { LaunchpadDetails } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadDetails";
@@ -31,6 +30,8 @@ import {
   CollectionFormValues,
   ZodCollectionFormValues,
 } from "@/utils/types/launchpad";
+
+export const launchpadCreateFormMaxWidth = 416;
 
 export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const navigation = useAppNavigation();
@@ -60,31 +61,35 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
   const [isLoading, setLoading] = useState(false);
   const { setLoadingFullScreen } = useFeedbacks();
 
-  const stepContent = useMemo(() => {
-    switch (selectedStepKey) {
-      case 1:
-        return <LaunchpadBasic />;
-      case 2:
-        return <LaunchpadDetails />;
-      case 3:
-        return <LaunchpadTeamAndInvestment />;
-      case 4:
-        return <LaunchpadAdditional />;
-      case 5:
-        return <LaunchpadMinting />;
-      case 6:
-        return <LaunchpadAssetsAndMetadata />;
-      default:
-        return <LaunchpadBasic />;
-    }
-  }, [selectedStepKey]);
+  const stepContent = useCallback(
+    (collectionForm: UseFormReturn<CollectionFormValues>) => {
+      switch (selectedStepKey) {
+        case 1:
+          return <LaunchpadBasic collectionForm={collectionForm} />;
+        case 2:
+          return <LaunchpadDetails collectionForm={collectionForm} />;
+        case 3:
+          return <LaunchpadTeamAndInvestment collectionForm={collectionForm} />;
+        case 4:
+          return <LaunchpadMinting collectionForm={collectionForm} />;
+        case 5:
+          return <LaunchpadAssetsAndMetadata collectionForm={collectionForm} />;
+        default:
+          return <LaunchpadBasic collectionForm={collectionForm} />;
+      }
+    },
+    [selectedStepKey],
+  );
 
   const onValid = async () => {
     setLoading(true);
     setLoadingFullScreen(true);
     try {
-      const success = await createCollection(collectionForm.getValues());
-      if (success) navigation.navigate("LaunchpadMyCollections");
+      // TODO: Uncomment when the NFT Launchpad MyCollections frontend is merged
+      // const success =
+      await createCollection(collectionForm.getValues());
+      // TODO: Uncomment when the NFT Launchpad MyCollections frontend is merged
+      // if (success) navigation.navigate("LaunchpadMyCollections");
     } catch (e) {
       console.error("Error creating a NFT collection", e);
     } finally {
@@ -112,10 +117,10 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
       responsive
       footerChildren={<></>}
       forceNetworkFeatures={[NetworkFeature.CosmWasmNFTLaunchpad]}
-      // TODO: Remove after tests
-      forceNetworkId="teritori-testnet"
       headerChildren={<BrandText>Apply to Launchpad</BrandText>}
       onBackPress={() => navigation.navigate("LaunchpadApply")}
+      // TODO: Remove after tests
+      forceNetworkId="teritori-testnet"
     >
       <View
         style={{
@@ -123,14 +128,13 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
           height: "100%",
         }}
       >
-        <FormProvider {...collectionForm}>
-          <LaunchpadStepper
-            selectedStepKey={selectedStepKey}
-            setSelectedStepKey={setSelectedStepKey}
-          />
-          <SpacerColumn size={4} />
-          {stepContent}
-        </FormProvider>
+        <LaunchpadStepper
+          collectionForm={collectionForm}
+          selectedStepKey={selectedStepKey}
+          setSelectedStepKey={setSelectedStepKey}
+        />
+        <SpacerColumn size={4} />
+        {stepContent(collectionForm)}
 
         <View
           style={{

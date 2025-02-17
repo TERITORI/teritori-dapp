@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import { View } from "react-native";
 
 import { itemSize, ItemView } from "./ItemView";
@@ -12,7 +12,7 @@ import { DeleteButton } from "@/components/FilePreview/DeleteButton";
 import { GridList } from "@/components/layout/GridList";
 import { layout } from "@/utils/style/layout";
 
-export const SelectedFilesPreview: React.FC<{
+export const SelectedFilesPreview: FC<{
   files: LocalFileData[];
   onPressItem: (file: LocalFileData, itemIndex: number) => void;
   onPressDeleteItem: (itemIndex: number) => void;

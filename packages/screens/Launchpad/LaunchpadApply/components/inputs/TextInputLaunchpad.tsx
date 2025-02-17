@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { ReactElement, useRef, useState } from "react";
 import {
   FieldValues,
   Path,
@@ -13,7 +13,7 @@ import { CustomPressable } from "@/components/buttons/CustomPressable";
 import { Label } from "@/components/inputs/TextInputCustom";
 import { SpacerColumn } from "@/components/spacer";
 import { neutral22, neutral77, secondaryColor } from "@/utils/style/colors";
-import { fontSemibold14 } from "@/utils/style/fonts";
+import { fontMedium14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 interface TextInputLaunchpadProps<T extends FieldValues>
@@ -22,7 +22,7 @@ interface TextInputLaunchpadProps<T extends FieldValues>
   placeHolder: string;
   form: UseFormReturn<T>;
   name: Path<T>;
-  sublabel?: React.ReactElement;
+  sublabel?: ReactElement;
   valueModifier?: (value: string) => string;
   required?: boolean;
   disabled?: boolean;
@@ -36,7 +36,7 @@ export const TextInputLaunchpad = <T extends FieldValues>({
   sublabel,
   valueModifier,
   disabled,
-  required = true,
+  required,
   ...restProps
 }: TextInputLaunchpadProps<T>) => {
   const inputRef = useRef<TextInput>(null);
@@ -45,6 +45,7 @@ export const TextInputLaunchpad = <T extends FieldValues>({
     name,
     control: form.control,
   });
+
   return (
     <CustomPressable
       onHoverIn={() => setHovered(true)}
@@ -73,7 +74,7 @@ export const TextInputLaunchpad = <T extends FieldValues>({
           placeholder={placeHolder}
           placeholderTextColor={neutral77}
           style={[
-            fontSemibold14,
+            fontMedium14,
             {
               color: secondaryColor,
               width: "100%",

@@ -1,11 +1,10 @@
-import React, { FC, useState } from "react";
+import { FC, ReactElement, useState } from "react";
 import { TouchableOpacity, View, ViewStyle } from "react-native";
-
-import { Checkbox } from "./../../../../../../components/Checkbox";
 
 import chevronDownSVG from "@/assets/icons/chevron-down.svg";
 import chevronUpSVG from "@/assets/icons/chevron-up.svg";
 import { BrandText } from "@/components/BrandText";
+import { Checkbox } from "@/components/Checkbox";
 import { SVG } from "@/components/SVG";
 import { PrimaryBox } from "@/components/boxes/PrimaryBox";
 import { TertiaryBox } from "@/components/boxes/TertiaryBox";
@@ -21,7 +20,7 @@ import {
   neutral77,
   secondaryColor,
 } from "@/utils/style/colors";
-import { fontMedium14, fontSemibold14 } from "@/utils/style/fonts";
+import { fontMedium14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 interface Props {
@@ -32,7 +31,7 @@ interface Props {
   onPressItem: (item: string) => void;
   items: string[];
   label: string;
-  sublabel?: React.ReactElement;
+  sublabel?: ReactElement;
   required?: boolean;
 }
 
@@ -44,7 +43,7 @@ export const MultipleSelectInput: FC<Props> = ({
   label,
   onPressItem,
   sublabel,
-  required = true,
+  required,
 }) => {
   const [isDropdownOpen, setDropdownState, ref] = useDropdowns();
   const [hovered, setHovered] = useState(false);
@@ -146,7 +145,7 @@ export const MultipleSelectInput: FC<Props> = ({
                     />
 
                     <BrandText
-                      style={[fontSemibold14, { color: secondaryColor }]}
+                      style={[fontMedium14, { color: secondaryColor }]}
                     >
                       {item}
                     </BrandText>

@@ -1,38 +1,37 @@
-import React from "react";
-import { useFormContext } from "react-hook-form";
+import { FC } from "react";
+import { UseFormReturn } from "react-hook-form";
 import { View } from "react-native";
 
 import { BrandText } from "@/components/BrandText";
 import { SpacerColumn } from "@/components/spacer";
+import { launchpadCreateFormMaxWidth } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/LaunchpadCreateScreen";
 import { TextInputLaunchpad } from "@/screens/Launchpad/LaunchpadApply/components/inputs/TextInputLaunchpad";
 import { neutral55, neutral77 } from "@/utils/style/colors";
-import {
-  fontSemibold13,
-  fontSemibold14,
-  fontSemibold20,
-} from "@/utils/style/fonts";
+import { fontMedium13, fontMedium14, fontMedium20 } from "@/utils/style/fonts";
 import { CollectionFormValues } from "@/utils/types/launchpad";
 
-export const ConfigureRoyaltyDetails: React.FC = () => {
-  const collectionForm = useFormContext<CollectionFormValues>();
+interface Props {
+  collectionForm: UseFormReturn<CollectionFormValues>;
+}
 
+export const ConfigureRoyaltyDetails: FC<Props> = ({ collectionForm }) => {
   return (
-    <View style={{ maxWidth: 416 }}>
+    <View style={{ maxWidth: launchpadCreateFormMaxWidth }}>
       <SpacerColumn size={2} />
-      <BrandText style={fontSemibold20}>Royalty Details</BrandText>
+      <BrandText style={fontMedium20}>Royalty Details</BrandText>
       <SpacerColumn size={1} />
-      <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+      <BrandText style={[fontMedium14, { color: neutral77 }]}>
         Configure royalties
       </BrandText>
       <SpacerColumn size={2} />
 
       <TextInputLaunchpad<CollectionFormValues>
         label="Payment Address "
-        placeHolder="teritori123456789qwertyuiopasdfghjklzxcvbnm"
+        placeHolder="toriz3fa8e6lc9uusqqmlsw6g3erpvun5pjagfs7d9l"
         name="royaltyAddress"
         sublabel={
           <View>
-            <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+            <BrandText style={[fontMedium13, { color: neutral55 }]}>
               Address to receive royalties
             </BrandText>
           </View>
@@ -47,7 +46,7 @@ export const ConfigureRoyaltyDetails: React.FC = () => {
         name="royaltyPercentage"
         sublabel={
           <View>
-            <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+            <BrandText style={[fontMedium13, { color: neutral55 }]}>
               Percentage of royalties to be paid
             </BrandText>
           </View>

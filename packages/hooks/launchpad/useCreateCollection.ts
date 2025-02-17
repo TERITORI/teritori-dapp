@@ -7,6 +7,7 @@ import { Coin } from "./../../contracts-clients/nft-launchpad/NftLaunchpad.types
 
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
+  Coin,
   MintPeriod,
   NftLaunchpadClient,
   WhitelistInfo,
@@ -36,38 +37,36 @@ export const useCreateCollection = () => {
   const { pinataPinFileToIPFS, uploadFilesToPinata } = useIpfs();
   const { completeCollection } = useCompleteCollection();
 
+  // TODO: Uncomment when the NFT Launchpad MyCollections frontend and useCompleteCollection are merged
+  // const { completeCollection } = useCompleteCollection();
+
   const createCollection = useCallback(
     async (collectionFormValues: CollectionFormValues) => {
       if (!selectedWallet) return false;
       const userId = selectedWallet.userId;
       const walletAddress = selectedWallet.address;
 
-      const signingComswasmClient =
-        await getKeplrSigningCosmWasmClient(selectedNetworkId);
-      const cosmwasmNftLaunchpadFeature = getNetworkFeature(
-        selectedNetworkId,
-        NetworkFeature.CosmWasmNFTLaunchpad,
-      );
-      if (!cosmwasmNftLaunchpadFeature) return false;
+      try {
+        const signingComswasmClient =
+          await getKeplrSigningCosmWasmClient(selectedNetworkId);
+        const cosmwasmNftLaunchpadFeature = getNetworkFeature(
+          selectedNetworkId,
+          NetworkFeature.CosmWasmNFTLaunchpad,
+        );
+        if (!cosmwasmNftLaunchpadFeature) return false;
 
-      const nftLaunchpadContractClient = new NftLaunchpadClient(
-        signingComswasmClient,
-        walletAddress,
-        cosmwasmNftLaunchpadFeature.launchpadContractAddress,
-      );
-      const pinataJWTKey =
-        collectionFormValues.assetsMetadatas?.nftApiKey ||
-        userIPFSKey ||
-        (await generateIpfsKey(selectedNetworkId, userId));
-      if (!pinataJWTKey) {
-        console.error("Project creation error: No Pinata JWT");
-        setToast({
-          mode: "normal",
-          type: "error",
-          title: "Project creation error: No Pinata JWT",
-        });
-        return false;
-      }
+        const nftLaunchpadContractClient = new NftLaunchpadClient(
+          signingComswasmClient,
+          walletAddress,
+          cosmwasmNftLaunchpadFeature.launchpadContractAddress,
+        );
+        const pinataJWTKey =
+          collectionFormValues.assetsMetadatas?.nftApiKey ||
+          userIPFSKey ||
+          (await generateIpfsKey(selectedNetworkId, userId));
+        if (!pinataJWTKey) {
+          throw new Error("No Pinata JWT");
+        }
 
       try {
         // ========== Cover image
@@ -76,13 +75,7 @@ export const useCreateCollection = () => {
           file: collectionFormValues.coverImage,
         } as PinataFileProps);
         if (!fileIpfsHash) {
-          console.error("Project creation error: Pin to Pinata failed");
-          setToast({
-            mode: "normal",
-            type: "error",
-            title: "Project creation error: Pin to Pinata failed",
-          });
-          return false;
+          throw new Error("Pin to Pinata failed");
         }
 
         // ========== Whitelists
@@ -97,9 +90,9 @@ export const useCreateCollection = () => {
           pinataJWTKey,
           files: whitelistAddressesFilesToUpload,
         });
-        const mint_periods: MintPeriod[] = collectionFormValues.mintPeriods.map(
+        const mintPeriods: MintPeriod[] = collectionFormValues.mintPeriods.map(
           (mintPeriod: CollectionMintPeriodFormValues, index) => {
-            let whitelist_info: WhitelistInfo | null = null;
+            let whitelistInfo: WhitelistInfo | null = null;
             if (
               mintPeriod.whitelistAddresses?.length &&
               remoteWhitelistAddressesFiles[index].url
@@ -108,7 +101,7 @@ export const useCreateCollection = () => {
               const leaves = addresses.map(keccak256);
               const tree = new MerkleTree(leaves, keccak256);
               const merkleRoot = tree.getRoot().toString("hex");
-              whitelist_info = {
+              whitelistInfo = {
                 addresses_count: addresses.length,
                 addresses_ipfs: remoteWhitelistAddressesFiles[index].url,
                 addresses_merkle_root: merkleRoot,
@@ -130,7 +123,7 @@ export const useCreateCollection = () => {
                 ? parseInt(mintPeriod.perAddressLimit, 10)
                 : 0,
               start_time: mintPeriod.startTime,
-              whitelist_info,
+              whitelist_info: whitelistInfo,
             };
           },
         );
@@ -156,19 +149,7 @@ export const useCreateCollection = () => {
           investment_link: collectionFormValues.investLink,
           artwork_desc: collectionFormValues.artworkDescription,
           cover_img_uri: "ipfs://" + fileIpfsHash,
-          is_applied_previously: collectionFormValues.isPreviouslyApplied,
-          is_project_derivative: collectionFormValues.isDerivativeProject,
-          is_ready_for_mint: collectionFormValues.isReadyForMint,
-          is_dox: collectionFormValues.isDox,
-          escrow_mint_proceeds_period: parseInt(
-            collectionFormValues.escrowMintProceedsPeriod,
-            10,
-          ),
-          dao_whitelist_count: parseInt(
-            collectionFormValues.daoWhitelistCount,
-            10,
-          ),
-          mint_periods,
+          mint_periods: mintPeriods,
           royalty_address: collectionFormValues.royaltyAddress,
           royalty_percentage: collectionFormValues.royaltyPercentage
             ? parseInt(collectionFormValues.royaltyPercentage, 10)
@@ -222,6 +203,7 @@ export const useCreateCollection = () => {
           title: "Error creating a NFT Collection in the Launchpad",
           message: e.message,
         });
+        return false;
       }
     },
     [

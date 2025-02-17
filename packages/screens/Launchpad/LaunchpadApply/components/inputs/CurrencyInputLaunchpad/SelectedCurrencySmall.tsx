@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import chevronDownSVG from "@/assets/icons/chevron-down.svg";
@@ -8,7 +8,7 @@ import { CurrencyIcon } from "@/components/CurrencyIcon";
 import { SVG } from "@/components/SVG";
 import { NativeCurrencyInfo } from "@/networks";
 import { secondaryColor } from "@/utils/style/colors";
-import { fontSemibold14 } from "@/utils/style/fonts";
+import { fontMedium14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
 export const SelectedCurrencySmall = forwardRef<
@@ -50,7 +50,7 @@ export const SelectedCurrencySmall = forwardRef<
             >
               <BrandText
                 style={[
-                  fontSemibold14,
+                  fontMedium14,
                   !disabled && { marginRight: layout.spacing_x1 },
                 ]}
               >

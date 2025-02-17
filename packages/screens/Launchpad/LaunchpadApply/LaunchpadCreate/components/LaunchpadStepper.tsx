@@ -1,5 +1,6 @@
-import React, { Dispatch, FC, useRef } from "react";
-import { useFormContext } from "react-hook-form";
+import { Dispatch, FC, SetStateAction, useRef } from "react";
+import { UseFormReturn } from "react-hook-form";
+import { FieldPath } from "react-hook-form/dist/types/path";
 import {
   LayoutChangeEvent,
   ScrollView,
@@ -21,112 +22,94 @@ import {
   primaryColor,
   primaryTextColor,
 } from "@/utils/style/colors";
-import { fontSemibold14 } from "@/utils/style/fonts";
+import { fontMedium14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { CollectionFormValues } from "@/utils/types/launchpad";
 export type LaunchpadCreateStepKey = number;
 
 interface LaunchpadStepperProps {
   selectedStepKey: LaunchpadCreateStepKey;
-  setSelectedStepKey: Dispatch<React.SetStateAction<LaunchpadCreateStepKey>>;
+  setSelectedStepKey: Dispatch<SetStateAction<LaunchpadCreateStepKey>>;
+  collectionForm: UseFormReturn<CollectionFormValues>;
 }
 
 interface LaunchpadCreateStep {
   key: LaunchpadCreateStepKey;
   title: string;
+  fields: FieldPath<CollectionFormValues>[];
 }
 
 const steps: LaunchpadCreateStep[] = [
   {
     key: 1,
     title: "Basic",
+    fields: [
+      "name",
+      "description",
+      "symbol",
+      "coverImage",
+      "assetsMetadatas.nftApiKey",
+    ],
   },
   {
     key: 2,
     title: "Details",
+    fields: [
+      "websiteLink",
+      // "isDerivativeProject",
+      "projectTypes",
+      // "isPreviouslyApplied",
+      "email",
+    ],
   },
   {
     key: 3,
     title: "Team & Investments",
+    fields: [
+      "teamDescription",
+      "partnersDescription",
+      "investDescription",
+      "investLink",
+    ],
   },
+  // {
+  //   key: 4,
+  //   title: "Additional",
+  //   fields: [
+  //     "artworkDescription",
+  //     "isReadyForMint",
+  //     "isDox",
+  //     "daoWhitelistCount",
+  //     "escrowMintProceedsPeriod",
+  //   ],
+  // },
   {
     key: 4,
-    title: "Additional",
+    title: "Minting",
+    fields: ["mintPeriods", "royaltyAddress", "royaltyPercentage"],
   },
   {
     key: 5,
-    title: "Minting",
-  },
-  {
-    key: 6,
     title: "Assets & Metadata",
+    fields: ["assetsMetadatas"],
   },
 ];
 
 export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
   selectedStepKey,
   setSelectedStepKey,
+  collectionForm,
 }) => {
   const { width: windowWidth } = useWindowDimensions();
   const scrollViewRef = useRef<ScrollView>(null);
   const isMobile = useIsMobile();
-  const collectionForm = useFormContext<CollectionFormValues>();
 
-  const hasErrors = (stepKey: number) => {
-    if (
-      (stepKey === 1 &&
-        (!!collectionForm.getFieldState("name").error ||
-          !!collectionForm.getFieldState("description").error ||
-          !!collectionForm.getFieldState("symbol").error)) ||
-      !!collectionForm.getFieldState("coverImage").error ||
-      !!collectionForm.getFieldState("assetsMetadatas.nftApiKey").error
-    ) {
-      return true;
-    }
-    if (
-      stepKey === 2 &&
-      (!!collectionForm.getFieldState("websiteLink").error ||
-        !!collectionForm.getFieldState("isDerivativeProject").error ||
-        !!collectionForm.getFieldState("projectTypes").error ||
-        !!collectionForm.getFieldState("isPreviouslyApplied").error ||
-        !!collectionForm.getFieldState("email").error)
-    ) {
-      return true;
-    }
-    if (
-      stepKey === 3 &&
-      (!!collectionForm.getFieldState("teamDescription").error ||
-        !!collectionForm.getFieldState("partnersDescription").error ||
-        !!collectionForm.getFieldState("investDescription").error ||
-        !!collectionForm.getFieldState("investLink").error)
-    ) {
-      return true;
-    }
-    if (
-      stepKey === 4 &&
-      (!!collectionForm.getFieldState("artworkDescription").error ||
-        !!collectionForm.getFieldState("isReadyForMint").error ||
-        !!collectionForm.getFieldState("isDox").error ||
-        !!collectionForm.getFieldState("daoWhitelistCount").error ||
-        !!collectionForm.getFieldState("escrowMintProceedsPeriod").error)
-    ) {
-      return true;
-    }
-    if (
-      stepKey === 5 &&
-      (!!collectionForm.getFieldState("mintPeriods").error ||
-        !!collectionForm.getFieldState("royaltyAddress").error ||
-        !!collectionForm.getFieldState("royaltyPercentage").error)
-    ) {
-      return true;
-    }
-    if (
-      stepKey === 6 &&
-      !!collectionForm.getFieldState("assetsMetadatas").error
-    ) {
-      return true;
-    }
-  };
+  const hasErrors = (stepKey: number) =>
+    steps
+      .find((step) => step.key === stepKey)
+      ?.fields.find(
+        (fieldName) => collectionForm.getFieldState(fieldName).error,
+      );
 
   const onSelectedItemLayout = (e: LayoutChangeEvent) => {
     scrollViewRef.current?.scrollTo({
@@ -175,15 +158,13 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
                   if (isSelected) onSelectedItemLayout(e);
                 }}
                 onPress={() => setSelectedStepKey(step.key)}
-                style={[
-                  {
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    paddingHorizontal: layout.spacing_x2,
-                    paddingVertical: layout.spacing_x1,
-                  },
-                ]}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  paddingHorizontal: layout.spacing_x2,
+                  paddingVertical: layout.spacing_x1,
+                }}
               >
                 <View
                   style={{
@@ -206,7 +187,7 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
                   )}
                   <BrandText
                     style={[
-                      fontSemibold14,
+                      fontMedium14,
                       {
                         lineHeight: layout.spacing_x2,
                         color: isSelected ? primaryTextColor : neutral77,
@@ -218,7 +199,7 @@ export const LaunchpadStepper: FC<LaunchpadStepperProps> = ({
                 </View>
                 <BrandText
                   style={[
-                    fontSemibold14,
+                    fontMedium14,
                     {
                       lineHeight: layout.spacing_x2,
                       marginLeft: 12,

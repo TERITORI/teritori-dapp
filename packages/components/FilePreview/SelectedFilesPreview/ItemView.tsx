@@ -1,11 +1,12 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { TouchableOpacity, Image, StyleProp, ViewStyle } from "react-native";
 
-import { neutral77, secondaryColor } from "../../../utils/style/colors";
-import { fontSemibold11, fontSemibold13 } from "../../../utils/style/fonts";
-import { layout } from "../../../utils/style/layout";
 import { BrandText } from "../../BrandText";
 import { PrimaryBox } from "../../boxes/PrimaryBox";
+
+import { neutral77, secondaryColor } from "@/utils/style/colors";
+import { fontSemibold11, fontSemibold13 } from "@/utils/style/fonts";
+import { layout } from "@/utils/style/layout";
 
 export const itemSize = 120;
 export const ItemView: FC<{
@@ -47,10 +48,8 @@ export const ItemView: FC<{
 
       <PrimaryBox
         style={{
-          // borderRadius: 32,
           paddingHorizontal: layout.spacing_x1,
           paddingVertical: layout.spacing_x0_5,
-          // height: 34,
           width: itemSize - 10,
           bottom: -20,
           alignItems: "center",
