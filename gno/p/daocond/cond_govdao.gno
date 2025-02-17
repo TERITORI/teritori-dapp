@@ -130,7 +130,6 @@ func (m *govDaoCondThresholdState) computeVotingPowers() (map[string]float64, fl
 		countsMembersPerRole[role] = float64(m.cond.usersWithRoleCountFn(role))
 	}
 
-	roleWeights := []float64{3.0, 2.0, 1.0} // T1 = 3.0, T2 = 2.0, T3 = 1.0
 	for i, role := range m.cond.roles {
 		if i == 0 {
 			votingPowers[role] = roleWeights[0] // Highest tier always gets max power (3.0)
