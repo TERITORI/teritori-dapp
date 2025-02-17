@@ -48,7 +48,7 @@ func (d *DAO) renderHomePage(res *mux.ResponseWriter, req *mux.Request) {
 	i := 1
 	d.Members.Members.Iterate("", "", func(key string, value interface{}) bool {
 		res.Write(ufmt.Sprintf("- **Member %d: [%s](%s:%s/%s)**\n\n", i, key, linkPath, "member", key))
-		res.Write(ufmt.Sprintf("	- **Profile:** %s\n", d.GetProfileString(std.Address(key), "DisplayName", "Unknown")))
+		res.Write(ufmt.Sprintf("	- **Profile:** %s\n", d.GetProfileString(std.Address(key), "DisplayName", "Anon")))
 		res.Write(ufmt.Sprintf(" 	- **Roles:** %s\n\n", strings.Join(d.Members.GetMemberRoles(key), ", ")))
 		i += 1
 		return false
