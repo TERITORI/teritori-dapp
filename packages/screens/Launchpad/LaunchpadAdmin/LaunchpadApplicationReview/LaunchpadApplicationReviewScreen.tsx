@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { View } from "react-native";
 
 import { Separator } from "./../../../../components/separators/Separator";
@@ -9,16 +9,13 @@ import { MintingInformation } from "./components/MintingInformation";
 import { ProjectInformation } from "./components/ProjectInformation";
 import { TeamInformation } from "./components/TeamInformation";
 import { Status } from "../../../../api/launchpad/v1/launchpad";
-import { PrimaryButton } from "../../../../components/buttons/PrimaryButton";
 import { ProposalRow } from "../../../../components/dao/DAOProposals";
 import { useDAOProposalById } from "../../../../hooks/dao/useDAOProposalById";
-import { useProposeApproveProject } from "../../../../hooks/launchpad/useProposeApproveProject";
 
 import { BrandText } from "@/components/BrandText";
 import { NotFound } from "@/components/NotFound";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { SpacerColumn } from "@/components/spacer";
-import { useInvalidateDAOProposals } from "@/hooks/dao/useDAOProposals";
 import { useIsUserLaunchpadAdmin } from "@/hooks/launchpad/useIsUserLaunchpadAdmin";
 import { useLaunchpadProjectById } from "@/hooks/launchpad/useLaunchpadProjectById";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
@@ -30,6 +27,7 @@ import { ScreenFC } from "@/utils/navigation";
 import { errorColor } from "@/utils/style/colors";
 import { fontSemibold20 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import {useGetLaunchpadAdmin} from "@/hooks/launchpad/useGetLaunchpadAdmin";
 
 // =====> TODO: SHOW ALL DATA, MINT PERIODS, ASSETS, ETC
 
@@ -43,13 +41,10 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
   const { id: projectId } = route.params;
   const navigation = useAppNavigation();
   const selectedNetworkId = useSelectedNetworkId();
-  const [isApproveLoading, setApproveLoading] = useState(false);
   const userId = useSelectedWallet()?.userId;
+  const { launchpadAdminId } = useGetLaunchpadAdmin(); // It's a DAO
   const { isUserLaunchpadAdmin, isLoading: isUserAdminLoading } =
     useIsUserLaunchpadAdmin(userId);
-  const { proposeApproveProject, launchpadAdminId } =
-    useProposeApproveProject();
-  const invalidateDAOProposals = useInvalidateDAOProposals(launchpadAdminId);
   const { launchpadProject, isLoading: isProjectsLoading } =
     useLaunchpadProjectById({
       projectId,
@@ -69,21 +64,6 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
   );
   const isUserOwner =
     launchpadProject?.creatorId && launchpadProject.creatorId === userId;
-
-  const onPressApprove = async () => {
-    setApproveLoading(true);
-    try {
-      await proposeApproveProject(projectId);
-    } catch (e) {
-      console.error("Error approving the collection", e);
-      setApproveLoading(false);
-    } finally {
-      invalidateDAOProposals();
-    }
-    setTimeout(() => {
-      setApproveLoading(false);
-    }, 1000);
-  };
 
   const onBackPress = () => {
     const routes = navigation.getState().routes;
@@ -171,9 +151,9 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
           />
 
           <SpacerColumn size={3} />
-          {daoProposal &&
+          {(daoProposal &&
           isUserLaunchpadAdmin &&
-          launchpadProject.status !== Status.STATUS_INCOMPLETE ? (
+          launchpadProject.status !== Status.STATUS_INCOMPLETE) && (
             <>
               <ProposalRow
                 daoId={launchpadAdminId}
@@ -182,23 +162,7 @@ export const LaunchpadApplicationReviewScreen: ScreenFC<
               />
               <SpacerColumn size={3} />
             </>
-          ) : launchpadProject.status !== Status.STATUS_INCOMPLETE &&
-            isUserLaunchpadAdmin ? (
-            <>
-              <View style={{ flexDirection: "row" }}>
-                <PrimaryButton
-                  text="Approve"
-                  boxStyle={{ width: 146 }}
-                  onPress={onPressApprove}
-                  loader
-                  isLoading={isApproveLoading}
-                  disabled={isApproveLoading}
-                />
-              </View>
-              <SpacerColumn size={3} />
-            </>
-          ) : null}
-
+          )}
           <Separator />
 
           <CreatorInformation

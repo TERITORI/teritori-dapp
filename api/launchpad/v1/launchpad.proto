@@ -10,7 +10,6 @@ service LaunchpadService {
   rpc LaunchpadProjects(LaunchpadProjectsRequest) returns (LaunchpadProjectsResponse);
   rpc LaunchpadProjectById(LaunchpadProjectByIdRequest) returns (LaunchpadProjectByIdResponse);
   rpc LaunchpadProjectsCounts(LaunchpadProjectsCountsRequest) returns (LaunchpadProjectsCountsResponse);
-  rpc ProposeApproveProject(ProposeApproveProjectRequest) returns (ProposeApproveProjectResponse);
 }
 
 enum Sort {
@@ -97,17 +96,6 @@ message LaunchpadProjectsCountsRequest {
 
 message LaunchpadProjectsCountsResponse {
   repeated StatusCount status_counts = 1;
-}
-
-message ProposeApproveProjectRequest {
-  string sender = 1;
-  string network_id = 2;
-  string project_id = 3;
-  string proposal_id = 4;
-}
-
-message ProposeApproveProjectResponse {
-  bool approved = 1;
 }
 
 // -------------------------------

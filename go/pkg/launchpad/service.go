@@ -146,32 +146,6 @@ func (s *Launchpad) UploadMetadatas(ctx context.Context, req *launchpadpb.Upload
 	return &launchpadpb.UploadMetadatasResponse{MerkleRoot: hex_root}, nil
 }
 
-// Store the proposal made by the admin DAO at the first "Approve"
-func (s *Launchpad) ProposeApproveProject(ctx context.Context, req *launchpadpb.ProposeApproveProjectRequest) (*launchpadpb.ProposeApproveProjectResponse, error) {
-	if err := s.verifySender(req.Sender); err != nil {
-		return nil, errors.Wrap(err, "failed to verify sender")
-	}
-
-	updates := map[string]interface{}{
-		"proposal_id": req.ProposalId,
-		"status":      launchpadpb.Status_STATUS_REVIEWING,
-	}
-
-	if err :=
-		s.conf.IndexerDB.
-			Model(&indexerdb.LaunchpadProject{}).
-			Where("project_id = ?", req.ProjectId).
-			Where("network_id = ?", req.NetworkId).
-			UpdateColumns(updates).
-			Error; err != nil {
-		return nil, errors.Wrap(err, "failed to update propsal id and project status to REVIEWING")
-	}
-
-	return &launchpadpb.ProposeApproveProjectResponse{
-		Approved: true,
-	}, nil
-}
-
 // ================================
 
 // Calculate collection merkle root

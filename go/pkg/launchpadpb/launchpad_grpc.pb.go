@@ -28,7 +28,6 @@ type LaunchpadServiceClient interface {
 	LaunchpadProjects(ctx context.Context, in *LaunchpadProjectsRequest, opts ...grpc.CallOption) (*LaunchpadProjectsResponse, error)
 	LaunchpadProjectById(ctx context.Context, in *LaunchpadProjectByIdRequest, opts ...grpc.CallOption) (*LaunchpadProjectByIdResponse, error)
 	LaunchpadProjectsCounts(ctx context.Context, in *LaunchpadProjectsCountsRequest, opts ...grpc.CallOption) (*LaunchpadProjectsCountsResponse, error)
-	ProposeApproveProject(ctx context.Context, in *ProposeApproveProjectRequest, opts ...grpc.CallOption) (*ProposeApproveProjectResponse, error)
 }
 
 type launchpadServiceClient struct {
@@ -93,15 +92,6 @@ func (c *launchpadServiceClient) LaunchpadProjectsCounts(ctx context.Context, in
 	return out, nil
 }
 
-func (c *launchpadServiceClient) ProposeApproveProject(ctx context.Context, in *ProposeApproveProjectRequest, opts ...grpc.CallOption) (*ProposeApproveProjectResponse, error) {
-	out := new(ProposeApproveProjectResponse)
-	err := c.cc.Invoke(ctx, "/launchpad.v1.LaunchpadService/ProposeApproveProject", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // LaunchpadServiceServer is the server API for LaunchpadService service.
 // All implementations must embed UnimplementedLaunchpadServiceServer
 // for forward compatibility
@@ -112,7 +102,6 @@ type LaunchpadServiceServer interface {
 	LaunchpadProjects(context.Context, *LaunchpadProjectsRequest) (*LaunchpadProjectsResponse, error)
 	LaunchpadProjectById(context.Context, *LaunchpadProjectByIdRequest) (*LaunchpadProjectByIdResponse, error)
 	LaunchpadProjectsCounts(context.Context, *LaunchpadProjectsCountsRequest) (*LaunchpadProjectsCountsResponse, error)
-	ProposeApproveProject(context.Context, *ProposeApproveProjectRequest) (*ProposeApproveProjectResponse, error)
 	mustEmbedUnimplementedLaunchpadServiceServer()
 }
 
@@ -137,9 +126,6 @@ func (UnimplementedLaunchpadServiceServer) LaunchpadProjectById(context.Context,
 }
 func (UnimplementedLaunchpadServiceServer) LaunchpadProjectsCounts(context.Context, *LaunchpadProjectsCountsRequest) (*LaunchpadProjectsCountsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LaunchpadProjectsCounts not implemented")
-}
-func (UnimplementedLaunchpadServiceServer) ProposeApproveProject(context.Context, *ProposeApproveProjectRequest) (*ProposeApproveProjectResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProposeApproveProject not implemented")
 }
 func (UnimplementedLaunchpadServiceServer) mustEmbedUnimplementedLaunchpadServiceServer() {}
 
@@ -262,24 +248,6 @@ func _LaunchpadService_LaunchpadProjectsCounts_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LaunchpadService_ProposeApproveProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProposeApproveProjectRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LaunchpadServiceServer).ProposeApproveProject(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/launchpad.v1.LaunchpadService/ProposeApproveProject",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LaunchpadServiceServer).ProposeApproveProject(ctx, req.(*ProposeApproveProjectRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // LaunchpadService_ServiceDesc is the grpc.ServiceDesc for LaunchpadService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -310,10 +278,6 @@ var LaunchpadService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LaunchpadProjectsCounts",
 			Handler:    _LaunchpadService_LaunchpadProjectsCounts_Handler,
-		},
-		{
-			MethodName: "ProposeApproveProject",
-			Handler:    _LaunchpadService_ProposeApproveProject_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

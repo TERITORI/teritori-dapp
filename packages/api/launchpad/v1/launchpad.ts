@@ -194,17 +194,6 @@ export interface LaunchpadProjectsCountsResponse {
   statusCounts: StatusCount[];
 }
 
-export interface ProposeApproveProjectRequest {
-  sender: string;
-  networkId: string;
-  projectId: string;
-  proposalId: string;
-}
-
-export interface ProposeApproveProjectResponse {
-  approved: boolean;
-}
-
 export interface StatusCount {
   status: Status;
   count: number;
@@ -1220,169 +1209,6 @@ export const LaunchpadProjectsCountsResponse = {
   },
 };
 
-function createBaseProposeApproveProjectRequest(): ProposeApproveProjectRequest {
-  return { sender: "", networkId: "", projectId: "", proposalId: "" };
-}
-
-export const ProposeApproveProjectRequest = {
-  encode(message: ProposeApproveProjectRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.sender !== "") {
-      writer.uint32(10).string(message.sender);
-    }
-    if (message.networkId !== "") {
-      writer.uint32(18).string(message.networkId);
-    }
-    if (message.projectId !== "") {
-      writer.uint32(26).string(message.projectId);
-    }
-    if (message.proposalId !== "") {
-      writer.uint32(34).string(message.proposalId);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ProposeApproveProjectRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseProposeApproveProjectRequest();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 10) {
-            break;
-          }
-
-          message.sender = reader.string();
-          continue;
-        case 2:
-          if (tag !== 18) {
-            break;
-          }
-
-          message.networkId = reader.string();
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
-          }
-
-          message.projectId = reader.string();
-          continue;
-        case 4:
-          if (tag !== 34) {
-            break;
-          }
-
-          message.proposalId = reader.string();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ProposeApproveProjectRequest {
-    return {
-      sender: isSet(object.sender) ? globalThis.String(object.sender) : "",
-      networkId: isSet(object.networkId) ? globalThis.String(object.networkId) : "",
-      projectId: isSet(object.projectId) ? globalThis.String(object.projectId) : "",
-      proposalId: isSet(object.proposalId) ? globalThis.String(object.proposalId) : "",
-    };
-  },
-
-  toJSON(message: ProposeApproveProjectRequest): unknown {
-    const obj: any = {};
-    if (message.sender !== "") {
-      obj.sender = message.sender;
-    }
-    if (message.networkId !== "") {
-      obj.networkId = message.networkId;
-    }
-    if (message.projectId !== "") {
-      obj.projectId = message.projectId;
-    }
-    if (message.proposalId !== "") {
-      obj.proposalId = message.proposalId;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<ProposeApproveProjectRequest>, I>>(base?: I): ProposeApproveProjectRequest {
-    return ProposeApproveProjectRequest.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<ProposeApproveProjectRequest>, I>>(object: I): ProposeApproveProjectRequest {
-    const message = createBaseProposeApproveProjectRequest();
-    message.sender = object.sender ?? "";
-    message.networkId = object.networkId ?? "";
-    message.projectId = object.projectId ?? "";
-    message.proposalId = object.proposalId ?? "";
-    return message;
-  },
-};
-
-function createBaseProposeApproveProjectResponse(): ProposeApproveProjectResponse {
-  return { approved: false };
-}
-
-export const ProposeApproveProjectResponse = {
-  encode(message: ProposeApproveProjectResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.approved === true) {
-      writer.uint32(8).bool(message.approved);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ProposeApproveProjectResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseProposeApproveProjectResponse();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          if (tag !== 8) {
-            break;
-          }
-
-          message.approved = reader.bool();
-          continue;
-      }
-      if ((tag & 7) === 4 || tag === 0) {
-        break;
-      }
-      reader.skipType(tag & 7);
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ProposeApproveProjectResponse {
-    return { approved: isSet(object.approved) ? globalThis.Boolean(object.approved) : false };
-  },
-
-  toJSON(message: ProposeApproveProjectResponse): unknown {
-    const obj: any = {};
-    if (message.approved === true) {
-      obj.approved = message.approved;
-    }
-    return obj;
-  },
-
-  create<I extends Exact<DeepPartial<ProposeApproveProjectResponse>, I>>(base?: I): ProposeApproveProjectResponse {
-    return ProposeApproveProjectResponse.fromPartial(base ?? ({} as any));
-  },
-  fromPartial<I extends Exact<DeepPartial<ProposeApproveProjectResponse>, I>>(
-    object: I,
-  ): ProposeApproveProjectResponse {
-    const message = createBaseProposeApproveProjectResponse();
-    message.approved = object.approved ?? false;
-    return message;
-  },
-};
-
 function createBaseStatusCount(): StatusCount {
   return { status: 0, count: 0 };
 }
@@ -1927,10 +1753,6 @@ export interface LaunchpadService {
     request: DeepPartial<LaunchpadProjectsCountsRequest>,
     metadata?: grpc.Metadata,
   ): Promise<LaunchpadProjectsCountsResponse>;
-  ProposeApproveProject(
-    request: DeepPartial<ProposeApproveProjectRequest>,
-    metadata?: grpc.Metadata,
-  ): Promise<ProposeApproveProjectResponse>;
 }
 
 export class LaunchpadServiceClientImpl implements LaunchpadService {
@@ -1944,7 +1766,6 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
     this.LaunchpadProjects = this.LaunchpadProjects.bind(this);
     this.LaunchpadProjectById = this.LaunchpadProjectById.bind(this);
     this.LaunchpadProjectsCounts = this.LaunchpadProjectsCounts.bind(this);
-    this.ProposeApproveProject = this.ProposeApproveProject.bind(this);
   }
 
   UploadMetadatas(
@@ -1998,17 +1819,6 @@ export class LaunchpadServiceClientImpl implements LaunchpadService {
     return this.rpc.unary(
       LaunchpadServiceLaunchpadProjectsCountsDesc,
       LaunchpadProjectsCountsRequest.fromPartial(request),
-      metadata,
-    );
-  }
-
-  ProposeApproveProject(
-    request: DeepPartial<ProposeApproveProjectRequest>,
-    metadata?: grpc.Metadata,
-  ): Promise<ProposeApproveProjectResponse> {
-    return this.rpc.unary(
-      LaunchpadServiceProposeApproveProjectDesc,
-      ProposeApproveProjectRequest.fromPartial(request),
       metadata,
     );
   }
@@ -2144,29 +1954,6 @@ export const LaunchpadServiceLaunchpadProjectsCountsDesc: UnaryMethodDefinitioni
   responseType: {
     deserializeBinary(data: Uint8Array) {
       const value = LaunchpadProjectsCountsResponse.decode(data);
-      return {
-        ...value,
-        toObject() {
-          return value;
-        },
-      };
-    },
-  } as any,
-};
-
-export const LaunchpadServiceProposeApproveProjectDesc: UnaryMethodDefinitionish = {
-  methodName: "ProposeApproveProject",
-  service: LaunchpadServiceDesc,
-  requestStream: false,
-  responseStream: false,
-  requestType: {
-    serializeBinary() {
-      return ProposeApproveProjectRequest.encode(this).finish();
-    },
-  } as any,
-  responseType: {
-    deserializeBinary(data: Uint8Array) {
-      const value = ProposeApproveProjectResponse.decode(data);
       return {
         ...value,
         toObject() {

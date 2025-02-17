@@ -3,30 +3,6 @@
 
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct LaunchpadProjectsByCreatorRequest {
-    #[prost(string, tag="1")]
-    pub creator_id: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
-    pub network_id: ::prost::alloc::string::String,
-    #[prost(int32, tag="3")]
-    pub limit: i32,
-    #[prost(int32, tag="4")]
-    pub offset: i32,
-    #[prost(enumeration="Sort", tag="5")]
-    pub sort: i32,
-    #[prost(enumeration="SortDirection", tag="6")]
-    pub sort_direction: i32,
-    #[prost(enumeration="Status", optional, tag="7")]
-    pub status: ::core::option::Option<i32>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct LaunchpadProjectsByCreatorResponse {
-    #[prost(message, repeated, tag="1")]
-    pub projects: ::prost::alloc::vec::Vec<LaunchpadProject>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LaunchpadProjectsRequest {
     #[prost(string, tag="1")]
     pub network_id: ::prost::alloc::string::String,
@@ -38,8 +14,10 @@ pub struct LaunchpadProjectsRequest {
     pub sort: i32,
     #[prost(enumeration="SortDirection", tag="5")]
     pub sort_direction: i32,
-    #[prost(enumeration="Status", optional, tag="6")]
-    pub status: ::core::option::Option<i32>,
+    #[prost(enumeration="Status", tag="6")]
+    pub status: i32,
+    #[prost(string, tag="7")]
+    pub creator_id: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -72,8 +50,8 @@ pub struct UploadMetadatasRequest {
     pub project_id: ::prost::alloc::string::String,
     #[prost(message, repeated, tag="4")]
     pub metadatas: ::prost::alloc::vec::Vec<Metadata>,
-    #[prost(string, optional, tag="5")]
-    pub pinata_jwt: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(string, tag="5")]
+    pub pinata_jwt: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -129,24 +107,6 @@ pub struct LaunchpadProjectsCountsResponse {
     #[prost(message, repeated, tag="1")]
     pub status_counts: ::prost::alloc::vec::Vec<StatusCount>,
 }
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ProposeApproveProjectRequest {
-    #[prost(string, tag="1")]
-    pub sender: ::prost::alloc::string::String,
-    #[prost(string, tag="2")]
-    pub network_id: ::prost::alloc::string::String,
-    #[prost(string, tag="3")]
-    pub project_id: ::prost::alloc::string::String,
-    #[prost(string, tag="4")]
-    pub proposal_id: ::prost::alloc::string::String,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ProposeApproveProjectResponse {
-    #[prost(bool, tag="1")]
-    pub approved: bool,
-}
 // -------------------------------
 
 #[allow(clippy::derive_partial_eq_without_eq)]
@@ -170,8 +130,8 @@ pub struct LaunchpadProject {
     pub collection_data: ::prost::alloc::string::String,
     #[prost(enumeration="Status", tag="5")]
     pub status: i32,
-    #[prost(string, optional, tag="6")]
-    pub proposal_id: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(string, tag="6")]
+    pub proposal_id: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
