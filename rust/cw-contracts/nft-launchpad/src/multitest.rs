@@ -1,14 +1,18 @@
-use cosmwasm_std::{Addr, Attribute, Coin, Uint128};
+use cosmwasm_std::{to_json_binary, Addr, Attribute, Coin, Empty, Uint128};
 use cw_utils::Duration;
+use dao_interface::msg::InstantiateMsg as DaoDaoInstantiateMsg;
+use dao_interface::state::{Admin, ModuleInstantiateInfo};
 use dao_proposal_single::contract::{
     execute as dao_execute, instantiate as dao_instantiate, query as dao_query,
 };
 use dao_proposal_single::msg::InstantiateMsg as DaoInstantiateMsg;
+use dao_testing::contracts::{dao_dao_contract, native_staked_balances_voting_contract};
 use dao_voting::pre_propose::PreProposeInfo;
 use dao_voting::threshold::Threshold;
-use sylvia::cw_multi_test::{ContractWrapper, Executor};
+use sylvia::cw_multi_test::{Contract, ContractWrapper, Executor};
 use sylvia::multitest::App;
 
+use crate::test_helpers::assert_wasm_attr;
 use crate::{
     contract::{sv::multitest_utils::CodeId as LaunchpadCodeId, CollectionProject, Config},
     error::ContractError,
@@ -41,7 +45,7 @@ fn get_default_collection() -> CollectionProject {
         // Info ----------------------------
         name: "name".to_string(),
         desc: "desc".to_string(),
-        symbol: "SYMBOL".to_string(),
+        symbol: COLLECTION_ID.to_string(),
         cover_img_uri: "img".to_string(),
         target_network: "network".to_string(),
         // Details ----------------------------
@@ -78,12 +82,15 @@ fn get_default_collection() -> CollectionProject {
 }
 
 const PROPOSAL_SINGLE_CONTRACT: &str = "contract1";
+const COLLECTION_ID: &str = "SYMBOL";
+const SENDER: &str = "sender";
+const ADMIN: &str = "admin";
+const DENOM: &str = "utori";
 
 #[test]
 fn instantiate() {
     let app = App::default();
     let code_id = LaunchpadCodeId::store_code(&app);
-    let sender = "sender";
     // Deploy NFT TR721 for sylvia contract
     let nft_contract = NftTr721CodeId::store_code(&app);
     let deployed_nft_code_id = nft_contract.code_id();
@@ -94,16 +101,93 @@ fn instantiate() {
     let config = Config {
         name: "teritori launchpad".to_string(),
         nft_code_id: deployed_nft_code_id,
-        admin: Addr::unchecked("admin"),
-        owner: Addr::unchecked(sender),
+        admin: Addr::unchecked(ADMIN),
+        owner: Addr::unchecked(SENDER),
         proposal_single_contract: Addr::unchecked(proposal_single_contract),
     };
 
-    let contract = code_id.instantiate(config).call(sender).unwrap();
+    let contract = code_id.instantiate(config).call(SENDER).unwrap();
 
     // Check create config
     let config = contract.get_config().unwrap();
     assert_eq!(config.name, "teritori launchpad".to_string());
+}
+
+fn single_proposal_contract() -> Box<dyn Contract<Empty>> {
+    let contract = ContractWrapper::new(dao_execute, dao_instantiate, dao_query);
+    Box::new(contract)
+}
+
+fn instantiate_dao_contract(app: &App<sylvia::cw_multi_test::App>, sender: &str) -> Addr {
+    let voting_id = app
+        .app_mut()
+        .store_code(native_staked_balances_voting_contract());
+    let dao_id = app.app_mut().store_code(dao_dao_contract());
+    let gov_id = app.app_mut().store_code(single_proposal_contract());
+
+    let gov_init_msg = DaoInstantiateMsg {
+        threshold: Threshold::AbsoluteCount {
+            threshold: Uint128::new(1),
+        },
+        max_voting_period: Duration::Height(1),
+        min_voting_period: Some(Duration::Height(1)),
+        only_members_execute: true,
+        allow_revoting: true,
+        close_proposal_on_execution_failure: true,
+        pre_propose_info: PreProposeInfo::AnyoneMayPropose {},
+        veto: None,
+    };
+
+    let voting_init_msg = dao_voting_token_staked::msg::InstantiateMsg {
+        token_info: dao_voting_token_staked::msg::TokenInfo::Existing {
+            denom: DENOM.to_string(),
+        },
+        unstaking_duration: Some(Duration::Height(5)),
+        active_threshold: None,
+    };
+
+    let dao_init_msg = DaoDaoInstantiateMsg {
+        dao_uri: None,
+        admin: None,
+        name: "DAO DAO".to_string(),
+        description: "A DAO that builds DAOs.".to_string(),
+        image_url: None,
+        automatically_add_cw20s: true,
+        automatically_add_cw721s: true,
+        voting_module_instantiate_info: ModuleInstantiateInfo {
+            code_id: voting_id,
+            msg: to_json_binary(&voting_init_msg).unwrap(),
+            admin: Some(Admin::Address {
+                addr: sender.to_string(),
+            }),
+            funds: vec![],
+            label: "voting module".to_string(),
+        },
+        proposal_modules_instantiate_info: vec![ModuleInstantiateInfo {
+            code_id: gov_id,
+            msg: to_json_binary(&gov_init_msg).unwrap(),
+            admin: Some(Admin::Address {
+                addr: sender.to_string(),
+            }),
+            funds: vec![],
+            label: "single proposal module".to_string(),
+        }],
+        initial_items: None,
+    };
+
+    let dao_addr = app
+        .app_mut()
+        .instantiate_contract(
+            dao_id,
+            Addr::unchecked(sender),
+            &dao_init_msg,
+            &[],
+            "Dao dao",
+            None,
+        )
+        .unwrap();
+
+    return dao_addr;
 }
 
 #[test]
@@ -112,7 +196,6 @@ fn full_flow() {
     let default_collection = get_default_collection();
 
     let app: App<sylvia::cw_multi_test::App> = App::default();
-    let sender = "sender";
 
     // Deploy NFT TR721 for sylvia contract
     let nft_contract = NftTr721CodeId::store_code(&app);
@@ -123,49 +206,31 @@ fn full_flow() {
         .instantiate(Config {
             name: "teritori launchpad".to_string(),
             nft_code_id: deployed_nft_code_id,
-            admin: Addr::unchecked("admin"),
-            owner: Addr::unchecked(sender),
+            admin: Addr::unchecked(ADMIN),
+            owner: Addr::unchecked(SENDER),
             proposal_single_contract: Addr::unchecked(PROPOSAL_SINGLE_CONTRACT),
         })
-        .call(sender)
+        .call(SENDER)
         .unwrap();
 
     // Check instantiated launchpad
     let config = contract.get_config().unwrap();
     assert_eq!(config.name, "teritori launchpad".to_string());
 
-    // Instantiate DAO contract ---------------------------------------------------------
-    // Store DAO contract
-    let dao_contract = Box::new(ContractWrapper::new(
-        dao_execute,
-        dao_instantiate,
-        dao_query,
-    ));
-    let dao_code_id = app.app_mut().store_code(dao_contract);
+    // Instantiate DAO contract with Single Proposal module ---------------------------------------------------------
+    let _ = instantiate_dao_contract(&app, SENDER);
 
-    // Instantiate the contract
-    let proposal_single_contract = app
+    // FIXME: By order of execution, contract3 is the single proposal contract
+    // We should find a way to get that address dynamically
+    // For now, we just hardcode it
+    const SINGLE_PROPOSAL_CONTRACT_ADDR: &str = "contract3";
+    let contract_data = app
         .app_mut()
-        .instantiate_contract(
-            dao_code_id,
-            Addr::unchecked("admin"),
-            &DaoInstantiateMsg {
-                threshold: Threshold::AbsoluteCount {
-                    threshold: Uint128::new(1),
-                },
-                max_voting_period: Duration::Height(1),
-                min_voting_period: Some(Duration::Height(1)),
-                only_members_execute: true,
-                allow_revoting: true,
-                close_proposal_on_execution_failure: true,
-                pre_propose_info: PreProposeInfo::AnyoneMayPropose {},
-                veto: None,
-            },
-            &[],
-            "DaoContract",
-            None, // No admin
-        )
+        .contract_data(&Addr::unchecked(SINGLE_PROPOSAL_CONTRACT_ADDR))
         .unwrap();
+    assert_eq!(contract_data.label, "single proposal module".to_string());
+
+    let single_proposal_contract_addr = SINGLE_PROPOSAL_CONTRACT_ADDR;
 
     // Create collection without period -----------------------------------------
     {
@@ -174,7 +239,7 @@ fn full_flow() {
                 mint_periods: vec![],
                 ..CollectionProject::default()
             })
-            .call(sender)
+            .call(SENDER)
             .unwrap_err();
 
         assert_eq!(err, ContractError::MintPeriodRequired);
@@ -187,7 +252,7 @@ fn full_flow() {
                 symbol: "a_123".to_string(),
                 ..default_collection.clone()
             })
-            .call(sender)
+            .call(SENDER)
             .unwrap_err();
 
         assert_eq!(err, ContractError::CollectionSymbolInvalid)
@@ -197,10 +262,10 @@ fn full_flow() {
     {
         let submit_collection_resp = contract
             .submit_collection(default_collection.clone())
-            .call(sender)
+            .call(SENDER)
             .unwrap();
 
-        // Check event
+        // Check events
         let attrs = submit_collection_resp.custom_attrs(1);
         assert_eq!(
             attrs[0],
@@ -209,9 +274,25 @@ fn full_flow() {
                 value: "submit_collection".to_string()
             }
         );
+        assert_eq!(
+            attrs[1],
+            Attribute {
+                key: "collection_id".to_string(),
+                value: COLLECTION_ID.to_string()
+            }
+        );
+        assert_eq!(
+            attrs[2],
+            Attribute {
+                key: "owner".to_string(),
+                value: SENDER.to_string()
+            }
+        );
 
         // Check created collection
-        let commited_collection = contract.get_collection_by_id("SYMBOL".to_string()).unwrap();
+        let commited_collection = contract
+            .get_collection_by_id(COLLECTION_ID.to_string())
+            .unwrap();
         assert_eq!(commited_collection.name, default_collection.name);
     }
 
@@ -219,7 +300,7 @@ fn full_flow() {
     {
         let err = contract
             .submit_collection(default_collection.clone())
-            .call(sender)
+            .call(SENDER)
             .unwrap_err();
 
         assert_eq!(err, ContractError::CollectionSymbolExists);
@@ -231,9 +312,9 @@ fn full_flow() {
             .update_config(ConfigChanges {
                 name: Some("test".to_string()),
                 nft_code_id: Some(deployed_nft_code_id),
-                admin: Some(sender.to_string()),
-                owner: Some(sender.to_string()),
-                proposal_single_contract: Some(proposal_single_contract.to_string()),
+                admin: Some(SENDER.to_string()),
+                owner: Some(SENDER.to_string()),
+                proposal_single_contract: Some(single_proposal_contract_addr.to_string()),
             })
             .call("wrong_owner")
             .unwrap_err();
@@ -247,15 +328,15 @@ fn full_flow() {
                 name: Some("test".to_string()),
                 nft_code_id: Some(deployed_nft_code_id),
                 admin: Some("deployer".to_string()),
-                owner: Some(sender.to_string()),
-                proposal_single_contract: Some(proposal_single_contract.to_string()),
+                owner: Some(SENDER.to_string()),
+                proposal_single_contract: Some(single_proposal_contract_addr.to_string()),
             })
-            .call(sender)
+            .call(SENDER)
             .unwrap();
 
         let err = contract
             .deploy_collection("SYMBOL_NOT_EXIST".to_string())
-            .call(sender)
+            .call(SENDER)
             .unwrap_err();
         assert_eq!(err, ContractError::WrongDeployer)
     }
@@ -266,16 +347,16 @@ fn full_flow() {
             .update_config(ConfigChanges {
                 name: Some("test".to_string()),
                 nft_code_id: Some(deployed_nft_code_id),
-                admin: Some(sender.to_string()),
-                owner: Some(sender.to_string()),
-                proposal_single_contract: Some(proposal_single_contract.to_string()),
+                admin: Some(SENDER.to_string()),
+                owner: Some(SENDER.to_string()),
+                proposal_single_contract: Some(single_proposal_contract_addr.to_string()),
             })
-            .call(sender)
+            .call(SENDER)
             .unwrap();
 
         let err = contract
             .deploy_collection("SYMBOL_NOT_EXIST".to_string())
-            .call(sender)
+            .call(SENDER)
             .unwrap_err();
         assert_eq!(err, ContractError::CollectionNotFound)
     }
@@ -283,8 +364,8 @@ fn full_flow() {
     // Deploy collection without merkle root  ---------------------------------------------------------
     {
         let err = contract
-            .deploy_collection("SYMBOL".to_string())
-            .call(sender)
+            .deploy_collection(COLLECTION_ID.to_string())
+            .call(SENDER)
             .unwrap_err();
         assert_eq!(err, ContractError::MerkleRootMissing)
     }
@@ -293,7 +374,7 @@ fn full_flow() {
     {
         let new_merkle_root = "new merkle root";
         let err = contract
-            .update_merkle_root("SYMBOL".to_string(), new_merkle_root.to_string())
+            .update_merkle_root(COLLECTION_ID.to_string(), new_merkle_root.to_string())
             .call("unauthorized")
             .unwrap_err();
 
@@ -303,12 +384,44 @@ fn full_flow() {
     // Update merkle root
     {
         let new_merkle_root = "new merkle root";
-        contract
-            .update_merkle_root("SYMBOL".to_string(), new_merkle_root.to_string())
-            .call(sender)
+        let resp = contract
+            .update_merkle_root(COLLECTION_ID.to_string(), new_merkle_root.to_string())
+            .call(SENDER)
             .unwrap();
 
-        let collection_after = contract.get_collection_by_id("SYMBOL".to_string()).unwrap();
+        // Check events
+        assert_wasm_attr(
+            resp.clone(),
+            Attribute {
+                key: "action".to_string(),
+                value: "update_merkle_root".to_string(),
+            },
+        );
+        assert_wasm_attr(
+            resp.clone(),
+            Attribute {
+                key: "merkle_root".to_string(),
+                value: new_merkle_root.to_string(),
+            },
+        );
+        assert_wasm_attr(
+            resp.clone(),
+            Attribute {
+                key: "action".to_string(),
+                value: "execute_propose".to_string(),
+            },
+        );
+        assert_wasm_attr(
+            resp.clone(),
+            Attribute {
+                key: "proposal_id".to_string(),
+                value: "1".to_string(),
+            },
+        );
+
+        let collection_after = contract
+            .get_collection_by_id(COLLECTION_ID.to_string())
+            .unwrap();
 
         assert_eq!(
             collection_after.metadatas_merkle_root,
@@ -322,11 +435,11 @@ fn full_flow() {
             .update_config(ConfigChanges {
                 name: Some("test".to_string()),
                 nft_code_id: Some(deployed_nft_code_id),
-                admin: Some(sender.to_string()),
-                owner: Some(sender.to_string()),
-                proposal_single_contract: Some(proposal_single_contract.to_string()),
+                admin: Some(SENDER.to_string()),
+                owner: Some(SENDER.to_string()),
+                proposal_single_contract: Some(single_proposal_contract_addr.to_string()),
             })
-            .call(sender)
+            .call(SENDER)
             .unwrap();
 
         let resp = contract.get_config().unwrap();
@@ -335,22 +448,49 @@ fn full_flow() {
 
     // Deploy completed collection after update merkle root + nft code id  ---------------------------------------------------------
     {
-        let collection_id = "SYMBOL".to_string();
+        let deployed_collection_addr = "contract4";
         let resp = contract
-            .deploy_collection(collection_id.to_owned())
-            .call(sender)
+            .deploy_collection(COLLECTION_ID.to_owned())
+            .call(SENDER)
             .unwrap();
-        let attrs = resp.custom_attrs(1);
-        assert_eq!(
-            attrs[1],
+
+        // Check events
+        assert_wasm_attr(
+            resp.clone(),
+            Attribute {
+                key: "action".to_string(),
+                value: "deploy_collection".to_string(),
+            },
+        );
+        assert_wasm_attr(
+            resp.clone(),
             Attribute {
                 key: "collection_id".to_string(),
-                value: "SYMBOL".to_string()
-            }
+                value: COLLECTION_ID.to_string(),
+            },
+        );
+        assert_wasm_attr(
+            resp.clone(),
+            Attribute {
+                key: "action".to_string(),
+                value: "instantiate_collection".to_string(),
+            },
+        );
+        assert_wasm_attr(
+            resp.clone(),
+            Attribute {
+                key: "collection_addr".to_string(),
+                value: deployed_collection_addr.to_string(),
+            },
         );
 
         // Check deployed contract
-        let collection = contract.get_collection_by_id(collection_id).unwrap();
-        assert_eq!(collection.deployed_address, Some("contract2".to_string()));
+        let collection = contract
+            .get_collection_by_id(COLLECTION_ID.to_string())
+            .unwrap();
+        assert_eq!(
+            collection.deployed_address,
+            Some(deployed_collection_addr.to_string())
+        );
     }
 }
