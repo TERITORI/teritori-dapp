@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
-import { FieldErrors, FormProvider, useForm } from "react-hook-form";
+import { FieldErrors, useForm } from "react-hook-form";
 import { View } from "react-native";
 import { useSelector } from "react-redux";
 
@@ -18,7 +18,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { NetworkFeature } from "@/networks";
-import { AssetsTab } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadAssetsAndMetadata/AssetsTab";
+import { AssetsAndMetadataInputs } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/components/steps/LaunchpadAssetsAndMetadata/AssetsAndMetadataInputs";
 import { selectNFTStorageAPI } from "@/store/slices/settings";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import {
@@ -172,24 +172,24 @@ export const LaunchpadCompleteScreen: ScreenFC<"LaunchpadComplete"> = ({
                 </BrandText>
               </View>
 
-              <FormProvider {...assetsMetadatasForm}>
-                <View style={{ maxWidth: 500, paddingLeft: layout.spacing_x2 }}>
-                  <TextInputLaunchpad<CollectionAssetsMetadatasFormValues>
-                    label="NFT.Storage JWT"
-                    sublabel={
-                      <BrandText style={[fontSemibold13, { color: neutral55 }]}>
-                        Used to upload the cover image and the assets to your
-                        NFT Storage
-                      </BrandText>
-                    }
-                    placeHolder="My Awesome Collection"
-                    name="nftApiKey"
-                    form={assetsMetadatasForm}
-                  />
-                </View>
+              <View style={{ maxWidth: 500, paddingLeft: layout.spacing_x2 }}>
+                <TextInputLaunchpad<CollectionAssetsMetadatasFormValues>
+                  label="NFT.Storage JWT"
+                  sublabel={
+                    <BrandText style={[fontSemibold13, { color: neutral55 }]}>
+                      Used to upload the cover image and the assets to your NFT
+                      Storage
+                    </BrandText>
+                  }
+                  placeHolder="My Awesome Collection"
+                  name="nftApiKey"
+                  form={assetsMetadatasForm}
+                />
+              </View>
 
-                <AssetsTab />
-              </FormProvider>
+              <AssetsAndMetadataInputs
+                assetsMetadatasForm={assetsMetadatasForm}
+              />
             </View>
 
             <View

@@ -654,17 +654,6 @@ export const AssetsAndMetadataInputs: React.FC<Props> = ({
           </View>
         </View>
 
-        {/* ---- Separator*/}
-        {/*<View*/}
-        {/*  style={[*/}
-        {/*    {*/}
-        {/*      backgroundColor: neutral33,*/}
-        {/*      margin: isMobile ? 0 : layout.spacing_x2,*/}
-        {/*    },*/}
-        {/*    isMobile ? { height: 1 } : { width: 1 },*/}
-        {/*  ]}*/}
-        {/*/>*/}
-
         {/* ===== Right container */}
         <View
           style={{
