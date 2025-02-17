@@ -1,5 +1,7 @@
 # ghverify
 
+Fork of [ghverify](https://github.com/gnolang/gno/tree/master/examples/gno.land/r/gnoland/ghverify)
+
 This realm is intended to enable off chain gno address to github handle verification.
 The steps are as follows:
 - A user calls `RequestVerification` and provides a github handle. This creates a new static oracle feed.
