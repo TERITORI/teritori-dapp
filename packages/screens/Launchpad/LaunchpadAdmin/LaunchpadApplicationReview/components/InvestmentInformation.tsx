@@ -39,24 +39,24 @@ export const InvestmentInformation: React.FC<{
           value={collectionData.investment_link}
         />
       </View>
-      <View
-        style={{
-          flexDirection:
-            width >= launchpadReviewBreakpointSM ? "row" : "column",
-          marginVertical: layout.spacing_x2,
-          gap: layout.spacing_x1_5,
-          flexWrap: "wrap",
-        }}
-      >
-        <ApplicationCard
-          title="TeritoriDAO Allocated Whitelists"
-          value={collectionData.dao_whitelist_count.toString()}
-        />
-        <ApplicationCard
-          title="TeritoriDAO Allocated Whitelists"
-          value={collectionData.escrow_mint_proceeds_period.toString()}
-        />
-      </View>
+      {/*<View*/}
+      {/*  style={{*/}
+      {/*    flexDirection:*/}
+      {/*      width >= launchpadReviewBreakpointSM ? "row" : "column",*/}
+      {/*    marginVertical: layout.spacing_x2,*/}
+      {/*    gap: layout.spacing_x1_5,*/}
+      {/*    flexWrap: "wrap",*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  <ApplicationCard*/}
+      {/*    title="TeritoriDAO Allocated Whitelists"*/}
+      {/*    value={collectionData.dao_whitelist_count.toString()}*/}
+      {/*  />*/}
+      {/*  <ApplicationCard*/}
+      {/*    title="TeritoriDAO Allocated Whitelists"*/}
+      {/*    value={collectionData.escrow_mint_proceeds_period.toString()}*/}
+      {/*  />*/}
+      {/*</View>*/}
 
       <ApplicationCard title="Partners" value={collectionData.partners} />
     </View>
