@@ -180,6 +180,7 @@ func TestEval(t *testing.T) {
 			votesT2:      []Vote{VoteYes, VoteYes, VoteYes, VoteYes}, // 2 voting power combined
 			votesT3:      []Vote{VoteNo},
 			expectedEval: false,
+			abstainT3:    false,
 			threshold:    0.45,
 			expectedYes:  2.0 / 6.0,
 			panic:        false,
@@ -189,6 +190,7 @@ func TestEval(t *testing.T) {
 			votesT2:      []Vote{VoteYes, VoteYes, VoteYes, VoteYes}, // 2 voting power combined
 			votesT3:      []Vote{VoteYes},
 			expectedEval: true,
+			abstainT3:    false,
 			threshold:    0.45,
 			expectedYes:  3.0 / 6.0,
 			panic:        false,
@@ -200,6 +202,7 @@ func TestEval(t *testing.T) {
 			// 4 T3 total power (1/3) powerT1 = 2, 2/4 0.5 each
 			votesT3:      []Vote{VoteYes, VoteNo, VoteYes, VoteNo},
 			expectedEval: false,
+			abstainT3:    false,
 			threshold:    0.42, //total power = 6+4+2 T3yes = 1, T2yes = 4 T1yes = 0 totalYes = 0.41666666666 (5/12)
 			expectedYes:  5.0 / 12.0,
 			panic:        false,
@@ -211,6 +214,7 @@ func TestEval(t *testing.T) {
 			// 4 T3 total power (1/3) powerT1 = 2, 2/4 0.5 each
 			votesT3:      []Vote{VoteYes, VoteYes, VoteYes, VoteNo},
 			expectedEval: true,
+			abstainT3:    false,
 			threshold:    0.42, //total power = 6+4+2 T3yes = 1.5, T2yes = 4 T1yes = 0 totalYes = 0.45833333333 (5.5/12)
 			expectedYes:  5.5 / 12.0,
 			panic:        false,
@@ -218,6 +222,7 @@ func TestEval(t *testing.T) {
 		"only T1s": {
 			votesT1:      []Vote{VoteYes, VoteNo}, // 6 voting power
 			expectedEval: false,
+			abstainT3:    false,
 			threshold:    0.6,
 			expectedYes:  3.0 / 6.0,
 			panic:        false,
@@ -225,6 +230,7 @@ func TestEval(t *testing.T) {
 		"only T3s": { // as T2 & T3 power is capped as power of T1, in this case the power will be 0 everywhere
 			votesT3:      []Vote{VoteYes, VoteYes, VoteYes, VoteYes}, // voting power = 0, 0 each
 			expectedEval: false,
+			abstainT3:    false,
 			threshold:    0.6,
 			expectedYes:  0.0,
 		},
@@ -232,7 +238,8 @@ func TestEval(t *testing.T) {
 			votesT1:      []Vote{VoteYes, VoteNo}, // 6 voting power
 			votesT2:      []Vote{VoteYes, VoteYes},
 			votesT3:      []Vote{},
-			expectedEval: false,
+			expectedEval: true,
+			abstainT3:    true,
 			threshold:    0.6,
 			expectedYes:  7.0 / 10.0,
 			panic:        false,
@@ -240,10 +247,11 @@ func TestEval(t *testing.T) {
 		"T3 abstaining w/ votes": {
 			votesT1:      []Vote{VoteYes, VoteNo}, // 6 voting power
 			votesT2:      []Vote{VoteYes, VoteYes},
-			votesT3:      []Vote{VoteYes, VoteYes},
+			votesT3:      []Vote{VoteYes, VoteNo},
 			expectedEval: true,
+			abstainT3:    true,
 			threshold:    0.6,
-			expectedYes:  9.0 / 10.0,
+			expectedYes:  7.0 / 10.0,
 			panic:        true, // a user with T3 when T3 is abstaining should panic
 		},
 	}
