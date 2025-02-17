@@ -5,8 +5,8 @@ import (
 	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/daokit"
 	"gno.land/p/teritori/role_manager"
-	"gno.land/r/teritori/ghverify"
 	"gno.land/r/demo/profile"
+	"gno.land/r/teritori/ghverify"
 )
 
 const (
@@ -44,6 +44,7 @@ func init() {
 		GetProfileString:  profile.GetStringField,
 	})
 
+	// XXX: t1Supermajority won't work because daocond.RoleThreshold uses events
 	t1Supermajority := daocond.RoleThreshold(0.66, Tier1, dao.Members.HasRole, dao.Members.CountMembersWithRole)
 	supermajority := daocond.GovDaoCondThreshold(0.66, []string{Tier1, Tier2, Tier3}, dao.Members.HasRole, dao.Members.CountMembersWithRole)
 	majorityWithoutT3 := daocond.GovDaoCondThreshold(0.5, []string{Tier1, Tier2}, dao.Members.HasRole, dao.Members.CountMembersWithRole)
