@@ -3,8 +3,6 @@ import { MerkleTree } from "merkletreejs";
 import { useCallback } from "react";
 import { useSelector } from "react-redux";
 
-import { Coin } from "./../../contracts-clients/nft-launchpad/NftLaunchpad.types";
-
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
   Coin,
@@ -37,9 +35,6 @@ export const useCreateCollection = () => {
   const { pinataPinFileToIPFS, uploadFilesToPinata } = useIpfs();
   const { completeCollection } = useCompleteCollection();
 
-  // TODO: Uncomment when the NFT Launchpad MyCollections frontend and useCompleteCollection are merged
-  // const { completeCollection } = useCompleteCollection();
-
   const createCollection = useCallback(
     async (collectionFormValues: CollectionFormValues) => {
       if (!selectedWallet) return false;
@@ -68,7 +63,6 @@ export const useCreateCollection = () => {
           throw new Error("No Pinata JWT");
         }
 
-      try {
         // ========== Cover image
         const fileIpfsHash = await pinataPinFileToIPFS({
           pinataJWTKey,

@@ -85,11 +85,8 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
     setLoading(true);
     setLoadingFullScreen(true);
     try {
-      // TODO: Uncomment when the NFT Launchpad MyCollections frontend is merged
-      // const success =
-      await createCollection(collectionForm.getValues());
-      // TODO: Uncomment when the NFT Launchpad MyCollections frontend is merged
-      // if (success) navigation.navigate("LaunchpadMyCollections");
+      const success = await createCollection(collectionForm.getValues());
+      if (success) navigation.navigate("LaunchpadMyCollections");
     } catch (e) {
       console.error("Error creating a NFT collection", e);
     } finally {
