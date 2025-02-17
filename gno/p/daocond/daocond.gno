@@ -60,6 +60,5 @@ type EventRoleUnassigned struct {
 }
 
 type EventRoleRemoved struct {
-	UserID string
-	Role   string
+	Role string
 }

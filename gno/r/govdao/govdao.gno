@@ -37,10 +37,16 @@ func init() {
 		{Address: "g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r", Roles: []string{Tier3}},
 	}
 	dao = basedao.New(&basedao.Config{
-		Name:              "GovDAO",
-		Description:       "This is a GovDAO demo",
+		Name: "GovDAO",
+		Description: "GovDAO is the autonomous, decentralized organization in charge of " +
+			"securing the Gnoland network and ecosystem. It is made up of members " +
+			"who have made a significant contribution to the emergence of the " +
+			"Gnoland language, network and ecosystem. The only way to become a " +
+			"member of GovDAO is to actively participate in coding, tooling, " +
+			"improving, securing or expanding Gnoland and its common tools.",
 		NoDefaultHandlers: true,
 		Members:           basedao.NewMembersStore(initialRoles, initialMembers),
+		SetProfileString:  profile.SetStringField,
 		GetProfileString:  profile.GetStringField,
 	})
 
