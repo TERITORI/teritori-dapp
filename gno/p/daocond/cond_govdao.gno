@@ -2,6 +2,7 @@ package daocond
 
 import (
 	"errors"
+	"strconv"
 	"strings"
 
 	"gno.land/p/demo/json"
@@ -44,11 +45,11 @@ func (m *govDaoCondThreshold) NewState() State {
 	}
 }
 
-// {threshold}% of {totalvotingpower} total voting power following these ({t1power} - T1, {t2power} T2, {t3power} T3)
 func (m *govDaoCondThreshold) Render() string {
 	rolePowers := []string{}
 	for i, role := range m.roles {
-		rolePowers = append(rolePowers, ufmt.Sprintf("%s => %.1f power", role, roleWeights[i]))
+		weight := strconv.FormatFloat(roleWeights[i], 'f', 2, 64) // ufmt.Sprintf("%.2f", ...) is not working
+		rolePowers = append(rolePowers, ufmt.Sprintf("%s => %s power", role, weight))
 	}
 	return ufmt.Sprintf("%g%% of total voting power | %s", m.threshold*100, strings.Join(rolePowers, " | "))
 }
@@ -74,11 +75,15 @@ func (m *govDaoCondThresholdState) HandleEvent(_ Event, _ map[string]Vote) {
 }
 func (m *govDaoCondThresholdState) RenderJSON(votes map[string]Vote) *json.Node {
 	vPowers, totalPower := m.computeVotingPowers()
-	powerSplit := ufmt.Sprintf("T1: %.1f, T2: %.1f, T3: %.1f", vPowers["T1"], vPowers["T2"], vPowers["T3"])
+	rolePowers := []string{}
+	for _, role := range m.cond.roles {
+		weight := strconv.FormatFloat(vPowers[role], 'f', 2, 64) // ufmt.Sprintf("%.2f", ...) is not working
+		rolePowers = append(rolePowers, ufmt.Sprintf("%s => %s power", role, weight))
+	}
 	jsonData := json.ObjectNode("", map[string]*json.Node{
 		"type":              json.StringNode("", "govdao-threshold"),
 		"threshold":         json.NumberNode("", m.cond.threshold),
-		"powerSplit":        json.StringNode("", powerSplit),
+		"powerSplit":        json.StringNode("", strings.Join(rolePowers, " | ")),
 		"totalYes":          json.NumberNode("", m.yesRatio(votes)),
 		"votingPowerNeeded": json.NumberNode("", m.cond.threshold*totalPower),
 		"totalVotingPower":  json.NumberNode("", totalPower),

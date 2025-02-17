@@ -30,16 +30,20 @@ T3 1000 members --> 100 VP, 0.1 votes per member
 */
 func TestComputeVotingPowers(t *testing.T) {
 	type govDaoComposition struct {
-		t1s            int
-		t2s            int
-		t3s            int
-		expectedPowers map[string]float64
+		t1s                int
+		t2s                int
+		t3s                int
+		abstainT3          bool
+		expectedTotalPower float64
+		expectedPowers     map[string]float64
 	}
 	tests := map[string]govDaoComposition{
 		"example 1": {
-			t1s: 100,
-			t2s: 100,
-			t3s: 100,
+			t1s:                100,
+			t2s:                100,
+			t3s:                100,
+			abstainT3:          false,
+			expectedTotalPower: 600,
 			expectedPowers: map[string]float64{
 				"T1": 3.0,
 				"T2": 2.0,
@@ -47,9 +51,11 @@ func TestComputeVotingPowers(t *testing.T) {
 			},
 		},
 		"example 2": {
-			t1s: 100,
-			t2s: 50,
-			t3s: 10,
+			t1s:                100,
+			t2s:                50,
+			t3s:                10,
+			abstainT3:          false,
+			expectedTotalPower: 410,
 			expectedPowers: map[string]float64{
 				"T1": 3.0,
 				"T2": 2.0,
@@ -57,9 +63,11 @@ func TestComputeVotingPowers(t *testing.T) {
 			},
 		},
 		"example 3": {
-			t1s: 100,
-			t2s: 200,
-			t3s: 100,
+			t1s:                100,
+			t2s:                200,
+			t3s:                100,
+			abstainT3:          false,
+			expectedTotalPower: 600,
 			expectedPowers: map[string]float64{
 				"T1": 3.0,
 				"T2": 1.0,
@@ -67,9 +75,11 @@ func TestComputeVotingPowers(t *testing.T) {
 			},
 		},
 		"example 4": {
-			t1s: 100,
-			t2s: 200,
-			t3s: 1000,
+			t1s:                100,
+			t2s:                200,
+			t3s:                1000,
+			abstainT3:          false,
+			expectedTotalPower: 600,
 			expectedPowers: map[string]float64{
 				"T1": 3.0,
 				"T2": 1.0,
@@ -77,9 +87,11 @@ func TestComputeVotingPowers(t *testing.T) {
 			},
 		},
 		"0 -T1s": {
-			t1s: 0,
-			t2s: 100,
-			t3s: 100,
+			t1s:                0,
+			t2s:                100,
+			t3s:                100,
+			abstainT3:          false,
+			expectedTotalPower: 0,
 			expectedPowers: map[string]float64{
 				"T1": 3.0,
 				"T2": 0.0,
@@ -87,13 +99,26 @@ func TestComputeVotingPowers(t *testing.T) {
 			},
 		},
 		"100 T1, 1 T2, 1 T3": {
-			t1s: 100,
-			t2s: 1,
-			t3s: 1,
+			t1s:                100,
+			t2s:                1,
+			t3s:                1,
+			abstainT3:          false,
+			expectedTotalPower: 303,
 			expectedPowers: map[string]float64{
 				"T1": 3.0,
 				"T2": 2.0,
 				"T3": 1.0,
+			},
+		},
+		"T3 Abstaining": {
+			t1s:                100,
+			t2s:                100,
+			t3s:                100,
+			expectedTotalPower: 500,
+			abstainT3:          true,
+			expectedPowers: map[string]float64{
+				"T1": 3.0,
+				"T2": 2.0,
 			},
 		},
 	}
@@ -111,19 +136,28 @@ func TestComputeVotingPowers(t *testing.T) {
 				dao.addUser(ufmt.Sprintf("%d_T3", i), []string{"T3"})
 			}
 
+			roles := []string{"T1", "T2"}
+			if !composition.abstainT3 {
+				roles = append(roles, "T3")
+			}
+
 			state := &govDaoCondThresholdState{
 				cond: &govDaoCondThreshold{
 					threshold:            0.6,
 					hasRoleFn:            dao.hasRole,
-					roles:                []string{"T1", "T2", "T3"},
+					roles:                roles,
 					usersWithRoleCountFn: dao.usersWithRoleCount,
 				},
 			}
-			votingPowers, _ := state.computeVotingPowers()
+			votingPowers, totalPower := state.computeVotingPowers()
 			for tier, expectedPower := range composition.expectedPowers {
 				if votingPowers[tier] != expectedPower {
 					t.Fail()
 				}
+			}
+
+			if totalPower != composition.expectedTotalPower {
+				t.Fail()
 			}
 		})
 	}
@@ -137,6 +171,8 @@ func TestEval(t *testing.T) {
 		threshold    float64
 		expectedEval bool
 		expectedYes  float64
+		abstainT3    bool
+		panic        bool
 	}
 	tests := map[string]govDaoVotes{
 		"2/6% Yes": { //0.3333
@@ -146,6 +182,7 @@ func TestEval(t *testing.T) {
 			expectedEval: false,
 			threshold:    0.45,
 			expectedYes:  2.0 / 6.0,
+			panic:        false,
 		},
 		"50% Yes": {
 			votesT1:      []Vote{VoteNo},                             // 3 voting power
@@ -154,6 +191,7 @@ func TestEval(t *testing.T) {
 			expectedEval: true,
 			threshold:    0.45,
 			expectedYes:  3.0 / 6.0,
+			panic:        false,
 		},
 		"several T2 & T3": {
 			votesT1: []Vote{VoteNo, VoteNo}, // 6 voting power
@@ -164,6 +202,7 @@ func TestEval(t *testing.T) {
 			expectedEval: false,
 			threshold:    0.42, //total power = 6+4+2 T3yes = 1, T2yes = 4 T1yes = 0 totalYes = 0.41666666666 (5/12)
 			expectedYes:  5.0 / 12.0,
+			panic:        false,
 		},
 		"several T2 & T3 eval true": {
 			votesT1: []Vote{VoteNo, VoteNo}, // 6 voting power
@@ -174,12 +213,14 @@ func TestEval(t *testing.T) {
 			expectedEval: true,
 			threshold:    0.42, //total power = 6+4+2 T3yes = 1.5, T2yes = 4 T1yes = 0 totalYes = 0.45833333333 (5.5/12)
 			expectedYes:  5.5 / 12.0,
+			panic:        false,
 		},
 		"only T1s": {
 			votesT1:      []Vote{VoteYes, VoteNo}, // 6 voting power
 			expectedEval: false,
 			threshold:    0.6,
 			expectedYes:  3.0 / 6.0,
+			panic:        false,
 		},
 		"only T3s": { // as T2 & T3 power is capped as power of T1, in this case the power will be 0 everywhere
 			votesT3:      []Vote{VoteYes, VoteYes, VoteYes, VoteYes}, // voting power = 0, 0 each
@@ -187,16 +228,35 @@ func TestEval(t *testing.T) {
 			threshold:    0.6,
 			expectedYes:  0.0,
 		},
+		"T3 abstaining": {
+			votesT1:      []Vote{VoteYes, VoteNo}, // 6 voting power
+			votesT2:      []Vote{VoteYes, VoteYes},
+			votesT3:      []Vote{},
+			expectedEval: false,
+			threshold:    0.6,
+			expectedYes:  7.0 / 10.0,
+			panic:        false,
+		},
+		"T3 abstaining w/ votes": {
+			votesT1:      []Vote{VoteYes, VoteNo}, // 6 voting power
+			votesT2:      []Vote{VoteYes, VoteYes},
+			votesT3:      []Vote{VoteYes, VoteYes},
+			expectedEval: true,
+			threshold:    0.6,
+			expectedYes:  9.0 / 10.0,
+			panic:        true, // a user with T3 when T3 is abstaining should panic
+		},
 	}
 
 	for name, tdata := range tests {
 		t.Run(name, func(t *testing.T) {
-			defer func() {
-				err := recover()
-				if err != nil {
-					t.Error(err)
-				}
-			}()
+			if tdata.panic {
+				defer func() {
+					if r := recover(); r == nil {
+						t.Errorf("The code did not panic")
+					}
+				}()
+			}
 			votes := map[string]Vote{}
 			dao := newMockDAO()
 			for i, vote := range tdata.votesT1 {
@@ -216,7 +276,11 @@ func TestEval(t *testing.T) {
 				dao.addUser(userID, []string{"T3"})
 				votes[userID] = vote
 			}
-			cond := GovDaoCondThreshold(tdata.threshold, []string{"T1", "T2", "T3"}, dao.hasRole, dao.usersWithRoleCount)
+			roles := []string{"T1", "T2"}
+			if !tdata.abstainT3 {
+				roles = append(roles, "T3")
+			}
+			cond := GovDaoCondThreshold(tdata.threshold, roles, dao.hasRole, dao.usersWithRoleCount)
 			state := cond.NewState()
 
 			// Get percent of total yes
