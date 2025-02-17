@@ -37,20 +37,19 @@ func (d *DAO) renderHomePage(res *mux.ResponseWriter, req *mux.Request) {
 	name := d.GetProfileString(d.Realm.Addr(), "DisplayName", "DAO")
 	description := d.GetProfileString(d.Realm.Addr(), "Bio", "Created with daokit")
 	pkgPath := d.Realm.PkgPath()
-	linkPath := ""
-	slashIdx := strings.IndexRune(pkgPath, '/')
-	if slashIdx != 1 {
-		linkPath = pkgPath[slashIdx:]
-	}
+	linkPath := getLinkPath(pkgPath)
 
-	res.Write(ufmt.Sprintf("# %s - %s\n\n", name, std.CurrentRealm().Addr().String()))
-	res.Write(ufmt.Sprintf("> Description: %s\n\n", description))
+	res.Write(ufmt.Sprintf("# %s\n\n", name))
+	res.Write(ufmt.Sprintf("%s\n\n", description))
+	res.Write(ufmt.Sprintf("> Realm address: %s\n\n", d.Realm.Addr()))
 	res.Write(ufmt.Sprintf("Discover more about this DAO on the [configuration page ⚙️](%s:%s)\n\n", linkPath, CONFIG_PATH))
 
 	res.Write(ufmt.Sprintf("## Members 👤 \n\n"))
 	i := 1
 	d.Members.Members.Iterate("", "", func(key string, value interface{}) bool {
 		res.Write(ufmt.Sprintf("- **Member %d: [%s](%s:%s/%s)**\n\n", i, key, linkPath, "member", key))
+		res.Write(ufmt.Sprintf("	- **Profile:** %s\n", d.GetProfileString(std.Address(key), "DisplayName", "Unknown")))
+		res.Write(ufmt.Sprintf(" 	- **Roles:** %s\n\n", strings.Join(d.Members.GetMemberRoles(key), ", ")))
 		i += 1
 		return false
 	})
@@ -109,11 +108,7 @@ func (d *DAO) renderConfigPage(res *mux.ResponseWriter, req *mux.Request) {
 func (d *DAO) renderProposalHistoryPage(res *mux.ResponseWriter, req *mux.Request) {
 	name := d.GetProfileString(d.Realm.Addr(), "DisplayName", "DAO")
 	pkgPath := d.Realm.PkgPath()
-	linkPath := ""
-	slashIdx := strings.IndexRune(pkgPath, '/')
-	if slashIdx != 1 {
-		linkPath = pkgPath[slashIdx:]
-	}
+	linkPath := getLinkPath(pkgPath)
 
 	res.Write(ufmt.Sprintf("# %s - Proposal History\n\n", name))
 	res.Write(ufmt.Sprintf("## Proposals 🗳️\n\n"))
@@ -134,23 +129,31 @@ func (d *DAO) renderProposalHistoryPage(res *mux.ResponseWriter, req *mux.Reques
 
 func (d *DAO) renderMemberDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 	name := d.GetProfileString(d.Realm.Addr(), "DisplayName", "DAO")
+	pkgPath := d.Realm.PkgPath()
+	linkPath := getLinkPath(pkgPath)
 
-	res.Write(ufmt.Sprintf("# %s - Member Detail - %s\n\n", name, req.GetVar("address")))
+	res.Write(ufmt.Sprintf("# %s - Member Detail\n\n", name))
 	roles := d.Members.GetMemberRoles(req.GetVar("address"))
+	displayName := d.GetProfileString(std.Address(req.GetVar("address")), "DisplayName", "Unknown")
+	bio := d.GetProfileString(std.Address(req.GetVar("address")), "Bio", "No bio")
+	pp := d.GetProfileString(std.Address(req.GetVar("address")), "Avatar", "")
+	res.Write(ufmt.Sprintf("## Profile 👤\n\n"))
+	res.Write(ufmt.Sprintf("- **Display Name:** %s\n\n", displayName))
+	res.Write(ufmt.Sprintf("- **Bio:** %s\n\n", bio))
+	if pp != "" {
+		res.Write(ufmt.Sprintf("![Avatar](%s)\n\n", pp))
+	}
 	res.Write(ufmt.Sprintf("## Roles 🏷️\n\n"))
 	for _, role := range roles {
 		res.Write(ufmt.Sprintf("- %s\n\n", role))
 	}
+	res.Write(ufmt.Sprintf("> Learn more about the roles on the [configuration page ⚙️](%s:%s)\n\n", linkPath, CONFIG_PATH))
 }
 
 func (d *DAO) renderProposalDetailPage(res *mux.ResponseWriter, req *mux.Request) {
 	name := d.GetProfileString(d.Realm.Addr(), "DisplayName", "DAO")
 	pkgPath := d.Realm.PkgPath()
-	linkPath := ""
-	slashIdx := strings.IndexRune(pkgPath, '/')
-	if slashIdx != 1 {
-		linkPath = pkgPath[slashIdx:]
-	}
+	linkPath := getLinkPath(pkgPath)
 
 	id, err := seqid.FromString(req.GetVar("id"))
 	if err != nil {
@@ -161,7 +164,7 @@ func (d *DAO) renderProposalDetailPage(res *mux.ResponseWriter, req *mux.Request
 	res.Write(ufmt.Sprintf("## Title - %s 📜\n\n", proposal.Title))
 	res.Write(ufmt.Sprintf("## Description 📝\n\n%s\n\n", proposal.Description))
 	res.Write(ufmt.Sprintf("## Resource - %s 📦\n\n", proposal.Message.Type()))
-	res.Write(proposal.Message.String())
+	res.Write(proposal.Message.String() + "\n\n")
 	if proposal.Status == daokit.ProposalStatusOpen {
 		res.Write(ufmt.Sprintf("## Status - Open 🟡\n\n"))
 		res.Write(ufmt.Sprintf("[Vote on this proposal 🗳️](%s$help)\n\n", linkPath))
@@ -179,4 +182,12 @@ func (d *DAO) renderProposalDetailPage(res *mux.ResponseWriter, req *mux.Request
 
 	res.Write(ufmt.Sprintf("## Votes 🗳️\n\n"))
 	res.Write(ufmt.Sprintf("%s\n\n", proposal.ConditionState.RenderJSON(proposal.Votes)))
+}
+
+func getLinkPath(pkgPath string) string {
+	slashIdx := strings.IndexRune(pkgPath, '/')
+	if slashIdx != 1 {
+		return pkgPath[slashIdx:]
+	}
+	return ""
 }
