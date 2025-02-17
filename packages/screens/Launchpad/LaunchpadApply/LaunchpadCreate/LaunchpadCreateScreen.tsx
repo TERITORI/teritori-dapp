@@ -158,7 +158,7 @@ export const LaunchpadCreateScreen: ScreenFC<"LaunchpadCreate"> = () => {
               />
             )}
 
-            {selectedStepKey === 6 ? (
+            {selectedStepKey === 5 ? (
               <PrimaryButton
                 width={160}
                 size="M"
