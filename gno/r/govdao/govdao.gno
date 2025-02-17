@@ -7,6 +7,7 @@ import (
 	"gno.land/p/teritori/role_manager"
 	"gno.land/r/demo/profile"
 	"gno.land/r/gnoland/ghverify"
+	"gno.land/r/teritori/social_feeds"
 )
 
 const (
@@ -65,6 +66,10 @@ func init() {
 		},
 		{
 			Handler:   basedao.NewEditProfileHandler(profile.SetStringField, nil),
+			Condition: supermajority,
+		},
+		{
+			Handler:   social_feeds.NewCreatePostDaokitHandler(),
 			Condition: supermajority,
 		},
 	}
