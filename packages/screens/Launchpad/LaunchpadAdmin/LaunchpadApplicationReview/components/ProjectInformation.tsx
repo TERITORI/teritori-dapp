@@ -45,47 +45,47 @@ export const ProjectInformation: React.FC<{
           gap: layout.spacing_x1_5,
         }}
       >
-        <View
-          style={{
-            flexDirection:
-              width >= launchpadReviewBreakpointSM ? "row" : "column",
-            flexWrap: "wrap",
-            flex: 1,
-            gap: layout.spacing_x1_5,
-          }}
-        >
-          <ApplicationCard
-            title="Previous Apply"
-            value={collectionData.is_applied_previously ? "Yes" : "No"}
-            style={{ maxHeight: 64 }}
-          />
-          <ApplicationCard
-            title="Doxed"
-            value={collectionData.is_dox ? "Yes" : "No"}
-            style={{ maxHeight: 64 }}
-          />
-        </View>
+        {/*<View*/}
+        {/*  style={{*/}
+        {/*    flexDirection:*/}
+        {/*      width >= launchpadReviewBreakpointSM ? "row" : "column",*/}
+        {/*    flexWrap: "wrap",*/}
+        {/*    flex: 1,*/}
+        {/*    gap: layout.spacing_x1_5,*/}
+        {/*  }}*/}
+        {/*>*/}
+        {/*  <ApplicationCard*/}
+        {/*    title="Previous Apply"*/}
+        {/*    value={collectionData.is_applied_previously ? "Yes" : "No"}*/}
+        {/*    style={{ maxHeight: 64 }}*/}
+        {/*  />*/}
+        {/*  <ApplicationCard*/}
+        {/*    title="Doxed"*/}
+        {/*    value={collectionData.is_dox ? "Yes" : "No"}*/}
+        {/*    style={{ maxHeight: 64 }}*/}
+        {/*  />*/}
+        {/*</View>*/}
 
-        <View
-          style={{
-            flexDirection:
-              width >= launchpadReviewBreakpointSM ? "row" : "column",
-            flexWrap: "wrap",
-            flex: 1,
-            gap: layout.spacing_x1_5,
-          }}
-        >
-          <ApplicationCard
-            title="Derivative"
-            value={collectionData.is_project_derivative ? "Yes" : "No"}
-            style={{ maxHeight: 64 }}
-          />
-          <ApplicationCard
-            title="Ready for Mint"
-            value={collectionData.is_ready_for_mint ? "Yes" : "No"}
-            style={{ maxHeight: 64 }}
-          />
-        </View>
+      {/*  <View*/}
+      {/*    style={{*/}
+      {/*      flexDirection:*/}
+      {/*        width >= launchpadReviewBreakpointSM ? "row" : "column",*/}
+      {/*      flexWrap: "wrap",*/}
+      {/*      flex: 1,*/}
+      {/*      gap: layout.spacing_x1_5,*/}
+      {/*    }}*/}
+      {/*  >*/}
+      {/*    <ApplicationCard*/}
+      {/*      title="Derivative"*/}
+      {/*      value={collectionData.is_project_derivative ? "Yes" : "No"}*/}
+      {/*      style={{ maxHeight: 64 }}*/}
+      {/*    />*/}
+      {/*    <ApplicationCard*/}
+      {/*      title="Ready for Mint"*/}
+      {/*      value={collectionData.is_ready_for_mint ? "Yes" : "No"}*/}
+      {/*      style={{ maxHeight: 64 }}*/}
+      {/*    />*/}
+      {/*  </View>*/}
       </View>
 
       <View
