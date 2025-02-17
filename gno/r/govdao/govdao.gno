@@ -42,7 +42,7 @@ func init() {
 	})
 
 	t1Supermajority := daocond.RoleThreshold(0.66, Tier1, dao.Members.HasRole, dao.Members.CountMembersWithRole)
-	supermajority := daocond.GovDaoCondThreshold(0.66, initialRoles, dao.Members.HasRole, dao.Members.CountMembersWithRole)
+	supermajority := daocond.GovDaoCondThreshold(0.66, []string{Tier1, Tier2, Tier3}, dao.Members.HasRole, dao.Members.CountMembersWithRole)
 	majorityWithoutT3 := daocond.GovDaoCondThreshold(0.5, []string{Tier1, Tier2}, dao.Members.HasRole, dao.Members.CountMembersWithRole)
 
 	resources := []*daokit.Resource{
