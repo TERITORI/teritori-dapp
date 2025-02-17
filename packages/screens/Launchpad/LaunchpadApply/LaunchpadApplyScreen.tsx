@@ -34,7 +34,7 @@ const BUTTONS: LargeBoxButtonProps[] = [
   {
     title: "My Collections",
     description: "Manage your collections with available actions and queries.",
-    buttonTitle: "Coming soon",
+    buttonTitle: "Open",
   },
 ];
 
@@ -74,7 +74,6 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
         >
           <LargeBoxButton {...BUTTONS[0]} />
         </CustomPressable>
-
         <OmniLink
           noHoverEffect
           to={{ screen: "LaunchpadCreate" }}
@@ -86,8 +85,13 @@ export const LaunchpadApplyScreen: ScreenFC<"LaunchpadApply"> = () => {
         >
           <LargeBoxButton {...BUTTONS[1]} />
         </OmniLink>
-
-        <LargeBoxButton {...BUTTONS[2]} />
+        <OmniLink
+          noHoverEffect
+          to={{ screen: "LaunchpadMyCollections" }}
+          style={{ flex: 1 }}
+        >
+          <LargeBoxButton {...BUTTONS[2]} />
+        </OmniLink>{" "}
       </View>
     </ScreenContainer>
   );
