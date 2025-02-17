@@ -13,9 +13,7 @@ export const BrandText: React.FC<TextProps & { isTicker?: boolean }> = (
   return (
     <BrandTextBase
       style={[
-        {
-          fontFamily: exoFontFamilyFromFontWeight(flatStyle?.fontWeight),
-        },
+        { fontFamily: exoFontFamilyFromFontWeight(flatStyle?.fontWeight) },
         style,
       ]}
       {...otherProps}

@@ -5,10 +5,17 @@ import { Info } from "@/contracts-clients/rakki";
 import { BuyTicketsButton } from "@/screens/Rakki/components/BuyTickets/BuyTicketsButton";
 import { TicketImage } from "@/screens/Rakki/components/TicketImage";
 
-export const IntroTicketImageButton: FC<{
+interface IntroTicketImageButtonProps {
   networkId: string;
   info: Info;
-}> = ({ networkId, info }) => {
+  onSuccess: () => void;
+}
+
+export const IntroTicketImageButton: FC<IntroTicketImageButtonProps> = ({
+  networkId,
+  info,
+  onSuccess,
+}) => {
   return (
     <View>
       <TicketImage />
@@ -22,7 +29,11 @@ export const IntroTicketImageButton: FC<{
           transform: "rotate(-6deg)",
         }}
       >
-        <BuyTicketsButton networkId={networkId} info={info} />
+        <BuyTicketsButton
+          networkId={networkId}
+          info={info}
+          onSuccess={onSuccess}
+        />
       </View>
     </View>
   );

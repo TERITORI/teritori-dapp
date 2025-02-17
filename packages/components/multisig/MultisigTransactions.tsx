@@ -14,7 +14,7 @@ import {
 import { useMultisigTransactions } from "../../hooks/multisig/useMultisigTransactions";
 import { useMultisigTransactionsCounts } from "../../hooks/multisig/useMultisigTransactionsCounts";
 import { secondaryColor } from "../../utils/style/colors";
-import { fontSemibold28 } from "../../utils/style/fonts";
+import { fontRegular28 } from "../../utils/style/fonts";
 import { headerHeight, layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
 import { EmptyList } from "../EmptyList";
@@ -111,7 +111,7 @@ export const MultisigTransactions: FC<{
       <View>
         {title && (
           <>
-            <BrandText style={fontSemibold28}>{title}</BrandText>
+            <BrandText style={fontRegular28}>{title}</BrandText>
             <SpacerColumn size={1.5} />
           </>
         )}
@@ -120,9 +120,7 @@ export const MultisigTransactions: FC<{
           items={tabs}
           onSelect={setSelectedTab}
           selected={selectedTab}
-          tabContainerStyle={{
-            height: 64,
-          }}
+          tabContainerStyle={{ height: 64 }}
         />
       </View>
 
