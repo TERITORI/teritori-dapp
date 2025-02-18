@@ -50,7 +50,22 @@ export const OptimizedImage: React.FC<
         ? { uri: transformURI(sourceURI, sourceWidth, sourceHeight) }
         : sourceURI) || {};
 
-    return <img crossOrigin="anonymous" src={source.uri || ""} />;
+    return (
+      <Image
+        crossOrigin={
+          source.uri?.includes("mypinata.cloud") ? "anonymous" : undefined
+        }
+        onError={() => {
+          if (shouldUseFallback) {
+            setIsFallbackError(true);
+            return;
+          }
+          setIsError(true);
+        }}
+        source={source}
+        {...passthrough}
+      />
+    );
   },
 );
 
