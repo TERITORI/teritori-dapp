@@ -16,6 +16,7 @@ const (
 	PROPOSAL_HISTORY_PATH = "history"
 	MEMBER_DETAIL_PATH    = "member/{address}"
 	PROPOSAL_DETAIL_PATH  = "proposal/{id}"
+	FALLBACK_DISPLAY_NAME = "Anon"
 )
 
 func (d *DAO) initRenderingRouter() {
@@ -48,7 +49,7 @@ func (d *DAO) renderHomePage(res *mux.ResponseWriter, req *mux.Request) {
 	i := 1
 	d.Members.Members.Iterate("", "", func(key string, value interface{}) bool {
 		res.Write(ufmt.Sprintf("- **Member %d: [%s](%s:%s/%s)**\n\n", i, key, linkPath, "member", key))
-		res.Write(ufmt.Sprintf("	- **Profile:** %s\n", d.GetProfileString(std.Address(key), "DisplayName", "Unknown")))
+		res.Write(ufmt.Sprintf("	- **Profile:** %s\n", d.GetProfileString(std.Address(key), "DisplayName", FALLBACK_DISPLAY_NAME)))
 		res.Write(ufmt.Sprintf(" 	- **Roles:** %s\n\n", strings.Join(d.Members.GetMemberRoles(key), ", ")))
 		i += 1
 		return false
@@ -134,7 +135,7 @@ func (d *DAO) renderMemberDetailPage(res *mux.ResponseWriter, req *mux.Request) 
 
 	res.Write(ufmt.Sprintf("# %s - Member Detail\n\n", name))
 	roles := d.Members.GetMemberRoles(req.GetVar("address"))
-	displayName := d.GetProfileString(std.Address(req.GetVar("address")), "DisplayName", "Unknown")
+	displayName := d.GetProfileString(std.Address(req.GetVar("address")), "DisplayName", FALLBACK_DISPLAY_NAME)
 	bio := d.GetProfileString(std.Address(req.GetVar("address")), "Bio", "No bio")
 	pp := d.GetProfileString(std.Address(req.GetVar("address")), "Avatar", "")
 	res.Write(ufmt.Sprintf("## Profile 👤\n\n"))
