@@ -97,6 +97,7 @@ export const UPPIntro: React.FC<{
             height: "100%",
             width: "100%",
             borderRadius: windowWidth < RESPONSIVE_BREAKPOINT_S ? 0 : 7,
+            objectFit: "cover",
           }}
         />
 
