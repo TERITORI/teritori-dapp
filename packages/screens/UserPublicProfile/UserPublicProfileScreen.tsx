@@ -49,9 +49,9 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   const screenContainerOtherProps: Partial<ScreenContainerProps> =
     useMemo(() => {
       return {
+        isLarge: true,
+        noMargin: true,
         forceNetworkId: network?.id,
-        responsive: true,
-        fullWidth: true,
         footerChildren: <></>,
         headerChildren: (
           <BrandText style={fontSemibold20}>

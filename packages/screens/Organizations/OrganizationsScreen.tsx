@@ -26,8 +26,8 @@ export const OrganizationsScreen: ScreenFC<"Organizations"> = ({
     <ScreenContainer
       headerChildren={<ScreenTitle>DAO List</ScreenTitle>}
       footerChildren={<></>}
+      isLarge
       noMargin
-      fullWidth
       forceNetworkFeatures={[NetworkFeature.Organizations]}
     >
       <ScrollView contentContainerStyle={{ width: "100%" }}>
@@ -54,7 +54,6 @@ const DAOsSection: React.FC<{
   return (
     <View
       style={{
-        paddingHorizontal: layout.contentSpacing,
         paddingTop: layout.topContentSpacingWithHeading,
         width: "100%",
       }}

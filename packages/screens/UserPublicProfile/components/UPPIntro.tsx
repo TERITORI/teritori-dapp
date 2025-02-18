@@ -60,7 +60,7 @@ export const UPPIntro: React.FC<{
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { margin: layout.spacing_x0_75 };
   const [network, userAddress] = parseUserId(userId);
-  const { width } = useMaxResolution();
+  const { width } = useMaxResolution({ isLarge: true });
   const { width: windowWidth } = useWindowDimensions();
   const { data: premiumChannel } = usePremiumChannel(network?.id, userAddress);
   const networkHasPremiumFeature = !!getNetworkFeature(
@@ -259,13 +259,6 @@ export const UPPIntro: React.FC<{
                 size="M"
                 backgroundColor={neutral00}
                 disabled
-                style={{
-                  width: Platform.OS === "web" ? "auto" : 170,
-                  marginRight:
-                    Platform.OS === "web"
-                      ? layout.spacing_x3
-                      : layout.spacing_x4_5,
-                }}
               />
             </>
           )}
