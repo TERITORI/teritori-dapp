@@ -32,6 +32,7 @@ import {
   accountExplorerLink,
   getNetworkFeature,
   NetworkFeature,
+  NetworkKind,
   parseUserId,
 } from "@/networks";
 import { DEFAULT_NAME } from "@/utils/social-feed";
@@ -136,6 +137,18 @@ export const UPPIntro: React.FC<{
                 if (!metadata.twitter_id) return;
                 Linking.openURL(normalizeTwitterId(metadata.twitter_id));
               }}
+            />
+          )}
+          {network?.kind === NetworkKind.Gno && (
+            <SocialButtonSecondary
+              iconSvg={infoSVG}
+              text="Gnoweb"
+              style={socialButtonStyle}
+              onPress={() =>
+                Linking.openURL(
+                  `${network.gnowebURL}${userAddress.startsWith("gno.land/") ? userAddress.substring("gno.land".length) : "/r/teritori/cockpit:u/" + userAddress}`,
+                )
+              }
             />
           )}
           <SocialButtonSecondary

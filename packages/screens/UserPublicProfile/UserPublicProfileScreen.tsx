@@ -39,6 +39,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
     params: { id, tab: tabKey },
   },
 }) => {
+  id = decodeURIComponent(id);
   const navigation = useAppNavigation();
   const [network, userAddress] = parseUserId(id);
   useForceNetworkSelection(network?.id);

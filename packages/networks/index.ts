@@ -513,6 +513,9 @@ export const accountExplorerLink = (
   if (!network?.accountExplorer) {
     return "/";
   }
+  if (network.kind === NetworkKind.Gno && address.includes(".")) {
+    return network.contractExplorer.replace("$address", address);
+  }
   return network.accountExplorer.replace("$address", address);
 };
 

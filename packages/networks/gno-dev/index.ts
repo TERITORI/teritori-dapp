@@ -31,9 +31,12 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   idPrefix: "gnodev",
   chainId: "dev",
   endpoint: "http://127.0.0.1:26657",
-  txExplorer: "https://gnoscan.io/transactions/details?txhash=$hash",
-  accountExplorer: "https://gnoscan.io/accounts/$address",
-  contractExplorer: "https://gnoscan.io/realms/details?path=$address",
+  txExplorer:
+    "https://gnoscan.io/transactions/details?txhash=$hash&type=custom&chainId=dev&rpcUrl=http://127.0.0.1:26657&indexerUrl=http://127.0.0.1:8546",
+  accountExplorer:
+    "https://gnoscan.io/accounts/$address?type=custom&chainId=dev&rpcUrl=http://127.0.0.1:26657&indexerUrl=http://127.0.0.1:8546",
+  contractExplorer:
+    "https://gnoscan.io/realms/details?path=$address&type=custom&chainId=dev&rpcUrl=http://127.0.0.1:26657&indexerUrl=http://127.0.0.1:8546",
   testnet: true,
   backendEndpoint: "http://localhost:9090",
   // backendEndpoint: "https://dapp-backend.testnet.teritori.com",
