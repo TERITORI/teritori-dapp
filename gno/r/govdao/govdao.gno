@@ -33,9 +33,6 @@ func init() {
 		{Address: "g126gx6p6d3da4ymef35ury6874j6kys044r7zlg", Roles: []string{Tier1}},
 		{Address: "g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv", Roles: []string{Tier2}},
 		{Address: "g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", Roles: []string{Tier2}},
-		{Address: "g1ns5vfj5app8sqqgc5jzst79rmahws8p9asfryd", Roles: []string{Tier3}},
-		{Address: "g1jkfwvm7pxr65r75tnyzt0s8k6cfjjdh7533q35", Roles: []string{Tier3}},
-		{Address: "g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r", Roles: []string{Tier3}},
 	}
 	dao = basedao.New(&basedao.Config{
 		Name: "GovDAO",
