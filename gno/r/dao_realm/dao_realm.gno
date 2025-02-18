@@ -25,8 +25,9 @@ func init() {
 	}
 
 	dao = basedao.New(&basedao.Config{
-		Name:             "Demo DAO",
-		Description:      "This is a demo DAO",
+		Name:             "Teritori Core DAO",
+		Description:      "Teritori's team administrative DAO",
+		ImageURI:         "ipfs://bafybeifhfkw2kt3samc4425qr2wncykjkfq2gbfcpkmj4x4lsdt2yk2bfu",
 		Members:          basedao.NewMembersStore(initialRoles, initialMembers),
 		GetProfileString: profile.GetStringField,
 		SetProfileString: profile.SetStringField,

@@ -7,6 +7,7 @@ export const gnoTest5Network: GnoNetworkInfo = {
   displayName: "Gno Test5",
   icon: "gno.svg",
   features: [
+    NetworkFeature.Organizations,
     NetworkFeature.SocialFeed,
     NetworkFeature.UPP,
     NetworkFeature.GnoProjectManager,

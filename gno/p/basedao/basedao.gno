@@ -32,6 +32,12 @@ type Config struct {
 type ProfileStringSetter func(field string, value string) bool
 type ProfileStringGetter func(addr std.Address, field string, def string) string
 
+const EventBaseDAOCreated = "BaseDAOCreated"
+
+func emitBaseDAOCreated() {
+	std.Emit(EventBaseDAOCreated)
+}
+
 func New(conf *Config) *DAO {
 	// XXX: emit events from memberstore
 
@@ -84,6 +90,8 @@ func New(conf *Config) *DAO {
 			dao.Core.SetResource(&daokit.Resource{Handler: m, Condition: conf.InitialCondition})
 		}
 	}
+
+	emitBaseDAOCreated()
 
 	return dao
 }

@@ -284,7 +284,7 @@ publish.multisig-backend:
 
 .PHONY: publish.gno-indexer
 publish.gno-indexer:
-	docker build -f go/cmd/gno_social_feed_indexer/Dockerfile . --platform linux/amd64 -t $(GNO_INDEXER_DOCKER_IMAGE)
+	docker build -f go/cmd/gno-indexer/Dockerfile . --platform linux/amd64 -t $(GNO_INDEXER_DOCKER_IMAGE)
 	docker push $(GNO_INDEXER_DOCKER_IMAGE)
 
 .PHONY: validate-networks

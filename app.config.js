@@ -1,1 +1,1 @@
-module.exports = require("./apps/teritori/app.config.js");
+module.exports = require("./apps/gnotribe/app.config.js");
