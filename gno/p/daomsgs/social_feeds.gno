@@ -9,14 +9,14 @@ type CreatePostFunc func(uint64, uint64, uint64, string) uint64
 
 const MsgCreatePostKind = "gno.land/r/teritori/daomsgs.social_feeds.CreatePost"
 
-type MsgCreatePostDaokit struct {
+type MsgCreatePost struct {
 	FeedID   uint64
 	ParentID uint64
 	Category uint64
 	Metadata string
 }
 
-func (m *MsgCreatePostDaokit) String() string {
+func (m *MsgCreatePost) String() string {
 	buf := ""
 	buf += ufmt.Sprintf("Create post in feed %d", m.FeedID)
 	if m.ParentID != 0 {
@@ -29,11 +29,11 @@ func (m *MsgCreatePostDaokit) String() string {
 
 func NewCreatePostHandler(createPostFunc CreatePostFunc) daokit.MessageHandler {
 	return daokit.NewMessageHandler(MsgCreatePostKind, func(msg interface{}) {
-		message := msg.(*MsgCreatePostDaokit)
+		message := msg.(*MsgCreatePost)
 		createPostFunc(message.FeedID, message.ParentID, message.Category, message.Metadata)
 	})
 }
 
-func NewCreatePostMsg(payload *MsgCreatePostDaokit) daokit.ExecutableMessage {
+func NewCreatePostMsg(payload *MsgCreatePost) daokit.ExecutableMessage {
 	return daokit.NewMessage(MsgCreatePostKind, payload)
 }
