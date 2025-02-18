@@ -1,6 +1,6 @@
 import { CID } from "multiformats";
 import React, { memo, useEffect } from "react";
-import { Image, ImageProps, View, PixelRatio } from "react-native";
+import { StyleSheet, Image, ImageProps, View, PixelRatio } from "react-native";
 
 import { neutral33 } from "../utils/style/colors";
 
@@ -21,12 +21,13 @@ export const OptimizedImage: React.FC<
     width,
     height,
     fallbackURI,
+    style,
     ...passthrough
   }) => {
     const [isError, setIsError] = React.useState(false);
     const [isFallbackError, setIsFallbackError] = React.useState(false);
     const shouldUseFallback = !baseSourceURI || isError;
-    // const sourceURI = shouldUseFallback ? fallbackURI : baseSourceURI;
+    const sourceURI = shouldUseFallback ? fallbackURI : baseSourceURI;
     const sourceWidth = PixelRatio.getPixelSizeForLayoutSize(width);
     const sourceHeight = PixelRatio.getPixelSizeForLayoutSize(height);
 
@@ -38,28 +39,39 @@ export const OptimizedImage: React.FC<
       setIsFallbackError(false);
     }, [fallbackURI]);
 
-    if ((shouldUseFallback && !fallbackURI) || isFallbackError) {
+    if (typeof sourceURI == "string" && sourceURI.startsWith("ipfs://")) {
       return (
-        <View style={[{ backgroundColor: neutral33 }, passthrough.style]} />
+        <img
+          crossOrigin="anonymous"
+          width={sourceWidth}
+          height={sourceHeight}
+          style={StyleSheet.flatten(style) as any}
+          src={transformURI(sourceURI, sourceWidth, sourceHeight)}
+        />
       );
     }
 
-    /*
+    if ((shouldUseFallback && !fallbackURI) || isFallbackError) {
+      return <View style={[{ backgroundColor: neutral33 }, style]} />;
+    }
+
     // imported images are already a valid source object
     const source =
       (typeof sourceURI === "string"
         ? { uri: transformURI(sourceURI, sourceWidth, sourceHeight) }
         : sourceURI) || {};
-      */
 
     return (
       <Image
-        crossOrigin={
-          baseSourceURI?.includes("mypinata.cloud") ? "anonymous" : undefined
-        }
-        source={{
-          uri: transformURI(baseSourceURI || "", sourceWidth, sourceHeight),
+        style={style}
+        onError={() => {
+          if (shouldUseFallback) {
+            setIsFallbackError(true);
+            return;
+          }
+          setIsError(true);
         }}
+        source={source}
         {...passthrough}
       />
     );
