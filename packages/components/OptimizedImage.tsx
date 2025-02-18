@@ -50,7 +50,7 @@ export const OptimizedImage: React.FC<
         ? { uri: transformURI(sourceURI, sourceWidth, sourceHeight) }
         : sourceURI) || {};
 
-    return <img crossOrigin="anonymous" src={sourceURI || ""} />;
+    return <img crossOrigin="anonymous" src={source.uri || ""} />;
   },
 );
 
