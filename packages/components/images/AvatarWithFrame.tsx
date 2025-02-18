@@ -76,7 +76,12 @@ export const AvatarWithFrame: React.FC<{
           sourceURI={image}
           fallbackURI={nameServiceDefaultImage(isDAO, network)}
           style={[
-            { width: imageSize, height: imageSize, backgroundColor: "black" },
+            {
+              width: imageSize,
+              height: imageSize,
+              backgroundColor: "black",
+              objectFit: "cover",
+            },
             isDAO
               ? {
                   borderRadius: imageSize * 0.05,
