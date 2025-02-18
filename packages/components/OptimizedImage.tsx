@@ -93,6 +93,10 @@ const transformURI = (
     return uri;
   }
 
+  if (uri?.startsWith("ipfs://")) {
+    return `https://testnet.mypinata.cloud/ipfs/${uri.substring("ipfs://".length)}?img-width=${Math.round(width)}&img-height=${Math.round(height)}&img-fit=cover`;
+  }
+
   const params = resolveParams(width, height);
 
   return `${process.env.EXPO_PUBLIC_IMG_PROXY_URL}${params}/plain/${encodeURIComponent(

@@ -69,7 +69,6 @@ func New(conf *Config) *DAO {
 
 	if !conf.NoDefaultHandlers {
 		if conf.InitialCondition == nil {
-			// XXX: this won't work because members threshold uses events
 			conf.InitialCondition = daocond.MembersThreshold(0.6, members.IsMember, members.MembersCount)
 		}
 
