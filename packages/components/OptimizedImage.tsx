@@ -64,7 +64,9 @@ export const OptimizedImage: React.FC<
           }
           setIsError(true);
         }}
-        source={{ uri: baseSourceURI || "" }}
+        source={{
+          uri: transformURI(baseSourceURI || "", sourceWidth, sourceHeight),
+        }}
         {...passthrough}
       />
     );
