@@ -45,7 +45,10 @@ export const OptimizedImage: React.FC<
           crossOrigin="anonymous"
           width={sourceWidth}
           height={sourceHeight}
-          style={StyleSheet.flatten(style) as any}
+          style={{
+            ...(StyleSheet.flatten(style) as any),
+            objectFit: "contain",
+          }}
           src={transformURI(sourceURI, sourceWidth, sourceHeight)}
         />
       );
@@ -105,8 +108,9 @@ const transformURI = (
     return uri;
   }
 
+  // XXX: pass gateway token from env to get images in localhost
   if (uri?.startsWith("ipfs://")) {
-    return `https://teritori.mypinata.cloud/ipfs/${uri.substring("ipfs://".length)}?img-width=${Math.round(width)}&img-height=${Math.round(height)}&img-fit=cover`;
+    return `https://teritori.mypinata.cloud/ipfs/${uri.substring("ipfs://".length)}?img-width=${Math.round(width)}&img-height=${Math.round(height)}&img-fit=contain`;
   }
 
   const params = resolveParams(width, height);
