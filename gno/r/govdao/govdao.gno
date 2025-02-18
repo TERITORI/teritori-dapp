@@ -4,6 +4,7 @@ import (
 	"gno.land/p/teritori/basedao"
 	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/daokit"
+	"gno.land/p/teritori/daomsgs"
 	"gno.land/p/teritori/role_manager"
 	"gno.land/r/demo/profile"
 	"gno.land/r/teritori/ghverify"
@@ -68,7 +69,7 @@ func init() {
 			Condition: supermajority,
 		},
 		{
-			Handler:   social_feeds.NewCreatePostDaokitHandler(),
+			Handler:   daomsgs.NewCreatePostHandler(createPostUint64),
 			Condition: supermajority,
 		},
 	}
@@ -97,4 +98,8 @@ func InstantExecute(proposal daokit.ProposalRequest) {
 
 func Render(path string) string {
 	return dao.Render(path)
+}
+
+func createPostUint64(feedID uint64, parentID uint64, category uint64, metadata string) uint64 {
+	return uint64(social_feeds.CreatePost(social_feeds.FeedID(feedID), social_feeds.PostID(parentID), category, metadata))
 }
