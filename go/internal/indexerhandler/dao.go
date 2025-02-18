@@ -268,8 +268,9 @@ func (h *Handler) handleExecuteDAOExecute(e *Message, execMsg *wasmtypes.MsgExec
 			return h.handleExecuteUpdateTNSMetadata(e, syntheticExecMsg)
 		case "create_post":
 			return h.handleExecuteCreatePost(e, syntheticExecMsg)
+		case "deploy_collection":
+			return h.handleExecuteDeployCollection(e, syntheticExecMsg)
 		}
-
 		h.logger.Debug("ignored dao execute sub message with unknown action", zap.String("action", action), zap.String("payload", string(string(subExecMsg.Execute.Msg))), zap.String("tx", e.TxHash), zap.String("dao", dao.ContractAddress), zap.Uint64("proposal-id", daoExecuteMsg.Execute.ProposalID))
 	}
 

@@ -17,9 +17,16 @@ import { GovernanceScreen } from "@/screens/Governance/GovernanceScreen";
 import { GuardiansScreen } from "@/screens/Guardians/GuardiansScreen";
 import { HashtagFeedScreen } from "@/screens/HashtagFeed/HashtagFeedScreen";
 import { HomeScreen } from "@/screens/Home/HomeScreen";
+import { LaunchpadAdministrationOverviewScreen } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadAdministrationOverview/LaunchpadAdministrationOverviewScreen";
+import { LaunchpadApplicationReviewScreen } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplicationReview/LaunchpadApplicationReviewScreen";
+import { LaunchpadApplicationsScreen } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplications/LaunchpadApplicationsScreen";
+import { LaunchpadReadyApplicationsScreen } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadReadyApplications/LaunchpadReadyApplicationsScreen";
 import { LaunchpadApplyScreen } from "@/screens/Launchpad/LaunchpadApply/LaunchpadApplyScreen";
+import { LaunchpadCompleteScreen } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCompleteScreen";
+import { LaunchpadCreateScreen } from "@/screens/Launchpad/LaunchpadApply/LaunchpadCreate/LaunchpadCreateScreen";
+import { LaunchpadMyCollectionsScreen } from "@/screens/Launchpad/LaunchpadApply/LaunchpadMyCollections/LaunchpadMyCollectionsScreen";
 import { LaunchpadScreen } from "@/screens/Launchpad/LaunchpadHome/LaunchpadScreen";
-import { MintCollectionScreen } from "@/screens/Launchpad/MintCollectionScreen";
+import { MintCollectionScreen } from "@/screens/Launchpad/LaunchpadHome/MintCollectionScreen";
 import { LaunchpadERC20CreateSaleScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Sales/LaunchpadERC20CreateSaleScreen";
 import { LaunchpadERC20SalesScreen } from "@/screens/LaunchpadERC20/LaunchpadERC20Sales/LaunchpadERC20SalesScreen";
 import { LaunchpadERC20Screen } from "@/screens/LaunchpadERC20/LaunchpadERC20Screen";
@@ -227,10 +234,33 @@ export const getNormalModeScreens = ({
         component={LaunchpadApplyScreen}
         options={{
           header: () => null,
-          title: screenTitle("Launchpad (Apply)"),
+          title: screenTitle("Apply to Launchpad"),
         }}
       />
-
+      <Nav.Screen
+        name="LaunchpadCreate"
+        component={LaunchpadCreateScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Create Collection"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadComplete"
+        component={LaunchpadCompleteScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Complete Collection"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadMyCollections"
+        component={LaunchpadMyCollectionsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("My Collections"),
+        }}
+      />
       <Nav.Screen
         name="MintCollection"
         component={MintCollectionScreen}
@@ -298,6 +328,38 @@ export const getNormalModeScreens = ({
         options={{
           header: () => null,
           title: screenTitle("Launchpad ERC20 Create Sale"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadAdministrationOverview"
+        component={LaunchpadAdministrationOverviewScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Administration Dashboard"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadApplications"
+        component={LaunchpadApplicationsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Applications"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadReadyApplications"
+        component={LaunchpadReadyApplicationsScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Ready Applications"),
+        }}
+      />
+      <Nav.Screen
+        name="LaunchpadApplicationReview"
+        component={LaunchpadApplicationReviewScreen}
+        options={{
+          header: () => null,
+          title: screenTitle("Launchpad Application Review"),
         }}
       />
 

@@ -66,11 +66,12 @@ func (nb *NetworkBase) GetFeatureCosmWasmNFTsBurner() (*FeatureCosmWasmNFTsBurne
 
 type FeatureCosmWasmNFTLaunchpad struct {
 	*FeatureBase
-	LaunchpadContractAddress string  `json:"launchpadContractAddress"`
-	DefaultMintDenom         string  `json:"defaultMintDenom"`
-	LaunchpadEndpoint        string  `json:"launchpadEndpoint"`
-	CodeId                   float64 `json:"codeId"`
-	NftTr721CodeId           float64 `json:"nftTr721CodeId"`
+	LaunchpadContractAddress         string  `json:"launchpadContractAddress"`
+	DefaultMintDenom                 string  `json:"defaultMintDenom"`
+	LaunchpadEndpoint                string  `json:"launchpadEndpoint"`
+	CodeId                           float64 `json:"codeId"`
+	NftTr721CodeId                   float64 `json:"nftTr721CodeId"`
+	DaoProposalSingleContractAddress string  `json:"daoProposalSingleContractAddress"`
 }
 
 var _ Feature = &FeatureCosmWasmNFTLaunchpad{}

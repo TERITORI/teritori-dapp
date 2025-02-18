@@ -34,11 +34,13 @@ const nftMarketplace: NFTMarketplace = {
 const cosmwasmNftLaunchpadFeature: CosmWasmNFTLaunchpad = {
   type: NetworkFeature.CosmWasmNFTLaunchpad,
   launchpadContractAddress:
-    "tori1te7ku4de0k4rl8lhyuvpmhygaq7k7vy5zpsjq9y638efxsnx3aaqck2utf",
+    "tori1f62uv8zght6vnnq6kh3pg69xca9s03ecwpal7gquupf9knctk25suzf7rq",
   launchpadEndpoint: "https://dapp-backend.testnet.teritori.com",
   nftTr721CodeId: 60,
-  codeId: 71,
+  codeId: 96,
   defaultMintDenom: "utori",
+  daoProposalSingleContractAddress:
+    "tori1huu2ysuct2e9xnmxc28xdwfeflytw2samzp95a2devjqs0qfj6fqx47v57",
 };
 
 const rakkiFeature: CosmWasmRakki = {
@@ -49,7 +51,7 @@ const rakkiFeature: CosmWasmRakki = {
 };
 
 const riotContractAddressGen0 =
-  "tori1r8raaqul4j05qtn0t05603mgquxfl8e9p7kcf7smwzcv2hc5rrlq0vket0";
+  "tori1hzz0s0ucrhdp6tue2lxk3c03nj6f60qy463we7lgx0wudd72ctmstg4wkc";
 const riotContractAddressGen1 = "";
 
 export const teritoriTestnetNetwork: CosmosNetworkInfo = {

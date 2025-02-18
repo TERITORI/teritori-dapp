@@ -2,7 +2,7 @@ import { toUtf8 } from "@cosmjs/encoding";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { isDeliverTxFailure } from "@cosmjs/stargate";
 import Long from "long";
-import React, { useCallback, useMemo, useState } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   StyleProp,
@@ -10,27 +10,24 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   View,
-  ViewStyle,
 } from "react-native";
 import ConfettiCannon from "react-native-confetti-cannon";
 import CountDown from "react-native-countdown-component";
 
-import { NUMBERS_REGEXP } from "./../../utils/regex";
-import balanceSVG from "../../../assets/icons/balance.svg";
-import minusSVG from "../../../assets/icons/minus.svg";
-import plusSVG from "../../../assets/icons/plus.svg";
-import sigmaSVG from "../../../assets/icons/sigma.svg";
-import FlexRow from "../../components/FlexRow";
-import useSelectedWallet from "../../hooks/useSelectedWallet";
-
 import { Coin } from "@/api/teritori-chain/cosmos/base/v1beta1/coin";
+import balanceSVG from "@/assets/icons/balance.svg";
+import minusSVG from "@/assets/icons/minus.svg";
+import plusSVG from "@/assets/icons/plus.svg";
+import sigmaSVG from "@/assets/icons/sigma.svg";
 import { BrandText } from "@/components/BrandText";
 import { ExternalLink } from "@/components/ExternalLink";
+import FlexRow from "@/components/FlexRow";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { TertiaryBadge } from "@/components/badges/TertiaryBadge";
-import { LegacyTertiaryBox } from "@/components/boxes/LegacyTertiaryBox";
+import { Box, BoxStyle } from "@/components/boxes/Box";
+import { TertiaryBox } from "@/components/boxes/TertiaryBox";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { SecondaryButton } from "@/components/buttons/SecondaryButton";
 import { ProgressionCard } from "@/components/cards/ProgressionCard";
@@ -38,13 +35,14 @@ import { CollectionSocialButtons } from "@/components/collections/CollectionSoci
 import { GradientText } from "@/components/gradientText";
 import { DepositWithdrawModal } from "@/components/modals/DepositWithdrawModal";
 import { SpacerRow } from "@/components/spacer";
-import { initialToastError, useFeedbacks } from "@/context/FeedbacksProvider";
+import { initialToast, useFeedbacks } from "@/context/FeedbacksProvider";
 import { useWalletControl } from "@/context/WalletControlProvider";
 import { Wallet } from "@/context/WalletsProvider";
 import { TeritoriMinter__factory } from "@/evm-contracts-clients/teritori-bunker-minter/TeritoriMinter__factory";
 import { useBalances } from "@/hooks/useBalances";
 import { useCanPay } from "@/hooks/useCanPay";
 import { useCollectionInfo } from "@/hooks/useCollectionInfo";
+import useSelectedWallet from "@/hooks/useSelectedWallet";
 import {
   CosmosNetworkInfo,
   EthereumNetworkInfo,
@@ -61,6 +59,7 @@ import { prettyPrice } from "@/utils/coins";
 import { MintPhase } from "@/utils/collection";
 import { getMetaMaskEthereumSigner } from "@/utils/ethereum";
 import { ScreenFC } from "@/utils/navigation";
+import { NUMBERS_REGEXP } from "@/utils/regex";
 import {
   neutral17,
   neutral22,
@@ -75,11 +74,10 @@ import {
   yellowDefault,
 } from "@/utils/style/colors";
 import {
+  fontMedium12,
   fontMedium14,
-  fontSemibold12,
-  fontSemibold14,
-  fontSemibold16,
-  fontSemibold20,
+  fontMedium16,
+  fontMedium20,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
@@ -104,7 +102,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     notFound,
     refetch: refetchCollectionInfo,
   } = useCollectionInfo(id);
-  const { setToastError } = useFeedbacks();
+  const { setToast } = useFeedbacks();
   const { showConnectWalletModal, showNotEnoughFundsModal } =
     useWalletControl();
   const [viewWidth, setViewWidth] = useState(0);
@@ -283,11 +281,13 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
         });
         return;
       }
-      setToastError(initialToastError);
+      setToast(initialToast);
       if (!wallet) {
-        setToastError({
+        setToast({
           title: "Error",
-          message: `no wallet`,
+          message: "no wallet",
+          type: "error",
+          mode: "normal",
         });
         return;
       }
@@ -299,9 +299,11 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
           await ethereumMint(network, wallet);
           break;
         default:
-          setToastError({
+          setToast({
             title: "Error",
             message: `unsupported network ${network?.id}`,
+            type: "error",
+            mode: "normal",
           });
           return;
       }
@@ -311,9 +313,11 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
       setMinted(false);
     } catch (e) {
       if (e instanceof Error) {
-        return setToastError({
+        return setToast({
           title: "Mint failed",
           message: prettyError(e),
+          type: "error",
+          mode: "normal",
         });
       }
       console.error(e);
@@ -326,7 +330,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     cosmosMint,
     ethereumMint,
     network,
-    setToastError,
+    setToast,
     wallet,
     showNotEnoughFundsModal,
   ]);
@@ -421,7 +425,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
               <GradientText
                 gradientType="grayLight"
                 style={[
-                  fontSemibold14,
+                  fontMedium14,
                   {
                     marginBottom: layout.spacing_x3,
                   },
@@ -441,7 +445,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 }}
               />
 
-              <LegacyTertiaryBox noBrokenCorners fullWidth>
+              <Box style={{ borderWidth: 1, borderColor: neutral33 }}>
                 {/* Upper section */}
                 <FlexRow
                   style={{
@@ -477,10 +481,10 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     <SpacerRow size={2} />
 
                     <View style={{ justifyContent: "center" }}>
-                      <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                      <BrandText style={[fontMedium14, { color: neutral77 }]}>
                         Total price:
                       </BrandText>
-                      <BrandText style={fontSemibold16}>
+                      <BrandText style={fontMedium16}>
                         {info.isMintable
                           ? prettyPrice(
                               network?.id,
@@ -513,10 +517,10 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     <SpacerRow size={2} />
 
                     <View style={{ justifyContent: "center" }}>
-                      <BrandText style={[fontSemibold14, { color: neutral77 }]}>
+                      <BrandText style={[fontMedium14, { color: neutral77 }]}>
                         Available balance:
                       </BrandText>
-                      <BrandText style={fontSemibold16}>
+                      <BrandText style={fontMedium16}>
                         {prettyPrice(
                           network?.id,
                           balance?.amount || "0",
@@ -567,7 +571,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                             width: 20,
                             textAlign: "center",
                           },
-                          fontSemibold14,
+                          fontMedium14,
                         ]}
                       />
                       <SpacerRow size={2} />
@@ -631,7 +635,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     )}
                   </View>
                 </FlexRow>
-              </LegacyTertiaryBox>
+              </Box>
 
               {mintTermsConditionsURL && (
                 <View
@@ -642,7 +646,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 >
                   <BrandText
                     style={[
-                      fontSemibold14,
+                      fontMedium14,
                       {
                         color: neutralA3,
                         textDecorationLine: "none",
@@ -655,7 +659,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     gradientType="gray"
                     externalUrl={mintTermsConditionsURL}
                     style={[
-                      fontSemibold14,
+                      fontMedium14,
                       {
                         color: neutral67,
                         textDecorationLine: "none",
@@ -702,7 +706,7 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                 margin: layout.spacing_x2,
               }}
             >
-              <LegacyTertiaryBox style={{ marginBottom: layout.spacing_x5 }}>
+              <TertiaryBox style={{ marginBottom: layout.spacing_x5 }}>
                 {info.image ? (
                   <OptimizedImage
                     sourceURI={info.image}
@@ -729,17 +733,17 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
                     />
                   </View>
                 )}
-              </LegacyTertiaryBox>
+              </TertiaryBox>
 
               <BrandText
-                style={[fontSemibold20, { marginBottom: layout.spacing_x3 }]}
+                style={[fontMedium20, { marginBottom: layout.spacing_x3 }]}
               >
                 Activity
               </BrandText>
               {info.mintStarted ? (
                 <>
                   {info.mintPhases.map((phase, index) => {
-                    return <PresaleActivy key={index} info={phase} />;
+                    return <PresaleActivity key={index} info={phase} />;
                   })}
                   <PublicSaleActivity
                     started={!info.isInPresalePeriod}
@@ -769,36 +773,37 @@ export const MintCollectionScreen: ScreenFC<"MintCollection"> = ({
     );
 };
 
-const AttributesCard: React.FC<{
-  style?: StyleProp<ViewStyle>;
+const AttributesCard: FC<{
+  style?: StyleProp<BoxStyle>;
   label: string;
   value: string;
 }> = ({ style, label, value }) => {
   return (
-    <LegacyTertiaryBox
-      style={style}
-      width={132}
-      height={62}
-      mainContainerStyle={{
-        alignItems: "flex-start",
-        paddingHorizontal: layout.spacing_x1_5,
-        paddingVertical: layout.spacing_x1_75,
-      }}
+    <TertiaryBox
+      style={[
+        {
+          width: 132,
+          height: 62,
+          paddingHorizontal: layout.spacing_x1_5,
+          paddingVertical: layout.spacing_x1_5,
+        },
+        style,
+      ]}
     >
       <BrandText
         style={[
-          fontSemibold12,
+          fontMedium12,
           { color: neutral77, marginBottom: layout.spacing_x0_75 },
         ]}
       >
         {label}
       </BrandText>
       <BrandText style={fontMedium14}>{value}</BrandText>
-    </LegacyTertiaryBox>
+    </TertiaryBox>
   );
 };
 
-const PresaleActivy: React.FC<{
+const PresaleActivity: FC<{
   info: MintPhase;
 }> = ({ info }) => {
   const now = Long.fromNumber(Date.now() / 1000);
@@ -816,13 +821,13 @@ const PresaleActivy: React.FC<{
       >
         <TertiaryBadge label="Presale" />
         {running ? (
-          <BrandText style={[fontSemibold16, { color: primaryColor }]}>
+          <BrandText style={[fontMedium16, { color: primaryColor }]}>
             IN PROGRESS
           </BrandText>
         ) : incoming ? (
           <PhaseCountdown startsAt={info.start.toNumber()} />
         ) : (
-          <BrandText style={[fontSemibold16, { color: yellowDefault }]}>
+          <BrandText style={[fontMedium16, { color: yellowDefault }]}>
             ENDED
           </BrandText>
         )}
@@ -848,13 +853,13 @@ const PresaleActivy: React.FC<{
         >
           <BrandText
             style={[
-              fontSemibold16,
+              fontMedium16,
               { color: neutral77, marginRight: layout.spacing_x0_5 },
             ]}
           >
             Whitelist
           </BrandText>
-          <BrandText style={fontSemibold16}>{info.size.toString()}</BrandText>
+          <BrandText style={fontMedium16}>{info.size.toString()}</BrandText>
 
           <View
             style={{
@@ -870,16 +875,16 @@ const PresaleActivy: React.FC<{
             <>
               <BrandText
                 style={[
-                  fontSemibold16,
+                  fontMedium16,
                   { color: neutral77, marginRight: layout.spacing_x0_5 },
                 ]}
               >
                 Max
               </BrandText>
-              <BrandText style={fontSemibold16}>{maxPerAddress}</BrandText>
+              <BrandText style={fontMedium16}>{maxPerAddress}</BrandText>
               <BrandText
                 style={[
-                  fontSemibold16,
+                  fontMedium16,
                   { color: neutral77, marginLeft: layout.spacing_x0_5 },
                 ]}
               >
@@ -889,7 +894,7 @@ const PresaleActivy: React.FC<{
           ) : (
             <BrandText
               style={[
-                fontSemibold16,
+                fontMedium16,
                 { color: neutral77, marginRight: layout.spacing_x0_5 },
               ]}
             >
@@ -902,13 +907,13 @@ const PresaleActivy: React.FC<{
   );
 };
 
-const PhaseCountdown: React.FC<{
+const PhaseCountdown: FC<{
   onCountdownEnd?: () => void;
   startsAt?: number;
 }> = ({ onCountdownEnd, startsAt }) => {
   const now = Date.now() / 1000;
   return (
-    <BrandText style={[fontSemibold16, { color: pinkDefault }]}>
+    <BrandText style={[fontMedium16, { color: pinkDefault }]}>
       STARTS IN
       <CountDown
         until={(startsAt || now) - now}
@@ -939,7 +944,7 @@ const PhaseCountdown: React.FC<{
   );
 };
 
-const PublicSaleActivity: React.FC<{
+const PublicSaleActivity: FC<{
   started?: boolean;
   startsAt?: number;
   ended: boolean;
@@ -958,11 +963,11 @@ const PublicSaleActivity: React.FC<{
       {!started && !ended ? (
         <PhaseCountdown onCountdownEnd={onCountdownEnd} startsAt={startsAt} />
       ) : running ? (
-        <BrandText style={[fontSemibold16, { color: primaryColor }]}>
+        <BrandText style={[fontMedium16, { color: primaryColor }]}>
           IN PROGRESS
         </BrandText>
       ) : (
-        <BrandText style={[fontSemibold16, { color: yellowDefault }]}>
+        <BrandText style={[fontMedium16, { color: yellowDefault }]}>
           ENDED
         </BrandText>
       )}
@@ -970,7 +975,7 @@ const PublicSaleActivity: React.FC<{
   );
 };
 
-const MintNotStartedActivity: React.FC = () => {
+const MintNotStartedActivity: FC = () => {
   return (
     <View
       style={{

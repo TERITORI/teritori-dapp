@@ -5,7 +5,6 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { View, TouchableOpacity } from "react-native";
 
 import { SubscriptionBottomComponent } from "./SubscriptionBottomComponent";
-import { AccordionComponent } from "../accordion/AccordionComponent";
 
 import addSVG from "@/assets/icons/add-secondary.svg";
 import settingsSVG from "@/assets/icons/settings-primary.svg";
@@ -24,6 +23,7 @@ import { usePremiumChannel } from "@/hooks/feed/usePremiumChannel";
 import useSelectedWallet from "@/hooks/useSelectedWallet";
 import { getNativeCurrency, getNetworkFeature, parseUserId } from "@/networks";
 import { NetworkFeature } from "@/networks/features";
+import { AccordionComponent } from "@/screens/UserPublicProfile/components/accordion/AccordionComponent";
 import { bigDaySeconds } from "@/utils/big-time";
 import { mustGetCw721MembershipSigningClient } from "@/utils/feed/client";
 import { mapTierToFormElement } from "@/utils/feed/premium";
