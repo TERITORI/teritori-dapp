@@ -6,6 +6,8 @@ import (
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/gnoindexerql"
 	"go.uber.org/zap"
+	"golang.org/x/exp/slices"
+	"gorm.io/gorm"
 )
 
 func (client *IndexerQL) SyncDAOs() error {
@@ -33,9 +35,58 @@ func (client *IndexerQL) SyncDAOs() error {
 				ContractAddress: data.Package.Path,
 			}
 
-			err = client.db.Save(&dao).Error
+			membersTxs, err := gnoindexerql.GetDAOMembersTransactions(context.Background(), client.gqlClient, dao.ContractAddress)
 			if err != nil {
 				return err
+			}
+			members := map[string]struct{}{}
+			for _, transaction := range membersTxs.Transactions {
+				for _, ievent := range transaction.Response.Events {
+					event, ok := ievent.(*gnoindexerql.GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEvent)
+					if !ok {
+						client.logger.Error("failed to get data from event", zap.String("hash", transaction.Hash))
+						continue
+					}
+					if event.Pkg_path != dao.ContractAddress {
+						continue
+					}
+					if !slices.Contains([]string{"BaseDAOAddMember", "BaseDAORemoveMember"}, event.Type) {
+						continue
+					}
+					addrIdx := slices.IndexFunc(event.Attrs, func(attr gnoindexerql.GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEventAttrsGnoEventAttribute) bool {
+						return attr.Key == "address"
+					})
+					if addrIdx == -1 {
+						continue
+					}
+					memberAddr := event.Attrs[addrIdx].Value
+					if event.Type == "BaseDAOAddMember" {
+						members[memberAddr] = struct{}{}
+					} else if event.Type == "BaseDAORemoveMember" {
+						delete(members, memberAddr)
+					}
+				}
+			}
+
+			daoMembers := []*indexerdb.DAOMember{}
+			for member := range members {
+				daoMembers = append(daoMembers, &indexerdb.DAOMember{
+					DAONetworkID:       dao.NetworkID,
+					DAOContractAddress: dao.ContractAddress,
+					MemberAddress:      member,
+				})
+			}
+
+			if err := client.db.Transaction(func(tx *gorm.DB) error {
+				if err := tx.Save(&dao).Error; err != nil {
+					return err
+				}
+				if err := tx.Save(daoMembers).Error; err != nil {
+					return err
+				}
+				return nil
+			}); err != nil {
+				client.logger.Error("failed to save dao and members", zap.Error(err), zap.String("hash", transaction.Hash))
 			}
 
 			count += 1

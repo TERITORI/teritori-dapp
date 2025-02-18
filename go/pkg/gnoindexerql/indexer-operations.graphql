@@ -70,3 +70,50 @@ query GetDAOsTransactions($StartBlock: Int!) {
     }
   }
 }
+
+
+
+query GetDAOMembersTransactions($PkgPath: String!) {
+  transactions(
+    filter: {
+      success: true
+      events: [
+        {
+          type: "BaseDAOAddMember"
+          pkg_path: $PkgPath
+        }
+        {
+          type: "BaseDAORemoveMember"
+          pkg_path: $PkgPath
+        }
+      ]
+      from_block_height: 0,
+      to_block_height: 10000000,
+      from_index: 0,
+      to_index: 10000000
+    }
+  ) {
+    index
+    hash
+    success
+    block_height
+    gas_wanted
+    gas_used
+    memo
+    response {
+      data
+      info
+      log
+      events {
+        ... on GnoEvent {
+					type
+          pkg_path
+          attrs {
+            key
+            value
+          }
+        }
+      }
+    }
+  }
+}
