@@ -49,6 +49,7 @@ func init() {
 		Members:           basedao.NewMembersStore(initialRoles, initialMembers),
 		SetProfileString:  profile.SetStringField,
 		GetProfileString:  profile.GetStringField,
+		NoEvents:          true,
 	})
 
 	// XXX: t1Supermajority won't work because daocond.RoleThreshold uses events
