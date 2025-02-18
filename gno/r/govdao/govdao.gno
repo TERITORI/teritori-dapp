@@ -4,9 +4,11 @@ import (
 	"gno.land/p/teritori/basedao"
 	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/daokit"
+	"gno.land/p/teritori/daomsgs"
 	"gno.land/p/teritori/role_manager"
 	"gno.land/r/demo/profile"
 	"gno.land/r/teritori/ghverify"
+	"gno.land/r/teritori/social_feeds"
 )
 
 const (
@@ -32,9 +34,6 @@ func init() {
 		{Address: "g126gx6p6d3da4ymef35ury6874j6kys044r7zlg", Roles: []string{Tier1}},
 		{Address: "g1ld6uaykyugld4rnm63rcy7vju4zx23lufml3jv", Roles: []string{Tier2}},
 		{Address: "g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", Roles: []string{Tier2}},
-		{Address: "g1ns5vfj5app8sqqgc5jzst79rmahws8p9asfryd", Roles: []string{Tier3}},
-		{Address: "g1jkfwvm7pxr65r75tnyzt0s8k6cfjjdh7533q35", Roles: []string{Tier3}},
-		{Address: "g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r", Roles: []string{Tier3}},
 	}
 	dao = basedao.New(&basedao.Config{
 		Name: "GovDAO",
@@ -49,6 +48,7 @@ func init() {
 		Members:           basedao.NewMembersStore(initialRoles, initialMembers),
 		SetProfileString:  profile.SetStringField,
 		GetProfileString:  profile.GetStringField,
+		NoEvents:          true,
 	})
 
 	// XXX: t1Supermajority won't work because daocond.RoleThreshold uses events
@@ -67,6 +67,10 @@ func init() {
 		},
 		{
 			Handler:   basedao.NewEditProfileHandler(profile.SetStringField, nil),
+			Condition: supermajority,
+		},
+		{
+			Handler:   daomsgs.NewCreatePostHandler(createPostUint64),
 			Condition: supermajority,
 		},
 	}
@@ -95,4 +99,8 @@ func InstantExecute(proposal daokit.ProposalRequest) {
 
 func Render(path string) string {
 	return dao.Render(path)
+}
+
+func createPostUint64(feedID uint64, parentID uint64, category uint64, metadata string) uint64 {
+	return uint64(social_feeds.CreatePost(social_feeds.FeedID(feedID), social_feeds.PostID(parentID), category, metadata))
 }
