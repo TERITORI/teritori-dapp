@@ -57,13 +57,6 @@ export const OptimizedImage: React.FC<
         crossOrigin={
           baseSourceURI?.includes("mypinata.cloud") ? "anonymous" : undefined
         }
-        onError={() => {
-          if (shouldUseFallback) {
-            setIsFallbackError(true);
-            return;
-          }
-          setIsError(true);
-        }}
         source={{
           uri: transformURI(baseSourceURI || "", sourceWidth, sourceHeight),
         }}
