@@ -52,6 +52,7 @@ export const OptimizedImage: React.FC<
 
     return (
       <Image
+        crossOrigin="anonymous"
         onError={() => {
           if (shouldUseFallback) {
             setIsFallbackError(true);
