@@ -16,7 +16,7 @@ const (
 	PROPOSAL_HISTORY_PATH = "history"
 	MEMBER_DETAIL_PATH    = "member/{address}"
 	PROPOSAL_DETAIL_PATH  = "proposal/{id}"
-  FALLBACK_DISPLAY_NAME = "Anon"
+	FALLBACK_DISPLAY_NAME = "Anon"
 )
 
 func (d *DAO) initRenderingRouter() {
