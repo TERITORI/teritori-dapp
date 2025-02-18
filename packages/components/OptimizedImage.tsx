@@ -50,20 +50,7 @@ export const OptimizedImage: React.FC<
         ? { uri: transformURI(sourceURI, sourceWidth, sourceHeight) }
         : sourceURI) || {};
 
-    return (
-      <Image
-        crossOrigin="anonymous"
-        onError={() => {
-          if (shouldUseFallback) {
-            setIsFallbackError(true);
-            return;
-          }
-          setIsError(true);
-        }}
-        source={source}
-        {...passthrough}
-      />
-    );
+    return <img crossOrigin="anonymous" src={sourceURI || ""} />;
   },
 );
 
