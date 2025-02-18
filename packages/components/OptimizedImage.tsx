@@ -94,7 +94,7 @@ const transformURI = (
   }
 
   if (uri?.startsWith("ipfs://")) {
-    return `https://testnet.mypinata.cloud/ipfs/${uri.substring("ipfs://".length)}?img-width=${Math.round(width)}&img-height=${Math.round(height)}&img-fit=cover`;
+    return `https://teritori.mypinata.cloud/ipfs/${uri.substring("ipfs://".length)}?img-width=${Math.round(width)}&img-height=${Math.round(height)}&img-fit=cover`;
   }
 
   const params = resolveParams(width, height);
