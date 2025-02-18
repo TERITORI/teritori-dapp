@@ -4,6 +4,7 @@ import (
 	"std"
 
 	"gno.land/p/demo/avl"
+	"gno.land/p/demo/json"
 	"gno.land/p/teritori/role_manager"
 )
 
@@ -125,4 +126,25 @@ func (m *MembersStore) RemoveRoleFromMember(member string, role string) {
 		panic("member does not have the role")
 	}
 	m.RoleManager.RemoveRoleFromUser(std.Address(member), role)
+}
+
+func (m *MembersStore) GetMembersJSON() string {
+	// XXX: replace with protoc-gen-gno
+	members := []*json.Node{}
+	for _, memberID := range m.GetMembers() {
+		roles := []*json.Node{}
+		for _, role := range m.GetMemberRoles(memberID) {
+			roles = append(roles, json.StringNode("", role))
+		}
+		members = append(members, json.ObjectNode("", map[string]*json.Node{
+			"address": json.StringNode("", memberID),
+			"roles":   json.ArrayNode("", roles),
+		}))
+	}
+	node := json.ArrayNode("", members)
+	bz, err := json.Marshal(node)
+	if err != nil {
+		panic(err)
+	}
+	return string(bz)
 }
