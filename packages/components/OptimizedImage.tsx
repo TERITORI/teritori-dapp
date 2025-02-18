@@ -65,6 +65,7 @@ export const OptimizedImage: React.FC<
           }}
           style={{
             objectFit: "contain",
+            borderWidth: 0,
             borderStyle: "solid",
             ...(flatStyle as any),
           }}
