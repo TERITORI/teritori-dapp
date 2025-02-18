@@ -32,7 +32,7 @@ export const gnoTest5Network: GnoNetworkInfo = {
     "https://gnoscan.io/realms/details?path=$address&chainId=test5",
   testnet: true,
   backendEndpoint: "https://dapp-backend.testnet.teritori.com",
-  gnowebURL: "https://gno.land",
+  gnowebURL: "https://test5.gno.land",
   vaultContractAddress: "",
   nameServiceContractAddress: "gno.land/r/demo/users",
   nameServiceDefaultImage:
