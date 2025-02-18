@@ -80,6 +80,8 @@ func New(conf *Config) *DAO {
 			NewRemoveMemberHandler(dao),
 			NewAssignRoleHandler(dao),
 			NewUnassignRoleHandler(dao),
+			daokit.NewAddResourceHandler(dao.Core.Resources),
+			daokit.NewRemoveResourceHandler(dao.Core.Resources),
 		} {
 			dao.Core.SetResource(&daokit.Resource{Handler: m, Condition: conf.InitialCondition})
 		}
