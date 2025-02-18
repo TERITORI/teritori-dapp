@@ -9,7 +9,7 @@ import { neutral33 } from "../utils/style/colors";
  * The width and height props are the source image dimensions, they should not be dynamic, otherwise it will overwelm the resizing proxy
  */
 export const OptimizedImage: React.FC<
-  Omit<ImageProps, "source"> & {
+  Omit<ImageProps, "source" | "crossOrigin"> & {
     width: number;
     height: number;
     sourceURI?: string | null;
@@ -26,7 +26,7 @@ export const OptimizedImage: React.FC<
     const [isError, setIsError] = React.useState(false);
     const [isFallbackError, setIsFallbackError] = React.useState(false);
     const shouldUseFallback = !baseSourceURI || isError;
-    const sourceURI = shouldUseFallback ? fallbackURI : baseSourceURI;
+    // const sourceURI = shouldUseFallback ? fallbackURI : baseSourceURI;
     const sourceWidth = PixelRatio.getPixelSizeForLayoutSize(width);
     const sourceHeight = PixelRatio.getPixelSizeForLayoutSize(height);
 
@@ -44,16 +44,18 @@ export const OptimizedImage: React.FC<
       );
     }
 
+    /*
     // imported images are already a valid source object
     const source =
       (typeof sourceURI === "string"
         ? { uri: transformURI(sourceURI, sourceWidth, sourceHeight) }
         : sourceURI) || {};
+      */
 
     return (
       <Image
         crossOrigin={
-          source.uri?.includes("mypinata.cloud") ? "anonymous" : undefined
+          baseSourceURI?.includes("mypinata.cloud") ? "anonymous" : undefined
         }
         onError={() => {
           if (shouldUseFallback) {
@@ -62,7 +64,7 @@ export const OptimizedImage: React.FC<
           }
           setIsError(true);
         }}
-        source={source}
+        source={{ uri: baseSourceURI || "" }}
         {...passthrough}
       />
     );
