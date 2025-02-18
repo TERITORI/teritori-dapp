@@ -57,7 +57,7 @@ func TestNewDAO(t *testing.T) {
 		}
 	}
 
-	urequire.Equal(t, 5, dao.Core.ResourcesCount(), "expected 5 resources")
+	urequire.Equal(t, 7, dao.Core.ResourcesCount(), "expected 7 resources")
 	urequire.Equal(t, dao.Realm.PkgPath(), daoRealm.PkgPath())
 
 	// XXX: check realm and profile
@@ -724,4 +724,124 @@ func newTestingDAO(t *testing.T, threshold float64, members []Member) *testingDA
 		mockProposalRequest:    mockProposalRequest,
 		unknownProposalRequest: unknownProposalRequest,
 	}
+}
+
+func TestAddRemoveResource(t *testing.T) {
+	resourceType := "newResource"
+	members := []Member{
+		{
+			alice.String(),
+			[]string{"admin"},
+		},
+		{
+			bob.String(),
+			[]string{"admin"},
+		},
+	}
+	tdao := newTestingDAO(t, 0.2, members)
+
+	if !tdao.dao.Members.HasRole(bob.String(), "admin") {
+		t.Errorf("Expected member %s to have role 'admin'", bob.String())
+	}
+
+	mockHandler := daokit.NewMessageHandler(resourceType, func(_ interface{}) {})
+
+	addResourceProposal := daokit.ProposalRequest{
+		Title:       "My Proposal",
+		Description: "My Proposal Description",
+		Message: daokit.NewAddResourceMsg(&daokit.Resource{
+			Handler:   mockHandler,
+			Condition: daocond.MembersThreshold(0.2, tdao.dao.Members.IsMember, tdao.dao.Members.MembersCount),
+		}),
+	}
+	urequire.Equal(t, 8, tdao.dao.Core.ResourcesCount(), "expected 8 resources")
+	std.TestSetOrigCaller(alice)
+	tdao.dao.InstantExecute(addResourceProposal)
+	urequire.Equal(t, 9, tdao.dao.Core.ResourcesCount(), "expected 9 resources")
+
+	removeResourceProposal := daokit.ProposalRequest{
+		Title:       "My Proposal",
+		Description: "My Proposal Description",
+		Message: daokit.NewRemoveResourceMsg(&daokit.Resource{
+			Handler:   mockHandler,
+			Condition: daocond.MembersThreshold(0.2, tdao.dao.Members.IsMember, tdao.dao.Members.MembersCount),
+		}),
+	}
+
+	tdao.dao.InstantExecute(removeResourceProposal)
+
+	urequire.Equal(t, 8, tdao.dao.Core.ResourcesCount(), "expected 8 resources")
+}
+
+func TestAddRemoveResourceInvalidateProposals(t *testing.T) {
+	resourceType := "newResource"
+	members := []Member{
+		{
+			alice.String(),
+			[]string{"admin"},
+		},
+		{
+			bob.String(),
+			[]string{"admin"},
+		},
+	}
+	tdao := newTestingDAO(t, 0.2, members)
+
+	if !tdao.dao.Members.HasRole(bob.String(), "admin") {
+		t.Errorf("Expected member %s to have role 'admin'", bob.String())
+	}
+
+	mockHandler := daokit.NewMessageHandler(resourceType, func(_ interface{}) {})
+
+	addResourceProposal := daokit.ProposalRequest{
+		Title:       "My Proposal",
+		Description: "My Proposal Description",
+		Message: daokit.NewAddResourceMsg(&daokit.Resource{
+			Handler:   mockHandler,
+			Condition: daocond.MembersThreshold(0.2, tdao.dao.Members.IsMember, tdao.dao.Members.MembersCount),
+		}),
+	}
+	std.TestSetOrigCaller(alice)
+	tdao.dao.InstantExecute(addResourceProposal)
+
+	proposalAddMember := daokit.ProposalRequest{
+		Message: daokit.NewMessage(MsgAddMemberKind, nil),
+	}
+
+	newResourceProposal := daokit.ProposalRequest{
+		Message: daokit.NewMessage(resourceType, nil),
+	}
+
+	tdao.dao.Propose(newResourceProposal)
+	tdao.dao.Propose(proposalAddMember)
+
+	// Check proposal is open
+	tdao.dao.Core.ProposalModule.Proposals.Iterate("", "", func(k string, v interface{}) bool {
+		p := v.(*daokit.Proposal)
+		if p.Message.Type() == resourceType {
+			urequire.Equal(t, int(daokit.ProposalStatusOpen), int(p.Status), "expected to be open")
+		} else if p.Message.Type() == MsgAddMemberKind {
+			urequire.Equal(t, int(daokit.ProposalStatusOpen), int(p.Status), "expected to be open")
+		}
+	})
+
+	removeResourceProposal := daokit.ProposalRequest{
+		Title:       "removeResource",
+		Description: "My Proposal Description",
+		Message: daokit.NewRemoveResourceMsg(&daokit.Resource{
+			Handler:   mockHandler,
+			Condition: daocond.MembersThreshold(0.2, tdao.dao.Members.IsMember, tdao.dao.Members.MembersCount),
+		}),
+	}
+	tdao.dao.InstantExecute(removeResourceProposal)
+
+	// proposal should be invalidated
+	tdao.dao.Core.ProposalModule.Proposals.Iterate("", "", func(k string, v interface{}) bool {
+		p := v.(*daokit.Proposal)
+		if p.Message.Type() == resourceType {
+			urequire.Equal(t, int(daokit.ProposalStatusInvalidated), int(p.Status), "expected to be invalidated")
+		} else if p.Message.Type() == MsgAddMemberKind {
+			urequire.Equal(t, int(daokit.ProposalStatusOpen), int(p.Status), "expected to stay open")
+		}
+	})
 }

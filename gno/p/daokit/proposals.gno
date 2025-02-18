@@ -14,6 +14,7 @@ const (
 	ProposalStatusOpen ProposalStatus = iota
 	ProposalStatusPassed
 	ProposalStatusExecuted
+	ProposalStatusInvalidated
 )
 
 func (s ProposalStatus) String() string {
@@ -24,6 +25,8 @@ func (s ProposalStatus) String() string {
 		return "Passed"
 	case ProposalStatusExecuted:
 		return "Executed"
+	case ProposalStatusInvalidated:
+		return "Invalidated"
 	default:
 		return "Unknown"
 	}
@@ -84,6 +87,23 @@ func (p *ProposalModule) GetProposal(id uint64) *Proposal {
 	}
 	proposal := value.(*Proposal)
 	return proposal
+}
+
+func (p *ProposalModule) InvalidateWithResource(resourceType string) {
+	toInvalidate := map[string]*Proposal{}
+
+	p.Proposals.Iterate("", "", func(k string, v interface{}) bool {
+		proposal := v.(*Proposal)
+		if proposal.Status == ProposalStatusOpen && proposal.Message.Type() == resourceType {
+			proposal.Status = ProposalStatusInvalidated
+			toInvalidate[k] = proposal
+		}
+		return false
+	})
+
+	for k, v := range toInvalidate {
+		p.Proposals.Set(k, v)
+	}
 }
 
 func (p *Proposal) UpdateStatus() {
