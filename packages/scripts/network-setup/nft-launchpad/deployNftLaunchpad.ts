@@ -148,7 +148,7 @@ const instantiateNftLaunchpad = async ({
     });
   }
   console.log(
-    "CW ADMIN FACTORY instantiated:",
+    "CW ADMIN FACTORY used:",
     network.cwAdminFactoryContractAddress,
   );
 

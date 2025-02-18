@@ -51,14 +51,13 @@ export const LaunchpadDetails: FC<Props> = ({ collectionForm }) => {
                     : [...projectTypes, item];
                   onChange(selectedProjectTypes);
                 }}
-                label="Project types"
+                label="Project type"
                 sublabel={
                   <BrandText style={[fontMedium13, { color: neutral55 }]}>
                     Multiple answers allowed
                   </BrandText>
                 }
                 style={{ zIndex: 2 }}
-                required
               />
               <ErrorText>
                 {collectionForm.getFieldState("projectTypes").error?.message}
