@@ -1,1 +1,1 @@
-require("./apps/gnotribe/index");
+require("./apps/teritori/index");
