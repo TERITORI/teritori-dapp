@@ -43,11 +43,7 @@ export const OptimizedImage: React.FC<
       return <View style={[{ backgroundColor: neutral33 }, style]} />;
     }
 
-    if (
-      !shouldUseFallback &&
-      typeof sourceURI == "string" &&
-      sourceURI.startsWith("ipfs://")
-    ) {
+    if (typeof sourceURI == "string" && sourceURI.startsWith("ipfs://")) {
       const flatStyle = StyleSheet.flatten(style);
 
       // XXX: we need to use and <img> tag for pinata since the crossOrigin param is mandatory and the one from react-native seems to not be used

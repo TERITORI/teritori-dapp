@@ -37,7 +37,7 @@ export const UserAvatarWithFrame: React.FC<{
   );
 };
 
-export const AvatarWithFrame: React.FC<{
+const AvatarWithFrame: React.FC<{
   networkId: string | undefined;
   image: string | null | undefined;
   size?: AvatarWithFrameSize;
