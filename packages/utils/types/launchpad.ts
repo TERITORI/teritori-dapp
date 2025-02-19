@@ -99,7 +99,7 @@ export const ZodCollectionFormValues = z.object({
     .trim()
     .refine((value) => EMAIL_REGEXP.test(value), DEFAULT_FORM_ERRORS.onlyEmail)
     .optional(),
-  projectTypes: z.array(z.string().trim()),
+  projectTypes: z.array(z.string().trim()).optional(),
   revealTime: z.number().optional(),
   teamDescription: z.string().trim().optional(),
   partnersDescription: z.string().trim().optional(),
