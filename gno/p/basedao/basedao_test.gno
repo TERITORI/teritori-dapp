@@ -749,7 +749,7 @@ func TestAddRemoveResource(t *testing.T) {
 	addResourceProposal := daokit.ProposalRequest{
 		Title:       "My Proposal",
 		Description: "My Proposal Description",
-		Message: daokit.NewAddResourceMsg(&daokit.Resource{
+		Message: daokit.NewSetResourceMsg(&daokit.Resource{
 			Handler:   mockHandler,
 			Condition: daocond.MembersThreshold(0.2, tdao.dao.Members.IsMember, tdao.dao.Members.MembersCount),
 		}),
@@ -796,7 +796,7 @@ func TestAddRemoveResourceInvalidateProposals(t *testing.T) {
 	addResourceProposal := daokit.ProposalRequest{
 		Title:       "My Proposal",
 		Description: "My Proposal Description",
-		Message: daokit.NewAddResourceMsg(&daokit.Resource{
+		Message: daokit.NewSetResourceMsg(&daokit.Resource{
 			Handler:   mockHandler,
 			Condition: daocond.MembersThreshold(0.2, tdao.dao.Members.IsMember, tdao.dao.Members.MembersCount),
 		}),
@@ -823,6 +823,7 @@ func TestAddRemoveResourceInvalidateProposals(t *testing.T) {
 		} else if p.Message.Type() == MsgAddMemberKind {
 			urequire.Equal(t, int(daokit.ProposalStatusOpen), int(p.Status), "expected to be open")
 		}
+		return false
 	})
 
 	removeResourceProposal := daokit.ProposalRequest{
@@ -843,5 +844,6 @@ func TestAddRemoveResourceInvalidateProposals(t *testing.T) {
 		} else if p.Message.Type() == MsgAddMemberKind {
 			urequire.Equal(t, int(daokit.ProposalStatusOpen), int(p.Status), "expected to stay open")
 		}
+		return false
 	})
 }
