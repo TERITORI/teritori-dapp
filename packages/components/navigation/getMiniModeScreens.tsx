@@ -50,7 +50,7 @@ import { MiniWalletScreen } from "@/screens/Mini/Wallet/MiniWalletScreen";
 import SelectTokenScreen from "@/screens/Mini/Wallet/SelectTokenScreen";
 import SendToriScreen from "@/screens/Mini/Wallet/SendToriScreen";
 import SendingToriScreen from "@/screens/Mini/Wallet/SendingToriScreen";
-import TransactionDetailScreen from "@/screens/Mini/Wallet/TransactionDetailScreen";
+import { TransactionDetailScreen } from "@/screens/Mini/Wallet/TransactionDetailScreen";
 import { CreatePasswordWallet } from "@/screens/Wallet/Screens/CreatePasswordWallet";
 import { CreateWalletScreen } from "@/screens/Wallet/Screens/CreateWalletScreen";
 import { selectIsChatActivated } from "@/store/slices/message";
