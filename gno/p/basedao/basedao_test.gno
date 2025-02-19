@@ -847,3 +847,49 @@ func TestAddRemoveResourceInvalidateProposals(t *testing.T) {
 		return false
 	})
 }
+
+func TestAddCustomReource(t *testing.T) {
+	resourceType := "killSwitch"
+	members := []Member{
+		{
+			alice.String(),
+			[]string{"admin"},
+		},
+		{
+			bob.String(),
+			[]string{"admin"},
+		},
+	}
+	tdao := newTestingDAO(t, 0.2, members)
+
+	if !tdao.dao.Members.HasRole(bob.String(), "admin") {
+		t.Errorf("Expected member %s to have role 'admin'", bob.String())
+	}
+
+	addResourceProposal := daokit.ProposalRequest{
+		Title:       "My Proposal",
+		Description: "My Proposal Description",
+		Message: daokit.NewSetResourceMsg(&daokit.Resource{
+			Handler: daokit.NewCustomHandler(resourceType, func() {
+				tdao.dao = nil
+			}),
+			Condition: daocond.MembersThreshold(0.2, tdao.dao.Members.IsMember, tdao.dao.Members.MembersCount),
+		}),
+	}
+	std.TestSetOrigCaller(alice)
+	tdao.dao.InstantExecute(addResourceProposal)
+
+	if tdao.dao == nil {
+		t.Error("dao should still be alive")
+	}
+
+	proposalCallCustomResource := daokit.ProposalRequest{
+		Message: daokit.NewMessage(resourceType, nil),
+	}
+
+	tdao.dao.InstantExecute(proposalCallCustomResource)
+
+	if tdao.dao != nil {
+		t.Error("dao should have been killed")
+	}
+}

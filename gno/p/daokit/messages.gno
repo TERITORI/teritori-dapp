@@ -102,3 +102,23 @@ func NewRemoveResourceHandler(d *Core) MessageHandler {
 func NewRemoveResourceMsg(payload *Resource) ExecutableMessage {
 	return NewMessage(MsgRemoveResourceKind, payload)
 }
+
+func NewCustomHandler(resourceType string, cb func()) MessageHandler {
+	return &CustomMessage{
+		cb:           cb,
+		resourceType: resourceType,
+	}
+}
+
+type CustomMessage struct {
+	cb           func()
+	resourceType string
+}
+
+func (m *CustomMessage) Execute(message ExecutableMessage) {
+	m.cb()
+}
+
+func (m *CustomMessage) Type() string {
+	return m.resourceType
+}
