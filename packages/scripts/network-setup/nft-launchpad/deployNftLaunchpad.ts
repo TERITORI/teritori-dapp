@@ -147,10 +147,7 @@ const instantiateNftLaunchpad = async ({
       wallet,
     });
   }
-  console.log(
-    "CW ADMIN FACTORY used:",
-    network.cwAdminFactoryContractAddress,
-  );
+  console.log("CW ADMIN FACTORY used:", network.cwAdminFactoryContractAddress);
 
   // DA0DA0
   if (

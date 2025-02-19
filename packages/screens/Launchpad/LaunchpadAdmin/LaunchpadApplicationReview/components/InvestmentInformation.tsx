@@ -2,7 +2,6 @@ import React from "react";
 import { View, useWindowDimensions } from "react-native";
 
 import { ApplicationCard } from "./ApplicationCard";
-import { launchpadReviewBreakpointSM } from "../LaunchpadApplicationReviewScreen";
 
 import { BrandText } from "@/components/BrandText";
 import { launchpadReviewBreakpointM } from "@/screens/Launchpad/LaunchpadAdmin/LaunchpadApplicationReview/LaunchpadApplicationReviewScreen";

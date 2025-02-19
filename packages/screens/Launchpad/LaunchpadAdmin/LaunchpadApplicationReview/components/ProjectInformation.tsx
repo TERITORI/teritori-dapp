@@ -2,10 +2,7 @@ import React from "react";
 import { useWindowDimensions, View } from "react-native";
 
 import { ApplicationCard } from "./ApplicationCard";
-import {
-  launchpadReviewBreakpointS,
-  launchpadReviewBreakpointSM,
-} from "../LaunchpadApplicationReviewScreen";
+import { launchpadReviewBreakpointS } from "../LaunchpadApplicationReviewScreen";
 
 import { BrandText } from "@/components/BrandText";
 import { fontSemibold20 } from "@/utils/style/fonts";
@@ -66,26 +63,26 @@ export const ProjectInformation: React.FC<{
         {/*  />*/}
         {/*</View>*/}
 
-      {/*  <View*/}
-      {/*    style={{*/}
-      {/*      flexDirection:*/}
-      {/*        width >= launchpadReviewBreakpointSM ? "row" : "column",*/}
-      {/*      flexWrap: "wrap",*/}
-      {/*      flex: 1,*/}
-      {/*      gap: layout.spacing_x1_5,*/}
-      {/*    }}*/}
-      {/*  >*/}
-      {/*    <ApplicationCard*/}
-      {/*      title="Derivative"*/}
-      {/*      value={collectionData.is_project_derivative ? "Yes" : "No"}*/}
-      {/*      style={{ maxHeight: 64 }}*/}
-      {/*    />*/}
-      {/*    <ApplicationCard*/}
-      {/*      title="Ready for Mint"*/}
-      {/*      value={collectionData.is_ready_for_mint ? "Yes" : "No"}*/}
-      {/*      style={{ maxHeight: 64 }}*/}
-      {/*    />*/}
-      {/*  </View>*/}
+        {/*  <View*/}
+        {/*    style={{*/}
+        {/*      flexDirection:*/}
+        {/*        width >= launchpadReviewBreakpointSM ? "row" : "column",*/}
+        {/*      flexWrap: "wrap",*/}
+        {/*      flex: 1,*/}
+        {/*      gap: layout.spacing_x1_5,*/}
+        {/*    }}*/}
+        {/*  >*/}
+        {/*    <ApplicationCard*/}
+        {/*      title="Derivative"*/}
+        {/*      value={collectionData.is_project_derivative ? "Yes" : "No"}*/}
+        {/*      style={{ maxHeight: 64 }}*/}
+        {/*    />*/}
+        {/*    <ApplicationCard*/}
+        {/*      title="Ready for Mint"*/}
+        {/*      value={collectionData.is_ready_for_mint ? "Yes" : "No"}*/}
+        {/*      style={{ maxHeight: 64 }}*/}
+        {/*    />*/}
+        {/*  </View>*/}
       </View>
 
       <View

@@ -134,7 +134,7 @@ export const useCreateCollection = () => {
           symbol: collectionFormValues.symbol,
           website_link: collectionFormValues.websiteLink || "",
           contact_email: collectionFormValues.email || "",
-          project_type: collectionFormValues.projectTypes.join() || "",
+          project_type: collectionFormValues.projectTypes?.join() || "",
           tokens_count: assetsMetadataFormsValues?.assetsMetadatas?.length || 0,
           reveal_time: collectionFormValues.revealTime || 0,
           team_desc: collectionFormValues.teamDescription || "",
