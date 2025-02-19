@@ -7,6 +7,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
+import { z } from "zod";
 
 import { ReviewCollapsable } from "./../ReviewCollapsable";
 import { ReviewCollapsableItem } from "./../ReviewCollapsableItem";
@@ -24,17 +25,17 @@ import { tinyAddress } from "@/utils/text";
 import {
   ConfigureVotingFormType,
   CreateDaoFormType,
-  RolesMemberSettingFormType,
-  RolesSettingFormType,
   TokenSettingFormType,
+  zodRoleObject,
+  zodRolesMemberObject,
 } from "@/utils/types/organizations";
 
 interface RolesReviewInformationSectionProps {
   organizationData?: CreateDaoFormType;
   votingSettingData?: ConfigureVotingFormType;
   tokenSettingData?: TokenSettingFormType;
-  memberSettingData?: RolesMemberSettingFormType;
-  rolesSettingData?: RolesSettingFormType;
+  memberSettingData?: z.infer<typeof zodRolesMemberObject>[];
+  rolesSettingData?: z.infer<typeof zodRoleObject>[];
   onSubmit: () => void;
 }
 
@@ -164,7 +165,7 @@ export const RolesReviewInformationSection: React.FC<
 
       <SpacerColumn size={2.5} />
       <ReviewCollapsable title="Roles settings">
-        {rolesSettingData?.roles?.map((role, index) => (
+        {rolesSettingData?.map((role, index) => (
           <View key={role.name} style={fillCStyle}>
             <ReviewCollapsableItem
               title={`ROLE #${index + 1}`}
@@ -174,7 +175,7 @@ export const RolesReviewInformationSection: React.FC<
                 </BrandText>
               )}
             />
-            {rolesSettingData?.roles.length !== index + 1 && (
+            {rolesSettingData?.length !== index + 1 && (
               <SpacerColumn size={1} />
             )}
           </View>
@@ -183,7 +184,7 @@ export const RolesReviewInformationSection: React.FC<
       <SpacerColumn size={2.5} />
 
       <ReviewCollapsable title="Member settings">
-        {memberSettingData?.members.map((member, index) => (
+        {memberSettingData?.map((member, index) => (
           <View key={member.addr} style={fillCStyle}>
             <ReviewCollapsableItem
               title={`MEMBER #${index + 1}`}

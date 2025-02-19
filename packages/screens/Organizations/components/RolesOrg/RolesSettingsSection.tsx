@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { UseFieldArrayAppend } from "react-hook-form";
 import { Pressable, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
+import { z } from "zod";
 
 import { RolesModalCreateRole } from "./RolesModalCreateRole";
 import trashSVG from "../../../../../assets/icons/trash.svg";
@@ -22,62 +23,39 @@ import { fontSemibold28 } from "@/utils/style/fonts";
 import { layout, screenContentMaxWidthLarge } from "@/utils/style/layout";
 import {
   ROLES_BASED_ORGANIZATION_STEPS,
-  RolesSettingFormType,
+  RolesFormType,
+  zodRoleObject,
 } from "@/utils/types/organizations";
 
 interface RolesSettingsSectionProps {
-  onSubmit: (form: RolesSettingFormType) => void;
+  roles: z.infer<typeof zodRoleObject>[];
+  remove: (index?: number | number[] | undefined) => void;
+  append: UseFieldArrayAppend<RolesFormType>;
+  handleSubmit: () => void;
 }
 
 export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
-  onSubmit,
+  roles,
+  remove,
+  append,
+  handleSubmit,
 }) => {
-  const {
-    handleSubmit,
-    control,
-    unregister,
-    register,
-    setValue,
-    resetField,
-    getValues,
-  } = useForm<RolesSettingFormType>();
   const [modalVisible, setModalVisible] = useState(false);
-  const [rolesIndexes, setRolesIndexes] = useState<number[]>([]);
-  const [resources, setResources] =
-    useState<{ name: string; resources: string[]; value: boolean }[]>(
-      fakeResources,
-    );
 
-  const removeRoleField = (id: number, index: number) => {
-    unregister(`roles.${index}.name`);
-    unregister(`roles.${index}.color`);
-    unregister(`roles.${index}.resources`);
-    if (rolesIndexes.length > 0) {
-      const copyIndex = [...rolesIndexes].filter((i) => i !== id);
-      setRolesIndexes(copyIndex);
-    }
-  };
-
-  const resetModal = () => {
-    resetField(`roles.${rolesIndexes.length}.name`);
-    resetField(`roles.${rolesIndexes.length}.color`);
-    resetField(`roles.${rolesIndexes.length}.resources`);
+  const removeRoleField = (index: number) => {
+    remove(index);
   };
 
   const onOpenModal = () => {
-    resetModal();
-    setResources(fakeResources.map((r) => ({ ...r, value: false })));
     setModalVisible(true);
   };
 
-  const addRoleField = () => {
-    register(`roles.${rolesIndexes.length}.resources`);
-    const selectedResources = resources
-      .filter((r) => r.value)
-      .flatMap((r) => r.resources);
-    setValue(`roles.${rolesIndexes.length}.resources`, selectedResources);
-    console.log(`Selected resources: ${selectedResources}`);
-    setRolesIndexes([...rolesIndexes, Math.floor(Math.random() * 200000)]);
+  const addRoleField = (name: string, color: string, resources: string[]) => {
+    append({
+      name,
+      color,
+      resources,
+    });
     setModalVisible(false);
   };
 
@@ -85,21 +63,11 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
     setModalVisible(false);
   };
 
-  const onCheckboxChange = (index: number) => {
-    const copyResources = [...resources];
-    copyResources[index].value = !copyResources[index].value;
-    setResources(copyResources);
-  };
-
   return (
     <View style={{ flex: 1 }}>
       <RolesModalCreateRole
         modalVisible={modalVisible}
-        rolesIndexes={rolesIndexes}
-        resources={resources}
-        control={control}
         onCloseModal={onCloseModal}
-        onCheckboxChange={onCheckboxChange}
         addRoleField={addRoleField}
       />
       <ScrollView
@@ -123,16 +91,16 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
           <TableWrapper horizontalScrollBreakpoint={800}>
             <TableHeader columns={columns} />
             <FlatList
-              data={rolesIndexes}
+              data={roles}
               renderItem={({ item, index }) => {
-                const role = getValues(`roles.${index}`);
+                const role = item;
 
                 if (!role) {
                   return null;
                 }
 
                 return (
-                  <View key={item} style={{ flex: 1 }}>
+                  <View key={item.name} style={{ flex: 1 }}>
                     <RoleTableRow
                       role={{
                         name: role.name || "undefined",
@@ -140,7 +108,6 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
                         resources: role.resources,
                       }}
                       removeRoleField={removeRoleField}
-                      id={item}
                       index={index}
                     />
                     <SpacerColumn size={1} />
@@ -167,7 +134,7 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
         <PrimaryButton
           size="M"
           text={`Next: ${ROLES_BASED_ORGANIZATION_STEPS[3]}`}
-          onPress={handleSubmit(onSubmit)}
+          onPress={handleSubmit}
           testID="roles-settings-next"
         />
       </View>
@@ -177,10 +144,9 @@ export const RolesSettingsSection: React.FC<RolesSettingsSectionProps> = ({
 
 const RoleTableRow: React.FC<{
   role: { name: string; color: string; resources: string[] | undefined };
-  removeRoleField: (id: number, index: number) => void;
-  id: number;
+  removeRoleField: (index: number) => void;
   index: number;
-}> = ({ role, removeRoleField, id, index }) => {
+}> = ({ role, removeRoleField, index }) => {
   return (
     <TableRow>
       <TableTextCell
@@ -216,7 +182,7 @@ const RoleTableRow: React.FC<{
         <View>
           <Pressable
             onPress={() => {
-              removeRoleField(id, index);
+              removeRoleField(index);
             }}
           >
             <SVG source={trashSVG} width={32} height={32} style={{}} />
@@ -249,47 +215,3 @@ const columns: TableColumns = {
     minWidth: 30,
   },
 };
-
-// TODO: Create a hook to get all the resources
-const fakeResources = [
-  {
-    name: "Organizations",
-    resources: [],
-    value: false,
-  },
-  {
-    name: "Social Feed",
-    resources: ["gno.land/r/teritori/social_feeds.CreatePost"],
-    value: false,
-  },
-  {
-    name: "Marketplace",
-    resources: [],
-    value: false,
-  },
-  {
-    name: "Launchpad NFT",
-    resources: [],
-    value: false,
-  },
-  {
-    name: "Launchpad ERC20",
-    resources: [],
-    value: false,
-  },
-  {
-    name: "Name Service",
-    resources: [],
-    value: false,
-  },
-  {
-    name: "Multisig Wallet",
-    resources: [],
-    value: false,
-  },
-  {
-    name: "Projects",
-    resources: [],
-    value: false,
-  },
-];
