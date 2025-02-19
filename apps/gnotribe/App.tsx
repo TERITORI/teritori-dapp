@@ -5,7 +5,7 @@ import AppRoot from "@/dapp-root/App";
 const config: AppConfig = {
   disableBuyTokensButton: true,
   disableDAppStore: true,
-  forceNetworkList: ["gno-test5", "gno-portal", "gno-dev", "gno-zenao"],
+  forceNetworkList: ["gno-test5", "gno-zenao"],
   forceDAppsList: ["feed", "organizations"],
   defaultNetworkId: "gno-test5",
   homeScreen: "Feed",
