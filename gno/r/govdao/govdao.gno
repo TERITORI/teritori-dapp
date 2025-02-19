@@ -43,6 +43,7 @@ func init() {
 			"Gnoland language, network and ecosystem. The only way to become a " +
 			"member of GovDAO is to actively participate in coding, tooling, " +
 			"improving, securing or expanding Gnoland and its common tools.",
+		ImageURI:          "ipfs://bafkreigqm3i4urywxohvpkbz5sgxosiogwn433ufmzz7eqldjxoi6xmwma",
 		NoDefaultHandlers: true,
 		Members:           basedao.NewMembersStore(initialRoles, initialMembers),
 		SetProfileString:  profile.SetStringField,

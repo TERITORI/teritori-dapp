@@ -10,6 +10,703 @@ import (
 	"github.com/Khan/genqlient/graphql"
 )
 
+// GetDAOMembersTransactionsResponse is returned by GetDAOMembersTransactions on success.
+type GetDAOMembersTransactionsResponse struct {
+	// Retrieves a list of Transactions that match the given filter criteria. If the result is incomplete due to errors, both partial results and errors are returned.
+	Transactions []GetDAOMembersTransactionsTransactionsTransaction `json:"transactions"`
+}
+
+// GetTransactions returns GetDAOMembersTransactionsResponse.Transactions, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsResponse) GetTransactions() []GetDAOMembersTransactionsTransactionsTransaction {
+	return v.Transactions
+}
+
+// GetDAOMembersTransactionsTransactionsTransaction includes the requested fields of the GraphQL type Transaction.
+// The GraphQL type's documentation follows.
+//
+// Defines a transaction within a block, detailing its execution specifics and content.
+type GetDAOMembersTransactionsTransactionsTransaction struct {
+	// A sequential index representing the order of this Transaction within its Block. Unique within the context of its Block.
+	Index int `json:"index"`
+	// Hash from Transaction content in base64 encoding.
+	Hash string `json:"hash"`
+	// The success can determine whether the transaction succeeded or failed.
+	Success bool `json:"success"`
+	// The height of the Block in which this Transaction is included. Links the Transaction to its containing Block.
+	Block_height int `json:"block_height"`
+	// The declared amount of computational effort the sender is willing to pay for executing this Transaction.
+	Gas_wanted int `json:"gas_wanted"`
+	// The actual amount of computational effort consumed to execute this Transaction. It could be less or equal to `gas_wanted`.
+	Gas_used int `json:"gas_used"`
+	// `memo` are string information stored within a transaction.
+	// `memo` can be utilized to find or distinguish transactions.
+	// For example, when trading a specific exchange, you would utilize the memo field of the transaction.
+	Memo string `json:"memo"`
+	// `response` is the processing result of the transaction.
+	// It has `log`, `info`, `error`, and `data`.
+	Response GetDAOMembersTransactionsTransactionsTransactionResponse `json:"response"`
+}
+
+// GetIndex returns GetDAOMembersTransactionsTransactionsTransaction.Index, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransaction) GetIndex() int { return v.Index }
+
+// GetHash returns GetDAOMembersTransactionsTransactionsTransaction.Hash, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransaction) GetHash() string { return v.Hash }
+
+// GetSuccess returns GetDAOMembersTransactionsTransactionsTransaction.Success, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransaction) GetSuccess() bool { return v.Success }
+
+// GetBlock_height returns GetDAOMembersTransactionsTransactionsTransaction.Block_height, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransaction) GetBlock_height() int {
+	return v.Block_height
+}
+
+// GetGas_wanted returns GetDAOMembersTransactionsTransactionsTransaction.Gas_wanted, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransaction) GetGas_wanted() int { return v.Gas_wanted }
+
+// GetGas_used returns GetDAOMembersTransactionsTransactionsTransaction.Gas_used, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransaction) GetGas_used() int { return v.Gas_used }
+
+// GetMemo returns GetDAOMembersTransactionsTransactionsTransaction.Memo, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransaction) GetMemo() string { return v.Memo }
+
+// GetResponse returns GetDAOMembersTransactionsTransactionsTransaction.Response, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransaction) GetResponse() GetDAOMembersTransactionsTransactionsTransactionResponse {
+	return v.Response
+}
+
+// GetDAOMembersTransactionsTransactionsTransactionResponse includes the requested fields of the GraphQL type TransactionResponse.
+// The GraphQL type's documentation follows.
+//
+// `TransactionResponse` is the processing result of the transaction.
+// It has `log`, `info`, `error`, and `data`.
+type GetDAOMembersTransactionsTransactionsTransactionResponse struct {
+	// The response data associated with the Transaction execution, if any.
+	Data string `json:"data"`
+	// The Info associated with the Transaction execution, if any.
+	Info string `json:"info"`
+	// The log value associated with the Transaction execution, if any.
+	Log string `json:"log"`
+	// The emitted events associated with the transaction execution, if any.
+	Events []GetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent `json:"-"`
+}
+
+// GetData returns GetDAOMembersTransactionsTransactionsTransactionResponse.Data, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransactionResponse) GetData() string { return v.Data }
+
+// GetInfo returns GetDAOMembersTransactionsTransactionsTransactionResponse.Info, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransactionResponse) GetInfo() string { return v.Info }
+
+// GetLog returns GetDAOMembersTransactionsTransactionsTransactionResponse.Log, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransactionResponse) GetLog() string { return v.Log }
+
+// GetEvents returns GetDAOMembersTransactionsTransactionsTransactionResponse.Events, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransactionResponse) GetEvents() []GetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent {
+	return v.Events
+}
+
+func (v *GetDAOMembersTransactionsTransactionsTransactionResponse) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetDAOMembersTransactionsTransactionsTransactionResponse
+		Events []json.RawMessage `json:"events"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetDAOMembersTransactionsTransactionsTransactionResponse = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Events
+		src := firstPass.Events
+		*dst = make(
+			[]GetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			if len(src) != 0 && string(src) != "null" {
+				err = __unmarshalGetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent(
+					src, dst)
+				if err != nil {
+					return fmt.Errorf(
+						"unable to unmarshal GetDAOMembersTransactionsTransactionsTransactionResponse.Events: %w", err)
+				}
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalGetDAOMembersTransactionsTransactionsTransactionResponse struct {
+	Data string `json:"data"`
+
+	Info string `json:"info"`
+
+	Log string `json:"log"`
+
+	Events []json.RawMessage `json:"events"`
+}
+
+func (v *GetDAOMembersTransactionsTransactionsTransactionResponse) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetDAOMembersTransactionsTransactionsTransactionResponse) __premarshalJSON() (*__premarshalGetDAOMembersTransactionsTransactionsTransactionResponse, error) {
+	var retval __premarshalGetDAOMembersTransactionsTransactionsTransactionResponse
+
+	retval.Data = v.Data
+	retval.Info = v.Info
+	retval.Log = v.Log
+	{
+
+		dst := &retval.Events
+		src := v.Events
+		*dst = make(
+			[]json.RawMessage,
+			len(src))
+		for i, src := range src {
+			dst := &(*dst)[i]
+			var err error
+			*dst, err = __marshalGetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent(
+				&src)
+			if err != nil {
+				return nil, fmt.Errorf(
+					"unable to marshal GetDAOMembersTransactionsTransactionsTransactionResponse.Events: %w", err)
+			}
+		}
+	}
+	return &retval, nil
+}
+
+// GetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent includes the requested fields of the GraphQL interface Event.
+//
+// GetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent is implemented by the following types:
+// GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEvent
+// GetDAOMembersTransactionsTransactionsTransactionResponseEventsUnknownEvent
+type GetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent interface {
+	implementsGraphQLInterfaceGetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() string
+}
+
+func (v *GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEvent) implementsGraphQLInterfaceGetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent() {
+}
+func (v *GetDAOMembersTransactionsTransactionsTransactionResponseEventsUnknownEvent) implementsGraphQLInterfaceGetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent() {
+}
+
+func __unmarshalGetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent(b []byte, v *GetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "GnoEvent":
+		*v = new(GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEvent)
+		return json.Unmarshal(b, *v)
+	case "UnknownEvent":
+		*v = new(GetDAOMembersTransactionsTransactionsTransactionResponseEventsUnknownEvent)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing Event.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for GetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalGetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent(v *GetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEvent:
+		typename = "GnoEvent"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEvent
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDAOMembersTransactionsTransactionsTransactionResponseEventsUnknownEvent:
+		typename = "UnknownEvent"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDAOMembersTransactionsTransactionsTransactionResponseEventsUnknownEvent
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for GetDAOMembersTransactionsTransactionsTransactionResponseEventsEvent: "%T"`, v)
+	}
+}
+
+// GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEvent includes the requested fields of the GraphQL type GnoEvent.
+// The GraphQL type's documentation follows.
+//
+// `GnoEvent` is the event information exported by the Gno VM.
+// It has `type`, `pkg_path`, `func`, and `attrs`.
+type GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEvent struct {
+	Typename string `json:"__typename"`
+	// `type` is the type of transaction event emitted.
+	Type string `json:"type"`
+	// `pkg_path` is the path to the package that emitted the event.
+	Pkg_path string `json:"pkg_path"`
+	// `attrs` is the event's attribute information.
+	Attrs []GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEventAttrsGnoEventAttribute `json:"attrs"`
+}
+
+// GetTypename returns GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEvent.Typename, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEvent) GetTypename() string {
+	return v.Typename
+}
+
+// GetType returns GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEvent.Type, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEvent) GetType() string {
+	return v.Type
+}
+
+// GetPkg_path returns GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEvent.Pkg_path, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEvent) GetPkg_path() string {
+	return v.Pkg_path
+}
+
+// GetAttrs returns GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEvent.Attrs, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEvent) GetAttrs() []GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEventAttrsGnoEventAttribute {
+	return v.Attrs
+}
+
+// GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEventAttrsGnoEventAttribute includes the requested fields of the GraphQL type GnoEventAttribute.
+// The GraphQL type's documentation follows.
+//
+// `GnoEventAttribute` is the attributes that the event has.
+// It has `key` and `value`.
+type GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEventAttrsGnoEventAttribute struct {
+	// The key of the event attribute.
+	Key string `json:"key"`
+	// The value of the event attribute.
+	Value string `json:"value"`
+}
+
+// GetKey returns GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEventAttrsGnoEventAttribute.Key, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEventAttrsGnoEventAttribute) GetKey() string {
+	return v.Key
+}
+
+// GetValue returns GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEventAttrsGnoEventAttribute.Value, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransactionResponseEventsGnoEventAttrsGnoEventAttribute) GetValue() string {
+	return v.Value
+}
+
+// GetDAOMembersTransactionsTransactionsTransactionResponseEventsUnknownEvent includes the requested fields of the GraphQL type UnknownEvent.
+// The GraphQL type's documentation follows.
+//
+// `UnknownEvent` is an unknown event type.
+// It has `value`.
+type GetDAOMembersTransactionsTransactionsTransactionResponseEventsUnknownEvent struct {
+	Typename string `json:"__typename"`
+}
+
+// GetTypename returns GetDAOMembersTransactionsTransactionsTransactionResponseEventsUnknownEvent.Typename, and is useful for accessing the field via an interface.
+func (v *GetDAOMembersTransactionsTransactionsTransactionResponseEventsUnknownEvent) GetTypename() string {
+	return v.Typename
+}
+
+// GetDAOsTransactionsResponse is returned by GetDAOsTransactions on success.
+type GetDAOsTransactionsResponse struct {
+	// Retrieves a list of Transactions that match the given filter criteria. If the result is incomplete due to errors, both partial results and errors are returned.
+	Transactions []GetDAOsTransactionsTransactionsTransaction `json:"transactions"`
+}
+
+// GetTransactions returns GetDAOsTransactionsResponse.Transactions, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsResponse) GetTransactions() []GetDAOsTransactionsTransactionsTransaction {
+	return v.Transactions
+}
+
+// GetDAOsTransactionsTransactionsTransaction includes the requested fields of the GraphQL type Transaction.
+// The GraphQL type's documentation follows.
+//
+// Defines a transaction within a block, detailing its execution specifics and content.
+type GetDAOsTransactionsTransactionsTransaction struct {
+	// A sequential index representing the order of this Transaction within its Block. Unique within the context of its Block.
+	Index int `json:"index"`
+	// Hash from Transaction content in base64 encoding.
+	Hash string `json:"hash"`
+	// The success can determine whether the transaction succeeded or failed.
+	Success bool `json:"success"`
+	// The height of the Block in which this Transaction is included. Links the Transaction to its containing Block.
+	Block_height int `json:"block_height"`
+	// The declared amount of computational effort the sender is willing to pay for executing this Transaction.
+	Gas_wanted int `json:"gas_wanted"`
+	// The actual amount of computational effort consumed to execute this Transaction. It could be less or equal to `gas_wanted`.
+	Gas_used int `json:"gas_used"`
+	// `memo` are string information stored within a transaction.
+	// `memo` can be utilized to find or distinguish transactions.
+	// For example, when trading a specific exchange, you would utilize the memo field of the transaction.
+	Memo string `json:"memo"`
+	// The payload of a message shows the contents of the messages in a transaction.
+	// A message consists of `router`, `type`, and `value` (whose form depends on the `router` and `type`).
+	Messages []GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessage `json:"messages"`
+	// `response` is the processing result of the transaction.
+	// It has `log`, `info`, `error`, and `data`.
+	Response GetDAOsTransactionsTransactionsTransactionResponse `json:"response"`
+}
+
+// GetIndex returns GetDAOsTransactionsTransactionsTransaction.Index, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransaction) GetIndex() int { return v.Index }
+
+// GetHash returns GetDAOsTransactionsTransactionsTransaction.Hash, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransaction) GetHash() string { return v.Hash }
+
+// GetSuccess returns GetDAOsTransactionsTransactionsTransaction.Success, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransaction) GetSuccess() bool { return v.Success }
+
+// GetBlock_height returns GetDAOsTransactionsTransactionsTransaction.Block_height, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransaction) GetBlock_height() int { return v.Block_height }
+
+// GetGas_wanted returns GetDAOsTransactionsTransactionsTransaction.Gas_wanted, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransaction) GetGas_wanted() int { return v.Gas_wanted }
+
+// GetGas_used returns GetDAOsTransactionsTransactionsTransaction.Gas_used, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransaction) GetGas_used() int { return v.Gas_used }
+
+// GetMemo returns GetDAOsTransactionsTransactionsTransaction.Memo, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransaction) GetMemo() string { return v.Memo }
+
+// GetMessages returns GetDAOsTransactionsTransactionsTransaction.Messages, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransaction) GetMessages() []GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessage {
+	return v.Messages
+}
+
+// GetResponse returns GetDAOsTransactionsTransactionsTransaction.Response, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransaction) GetResponse() GetDAOsTransactionsTransactionsTransactionResponse {
+	return v.Response
+}
+
+// GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessage includes the requested fields of the GraphQL type TransactionMessage.
+type GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessage struct {
+	// MessageValue is the content of the transaction.
+	// `value` can be of type `BankMsgSend`, `MsgCall`, `MsgAddPackage`, `MsgRun`, `UnexpectedMessage`.
+	Value GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue `json:"-"`
+}
+
+// GetValue returns GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessage.Value, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessage) GetValue() GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue {
+	return v.Value
+}
+
+func (v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessage) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessage
+		Value json.RawMessage `json:"value"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessage = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Value
+		src := firstPass.Value
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalGetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessage.Value: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalGetDAOsTransactionsTransactionsTransactionMessagesTransactionMessage struct {
+	Value json.RawMessage `json:"value"`
+}
+
+func (v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessage) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessage) __premarshalJSON() (*__premarshalGetDAOsTransactionsTransactionsTransactionMessagesTransactionMessage, error) {
+	var retval __premarshalGetDAOsTransactionsTransactionsTransactionMessagesTransactionMessage
+
+	{
+
+		dst := &retval.Value
+		src := v.Value
+		var err error
+		*dst, err = __marshalGetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessage.Value: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue includes the requested fields of the GraphQL interface MessageValue.
+//
+// GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue is implemented by the following types:
+// GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueBankMsgSend
+// GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackage
+// GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgCall
+// GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgRun
+// GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueUnexpectedMessage
+type GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue interface {
+	implementsGraphQLInterfaceGetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() string
+}
+
+func (v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueBankMsgSend) implementsGraphQLInterfaceGetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue() {
+}
+func (v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackage) implementsGraphQLInterfaceGetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue() {
+}
+func (v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgCall) implementsGraphQLInterfaceGetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue() {
+}
+func (v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgRun) implementsGraphQLInterfaceGetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue() {
+}
+func (v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueUnexpectedMessage) implementsGraphQLInterfaceGetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue() {
+}
+
+func __unmarshalGetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue(b []byte, v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "BankMsgSend":
+		*v = new(GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueBankMsgSend)
+		return json.Unmarshal(b, *v)
+	case "MsgAddPackage":
+		*v = new(GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackage)
+		return json.Unmarshal(b, *v)
+	case "MsgCall":
+		*v = new(GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgCall)
+		return json.Unmarshal(b, *v)
+	case "MsgRun":
+		*v = new(GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgRun)
+		return json.Unmarshal(b, *v)
+	case "UnexpectedMessage":
+		*v = new(GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueUnexpectedMessage)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing MessageValue.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalGetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue(v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueBankMsgSend:
+		typename = "BankMsgSend"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueBankMsgSend
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackage:
+		typename = "MsgAddPackage"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackage
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgCall:
+		typename = "MsgCall"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgCall
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgRun:
+		typename = "MsgRun"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgRun
+		}{typename, v}
+		return json.Marshal(result)
+	case *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueUnexpectedMessage:
+		typename = "UnexpectedMessage"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueUnexpectedMessage
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValue: "%T"`, v)
+	}
+}
+
+// GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueBankMsgSend includes the requested fields of the GraphQL type BankMsgSend.
+// The GraphQL type's documentation follows.
+//
+// `BankMsgSend` is a message with a message router of `bank` and a message type of `send`.
+// `BankMsgSend` is the fund transfer tx message.
+type GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueBankMsgSend struct {
+	Typename string `json:"__typename"`
+}
+
+// GetTypename returns GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueBankMsgSend.Typename, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueBankMsgSend) GetTypename() string {
+	return v.Typename
+}
+
+// GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackage includes the requested fields of the GraphQL type MsgAddPackage.
+// The GraphQL type's documentation follows.
+//
+// `MsgAddPackage` is a message with a message router of `vm` and a message type of `add_package`.
+// `MsgAddPackage` is the package deployment tx message.
+type GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackage struct {
+	Typename string `json:"__typename"`
+	// the package being deployed.
+	Package GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackagePackageMemPackage `json:"package"`
+}
+
+// GetTypename returns GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackage.Typename, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackage) GetTypename() string {
+	return v.Typename
+}
+
+// GetPackage returns GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackage.Package, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackage) GetPackage() GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackagePackageMemPackage {
+	return v.Package
+}
+
+// GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackagePackageMemPackage includes the requested fields of the GraphQL type MemPackage.
+// The GraphQL type's documentation follows.
+//
+// `MemPackage` is the metadata information tied to package / realm deployment.
+type GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackagePackageMemPackage struct {
+	// the gno path of the package.
+	Path string `json:"path"`
+}
+
+// GetPath returns GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackagePackageMemPackage.Path, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgAddPackagePackageMemPackage) GetPath() string {
+	return v.Path
+}
+
+// GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgCall includes the requested fields of the GraphQL type MsgCall.
+// The GraphQL type's documentation follows.
+//
+// `MsgCall` is a message with a message router of `vm` and a message type of `exec`.
+// `MsgCall` is the method invocation tx message.
+type GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgCall struct {
+	Typename string `json:"__typename"`
+}
+
+// GetTypename returns GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgCall.Typename, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgCall) GetTypename() string {
+	return v.Typename
+}
+
+// GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgRun includes the requested fields of the GraphQL type MsgRun.
+// The GraphQL type's documentation follows.
+//
+// `MsgRun` is a message with a message router of `vm` and a message type of `run`.
+// `MsgRun is the execute arbitrary Gno code tx message`.
+type GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgRun struct {
+	Typename string `json:"__typename"`
+}
+
+// GetTypename returns GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgRun.Typename, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueMsgRun) GetTypename() string {
+	return v.Typename
+}
+
+// GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueUnexpectedMessage includes the requested fields of the GraphQL type UnexpectedMessage.
+// The GraphQL type's documentation follows.
+//
+// `UnexpectedMessage` is an Undefined Message, which is a message that decoding failed.
+type GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueUnexpectedMessage struct {
+	Typename string `json:"__typename"`
+}
+
+// GetTypename returns GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueUnexpectedMessage.Typename, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransactionMessagesTransactionMessageValueUnexpectedMessage) GetTypename() string {
+	return v.Typename
+}
+
+// GetDAOsTransactionsTransactionsTransactionResponse includes the requested fields of the GraphQL type TransactionResponse.
+// The GraphQL type's documentation follows.
+//
+// `TransactionResponse` is the processing result of the transaction.
+// It has `log`, `info`, `error`, and `data`.
+type GetDAOsTransactionsTransactionsTransactionResponse struct {
+	// The response data associated with the Transaction execution, if any.
+	Data string `json:"data"`
+	// The Info associated with the Transaction execution, if any.
+	Info string `json:"info"`
+	// The log value associated with the Transaction execution, if any.
+	Log string `json:"log"`
+}
+
+// GetData returns GetDAOsTransactionsTransactionsTransactionResponse.Data, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransactionResponse) GetData() string { return v.Data }
+
+// GetInfo returns GetDAOsTransactionsTransactionsTransactionResponse.Info, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransactionResponse) GetInfo() string { return v.Info }
+
+// GetLog returns GetDAOsTransactionsTransactionsTransactionResponse.Log, and is useful for accessing the field via an interface.
+func (v *GetDAOsTransactionsTransactionsTransactionResponse) GetLog() string { return v.Log }
+
 // GetPostTransactionsResponse is returned by GetPostTransactions on success.
 type GetPostTransactionsResponse struct {
 	// Retrieves a list of Transactions that match the given filter criteria. If the result is incomplete due to errors, both partial results and errors are returned.
@@ -422,6 +1119,22 @@ func (v *GetPostTransactionsTransactionsTransactionResponse) GetInfo() string { 
 // GetLog returns GetPostTransactionsTransactionsTransactionResponse.Log, and is useful for accessing the field via an interface.
 func (v *GetPostTransactionsTransactionsTransactionResponse) GetLog() string { return v.Log }
 
+// __GetDAOMembersTransactionsInput is used internally by genqlient
+type __GetDAOMembersTransactionsInput struct {
+	PkgPath string `json:"PkgPath"`
+}
+
+// GetPkgPath returns __GetDAOMembersTransactionsInput.PkgPath, and is useful for accessing the field via an interface.
+func (v *__GetDAOMembersTransactionsInput) GetPkgPath() string { return v.PkgPath }
+
+// __GetDAOsTransactionsInput is used internally by genqlient
+type __GetDAOsTransactionsInput struct {
+	StartBlock int `json:"StartBlock"`
+}
+
+// GetStartBlock returns __GetDAOsTransactionsInput.StartBlock, and is useful for accessing the field via an interface.
+func (v *__GetDAOsTransactionsInput) GetStartBlock() int { return v.StartBlock }
+
 // __GetPostTransactionsInput is used internally by genqlient
 type __GetPostTransactionsInput struct {
 	StartBlock int    `json:"StartBlock"`
@@ -433,6 +1146,113 @@ func (v *__GetPostTransactionsInput) GetStartBlock() int { return v.StartBlock }
 
 // GetPkgPath returns __GetPostTransactionsInput.PkgPath, and is useful for accessing the field via an interface.
 func (v *__GetPostTransactionsInput) GetPkgPath() string { return v.PkgPath }
+
+func GetDAOMembersTransactions(
+	ctx context.Context,
+	client graphql.Client,
+	PkgPath string,
+) (*GetDAOMembersTransactionsResponse, error) {
+	req := &graphql.Request{
+		OpName: "GetDAOMembersTransactions",
+		Query: `
+query GetDAOMembersTransactions ($PkgPath: String!) {
+	transactions(filter: {success:true,events:[{type:"BaseDAOAddMember",pkg_path:$PkgPath},{type:"BaseDAORemoveMember",pkg_path:$PkgPath}],from_block_height:0,to_block_height:10000000,from_index:0,to_index:10000000}) {
+		index
+		hash
+		success
+		block_height
+		gas_wanted
+		gas_used
+		memo
+		response {
+			data
+			info
+			log
+			events {
+				__typename
+				... on GnoEvent {
+					type
+					pkg_path
+					attrs {
+						key
+						value
+					}
+				}
+			}
+		}
+	}
+}
+`,
+		Variables: &__GetDAOMembersTransactionsInput{
+			PkgPath: PkgPath,
+		},
+	}
+	var err error
+
+	var data GetDAOMembersTransactionsResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
+	)
+
+	return &data, err
+}
+
+func GetDAOsTransactions(
+	ctx context.Context,
+	client graphql.Client,
+	StartBlock int,
+) (*GetDAOsTransactionsResponse, error) {
+	req := &graphql.Request{
+		OpName: "GetDAOsTransactions",
+		Query: `
+query GetDAOsTransactions ($StartBlock: Int!) {
+	transactions(filter: {success:true,events:[{type:"BaseDAOCreated"}],from_block_height:$StartBlock,to_block_height:10000000,from_index:0,to_index:10000000}) {
+		index
+		hash
+		success
+		block_height
+		gas_wanted
+		gas_used
+		memo
+		messages {
+			value {
+				__typename
+				... on MsgAddPackage {
+					package {
+						path
+					}
+				}
+			}
+		}
+		response {
+			data
+			info
+			log
+		}
+	}
+}
+`,
+		Variables: &__GetDAOsTransactionsInput{
+			StartBlock: StartBlock,
+		},
+	}
+	var err error
+
+	var data GetDAOsTransactionsResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
+	)
+
+	return &data, err
+}
 
 func GetPostTransactions(
 	ctx context.Context,

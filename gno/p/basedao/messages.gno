@@ -5,6 +5,7 @@ import (
 	"std"
 
 	"gno.land/p/demo/ufmt"
+	"gno.land/p/moul/md"
 	"gno.land/p/teritori/daokit"
 )
 
@@ -111,17 +112,29 @@ func NewUnassignRoleMsg(payload *MsgUnassignRole) daokit.ExecutableMessage {
 
 const MsgEditProfileKind = "gno.land/p/teritori/basedao.EditProfile"
 
+type msgEditProfile struct {
+	kv [][2]string
+}
+
+func (m *msgEditProfile) String() string {
+	elems := []string{}
+	for _, v := range m.kv {
+		elems = append(elems, v[0]+": "+v[1])
+	}
+	return md.BulletList(elems)
+}
+
 func NewEditProfileMsg(kv ...[2]string) daokit.ExecutableMessage {
-	return daokit.NewMessage(MsgEditProfileKind, kv)
+	return daokit.NewMessage(MsgEditProfileKind, &msgEditProfile{kv: kv})
 }
 
 func NewEditProfileHandler(setter ProfileStringSetter, allowedFields []string) daokit.MessageHandler {
 	return daokit.NewMessageHandler(MsgEditProfileKind, func(imsg interface{}) {
-		msg, ok := imsg.([][2]string)
+		msg, ok := imsg.(*msgEditProfile)
 		if !ok {
 			panic(errors.New("invalid message type"))
 		}
-		for _, elem := range msg {
+		for _, elem := range msg.kv {
 			k, v := elem[0], elem[1]
 			if len(allowedFields) > 0 && !stringSliceContains(allowedFields, k) {
 				panic(ufmt.Errorf("unauthorized field %q", k))

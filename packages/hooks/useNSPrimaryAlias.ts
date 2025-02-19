@@ -48,6 +48,7 @@ const gnoGetUsernameByAddress = async (
   if (!userAddress) return null;
 
   if (userAddress.startsWith("gno.land/r/")) {
+    console.log("got", userAddress);
     return userAddress;
   }
 

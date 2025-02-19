@@ -115,10 +115,10 @@ export const UserCard: React.FC<{
 
       <View>
         <FollowingFollowers style={{ marginBottom: 10 }} />
-        {roles && roles.length && (
+        {roles && (
           <View>
             <BrandText
-              style={[fontSemibold12, { lineHeight: 14, marginBottom: 8 }]}
+              style={[fontSemibold12, { lineHeight: 14, marginBottom: 10 }]}
             >
               Roles
             </BrandText>
@@ -137,7 +137,7 @@ export const UserCard: React.FC<{
                         borderRadius: 4,
                         backgroundColor: "#1C1C1C",
                         height: 24,
-                        paddingHorizontal: 4,
+                        paddingHorizontal: 6,
                       },
                     ]}
                   >
@@ -154,6 +154,28 @@ export const UserCard: React.FC<{
                   </View>
                 );
               })}
+              {!roles.length && (
+                <View
+                  style={[
+                    {
+                      justifyContent: "center",
+                      borderRadius: 4,
+                      height: 24,
+                    },
+                  ]}
+                >
+                  <BrandText
+                    style={[
+                      fontSemibold9,
+                      {
+                        color: neutralA3,
+                      },
+                    ]}
+                  >
+                    None
+                  </BrandText>
+                </View>
+              )}
             </ScrollView>
           </View>
         )}

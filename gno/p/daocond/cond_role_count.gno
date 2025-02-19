@@ -2,6 +2,7 @@ package daocond
 
 import (
 	"errors"
+	"math"
 
 	"gno.land/p/demo/json"
 	"gno.land/p/demo/ufmt"
@@ -56,6 +57,11 @@ var _ Condition = (*roleCountCond)(nil)
 type roleCountState struct {
 	cond     *roleCountCond
 	totalYes uint64
+}
+
+// Signal implements State.
+func (m *roleCountState) Signal(votes map[string]Vote) float64 {
+	return math.Min(float64(m.totalYes)/float64(m.cond.count), 1)
 }
 
 // Eval implements State.
