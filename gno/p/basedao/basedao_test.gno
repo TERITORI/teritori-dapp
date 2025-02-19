@@ -872,7 +872,7 @@ func TestAddCustomCallback(t *testing.T) {
 	}
 
 	proposalKillSwitch := daokit.ProposalRequest{
-		Message: daokit.NewCustomCallback(func() {
+		Message: daokit.NewExecuteLambdaMsg(func() {
 			tdao.dao = nil
 		}),
 	}

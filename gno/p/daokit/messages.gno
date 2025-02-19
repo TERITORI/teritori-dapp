@@ -65,6 +65,22 @@ func (g *genericMessageHandler) Type() string {
 	return g.kind
 }
 
+const MsgExecuteLambdaKind = "gno.land/p/teritori/daokit.ExecuteLambda"
+
+func NewExecuteLambdaHandler() MessageHandler {
+	return NewMessageHandler(MsgExecuteLambdaKind, func(i interface{}) {
+		cb, ok := i.(func())
+		if !ok {
+			panic(errors.New("invalid msg type"))
+		}
+		cb()
+	})
+}
+
+func NewExecuteLambdaMsg(cb func()) ExecutableMessage {
+	return NewMessage(MsgExecuteLambdaKind, cb)
+}
+
 const MsgSetResourceKind = "gno.land/p/teritori/daokit.SetResource"
 
 func NewSetResourceHandler(d *Core) MessageHandler {
@@ -101,46 +117,4 @@ func NewRemoveResourceHandler(d *Core) MessageHandler {
 
 func NewRemoveResourceMsg(payload *Resource) ExecutableMessage {
 	return NewMessage(MsgRemoveResourceKind, payload)
-}
-
-const MsgCustomMessageKind = "gno.land/p/teritori/daokit.CustomMessage"
-
-type CustomCallbackHandler struct {
-	resourceType string
-}
-
-func NewCustomCallbackHandler() MessageHandler {
-	return &CustomCallbackHandler{
-		resourceType: MsgCustomMessageKind,
-	}
-}
-
-func (m *CustomCallbackHandler) Execute(message ExecutableMessage) {
-	msg, ok := message.(*CustomCallback)
-	if !ok {
-		panic(errors.New("invalid message type"))
-	}
-	msg.cb()
-}
-
-func (m *CustomCallbackHandler) Type() string {
-	return m.resourceType
-}
-
-type CustomCallback struct {
-	cb func()
-}
-
-// String implements ExecutableMessage.
-func (g *CustomCallback) String() string {
-	return ufmt.Sprintf("%v", g.cb)
-}
-
-// Type implements ExecutableMessage.
-func (g *CustomCallback) Type() string {
-	return MsgCustomMessageKind
-}
-
-func NewCustomCallback(callback func()) ExecutableMessage {
-	return &CustomCallback{cb: callback}
 }
