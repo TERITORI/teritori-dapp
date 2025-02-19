@@ -1,4 +1,8 @@
-import { createMultisigThresholdPubkey } from "@cosmjs/amino";
+import {
+  Pubkey,
+  createMultisigThresholdPubkey,
+  pubkeyToAddress,
+} from "@cosmjs/amino";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, View } from "react-native";
@@ -23,7 +27,12 @@ import { useMultisigAuthToken } from "@/hooks/multisig/useMultisigAuthToken";
 import { useMultisigClient } from "@/hooks/multisig/useMultisigClient";
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
-import { getUserId, NetworkKind, parseUserId } from "@/networks";
+import {
+  getNonSigningStargateClient,
+  getUserId,
+  NetworkKind,
+  parseUserId,
+} from "@/networks";
 import { getCosmosAccount } from "@/utils/cosmos";
 import {
   patternOnlyNumbers,
@@ -220,6 +229,76 @@ export const MultisigCreateScreen = () => {
             placeHolder="Type the name of the multisig"
             iconSVG={walletInputSVG}
           />
+          <SpacerColumn size={3} />
+
+          <TextInputCustom
+            name="existing-address"
+            variant="labelOutside"
+            noBrokenCorners
+            label="Optional existing multisig address"
+            onChangeText={async (addr) => {
+              try {
+                console.log("addr", addr);
+                if (selectedNetwork?.kind !== NetworkKind.Cosmos) {
+                  console.error("not a cosmos netwokr");
+                  return;
+                }
+                const networkId = selectedNetwork?.id;
+                if (!networkId) {
+                  console.error("invalid network id", networkId);
+                  return;
+                }
+                const client = await getNonSigningStargateClient(networkId);
+                const account = await client.getAccount(addr);
+                console.log("got account", account);
+                const multisig = account?.pubkey;
+                if (!multisig) {
+                  console.error("multisig not found on chain");
+                  return;
+                }
+                if (multisig.type !== "tendermint/PubKeyMultisigThreshold") {
+                  console.error("invalid multisig type", multisig.type);
+                  return;
+                }
+                console.log(multisig.value);
+                const threshold: string = multisig.value.threshold;
+                const participants: Pubkey[] = multisig.value.pubkeys;
+                console.log("threshold", threshold);
+                console.log("participants", participants);
+                for (const p of participants) {
+                  if (typeof p.value !== "string") {
+                    console.error(
+                      "invalid participant pubkey value type",
+                      participants,
+                    );
+                    return;
+                  }
+                }
+                const formPubkeys = participants.map((p) => {
+                  const address = pubkeyToAddress(
+                    p,
+                    selectedNetwork.addressPrefix,
+                  );
+                  return {
+                    address,
+                    compressedPubkey: p.value,
+                  };
+                });
+                setValue("maxSignature", formPubkeys.length.toString());
+                setValue("signatureRequired", threshold);
+                setValue(
+                  "addresses",
+                  formPubkeys.map((fpk) => ({ address: fpk.address })),
+                );
+                setAddressIndexes(formPubkeys);
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+            placeHolder="Type the address of an existing multisig to import it"
+            iconSVG={walletInputSVG}
+          />
+
           <SpacerColumn size={3} />
 
           {addressIndexes.map((_, index) => (
