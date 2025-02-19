@@ -12,6 +12,7 @@ export const DAOsList: React.FC<{
   req: Partial<DAOsRequest>;
 }> = ({ req }) => {
   const { daos } = useDAOs(req);
+  console.log("got daos", daos);
   return (
     <GridList<DAO>
       data={daos || []}

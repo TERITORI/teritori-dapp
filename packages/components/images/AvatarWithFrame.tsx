@@ -74,6 +74,7 @@ export const AvatarWithFrame: React.FC<{
           width={imageSize}
           height={imageSize}
           sourceURI={image}
+          resizeMode="cover"
           fallbackURI={nameServiceDefaultImage(isDAO, network)}
           style={[
             {

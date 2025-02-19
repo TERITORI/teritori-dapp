@@ -4530,7 +4530,7 @@
     "daoCorePkgPath": "gno.land/p/teritori/dao_core",
     "daoUtilsPkgPath": "gno.land/p/teritori/dao_utils",
     "toriPkgPath": "gno.land/r/teritori/tori",
-    "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+    "nameServiceDefaultImage": "ipfs://bafkreigqm3i4urywxohvpkbz5sgxosiogwn433ufmzz7eqldjxoi6xmwma",
     "gnowebURL": "http://127.0.0.1:8888",
     "txIndexerURL": "http://127.0.0.1:8546"
   },
@@ -4569,7 +4569,7 @@
     "gnowebURL": "https://gno.land",
     "vaultContractAddress": "",
     "nameServiceContractAddress": "gno.land/r/demo/users",
-    "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+    "nameServiceDefaultImage": "ipfs://bafkreigqm3i4urywxohvpkbz5sgxosiogwn433ufmzz7eqldjxoi6xmwma",
     "daoRegistryPkgPath": "gno.land/r/teritori/dao_registry",
     "socialFeedsPkgPath": "gno.land/r/teritori/social_feeds",
     "socialFeedsDAOPkgPath": "gno.land/r/teritori/social_feeds_dao",
@@ -4660,12 +4660,54 @@
     "gnowebURL": "https://test5.gno.land",
     "vaultContractAddress": "",
     "nameServiceContractAddress": "gno.land/r/demo/users",
-    "nameServiceDefaultImage": "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+    "nameServiceDefaultImage": "ipfs://bafkreigqm3i4urywxohvpkbz5sgxosiogwn433ufmzz7eqldjxoi6xmwma",
     "socialFeedsPkgPath": "gno.land/r/teritori/social_feeds",
     "socialFeedsDAOPkgPath": "gno.land/r/teritori/social_feeds_dao",
     "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
     "profilePkgPath": "gno.land/r/demo/profile",
     "txIndexerURL": "https://indexer.test5.gno.testnet.teritori.com"
+  },
+  {
+    "id": "gno-zenao",
+    "kind": "Gno",
+    "displayName": "Gno Zenao",
+    "icon": "zenao.svg",
+    "features": [
+      "Organizations",
+      "UPP",
+      "NameService"
+    ],
+    "currencies": [
+      {
+        "denom": "ugnot",
+        "displayName": "GNOT",
+        "decimals": 6,
+        "coingeckoId": "gno",
+        "icon": "gno.svg",
+        "kind": "native",
+        "color": "#232800",
+        "variant": "gno"
+      }
+    ],
+    "stakeCurrency": "ugnot",
+    "idPrefix": "zenao",
+    "chainId": "zenao-dev",
+    "endpoint": "https://zenao-gno.fly.dev:26657",
+    "testnet": true,
+    "backendEndpoint": "https://dapp-backend.testnet.teritori.com",
+    "gnowebURL": "https://zenao-gno.fly.dev",
+    "vaultContractAddress": "",
+    "nameServiceContractAddress": "gno.land/r/demo/users",
+    "nameServiceDefaultImage": "ipfs://bafkreigqm3i4urywxohvpkbz5sgxosiogwn433ufmzz7eqldjxoi6xmwma",
+    "socialFeedsPkgPath": "gno.land/r/teritori/social_feeds",
+    "socialFeedsDAOPkgPath": "gno.land/r/teritori/social_feeds_dao",
+    "daoInterfacesPkgPath": "gno.land/p/teritori/dao_interfaces",
+    "profilePkgPath": "gno.land/r/demo/profile",
+    "txIndexerURL": "https://indexer.zenao.gno.testnet.teritori.com",
+    "cockpitNamespace": "zenao",
+    "txExplorer": "https://gnoscan.io/transactions/details?txhash=$hash&type=custom&chainId=zenao-dev&rpcUrl=https://zenao-gno.fly.dev:26657&indexerUrl=https://indexer.zenao.gno.testnet.teritori.com",
+    "accountExplorer": "https://gnoscan.io/accounts/$address?type=custom&chainId=zenao-dev&rpcUrl=https://zenao-gno.fly.dev:26657&indexerUrl=https://indexer.zenao.gno.testnet.teritori.com",
+    "contractExplorer": "https://gnoscan.io/realms/details?path=$address&type=custom&chainId=zenao-dev&rpcUrl=https://zenao-gno.fly.dev:26657&indexerUrl=https://indexer.zenao.gno.testnet.teritori.com"
   },
   {
     "id": "cosmos-registry:gravitybridge",

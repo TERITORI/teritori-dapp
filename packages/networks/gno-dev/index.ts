@@ -57,7 +57,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   daoUtilsPkgPath: "gno.land/p/teritori/dao_utils",
   toriPkgPath: "gno.land/r/teritori/tori",
   nameServiceDefaultImage:
-    "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+    "ipfs://bafkreigqm3i4urywxohvpkbz5sgxosiogwn433ufmzz7eqldjxoi6xmwma",
   gnowebURL: "http://127.0.0.1:8888",
   txIndexerURL: "http://127.0.0.1:8546",
 };

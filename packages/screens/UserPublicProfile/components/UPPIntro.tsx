@@ -146,7 +146,7 @@ export const UPPIntro: React.FC<{
               style={socialButtonStyle}
               onPress={() =>
                 Linking.openURL(
-                  `${network.gnowebURL}${userAddress.startsWith("gno.land/") ? userAddress.substring("gno.land".length) : "/r/teritori/cockpit:u/" + userAddress}`,
+                  `${network.gnowebURL}${userAddress.startsWith("gno.land/") ? userAddress.substring("gno.land".length) : `/r/${network.cockpitNamespace || "teritori"}/cockpit:u/${userAddress}`}`,
                 )
               }
             />
