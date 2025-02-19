@@ -19,6 +19,11 @@ export const useMaxResolution = ({
   responsive = true,
   isLarge = false,
 } = {}) => {
+  // XXX: simplify this instead of enforcing
+  isLarge = true;
+  responsive = true;
+  noMargin = false;
+
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const isMobile = useIsMobile();
 

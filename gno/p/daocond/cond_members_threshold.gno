@@ -2,6 +2,7 @@ package daocond
 
 import (
 	"errors"
+	"math"
 
 	"gno.land/p/demo/json"
 	"gno.land/p/demo/ufmt"
@@ -57,9 +58,18 @@ type membersThresholdState struct {
 	totalYes uint64
 }
 
+// Signal implements State.
+func (m *membersThresholdState) Signal(votes map[string]Vote) float64 {
+	return math.Min(m.yesRatio()/m.cond.threshold, 1)
+}
+
+func (m *membersThresholdState) yesRatio() float64 {
+	return float64(m.totalYes) / float64(m.cond.membersCountFn())
+}
+
 // Eval implements State.
 func (m *membersThresholdState) Eval(_ map[string]Vote) bool {
-	return float64(m.totalYes)/float64(m.cond.membersCountFn()) >= m.cond.threshold
+	return m.yesRatio() >= m.cond.threshold
 }
 
 // HandleEvent implements State.

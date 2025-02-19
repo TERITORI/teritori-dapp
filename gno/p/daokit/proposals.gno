@@ -1,9 +1,12 @@
 package daokit
 
 import (
+	"errors"
+	"std"
 	"time"
 
 	"gno.land/p/demo/avl"
+	"gno.land/p/demo/json"
 	"gno.land/p/demo/seqid"
 	"gno.land/p/teritori/daocond"
 )
@@ -37,6 +40,7 @@ type Proposal struct {
 	Title          string
 	Description    string
 	CreatedAt      time.Time
+	CreatedHeight  int64
 	ProposerID     string
 	ConditionState daocond.State
 	Message        ExecutableMessage
@@ -75,6 +79,7 @@ func (p *ProposalModule) newProposal(proposer string, req ProposalRequest, condi
 		ConditionState: conditionState,
 		Votes:          map[string]daocond.Vote{},
 		CreatedAt:      time.Now(),
+		CreatedHeight:  std.GetHeight(),
 	}
 	p.Proposals.Set(id.String(), proposal)
 	return proposal
@@ -111,4 +116,31 @@ func (p *Proposal) UpdateStatus() {
 	if p.Status == ProposalStatusOpen && conditionsAreMet {
 		p.Status = ProposalStatusPassed
 	}
+}
+
+func (p *ProposalModule) GetProposalsJSON() string {
+	props := make([]*json.Node, 0, p.Proposals.Size())
+	// XXX: pagination
+	p.Proposals.Iterate("", "", func(key string, value interface{}) bool {
+		prop, ok := value.(*Proposal)
+		if !ok {
+			panic(errors.New("unexpected invalid proposal type"))
+		}
+		prop.UpdateStatus()
+		props = append(props, json.ObjectNode("", map[string]*json.Node{
+			"id":          json.NumberNode("", float64(prop.ID)),
+			"title":       json.StringNode("", prop.Title),
+			"description": json.StringNode("", prop.Description),
+			"proposer":    json.StringNode("", prop.ProposerID),
+			"status":      json.StringNode("", prop.Status.String()),
+			"startHeight": json.NumberNode("", float64(prop.CreatedHeight)),
+			"signal":      json.NumberNode("", prop.ConditionState.Signal(prop.Votes)),
+		}))
+		return false
+	})
+	bz, err := json.Marshal(json.ArrayNode("", props))
+	if err != nil {
+		panic(err)
+	}
+	return string(bz)
 }

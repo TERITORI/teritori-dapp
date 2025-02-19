@@ -1,6 +1,8 @@
 package daocond
 
 import (
+	"math"
+
 	"gno.land/p/demo/json"
 )
 
@@ -41,6 +43,11 @@ var _ Condition = (*andCond)(nil)
 type orState struct {
 	left  State
 	right State
+}
+
+// Signal implements State.
+func (a *orState) Signal(votes map[string]Vote) float64 {
+	return math.Max(a.left.Signal(votes), a.right.Signal(votes))
 }
 
 // Eval implements State.

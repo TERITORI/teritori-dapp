@@ -172,6 +172,7 @@ export const MediaPreview: React.FC<{
             borderRadius: layout.borderRadius,
             borderWidth: 1,
             borderColor: neutral33,
+            objectFit: "cover",
           }}
         />
         <OptimizedImage
@@ -190,6 +191,7 @@ export const MediaPreview: React.FC<{
             borderRadius: 25,
             borderWidth: 1,
             borderColor: neutral00,
+            objectFit: "cover",
           }}
         />
       </View>

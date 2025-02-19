@@ -7417,6 +7417,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/sha.js@npm:^2.4.4":
+  version: 2.4.4
+  resolution: "@types/sha.js@npm:2.4.4"
+  dependencies:
+    "@types/node": "*"
+  checksum: e5917afe3116971c882b475298c7ca99aae69715057948526f805ca75dd67675eeaad7014f525c80e1243022923c496f52546164b90231285364f72aba874989
+  languageName: node
+  linkType: hard
+
 "@types/sinonjs__fake-timers@npm:8.1.1":
   version: 8.1.1
   resolution: "@types/sinonjs__fake-timers@npm:8.1.1"
@@ -21612,6 +21621,7 @@ __metadata:
     "@types/pluralize": ^0.0.33
     "@types/react": ~18.2.45
     "@types/react-native-countdown-component": ^2.7.0
+    "@types/sha.js": ^2.4.4
     "@types/uuid": ^9.0.0
     assert: ^2.1.0
     axios: ^1.6.2
@@ -21727,6 +21737,7 @@ __metadata:
     redux-persist-electron-storage: ^2.1.0
     rimraf: ^5.0.5
     rxjs: ^7.8.1
+    sha.js: ^2.4.11
     starknet: ^6.11.0
     starknetkit: ^2.6.1
     stream-browserify: ^3.0.0

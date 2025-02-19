@@ -25,31 +25,21 @@ export type AppProposalResponse = ProposalResponse & {
   proposal: { actions: string[] };
 };
 
-type GnoProposalVotes = {
-  yes: number;
-  no: number;
-  abstain: number;
-};
-
 export type GnoDAOProposal = {
   id: number;
   title: string;
   description: string;
   proposer: string;
-  status: "Open" | "Passed" | "Executed"; // can also be Unknown($value)
-  threshold: any; // TODO: type
-  totalPower: number;
+  status: "Open" | "Passed" | "Executed"; // can also be Unknown
   startHeight: number;
-  messages: { type: string; payload: unknown }[]; // TODO: type
-  // Ballots     *avl.Tree // dev
-  votes: GnoProposalVotes;
-  // Status ProposalStatus
+  signal: number;
 };
 
 export const useDAOProposals = (daoId: string | undefined) => {
   const [network, daoAddress] = parseUserId(daoId);
   const { daoProposals: cosmWasmDAOProposals, ...cosmWasmOther } =
     useCosmWasmDAOProposals(daoId);
+
   const { data: gnoDAOProposals, ...gnoOther } = useQuery(
     [...daoProposalsQueryKey(daoId), "gno"],
     async () => {
@@ -59,7 +49,7 @@ export const useDAOProposals = (daoId: string | undefined) => {
       const gnoProposals: GnoDAOProposal[] = extractGnoJSONString(
         await provider.evaluateExpression(
           daoAddress,
-          `getProposalsJSON(0, 0, "", false)`,
+          `dao.Core.ProposalModule.GetProposalsJSON()`,
         ),
       );
 
@@ -71,7 +61,10 @@ export const useDAOProposals = (daoId: string | undefined) => {
       }
       return proposals;
     },
-    { staleTime: Infinity, enabled: !!daoId },
+    {
+      staleTime: Infinity,
+      enabled: !!daoId && network?.kind === NetworkKind.Gno,
+    },
   );
   if (network?.kind === NetworkKind.Gno) {
     return {
@@ -79,6 +72,7 @@ export const useDAOProposals = (daoId: string | undefined) => {
       ...gnoOther,
     };
   }
+
   return {
     daoProposals: cosmWasmDAOProposals,
     ...cosmWasmOther,
@@ -139,13 +133,6 @@ export const gnoToAppProposal = (proposal: GnoDAOProposal) => {
   const description = proposal.description;
   const status = proposal.status.toLowerCase() as Status;
   const proposer = proposal.proposer;
-  const yesVotes = proposal.votes.yes;
-  const noVotes = proposal.votes.no;
-  const abstainVotes = proposal.votes.abstain;
-  const threshold =
-    proposal.threshold.thresholdQuorum.threshold.percent / 10000;
-  const quorum = proposal.threshold.thresholdQuorum.quorum.percent / 10000;
-  const actions = proposal.messages.map((m) => JSON.stringify(m));
 
   const appProposal: AppProposalResponse = {
     id: proposal.id,
@@ -153,27 +140,24 @@ export const gnoToAppProposal = (proposal: GnoDAOProposal) => {
       title,
       description,
       votes: {
-        yes: yesVotes.toString(),
-        no: noVotes.toString(),
-        abstain: abstainVotes.toString(),
+        yes: `${Math.ceil(proposal.signal * 10000)}`,
+        no: "0",
+        abstain: "0",
       },
-      allow_revoting: false,
+      allow_revoting: true,
       expiration: "TODO" as any,
-      msgs: proposal.messages.map((m) => ({
-        ...m,
-        gno: true,
-      })),
-      actions,
+      msgs: [],
+      actions: [],
       proposer,
       start_height: proposal.startHeight,
       status,
       threshold: {
         threshold_quorum: {
-          threshold: { percent: `${threshold}` },
-          quorum: { percent: `${quorum}` },
+          threshold: { percent: "1" },
+          quorum: { percent: "0" },
         },
       },
-      total_power: proposal.totalPower.toString(),
+      total_power: "10000",
     },
   };
 

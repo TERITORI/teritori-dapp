@@ -1,6 +1,6 @@
 import { CID } from "multiformats";
 import React, { memo, useEffect } from "react";
-import { Image, ImageProps, View, PixelRatio } from "react-native";
+import { StyleSheet, Image, ImageProps, View, PixelRatio } from "react-native";
 
 import { neutral33 } from "../utils/style/colors";
 
@@ -9,7 +9,7 @@ import { neutral33 } from "../utils/style/colors";
  * The width and height props are the source image dimensions, they should not be dynamic, otherwise it will overwelm the resizing proxy
  */
 export const OptimizedImage: React.FC<
-  Omit<ImageProps, "source"> & {
+  Omit<ImageProps, "source" | "crossOrigin" | "onError"> & {
     width: number;
     height: number;
     sourceURI?: string | null;
@@ -21,6 +21,7 @@ export const OptimizedImage: React.FC<
     width,
     height,
     fallbackURI,
+    style,
     ...passthrough
   }) => {
     const [isError, setIsError] = React.useState(false);
@@ -39,8 +40,33 @@ export const OptimizedImage: React.FC<
     }, [fallbackURI]);
 
     if ((shouldUseFallback && !fallbackURI) || isFallbackError) {
+      return <View style={[{ backgroundColor: neutral33 }, style]} />;
+    }
+
+    if (typeof sourceURI == "string" && sourceURI.startsWith("ipfs://")) {
+      const flatStyle = StyleSheet.flatten(style);
+
+      // XXX: we need to use and <img> tag for pinata since the crossOrigin param is mandatory and the one from react-native seems to not be used
       return (
-        <View style={[{ backgroundColor: neutral33 }, passthrough.style]} />
+        <img
+          crossOrigin="anonymous"
+          width={sourceWidth}
+          height={sourceHeight}
+          onError={() => {
+            if (shouldUseFallback) {
+              setIsFallbackError(true);
+              return;
+            }
+            setIsError(true);
+          }}
+          style={{
+            objectFit: "contain",
+            borderWidth: 0,
+            borderStyle: "solid",
+            ...(flatStyle as any),
+          }}
+          src={transformURI(sourceURI, sourceWidth, sourceHeight)}
+        />
       );
     }
 
@@ -52,6 +78,7 @@ export const OptimizedImage: React.FC<
 
     return (
       <Image
+        style={style}
         onError={() => {
           if (shouldUseFallback) {
             setIsFallbackError(true);
@@ -91,6 +118,11 @@ const transformURI = (
   );
   if (!knownScheme) {
     return uri;
+  }
+
+  // XXX: pass gateway token from env to get images in localhost
+  if (uri?.startsWith("ipfs://")) {
+    return `https://teritori.mypinata.cloud/ipfs/${uri.substring("ipfs://".length)}?img-width=${Math.round(width)}&img-height=${Math.round(height)}&img-fit=contain`;
   }
 
   const params = resolveParams(width, height);

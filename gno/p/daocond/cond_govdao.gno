@@ -2,6 +2,7 @@ package daocond
 
 import (
 	"errors"
+	"math"
 	"strconv"
 	"strings"
 
@@ -67,12 +68,18 @@ type govDaoCondThresholdState struct {
 	cond *govDaoCondThreshold
 }
 
+func (m *govDaoCondThresholdState) Signal(votes map[string]Vote) float64 {
+	return math.Min(m.yesRatio(votes)/m.cond.threshold, 1)
+}
+
 func (m *govDaoCondThresholdState) Eval(votes map[string]Vote) bool {
 	return m.yesRatio(votes) >= m.cond.threshold
 }
+
 func (m *govDaoCondThresholdState) HandleEvent(_ Event, _ map[string]Vote) {
 	panic(errors.New("not implemented"))
 }
+
 func (m *govDaoCondThresholdState) RenderJSON(votes map[string]Vote) *json.Node {
 	vPowers, totalPower := m.computeVotingPowers()
 	rolePowers := []string{}
