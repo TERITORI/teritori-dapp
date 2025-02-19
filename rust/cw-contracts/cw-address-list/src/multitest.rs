@@ -2,6 +2,7 @@ use cosmwasm_std::Addr;
 use sylvia::multitest::App;
 
 use crate::contract::sv::multitest_utils::CodeId;
+use crate::error::ContractError;
 
 #[test]
 fn instantiate() {
@@ -24,6 +25,9 @@ fn instantiate() {
     contract.add(col1.to_string()).call(owner).unwrap();
     let addrs = contract.addresses(None, None, None, None).unwrap();
     assert_eq!(addrs, vec![col1_addr.clone()]);
+
+    let err = contract.add(col1.to_string()).call(owner).unwrap_err();
+    assert_eq!(err, ContractError::AddressAlreadyRegistered);
 
     let col2 = "col2";
     let col2_addr = Addr::unchecked(col2);
@@ -51,6 +55,9 @@ fn instantiate() {
     contract.remove(col1.to_string()).call(owner).unwrap();
     let addrs = contract.addresses(None, None, None, None).unwrap();
     assert_eq!(addrs, vec![col2_addr]);
+
+    let err = contract.remove(col1.to_string()).call(owner).unwrap_err();
+    assert_eq!(err, ContractError::AddressNotRegistered);
 
     contract.remove(col2.to_string()).call(owner).unwrap();
     let addrs = contract.addresses(None, None, None, None).unwrap();
