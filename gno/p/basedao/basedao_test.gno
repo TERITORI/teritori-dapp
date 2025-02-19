@@ -57,7 +57,7 @@ func TestNewDAO(t *testing.T) {
 		}
 	}
 
-	urequire.Equal(t, 7, dao.Core.ResourcesCount(), "expected 7 resources")
+	urequire.Equal(t, 8, dao.Core.ResourcesCount(), "expected 7 resources")
 	urequire.Equal(t, dao.Realm.PkgPath(), daoRealm.PkgPath())
 
 	// XXX: check realm and profile
@@ -754,10 +754,10 @@ func TestAddRemoveResource(t *testing.T) {
 			Condition: daocond.MembersThreshold(0.2, tdao.dao.Members.IsMember, tdao.dao.Members.MembersCount),
 		}),
 	}
-	urequire.Equal(t, 8, tdao.dao.Core.ResourcesCount(), "expected 8 resources")
+	urequire.Equal(t, 9, tdao.dao.Core.ResourcesCount(), "expected 9 resources")
 	std.TestSetOrigCaller(alice)
 	tdao.dao.InstantExecute(addResourceProposal)
-	urequire.Equal(t, 9, tdao.dao.Core.ResourcesCount(), "expected 9 resources")
+	urequire.Equal(t, 10, tdao.dao.Core.ResourcesCount(), "expected 10 resources")
 
 	removeResourceProposal := daokit.ProposalRequest{
 		Title:       "My Proposal",
@@ -770,7 +770,7 @@ func TestAddRemoveResource(t *testing.T) {
 
 	tdao.dao.InstantExecute(removeResourceProposal)
 
-	urequire.Equal(t, 8, tdao.dao.Core.ResourcesCount(), "expected 8 resources")
+	urequire.Equal(t, 9, tdao.dao.Core.ResourcesCount(), "expected 9 resources")
 }
 
 func TestAddRemoveResourceInvalidateProposals(t *testing.T) {
@@ -848,8 +848,7 @@ func TestAddRemoveResourceInvalidateProposals(t *testing.T) {
 	})
 }
 
-func TestAddCustomReource(t *testing.T) {
-	resourceType := "killSwitch"
+func TestAddCustomCallback(t *testing.T) {
 	members := []Member{
 		{
 			alice.String(),
@@ -866,28 +865,19 @@ func TestAddCustomReource(t *testing.T) {
 		t.Errorf("Expected member %s to have role 'admin'", bob.String())
 	}
 
-	addResourceProposal := daokit.ProposalRequest{
-		Title:       "My Proposal",
-		Description: "My Proposal Description",
-		Message: daokit.NewSetResourceMsg(&daokit.Resource{
-			Handler: daokit.NewCustomHandler(resourceType, func() {
-				tdao.dao = nil
-			}),
-			Condition: daocond.MembersThreshold(0.2, tdao.dao.Members.IsMember, tdao.dao.Members.MembersCount),
-		}),
-	}
 	std.TestSetOrigCaller(alice)
-	tdao.dao.InstantExecute(addResourceProposal)
 
 	if tdao.dao == nil {
 		t.Error("dao should still be alive")
 	}
 
-	proposalCallCustomResource := daokit.ProposalRequest{
-		Message: daokit.NewMessage(resourceType, nil),
+	proposalKillSwitch := daokit.ProposalRequest{
+		Message: daokit.NewCustomCallback(func() {
+			tdao.dao = nil
+		}),
 	}
 
-	tdao.dao.InstantExecute(proposalCallCustomResource)
+	tdao.dao.InstantExecute(proposalKillSwitch)
 
 	if tdao.dao != nil {
 		t.Error("dao should have been killed")

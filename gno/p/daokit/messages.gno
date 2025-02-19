@@ -92,7 +92,7 @@ func NewRemoveResourceHandler(d *Core) MessageHandler {
 			panic(errors.New("invalid payload type"))
 		}
 		if d.Resources.getResource(payload.Handler.Type()) == nil {
-			panic("ressource " + payload.Handler.Type() + " does not exists")
+			panic("resource " + payload.Handler.Type() + " does not exists")
 		}
 		d.Resources.removeResource(payload)
 		d.ProposalModule.InvalidateWithResource(payload.Handler.Type())
@@ -103,22 +103,44 @@ func NewRemoveResourceMsg(payload *Resource) ExecutableMessage {
 	return NewMessage(MsgRemoveResourceKind, payload)
 }
 
-func NewCustomHandler(resourceType string, cb func()) MessageHandler {
-	return &CustomMessage{
-		cb:           cb,
-		resourceType: resourceType,
-	}
-}
+const MsgCustomMessageKind = "gno.land/p/teritori/daokit.CustomMessage"
 
-type CustomMessage struct {
-	cb           func()
+type CustomCallbackHandler struct {
 	resourceType string
 }
 
-func (m *CustomMessage) Execute(message ExecutableMessage) {
-	m.cb()
+func NewCustomCallbackHandler() MessageHandler {
+	return &CustomCallbackHandler{
+		resourceType: MsgCustomMessageKind,
+	}
 }
 
-func (m *CustomMessage) Type() string {
+func (m *CustomCallbackHandler) Execute(message ExecutableMessage) {
+	msg, ok := message.(*CustomCallback)
+	if !ok {
+		panic(errors.New("invalid message type"))
+	}
+	msg.cb()
+}
+
+func (m *CustomCallbackHandler) Type() string {
 	return m.resourceType
+}
+
+type CustomCallback struct {
+	cb func()
+}
+
+// String implements ExecutableMessage.
+func (g *CustomCallback) String() string {
+	return ufmt.Sprintf("%v", g.cb)
+}
+
+// Type implements ExecutableMessage.
+func (g *CustomCallback) Type() string {
+	return MsgCustomMessageKind
+}
+
+func NewCustomCallback(callback func()) ExecutableMessage {
+	return &CustomCallback{cb: callback}
 }
