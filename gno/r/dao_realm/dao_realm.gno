@@ -23,14 +23,23 @@ func init() {
 		{Address: "g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", Roles: []string{"finance-officer"}},
 		{Address: "g16jv3rpz7mkt0gqulxas56se2js7v5vmc6n6e0r", Roles: []string{}},
 	}
+	members := basedao.NewMembersStore(initialRoles, initialMembers)
 
 	dao = basedao.New(&basedao.Config{
 		Name:             "Teritori Core DAO",
 		Description:      "Teritori's team administrative DAO",
 		ImageURI:         "ipfs://bafybeifhfkw2kt3samc4425qr2wncykjkfq2gbfcpkmj4x4lsdt2yk2bfu",
-		Members:          basedao.NewMembersStore(initialRoles, initialMembers),
+		Members:          members,
 		GetProfileString: profile.GetStringField,
 		SetProfileString: profile.SetStringField,
+		InitialCondition: daocond.MembersThreshold(0.1, members.IsMember, members.MembersCount),
+	})
+
+	// XXX: remove initial proposals
+	dao.Core.Propose("g1tdjkvapz5jxap6zxf06dxp7g88kad72svpzcu9", daokit.ProposalRequest{
+		Title:       "Set name to Teritori Core Team",
+		Description: "Change profile display name to Teritori Core Team",
+		Message:     basedao.NewEditProfileMsg([2]string{"DisplayName", "Teritori Core Team"}),
 	})
 }
 

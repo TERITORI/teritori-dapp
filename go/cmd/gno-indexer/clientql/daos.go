@@ -81,6 +81,9 @@ func (client *IndexerQL) SyncDAOs() error {
 				if err := tx.Save(&dao).Error; err != nil {
 					return err
 				}
+				if err := tx.Delete(&indexerdb.DAOMember{}, "dao_network_id = ? AND dao_contract_address = ?", dao.NetworkID, dao.ContractAddress).Error; err != nil {
+					return err
+				}
 				if err := tx.Save(daoMembers).Error; err != nil {
 					return err
 				}

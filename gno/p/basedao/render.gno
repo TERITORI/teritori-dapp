@@ -2,6 +2,7 @@ package basedao
 
 import (
 	"std"
+	"strconv"
 	"strings"
 
 	"gno.land/p/demo/mux"
@@ -69,7 +70,7 @@ func (d *DAO) renderHomePage(res *mux.ResponseWriter, req *mux.Request) {
 		if err != nil {
 			panic(err)
 		}
-		res.Write(ufmt.Sprintf("- **Proposal %d: [%s](%s:%s/%s)**\n\n", uint64(id), proposal.Title, linkPath, "proposal", key))
+		res.Write(ufmt.Sprintf("- **Proposal %d: [%s](%s:%s/%d)**\n\n", uint64(id), proposal.Title, linkPath, "proposal", uint64(id)))
 		i += 1
 		return false
 	})
@@ -120,7 +121,7 @@ func (d *DAO) renderProposalHistoryPage(res *mux.ResponseWriter, req *mux.Reques
 		if err != nil {
 			panic(err)
 		}
-		res.Write(ufmt.Sprintf("- **Proposal %d: [%s](%s:%s/%s) - %s**\n\n", uint64(id), proposal.Title, linkPath, "proposal", key, proposal.Status))
+		res.Write(ufmt.Sprintf("- **Proposal %d: [%s](%s:%s/%d) - %s**\n\n", uint64(id), proposal.Title, linkPath, "proposal", uint64(id), proposal.Status))
 		i += 1
 		return false
 	})
@@ -156,10 +157,11 @@ func (d *DAO) renderProposalDetailPage(res *mux.ResponseWriter, req *mux.Request
 	pkgPath := d.Realm.PkgPath()
 	linkPath := getLinkPath(pkgPath)
 
-	id, err := seqid.FromString(req.GetVar("id"))
+	idu, err := strconv.ParseUint(req.GetVar("id"), 10, 64)
 	if err != nil {
 		panic(err)
 	}
+	id := seqid.ID(idu)
 	res.Write(ufmt.Sprintf("# %s - Proposal #%d\n\n", name, uint64(id)))
 	proposal := d.Core.ProposalModule.GetProposal(uint64(id))
 	res.Write(ufmt.Sprintf("## Title - %s 📜\n\n", proposal.Title))

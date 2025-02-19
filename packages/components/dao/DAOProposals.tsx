@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Linking,
   StyleProp,
   Text,
   TouchableOpacity,
@@ -13,7 +14,7 @@ import {
   AppProposalResponse,
   useDAOProposals,
 } from "../../hooks/dao/useDAOProposals";
-import { getUserId, parseUserId } from "../../networks";
+import { getUserId, NetworkKind, parseUserId } from "../../networks";
 import {
   neutral33,
   neutral55,
@@ -28,6 +29,7 @@ import { getTxInfo } from "../tx/getTxInfo";
 import { Username } from "../user/Username";
 
 import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
+import { prettyPercent } from "@/utils/numbers";
 
 export const DAOProposals: React.FC<{
   daoId: string | undefined;
@@ -50,7 +52,7 @@ const ProposalRow: React.FC<{
   daoId: string | undefined;
   proposal: AppProposalResponse;
 }> = ({ daoId, proposal }) => {
-  const [network] = parseUserId(daoId);
+  const [network, daoAddress] = parseUserId(daoId);
 
   const halfGap = 24;
   const elemStyle: ViewStyle = {
@@ -107,6 +109,12 @@ const ProposalRow: React.FC<{
     { textStyle: [fontSemibold13, { lineHeight: 13 }] },
   );
 
+  const nameContent = (
+    <BrandText style={[fontSemibold14, { lineHeight: 14 }]} numberOfLines={1}>
+      #{proposal.id}: {proposal.proposal.title || name}
+    </BrandText>
+  );
+
   return (
     <View
       style={{
@@ -146,14 +154,21 @@ const ProposalRow: React.FC<{
                 justifyContent: "space-between",
               }}
             >
-              <TouchableOpacity onPress={() => setDisplayProposalModal(true)}>
-                <BrandText
-                  style={[fontSemibold14, { lineHeight: 14 }]}
-                  numberOfLines={1}
+              {network?.kind === NetworkKind.Gno ? (
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      `${network.gnowebURL}${daoAddress.substring("gno.land".length)}:proposal/${proposal.id}`,
+                    )
+                  }
                 >
-                  #{proposal.id}: {proposal.proposal.title || name}
-                </BrandText>
-              </TouchableOpacity>
+                  {nameContent}
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={() => setDisplayProposalModal(true)}>
+                  {nameContent}
+                </TouchableOpacity>
+              )}
               <View>
                 <BrandText
                   style={[fontSemibold13, { lineHeight: 13, color: neutral77 }]}
@@ -179,27 +194,48 @@ const ProposalRow: React.FC<{
               justifyContent: "space-between",
             }}
           >
-            <BrandText
-              style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
-              numberOfLines={1}
-            >
-              Voted:{" "}
-              <Text style={{ color: "white" }}>{Math.ceil(weights.voted)}</Text>
-              /<Text style={{ color: "white" }}>{Math.ceil(quorumWeight)}</Text>
-            </BrandText>
-            <BrandText
-              style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
-              numberOfLines={1}
-            >
-              Yes:{" "}
-              <Text style={{ color: "white" }}>
-                {Math.ceil(weights.approved)}
-              </Text>
-              /
-              <Text style={{ color: "white" }}>
-                {Math.ceil(thresholdWeight)}
-              </Text>
-            </BrandText>
+            {network?.kind === NetworkKind.Gno ? (
+              <>
+                <BrandText
+                  style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
+                  numberOfLines={1}
+                >
+                  Approval:{" "}
+                  <Text style={{ color: "white" }}>
+                    {prettyPercent(weights.approved / totalWeight)}
+                  </Text>
+                </BrandText>
+              </>
+            ) : (
+              <>
+                <BrandText
+                  style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
+                  numberOfLines={1}
+                >
+                  Voted:{" "}
+                  <Text style={{ color: "white" }}>
+                    {Math.ceil(weights.voted)}
+                  </Text>
+                  /
+                  <Text style={{ color: "white" }}>
+                    {Math.ceil(quorumWeight)}
+                  </Text>
+                </BrandText>
+                <BrandText
+                  style={[fontSemibold14, { lineHeight: 14, color: neutral77 }]}
+                  numberOfLines={1}
+                >
+                  Yes:{" "}
+                  <Text style={{ color: "white" }}>
+                    {Math.ceil(weights.approved)}
+                  </Text>
+                  /
+                  <Text style={{ color: "white" }}>
+                    {Math.ceil(thresholdWeight)}
+                  </Text>
+                </BrandText>
+              </>
+            )}
           </View>
           <View
             style={{
