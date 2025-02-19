@@ -9,7 +9,11 @@ import {
   getNetwork,
 } from "@/networks";
 import { getCosmosNameServiceQueryClient } from "@/utils/contracts";
-import { derivePkgAddr, extractGnoString } from "@/utils/gno";
+import {
+  derivePkgAddr,
+  extractGnoAddress,
+  extractGnoString,
+} from "@/utils/gno";
 import { ProfileData } from "@/utils/upp";
 
 export const GNO_CONTRACT_FIELD = {
@@ -159,7 +163,8 @@ const gnoGetAddressByUsername = async (
       network.nameServiceContractAddress,
       `GetUserByName(${JSON.stringify(name)}).Address`,
     );
-    const address = extractGnoString(res);
+    console.log({ res });
+    const address = extractGnoAddress(res);
     return address;
   } catch (err) {
     if (
