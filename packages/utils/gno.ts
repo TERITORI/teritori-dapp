@@ -119,6 +119,16 @@ export const adenaAddPkg = async (
 export const extractGnoNumber = (str: string) => {
   return parseFloat(str.slice("(".length).split(" ")[0]);
 };
+export const extractGnoAddress = (str: string) => {
+  console.log("extracting address", str);
+  const jsonStr = str.slice("(".length, -" std.Address)".length);
+  if (!jsonStr) {
+    return "";
+  }
+  // FIXME: sanitize
+  // eslint-disable-next-line no-restricted-syntax
+  return JSON.parse(jsonStr) as string;
+};
 export const extractGnoString = (str: string) => {
   console.log("extracting string from", str);
   const jsonStr = str.slice("(".length, -" string)".length);
