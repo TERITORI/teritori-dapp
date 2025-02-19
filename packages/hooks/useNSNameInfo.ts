@@ -163,7 +163,6 @@ const gnoGetAddressByUsername = async (
       network.nameServiceContractAddress,
       `GetUserByName(${JSON.stringify(name)}).Address`,
     );
-    console.log({ res });
     const address = extractGnoAddress(res);
     return address;
   } catch (err) {
