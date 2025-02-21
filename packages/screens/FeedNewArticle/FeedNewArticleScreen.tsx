@@ -357,7 +357,6 @@ export const FeedNewArticleScreen: ScreenFC<"FeedNewArticle"> = () => {
         <View
           style={{
             width: isSmallScreen ? windowWidth : width,
-            maxWidth: screenContentMaxWidth,
             alignSelf: "center",
           }}
         >
