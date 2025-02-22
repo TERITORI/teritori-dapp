@@ -33,7 +33,7 @@ fn get_default_collection() -> CollectionProject {
         // Info ----------------------------
         name: "name".to_string(),
         desc: "desc".to_string(),
-        symbol: "SYMBOL".to_string(),
+        symbol: COLLECTION_ID.to_string(),
         cover_img_uri: "img".to_string(),
         target_network: "network".to_string(),
         // Details ----------------------------
