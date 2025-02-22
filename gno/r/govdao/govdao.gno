@@ -4,9 +4,11 @@ import (
 	"gno.land/p/teritori/basedao"
 	"gno.land/p/teritori/daocond"
 	"gno.land/p/teritori/daokit"
+	"gno.land/p/teritori/daomsgs"
 	"gno.land/p/teritori/role_manager"
 	"gno.land/r/demo/profile"
-	"gno.land/r/gnoland/ghverify"
+	"gno.land/r/teritori/ghverify"
+	"gno.land/r/teritori/social_feeds"
 )
 
 const (
@@ -34,16 +36,25 @@ func init() {
 		{Address: "g1r69l0vhp7tqle3a0rk8m8fulr8sjvj4h7n0tth", Roles: []string{Tier2}},
 	}
 	dao = basedao.New(&basedao.Config{
-		Name:              "GovDAO",
-		Description:       "This is a GovDAO demo",
+		Name: "GovDAO",
+		Description: "GovDAO is the autonomous, decentralized organization in charge of " +
+			"securing the Gnoland network and ecosystem. It is made up of members " +
+			"who have made a significant contribution to the emergence of the " +
+			"Gnoland language, network and ecosystem. The only way to become a " +
+			"member of GovDAO is to actively participate in coding, tooling, " +
+			"improving, securing or expanding Gnoland and its common tools.",
+		ImageURI:          "ipfs://bafkreigqm3i4urywxohvpkbz5sgxosiogwn433ufmzz7eqldjxoi6xmwma",
 		NoDefaultHandlers: true,
 		Members:           basedao.NewMembersStore(initialRoles, initialMembers),
+		SetProfileString:  profile.SetStringField,
 		GetProfileString:  profile.GetStringField,
+		NoEvents:          true,
 	})
 
+	// XXX: t1Supermajority won't work because daocond.RoleThreshold uses events
 	t1Supermajority := daocond.RoleThreshold(0.66, Tier1, dao.Members.HasRole, dao.Members.CountMembersWithRole)
-	supermajority := daocond.GovDaoCondThreshold(0.66, dao.Members.HasRole, dao.Members.CountMembersWithRole)
-	majority := daocond.GovDaoCondThreshold(0.5, dao.Members.HasRole, dao.Members.CountMembersWithRole)
+	supermajority := daocond.GovDaoCondThreshold(0.66, []string{Tier1, Tier2, Tier3}, dao.Members.HasRole, dao.Members.CountMembersWithRole)
+	majorityWithoutT3 := daocond.GovDaoCondThreshold(0.5, []string{Tier1, Tier2}, dao.Members.HasRole, dao.Members.CountMembersWithRole)
 
 	resources := []*daokit.Resource{
 		{
@@ -52,10 +63,14 @@ func init() {
 		},
 		{
 			Handler:   NewAddT2MemberHandler(dao),
-			Condition: majority,
+			Condition: majorityWithoutT3,
 		},
 		{
 			Handler:   basedao.NewEditProfileHandler(profile.SetStringField, nil),
+			Condition: supermajority,
+		},
+		{
+			Handler:   daomsgs.NewCreatePostHandler(createPostUint64),
 			Condition: supermajority,
 		},
 	}
@@ -84,4 +99,8 @@ func InstantExecute(proposal daokit.ProposalRequest) {
 
 func Render(path string) string {
 	return dao.Render(path)
+}
+
+func createPostUint64(feedID uint64, parentID uint64, category uint64, metadata string) uint64 {
+	return uint64(social_feeds.CreatePost(social_feeds.FeedID(feedID), social_feeds.PostID(parentID), category, metadata))
 }

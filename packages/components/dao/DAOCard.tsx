@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
-import { GnoDAORegistration } from "../../hooks/gno/useGnoDAOs";
 import { useNSUserInfo } from "../../hooks/useNSUserInfo";
 import { parseUserId } from "../../networks";
 import { secondaryColor, neutral77, neutral33 } from "../../utils/style/colors";
@@ -10,10 +9,7 @@ import { layout } from "../../utils/style/layout";
 import { tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
 import { OmniLink } from "../OmniLink";
-import {
-  AvatarWithFrame,
-  UserAvatarWithFrame,
-} from "../images/AvatarWithFrame";
+import { UserAvatarWithFrame } from "../images/AvatarWithFrame";
 import { SpacerColumn } from "../spacer";
 
 export const DAOCard: React.FC<{
@@ -31,30 +27,6 @@ export const DAOCard: React.FC<{
       tokenId={tokenId}
       style={style}
       avatar={<UserAvatarWithFrame userId={daoId} size="L" />}
-    />
-  );
-};
-
-export const GnoDAOCard: React.FC<{
-  daoId: string;
-  registration: GnoDAORegistration;
-  style?: StyleProp<ViewStyle>;
-}> = ({ daoId, style, registration }) => {
-  const [network] = parseUserId(daoId);
-  return (
-    <DAOCardView
-      daoId={daoId}
-      name={registration.name}
-      description={registration.description}
-      style={style}
-      avatar={
-        <AvatarWithFrame
-          networkId={network?.id}
-          image={registration.imageURI}
-          isDAO
-          size="L"
-        />
-      }
     />
   );
 };

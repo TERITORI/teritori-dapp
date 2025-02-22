@@ -43,7 +43,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
   -w -s -linkmode=external -extldflags '-Wl,-z,muldefs -static'" \
   -trimpath \
   -o /app/build/ \
-  ./go/cmd/gno_social_feed_indexer
+  ./go/cmd/gno-indexer
 
 # --------------------------------------------------------
 # Runner
@@ -51,7 +51,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 
 FROM ${RUNNER_IMAGE}
 
-COPY --from=builder /app/build/gno_social_feed_indexer /bin/gno_social_feed_indexer
+COPY --from=builder /app/build/gno-indexer /bin/gno-indexer
 
 
 
@@ -60,4 +60,4 @@ WORKDIR $HOME
 
 COPY networks.json $HOME/networks.json
 
-ENTRYPOINT ["gno_social_feed_indexer"]
+ENTRYPOINT ["gno-indexer"]

@@ -15,7 +15,7 @@ import { extractGnoJSONString } from "@/utils/gno";
 
 type GnoDAOMember = {
   address: string;
-  power: number;
+  power?: number;
   roles?: string[];
 };
 
@@ -48,19 +48,16 @@ export const useDAOMembers = (daoId: string | undefined) => {
           }));
         }
         case NetworkKind.Gno: {
-          if (!network.groupsPkgPath) {
-            return [];
-          }
           const provider = new GnoJSONRPCProvider(network.endpoint);
           const res: GnoDAOMember[] = extractGnoJSONString(
             await provider.evaluateExpression(
               daoAddress,
-              `getMembersJSON("", "", 0)`,
+              `dao.Members.GetMembersJSON()`,
             ),
           );
           return res.map((member) => ({
             addr: member.address,
-            weight: member.power,
+            weight: member.power || 0,
             roles: member.roles || [],
           }));
         }

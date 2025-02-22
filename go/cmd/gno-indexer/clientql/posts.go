@@ -7,26 +7,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Khan/genqlient/graphql"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/gnoindexerql"
-	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
-	"gorm.io/gorm"
 )
-
-type IndexerQL struct {
-	gqlClient graphql.Client
-	db        *gorm.DB
-	network   networks.GnoNetwork
-	logger    *zap.Logger
-}
-
-func New(network networks.GnoNetwork, graphqlEndpoint string, db *gorm.DB, logger *zap.Logger) *IndexerQL {
-	gqlClient := graphql.NewClient(graphqlEndpoint, nil)
-	return &IndexerQL{gqlClient: gqlClient, db: db, network: network, logger: logger}
-}
 
 func (client *IndexerQL) SyncPosts() error {
 	block := 0 // FIXME: use cursor instead, since we use our own indexers, we can hammer them in the meantime
@@ -36,7 +21,7 @@ func (client *IndexerQL) SyncPosts() error {
 	}
 	pkgPath := *client.network.SocialFeedsPkgPath
 
-	client.logger.Info("fetching", zap.Int("block", block), zap.String("pkg_path", pkgPath))
+	client.logger.Info("fetching posts", zap.Int("block", block), zap.String("pkg_path", pkgPath))
 
 	posts, err := gnoindexerql.GetPostTransactions(context.Background(), client.gqlClient, block, pkgPath)
 	if err != nil {
@@ -75,7 +60,7 @@ func (client *IndexerQL) getPostWithData(data *gnoindexerql.GetPostTransactionsT
 		return indexerdb.Post{}, fmt.Errorf("invalid args length")
 	}
 	categoryID, _ := strconv.Atoi(data.Args[2])
-	var metadata metadata
+	var metadata postMetadata
 	metadataBytes := []byte(data.Args[3])
 	if err := json.Unmarshal(metadataBytes, &metadata); err != nil {
 		// we ignore malformed metadata since users can put anything in this field
@@ -122,7 +107,7 @@ func extractPostIdentifierFromData(data string) (string, error) {
 	return parts[0], nil
 }
 
-type metadata struct {
+type postMetadata struct {
 	Message string `json:"message"`
 	Files   []struct {
 		FileName string `json:"fileName"`

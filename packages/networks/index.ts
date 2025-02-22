@@ -15,6 +15,7 @@ import { gnoDevNetwork } from "./gno-dev";
 import { gnoPortalNetwork } from "./gno-portal";
 import { gnoTest3Network } from "./gno-test3";
 import { gnoTest5Network } from "./gno-test5";
+import { gnoZenaoNetwork } from "./gno-zenao";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
 // import { solanaNetwork } from "./solana";
@@ -60,6 +61,7 @@ const packageNetworks = [
   sagaNetwork,
   starknetNetwork,
   starknetSepoliaNetwork,
+  gnoZenaoNetwork,
 ];
 
 export const defaultEnabledNetworks = [
@@ -193,7 +195,7 @@ export const parseUserId = (
       bech32.decode(rest);
       return [network, rest];
     } catch {}
-    return [network, "gno.land/" + rest.replaceAll("-", "/")];
+    return [network, rest];
   }
   return [network, rest];
 };
@@ -512,6 +514,9 @@ export const accountExplorerLink = (
   const network = getNetwork(networkId);
   if (!network?.accountExplorer) {
     return "/";
+  }
+  if (network.kind === NetworkKind.Gno && address.includes(".")) {
+    return network.contractExplorer.replace("$address", address);
   }
   return network.accountExplorer.replace("$address", address);
 };

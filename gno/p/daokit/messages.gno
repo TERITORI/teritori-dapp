@@ -64,3 +64,57 @@ func (g *genericMessageHandler) Instantiate() ExecutableMessage {
 func (g *genericMessageHandler) Type() string {
 	return g.kind
 }
+
+const MsgExecuteLambdaKind = "gno.land/p/teritori/daokit.ExecuteLambda"
+
+func NewExecuteLambdaHandler() MessageHandler {
+	return NewMessageHandler(MsgExecuteLambdaKind, func(i interface{}) {
+		cb, ok := i.(func())
+		if !ok {
+			panic(errors.New("invalid msg type"))
+		}
+		cb()
+	})
+}
+
+func NewExecuteLambdaMsg(cb func()) ExecutableMessage {
+	return NewMessage(MsgExecuteLambdaKind, cb)
+}
+
+const MsgSetResourceKind = "gno.land/p/teritori/daokit.SetResource"
+
+func NewSetResourceHandler(d *Core) MessageHandler {
+	return NewMessageHandler(MsgSetResourceKind, func(ipayload interface{}) {
+		payload, ok := ipayload.(*Resource)
+		if !ok {
+			panic(errors.New("invalid payload type"))
+		}
+
+		d.SetResource(payload)
+		d.ProposalModule.InvalidateWithResource(payload.Handler.Type())
+	})
+}
+
+func NewSetResourceMsg(payload *Resource) ExecutableMessage {
+	return NewMessage(MsgSetResourceKind, payload)
+}
+
+const MsgRemoveResourceKind = "gno.land/p/teritori/daokit.RemoveResource"
+
+func NewRemoveResourceHandler(d *Core) MessageHandler {
+	return NewMessageHandler(MsgRemoveResourceKind, func(ipayload interface{}) {
+		payload, ok := ipayload.(*Resource)
+		if !ok {
+			panic(errors.New("invalid payload type"))
+		}
+		if d.Resources.getResource(payload.Handler.Type()) == nil {
+			panic("resource " + payload.Handler.Type() + " does not exists")
+		}
+		d.Resources.removeResource(payload)
+		d.ProposalModule.InvalidateWithResource(payload.Handler.Type())
+	})
+}
+
+func NewRemoveResourceMsg(payload *Resource) ExecutableMessage {
+	return NewMessage(MsgRemoveResourceKind, payload)
+}

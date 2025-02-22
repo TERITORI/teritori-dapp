@@ -15,6 +15,8 @@ import teritori from "./teritori.svg";
 import polygon from "./polygon.svg";
 import starknet from "./starknet.svg";
 import starknetCircle from "./starknet-circle.svg";
+import zenao from "./zenao.svg";
+import zenaoCircle from "./zenao-circle.svg"
 
 export const networks = {
   teritori,
@@ -34,4 +36,6 @@ export const networks = {
   polygon,
   starknet,
   starknetCircle,
+  zenao,
+  zenaoCircle,
 };

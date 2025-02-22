@@ -11,6 +11,7 @@ import { useMemo } from "react";
 import { z } from "zod";
 
 import { getCosmosNetwork, getStakingCurrency } from "@/networks";
+import { prettyPercent } from "@/utils/numbers";
 import { ValidatorInfo } from "@/utils/types/staking";
 
 interface StakingParams {
@@ -230,10 +231,6 @@ const useCosmosNetworkEndpointsScores = (networkId: string | undefined) => {
     },
     { staleTime: 60000 },
   );
-};
-
-const prettyPercent = (val: number) => {
-  return (val * 100).toFixed(2) + "%"; // FIXME: cut useless zeros
 };
 
 const getTendermintActiveValidators = async (

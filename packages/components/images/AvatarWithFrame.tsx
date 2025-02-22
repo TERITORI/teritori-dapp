@@ -37,7 +37,7 @@ export const UserAvatarWithFrame: React.FC<{
   );
 };
 
-export const AvatarWithFrame: React.FC<{
+const AvatarWithFrame: React.FC<{
   networkId: string | undefined;
   image: string | null | undefined;
   size?: AvatarWithFrameSize;
@@ -74,9 +74,15 @@ export const AvatarWithFrame: React.FC<{
           width={imageSize}
           height={imageSize}
           sourceURI={image}
+          resizeMode="cover"
           fallbackURI={nameServiceDefaultImage(isDAO, network)}
           style={[
-            { width: imageSize, height: imageSize, backgroundColor: "black" },
+            {
+              width: imageSize,
+              height: imageSize,
+              backgroundColor: "black",
+              objectFit: "cover",
+            },
             isDAO
               ? {
                   borderRadius: imageSize * 0.05,

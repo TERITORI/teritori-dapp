@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/TERITORI/teritori-dapp/go/cmd/gno_social_feed_indexer/clientql"
+	"github.com/TERITORI/teritori-dapp/go/cmd/gno-indexer/clientql"
 	"github.com/TERITORI/teritori-dapp/go/internal/indexerdb"
 	"github.com/TERITORI/teritori-dapp/go/pkg/networks"
 	"github.com/go-co-op/gocron"
@@ -26,7 +26,7 @@ func main() {
 		dbName       = fs.String("database-name", "", "database name for postgreSQL")
 		dbUser       = fs.String("postgres-user", "", "username for postgreSQL")
 		networksFile = fs.String("networks-file", "networks.json", "path to networks config file")
-		networkID    = fs.String("gno-network-id", "devLocal", "network id to index")
+		networkID    = fs.String("gno-network-id", "gno-dev", "network id to index")
 	)
 	if err := ff.Parse(fs, os.Args[1:],
 		ff.WithEnvVars(),
@@ -85,13 +85,23 @@ func main() {
 	clientql := clientql.New(*network, gqlurl, db, logger)
 	schedule := gocron.NewScheduler(time.UTC)
 
-	schedule.Every(20).Seconds().Do(func() {
+	schedule.Every(10).Seconds().Do(func() {
 		logger.Info("indexing")
 		err = clientql.SyncPosts()
 		if err != nil {
 			logger.Error("failed to get posts list", zap.Error(err))
-			panic(err)
 		}
+		err = clientql.SyncDAOs()
+		if err != nil {
+			logger.Error("failed to get daos list", zap.Error(err))
+		}
+		/*
+			TODO:
+			err = clientql.SyncNames()
+			if err != nil {
+				logger.Error("failed to get posts list", zap.Error(err))
+			}
+		*/
 	})
 
 	schedule.StartBlocking()

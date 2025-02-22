@@ -4,6 +4,7 @@ import (
 	"std"
 
 	"gno.land/p/demo/avl"
+	"gno.land/p/demo/json"
 	"gno.land/p/teritori/role_manager"
 )
 
@@ -16,6 +17,9 @@ type Member struct {
 	Address string
 	Roles   []string
 }
+
+const EventAddMember = "BaseDAOAddMember"
+const EventRemoveMember = "BaseDAORemoveMember"
 
 func NewMembersStore(initialRoles []role_manager.RoleInfo, initialMembers []Member) *MembersStore {
 	res := &MembersStore{
@@ -76,6 +80,11 @@ func (m *MembersStore) setRoles(roles []role_manager.RoleInfo) {
 
 func (m *MembersStore) setMembers(members []Member) {
 	for _, member := range members {
+		if ok := m.Members.Has(member.Address); !ok {
+			std.Emit(EventAddMember,
+				"address", member.Address,
+			)
+		}
 		m.Members.Set(member.Address, struct{}{})
 		for _, role := range member.Roles {
 			m.RoleManager.AddRoleToUser(std.Address(member.Address), role)
@@ -87,6 +96,9 @@ func (m *MembersStore) AddMember(member string, roles []string) {
 	if m.IsMember(member) {
 		panic("member already exists")
 	}
+	std.Emit(EventAddMember,
+		"address", member,
+	)
 	m.Members.Set(member, struct{}{})
 	for _, role := range roles {
 		m.RoleManager.AddRoleToUser(std.Address(member), role)
@@ -97,6 +109,9 @@ func (m *MembersStore) RemoveMember(member string) {
 	if !m.IsMember(member) {
 		panic("member does not exist")
 	}
+	std.Emit(EventRemoveMember,
+		"address", member,
+	)
 	m.Members.Remove(member)
 	m.RoleManager.RemoveAllRolesFromUser(std.Address(member))
 }
@@ -125,4 +140,25 @@ func (m *MembersStore) RemoveRoleFromMember(member string, role string) {
 		panic("member does not have the role")
 	}
 	m.RoleManager.RemoveRoleFromUser(std.Address(member), role)
+}
+
+func (m *MembersStore) GetMembersJSON() string {
+	// XXX: replace with protoc-gen-gno
+	members := []*json.Node{}
+	for _, memberID := range m.GetMembers() {
+		roles := []*json.Node{}
+		for _, role := range m.GetMemberRoles(memberID) {
+			roles = append(roles, json.StringNode("", role))
+		}
+		members = append(members, json.ObjectNode("", map[string]*json.Node{
+			"address": json.StringNode("", memberID),
+			"roles":   json.ArrayNode("", roles),
+		}))
+	}
+	node := json.ArrayNode("", members)
+	bz, err := json.Marshal(node)
+	if err != nil {
+		panic(err)
+	}
+	return string(bz)
 }

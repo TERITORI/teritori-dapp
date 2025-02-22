@@ -31,12 +31,15 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   idPrefix: "gnodev",
   chainId: "dev",
   endpoint: "http://127.0.0.1:26657",
-  txExplorer: "https://gnoscan.io/transactions/details?txhash=$hash",
-  accountExplorer: "https://gnoscan.io/accounts/$address",
-  contractExplorer: "https://gnoscan.io/realms/details?path=$address",
+  txExplorer:
+    "https://gnoscan.io/transactions/details?txhash=$hash&type=custom&chainId=dev&rpcUrl=http://127.0.0.1:26657&indexerUrl=http://127.0.0.1:8546",
+  accountExplorer:
+    "https://gnoscan.io/accounts/$address?type=custom&chainId=dev&rpcUrl=http://127.0.0.1:26657&indexerUrl=http://127.0.0.1:8546",
+  contractExplorer:
+    "https://gnoscan.io/realms/details?path=$address&type=custom&chainId=dev&rpcUrl=http://127.0.0.1:26657&indexerUrl=http://127.0.0.1:8546",
   testnet: true,
-  // backendEndpoint: "http://localhost:9090",
-  backendEndpoint: "https://dapp-backend.testnet.teritori.com",
+  backendEndpoint: "http://localhost:9090",
+  // backendEndpoint: "https://dapp-backend.testnet.teritori.com",
   vaultContractAddress: "",
   daoRegistryPkgPath: "gno.land/r/teritori/dao_registry",
   socialFeedsPkgPath: "gno.land/r/teritori/social_feeds",
@@ -54,7 +57,7 @@ export const gnoDevNetwork: GnoNetworkInfo = {
   daoUtilsPkgPath: "gno.land/p/teritori/dao_utils",
   toriPkgPath: "gno.land/r/teritori/tori",
   nameServiceDefaultImage:
-    "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+    "ipfs://bafkreigqm3i4urywxohvpkbz5sgxosiogwn433ufmzz7eqldjxoi6xmwma",
   gnowebURL: "http://127.0.0.1:8888",
   txIndexerURL: "http://127.0.0.1:8546",
 };
