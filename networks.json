@@ -11649,6 +11649,17 @@
       "RiotP2E",
       "NFTMarketplaceLeaderboard"
     ],
+    "featureObjects": [
+      {
+        "type": "CosmWasmNFTLaunchpad",
+        "launchpadContractAddress": "tori1l07lh669x8wg2rh3pxzpatrr2npf5ql7y6kusaup53fu2xr68p5qglyy9t",
+        "launchpadEndpoint": "http://localhost:9090",
+        "nftTr721CodeId": 60,
+        "codeId": 95,
+        "defaultMintDenom": "utori",
+        "daoProposalSingleContractAddress": "tori1tj2uked2zfq958w6cugnm44qlllnrpaaxk09j39qqdqhhedjpljszjyhx6"
+      }
+    ],
     "currencies": [
       {
         "denom": "utori",
@@ -11746,11 +11757,12 @@
       },
       {
         "type": "CosmWasmNFTLaunchpad",
-        "launchpadContractAddress": "tori1te7ku4de0k4rl8lhyuvpmhygaq7k7vy5zpsjq9y638efxsnx3aaqck2utf",
+        "launchpadContractAddress": "tori1f62uv8zght6vnnq6kh3pg69xca9s03ecwpal7gquupf9knctk25suzf7rq",
         "launchpadEndpoint": "https://dapp-backend.testnet.teritori.com",
         "nftTr721CodeId": 60,
-        "codeId": 71,
-        "defaultMintDenom": "utori"
+        "codeId": 96,
+        "defaultMintDenom": "utori",
+        "daoProposalSingleContractAddress": "tori1huu2ysuct2e9xnmxc28xdwfeflytw2samzp95a2devjqs0qfj6fqx47v57"
       },
       {
         "type": "CosmWasmRakki",

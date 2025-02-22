@@ -14,6 +14,7 @@ export interface Config {
   name: string;
   nft_code_id: number;
   owner: Addr;
+  proposal_single_contract: Addr;
 }
 export type ExecuteMsg = {
   update_config: {
@@ -43,6 +44,7 @@ export interface ConfigChanges {
   name?: string | null;
   nft_code_id?: number | null;
   owner?: string | null;
+  proposal_single_contract?: string | null;
 }
 export interface CollectionProject {
   artwork_desc?: string | null;
