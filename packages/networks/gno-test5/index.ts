@@ -7,6 +7,7 @@ export const gnoTest5Network: GnoNetworkInfo = {
   displayName: "Gno Test5",
   icon: "gno.svg",
   features: [
+    NetworkFeature.Organizations,
     NetworkFeature.SocialFeed,
     NetworkFeature.UPP,
     NetworkFeature.GnoProjectManager,
@@ -31,11 +32,11 @@ export const gnoTest5Network: GnoNetworkInfo = {
     "https://gnoscan.io/realms/details?path=$address&chainId=test5",
   testnet: true,
   backendEndpoint: "https://dapp-backend.testnet.teritori.com",
-  gnowebURL: "https://gno.land",
+  gnowebURL: "https://test5.gno.land",
   vaultContractAddress: "",
   nameServiceContractAddress: "gno.land/r/demo/users",
   nameServiceDefaultImage:
-    "ipfs://bafkreignptjimiu7wuux6mk6uh4hb4odb6ff62ny4bvdokrhes7g67huse",
+    "ipfs://bafkreigqm3i4urywxohvpkbz5sgxosiogwn433ufmzz7eqldjxoi6xmwma",
   socialFeedsPkgPath: "gno.land/r/teritori/social_feeds",
   socialFeedsDAOPkgPath: "gno.land/r/teritori/social_feeds_dao",
   daoInterfacesPkgPath: "gno.land/p/teritori/dao_interfaces",

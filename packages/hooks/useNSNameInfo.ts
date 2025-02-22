@@ -1,12 +1,7 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 
-import { GnoDAORegistration } from "./gno/useGnoDAOs";
-
-import {
-  Metadata,
-  NftInfoResponse,
-} from "@/contracts-clients/teritori-name-service/TeritoriNameService.types";
+import { NftInfoResponse } from "@/contracts-clients/teritori-name-service/TeritoriNameService.types";
 import {
   CosmosNetworkInfo,
   GnoNetworkInfo,
@@ -14,7 +9,11 @@ import {
   getNetwork,
 } from "@/networks";
 import { getCosmosNameServiceQueryClient } from "@/utils/contracts";
-import { extractGnoJSONString, extractGnoString } from "@/utils/gno";
+import {
+  derivePkgAddr,
+  extractGnoAddress,
+  extractGnoString,
+} from "@/utils/gno";
 import { ProfileData } from "@/utils/upp";
 
 export const GNO_CONTRACT_FIELD = {
@@ -32,30 +31,13 @@ const gnoGetNSNameInfo = async (
   if (!addressOrName) return null;
 
   // DAO User
-  if (addressOrName?.startsWith("gno.land/")) {
-    if (!network.daoRegistryPkgPath) {
-      return null;
-    }
-    const provider = new GnoJSONRPCProvider(network.endpoint);
-    const query = `GetJSON(${JSON.stringify(addressOrName)})`;
-    const res: GnoDAORegistration = extractGnoJSONString(
-      await provider.evaluateExpression(network.daoRegistryPkgPath, query),
-    );
-    const data: Metadata = {
-      public_name: res.name,
-      public_bio: res.description,
-      image: res.imageURI,
-    };
-    const user: NftInfoResponse = {
-      extension: data,
-    };
-    return user;
-  }
 
   // Single User
   let address: string | null = addressOrName;
   // If aon is username then get the address
-  if (addressOrName.endsWith(".gno")) {
+  if (addressOrName.startsWith("gno.land/")) {
+    address = derivePkgAddr(addressOrName);
+  } else if (addressOrName.endsWith(".gno")) {
     address = await gnoGetAddressByUsername(
       network,
       addressOrName.slice(0, -".gno".length),
@@ -181,7 +163,7 @@ const gnoGetAddressByUsername = async (
       network.nameServiceContractAddress,
       `GetUserByName(${JSON.stringify(name)}).Address`,
     );
-    const address = extractGnoString(res);
+    const address = extractGnoAddress(res);
     return address;
   } catch (err) {
     if (

@@ -32,6 +32,7 @@ import {
   accountExplorerLink,
   getNetworkFeature,
   NetworkFeature,
+  NetworkKind,
   parseUserId,
 } from "@/networks";
 import { DEFAULT_NAME } from "@/utils/social-feed";
@@ -59,7 +60,7 @@ export const UPPIntro: React.FC<{
   const { copyToClipboard } = useCopyToClipboard();
   const socialButtonStyle = { margin: layout.spacing_x0_75 };
   const [network, userAddress] = parseUserId(userId);
-  const { width } = useMaxResolution();
+  const { width } = useMaxResolution({ isLarge: true });
   const { width: windowWidth } = useWindowDimensions();
   const { data: premiumChannel } = usePremiumChannel(network?.id, userAddress);
   const networkHasPremiumFeature = !!getNetworkFeature(
@@ -97,6 +98,7 @@ export const UPPIntro: React.FC<{
             height: "100%",
             width: "100%",
             borderRadius: windowWidth < RESPONSIVE_BREAKPOINT_S ? 0 : 7,
+            objectFit: "cover",
           }}
         />
 
@@ -135,6 +137,18 @@ export const UPPIntro: React.FC<{
                 if (!metadata.twitter_id) return;
                 Linking.openURL(normalizeTwitterId(metadata.twitter_id));
               }}
+            />
+          )}
+          {network?.kind === NetworkKind.Gno && (
+            <SocialButtonSecondary
+              iconSvg={infoSVG}
+              text="Gnoweb"
+              style={socialButtonStyle}
+              onPress={() =>
+                Linking.openURL(
+                  `${network.gnowebURL}${userAddress.startsWith("gno.land/") ? userAddress.substring("gno.land".length) : `/r/${network.cockpitNamespace || "teritori"}/cockpit:u/${userAddress}`}`,
+                )
+              }
             />
           )}
           <SocialButtonSecondary
@@ -245,13 +259,6 @@ export const UPPIntro: React.FC<{
                 size="M"
                 backgroundColor={neutral00}
                 disabled
-                style={{
-                  width: Platform.OS === "web" ? "auto" : 170,
-                  marginRight:
-                    Platform.OS === "web"
-                      ? layout.spacing_x3
-                      : layout.spacing_x4_5,
-                }}
               />
             </>
           )}

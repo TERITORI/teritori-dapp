@@ -39,6 +39,7 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
     params: { id, tab: tabKey },
   },
 }) => {
+  id = decodeURIComponent(id);
   const navigation = useAppNavigation();
   const [network, userAddress] = parseUserId(id);
   useForceNetworkSelection(network?.id);
@@ -48,9 +49,9 @@ export const UserPublicProfileScreen: ScreenFC<"UserPublicProfile"> = ({
   const screenContainerOtherProps: Partial<ScreenContainerProps> =
     useMemo(() => {
       return {
+        isLarge: true,
+        noMargin: true,
         forceNetworkId: network?.id,
-        responsive: true,
-        fullWidth: true,
         footerChildren: <></>,
         headerChildren: (
           <BrandText style={fontSemibold20}>

@@ -1,6 +1,8 @@
 package daocond
 
 import (
+	"math"
+
 	"gno.land/p/demo/json"
 )
 
@@ -41,6 +43,11 @@ var _ Condition = (*andCond)(nil)
 type andState struct {
 	left  State
 	right State
+}
+
+// Signal implements State.
+func (a *andState) Signal(votes map[string]Vote) float64 {
+	return math.Min(a.left.Signal(votes), a.right.Signal(votes))
 }
 
 // RenderJSON implements State.

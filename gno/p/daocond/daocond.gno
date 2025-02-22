@@ -19,6 +19,7 @@ type Condition interface {
 type State interface {
 	Eval(votes map[string]Vote) bool
 	HandleEvent(event Event, votes map[string]Vote)
+	Signal(votes map[string]Vote) float64
 
 	RenderJSON(votes map[string]Vote) *json.Node
 }
@@ -60,6 +61,5 @@ type EventRoleUnassigned struct {
 }
 
 type EventRoleRemoved struct {
-	UserID string
-	Role   string
+	Role string
 }

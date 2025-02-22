@@ -34,3 +34,7 @@ export function prettyNumber(val: number, maxDecimals: number) {
   }
   return `${trimFixed(val.toFixed(maxDecimals))}${units[unitIndex]}`;
 }
+
+export function prettyPercent(gain: number) {
+  return trimFixed((gain * 100).toFixed(2)) + "%";
+}

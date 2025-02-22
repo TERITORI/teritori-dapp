@@ -23,6 +23,7 @@ type Config struct {
 	ImageURI          string
 	Members           *MembersStore
 	NoDefaultHandlers bool
+	NoEvents          bool
 	InitialCondition  daocond.Condition
 	SetProfileString  ProfileStringSetter
 	GetProfileString  ProfileStringGetter
@@ -31,7 +32,15 @@ type Config struct {
 type ProfileStringSetter func(field string, value string) bool
 type ProfileStringGetter func(addr std.Address, field string, def string) string
 
+const EventBaseDAOCreated = "BaseDAOCreated"
+
+func emitBaseDAOCreated() {
+	std.Emit(EventBaseDAOCreated)
+}
+
 func New(conf *Config) *DAO {
+	// XXX: emit events from memberstore
+
 	members := conf.Members
 	if members == nil {
 		members = NewMembersStore(nil, nil)
@@ -41,8 +50,11 @@ func New(conf *Config) *DAO {
 		panic(errors.New("GetProfileString is required"))
 	}
 
+	core := daokit.NewCore()
+	core.NoEvents = conf.NoEvents
+
 	dao := &DAO{
-		Core:             daokit.NewCore(),
+		Core:             core,
 		Members:          members,
 		GetProfileString: conf.GetProfileString,
 		Realm:            std.CurrentRealm(),
@@ -56,10 +68,6 @@ func New(conf *Config) *DAO {
 	}
 
 	if !conf.NoDefaultHandlers {
-		if conf.SetProfileString == nil {
-			panic(errors.New("SetProfileString is required"))
-		}
-
 		if conf.InitialCondition == nil {
 			conf.InitialCondition = daocond.MembersThreshold(0.6, members.IsMember, members.MembersCount)
 		}
@@ -77,10 +85,15 @@ func New(conf *Config) *DAO {
 			NewRemoveMemberHandler(dao),
 			NewAssignRoleHandler(dao),
 			NewUnassignRoleHandler(dao),
+			daokit.NewSetResourceHandler(dao.Core),
+			daokit.NewRemoveResourceHandler(dao.Core),
+			daokit.NewExecuteLambdaHandler(),
 		} {
 			dao.Core.SetResource(&daokit.Resource{Handler: m, Condition: conf.InitialCondition})
 		}
 	}
+
+	emitBaseDAOCreated()
 
 	return dao
 }

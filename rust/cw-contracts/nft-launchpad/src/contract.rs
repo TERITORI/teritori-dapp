@@ -372,24 +372,17 @@ pub struct CollectionProject {
     pub cover_img_uri: String,
     pub target_network: String,
     // Details ----------------------------
-    pub website_link: String,
-    pub contact_email: String,
-    pub is_project_derivative: bool,
-    pub project_type: String,
-    pub is_applied_previously: bool,
+    pub website_link: Option<String>,
+    pub contact_email: Option<String>,
+    pub project_type: Option<String>,
+    pub artwork_desc: Option<String>,
     // Team info --------------------------------------
-    pub team_desc: String,
-    pub partners: String,
-    pub investment_desc: String,
-    pub investment_link: String,
-    // Additional info ----------------------------
-    pub artwork_desc: String,
-    pub is_ready_for_mint: bool,
-    pub escrow_mint_proceeds_period: u64,
-    pub is_dox: bool,
-    pub dao_whitelist_count: u32,
-    pub reveal_time: Option<u64>,
+    pub team_desc: Option<String>,
+    pub partners: Option<String>,
+    pub investment_desc: Option<String>,
+    pub investment_link: Option<String>,
     // Minting details ----------------------------
+    pub reveal_time: Option<u64>,
     pub tokens_count: u64,
     // Mint periods --------------------------
     pub mint_periods: Vec<Tr721MintPeriod>,

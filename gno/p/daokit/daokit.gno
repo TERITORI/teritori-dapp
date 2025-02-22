@@ -9,6 +9,7 @@ import (
 type Core struct {
 	Resources      *resourcesStore
 	ProposalModule *ProposalModule
+	NoEvents       bool
 }
 
 func NewCore() *Core {
@@ -32,12 +33,14 @@ func (d *Core) Vote(voterID string, proposalID uint64, vote daocond.Vote) {
 		panic("proposal is not open")
 	}
 
-	e := &daocond.EventVote{
-		VoterID: voterID,
-		Vote:    daocond.Vote(vote),
+	if !d.NoEvents {
+		e := &daocond.EventVote{
+			VoterID: voterID,
+			Vote:    daocond.Vote(vote),
+		}
+		proposal.ConditionState.HandleEvent(e, proposal.Votes)
 	}
 
-	proposal.ConditionState.HandleEvent(e, proposal.Votes)
 	proposal.Votes[voterID] = daocond.Vote(vote)
 
 }
