@@ -36,17 +36,12 @@ import { zodTryParseJSON } from "@/utils/sanitize";
 import {
   ARTICLE_COVER_IMAGE_MAX_HEIGHT,
   ARTICLE_COVER_IMAGE_RATIO,
-  ARTICLE_MAX_WIDTH,
   DEFAULT_USERNAME,
   LINES_HORIZONTAL_SPACE,
   SOCIAl_CARD_BORDER_RADIUS,
 } from "@/utils/social-feed";
 import { neutral33 } from "@/utils/style/colors";
-import {
-  layout,
-  RESPONSIVE_BREAKPOINT_S,
-  screenContentMaxWidth,
-} from "@/utils/style/layout";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
 import {
   OnPressReplyType,
@@ -66,6 +61,8 @@ export const FeedPostArticleView: FC<{
   const navigation = useAppNavigation();
   const { width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
+  const isSmallScreen = windowWidth < RESPONSIVE_BREAKPOINT_S;
+  const contentWidth = isSmallScreen ? windowWidth : width;
   const isMobile = useIsMobile();
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
 
@@ -197,7 +194,10 @@ export const FeedPostArticleView: FC<{
     >
       <Animated.ScrollView
         ref={aref}
-        contentContainerStyle={contentContainerCStyle}
+        contentContainerStyle={[
+          contentContainerCStyle,
+          { width: contentWidth },
+        ]}
         onScroll={scrollHandler}
         scrollEventThrottle={1}
       >
@@ -205,8 +205,7 @@ export const FeedPostArticleView: FC<{
         {isMobile && <MobileTitle title={headerLabel.toUpperCase()} />}
         <View
           style={{
-            width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-            maxWidth: screenContentMaxWidth,
+            width: "100%",
             alignItems: "center",
             paddingVertical: layout.spacing_x2,
           }}
@@ -222,13 +221,9 @@ export const FeedPostArticleView: FC<{
             }}
             style={{
               width: "100%",
-              maxWidth: ARTICLE_MAX_WIDTH + contentPaddingHorizontal * 2,
               borderBottomWidth: 1,
               borderBottomColor: neutral33,
-              borderRadius:
-                windowWidth < RESPONSIVE_BREAKPOINT_S
-                  ? 0
-                  : SOCIAl_CARD_BORDER_RADIUS,
+              borderRadius: isSmallScreen ? 0 : SOCIAl_CARD_BORDER_RADIUS,
               paddingHorizontal: contentPaddingHorizontal,
               paddingBottom: layout.spacing_x2,
             }}
@@ -243,7 +238,6 @@ export const FeedPostArticleView: FC<{
                     style={{
                       width: "100%",
                       aspectRatio: ARTICLE_COVER_IMAGE_RATIO,
-                      // height: ARTICLE_COVER_IMAGE_MAX_HEIGHT/1.6,
                       maxHeight: ARTICLE_COVER_IMAGE_MAX_HEIGHT,
                     }}
                   />
