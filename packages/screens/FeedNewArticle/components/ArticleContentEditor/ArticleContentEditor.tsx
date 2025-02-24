@@ -19,7 +19,6 @@ import {
   renderHtmlTagStyles,
   renderHtmlDomVisitors,
 } from "@/utils/feed/markdown";
-import { ARTICLE_MAX_WIDTH } from "@/utils/social-feed";
 import {
   neutral00,
   neutral33,
@@ -81,7 +80,6 @@ export const ArticleContentEditor: FC<Props> = ({ width }) => {
         style={{
           flexDirection: "row",
           width: windowWidth < RESPONSIVE_BREAKPOINT_S ? "100%" : width,
-          maxWidth: ARTICLE_MAX_WIDTH + 16 * 2,
           height: editionAndPreviewHeight,
         }}
       >
