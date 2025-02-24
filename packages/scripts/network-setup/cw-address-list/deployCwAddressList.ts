@@ -1,7 +1,5 @@
 import { bech32 } from "bech32";
-import { program } from "commander";
 import { cloneDeep } from "lodash";
-import os from "os";
 import path from "path";
 
 import {
@@ -16,7 +14,7 @@ import {
   storeWASM,
 } from "@/scripts/network-setup/deployLib";
 
-const deployCwAddressList = async ({
+export const deployCwAddressList = async ({
   opts,
   networkId,
   wallet,
@@ -58,14 +56,14 @@ const deployCwAddressList = async ({
       __dirname,
       "cw_address_list.wasm",
     );
-    network.cwAdminFactoryCodeId = await storeWASM(
+    network.cwAddressListCodeId = await storeWASM(
       opts,
       wallet,
       network,
       cwAddressListWasmFilePath,
     );
 
-    console.log("Instantiating cw address list", network.cwAdminFactoryCodeId);
+    console.log("Instantiating cw address list", network.cwAddressListCodeId);
     nftMarketplaceFeature.cwAddressListContractAddress =
       await instantiateCwAddressList(opts, wallet, walletAddr, network);
 
@@ -83,7 +81,7 @@ const instantiateCwAddressList = async (
   adminAddr: string,
   network: CosmosNetworkInfo,
 ) => {
-  const codeId = network.cwAdminFactoryCodeId;
+  const codeId = network.cwAddressListCodeId;
   if (!codeId) {
     throw new Error("CW Address List code ID not found");
   }
@@ -97,23 +95,3 @@ const instantiateCwAddressList = async (
     {},
   );
 };
-
-const main = async () => {
-  program.argument("<network-id>", "Network id to deploy to");
-  program.argument("<wallet>", "Wallet to deploy from");
-  program.option("--keyring-backend [keyring-backend]", "Keyring backend");
-  program.parse();
-  const [networkId, wallet] = program.args;
-  const { keyringBackend } = program.opts();
-
-  await deployCwAddressList({
-    opts: {
-      home: path.join(os.homedir(), ".teritorid"),
-      binaryPath: "teritorid",
-      keyringBackend,
-    },
-    networkId,
-    wallet,
-  });
-};
-main();

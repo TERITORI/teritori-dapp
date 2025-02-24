@@ -110,31 +110,20 @@
     "CollectionProject": {
       "type": "object",
       "required": [
-        "artwork_desc",
-        "contact_email",
         "cover_img_uri",
-        "dao_whitelist_count",
         "desc",
-        "escrow_mint_proceeds_period",
-        "investment_desc",
-        "investment_link",
-        "is_applied_previously",
-        "is_dox",
-        "is_project_derivative",
-        "is_ready_for_mint",
         "mint_periods",
         "name",
-        "partners",
-        "project_type",
         "symbol",
         "target_network",
-        "team_desc",
-        "tokens_count",
-        "website_link"
+        "tokens_count"
       ],
       "properties": {
         "artwork_desc": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "base_token_uri": {
           "type": [
@@ -143,15 +132,13 @@
           ]
         },
         "contact_email": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "cover_img_uri": {
           "type": "string"
-        },
-        "dao_whitelist_count": {
-          "type": "integer",
-          "format": "uint32",
-          "minimum": 0.0
         },
         "deployed_address": {
           "type": [
@@ -162,28 +149,17 @@
         "desc": {
           "type": "string"
         },
-        "escrow_mint_proceeds_period": {
-          "type": "integer",
-          "format": "uint64",
-          "minimum": 0.0
-        },
         "investment_desc": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "investment_link": {
-          "type": "string"
-        },
-        "is_applied_previously": {
-          "type": "boolean"
-        },
-        "is_dox": {
-          "type": "boolean"
-        },
-        "is_project_derivative": {
-          "type": "boolean"
-        },
-        "is_ready_for_mint": {
-          "type": "boolean"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "metadatas_merkle_root": {
           "type": [
@@ -207,10 +183,16 @@
           ]
         },
         "partners": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "project_type": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "reveal_time": {
           "type": [
@@ -245,7 +227,10 @@
           "type": "string"
         },
         "team_desc": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "tokens_count": {
           "type": "integer",
@@ -253,7 +238,10 @@
           "minimum": 0.0
         },
         "website_link": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         }
       },
       "additionalProperties": false
@@ -282,6 +270,12 @@
           "minimum": 0.0
         },
         "owner": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "proposal_single_contract": {
           "type": [
             "string",
             "null"

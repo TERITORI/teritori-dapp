@@ -5,9 +5,12 @@ import {
 import { Coin, StdFee } from "@cosmjs/stargate";
 import { Buffer } from "buffer";
 
+import { InstantiateMsg as DaoCoreInstantiateMsg } from "@/contracts-clients/dao-core/DaoCore.types";
+import { InstantiateMsg as PreProposeSingleInstantiateMsg } from "@/contracts-clients/dao-pre-propose-single/DaoPreProposeSingle.types";
+import { InstantiateMsg as ProposalSingleInstantiateMsg } from "@/contracts-clients/dao-proposal-single/DaoProposalSingle.types";
+import { InstantiateMsg as VotingCw4InstantiateMsg } from "@/contracts-clients/dao-voting-cw4/DaoVotingCw4.types";
 import { TeritoriNameServiceClient } from "@/contracts-clients/teritori-name-service/TeritoriNameService.client";
 import { getStakingCurrency, mustGetCosmosNetwork } from "@/networks";
-import { getKeplrSigningCosmWasmClient } from "@/networks/signer";
 
 interface TokenHolder {
   address: string;
@@ -19,6 +22,8 @@ interface DaoMember {
 }
 
 export interface CreateDaoMemberBasedParams {
+  signingCosmWasmClient: SigningCosmWasmClient;
+  nameServiceClient: TeritoriNameServiceClient;
   networkId: string;
   sender: string;
   contractAddress: string;
@@ -187,6 +192,8 @@ export const createDaoTokenBased = async (
 
 export const createDaoMemberBased = async (
   {
+    signingCosmWasmClient,
+    nameServiceClient,
     sender,
     networkId,
     contractAddress,
@@ -211,12 +218,12 @@ export const createDaoMemberBased = async (
 ) => {
   await onStepChange?.(0);
 
-  const dao_pre_propose_single_msg = {
+  const dao_pre_propose_single_msg: PreProposeSingleInstantiateMsg = {
     deposit_info: null,
     extension: {},
     open_proposal_submission: false,
   };
-  const dao_proposal_single_msg = {
+  const dao_proposal_single_msg: ProposalSingleInstantiateMsg = {
     threshold: {
       threshold_quorum: {
         quorum: { percent: quorum },
@@ -256,7 +263,7 @@ export const createDaoMemberBased = async (
     },
   ];
 
-  const dao_voting_cw4_msg = {
+  const dao_voting_cw4_msg: VotingCw4InstantiateMsg = {
     cw4_group_code_id: cw4GroupCodeId,
     initial_members: members,
   };
@@ -268,7 +275,7 @@ export const createDaoMemberBased = async (
     msg: Buffer.from(JSON.stringify(dao_voting_cw4_msg)).toString("base64"),
   };
 
-  const dao_core_instantiate_msg = {
+  const dao_core_instantiate_msg: DaoCoreInstantiateMsg = {
     admin: null,
     automatically_add_cw20s: true,
     automatically_add_cw721s: true,
@@ -278,6 +285,7 @@ export const createDaoMemberBased = async (
     proposal_modules_instantiate_info,
     voting_module_instantiate_info,
   };
+
   const instantiate_msg = Buffer.from(
     JSON.stringify(dao_core_instantiate_msg),
   ).toString("base64");
@@ -288,13 +296,6 @@ export const createDaoMemberBased = async (
     throw new Error("no name service contract address");
   }
 
-  const client = await getKeplrSigningCosmWasmClient(networkId);
-
-  const nameServiceClient = new TeritoriNameServiceClient(
-    client,
-    sender,
-    network.nameServiceContractAddress,
-  );
   const tokenId = (tns + network.nameServiceTLD).toLowerCase();
   const amount = await nameServiceClient.mintPrice({
     tokenId,
@@ -316,7 +317,7 @@ export const createDaoMemberBased = async (
     amount && denom ? [{ denom, amount }] : [],
   );
 
-  const executeResult = await client.execute(
+  const executeResult = await signingCosmWasmClient.execute(
     sender,
     contractAddress,
     {
