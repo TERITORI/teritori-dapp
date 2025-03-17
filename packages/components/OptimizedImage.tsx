@@ -52,13 +52,6 @@ export const OptimizedImage: React.FC<
           crossOrigin="anonymous"
           width={sourceWidth}
           height={sourceHeight}
-          onError={() => {
-            if (shouldUseFallback) {
-              setIsFallbackError(true);
-              return;
-            }
-            setIsError(true);
-          }}
           style={{
             objectFit: "contain",
             borderWidth: 0,
