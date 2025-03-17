@@ -121,10 +121,8 @@ const transformURI = (
   }
 
   if (uri?.startsWith("ipfs://")) {
-    // FIXME: passing the gateway token here is unsafe and people could rip our cap but the host origin method seems broken atm
-    const gatewayAccessToken =
-      "0Ik-SBA6O3xxcvHBRmD526aG06EEwIqwcr14MFfFveyotZmOI4v9gLfJgHW3SRFY";
-    return `https://teritori.mypinata.cloud/ipfs/${uri.substring("ipfs://".length)}?img-width=${Math.round(width)}&img-height=${Math.round(height)}&img-fit=contain&pinataGatewayToken=${gatewayAccessToken}`;
+    // XXX: allow passing a dev token
+    return `https://teritori.mypinata.cloud/ipfs/${uri.substring("ipfs://".length)}?img-width=${Math.round(width)}&img-height=${Math.round(height)}&img-fit=contain`;
   }
 
   const params = resolveParams(width, height);
