@@ -170,7 +170,8 @@ export default function ProfileDetailScreen({
         style={{
           justifyContent: "space-between",
           backgroundColor: "rgba(0,0,0,0.8)",
-          height: "70%",
+          // height: "70%",
+          flex: 1,
           paddingHorizontal: layout.spacing_x2,
         }}
       >
@@ -197,7 +198,7 @@ export default function ProfileDetailScreen({
           </BrandText>
         </View>
 
-        <View>
+        <View style={{ justifyContent: "flex-end" }}>
           <CustomButton onPress={() => handleSave()} title="Update Profile" />
           <SpacerColumn size={1.5} />
 
