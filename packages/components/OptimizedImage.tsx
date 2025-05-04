@@ -106,29 +106,10 @@ const transformURI = (
     uri = "ipfs://" + uri;
   } catch {}
 
-  const knownScheme = ["https://", "http://", "ipfs://"].find((scheme) =>
-    uri?.startsWith(scheme),
-  );
-  if (!knownScheme) {
-    return uri;
-  }
-
   if (uri?.startsWith("ipfs://")) {
     // XXX: allow passing a dev token
     return `https://teritori.mypinata.cloud/ipfs/${uri.substring("ipfs://".length)}?img-width=${Math.round(width)}&img-height=${Math.round(height)}&img-fit=contain`;
   }
 
-  const params = resolveParams(width, height);
-
-  return `${process.env.EXPO_PUBLIC_IMG_PROXY_URL}${params}/plain/${encodeURIComponent(
-    uri,
-  )}`;
-};
-
-const resolveParams = (width: number, height: number) => {
-  const params: string[] = [];
-  params.push(`width:${Math.round(width)}`);
-  params.push(`height:${Math.round(height)}`);
-
-  return params.join("/");
+  return uri;
 };
