@@ -106,6 +106,24 @@ const transformURI = (
     uri = "ipfs://" + uri;
   } catch {}
 
+  // detect if prefixed gateway link
+  try {
+    const u = new URL(uri);
+    const cid = u.host.split(".")[0];
+    CID.parse(cid);
+    uri = "ipfs://" + cid + u.pathname;
+  } catch {}
+
+  // detect if suffixed gateway link
+  try {
+    const u = new URL(uri);
+    const parts = u.pathname.split("/");
+    if (parts[1] === "ipfs") {
+      CID.parse(parts[2]);
+      uri = "ipfs://" + parts.slice(2).join("/");
+    }
+  } catch {}
+
   if (uri?.startsWith("ipfs://")) {
     // XXX: allow passing a dev token
     return `https://teritori.mypinata.cloud/ipfs/${uri.substring("ipfs://".length)}?img-width=${Math.round(width)}&img-height=${Math.round(height)}&img-fit=contain`;
