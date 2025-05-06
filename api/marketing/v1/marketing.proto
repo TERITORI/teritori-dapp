@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package marketing.v1;
+option go_package = "./marketingpb";
+
+service MarketingService {
+  rpc News(NewsRequest) returns (NewsResponse);
+  rpc LiveCollections(LiveCollectionsRequest) returns (LiveCollectionsResponse);
+  rpc UpcomingCollections(UpcomingCollectionsRequest) returns (UpcomingCollectionsResponse);
+  rpc HighlightedCollections(HighlightedCollectionsRequest) returns (HighlightedCollectionsResponse);
+}
+
+message MarketingCollectionPreview {
+  string id = 1;
+  string image_uri = 2;
+  string collection_name = 3;
+  string creator_name = 4;
+  string twitter_url = 5;
+  bool secondary_during_mint = 6;
+}
+
+message Action {
+  string label = 1;
+  string url = 2;
+}
+
+message News {
+  string title = 1;
+  string subtitle = 2;
+  string text = 3;
+  string image = 4;
+  repeated Action actions = 5;
+}
+
+message Banner {
+  string image = 1;
+  string url = 2;
+}
+
+message NewsRequest {
+  bool testnet = 1;
+}
+
+message NewsResponse {
+  repeated News news = 1;
+}
+
+message BannersRequest {
+  bool testnet = 1;
+}
+
+message BannersResponse {
+  repeated Banner banners = 1;
+}
+
+message LiveCollectionsRequest {
+  string network_id = 1;
+}
+
+message LiveCollectionsResponse {
+  repeated MarketingCollectionPreview collections = 1;
+}
+
+message UpcomingCollectionsRequest {
+  string network_id = 1;
+}
+
+message UpcomingCollectionsResponse {
+  repeated MarketingCollectionPreview collections = 1;
+}
+
+message HighlightedCollectionsRequest {
+  string network_id = 1;
+}
+
+message HighlightedCollectionsResponse {
+  repeated MarketingCollectionPreview collections = 1;
+}
