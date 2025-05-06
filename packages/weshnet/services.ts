@@ -72,6 +72,8 @@ const bootWeshModule = async () => {
 
 export const stopWeshModule = async () => {
   store.dispatch(setIsChatActivated(false));
+  store.dispatch(setIsWeshConnected(false));
+
   if (Platform.OS !== "web" && !isRunningInExpoGo) {
     const WeshnetModule = require("../../weshd");
     await WeshnetModule.shutdown();
