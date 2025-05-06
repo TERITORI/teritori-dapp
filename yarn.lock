@@ -2147,33 +2147,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chain-registry/types@npm:^0.17.1":
-  version: 0.17.1
-  resolution: "@chain-registry/types@npm:0.17.1"
-  dependencies:
-    "@babel/runtime": ^7.21.0
-  checksum: be3c52d22e0b835aead431718f2282e722632e626d84402ab55fef8227392ae155125a6b3002a9a2dcb7438602b14da2a241423a9a8e28fab5552d0a496eb2ab
+"@chain-registry/types@npm:^0.50.15":
+  version: 0.50.15
+  resolution: "@chain-registry/types@npm:0.50.15"
+  checksum: 15c3d5d920f73cdbf82b7caf096b07c169a496b75754c8799354cf71c8d8dffc3c78c81952e56309750b100871ad90af2e46c80149b7117bf66452c374f368a8
   languageName: node
   linkType: hard
 
-"@chain-registry/types@npm:^0.18.0":
-  version: 0.18.0
-  resolution: "@chain-registry/types@npm:0.18.0"
+"@chain-registry/utils@npm:1.51.15":
+  version: 1.51.15
+  resolution: "@chain-registry/utils@npm:1.51.15"
   dependencies:
-    "@babel/runtime": ^7.21.0
-  checksum: 420bc6fc93389cd52f7f744349f0d453322b4f83fcd18a3c379f9bc7731822abf8f1442ae20298518f1a15bd1c442a4942d1bb16becc874215acea86204d715e
-  languageName: node
-  linkType: hard
-
-"@chain-registry/utils@npm:1.18.0":
-  version: 1.18.0
-  resolution: "@chain-registry/utils@npm:1.18.0"
-  dependencies:
-    "@babel/runtime": ^7.21.0
-    "@chain-registry/types": ^0.18.0
-    bignumber.js: 9.1.1
+    "@chain-registry/types": ^0.50.15
+    bignumber.js: 9.1.2
     sha.js: ^2.4.11
-  checksum: 5a4b9b4af5ed880a972fbab8282ad13f3c260bc1df5af448c26634584c728a0fcbbf336b4dda29f7e408f77821ac0a18a5d45f878d8b90936d43e9ae10223ca9
+  checksum: b76de4a9134d67b32035ec53e246f6d9400f623e9d66e52c8016716bd4c118a8a4e6e4d08d192cedc04cb6c909ed2834d65e66b1ec7882e3792e4bf16f3f3174
   languageName: node
   linkType: hard
 
@@ -9054,14 +9042,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:9.1.1":
-  version: 9.1.1
-  resolution: "bignumber.js@npm:9.1.1"
-  checksum: ad243b7e2f9120b112d670bb3d674128f0bd2ca1745b0a6c9df0433bd2c0252c43e6315d944c2ac07b4c639e7496b425e46842773cf89c6a2dcd4f31e5c4b11e
-  languageName: node
-  linkType: hard
-
-"bignumber.js@npm:^9.0.1":
+"bignumber.js@npm:9.1.2, bignumber.js@npm:^9.0.1":
   version: 9.1.2
   resolution: "bignumber.js@npm:9.1.2"
   checksum: 582c03af77ec9cb0ebd682a373ee6c66475db94a4325f92299621d544aa4bd45cb45fd60001610e94aef8ae98a0905fa538241d9638d4422d57abbeeac6fadaf
@@ -9663,13 +9644,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chain-registry@npm:^1.25.4":
-  version: 1.27.0
-  resolution: "chain-registry@npm:1.27.0"
+"chain-registry@npm:^1.69.36":
+  version: 1.69.36
+  resolution: "chain-registry@npm:1.69.36"
   dependencies:
-    "@babel/runtime": ^7.21.0
-    "@chain-registry/types": ^0.18.0
-  checksum: cfe13f3e2d1ba08785fdb4c14e7525c5956adf54b93d2e18118499502dbd8c015df330ba73bc32f3a40ca2360c31f59b7613feee5a197e37225b02e3ef1054aa
+    "@chain-registry/types": ^0.50.15
+  checksum: 660bece7e0f37d176615edc9fccc5b4fdd929c1af8e1ceddebf108497e137997dbc95d5e6fa1d64411817c95cc7ace25d78e3db548ea28ea8683783686e98eda
   languageName: node
   linkType: hard
 
@@ -21597,8 +21577,8 @@ __metadata:
     "@babel/plugin-transform-arrow-functions": ^7.23.3
     "@babel/plugin-transform-shorthand-properties": ^7.23.3
     "@babel/plugin-transform-template-literals": ^7.23.3
-    "@chain-registry/types": ^0.17.1
-    "@chain-registry/utils": 1.18.0
+    "@chain-registry/types": ^0.50.15
+    "@chain-registry/utils": 1.51.15
     "@cosmjs/amino": 0.32.2
     "@cosmjs/cosmwasm-stargate": 0.32.2
     "@cosmjs/crypto": 0.32.2
@@ -21674,7 +21654,7 @@ __metadata:
     bip39: ^3.1.0
     browser-headers: ^0.4.1
     buffer: ^6.0.3
-    chain-registry: ^1.25.4
+    chain-registry: ^1.69.36
     commander: ^10.0.1
     cors-anywhere: ^0.4.4
     cosmos-endpoints-scorer: ^0.1.0

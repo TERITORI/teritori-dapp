@@ -3,31 +3,44 @@ import { chains, assets } from "chain-registry";
 import { IBCCurrencyInfo } from "./ibc";
 import { CosmosNetworkInfo, NativeCurrencyInfo, NetworkKind } from "./types";
 
-const banList = [
-  "permtestnet",
-  "terpnetwork",
-  "wavehashtestnet",
-  "coreum",
-  "seitestnet2",
-  "lavatestnet2",
-];
+const banList: string[] = [];
 
 export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
   return chains
-    .filter((chain) => chain.chain_name && !banList.includes(chain.chain_name))
     .map((chain) => {
-      //console.log(chain);
+      if (banList.includes(chain.chain_name)) {
+        return undefined;
+      }
+
+      if (!chain.chain_id) {
+        return undefined;
+      }
+
+      if (!chain.chain_name) {
+        return undefined;
+      }
+
       const chainAssets =
         assets.find((a) => a.chain_name === chain.chain_name)?.assets || [];
-      //console.log(chainAssets);
+
       const testnet = chain.network_type !== "mainnet";
-      const cosmosNetwork: CosmosNetworkInfo = {
-        id: `cosmos-registry:` + chain.chain_name,
-        displayName: testnet
-          ? chain.pretty_name.toLowerCase().includes("test")
+
+      const bech32Prefix =
+        chain.bech32_prefix || chain.bech32_config?.bech32PrefixAccAddr;
+      if (!bech32Prefix) {
+        return undefined;
+      }
+
+      const displayName =
+        (testnet
+          ? chain.pretty_name?.toLowerCase().includes("test")
             ? chain.pretty_name
             : chain.pretty_name + " Testnet"
-          : chain.pretty_name,
+          : chain.pretty_name) || chain.chain_id;
+
+      const cosmosNetwork: CosmosNetworkInfo = {
+        id: `cosmos-registry:` + chain.chain_name,
+        displayName,
         chainId: chain.chain_id,
         registryName: chain.chain_name,
         kind: NetworkKind.Cosmos,
@@ -57,11 +70,7 @@ export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
               variant: "cosmos",
               displayName: asset.symbol,
               coingeckoId: asset.coingecko_id || "not-found",
-              icon:
-                asset.logo_URIs?.svg ||
-                asset.logo_URIs?.png ||
-                asset.logo_URIs?.jpeg ||
-                "not-found",
+              icon: asset.logo_URIs?.svg || asset.logo_URIs?.png || "not-found",
               color: "TODO",
             };
             return nativeCurrency;
@@ -69,7 +78,7 @@ export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
         features: [],
         featureObjects: [],
         idPrefix: chain.chain_name,
-        addressPrefix: chain.bech32_prefix,
+        addressPrefix: bech32Prefix,
         txExplorer:
           chain.explorers
             ?.find((ex) => !!ex.tx_page)
@@ -84,11 +93,7 @@ export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
             ?.find((ex) => !!ex.account_page)
             ?.account_page?.replace("${accountAddress}", "$address") ||
           "not-found",
-        icon:
-          chain.logo_URIs?.svg ||
-          chain.logo_URIs?.png ||
-          chain.logo_URIs?.jpeg ||
-          "not-found",
+        icon: chain.logo_URIs?.svg || chain.logo_URIs?.png || "not-found",
         testnet,
         backendEndpoint: "",
         restEndpoint: chain.apis?.rest?.[0]?.address || "not-found",
@@ -99,11 +104,11 @@ export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
           average: chain.fees?.fee_tokens?.[0]?.average_gas_price || 42,
           high: chain.fees?.fee_tokens?.[0]?.high_gas_price || 42,
         },
-        nameServiceDefaultImage:
-          chain.logo_URIs?.svg || chain.logo_URIs?.png || chain.logo_URIs?.jpeg,
+        nameServiceDefaultImage: chain.logo_URIs?.svg || chain.logo_URIs?.png,
         cosmosFeatures: [],
       };
       //console.log(cosmosNetwork);
       return cosmosNetwork;
-    });
+    })
+    .filter((chain): chain is CosmosNetworkInfo => !!chain);
 };
