@@ -29,11 +29,7 @@ import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
 import { parseUserId } from "@/networks";
 import { DEFAULT_USERNAME, LINES_HORIZONTAL_SPACE } from "@/utils/social-feed";
-import {
-  layout,
-  RESPONSIVE_BREAKPOINT_S,
-  screenContentMaxWidth,
-} from "@/utils/style/layout";
+import { layout, RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 import { tinyAddress } from "@/utils/text";
 import {
   OnPressReplyType,
@@ -50,6 +46,8 @@ export const FeedPostDefaultView: FC<{
 
   const { width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
+  const isSmallScreen = windowWidth < RESPONSIVE_BREAKPOINT_S;
+  const contentWidth = isSmallScreen ? windowWidth : width;
   const isMobile = useIsMobile();
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
 
@@ -163,7 +161,10 @@ export const FeedPostDefaultView: FC<{
     >
       <Animated.ScrollView
         ref={aref}
-        contentContainerStyle={contentContainerCStyle}
+        contentContainerStyle={[
+          contentContainerCStyle,
+          { width: contentWidth },
+        ]}
         onScroll={scrollHandler}
         scrollEventThrottle={1}
       >
@@ -171,8 +172,7 @@ export const FeedPostDefaultView: FC<{
         {isMobile && <MobileTitle title={headerLabel.toUpperCase()} />}
         <View
           style={{
-            width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,
-            maxWidth: screenContentMaxWidth,
+            width: "100%",
             alignItems: "center",
             paddingVertical: layout.spacing_x2,
           }}
@@ -192,7 +192,7 @@ export const FeedPostDefaultView: FC<{
               <SocialThreadCard
                 refetchFeed={refetchPost}
                 style={
-                  windowWidth < RESPONSIVE_BREAKPOINT_S && {
+                  isSmallScreen && {
                     borderRadius: 0,
                     borderLeftWidth: 0,
                     borderRightWidth: 0,
@@ -256,44 +256,51 @@ export const FeedPostDefaultView: FC<{
       )}
 
       {/*========== Refresh button and Comment button mobile */}
-      {isMobile ? (
-        <>
-          <SpacerColumn size={2} />
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <CreateShortPostButton
-              label="Create Comment"
-              onPress={() => setCreateModalVisible(true)}
-            />
-            <SpacerRow size={1.5} />
-            <RefreshButton
-              isRefreshing={isLoadingSharedValue}
-              onPress={() => {
-                refetchComments();
+      <View
+        style={{
+          width: contentWidth,
+          alignSelf: "center",
+        }}
+      >
+        {isMobile ? (
+          <>
+            <SpacerColumn size={2} />
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
               }}
-            />
-          </View>
-          <SpacerColumn size={2} />
-        </>
-      ) : (
-        <NewsFeedInput
-          style={{ alignSelf: "center" }}
-          ref={feedInputRef}
-          type="comment"
-          replyTo={replyTo}
-          parentId={post.id}
-          onSubmitInProgress={handleSubmitInProgress}
-          onSubmitSuccess={() => {
-            setReplyTo(undefined);
-            refetchComments();
-          }}
-        />
-      )}
+            >
+              <CreateShortPostButton
+                label="Create Comment"
+                onPress={() => setCreateModalVisible(true)}
+              />
+              <SpacerRow size={1.5} />
+              <RefreshButton
+                isRefreshing={isLoadingSharedValue}
+                onPress={() => {
+                  refetchComments();
+                }}
+              />
+            </View>
+            <SpacerColumn size={2} />
+          </>
+        ) : (
+          <NewsFeedInput
+            style={{ alignSelf: "center" }}
+            ref={feedInputRef}
+            type="comment"
+            replyTo={replyTo}
+            parentId={post.id}
+            onSubmitInProgress={handleSubmitInProgress}
+            onSubmitSuccess={() => {
+              setReplyTo(undefined);
+              refetchComments();
+            }}
+          />
+        )}
+      </View>
 
       <CreateShortPostModal
         label="Create a Comment"
