@@ -121,6 +121,35 @@ export const Conversations = ({
     );
   }
 
+  const renderDateSeparator = (separatorDate: string) => {
+    return (
+      <View
+        style={{
+          position: "relative",
+          flexDirection: "row",
+          justifyContent: "center",
+          marginTop: layout.spacing_x2,
+        }}
+      >
+        <Separator style={{ position: "absolute", top: 10 }} />
+        <BrandText
+          style={[
+            fontSemibold14,
+            {
+              backgroundColor: neutral00,
+              zIndex: 10,
+              paddingHorizontal: layout.spacing_x2,
+              textAlign: "center",
+              marginBottom: layout.spacing_x3,
+            },
+          ]}
+        >
+          {moment(separatorDate).format("L")}
+        </BrandText>
+      </View>
+    );
+  };
+
   return (
     <>
       <View
@@ -138,9 +167,10 @@ export const Conversations = ({
               index < messages.length - 1 ? messages[index + 1] : undefined;
 
             const separatorDate = previousMessage
-              ? moment(item.timestamp).format("DD/MM/YYYY") !==
-                  moment(previousMessage.timestamp).format("DD/MM/YYYY") &&
-                item.timestamp
+              ? moment(item.timestamp).format("L") ===
+                moment(previousMessage.timestamp).format("L")
+                ? false
+                : item?.timestamp
               : item.timestamp;
 
             if (item.type === "group-join") {
@@ -155,31 +185,9 @@ export const Conversations = ({
               : undefined;
             return (
               <>
-                {!!separatorDate && (
-                  <View
-                    style={{
-                      position: "relative",
-                      flexDirection: "row",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Separator style={{ position: "absolute", top: 10 }} />
-                    <BrandText
-                      style={[
-                        fontSemibold14,
-                        {
-                          backgroundColor: neutral00,
-                          zIndex: 10,
-                          paddingHorizontal: layout.spacing_x2,
-                          textAlign: "center",
-                          marginBottom: layout.spacing_x3,
-                        },
-                      ]}
-                    >
-                      {moment(separatorDate).format("YYYY, MMM DD")}
-                    </BrandText>
-                  </View>
-                )}
+                {!!separatorDate &&
+                  !previousMessage &&
+                  renderDateSeparator(separatorDate)}
                 {item.type === "accept-contact" && !previousMessage && (
                   <View style={{ marginBottom: layout.spacing_x5 }}>
                     <View
@@ -242,6 +250,9 @@ export const Conversations = ({
                     }
                   />
                 )}
+                {!!separatorDate &&
+                  previousMessage &&
+                  renderDateSeparator(separatorDate)}
               </>
             );
           }}
