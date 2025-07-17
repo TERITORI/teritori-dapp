@@ -9,6 +9,7 @@ export enum NetworkFeature {
   Organizations = "Organizations",
   P2E = "P2E",
   SocialFeed = "SocialFeed",
+  SocialFeedReadonly = "SocialFeedReadonly",
   UPP = "UPP",
   RiotP2E = "RiotP2E",
   NFTBridge = "NFTBridge",

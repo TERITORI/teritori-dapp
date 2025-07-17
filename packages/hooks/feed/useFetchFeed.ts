@@ -99,7 +99,9 @@ const fetchGnoZenaoFeed = async (
   req: DeepPartial<PostsRequest>,
   pageParam: number,
 ) => {
-  if (!selectedNetwork.socialFeedsPkgPath) return { list: [], totalCount: 0 };
+  if (!selectedNetwork.socialFeedsPkgPath || req.filter?.categories?.length) {
+    return { list: [], totalCount: 0 };
+  }
   callerAddress = callerAddress || "";
 
   const limit = req.limit || 0;

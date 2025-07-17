@@ -12,7 +12,9 @@ import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 import { PostCategory } from "@/utils/types/feed";
 
-export const VideosFeed: FC = () => {
+export const VideosFeed: FC<{ disablePosting?: boolean }> = ({
+  disablePosting,
+}) => {
   const { width: windowWidth } = useWindowDimensions();
   const { width, height } = useMaxResolution({ isLarge: true });
   const isMobile = useIsMobile();
@@ -41,7 +43,7 @@ export const VideosFeed: FC = () => {
       {isMobile && <MobileTitle title="SOCIAL FEED" />}
       <FeedHeader selectedTab="videos" />
       <FeedVideosList
-        allowUpload
+        allowUpload={!disablePosting}
         title="All videos"
         req={feedRequest}
         style={{

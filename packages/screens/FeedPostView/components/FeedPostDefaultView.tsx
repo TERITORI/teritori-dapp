@@ -27,7 +27,7 @@ import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
-import { parseUserId } from "@/networks";
+import { getNetwork, NetworkFeature, parseUserId } from "@/networks";
 import { DEFAULT_USERNAME, LINES_HORIZONTAL_SPACE } from "@/utils/social-feed";
 import {
   layout,
@@ -51,6 +51,11 @@ export const FeedPostDefaultView: FC<{
   const { width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
   const isMobile = useIsMobile();
+  const network = getNetwork(post?.networkId);
+  const isReadonlyFeed = useMemo(
+    () => network?.features.includes(NetworkFeature.SocialFeedReadonly),
+    [network?.features],
+  );
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
 
   const authorId = post?.authorId;
@@ -266,11 +271,15 @@ export const FeedPostDefaultView: FC<{
               justifyContent: "center",
             }}
           >
-            <CreateShortPostButton
-              label="Create Comment"
-              onPress={() => setCreateModalVisible(true)}
-            />
-            <SpacerRow size={1.5} />
+            {!isReadonlyFeed && (
+              <>
+                <CreateShortPostButton
+                  label="Create Comment"
+                  onPress={() => setCreateModalVisible(true)}
+                />
+                <SpacerRow size={1.5} />
+              </>
+            )}
             <RefreshButton
               isRefreshing={isLoadingSharedValue}
               onPress={() => {
@@ -281,18 +290,20 @@ export const FeedPostDefaultView: FC<{
           <SpacerColumn size={2} />
         </>
       ) : (
-        <NewsFeedInput
-          style={{ alignSelf: "center" }}
-          ref={feedInputRef}
-          type="comment"
-          replyTo={replyTo}
-          parentId={post.id}
-          onSubmitInProgress={handleSubmitInProgress}
-          onSubmitSuccess={() => {
-            setReplyTo(undefined);
-            refetchComments();
-          }}
-        />
+        !isReadonlyFeed && (
+          <NewsFeedInput
+            style={{ alignSelf: "center" }}
+            ref={feedInputRef}
+            type="comment"
+            replyTo={replyTo}
+            parentId={post.id}
+            onSubmitInProgress={handleSubmitInProgress}
+            onSubmitSuccess={() => {
+              setReplyTo(undefined);
+              refetchComments();
+            }}
+          />
+        )
       )}
 
       <CreateShortPostModal

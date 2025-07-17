@@ -30,7 +30,7 @@ import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useNSUserInfo } from "@/hooks/useNSUserInfo";
-import { parseUserId } from "@/networks";
+import { getNetwork, NetworkFeature, parseUserId } from "@/networks";
 import {
   renderHtmlTagStyles,
   articleMd as md,
@@ -70,6 +70,11 @@ export const FeedPostArticleMarkdownView: FC<{
   const { width: windowWidth } = useWindowDimensions();
   const { width } = useMaxResolution();
   const isMobile = useIsMobile();
+  const network = getNetwork(post?.networkId);
+  const isReadonlyFeed = useMemo(
+    () => network?.features.includes(NetworkFeature.SocialFeedReadonly),
+    [network?.features],
+  );
   const [parentOffsetValue, setParentOffsetValue] = useState(0);
 
   const authorId = post?.authorId;
@@ -315,7 +320,7 @@ export const FeedPostArticleMarkdownView: FC<{
         </View>
 
         {/*========== Comment input */}
-        {!isMobile && (
+        {!isMobile && !isReadonlyFeed && (
           <>
             <SpacerColumn size={2.5} />
             <NewsFeedInput
@@ -345,31 +350,31 @@ export const FeedPostArticleMarkdownView: FC<{
       )}
 
       {/*========== Refresh button and Comment button mobile */}
-      {isMobile && (
-        <>
-          <SpacerColumn size={2} />
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+      <SpacerColumn size={2} />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {isMobile && !isReadonlyFeed && (
+          <>
             <CreateShortPostButton
               label="Create Comment"
               onPress={() => setCreateModalVisible(true)}
             />
             <SpacerRow size={1.5} />
-            <RefreshButton
-              isRefreshing={isLoadingSharedValue}
-              onPress={() => {
-                refetchComments();
-              }}
-            />
-          </View>
-          <SpacerColumn size={2} />
-        </>
-      )}
+          </>
+        )}
+        <RefreshButton
+          isRefreshing={isLoadingSharedValue}
+          onPress={() => {
+            refetchComments();
+          }}
+        />
+      </View>
+      <SpacerColumn size={2} />
 
       <CreateShortPostModal
         label="Create a Comment"

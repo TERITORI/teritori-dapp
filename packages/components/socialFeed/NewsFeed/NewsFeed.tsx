@@ -110,39 +110,41 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
   const ListHeaderComponent = useCallback(
     () => (
       <>
-        {!disablePosting && (
-          <Animated.View
-            style={[
-              {
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: isMobile ? "row" : "column",
-              },
-            ]}
-          >
-            {isMobile ? (
-              <>
-                <CreateShortPostButton
-                  label="Create Post"
-                  onPress={() => setCreateModalVisible(true)}
-                />
-                <SpacerRow size={1.5} />
-              </>
-            ) : (
-              <>
-                <NewsFeedInput
-                  daoId={daoId}
-                  type="post"
-                  onSubmitSuccess={refetch}
-                  additionalMention={additionalMention}
-                  additionalHashtag={additionalHashtag}
-                />
-                <SpacerColumn size={1.5} />
-              </>
-            )}
-            <RefreshButton isRefreshing={isLoadingValue} onPress={refetch} />
-          </Animated.View>
-        )}
+        <Animated.View
+          style={[
+            {
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: isMobile ? "row" : "column",
+            },
+          ]}
+        >
+          {!disablePosting && (
+            <>
+              {isMobile ? (
+                <>
+                  <CreateShortPostButton
+                    label="Create Post"
+                    onPress={() => setCreateModalVisible(true)}
+                  />
+                  <SpacerRow size={1.5} />
+                </>
+              ) : (
+                <>
+                  <NewsFeedInput
+                    daoId={daoId}
+                    type="post"
+                    onSubmitSuccess={refetch}
+                    additionalMention={additionalMention}
+                    additionalHashtag={additionalHashtag}
+                  />
+                  <SpacerColumn size={1.5} />
+                </>
+              )}
+            </>
+          )}
+          <RefreshButton isRefreshing={isLoadingValue} onPress={refetch} />
+        </Animated.View>
         <SpacerColumn size={1.5} />
       </>
     ),
@@ -252,11 +254,12 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
 
       {flatListContentOffsetY >= OFFSET_Y_LIMIT_FLOATING + headerHeight && (
         <View style={floatingActionsCStyle}>
-          <CreateShortPostButtonRound
-            onPress={() => setCreateModalVisible(true)}
-            style={{ marginBottom: layout.spacing_x1_5 }}
-          />
-
+          {!disablePosting && (
+            <CreateShortPostButtonRound
+              onPress={() => setCreateModalVisible(true)}
+              style={{ marginBottom: layout.spacing_x1_5 }}
+            />
+          )}
           <RefreshButtonRound isRefreshing={isLoadingValue} onPress={refetch} />
         </View>
       )}

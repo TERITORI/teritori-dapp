@@ -9,7 +9,9 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { PostCategory } from "@/utils/types/feed";
 
-export const PicsFeed: FC = () => {
+export const PicsFeed: FC<{ disablePosting?: boolean }> = ({
+  disablePosting,
+}) => {
   const isMobile = useIsMobile();
   const selectedNetworkId = useSelectedNetworkId();
 
@@ -30,6 +32,7 @@ export const PicsFeed: FC = () => {
   return (
     <NewsFeed
       req={feedRequest}
+      disablePosting={disablePosting}
       Header={() => (
         <>
           {/* ScreenContainer in FeedScreen has noScroll, so we need to add MobileTitle here */}

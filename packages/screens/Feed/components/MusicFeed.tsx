@@ -10,7 +10,9 @@ import { useMaxResolution } from "@/hooks/useMaxResolution";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { RESPONSIVE_BREAKPOINT_S } from "@/utils/style/layout";
 
-export const MusicFeed: FC = () => {
+export const MusicFeed: FC<{ disablePosting?: boolean }> = ({
+  disablePosting,
+}) => {
   const { width: windowWidth } = useWindowDimensions();
   const { width, height } = useMaxResolution({ isLarge: true });
   const isMobile = useIsMobile();
@@ -23,7 +25,7 @@ export const MusicFeed: FC = () => {
       <FeedMusicList
         title="All music"
         networkId={selectedNetworkId}
-        allowUpload
+        allowUpload={!disablePosting}
         style={{
           alignSelf: "center",
           width: windowWidth < RESPONSIVE_BREAKPOINT_S ? windowWidth : width,

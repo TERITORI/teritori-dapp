@@ -14,6 +14,8 @@ import { BrandText } from "../../BrandText";
 import { SVG } from "../../SVG";
 import { SpacerRow } from "../../spacer";
 
+import { NetworkFeature, parseNetworkObjectId } from "@/networks";
+
 type FlagButtonProps = {
   refetchFeed?: () => Promise<any>;
   postId: string;
@@ -28,10 +30,21 @@ export const ReportButton: React.FC<FlagButtonProps> = ({
 }) => {
   const [isShowFlagModal, setIsShowFlagModal] = useState(false);
 
+  const onPress = () => {
+    const [network] = parseNetworkObjectId(postId);
+    const isReadonlyFeed = network?.features.includes(
+      NetworkFeature.SocialFeedReadonly,
+    );
+    if (isReadonlyFeed) {
+      return;
+    }
+    setIsShowFlagModal(true);
+  };
+
   return (
     <>
       <TouchableOpacity
-        onPress={() => setIsShowFlagModal(true)}
+        onPress={onPress}
         style={[
           { flexDirection: "row", alignItems: "center" },
           useAltStyle && {
