@@ -4,6 +4,9 @@ import { StyleSheet, Image, ImageProps, View, PixelRatio } from "react-native";
 
 import { neutral33 } from "../utils/style/colors";
 
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { gnoZenaoNetwork } from "@/networks/gno-zenao";
+
 /**
  * This only supports uri images since the proxy is only for external images
  * The width and height props are the source image dimensions, they should not be dynamic, otherwise it will overwelm the resizing proxy
@@ -24,6 +27,7 @@ export const OptimizedImage: React.FC<
     style,
     ...passthrough
   }) => {
+    const selectedNetworkId = useSelectedNetworkId();
     const [isError, setIsError] = React.useState(false);
     const [isFallbackError, setIsFallbackError] = React.useState(false);
     const shouldUseFallback = !baseSourceURI || isError;
@@ -58,7 +62,12 @@ export const OptimizedImage: React.FC<
             borderStyle: "solid",
             ...(flatStyle as any),
           }}
-          src={transformURI(sourceURI, sourceWidth, sourceHeight)}
+          src={transformURI(
+            sourceURI,
+            sourceWidth,
+            sourceHeight,
+            selectedNetworkId,
+          )}
         />
       );
     }
@@ -66,7 +75,14 @@ export const OptimizedImage: React.FC<
     // imported images are already a valid source object
     const source =
       (typeof sourceURI === "string"
-        ? { uri: transformURI(sourceURI, sourceWidth, sourceHeight) }
+        ? {
+            uri: transformURI(
+              sourceURI,
+              sourceWidth,
+              sourceHeight,
+              selectedNetworkId,
+            ),
+          }
         : sourceURI) || {};
 
     return (
@@ -90,6 +106,7 @@ const transformURI = (
   uri: string | undefined,
   width: number,
   height: number,
+  networkId: string,
 ) => {
   if (typeof uri !== "string" || !uri) {
     return "";
@@ -107,8 +124,13 @@ const transformURI = (
   } catch {}
 
   if (uri?.startsWith("ipfs://")) {
+    const ipfsGateway =
+      networkId === gnoZenaoNetwork.id
+        ? "https://pinata.zenao.io"
+        : "https://teritori.mypinata.cloud";
+
     // XXX: allow passing a dev token
-    return `https://teritori.mypinata.cloud/ipfs/${uri.substring("ipfs://".length)}?img-width=${Math.round(width)}&img-height=${Math.round(height)}&img-fit=contain`;
+    return `${ipfsGateway}/ipfs/${uri.substring("ipfs://".length)}?img-width=${Math.round(width)}&img-height=${Math.round(height)}&img-fit=contain`;
   }
 
   return uri;

@@ -16,22 +16,24 @@ import {
   NetworkKind,
   parseUserId,
 } from "@/networks";
+import { gnoZenaoNetwork } from "@/networks/gno-zenao";
 import { mustGetFeedClient } from "@/utils/backend";
-import { TERITORI_FEED_ID } from "@/utils/feed/constants";
+import { HYPERAKTIVE_EVENT_ID, TERITORI_FEED_ID } from "@/utils/feed/constants";
 import { decodeGnoPost } from "@/utils/feed/gno";
-import { extractGnoJSONString } from "@/utils/gno";
+import {
+  derivePkgAddr,
+  extractGnoJSONResponse,
+  extractGnoJSONString,
+} from "@/utils/gno";
+import { PostsList } from "@/utils/types/feed";
 import { DeepPartial } from "@/utils/typescript";
+import { postViewsFromJson, postViewsToPostsList } from "@/utils/zenao";
 
 interface PostsWithAggregations {
   list: Post[];
   totalCount: number;
   aggregations: AggregatedPost[];
 }
-
-export type PostsList = {
-  list: Post[];
-  totalCount: number | undefined;
-};
 
 export const combineFetchFeedPages = (pages: PostsList[]) =>
   pages.reduce((acc: Post[], page) => [...acc, ...(page?.list || [])], []);
@@ -90,6 +92,32 @@ const fetchGnoFeed = async (
   return result;
 };
 
+const fetchGnoZenaoFeed = async (
+  eventId: string,
+  selectedNetwork: GnoNetworkInfo,
+  callerAddress: string | undefined,
+  req: DeepPartial<PostsRequest>,
+  pageParam: number,
+) => {
+  if (!selectedNetwork.socialFeedsPkgPath) return { list: [], totalCount: 0 };
+  callerAddress = callerAddress || "";
+
+  const limit = req.limit || 0;
+  const tags = "";
+
+  const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
+  const pkgPath = `gno.land/r/zenao/events/e${eventId}`;
+  const feedId = `${derivePkgAddr(pkgPath)}:main`;
+
+  const output = await provider.evaluateExpression(
+    selectedNetwork.socialFeedsPkgPath || "",
+    `postViewsToJSON(GetFeedPosts("${feedId}", ${pageParam * limit}, ${limit}, "${tags}", "${callerAddress}"))`,
+  );
+  const raw = extractGnoJSONResponse(output);
+  const postViews = postViewsFromJson(raw);
+  return postViewsToPostsList(postViews);
+};
+
 export const useFetchFeed = (req: DeepPartial<PostsRequest>) => {
   const selectedNetwork = useSelectedNetworkInfo();
   const wallet = useSelectedWallet();
@@ -98,9 +126,25 @@ export const useFetchFeed = (req: DeepPartial<PostsRequest>) => {
     useInfiniteQuery(
       ["posts", selectedNetwork?.id, wallet?.address, { ...req }],
       async ({ pageParam = req.offset }) => {
+        // Cosmos networks
         if (selectedNetwork?.kind === NetworkKind.Cosmos) {
           return fetchTeritoriFeed(selectedNetwork, req, pageParam);
-        } else if (selectedNetwork?.kind === NetworkKind.Gno) {
+        }
+        // Gno Zenao network
+        else if (
+          selectedNetwork?.kind === NetworkKind.Gno &&
+          selectedNetwork?.id === gnoZenaoNetwork.id
+        ) {
+          return fetchGnoZenaoFeed(
+            HYPERAKTIVE_EVENT_ID,
+            selectedNetwork,
+            wallet?.address,
+            req,
+            pageParam,
+          );
+        }
+        // Gno network
+        else if (selectedNetwork?.kind === NetworkKind.Gno) {
           return fetchGnoFeed(selectedNetwork, wallet?.address, req, pageParam);
         }
 

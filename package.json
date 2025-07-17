@@ -23,6 +23,7 @@
   "engineStrict": true,
   "dependencies": {
     "@axelar-network/axelarjs-sdk": "^0.13.6",
+    "@bufbuild/protobuf": "^2.6.0",
     "@chain-registry/types": "^0.17.1",
     "@chain-registry/utils": "1.18.0",
     "@cosmjs/amino": "0.32.2",
@@ -82,6 +83,7 @@
     "@types/markdown-it-footnote": "^3.0.4",
     "@types/papaparse": "^5.3.14",
     "@types/pluralize": "^0.0.33",
+    "@yornaath/batshit": "^0.10.1",
     "assert": "^2.1.0",
     "axios": "^1.6.2",
     "bech32": "^2.0.0",

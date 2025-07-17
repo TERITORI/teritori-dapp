@@ -2126,6 +2126,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bufbuild/protobuf@npm:^2.6.0":
+  version: 2.6.0
+  resolution: "@bufbuild/protobuf@npm:2.6.0"
+  checksum: 9337e89052a0e4b6a1ca099f09801243055c7027a9ecb2e2d22ae25926f8730d32f5e2e8222214155de2847324b0f07fee0318621147f229da8f2fb595ff6802
+  languageName: node
+  linkType: hard
+
 "@callstack/react-theme-provider@npm:^3.0.7":
   version: 3.0.9
   resolution: "@callstack/react-theme-provider@npm:3.0.9"
@@ -6912,10 +6919,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:4.36.1":
-  version: 4.36.1
-  resolution: "@tanstack/query-core@npm:4.36.1"
-  checksum: 47672094da20d89402d9fe03bb7b0462be73a76ff9ca715169738bc600a719d064d106d083a8eedae22a2c22de22f87d5eb5d31ef447aba771d9190f2117ed10
+"@tanstack/query-core@npm:4.40.0":
+  version: 4.40.0
+  resolution: "@tanstack/query-core@npm:4.40.0"
+  checksum: 0d51f905819bdaeeeddad30a94a85c2cdda6de90dde716195274613ef0f2840cbc476fc2401848b5ef70bbcbc67749ac4c216a3c5bc56fc933b642a346f32b87
   languageName: node
   linkType: hard
 
@@ -6927,10 +6934,10 @@ __metadata:
   linkType: hard
 
 "@tanstack/react-query@npm:^4.12.0":
-  version: 4.36.1
-  resolution: "@tanstack/react-query@npm:4.36.1"
+  version: 4.40.1
+  resolution: "@tanstack/react-query@npm:4.40.1"
   dependencies:
-    "@tanstack/query-core": 4.36.1
+    "@tanstack/query-core": 4.40.0
     use-sync-external-store: ^1.2.0
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -6941,7 +6948,7 @@ __metadata:
       optional: true
     react-native:
       optional: true
-  checksum: 1aff0a476859386f8d32253fa0d0bde7b81769a6d4d4d9cbd78778f0f955459a3bdb7ee27a0d2ee7373090f12998b45df80db0b5b313bd0a7a39d36c6e8e51c5
+  checksum: f183f7cd3c1c1786b901dd01b154b9961f75f247d4c8bf646d752530341d901d2e7057e56e28a3e6c2e880523838defb00a621efde2fc7df6f6500f381715d44
   languageName: node
   linkType: hard
 
@@ -8015,6 +8022,22 @@ __metadata:
   version: 1.1.0
   resolution: "@yarnpkg/lockfile@npm:1.1.0"
   checksum: 05b881b4866a3546861fee756e6d3812776ea47fa6eb7098f983d6d0eefa02e12b66c3fff931574120f196286a7ad4879ce02743c8bb2be36c6a576c7852083a
+  languageName: node
+  linkType: hard
+
+"@yornaath/batshit-devtools@npm:^1.7.1":
+  version: 1.7.1
+  resolution: "@yornaath/batshit-devtools@npm:1.7.1"
+  checksum: 8258a0572c2d4064c44b217152e5c0d01b1d43835dc11cb200b0d8fe80019f88004a3931a4ce5b8b81a1836fedf17562d8029f7f1ca98d75a2bfd2936c794cd1
+  languageName: node
+  linkType: hard
+
+"@yornaath/batshit@npm:^0.10.1":
+  version: 0.10.1
+  resolution: "@yornaath/batshit@npm:0.10.1"
+  dependencies:
+    "@yornaath/batshit-devtools": ^1.7.1
+  checksum: e8e0ae7a237eaa0591354a7f3c3017cb7924d38540b43bebca6807ba5ac888ec7eb9f23002cfe84d992957735d57ef1983f0378de539afd3bf3940cef6146f29
   languageName: node
   linkType: hard
 
@@ -21597,6 +21620,7 @@ __metadata:
     "@babel/plugin-transform-arrow-functions": ^7.23.3
     "@babel/plugin-transform-shorthand-properties": ^7.23.3
     "@babel/plugin-transform-template-literals": ^7.23.3
+    "@bufbuild/protobuf": ^2.6.0
     "@chain-registry/types": ^0.17.1
     "@chain-registry/utils": 1.18.0
     "@cosmjs/amino": 0.32.2
@@ -21666,6 +21690,7 @@ __metadata:
     "@types/react-native-countdown-component": ^2.7.0
     "@types/sha.js": ^2.4.4
     "@types/uuid": ^9.0.0
+    "@yornaath/batshit": ^0.10.1
     assert: ^2.1.0
     axios: ^1.6.2
     babel-loader: ^8.2.5
@@ -22779,12 +22804,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:1.2.0, use-sync-external-store@npm:^1.0.0, use-sync-external-store@npm:^1.2.0":
+"use-sync-external-store@npm:1.2.0, use-sync-external-store@npm:^1.0.0":
   version: 1.2.0
   resolution: "use-sync-external-store@npm:1.2.0"
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: 5c639e0f8da3521d605f59ce5be9e094ca772bd44a4ce7322b055a6f58eeed8dda3c94cabd90c7a41fb6fa852210092008afe48f7038792fd47501f33299116a
+  languageName: node
+  linkType: hard
+
+"use-sync-external-store@npm:^1.2.0":
+  version: 1.5.0
+  resolution: "use-sync-external-store@npm:1.5.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 5e639c9273200adb6985b512c96a3a02c458bc8ca1a72e91da9cdc6426144fc6538dca434b0f99b28fb1baabc82e1c383ba7900b25ccdcb43758fb058dc66c34
   languageName: node
   linkType: hard
 

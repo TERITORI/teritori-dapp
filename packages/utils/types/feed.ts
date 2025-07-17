@@ -20,6 +20,8 @@ export enum PostCategory {
   MusicAudio,
   Video,
   ArticleMarkdown,
+  // TODO: Handle new category Poll
+  Poll,
 }
 
 export interface NewArticleFormValues {
@@ -50,6 +52,11 @@ export interface PostResultExtra extends PostResult {
 }
 export interface PostExtra extends Post {
   isInLocal?: boolean;
+}
+
+export interface PostsList {
+  list: Post[];
+  totalCount: number | undefined;
 }
 
 // some files are malformed, we use this filter to get only valid file data
