@@ -1,11 +1,13 @@
 import { useQueryClient } from "@tanstack/react-query";
 
 import { FetchCommentResponse } from "./useFetchComments";
+import { useSelectedNetworkId } from "../useSelectedNetwork";
 import useSelectedWallet from "../useSelectedWallet";
 
+import { Post } from "@/api/feed/v1/feed";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { useTeritoriSocialFeedCreatePostMutation } from "@/contracts-clients/teritori-social-feed/TeritoriSocialFeed.react-query";
-import { PostResultExtra } from "@/utils/types/feed";
+import { getNetworkObjectId, getUserId } from "@/networks";
 
 // =============== Used only for Simple Post for now. (Sorry for the mess)
 export const useCreatePost = ({
@@ -16,23 +18,28 @@ export const useCreatePost = ({
   onMutate?: () => void;
 }) => {
   const wallet = useSelectedWallet();
+  const selectedNetworkId = useSelectedNetworkId();
   const { setToastSuccess, setToastError } = useFeedbacks();
   const queryClient = useQueryClient();
 
   const request = useTeritoriSocialFeedCreatePostMutation({
     onMutate: (data) => {
-      const newComment: PostResultExtra = {
+      const localIdentifier = data.msg.identifier || "";
+      const newComment: Post = {
         category: data.msg.category,
-        deleted: false,
-        identifier: data.msg.identifier,
+        isDeleted: false,
+        networkId: selectedNetworkId,
+        identifier: localIdentifier,
+        localIdentifier,
+        id: getNetworkObjectId(selectedNetworkId, localIdentifier),
         metadata: data.msg.metadata,
-        parent_post_identifier: data.msg.parentPostIdentifier,
-        post_by: wallet?.address || "",
-        sub_post_length: 0,
-        isInLocal: true,
+        parentPostIdentifier: data.msg.parentPostIdentifier || "",
+        subPostLength: 0,
+        authorId: getUserId(selectedNetworkId, wallet?.address || ""),
         reactions: [],
-        user_reactions: [],
-        tip_amount: "0",
+        tipAmount: 0,
+        premiumLevel: 0,
+        createdAt: Date.now(),
       };
 
       const prevData = addUpdateNewComment(
@@ -45,8 +52,7 @@ export const useCreatePost = ({
       return { prevData, newComment }; // context
     },
     onSuccess: async (_, data, context: any) => {
-      const updatedComment = context.newComment as PostResultExtra;
-      delete updatedComment.isInLocal;
+      const updatedComment = context.newComment as Post;
 
       addUpdateNewComment(
         data?.msg?.parentPostIdentifier || "",
@@ -77,7 +83,7 @@ export const useCreatePost = ({
 
   const addUpdateNewComment = (
     parentPostIdentifier: string,
-    newComment: PostResultExtra,
+    newComment: Post,
     type: "add" | "update" = "add",
   ) => {
     const prevData: { pages: FetchCommentResponse[] } =

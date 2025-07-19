@@ -153,7 +153,7 @@ export const derivePkgAddr = (pkgPath: string): string => {
   return bech32.encode("g", bech32.toWords(h));
 };
 
-export function extractGnoStringResponse(res: string): string {
+const extractGnoStringResponse = (res: string): string => {
   const jsonString = res.substring("(".length, res.length - " string)".length);
   // eslint-disable-next-line no-restricted-syntax
   const jsonStringContent = JSON.parse(jsonString);
@@ -163,10 +163,10 @@ export function extractGnoStringResponse(res: string): string {
     );
   }
   return jsonStringContent;
-}
+};
 
-export function extractGnoJSONResponse(res: string): unknown {
+export const extractGnoJSONResponse = (res: string): unknown => {
   const str = extractGnoStringResponse(res);
   // eslint-disable-next-line no-restricted-syntax
   return JSON.parse(str) as unknown;
-}
+};
