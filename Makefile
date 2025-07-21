@@ -89,7 +89,7 @@ lint: lint.buf lint.js lint.rust
 
 .PHONY: lint.buf
 lint.buf:
-	buf lint api
+	buf lint --path api
 	buf breaking --against 'https://github.com/TERITORI/teritori-dapp.git#branch=main' --path api
 
 .PHONY: lint.js
