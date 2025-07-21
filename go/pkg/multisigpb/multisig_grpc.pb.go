@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             (unknown)
-// source: multisig/v1/multisig.proto
+// source: api/multisig/v1/multisig.proto
 
 package multisigpb
 
@@ -539,5 +539,5 @@ var MultisigService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "multisig/v1/multisig.proto",
+	Metadata: "api/multisig/v1/multisig.proto",
 }

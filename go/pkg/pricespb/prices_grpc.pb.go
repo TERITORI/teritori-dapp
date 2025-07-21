@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             (unknown)
-// source: prices/v1/prices.proto
+// source: api/prices/v1/prices.proto
 
 package pricespb
 
@@ -101,5 +101,5 @@ var PricesService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "prices/v1/prices.proto",
+	Metadata: "api/prices/v1/prices.proto",
 }

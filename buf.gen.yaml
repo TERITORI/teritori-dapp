@@ -5,7 +5,7 @@ plugins:
   - name: go-grpc
     out: go/pkg
   - name: ts
-    out: packages/api
+    out: packages
     path: node_modules/ts-proto/protoc-gen-ts_proto
     opt:
       - outputClientImpl=grpc-web

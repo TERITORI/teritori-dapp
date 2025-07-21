@@ -2,7 +2,7 @@
 import { grpc } from "@improbable-eng/grpc-web";
 import { BrowserHeaders } from "browser-headers";
 import _m0 from "protobufjs/minimal";
-import { Any } from "../../google/protobuf/any";
+import { Any } from "../../../google/protobuf/any";
 
 export const protobufPackage = "multisig.v1";
 

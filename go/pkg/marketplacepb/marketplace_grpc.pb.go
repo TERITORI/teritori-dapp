@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             (unknown)
-// source: marketplace/v1/marketplace.proto
+// source: api/marketplace/v1/marketplace.proto
 
 package marketplacepb
 
@@ -723,5 +723,5 @@ var MarketplaceService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "marketplace/v1/marketplace.proto",
+	Metadata: "api/marketplace/v1/marketplace.proto",
 }

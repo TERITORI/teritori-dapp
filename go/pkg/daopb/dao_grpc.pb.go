@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             (unknown)
-// source: dao/v1/dao.proto
+// source: api/dao/v1/dao.proto
 
 package daopb
 
@@ -137,5 +137,5 @@ var DAOService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "dao/v1/dao.proto",
+	Metadata: "api/dao/v1/dao.proto",
 }

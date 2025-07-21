@@ -9,6 +9,11 @@ export enum Edition {
   /** EDITION_UNKNOWN - A placeholder for an unknown edition value. */
   EDITION_UNKNOWN = 0,
   /**
+   * EDITION_LEGACY - A placeholder edition for specifying default behaviors *before* a feature
+   * was first introduced.  This is effectively an "infinite past".
+   */
+  EDITION_LEGACY = 900,
+  /**
    * EDITION_PROTO2 - Legacy syntax "editions".  These pre-date editions, but behave much like
    * distinct editions.  These can't be used to specify the edition of proto
    * files, but feature definitions must supply proto2/proto3 defaults for
@@ -22,15 +27,22 @@ export enum Edition {
    * comparison.
    */
   EDITION_2023 = 1000,
+  EDITION_2024 = 1001,
   /**
    * EDITION_1_TEST_ONLY - Placeholder editions for testing feature resolution.  These should not be
-   * used or relyed on outside of tests.
+   * used or relied on outside of tests.
    */
   EDITION_1_TEST_ONLY = 1,
   EDITION_2_TEST_ONLY = 2,
   EDITION_99997_TEST_ONLY = 99997,
   EDITION_99998_TEST_ONLY = 99998,
   EDITION_99999_TEST_ONLY = 99999,
+  /**
+   * EDITION_MAX - Placeholder for specifying unbounded edition support.  This should only
+   * ever be used by plugins that can expect to never require any changes to
+   * support a new edition.
+   */
+  EDITION_MAX = 2147483647,
   UNRECOGNIZED = -1,
 }
 
@@ -39,6 +51,9 @@ export function editionFromJSON(object: any): Edition {
     case 0:
     case "EDITION_UNKNOWN":
       return Edition.EDITION_UNKNOWN;
+    case 900:
+    case "EDITION_LEGACY":
+      return Edition.EDITION_LEGACY;
     case 998:
     case "EDITION_PROTO2":
       return Edition.EDITION_PROTO2;
@@ -48,6 +63,9 @@ export function editionFromJSON(object: any): Edition {
     case 1000:
     case "EDITION_2023":
       return Edition.EDITION_2023;
+    case 1001:
+    case "EDITION_2024":
+      return Edition.EDITION_2024;
     case 1:
     case "EDITION_1_TEST_ONLY":
       return Edition.EDITION_1_TEST_ONLY;
@@ -63,6 +81,9 @@ export function editionFromJSON(object: any): Edition {
     case 99999:
     case "EDITION_99999_TEST_ONLY":
       return Edition.EDITION_99999_TEST_ONLY;
+    case 2147483647:
+    case "EDITION_MAX":
+      return Edition.EDITION_MAX;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -74,12 +95,16 @@ export function editionToJSON(object: Edition): string {
   switch (object) {
     case Edition.EDITION_UNKNOWN:
       return "EDITION_UNKNOWN";
+    case Edition.EDITION_LEGACY:
+      return "EDITION_LEGACY";
     case Edition.EDITION_PROTO2:
       return "EDITION_PROTO2";
     case Edition.EDITION_PROTO3:
       return "EDITION_PROTO3";
     case Edition.EDITION_2023:
       return "EDITION_2023";
+    case Edition.EDITION_2024:
+      return "EDITION_2024";
     case Edition.EDITION_1_TEST_ONLY:
       return "EDITION_1_TEST_ONLY";
     case Edition.EDITION_2_TEST_ONLY:
@@ -90,7 +115,55 @@ export function editionToJSON(object: Edition): string {
       return "EDITION_99998_TEST_ONLY";
     case Edition.EDITION_99999_TEST_ONLY:
       return "EDITION_99999_TEST_ONLY";
+    case Edition.EDITION_MAX:
+      return "EDITION_MAX";
     case Edition.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+/**
+ * Describes the 'visibility' of a symbol with respect to the proto import
+ * system. Symbols can only be imported when the visibility rules do not prevent
+ * it (ex: local symbols cannot be imported).  Visibility modifiers can only set
+ * on `message` and `enum` as they are the only types available to be referenced
+ * from other files.
+ */
+export enum SymbolVisibility {
+  VISIBILITY_UNSET = 0,
+  VISIBILITY_LOCAL = 1,
+  VISIBILITY_EXPORT = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function symbolVisibilityFromJSON(object: any): SymbolVisibility {
+  switch (object) {
+    case 0:
+    case "VISIBILITY_UNSET":
+      return SymbolVisibility.VISIBILITY_UNSET;
+    case 1:
+    case "VISIBILITY_LOCAL":
+      return SymbolVisibility.VISIBILITY_LOCAL;
+    case 2:
+    case "VISIBILITY_EXPORT":
+      return SymbolVisibility.VISIBILITY_EXPORT;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return SymbolVisibility.UNRECOGNIZED;
+  }
+}
+
+export function symbolVisibilityToJSON(object: SymbolVisibility): string {
+  switch (object) {
+    case SymbolVisibility.VISIBILITY_UNSET:
+      return "VISIBILITY_UNSET";
+    case SymbolVisibility.VISIBILITY_LOCAL:
+      return "VISIBILITY_LOCAL";
+    case SymbolVisibility.VISIBILITY_EXPORT:
+      return "VISIBILITY_EXPORT";
+    case SymbolVisibility.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
   }
@@ -119,6 +192,11 @@ export interface FileDescriptorProto {
    * For Google-internal migration only. Do not use.
    */
   weakDependency: number[];
+  /**
+   * Names of files imported by this file purely for the purpose of providing
+   * option extensions. These are excluded from the dependency list above.
+   */
+  optionDependency: string[];
   /** All top-level definitions in this file. */
   messageType: DescriptorProto[];
   enumType: EnumDescriptorProto[];
@@ -141,9 +219,17 @@ export interface FileDescriptorProto {
    * The supported values are "proto2", "proto3", and "editions".
    *
    * If `edition` is present, this value must be "editions".
+   * WARNING: This field should only be used by protobuf plugins or special
+   * cases like the proto compiler. Other uses are discouraged and
+   * developers should rely on the protoreflect APIs for their client language.
    */
   syntax: string;
-  /** The edition of the proto file. */
+  /**
+   * The edition of the proto file.
+   * WARNING: This field should only be used by protobuf plugins or special
+   * cases like the proto compiler. Other uses are discouraged and
+   * developers should rely on the protoreflect APIs for their client language.
+   */
   edition: Edition;
 }
 
@@ -163,6 +249,8 @@ export interface DescriptorProto {
    * A given name may only be reserved once.
    */
   reservedName: string[];
+  /** Support for `export` and `local` keywords on enums. */
+  visibility: SymbolVisibility;
 }
 
 export interface DescriptorProto_ExtensionRange {
@@ -317,12 +405,12 @@ export interface FieldDescriptorProto {
    * If true, this is a proto3 "optional". When a proto3 field is optional, it
    * tracks presence regardless of field type.
    *
-   * When proto3_optional is true, this field must be belong to a oneof to
-   * signal to old proto3 clients that presence is tracked for this field. This
-   * oneof is known as a "synthetic" oneof, and this field must be its sole
-   * member (each proto3 optional field gets its own synthetic oneof). Synthetic
-   * oneofs exist in the descriptor only, and do not generate any API. Synthetic
-   * oneofs must be ordered after all "real" oneofs.
+   * When proto3_optional is true, this field must belong to a oneof to signal
+   * to old proto3 clients that presence is tracked for this field. This oneof
+   * is known as a "synthetic" oneof, and this field must be its sole member
+   * (each proto3 optional field gets its own synthetic oneof). Synthetic oneofs
+   * exist in the descriptor only, and do not generate any API. Synthetic oneofs
+   * must be ordered after all "real" oneofs.
    *
    * For message fields, proto3_optional doesn't create any semantic change,
    * since non-repeated message fields always track presence. However it still
@@ -560,6 +648,8 @@ export interface EnumDescriptorProto {
    * be reserved once.
    */
   reservedName: string[];
+  /** Support for `export` and `local` keywords on enums. */
+  visibility: SymbolVisibility;
 }
 
 /**
@@ -641,12 +731,16 @@ export interface FileOptions {
    */
   javaGenerateEqualsAndHash: boolean;
   /**
-   * If set true, then the Java2 code generator will generate code that
-   * throws an exception whenever an attempt is made to assign a non-UTF-8
-   * byte sequence to a string field.
-   * Message reflection will do the same.
-   * However, an extension field still accepts non-UTF-8 byte sequences.
-   * This option has no effect on when used with the lite runtime.
+   * A proto2 file can set this to true to opt in to UTF-8 checking for Java,
+   * which will throw an exception if invalid UTF-8 is parsed from the wire or
+   * assigned to a string field.
+   *
+   * TODO: clarify exactly what kinds of field types this option
+   * applies to, and update these docs accordingly.
+   *
+   * Proto3 files already perform these checks. Setting the option explicitly to
+   * false has no effect: it cannot be used to opt proto3 files out of UTF-8
+   * checks.
    */
   javaStringCheckUtf8: boolean;
   optimizeFor: FileOptions_OptimizeMode;
@@ -673,7 +767,6 @@ export interface FileOptions {
   ccGenericServices: boolean;
   javaGenericServices: boolean;
   pyGenericServices: boolean;
-  phpGenericServices: boolean;
   /**
    * Is this file deprecated?
    * Depending on the target platform, this can emit Deprecated annotations
@@ -723,7 +816,12 @@ export interface FileOptions {
    * determining the ruby package.
    */
   rubyPackage: string;
-  /** Any features defined in the specific edition. */
+  /**
+   * Any features defined in the specific edition.
+   * WARNING: This field should only be used by protobuf plugins or special
+   * cases like the proto compiler. Other uses are discouraged and
+   * developers should rely on the protoreflect APIs for their client language.
+   */
   features:
     | FeatureSet
     | undefined;
@@ -813,10 +911,6 @@ export interface MessageOptions {
    */
   deprecated: boolean;
   /**
-   * NOTE: Do not set the option in .proto files. Always use the maps syntax
-   * instead. The option should only be implicitly set by the proto compiler
-   * parser.
-   *
    * Whether the message is an automatically generated map entry type for the
    * maps field.
    *
@@ -834,6 +928,10 @@ export interface MessageOptions {
    * use a native map in the target language to hold the keys and values.
    * The reflection APIs in such implementations still need to work as
    * if the field is a repeated message field.
+   *
+   * NOTE: Do not set the option in .proto files. Always use the maps syntax
+   * instead. The option should only be implicitly set by the proto compiler
+   * parser.
    */
   mapEntry: boolean;
   /**
@@ -851,7 +949,12 @@ export interface MessageOptions {
    * @deprecated
    */
   deprecatedLegacyJsonFieldConflicts: boolean;
-  /** Any features defined in the specific edition. */
+  /**
+   * Any features defined in the specific edition.
+   * WARNING: This field should only be used by protobuf plugins or special
+   * cases like the proto compiler. Other uses are discouraged and
+   * developers should rely on the protoreflect APIs for their client language.
+   */
   features:
     | FeatureSet
     | undefined;
@@ -861,12 +964,13 @@ export interface MessageOptions {
 
 export interface FieldOptions {
   /**
+   * NOTE: ctype is deprecated. Use `features.(pb.cpp).string_type` instead.
    * The ctype option instructs the C++ code generator to use a different
    * representation of the field than it normally would.  See the specific
    * options below.  This option is only implemented to support use of
    * [ctype=CORD] and [ctype=STRING] (the default) on non-repeated fields of
-   * type "bytes" in the open source release -- sorry, we'll try to include
-   * other types in a future version!
+   * type "bytes" in the open source release.
+   * TODO: make ctype actually deprecated.
    */
   ctype: FieldOptions_CType;
   /**
@@ -911,19 +1015,11 @@ export interface FieldOptions {
    * call from multiple threads concurrently, while non-const methods continue
    * to require exclusive access.
    *
-   * Note that implementations may choose not to check required fields within
-   * a lazy sub-message.  That is, calling IsInitialized() on the outer message
-   * may return true even if the inner message has missing required fields.
-   * This is necessary because otherwise the inner message would have to be
-   * parsed in order to perform the check, defeating the purpose of lazy
-   * parsing.  An implementation which chooses not to check required fields
-   * must be consistent about it.  That is, for any particular sub-message, the
-   * implementation must either *always* check its required fields, or *never*
-   * check its required fields, regardless of whether or not the message has
-   * been parsed.
-   *
-   * As of May 2022, lazy verifies the contents of the byte stream during
-   * parsing.  An invalid byte stream will cause the overall parsing to fail.
+   * Note that lazy message fields are still eagerly verified to check
+   * ill-formed wireformat or missing required fields. Calling IsInitialized()
+   * on the outer message would fail if the inner message has missing required
+   * fields. Failed verification would result in parsing failure (except when
+   * uninitialized messages are acceptable).
    */
   lazy: boolean;
   /**
@@ -949,9 +1045,15 @@ export interface FieldOptions {
   retention: FieldOptions_OptionRetention;
   targets: FieldOptions_OptionTargetType[];
   editionDefaults: FieldOptions_EditionDefault[];
-  /** Any features defined in the specific edition. */
-  features:
-    | FeatureSet
+  /**
+   * Any features defined in the specific edition.
+   * WARNING: This field should only be used by protobuf plugins or special
+   * cases like the proto compiler. Other uses are discouraged and
+   * developers should rely on the protoreflect APIs for their client language.
+   */
+  features: FeatureSet | undefined;
+  featureSupport:
+    | FieldOptions_FeatureSupport
     | undefined;
   /** The parser stores options it doesn't recognize here. See above. */
   uninterpretedOption: UninterpretedOption[];
@@ -1047,11 +1149,7 @@ export function fieldOptions_JSTypeToJSON(object: FieldOptions_JSType): string {
   }
 }
 
-/**
- * If set to RETENTION_SOURCE, the option will be omitted from the binary.
- * Note: as of January 2023, support for this is in progress and does not yet
- * have an effect (b/264593489).
- */
+/** If set to RETENTION_SOURCE, the option will be omitted from the binary. */
 export enum FieldOptions_OptionRetention {
   RETENTION_UNKNOWN = 0,
   RETENTION_RUNTIME = 1,
@@ -1094,8 +1192,7 @@ export function fieldOptions_OptionRetentionToJSON(object: FieldOptions_OptionRe
 /**
  * This indicates the types of entities that the field may apply to when used
  * as an option. If it is unset, then the field may be freely used as an
- * option on any kind of entity. Note: as of January 2023, support for this is
- * in progress and does not yet have an effect (b/264593489).
+ * option on any kind of entity.
  */
 export enum FieldOptions_OptionTargetType {
   TARGET_TYPE_UNKNOWN = 0,
@@ -1184,8 +1281,39 @@ export interface FieldOptions_EditionDefault {
   value: string;
 }
 
+/** Information about the support window of a feature. */
+export interface FieldOptions_FeatureSupport {
+  /**
+   * The edition that this feature was first available in.  In editions
+   * earlier than this one, the default assigned to EDITION_LEGACY will be
+   * used, and proto files will not be able to override it.
+   */
+  editionIntroduced: Edition;
+  /**
+   * The edition this feature becomes deprecated in.  Using this after this
+   * edition may trigger warnings.
+   */
+  editionDeprecated: Edition;
+  /**
+   * The deprecation warning text if this feature is used after the edition it
+   * was marked deprecated in.
+   */
+  deprecationWarning: string;
+  /**
+   * The edition this feature is no longer available in.  In editions after
+   * this one, the last default assigned will be used, and proto files will
+   * not be able to override it.
+   */
+  editionRemoved: Edition;
+}
+
 export interface OneofOptions {
-  /** Any features defined in the specific edition. */
+  /**
+   * Any features defined in the specific edition.
+   * WARNING: This field should only be used by protobuf plugins or special
+   * cases like the proto compiler. Other uses are discouraged and
+   * developers should rely on the protoreflect APIs for their client language.
+   */
   features:
     | FeatureSet
     | undefined;
@@ -1217,7 +1345,12 @@ export interface EnumOptions {
    * @deprecated
    */
   deprecatedLegacyJsonFieldConflicts: boolean;
-  /** Any features defined in the specific edition. */
+  /**
+   * Any features defined in the specific edition.
+   * WARNING: This field should only be used by protobuf plugins or special
+   * cases like the proto compiler. Other uses are discouraged and
+   * developers should rely on the protoreflect APIs for their client language.
+   */
   features:
     | FeatureSet
     | undefined;
@@ -1233,7 +1366,12 @@ export interface EnumValueOptions {
    * this is a formalization for deprecating enum values.
    */
   deprecated: boolean;
-  /** Any features defined in the specific edition. */
+  /**
+   * Any features defined in the specific edition.
+   * WARNING: This field should only be used by protobuf plugins or special
+   * cases like the proto compiler. Other uses are discouraged and
+   * developers should rely on the protoreflect APIs for their client language.
+   */
   features:
     | FeatureSet
     | undefined;
@@ -1243,12 +1381,21 @@ export interface EnumValueOptions {
    * credentials.
    */
   debugRedact: boolean;
+  /** Information about the support window of a feature value. */
+  featureSupport:
+    | FieldOptions_FeatureSupport
+    | undefined;
   /** The parser stores options it doesn't recognize here. See above. */
   uninterpretedOption: UninterpretedOption[];
 }
 
 export interface ServiceOptions {
-  /** Any features defined in the specific edition. */
+  /**
+   * Any features defined in the specific edition.
+   * WARNING: This field should only be used by protobuf plugins or special
+   * cases like the proto compiler. Other uses are discouraged and
+   * developers should rely on the protoreflect APIs for their client language.
+   */
   features:
     | FeatureSet
     | undefined;
@@ -1272,7 +1419,12 @@ export interface MethodOptions {
    */
   deprecated: boolean;
   idempotencyLevel: MethodOptions_IdempotencyLevel;
-  /** Any features defined in the specific edition. */
+  /**
+   * Any features defined in the specific edition.
+   * WARNING: This field should only be used by protobuf plugins or special
+   * cases like the proto compiler. Other uses are discouraged and
+   * developers should rely on the protoreflect APIs for their client language.
+   */
   features:
     | FeatureSet
     | undefined;
@@ -1375,6 +1527,8 @@ export interface FeatureSet {
   utf8Validation: FeatureSet_Utf8Validation;
   messageEncoding: FeatureSet_MessageEncoding;
   jsonFormat: FeatureSet_JsonFormat;
+  enforceNamingStyle: FeatureSet_EnforceNamingStyle;
+  defaultSymbolVisibility: FeatureSet_VisibilityFeature_DefaultSymbolVisibility;
 }
 
 export enum FeatureSet_FieldPresence {
@@ -1502,8 +1656,8 @@ export function featureSet_RepeatedFieldEncodingToJSON(object: FeatureSet_Repeat
 
 export enum FeatureSet_Utf8Validation {
   UTF8_VALIDATION_UNKNOWN = 0,
-  NONE = 1,
   VERIFY = 2,
+  NONE = 3,
   UNRECOGNIZED = -1,
 }
 
@@ -1512,12 +1666,12 @@ export function featureSet_Utf8ValidationFromJSON(object: any): FeatureSet_Utf8V
     case 0:
     case "UTF8_VALIDATION_UNKNOWN":
       return FeatureSet_Utf8Validation.UTF8_VALIDATION_UNKNOWN;
-    case 1:
-    case "NONE":
-      return FeatureSet_Utf8Validation.NONE;
     case 2:
     case "VERIFY":
       return FeatureSet_Utf8Validation.VERIFY;
+    case 3:
+    case "NONE":
+      return FeatureSet_Utf8Validation.NONE;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -1529,10 +1683,10 @@ export function featureSet_Utf8ValidationToJSON(object: FeatureSet_Utf8Validatio
   switch (object) {
     case FeatureSet_Utf8Validation.UTF8_VALIDATION_UNKNOWN:
       return "UTF8_VALIDATION_UNKNOWN";
-    case FeatureSet_Utf8Validation.NONE:
-      return "NONE";
     case FeatureSet_Utf8Validation.VERIFY:
       return "VERIFY";
+    case FeatureSet_Utf8Validation.NONE:
+      return "NONE";
     case FeatureSet_Utf8Validation.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -1617,6 +1771,111 @@ export function featureSet_JsonFormatToJSON(object: FeatureSet_JsonFormat): stri
   }
 }
 
+export enum FeatureSet_EnforceNamingStyle {
+  ENFORCE_NAMING_STYLE_UNKNOWN = 0,
+  STYLE2024 = 1,
+  STYLE_LEGACY = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function featureSet_EnforceNamingStyleFromJSON(object: any): FeatureSet_EnforceNamingStyle {
+  switch (object) {
+    case 0:
+    case "ENFORCE_NAMING_STYLE_UNKNOWN":
+      return FeatureSet_EnforceNamingStyle.ENFORCE_NAMING_STYLE_UNKNOWN;
+    case 1:
+    case "STYLE2024":
+      return FeatureSet_EnforceNamingStyle.STYLE2024;
+    case 2:
+    case "STYLE_LEGACY":
+      return FeatureSet_EnforceNamingStyle.STYLE_LEGACY;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return FeatureSet_EnforceNamingStyle.UNRECOGNIZED;
+  }
+}
+
+export function featureSet_EnforceNamingStyleToJSON(object: FeatureSet_EnforceNamingStyle): string {
+  switch (object) {
+    case FeatureSet_EnforceNamingStyle.ENFORCE_NAMING_STYLE_UNKNOWN:
+      return "ENFORCE_NAMING_STYLE_UNKNOWN";
+    case FeatureSet_EnforceNamingStyle.STYLE2024:
+      return "STYLE2024";
+    case FeatureSet_EnforceNamingStyle.STYLE_LEGACY:
+      return "STYLE_LEGACY";
+    case FeatureSet_EnforceNamingStyle.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
+export interface FeatureSet_VisibilityFeature {
+}
+
+export enum FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
+  DEFAULT_SYMBOL_VISIBILITY_UNKNOWN = 0,
+  /** EXPORT_ALL - Default pre-EDITION_2024, all UNSET visibility are export. */
+  EXPORT_ALL = 1,
+  /** EXPORT_TOP_LEVEL - All top-level symbols default to export, nested default to local. */
+  EXPORT_TOP_LEVEL = 2,
+  /** LOCAL_ALL - All symbols default to local. */
+  LOCAL_ALL = 3,
+  /**
+   * STRICT - All symbols local by default. Nested types cannot be exported.
+   * With special case caveat for message { enum {} reserved 1 to max; }
+   * This is the recommended setting for new protos.
+   */
+  STRICT = 4,
+  UNRECOGNIZED = -1,
+}
+
+export function featureSet_VisibilityFeature_DefaultSymbolVisibilityFromJSON(
+  object: any,
+): FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
+  switch (object) {
+    case 0:
+    case "DEFAULT_SYMBOL_VISIBILITY_UNKNOWN":
+      return FeatureSet_VisibilityFeature_DefaultSymbolVisibility.DEFAULT_SYMBOL_VISIBILITY_UNKNOWN;
+    case 1:
+    case "EXPORT_ALL":
+      return FeatureSet_VisibilityFeature_DefaultSymbolVisibility.EXPORT_ALL;
+    case 2:
+    case "EXPORT_TOP_LEVEL":
+      return FeatureSet_VisibilityFeature_DefaultSymbolVisibility.EXPORT_TOP_LEVEL;
+    case 3:
+    case "LOCAL_ALL":
+      return FeatureSet_VisibilityFeature_DefaultSymbolVisibility.LOCAL_ALL;
+    case 4:
+    case "STRICT":
+      return FeatureSet_VisibilityFeature_DefaultSymbolVisibility.STRICT;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return FeatureSet_VisibilityFeature_DefaultSymbolVisibility.UNRECOGNIZED;
+  }
+}
+
+export function featureSet_VisibilityFeature_DefaultSymbolVisibilityToJSON(
+  object: FeatureSet_VisibilityFeature_DefaultSymbolVisibility,
+): string {
+  switch (object) {
+    case FeatureSet_VisibilityFeature_DefaultSymbolVisibility.DEFAULT_SYMBOL_VISIBILITY_UNKNOWN:
+      return "DEFAULT_SYMBOL_VISIBILITY_UNKNOWN";
+    case FeatureSet_VisibilityFeature_DefaultSymbolVisibility.EXPORT_ALL:
+      return "EXPORT_ALL";
+    case FeatureSet_VisibilityFeature_DefaultSymbolVisibility.EXPORT_TOP_LEVEL:
+      return "EXPORT_TOP_LEVEL";
+    case FeatureSet_VisibilityFeature_DefaultSymbolVisibility.LOCAL_ALL:
+      return "LOCAL_ALL";
+    case FeatureSet_VisibilityFeature_DefaultSymbolVisibility.STRICT:
+      return "STRICT";
+    case FeatureSet_VisibilityFeature_DefaultSymbolVisibility.UNRECOGNIZED:
+    default:
+      return "UNRECOGNIZED";
+  }
+}
+
 /**
  * A compiled specification for the defaults of a set of features.  These
  * messages are generated from FeatureSet extensions and can be used to seed
@@ -1645,7 +1904,12 @@ export interface FeatureSetDefaults {
  */
 export interface FeatureSetDefaults_FeatureSetEditionDefault {
   edition: Edition;
-  features: FeatureSet | undefined;
+  /** Defaults of features that can be overridden in this edition. */
+  overridableFeatures:
+    | FeatureSet
+    | undefined;
+  /** Defaults of features that can't be overridden in this edition. */
+  fixedFeatures: FeatureSet | undefined;
 }
 
 /**
@@ -1707,7 +1971,7 @@ export interface SourceCodeInfo_Location {
    * location.
    *
    * Each element is a field number or an index.  They form a path from
-   * the root FileDescriptorProto to the place where the definition occurs.
+   * the root FileDescriptorProto to the place where the definition appears.
    * For example, this path:
    *   [ 4, 3, 2, 7, 1 ]
    * refers to:
@@ -1937,6 +2201,7 @@ function createBaseFileDescriptorProto(): FileDescriptorProto {
     dependency: [],
     publicDependency: [],
     weakDependency: [],
+    optionDependency: [],
     messageType: [],
     enumType: [],
     service: [],
@@ -1969,6 +2234,9 @@ export const FileDescriptorProto = {
       writer.int32(v);
     }
     writer.ldelim();
+    for (const v of message.optionDependency) {
+      writer.uint32(122).string(v!);
+    }
     for (const v of message.messageType) {
       DescriptorProto.encode(v!, writer.uint32(34).fork()).ldelim();
     }
@@ -2058,6 +2326,13 @@ export const FileDescriptorProto = {
           }
 
           break;
+        case 15:
+          if (tag !== 122) {
+            break;
+          }
+
+          message.optionDependency.push(reader.string());
+          continue;
         case 4:
           if (tag !== 34) {
             break;
@@ -2136,6 +2411,9 @@ export const FileDescriptorProto = {
       weakDependency: globalThis.Array.isArray(object?.weakDependency)
         ? object.weakDependency.map((e: any) => globalThis.Number(e))
         : [],
+      optionDependency: globalThis.Array.isArray(object?.optionDependency)
+        ? object.optionDependency.map((e: any) => globalThis.String(e))
+        : [],
       messageType: globalThis.Array.isArray(object?.messageType)
         ? object.messageType.map((e: any) => DescriptorProto.fromJSON(e))
         : [],
@@ -2171,6 +2449,9 @@ export const FileDescriptorProto = {
     }
     if (message.weakDependency?.length) {
       obj.weakDependency = message.weakDependency.map((e) => Math.round(e));
+    }
+    if (message.optionDependency?.length) {
+      obj.optionDependency = message.optionDependency;
     }
     if (message.messageType?.length) {
       obj.messageType = message.messageType.map((e) => DescriptorProto.toJSON(e));
@@ -2209,6 +2490,7 @@ export const FileDescriptorProto = {
     message.dependency = object.dependency?.map((e) => e) || [];
     message.publicDependency = object.publicDependency?.map((e) => e) || [];
     message.weakDependency = object.weakDependency?.map((e) => e) || [];
+    message.optionDependency = object.optionDependency?.map((e) => e) || [];
     message.messageType = object.messageType?.map((e) => DescriptorProto.fromPartial(e)) || [];
     message.enumType = object.enumType?.map((e) => EnumDescriptorProto.fromPartial(e)) || [];
     message.service = object.service?.map((e) => ServiceDescriptorProto.fromPartial(e)) || [];
@@ -2237,6 +2519,7 @@ function createBaseDescriptorProto(): DescriptorProto {
     options: undefined,
     reservedRange: [],
     reservedName: [],
+    visibility: 0,
   };
 }
 
@@ -2271,6 +2554,9 @@ export const DescriptorProto = {
     }
     for (const v of message.reservedName) {
       writer.uint32(82).string(v!);
+    }
+    if (message.visibility !== 0) {
+      writer.uint32(88).int32(message.visibility);
     }
     return writer;
   },
@@ -2352,6 +2638,13 @@ export const DescriptorProto = {
 
           message.reservedName.push(reader.string());
           continue;
+        case 11:
+          if (tag !== 88) {
+            break;
+          }
+
+          message.visibility = reader.int32() as any;
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2389,6 +2682,7 @@ export const DescriptorProto = {
       reservedName: globalThis.Array.isArray(object?.reservedName)
         ? object.reservedName.map((e: any) => globalThis.String(e))
         : [],
+      visibility: isSet(object.visibility) ? symbolVisibilityFromJSON(object.visibility) : 0,
     };
   },
 
@@ -2424,6 +2718,9 @@ export const DescriptorProto = {
     if (message.reservedName?.length) {
       obj.reservedName = message.reservedName;
     }
+    if (message.visibility !== 0) {
+      obj.visibility = symbolVisibilityToJSON(message.visibility);
+    }
     return obj;
   },
 
@@ -2444,6 +2741,7 @@ export const DescriptorProto = {
       : undefined;
     message.reservedRange = object.reservedRange?.map((e) => DescriptorProto_ReservedRange.fromPartial(e)) || [];
     message.reservedName = object.reservedName?.map((e) => e) || [];
+    message.visibility = object.visibility ?? 0;
     return message;
   },
 };
@@ -3152,7 +3450,7 @@ export const OneofDescriptorProto = {
 };
 
 function createBaseEnumDescriptorProto(): EnumDescriptorProto {
-  return { name: "", value: [], options: undefined, reservedRange: [], reservedName: [] };
+  return { name: "", value: [], options: undefined, reservedRange: [], reservedName: [], visibility: 0 };
 }
 
 export const EnumDescriptorProto = {
@@ -3171,6 +3469,9 @@ export const EnumDescriptorProto = {
     }
     for (const v of message.reservedName) {
       writer.uint32(42).string(v!);
+    }
+    if (message.visibility !== 0) {
+      writer.uint32(48).int32(message.visibility);
     }
     return writer;
   },
@@ -3217,6 +3518,13 @@ export const EnumDescriptorProto = {
 
           message.reservedName.push(reader.string());
           continue;
+        case 6:
+          if (tag !== 48) {
+            break;
+          }
+
+          message.visibility = reader.int32() as any;
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -3239,6 +3547,7 @@ export const EnumDescriptorProto = {
       reservedName: globalThis.Array.isArray(object?.reservedName)
         ? object.reservedName.map((e: any) => globalThis.String(e))
         : [],
+      visibility: isSet(object.visibility) ? symbolVisibilityFromJSON(object.visibility) : 0,
     };
   },
 
@@ -3259,6 +3568,9 @@ export const EnumDescriptorProto = {
     if (message.reservedName?.length) {
       obj.reservedName = message.reservedName;
     }
+    if (message.visibility !== 0) {
+      obj.visibility = symbolVisibilityToJSON(message.visibility);
+    }
     return obj;
   },
 
@@ -3275,6 +3587,7 @@ export const EnumDescriptorProto = {
     message.reservedRange = object.reservedRange?.map((e) => EnumDescriptorProto_EnumReservedRange.fromPartial(e)) ||
       [];
     message.reservedName = object.reservedName?.map((e) => e) || [];
+    message.visibility = object.visibility ?? 0;
     return message;
   },
 };
@@ -3696,7 +4009,6 @@ function createBaseFileOptions(): FileOptions {
     ccGenericServices: false,
     javaGenericServices: false,
     pyGenericServices: false,
-    phpGenericServices: false,
     deprecated: false,
     ccEnableArenas: false,
     objcClassPrefix: "",
@@ -3742,9 +4054,6 @@ export const FileOptions = {
     }
     if (message.pyGenericServices === true) {
       writer.uint32(144).bool(message.pyGenericServices);
-    }
-    if (message.phpGenericServices === true) {
-      writer.uint32(336).bool(message.phpGenericServices);
     }
     if (message.deprecated === true) {
       writer.uint32(184).bool(message.deprecated);
@@ -3859,13 +4168,6 @@ export const FileOptions = {
 
           message.pyGenericServices = reader.bool();
           continue;
-        case 42:
-          if (tag !== 336) {
-            break;
-          }
-
-          message.phpGenericServices = reader.bool();
-          continue;
         case 23:
           if (tag !== 184) {
             break;
@@ -3966,7 +4268,6 @@ export const FileOptions = {
       ccGenericServices: isSet(object.ccGenericServices) ? globalThis.Boolean(object.ccGenericServices) : false,
       javaGenericServices: isSet(object.javaGenericServices) ? globalThis.Boolean(object.javaGenericServices) : false,
       pyGenericServices: isSet(object.pyGenericServices) ? globalThis.Boolean(object.pyGenericServices) : false,
-      phpGenericServices: isSet(object.phpGenericServices) ? globalThis.Boolean(object.phpGenericServices) : false,
       deprecated: isSet(object.deprecated) ? globalThis.Boolean(object.deprecated) : false,
       ccEnableArenas: isSet(object.ccEnableArenas) ? globalThis.Boolean(object.ccEnableArenas) : false,
       objcClassPrefix: isSet(object.objcClassPrefix) ? globalThis.String(object.objcClassPrefix) : "",
@@ -4014,9 +4315,6 @@ export const FileOptions = {
     }
     if (message.pyGenericServices === true) {
       obj.pyGenericServices = message.pyGenericServices;
-    }
-    if (message.phpGenericServices === true) {
-      obj.phpGenericServices = message.phpGenericServices;
     }
     if (message.deprecated === true) {
       obj.deprecated = message.deprecated;
@@ -4069,7 +4367,6 @@ export const FileOptions = {
     message.ccGenericServices = object.ccGenericServices ?? false;
     message.javaGenericServices = object.javaGenericServices ?? false;
     message.pyGenericServices = object.pyGenericServices ?? false;
-    message.phpGenericServices = object.phpGenericServices ?? false;
     message.deprecated = object.deprecated ?? false;
     message.ccEnableArenas = object.ccEnableArenas ?? false;
     message.objcClassPrefix = object.objcClassPrefix ?? "";
@@ -4268,6 +4565,7 @@ function createBaseFieldOptions(): FieldOptions {
     targets: [],
     editionDefaults: [],
     features: undefined,
+    featureSupport: undefined,
     uninterpretedOption: [],
   };
 }
@@ -4311,6 +4609,9 @@ export const FieldOptions = {
     }
     if (message.features !== undefined) {
       FeatureSet.encode(message.features, writer.uint32(170).fork()).ldelim();
+    }
+    if (message.featureSupport !== undefined) {
+      FieldOptions_FeatureSupport.encode(message.featureSupport, writer.uint32(178).fork()).ldelim();
     }
     for (const v of message.uninterpretedOption) {
       UninterpretedOption.encode(v!, writer.uint32(7994).fork()).ldelim();
@@ -4419,6 +4720,13 @@ export const FieldOptions = {
 
           message.features = FeatureSet.decode(reader, reader.uint32());
           continue;
+        case 22:
+          if (tag !== 178) {
+            break;
+          }
+
+          message.featureSupport = FieldOptions_FeatureSupport.decode(reader, reader.uint32());
+          continue;
         case 999:
           if (tag !== 7994) {
             break;
@@ -4453,6 +4761,9 @@ export const FieldOptions = {
         ? object.editionDefaults.map((e: any) => FieldOptions_EditionDefault.fromJSON(e))
         : [],
       features: isSet(object.features) ? FeatureSet.fromJSON(object.features) : undefined,
+      featureSupport: isSet(object.featureSupport)
+        ? FieldOptions_FeatureSupport.fromJSON(object.featureSupport)
+        : undefined,
       uninterpretedOption: globalThis.Array.isArray(object?.uninterpretedOption)
         ? object.uninterpretedOption.map((e: any) => UninterpretedOption.fromJSON(e))
         : [],
@@ -4497,6 +4808,9 @@ export const FieldOptions = {
     if (message.features !== undefined) {
       obj.features = FeatureSet.toJSON(message.features);
     }
+    if (message.featureSupport !== undefined) {
+      obj.featureSupport = FieldOptions_FeatureSupport.toJSON(message.featureSupport);
+    }
     if (message.uninterpretedOption?.length) {
       obj.uninterpretedOption = message.uninterpretedOption.map((e) => UninterpretedOption.toJSON(e));
     }
@@ -4521,6 +4835,9 @@ export const FieldOptions = {
     message.editionDefaults = object.editionDefaults?.map((e) => FieldOptions_EditionDefault.fromPartial(e)) || [];
     message.features = (object.features !== undefined && object.features !== null)
       ? FeatureSet.fromPartial(object.features)
+      : undefined;
+    message.featureSupport = (object.featureSupport !== undefined && object.featureSupport !== null)
+      ? FieldOptions_FeatureSupport.fromPartial(object.featureSupport)
       : undefined;
     message.uninterpretedOption = object.uninterpretedOption?.map((e) => UninterpretedOption.fromPartial(e)) || [];
     return message;
@@ -4597,6 +4914,110 @@ export const FieldOptions_EditionDefault = {
     const message = createBaseFieldOptions_EditionDefault();
     message.edition = object.edition ?? 0;
     message.value = object.value ?? "";
+    return message;
+  },
+};
+
+function createBaseFieldOptions_FeatureSupport(): FieldOptions_FeatureSupport {
+  return { editionIntroduced: 0, editionDeprecated: 0, deprecationWarning: "", editionRemoved: 0 };
+}
+
+export const FieldOptions_FeatureSupport = {
+  encode(message: FieldOptions_FeatureSupport, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.editionIntroduced !== 0) {
+      writer.uint32(8).int32(message.editionIntroduced);
+    }
+    if (message.editionDeprecated !== 0) {
+      writer.uint32(16).int32(message.editionDeprecated);
+    }
+    if (message.deprecationWarning !== "") {
+      writer.uint32(26).string(message.deprecationWarning);
+    }
+    if (message.editionRemoved !== 0) {
+      writer.uint32(32).int32(message.editionRemoved);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FieldOptions_FeatureSupport {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFieldOptions_FeatureSupport();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 8) {
+            break;
+          }
+
+          message.editionIntroduced = reader.int32() as any;
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.editionDeprecated = reader.int32() as any;
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.deprecationWarning = reader.string();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.editionRemoved = reader.int32() as any;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FieldOptions_FeatureSupport {
+    return {
+      editionIntroduced: isSet(object.editionIntroduced) ? editionFromJSON(object.editionIntroduced) : 0,
+      editionDeprecated: isSet(object.editionDeprecated) ? editionFromJSON(object.editionDeprecated) : 0,
+      deprecationWarning: isSet(object.deprecationWarning) ? globalThis.String(object.deprecationWarning) : "",
+      editionRemoved: isSet(object.editionRemoved) ? editionFromJSON(object.editionRemoved) : 0,
+    };
+  },
+
+  toJSON(message: FieldOptions_FeatureSupport): unknown {
+    const obj: any = {};
+    if (message.editionIntroduced !== 0) {
+      obj.editionIntroduced = editionToJSON(message.editionIntroduced);
+    }
+    if (message.editionDeprecated !== 0) {
+      obj.editionDeprecated = editionToJSON(message.editionDeprecated);
+    }
+    if (message.deprecationWarning !== "") {
+      obj.deprecationWarning = message.deprecationWarning;
+    }
+    if (message.editionRemoved !== 0) {
+      obj.editionRemoved = editionToJSON(message.editionRemoved);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<FieldOptions_FeatureSupport>, I>>(base?: I): FieldOptions_FeatureSupport {
+    return FieldOptions_FeatureSupport.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<FieldOptions_FeatureSupport>, I>>(object: I): FieldOptions_FeatureSupport {
+    const message = createBaseFieldOptions_FeatureSupport();
+    message.editionIntroduced = object.editionIntroduced ?? 0;
+    message.editionDeprecated = object.editionDeprecated ?? 0;
+    message.deprecationWarning = object.deprecationWarning ?? "";
+    message.editionRemoved = object.editionRemoved ?? 0;
     return message;
   },
 };
@@ -4811,7 +5232,13 @@ export const EnumOptions = {
 };
 
 function createBaseEnumValueOptions(): EnumValueOptions {
-  return { deprecated: false, features: undefined, debugRedact: false, uninterpretedOption: [] };
+  return {
+    deprecated: false,
+    features: undefined,
+    debugRedact: false,
+    featureSupport: undefined,
+    uninterpretedOption: [],
+  };
 }
 
 export const EnumValueOptions = {
@@ -4824,6 +5251,9 @@ export const EnumValueOptions = {
     }
     if (message.debugRedact === true) {
       writer.uint32(24).bool(message.debugRedact);
+    }
+    if (message.featureSupport !== undefined) {
+      FieldOptions_FeatureSupport.encode(message.featureSupport, writer.uint32(34).fork()).ldelim();
     }
     for (const v of message.uninterpretedOption) {
       UninterpretedOption.encode(v!, writer.uint32(7994).fork()).ldelim();
@@ -4859,6 +5289,13 @@ export const EnumValueOptions = {
 
           message.debugRedact = reader.bool();
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.featureSupport = FieldOptions_FeatureSupport.decode(reader, reader.uint32());
+          continue;
         case 999:
           if (tag !== 7994) {
             break;
@@ -4880,6 +5317,9 @@ export const EnumValueOptions = {
       deprecated: isSet(object.deprecated) ? globalThis.Boolean(object.deprecated) : false,
       features: isSet(object.features) ? FeatureSet.fromJSON(object.features) : undefined,
       debugRedact: isSet(object.debugRedact) ? globalThis.Boolean(object.debugRedact) : false,
+      featureSupport: isSet(object.featureSupport)
+        ? FieldOptions_FeatureSupport.fromJSON(object.featureSupport)
+        : undefined,
       uninterpretedOption: globalThis.Array.isArray(object?.uninterpretedOption)
         ? object.uninterpretedOption.map((e: any) => UninterpretedOption.fromJSON(e))
         : [],
@@ -4897,6 +5337,9 @@ export const EnumValueOptions = {
     if (message.debugRedact === true) {
       obj.debugRedact = message.debugRedact;
     }
+    if (message.featureSupport !== undefined) {
+      obj.featureSupport = FieldOptions_FeatureSupport.toJSON(message.featureSupport);
+    }
     if (message.uninterpretedOption?.length) {
       obj.uninterpretedOption = message.uninterpretedOption.map((e) => UninterpretedOption.toJSON(e));
     }
@@ -4913,6 +5356,9 @@ export const EnumValueOptions = {
       ? FeatureSet.fromPartial(object.features)
       : undefined;
     message.debugRedact = object.debugRedact ?? false;
+    message.featureSupport = (object.featureSupport !== undefined && object.featureSupport !== null)
+      ? FieldOptions_FeatureSupport.fromPartial(object.featureSupport)
+      : undefined;
     message.uninterpretedOption = object.uninterpretedOption?.map((e) => UninterpretedOption.fromPartial(e)) || [];
     return message;
   },
@@ -5362,6 +5808,8 @@ function createBaseFeatureSet(): FeatureSet {
     utf8Validation: 0,
     messageEncoding: 0,
     jsonFormat: 0,
+    enforceNamingStyle: 0,
+    defaultSymbolVisibility: 0,
   };
 }
 
@@ -5384,6 +5832,12 @@ export const FeatureSet = {
     }
     if (message.jsonFormat !== 0) {
       writer.uint32(48).int32(message.jsonFormat);
+    }
+    if (message.enforceNamingStyle !== 0) {
+      writer.uint32(56).int32(message.enforceNamingStyle);
+    }
+    if (message.defaultSymbolVisibility !== 0) {
+      writer.uint32(64).int32(message.defaultSymbolVisibility);
     }
     return writer;
   },
@@ -5437,6 +5891,20 @@ export const FeatureSet = {
 
           message.jsonFormat = reader.int32() as any;
           continue;
+        case 7:
+          if (tag !== 56) {
+            break;
+          }
+
+          message.enforceNamingStyle = reader.int32() as any;
+          continue;
+        case 8:
+          if (tag !== 64) {
+            break;
+          }
+
+          message.defaultSymbolVisibility = reader.int32() as any;
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -5456,6 +5924,12 @@ export const FeatureSet = {
       utf8Validation: isSet(object.utf8Validation) ? featureSet_Utf8ValidationFromJSON(object.utf8Validation) : 0,
       messageEncoding: isSet(object.messageEncoding) ? featureSet_MessageEncodingFromJSON(object.messageEncoding) : 0,
       jsonFormat: isSet(object.jsonFormat) ? featureSet_JsonFormatFromJSON(object.jsonFormat) : 0,
+      enforceNamingStyle: isSet(object.enforceNamingStyle)
+        ? featureSet_EnforceNamingStyleFromJSON(object.enforceNamingStyle)
+        : 0,
+      defaultSymbolVisibility: isSet(object.defaultSymbolVisibility)
+        ? featureSet_VisibilityFeature_DefaultSymbolVisibilityFromJSON(object.defaultSymbolVisibility)
+        : 0,
     };
   },
 
@@ -5479,6 +5953,14 @@ export const FeatureSet = {
     if (message.jsonFormat !== 0) {
       obj.jsonFormat = featureSet_JsonFormatToJSON(message.jsonFormat);
     }
+    if (message.enforceNamingStyle !== 0) {
+      obj.enforceNamingStyle = featureSet_EnforceNamingStyleToJSON(message.enforceNamingStyle);
+    }
+    if (message.defaultSymbolVisibility !== 0) {
+      obj.defaultSymbolVisibility = featureSet_VisibilityFeature_DefaultSymbolVisibilityToJSON(
+        message.defaultSymbolVisibility,
+      );
+    }
     return obj;
   },
 
@@ -5493,6 +5975,51 @@ export const FeatureSet = {
     message.utf8Validation = object.utf8Validation ?? 0;
     message.messageEncoding = object.messageEncoding ?? 0;
     message.jsonFormat = object.jsonFormat ?? 0;
+    message.enforceNamingStyle = object.enforceNamingStyle ?? 0;
+    message.defaultSymbolVisibility = object.defaultSymbolVisibility ?? 0;
+    return message;
+  },
+};
+
+function createBaseFeatureSet_VisibilityFeature(): FeatureSet_VisibilityFeature {
+  return {};
+}
+
+export const FeatureSet_VisibilityFeature = {
+  encode(_: FeatureSet_VisibilityFeature, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FeatureSet_VisibilityFeature {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFeatureSet_VisibilityFeature();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): FeatureSet_VisibilityFeature {
+    return {};
+  },
+
+  toJSON(_: FeatureSet_VisibilityFeature): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<FeatureSet_VisibilityFeature>, I>>(base?: I): FeatureSet_VisibilityFeature {
+    return FeatureSet_VisibilityFeature.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<FeatureSet_VisibilityFeature>, I>>(_: I): FeatureSet_VisibilityFeature {
+    const message = createBaseFeatureSet_VisibilityFeature();
     return message;
   },
 };
@@ -5589,7 +6116,7 @@ export const FeatureSetDefaults = {
 };
 
 function createBaseFeatureSetDefaults_FeatureSetEditionDefault(): FeatureSetDefaults_FeatureSetEditionDefault {
-  return { edition: 0, features: undefined };
+  return { edition: 0, overridableFeatures: undefined, fixedFeatures: undefined };
 }
 
 export const FeatureSetDefaults_FeatureSetEditionDefault = {
@@ -5597,8 +6124,11 @@ export const FeatureSetDefaults_FeatureSetEditionDefault = {
     if (message.edition !== 0) {
       writer.uint32(24).int32(message.edition);
     }
-    if (message.features !== undefined) {
-      FeatureSet.encode(message.features, writer.uint32(18).fork()).ldelim();
+    if (message.overridableFeatures !== undefined) {
+      FeatureSet.encode(message.overridableFeatures, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.fixedFeatures !== undefined) {
+      FeatureSet.encode(message.fixedFeatures, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
@@ -5617,12 +6147,19 @@ export const FeatureSetDefaults_FeatureSetEditionDefault = {
 
           message.edition = reader.int32() as any;
           continue;
-        case 2:
-          if (tag !== 18) {
+        case 4:
+          if (tag !== 34) {
             break;
           }
 
-          message.features = FeatureSet.decode(reader, reader.uint32());
+          message.overridableFeatures = FeatureSet.decode(reader, reader.uint32());
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.fixedFeatures = FeatureSet.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -5636,7 +6173,10 @@ export const FeatureSetDefaults_FeatureSetEditionDefault = {
   fromJSON(object: any): FeatureSetDefaults_FeatureSetEditionDefault {
     return {
       edition: isSet(object.edition) ? editionFromJSON(object.edition) : 0,
-      features: isSet(object.features) ? FeatureSet.fromJSON(object.features) : undefined,
+      overridableFeatures: isSet(object.overridableFeatures)
+        ? FeatureSet.fromJSON(object.overridableFeatures)
+        : undefined,
+      fixedFeatures: isSet(object.fixedFeatures) ? FeatureSet.fromJSON(object.fixedFeatures) : undefined,
     };
   },
 
@@ -5645,8 +6185,11 @@ export const FeatureSetDefaults_FeatureSetEditionDefault = {
     if (message.edition !== 0) {
       obj.edition = editionToJSON(message.edition);
     }
-    if (message.features !== undefined) {
-      obj.features = FeatureSet.toJSON(message.features);
+    if (message.overridableFeatures !== undefined) {
+      obj.overridableFeatures = FeatureSet.toJSON(message.overridableFeatures);
+    }
+    if (message.fixedFeatures !== undefined) {
+      obj.fixedFeatures = FeatureSet.toJSON(message.fixedFeatures);
     }
     return obj;
   },
@@ -5661,8 +6204,11 @@ export const FeatureSetDefaults_FeatureSetEditionDefault = {
   ): FeatureSetDefaults_FeatureSetEditionDefault {
     const message = createBaseFeatureSetDefaults_FeatureSetEditionDefault();
     message.edition = object.edition ?? 0;
-    message.features = (object.features !== undefined && object.features !== null)
-      ? FeatureSet.fromPartial(object.features)
+    message.overridableFeatures = (object.overridableFeatures !== undefined && object.overridableFeatures !== null)
+      ? FeatureSet.fromPartial(object.overridableFeatures)
+      : undefined;
+    message.fixedFeatures = (object.fixedFeatures !== undefined && object.fixedFeatures !== null)
+      ? FeatureSet.fromPartial(object.fixedFeatures)
       : undefined;
     return message;
   },

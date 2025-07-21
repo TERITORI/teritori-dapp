@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             (unknown)
-// source: p2e/v1/p2e.proto
+// source: api/p2e/v1/p2e.proto
 
 package p2epb
 
@@ -273,5 +273,5 @@ var P2EService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "p2e/v1/p2e.proto",
+	Metadata: "api/p2e/v1/p2e.proto",
 }
