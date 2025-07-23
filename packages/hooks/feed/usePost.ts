@@ -10,6 +10,7 @@ import { PostViewJson, PostViewSchema } from "@/api/feeds/v1/feeds_pb";
 import { nonSigningSocialFeedClient } from "@/client-creators/socialFeedClient";
 import { NetworkKind, getUserId, parseNetworkObjectId } from "@/networks";
 import { gnoZenaoNetwork } from "@/networks/gno-zenao";
+import { gnoZenaoStagingNetwork } from "@/networks/gno-zenao-staging";
 import { decodeGnoPost } from "@/utils/feed/gno";
 import { extractGnoJSONResponse, extractGnoJSONString } from "@/utils/gno";
 import { safeParseJSON, zodTryParseJSON } from "@/utils/sanitize";
@@ -32,7 +33,8 @@ export const usePost = (id: string | undefined) => {
       // Gno Zenao network
       else if (
         network?.kind === NetworkKind.Gno &&
-        network?.id === gnoZenaoNetwork.id
+        (network?.id === gnoZenaoNetwork.id ||
+          network?.id === gnoZenaoStagingNetwork.id)
       ) {
         const callerAddress = wallet?.address || "";
         const provider = new GnoJSONRPCProvider(network.endpoint);
@@ -43,7 +45,7 @@ export const usePost = (id: string | undefined) => {
         );
         const raw = extractGnoJSONResponse(output);
         const postView = fromJson(PostViewSchema, raw as PostViewJson);
-        return postViewToPost(postView);
+        return postViewToPost(postView, network.id);
       }
       // Gno network
       else if (network?.kind === NetworkKind.Gno) {

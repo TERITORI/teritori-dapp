@@ -6,6 +6,7 @@ import { neutral33 } from "../utils/style/colors";
 
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { gnoZenaoNetwork } from "@/networks/gno-zenao";
+import { gnoZenaoStagingNetwork } from "@/networks/gno-zenao-staging";
 
 /**
  * This only supports uri images since the proxy is only for external images
@@ -125,7 +126,8 @@ const transformURI = (
 
   if (uri?.startsWith("ipfs://")) {
     const ipfsGateway =
-      networkId === gnoZenaoNetwork.id
+      networkId === gnoZenaoNetwork.id ||
+      networkId === gnoZenaoStagingNetwork.id
         ? "https://pinata.zenao.io"
         : "https://teritori.mypinata.cloud";
 

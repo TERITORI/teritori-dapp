@@ -17,8 +17,12 @@ import {
   parseUserId,
 } from "@/networks";
 import { gnoZenaoNetwork } from "@/networks/gno-zenao";
+import { gnoZenaoStagingNetwork } from "@/networks/gno-zenao-staging";
 import { mustGetFeedClient } from "@/utils/backend";
-import { HYPERAKTIVE_EVENT_ID, TERITORI_FEED_ID } from "@/utils/feed/constants";
+import {
+  HYPERHACKTIVE_EVENT_ID,
+  TERITORI_FEED_ID,
+} from "@/utils/feed/constants";
 import { decodeGnoPost } from "@/utils/feed/gno";
 import {
   derivePkgAddr,
@@ -50,7 +54,7 @@ const fetchTeritoriFeed = async (
   const feedClient = mustGetFeedClient(selectedNetwork.id);
   const response = await feedClient.Posts(postsRequest);
   const list = response.posts.sort((a, b) => b.createdAt - a.createdAt);
-  return { list, totalCount: undefined };
+  return { list, totalCount: list.length };
 };
 
 const fetchGnoFeed = async (
@@ -105,6 +109,7 @@ const fetchGnoZenaoFeed = async (
   callerAddress = callerAddress || "";
 
   const limit = req.limit || 0;
+  const offset = pageParam * limit;
   const tags = "";
 
   const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
@@ -113,11 +118,11 @@ const fetchGnoZenaoFeed = async (
 
   const output = await provider.evaluateExpression(
     selectedNetwork.socialFeedsPkgPath || "",
-    `postViewsToJSON(GetFeedPosts("${feedId}", ${pageParam * limit}, ${limit}, "${tags}", "${callerAddress}"))`,
+    `postViewsToJSON(GetFeedPosts("${feedId}", ${offset}, ${limit}, "${tags}", "${callerAddress}"))`,
   );
   const raw = extractGnoJSONResponse(output);
   const postViews = postViewsFromJson(raw);
-  return postViewsToPostsList(postViews);
+  return postViewsToPostsList(postViews, selectedNetwork.id);
 };
 
 export const useFetchFeed = (req: DeepPartial<PostsRequest>) => {
@@ -135,10 +140,11 @@ export const useFetchFeed = (req: DeepPartial<PostsRequest>) => {
         // Gno Zenao network
         else if (
           selectedNetwork?.kind === NetworkKind.Gno &&
-          selectedNetwork?.id === gnoZenaoNetwork.id
+          (selectedNetwork?.id === gnoZenaoNetwork.id ||
+            selectedNetwork?.id === gnoZenaoStagingNetwork.id)
         ) {
           return fetchGnoZenaoFeed(
-            HYPERAKTIVE_EVENT_ID,
+            HYPERHACKTIVE_EVENT_ID,
             selectedNetwork,
             wallet?.address,
             req,
@@ -154,9 +160,22 @@ export const useFetchFeed = (req: DeepPartial<PostsRequest>) => {
       },
       {
         getNextPageParam: (lastPage, pages) => {
+          if (
+            selectedNetwork?.kind === NetworkKind.Gno &&
+            (selectedNetwork?.id === gnoZenaoNetwork.id ||
+              selectedNetwork?.id === gnoZenaoStagingNetwork.id)
+          ) {
+            if (
+              lastPage.totalCount &&
+              req.limit &&
+              lastPage.totalCount >= req.limit
+            ) {
+              return pages.length;
+            }
+          }
           // NOTE: On gno feeds, due to list length depends on each user (due to flag, hide)
           // so if last page contains posts = limit => try to load more content
-          if (selectedNetwork?.kind === NetworkKind.Gno) {
+          else if (selectedNetwork?.kind === NetworkKind.Gno) {
             if (lastPage?.totalCount && lastPage.totalCount === req.limit) {
               return pages.length * req.limit;
             }

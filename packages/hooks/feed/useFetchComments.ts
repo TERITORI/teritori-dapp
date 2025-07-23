@@ -9,6 +9,7 @@ import { nonSigningSocialFeedClient } from "@/client-creators/socialFeedClient";
 import { PostResult } from "@/contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { GnoNetworkInfo, NetworkKind, parseNetworkObjectId } from "@/networks";
 import { gnoZenaoNetwork } from "@/networks/gno-zenao";
+import { gnoZenaoStagingNetwork } from "@/networks/gno-zenao-staging";
 import { TERITORI_FEED_ID } from "@/utils/feed/constants";
 import { decodeGnoPost } from "@/utils/feed/gno";
 import { extractGnoJSONResponse, extractGnoJSONString } from "@/utils/gno";
@@ -17,6 +18,7 @@ import { postViewToPost, postViewsFromJson } from "@/utils/zenao";
 
 export type FetchCommentResponse = {
   list: Post[];
+  totalCount: number | undefined;
 } | null;
 
 const combineFetchCommentPages = (pages: FetchCommentResponse[]) =>
@@ -37,7 +39,7 @@ const fetchTeritoriComments = async (
     networkId,
   });
 
-  const subComment = await client.querySubPosts({
+  const comments = await client.querySubPosts({
     count: 5,
     from: pageParam || 0,
     sort: "desc",
@@ -45,9 +47,10 @@ const fetchTeritoriComments = async (
   });
 
   return {
-    list: subComment.map((subPostRes: PostResult) =>
+    list: comments.map((subPostRes: PostResult) =>
       postResultToPost(networkId, subPostRes),
     ),
+    totalCount: comments.length,
   };
 };
 
@@ -65,7 +68,7 @@ const fetchGnoComments = async (
     `GetComments(${TERITORI_FEED_ID}, ${parentId}, ${offset}, ${limit})`,
   );
 
-  const posts: Post[] = [];
+  const comments: Post[] = [];
 
   const gnoPosts = extractGnoJSONString(output);
   for (const gnoPost of gnoPosts) {
@@ -77,14 +80,16 @@ const fetchGnoComments = async (
       ownState: false, // FIXME: find a way to get the user's reaction state from on-chain post
     }));
 
-    posts.push({ ...post, reactions: postReactions });
+    comments.push({ ...post, reactions: postReactions });
   }
 
   return {
-    list: posts.sort((p1, p2) => p2.createdAt - p1.createdAt),
+    list: comments.sort((p1, p2) => p2.createdAt - p1.createdAt),
+    totalCount: comments.length,
   };
 };
 
+const gnoZenaoCommentsLimit = 10;
 const fetchGnoZenaoComments = async (
   selectedNetwork: GnoNetworkInfo,
   parentId: string,
@@ -94,33 +99,38 @@ const fetchGnoZenaoComments = async (
   if (!selectedNetwork.socialFeedsPkgPath) return { list: [], totalCount: 0 };
   callerAddress = callerAddress || "";
 
-  const limit = 100; // For now hardcode to load max 100 comments
+  const limit = gnoZenaoCommentsLimit;
+  const offset = pageParam * limit;
   const tags = "";
   const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
 
   const output = await provider.evaluateExpression(
     selectedNetwork.socialFeedsPkgPath || "",
-    `postViewsToJSON(GetChildrenPosts("${parentId}", ${pageParam * limit}, ${limit}, "${tags}", "${callerAddress}"))`,
+    `postViewsToJSON(GetChildrenPosts("${parentId}", ${offset}, ${limit}, "${tags}", "${callerAddress}"))`,
   );
   const raw = extractGnoJSONResponse(output);
   const postViews = postViewsFromJson(raw);
   return {
-    list: postViews.map((postView) => postViewToPost(postView)),
+    list: postViews.map((postView) =>
+      postViewToPost(postView, selectedNetwork.id),
+    ),
+    totalCount: postViews.length,
   };
 };
 
 const useFetchCommentsRaw = ({ parentId, totalCount, enabled }: ConfigType) => {
   const selectedWallet = useSelectedWallet();
+  const [parentNetwork, localIdentifier] = parseNetworkObjectId(parentId);
 
   const data = useInfiniteQuery<FetchCommentResponse>(
     ["FetchComment", parentId],
     async ({ pageParam = 0 }) => {
-      const [parentNetwork, localIdentifier] = parseNetworkObjectId(parentId);
       let comments: FetchCommentResponse;
       // Gno Zenao network
       if (
         parentNetwork?.kind === NetworkKind.Gno &&
-        parentNetwork?.id === gnoZenaoNetwork.id
+        (parentNetwork?.id === gnoZenaoNetwork.id ||
+          parentNetwork?.id === gnoZenaoStagingNetwork.id)
       ) {
         return fetchGnoZenaoComments(
           parentNetwork,
@@ -144,13 +154,26 @@ const useFetchCommentsRaw = ({ parentId, totalCount, enabled }: ConfigType) => {
       return comments;
     },
     {
-      getNextPageParam: (_, pages) => {
-        const postsLength = combineFetchCommentPages(pages).length;
+      getNextPageParam: (lastPage, pages) => {
+        if (
+          parentNetwork?.kind === NetworkKind.Gno &&
+          (parentNetwork?.id === gnoZenaoNetwork.id ||
+            parentNetwork?.id === gnoZenaoStagingNetwork.id)
+        ) {
+          if (
+            lastPage?.totalCount &&
+            lastPage.totalCount >= gnoZenaoCommentsLimit
+          ) {
+            return pages.length;
+          }
+        } else {
+          const postsLength = combineFetchCommentPages(pages).length;
 
-        if ((totalCount || 0) > postsLength) {
-          return postsLength;
+          if ((totalCount || 0) > postsLength) {
+            return postsLength;
+          }
+          return null;
         }
-        return null;
       },
       staleTime: Infinity,
       refetchOnWindowFocus: false,

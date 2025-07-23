@@ -14,7 +14,6 @@ import {
   PostViewSchema,
 } from "@/api/feeds/v1/feeds_pb";
 import { getNetworkObjectId, getUserId } from "@/networks";
-import { gnoZenaoNetwork } from "@/networks/gno-zenao";
 
 export const postViewsFromJson = (raw: unknown) => {
   const list = raw as unknown[];
@@ -223,7 +222,7 @@ const metadataFromPostView = (postView: PostView): string => {
   return JSON.stringify(metadata);
 };
 
-export const postViewToPost = (postView: PostView): Post => {
+export const postViewToPost = (postView: PostView, networkId: string): Post => {
   const localIdentifier = postView.post!.localPostId.toString();
   return {
     category: categoryFromPostView(postView),
@@ -232,21 +231,24 @@ export const postViewToPost = (postView: PostView): Post => {
     metadata: metadataFromPostView(postView),
     parentPostIdentifier: "",
     subPostLength: Number(postView.childrenCount),
-    authorId: getUserId(gnoZenaoNetwork.id, postView.post?.author),
+    authorId: getUserId(networkId, postView.post?.author),
     createdAt: Number(postView.post?.createdAt),
     reactions: reactionsFromPostView(postView),
     tipAmount: 0, // Not handled yet in zenao
     premiumLevel: 0,
-    id: getNetworkObjectId(gnoZenaoNetwork.id, localIdentifier),
+    id: getNetworkObjectId(networkId, localIdentifier),
     localIdentifier,
-    networkId: gnoZenaoNetwork.id,
+    networkId,
   };
 };
 
-export const postViewsToPostsList = (postViews: PostView[]): PostsList => {
+export const postViewsToPostsList = (
+  postViews: PostView[],
+  networkId: string,
+): PostsList => {
   const list: Post[] = postViews
     .filter((postView) => !!postView.post)
-    .map((postView) => postViewToPost(postView));
+    .map((postView) => postViewToPost(postView, networkId));
 
   const postsList = {
     list,

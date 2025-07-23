@@ -16,6 +16,7 @@ import { gnoPortalNetwork } from "./gno-portal";
 import { gnoTest3Network } from "./gno-test3";
 import { gnoTest5Network } from "./gno-test5";
 import { gnoZenaoNetwork } from "./gno-zenao";
+import { gnoZenaoStagingNetwork } from "./gno-zenao-staging";
 import { osmosisNetwork } from "./osmosis";
 import { osmosisTestnetNetwork } from "./osmosis-testnet";
 // import { solanaNetwork } from "./solana";
@@ -62,6 +63,7 @@ const packageNetworks = [
   starknetNetwork,
   starknetSepoliaNetwork,
   gnoZenaoNetwork,
+  gnoZenaoStagingNetwork,
 ];
 
 export const defaultEnabledNetworks = [
