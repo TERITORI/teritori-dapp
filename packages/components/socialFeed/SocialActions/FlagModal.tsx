@@ -5,7 +5,6 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { mustGetGnoNetwork } from "../../../networks";
-import { TERITORI_FEED_ID } from "../../../utils/feed/constants";
 import {
   adenaDoContract,
   AdenaDoContractMessageType,
@@ -50,7 +49,7 @@ export const FlagModal: React.FC<FlagModalProps> = ({
       send: "",
       pkg_path: gnoNetwork.socialFeedsPkgPath,
       func: flagType === "hideForMe" ? "HidePostForMe" : "FlagPost",
-      args: [TERITORI_FEED_ID, postId],
+      args: [gnoNetwork.socialFeedsFeedId || "", postId],
     };
 
     try {

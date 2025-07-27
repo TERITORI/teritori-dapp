@@ -6,7 +6,6 @@ import { useFeedbacks } from "../../../context/FeedbacksProvider";
 import { useGetBanPostProposals } from "../../../hooks/feed/useBanPostProposals";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { NetworkKind, getNetwork } from "../../../networks";
-import { TERITORI_FEED_ID } from "../../../utils/feed/constants";
 import { adenaVMCall } from "../../../utils/gno";
 import {
   GnoBanPostMessage,
@@ -139,7 +138,7 @@ export const SocialCardWrapper: FC<{
       const msg: GnoBanPostMessage = {
         type: "gno.land/r/teritori/social_feeds.BanPost",
         payload: {
-          feedId: +TERITORI_FEED_ID,
+          feedId: +(postNetwork.socialFeedsFeedId || ""),
           postId: +localPost.localIdentifier,
           reason: `Flag the post: ${localPost.localIdentifier}`,
         },

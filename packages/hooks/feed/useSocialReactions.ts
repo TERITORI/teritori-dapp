@@ -14,7 +14,6 @@ import {
   NetworkFeature,
   NetworkKind,
 } from "@/networks";
-import { TERITORI_FEED_ID } from "@/utils/feed/constants";
 import { adenaDoContract, AdenaDoContractMessageType } from "@/utils/gno";
 import {
   DISLIKE_EMOJI,
@@ -79,7 +78,12 @@ export const useSocialReactions = ({
       send: "",
       pkg_path: gnoNetwork.socialFeedsPkgPath,
       func: "ReactPost",
-      args: [TERITORI_FEED_ID, post.id.split("-")[1], emoji, "true"],
+      args: [
+        gnoNetwork.socialFeedsFeedId || "",
+        post.id.split("-")[1],
+        emoji,
+        "true",
+      ],
     };
 
     try {
