@@ -1,6 +1,12 @@
 import { gnoCurrencies } from "./currencies";
 import { GnoNetworkInfo, NetworkFeature, NetworkKind } from "../types";
 
+import { derivePkgAddr } from "@/utils/gno";
+
+const hyperacktiveEventId = "15";
+const pkgPath = `gno.land/r/zenao/events/e${hyperacktiveEventId}`;
+const socialFeedsFeedId = `${derivePkgAddr(pkgPath)}:main`;
+
 export const gnoZenaoNetwork: GnoNetworkInfo = {
   id: "gno-zenao",
   kind: NetworkKind.Gno,
@@ -24,6 +30,7 @@ export const gnoZenaoNetwork: GnoNetworkInfo = {
   nameServiceContractAddress: "gno.land/r/demo/users",
   nameServiceDefaultImage:
     "ipfs://bafkreigqm3i4urywxohvpkbz5sgxosiogwn433ufmzz7eqldjxoi6xmwma",
+  socialFeedsFeedId,
   socialFeedsPkgPath: "gno.land/r/zenao/social_feed",
   socialFeedsDAOPkgPath: "gno.land/r/teritori/social_feeds_dao",
   daoInterfacesPkgPath: "gno.land/p/teritori/dao_interfaces",

@@ -4,17 +4,13 @@ import { useMemo } from "react";
 
 import useSelectedWallet from "../useSelectedWallet";
 
-import { Post, Reaction } from "@/api/feed/v1/feed";
+import { Post } from "@/api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "@/client-creators/socialFeedClient";
 import { PostResult } from "@/contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { GnoNetworkInfo, NetworkKind, parseNetworkObjectId } from "@/networks";
-import { gnoZenaoNetwork } from "@/networks/gno-zenao";
-import { gnoZenaoStagingNetwork } from "@/networks/gno-zenao-staging";
-import { TERITORI_FEED_ID } from "@/utils/feed/constants";
-import { decodeGnoPost } from "@/utils/feed/gno";
-import { extractGnoJSONResponse, extractGnoJSONString } from "@/utils/gno";
+import { postViewToPost, postViewsFromJson } from "@/utils/feed/gno";
+import { extractGnoJSONResponse } from "@/utils/gno";
 import { postResultToPost } from "@/utils/social-feed";
-import { postViewToPost, postViewsFromJson } from "@/utils/zenao";
 
 export type FetchCommentResponse = {
   list: Post[];
@@ -54,52 +50,17 @@ const fetchTeritoriComments = async (
   };
 };
 
+const gnoCommentsLimit = 10;
 const fetchGnoComments = async (
-  selectedNetwork: GnoNetworkInfo,
-  parentId: string,
-): Promise<FetchCommentResponse> => {
-  const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
-
-  const offset = 0;
-  const limit = 100; // For now hardcode to load max 100 comments
-
-  const output = await provider.evaluateExpression(
-    selectedNetwork.socialFeedsPkgPath || "",
-    `GetComments(${TERITORI_FEED_ID}, ${parentId}, ${offset}, ${limit})`,
-  );
-
-  const comments: Post[] = [];
-
-  const gnoPosts = extractGnoJSONString(output);
-  for (const gnoPost of gnoPosts) {
-    const post = decodeGnoPost(selectedNetwork.id, gnoPost);
-    const chainReactions = post.reactions;
-    const postReactions: Reaction[] = chainReactions.map((reaction) => ({
-      icon: reaction.icon,
-      count: reaction.count,
-      ownState: false, // FIXME: find a way to get the user's reaction state from on-chain post
-    }));
-
-    comments.push({ ...post, reactions: postReactions });
-  }
-
-  return {
-    list: comments.sort((p1, p2) => p2.createdAt - p1.createdAt),
-    totalCount: comments.length,
-  };
-};
-
-const gnoZenaoCommentsLimit = 10;
-const fetchGnoZenaoComments = async (
   selectedNetwork: GnoNetworkInfo,
   parentId: string,
   callerAddress: string | undefined,
   pageParam: number,
-) => {
+): Promise<FetchCommentResponse> => {
   if (!selectedNetwork.socialFeedsPkgPath) return { list: [], totalCount: 0 };
   callerAddress = callerAddress || "";
 
-  const limit = gnoZenaoCommentsLimit;
+  const limit = gnoCommentsLimit;
   const offset = pageParam * limit;
   const tags = "";
   const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
@@ -126,22 +87,13 @@ const useFetchCommentsRaw = ({ parentId, totalCount, enabled }: ConfigType) => {
     ["FetchComment", parentId],
     async ({ pageParam = 0 }) => {
       let comments: FetchCommentResponse;
-      // Gno Zenao network
-      if (
-        parentNetwork?.kind === NetworkKind.Gno &&
-        (parentNetwork?.id === gnoZenaoNetwork.id ||
-          parentNetwork?.id === gnoZenaoStagingNetwork.id)
-      ) {
-        return fetchGnoZenaoComments(
+      if (parentNetwork?.kind === NetworkKind.Gno) {
+        comments = await fetchGnoComments(
           parentNetwork,
           localIdentifier,
           selectedWallet?.address,
           pageParam,
         );
-      }
-      // Gno network
-      else if (parentNetwork?.kind === NetworkKind.Gno) {
-        comments = await fetchGnoComments(parentNetwork, localIdentifier);
       }
       // Other networks (e.g., Cosmos)
       else {
@@ -155,15 +107,8 @@ const useFetchCommentsRaw = ({ parentId, totalCount, enabled }: ConfigType) => {
     },
     {
       getNextPageParam: (lastPage, pages) => {
-        if (
-          parentNetwork?.kind === NetworkKind.Gno &&
-          (parentNetwork?.id === gnoZenaoNetwork.id ||
-            parentNetwork?.id === gnoZenaoStagingNetwork.id)
-        ) {
-          if (
-            lastPage?.totalCount &&
-            lastPage.totalCount >= gnoZenaoCommentsLimit
-          ) {
+        if (parentNetwork?.kind === NetworkKind.Gno) {
+          if (lastPage?.totalCount && lastPage.totalCount >= gnoCommentsLimit) {
             return pages.length;
           }
         } else {

@@ -9,13 +9,10 @@ import { Post } from "@/api/feed/v1/feed";
 import { PostViewJson, PostViewSchema } from "@/api/feeds/v1/feeds_pb";
 import { nonSigningSocialFeedClient } from "@/client-creators/socialFeedClient";
 import { NetworkKind, getUserId, parseNetworkObjectId } from "@/networks";
-import { gnoZenaoNetwork } from "@/networks/gno-zenao";
-import { gnoZenaoStagingNetwork } from "@/networks/gno-zenao-staging";
-import { decodeGnoPost } from "@/utils/feed/gno";
-import { extractGnoJSONResponse, extractGnoJSONString } from "@/utils/gno";
+import { postViewToPost } from "@/utils/feed/gno";
+import { extractGnoJSONResponse } from "@/utils/gno";
 import { safeParseJSON, zodTryParseJSON } from "@/utils/sanitize";
 import { zodSocialFeedCommonMetadata } from "@/utils/types/feed";
-import { postViewToPost } from "@/utils/zenao";
 
 export const usePost = (id: string | undefined) => {
   const wallet = useSelectedWallet();
@@ -30,12 +27,8 @@ export const usePost = (id: string | undefined) => {
       if (!network) {
         return null;
       }
-      // Gno Zenao network
-      else if (
-        network?.kind === NetworkKind.Gno &&
-        (network?.id === gnoZenaoNetwork.id ||
-          network?.id === gnoZenaoStagingNetwork.id)
-      ) {
+      // Gno network
+      else if (network?.kind === NetworkKind.Gno) {
         const callerAddress = wallet?.address || "";
         const provider = new GnoJSONRPCProvider(network.endpoint);
 
@@ -46,17 +39,6 @@ export const usePost = (id: string | undefined) => {
         const raw = extractGnoJSONResponse(output);
         const postView = fromJson(PostViewSchema, raw as PostViewJson);
         return postViewToPost(postView, network.id);
-      }
-      // Gno network
-      else if (network?.kind === NetworkKind.Gno) {
-        const provider = new GnoJSONRPCProvider(network.endpoint);
-        const output = await provider.evaluateExpression(
-          network.socialFeedsPkgPath || "",
-          `GetPost(1, ${localIdentifier})`,
-        );
-
-        const gnoPost = extractGnoJSONString(output);
-        return decodeGnoPost(network.id, gnoPost);
       }
       // Other networks (e.g., Cosmos)
       else {
