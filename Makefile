@@ -65,7 +65,7 @@ generate: generate.protobuf generate.graphql generate.contracts-clients generate
 generate.protobuf: node_modules packages/api/weshnet
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
-	buf generate api
+	buf generate
 
 .PHONY: packages/api/weshnet
 packages/api/weshnet: node_modules
@@ -89,8 +89,8 @@ lint: lint.buf lint.js lint.rust
 
 .PHONY: lint.buf
 lint.buf:
-	buf lint api
-	buf breaking --against 'https://github.com/TERITORI/teritori-dapp.git#branch=main' --path api
+	buf lint
+	buf breaking --against 'https://github.com/TERITORI/teritori-dapp.git#branch=main'
 
 .PHONY: lint.js
 lint.js: node_modules
