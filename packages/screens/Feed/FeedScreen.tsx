@@ -16,7 +16,7 @@ import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { NewsFeed } from "@/components/socialFeed/NewsFeed/NewsFeed";
 import { useForceNetworkSelection } from "@/hooks/useForceNetworkSelection";
 import { useIsMobile } from "@/hooks/useIsMobile";
-import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
+import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
 import { NetworkFeature } from "@/networks";
 import { ScreenFC } from "@/utils/navigation";
 
@@ -26,47 +26,40 @@ export const FeedScreen: ScreenFC<"Feed"> = ({
 }) => {
   useForceNetworkSelection(params?.network);
   const isMobile = useIsMobile();
-  const selectedNetwork = useSelectedNetworkInfo();
-  const isReadonlyFeed = useMemo(
-    () => selectedNetwork?.features.includes(NetworkFeature.SocialFeedReadonly),
-    [selectedNetwork?.features],
-  );
+  const selectedNetworkId = useSelectedNetworkId();
 
   const updateParams = useCallback(() => {
-    setParams({ network: selectedNetwork?.id });
-  }, [setParams, selectedNetwork?.id]);
+    setParams({ network: selectedNetworkId });
+  }, [setParams, selectedNetworkId]);
 
   useFocusEffect(updateParams);
 
   const defaultFeedRequest = useMemo(() => {
-    if (selectedNetwork) {
-      return getDefaultFeedRequest(selectedNetwork.id);
-    }
-  }, [selectedNetwork]);
+    return getDefaultFeedRequest(selectedNetworkId);
+  }, [selectedNetworkId]);
 
   const feedContent = useMemo(() => {
     switch (params?.tab) {
       case "music":
-        return <MusicFeed disablePosting={isReadonlyFeed} />;
+        return <MusicFeed />;
       case "map":
         return (
           <MapFeed consultedPostId={params?.post ? params.post : undefined} />
         );
       case "pics":
-        return <PicsFeed disablePosting={isReadonlyFeed} />;
+        return <PicsFeed />;
       case "videos":
-        return <VideosFeed disablePosting={isReadonlyFeed} />;
+        return <VideosFeed />;
       case "articles":
-        return <ArticlesFeed disablePosting={isReadonlyFeed} />;
+        return <ArticlesFeed />;
       case "moderationDAO":
         return <ModerationFeed />;
       default:
-        if (!defaultFeedRequest) return null;
         return (
           <NewsFeed
             req={defaultFeedRequest}
             isFlagged={params?.tab === "moderationDAO"}
-            disablePosting={params?.tab === "moderationDAO" || isReadonlyFeed}
+            disablePosting={params?.tab === "moderationDAO"}
             Header={() => (
               <>
                 {/* ScreenContainer in FeedScreen has noScroll, so we need to add MobileTitle here */}
@@ -77,7 +70,7 @@ export const FeedScreen: ScreenFC<"Feed"> = ({
           />
         );
     }
-  }, [params?.tab, params?.post, isReadonlyFeed, defaultFeedRequest, isMobile]);
+  }, [params?.tab, params?.post, isMobile, defaultFeedRequest]);
 
   return (
     <ScreenContainer
@@ -86,10 +79,7 @@ export const FeedScreen: ScreenFC<"Feed"> = ({
       noScroll
       responsive
       footerChildren={<></>}
-      forceNetworkFeatures={[
-        NetworkFeature.SocialFeed,
-        NetworkFeature.SocialFeedReadonly,
-      ]}
+      forceNetworkFeatures={[NetworkFeature.SocialFeed]}
       headerChildren={<ScreenTitle>Social Feed</ScreenTitle>}
     >
       {feedContent}

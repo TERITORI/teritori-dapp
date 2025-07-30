@@ -4594,8 +4594,7 @@
     "features": [
       "Organizations",
       "UPP",
-      "NameService",
-      "SocialFeedReadonly"
+      "NameService"
     ],
     "currencies": [
       {
@@ -4638,8 +4637,7 @@
     "features": [
       "Organizations",
       "UPP",
-      "NameService",
-      "SocialFeedReadonly"
+      "NameService"
     ],
     "currencies": [
       {

@@ -19,52 +19,31 @@ export enum UppTabKeys {
 export const uppTabItems: { [key: string]: TabDefinition } = {
   [UppTabKeys.posts]: {
     name: "Posts",
-    networkFeatures: [
-      NetworkFeature.SocialFeed,
-      NetworkFeature.SocialFeedReadonly,
-    ],
+    networkFeatures: [NetworkFeature.SocialFeed],
   },
   [UppTabKeys.premiumSubscribe]: {
     name: "Premium Content",
-    networkFeatures: [
-      NetworkFeature.SocialFeed,
-      NetworkFeature.SocialFeedReadonly,
-    ],
+    networkFeatures: [NetworkFeature.SocialFeed],
   },
   [UppTabKeys.nfts]: {
     name: "NFTs",
-    networkFeatures: [
-      NetworkFeature.SocialFeed,
-      NetworkFeature.SocialFeedReadonly,
-    ],
+    networkFeatures: [NetworkFeature.SocialFeed],
   },
   [UppTabKeys.quests]: {
     name: "Quests",
-    networkFeatures: [
-      NetworkFeature.SocialFeed,
-      NetworkFeature.SocialFeedReadonly,
-    ],
+    networkFeatures: [NetworkFeature.SocialFeed],
   },
   [UppTabKeys.mentionsPosts]: {
     name: "Mentions Posts",
-    networkFeatures: [
-      NetworkFeature.SocialFeed,
-      NetworkFeature.SocialFeedReadonly,
-    ],
+    networkFeatures: [NetworkFeature.SocialFeed],
   },
   [UppTabKeys.music]: {
     name: "Music",
-    networkFeatures: [
-      NetworkFeature.SocialFeed,
-      NetworkFeature.SocialFeedReadonly,
-    ],
+    networkFeatures: [NetworkFeature.SocialFeed],
   },
   [UppTabKeys.videos]: {
     name: "Videos",
-    networkFeatures: [
-      NetworkFeature.SocialFeed,
-      NetworkFeature.SocialFeedReadonly,
-    ],
+    networkFeatures: [NetworkFeature.SocialFeed],
   },
   [UppTabKeys.daos]: {
     name: "Organizations",

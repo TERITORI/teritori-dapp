@@ -119,14 +119,6 @@ export const useSocialReactions = ({
   };
 
   const handleReaction = async (emoji: string) => {
-    const network = getNetwork(post.networkId);
-    const isReadonlyFeed = network?.features.includes(
-      NetworkFeature.SocialFeedReadonly,
-    );
-    if (isReadonlyFeed) {
-      return;
-    }
-
     const action =
       emoji === LIKE_EMOJI
         ? "Like"
@@ -151,6 +143,7 @@ export const useSocialReactions = ({
       });
       return;
     }
+    const network = getNetwork(post.networkId);
     if (network?.kind === NetworkKind.Gno) {
       reactOnGno(emoji, network?.endpoint || "");
     } else {

@@ -9,11 +9,7 @@ import { useAppMode } from "../../../hooks/useAppMode";
 import { useCoingeckoPrices } from "../../../hooks/useCoingeckoPrices";
 import { useSelectedNetworkInfo } from "../../../hooks/useSelectedNetwork";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
-import {
-  NetworkFeature,
-  NetworkKind,
-  parseNetworkObjectId,
-} from "../../../networks";
+import { NetworkFeature, NetworkKind } from "../../../networks";
 import { CoingeckoCoin, getCoingeckoPrice } from "../../../utils/coingecko";
 import { prettyPrice } from "../../../utils/coins";
 import {
@@ -75,14 +71,6 @@ export const TipButton: React.FC<{
   const [appMode] = useAppMode();
 
   const onPress = async () => {
-    const [network] = parseNetworkObjectId(postId);
-    const isReadonlyFeed = network?.features.includes(
-      NetworkFeature.SocialFeedReadonly,
-    );
-    if (isReadonlyFeed) {
-      return;
-    }
-
     if (!selectedWallet?.address || !selectedWallet.connected) {
       showConnectWalletModal({
         forceNetworkFeature: NetworkFeature.SocialFeed,

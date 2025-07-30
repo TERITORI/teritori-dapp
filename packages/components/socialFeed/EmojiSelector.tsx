@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { Menu, MenuOptions, MenuTrigger } from "react-native-popup-menu";
@@ -11,14 +11,12 @@ import { layout } from "../../utils/style/layout";
 import EmojiModal from "../EmojiModal";
 import { IconBox } from "../IconBox";
 
-import { useSelectedNetworkInfo } from "@/hooks/useSelectedNetwork";
-import { NetworkFeature } from "@/networks";
-
 type EmojiSelectorProps = {
   onEmojiSelected: (emoji: string) => void;
   isLoading?: boolean;
   buttonStyle?: StyleProp<ViewStyle>;
   iconStyle?: StyleProp<ViewStyle>;
+  disabled?: boolean;
 };
 
 const WIDTH = 308;
@@ -29,25 +27,14 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
   isLoading,
   buttonStyle,
   iconStyle,
+  disabled,
 }) => {
-  const selectedNetwork = useSelectedNetworkInfo();
   const [appMode] = useAppMode();
+
   const [isEmojiModalVisible, setIsEmojiModalVisible] = useState(false);
 
-  const toggleEmojiModal = useCallback(
-    () => !isLoading && setIsEmojiModalVisible(!isEmojiModalVisible),
-    [isLoading, isEmojiModalVisible],
-  );
-
-  const onPress = useCallback(() => {
-    const isReadonlyFeed = selectedNetwork?.features.includes(
-      NetworkFeature.SocialFeedReadonly,
-    );
-    if (isReadonlyFeed) {
-      return;
-    }
-    toggleEmojiModal();
-  }, [selectedNetwork?.features, toggleEmojiModal]);
+  const toggleEmojiModal = () =>
+    !isLoading && setIsEmojiModalVisible(!isEmojiModalVisible);
 
   return (
     <Menu
@@ -55,14 +42,15 @@ export const EmojiSelector: React.FC<EmojiSelectorProps> = ({
       onBackdropPress={toggleEmojiModal}
       style={buttonStyle}
     >
-      <MenuTrigger>
+      <MenuTrigger onPress={() => !disabled && toggleEmojiModal()}>
         {isLoading ? (
           <ActivityIndicator animating color={secondaryColor} size={32} />
         ) : (
           <IconBox
             icon={appMode === "mini" ? emojiSolidSVG : emojiSVG}
             iconProps={{ height: 17, width: 17 }}
-            onPress={onPress}
+            onPress={toggleEmojiModal}
+            disabled={disabled}
             style={iconStyle}
           />
         )}

@@ -16,7 +16,6 @@ export const gnoZenaoStagingNetwork: GnoNetworkInfo = {
     NetworkFeature.Organizations,
     NetworkFeature.UPP,
     NetworkFeature.NameService,
-    NetworkFeature.SocialFeedReadonly,
   ],
   currencies: gnoCurrencies,
   stakeCurrency: "ugnot",
