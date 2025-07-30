@@ -23,7 +23,6 @@ import {
 } from "@/networks";
 import { prettyPrice } from "@/utils/coins";
 import { defaultSocialFeedFee } from "@/utils/fee";
-import { TERITORI_FEED_ID } from "@/utils/feed/constants";
 import { feedPostingStep, FeedPostingStepId } from "@/utils/feed/posting";
 import { adenaDoContract, AdenaDoContractMessageType } from "@/utils/gno";
 import {
@@ -100,7 +99,7 @@ export const useFeedPosting = (
           const msg: GnoCreatePostMessage = {
             type: "gno.land/r/teritori/social_feeds.CreatePost",
             payload: {
-              feedId: TERITORI_FEED_ID,
+              feedId: network.globalFeedId || "",
               parentId: "0",
               category: category.toString(),
               metadata,
@@ -166,7 +165,7 @@ export const useFeedPosting = (
             pkg_path: network.socialFeedsPkgPath,
             func: "CreatePost",
             args: [
-              TERITORI_FEED_ID,
+              network.globalFeedId || "",
               parentPostLocalIdentifier || "0",
               msg.category.toString(),
               msg.metadata,

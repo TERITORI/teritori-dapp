@@ -27,11 +27,11 @@ export const uppTabItems: { [key: string]: TabDefinition } = {
   },
   [UppTabKeys.nfts]: {
     name: "NFTs",
-    networkFeatures: [NetworkFeature.NFTMarketplace],
+    networkFeatures: [NetworkFeature.SocialFeed],
   },
   [UppTabKeys.quests]: {
     name: "Quests",
-    networkKinds: [NetworkKind.Cosmos],
+    networkFeatures: [NetworkFeature.SocialFeed],
   },
   [UppTabKeys.mentionsPosts]: {
     name: "Mentions Posts",

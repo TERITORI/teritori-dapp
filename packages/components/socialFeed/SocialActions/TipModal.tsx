@@ -21,7 +21,6 @@ import {
 } from "../../../networks";
 import { prettyPrice } from "../../../utils/coins";
 import { defaultSocialFeedFee } from "../../../utils/fee";
-import { TERITORI_FEED_ID } from "../../../utils/feed/constants";
 import {
   adenaDoContract,
   AdenaDoContractMessageType,
@@ -121,7 +120,10 @@ export const TipModal: React.FC<{
         send: `${amount}ugnot`,
         pkg_path: selectedNetworkInfo.socialFeedsPkgPath,
         func: "TipPost",
-        args: [TERITORI_FEED_ID, parseNetworkObjectId(postId)[1]],
+        args: [
+          selectedNetworkInfo.globalFeedId || "",
+          parseNetworkObjectId(postId)[1],
+        ],
       };
 
       try {

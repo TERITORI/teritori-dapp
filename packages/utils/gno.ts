@@ -120,7 +120,6 @@ export const extractGnoNumber = (str: string) => {
   return parseFloat(str.slice("(".length).split(" ")[0]);
 };
 export const extractGnoAddress = (str: string) => {
-  console.log("extracting address", str);
   const jsonStr = str.slice("(".length, -" std.Address)".length);
   if (!jsonStr) {
     return "";
@@ -130,7 +129,6 @@ export const extractGnoAddress = (str: string) => {
   return JSON.parse(jsonStr) as string;
 };
 export const extractGnoString = (str: string) => {
-  console.log("extracting string from", str);
   const jsonStr = str.slice("(".length, -" string)".length);
   if (!jsonStr) {
     return "";
@@ -151,4 +149,22 @@ export const derivePkgAddr = (pkgPath: string): string => {
     .digest()
     .subarray(0, 20);
   return bech32.encode("g", bech32.toWords(h));
+};
+
+const extractGnoStringResponse = (res: string): string => {
+  const jsonString = res.substring("(".length, res.length - " string)".length);
+  // eslint-disable-next-line no-restricted-syntax
+  const jsonStringContent = JSON.parse(jsonString);
+  if (typeof jsonStringContent != "string") {
+    throw new Error(
+      `unexpected response type ${typeof jsonStringContent} in ${jsonString}`,
+    );
+  }
+  return jsonStringContent;
+};
+
+export const extractGnoJSONResponse = (res: string): unknown => {
+  const str = extractGnoStringResponse(res);
+  // eslint-disable-next-line no-restricted-syntax
+  return JSON.parse(str) as unknown;
 };

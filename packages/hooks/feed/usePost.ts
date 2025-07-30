@@ -1,39 +1,47 @@
+import { fromJson } from "@bufbuild/protobuf";
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 
+import useSelectedWallet from "../useSelectedWallet";
+
 import { Post } from "@/api/feed/v1/feed";
+import { PostViewJson, PostViewSchema } from "@/api/feeds/v1/feeds_pb";
 import { nonSigningSocialFeedClient } from "@/client-creators/socialFeedClient";
 import { NetworkKind, getUserId, parseNetworkObjectId } from "@/networks";
-import { decodeGnoPost } from "@/utils/feed/gno";
-import { extractGnoJSONString } from "@/utils/gno";
+import { postViewToPost } from "@/utils/feed/gno";
+import { extractGnoJSONResponse } from "@/utils/gno";
 import { safeParseJSON, zodTryParseJSON } from "@/utils/sanitize";
 import { zodSocialFeedCommonMetadata } from "@/utils/types/feed";
 
 export const usePost = (id: string | undefined) => {
+  const wallet = useSelectedWallet();
+
   const { data, ...other } = useQuery<Post | null>(
     ["social-post", id],
     async () => {
       if (!id) {
         return null;
       }
-
       const [network, localIdentifier] = parseNetworkObjectId(id);
-
       if (!network) {
         return null;
       }
-
-      if (network?.kind === NetworkKind.Gno) {
+      // Gno network
+      else if (network?.kind === NetworkKind.Gno) {
+        const callerAddress = wallet?.address || "";
         const provider = new GnoJSONRPCProvider(network.endpoint);
+
         const output = await provider.evaluateExpression(
           network.socialFeedsPkgPath || "",
-          `GetPost(1, ${localIdentifier})`,
+          `postViewToJSON(GetPostView(${localIdentifier}, "${callerAddress}"))`,
         );
-
-        const gnoPost = extractGnoJSONString(output);
-        return decodeGnoPost(network.id, gnoPost);
-      } else {
+        const raw = extractGnoJSONResponse(output);
+        const postView = fromJson(PostViewSchema, raw as PostViewJson);
+        return postViewToPost(postView, network.id);
+      }
+      // Other networks (e.g., Cosmos)
+      else {
         const client = await nonSigningSocialFeedClient({
           networkId: network.id,
         });

@@ -3,14 +3,14 @@ import { GnoNetworkInfo, NetworkFeature, NetworkKind } from "../types";
 
 import { derivePkgAddr } from "@/utils/gno";
 
-const hyperacktiveEventId = "15";
-const pkgPath = `gno.land/r/zenao/events/e${hyperacktiveEventId}`;
+const testEventId = "40";
+const pkgPath = `gno.land/r/zenao/events/e${testEventId}`;
 const globalFeedId = `${derivePkgAddr(pkgPath)}:main`;
 
-export const gnoZenaoNetwork: GnoNetworkInfo = {
-  id: "gno-zenao",
+export const gnoZenaoStagingNetwork: GnoNetworkInfo = {
+  id: "gno-zenao-staging",
   kind: NetworkKind.Gno,
-  displayName: "Gno Zenao",
+  displayName: "Gno Zenao Staging",
   icon: "zenao.svg",
   features: [
     NetworkFeature.Organizations,
@@ -19,12 +19,12 @@ export const gnoZenaoNetwork: GnoNetworkInfo = {
   ],
   currencies: gnoCurrencies,
   stakeCurrency: "ugnot",
-  idPrefix: "zenao",
-  chainId: "zenao-dev",
-  endpoint: "https://gnorpc.prod.zenao.io/",
+  idPrefix: "zenaostaging",
+  chainId: "zenao-dev-staging",
+  endpoint: "https://gnorpc.staging.zenao.io/",
   testnet: true,
   backendEndpoint: "https://dapp-backend.testnet.teritori.com",
-  gnowebURL: "https://gnoweb.prod.zenao.io/",
+  gnowebURL: "https://gnoweb.staging.zenao.io/",
   vaultContractAddress: "",
   nameServiceContractAddress: "gno.land/r/demo/users",
   nameServiceDefaultImage:
@@ -46,6 +46,6 @@ const customGnoscanParams = (network: GnoNetworkInfo) => {
   return `type=custom&chainId=${network.chainId}&rpcUrl=${network.endpoint}&indexerUrl=${network.txIndexerURL}`;
 };
 
-gnoZenaoNetwork.txExplorer = `https://gnoscan.io/transactions/details?txhash=$hash&${customGnoscanParams(gnoZenaoNetwork)}`;
-gnoZenaoNetwork.accountExplorer = `https://gnoscan.io/accounts/$address?${customGnoscanParams(gnoZenaoNetwork)}`;
-gnoZenaoNetwork.contractExplorer = `https://gnoscan.io/realms/details?path=$address&${customGnoscanParams(gnoZenaoNetwork)}`;
+gnoZenaoStagingNetwork.txExplorer = `https://gnoscan.io/transactions/details?txhash=$hash&${customGnoscanParams(gnoZenaoStagingNetwork)}`;
+gnoZenaoStagingNetwork.accountExplorer = `https://gnoscan.io/accounts/$address?${customGnoscanParams(gnoZenaoStagingNetwork)}`;
+gnoZenaoStagingNetwork.contractExplorer = `https://gnoscan.io/realms/details?path=$address&${customGnoscanParams(gnoZenaoStagingNetwork)}`;

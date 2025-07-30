@@ -10,16 +10,11 @@ import {
   PostsWithLocationRequest,
   PostsRequest,
 } from "@/api/feed/v1/feed";
-import {
-  GnoNetworkInfo,
-  NetworkInfo,
-  NetworkKind,
-  parseUserId,
-} from "@/networks";
+import { GnoNetworkInfo, NetworkInfo, NetworkKind } from "@/networks";
 import { mustGetFeedClient } from "@/utils/backend";
-import { TERITORI_FEED_ID } from "@/utils/feed/constants";
-import { decodeGnoPost } from "@/utils/feed/gno";
-import { extractGnoJSONString } from "@/utils/gno";
+import { postViewsFromJson, postViewsToPostsList } from "@/utils/feed/gno";
+import { extractGnoJSONResponse } from "@/utils/gno";
+import { PostsList } from "@/utils/types/feed";
 import { DeepPartial } from "@/utils/typescript";
 
 interface PostsWithAggregations {
@@ -27,11 +22,6 @@ interface PostsWithAggregations {
   totalCount: number;
   aggregations: AggregatedPost[];
 }
-
-export type PostsList = {
-  list: Post[];
-  totalCount: number | undefined;
-};
 
 export const combineFetchFeedPages = (pages: PostsList[]) =>
   pages.reduce((acc: Post[], page) => [...acc, ...(page?.list || [])], []);
@@ -48,7 +38,7 @@ const fetchTeritoriFeed = async (
   const feedClient = mustGetFeedClient(selectedNetwork.id);
   const response = await feedClient.Posts(postsRequest);
   const list = response.posts.sort((a, b) => b.createdAt - a.createdAt);
-  return { list, totalCount: undefined };
+  return { list, totalCount: list.length };
 };
 
 const fetchGnoFeed = async (
@@ -57,37 +47,24 @@ const fetchGnoFeed = async (
   req: DeepPartial<PostsRequest>,
   pageParam: number,
 ) => {
-  if (!selectedNetwork.socialFeedsPkgPath) return { list: [], totalCount: 0 };
+  if (!selectedNetwork.socialFeedsPkgPath || req.filter?.categories?.length) {
+    return { list: [], totalCount: 0 };
+  }
   callerAddress = callerAddress || "";
-  const userId = req.filter?.user || "";
 
-  const [, userAddress] = parseUserId(userId);
-
-  const offset = pageParam || 0;
-  const limit = req.limit;
-  const categories = req.filter?.categories || []; // Default = all
-  const categoriesStr = `[]uint64{${categories.join(",")}}`;
-  const parentId = 0;
+  const limit = req.limit || 0;
+  const offset = pageParam * limit;
+  const tags = "";
 
   const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
+
   const output = await provider.evaluateExpression(
-    selectedNetwork.socialFeedsPkgPath,
-    `GetPostsWithCaller(${TERITORI_FEED_ID}, ${parentId}, "${callerAddress}", "${userAddress}", ${categoriesStr}, ${offset}, ${limit})`,
+    selectedNetwork.socialFeedsPkgPath || "",
+    `postViewsToJSON(GetFeedPosts("${selectedNetwork.globalFeedId}", ${offset}, ${limit}, "${tags}", "${callerAddress}"))`,
   );
-
-  const posts: Post[] = [];
-  const gnoPosts = extractGnoJSONString(output);
-
-  for (const gnoPost of gnoPosts) {
-    const post = decodeGnoPost(selectedNetwork.id, gnoPost);
-    posts.push(post);
-  }
-
-  const result = {
-    list: posts.sort((p1, p2) => p2.createdAt - p1.createdAt),
-    totalCount: posts.length,
-  } as PostsList;
-  return result;
+  const raw = extractGnoJSONResponse(output);
+  const postViews = postViewsFromJson(raw);
+  return postViewsToPostsList(postViews, selectedNetwork.id);
 };
 
 export const useFetchFeed = (req: DeepPartial<PostsRequest>) => {
@@ -98,9 +75,12 @@ export const useFetchFeed = (req: DeepPartial<PostsRequest>) => {
     useInfiniteQuery(
       ["posts", selectedNetwork?.id, wallet?.address, { ...req }],
       async ({ pageParam = req.offset }) => {
+        // Cosmos networks
         if (selectedNetwork?.kind === NetworkKind.Cosmos) {
           return fetchTeritoriFeed(selectedNetwork, req, pageParam);
-        } else if (selectedNetwork?.kind === NetworkKind.Gno) {
+        }
+        // Gno network
+        else if (selectedNetwork?.kind === NetworkKind.Gno) {
           return fetchGnoFeed(selectedNetwork, wallet?.address, req, pageParam);
         }
 
@@ -108,11 +88,13 @@ export const useFetchFeed = (req: DeepPartial<PostsRequest>) => {
       },
       {
         getNextPageParam: (lastPage, pages) => {
-          // NOTE: On gno feeds, due to list length depends on each user (due to flag, hide)
-          // so if last page contains posts = limit => try to load more content
           if (selectedNetwork?.kind === NetworkKind.Gno) {
-            if (lastPage?.totalCount && lastPage.totalCount === req.limit) {
-              return pages.length * req.limit;
+            if (
+              lastPage.totalCount &&
+              req.limit &&
+              lastPage.totalCount >= req.limit
+            ) {
+              return pages.length;
             }
           } else {
             const postsLength = combineFetchFeedPages(pages).length;

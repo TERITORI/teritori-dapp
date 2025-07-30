@@ -2,30 +2,22 @@ import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
+import useSelectedWallet from "../useSelectedWallet";
+
+import { Post } from "@/api/feed/v1/feed";
 import { nonSigningSocialFeedClient } from "@/client-creators/socialFeedClient";
-import {
-  PostResult,
-  Reaction,
-} from "@/contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import { PostResult } from "@/contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
 import { GnoNetworkInfo, NetworkKind, parseNetworkObjectId } from "@/networks";
-import { TERITORI_FEED_ID } from "@/utils/feed/constants";
-import { decodeGnoPost } from "@/utils/feed/gno";
-import { extractGnoJSONString } from "@/utils/gno";
+import { postViewToPost, postViewsFromJson } from "@/utils/feed/gno";
+import { extractGnoJSONResponse } from "@/utils/gno";
 import { postResultToPost } from "@/utils/social-feed";
 
 export type FetchCommentResponse = {
-  list: PostResult[];
+  list: Post[];
 } | null;
 
-type PostResultWithCreatedAt = PostResult & {
-  created_at: number;
-};
-
 const combineFetchCommentPages = (pages: FetchCommentResponse[]) =>
-  pages.reduce(
-    (acc: PostResult[], page) => [...acc, ...(page?.list || [])],
-    [],
-  );
+  pages.reduce((acc: Post[], page) => [...acc, ...(page?.list || [])], []);
 
 type ConfigType = {
   parentId?: string;
@@ -42,74 +34,67 @@ const fetchTeritoriComments = async (
     networkId,
   });
 
-  const subComment = await client.querySubPosts({
+  const comments = await client.querySubPosts({
     count: 5,
     from: pageParam || 0,
     sort: "desc",
     identifier: parentId || "",
   });
 
-  return { list: subComment };
+  return {
+    list: comments.map((subPostRes: PostResult) =>
+      postResultToPost(networkId, subPostRes),
+    ),
+    totalCount: comments.length,
+  };
 };
 
+const gnoCommentsLimit = 10;
 const fetchGnoComments = async (
   selectedNetwork: GnoNetworkInfo,
   parentId: string,
+  callerAddress: string | undefined,
+  pageParam: number,
 ): Promise<FetchCommentResponse> => {
-  const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
+  if (!selectedNetwork.socialFeedsPkgPath) return { list: [] };
+  callerAddress = callerAddress || "";
 
-  const offset = 0;
-  const limit = 100; // For now hardcode to load max 100 comments
+  const limit = gnoCommentsLimit;
+  const offset = pageParam * limit;
+  const tags = "";
+  const provider = new GnoJSONRPCProvider(selectedNetwork.endpoint);
 
   const output = await provider.evaluateExpression(
     selectedNetwork.socialFeedsPkgPath || "",
-    `GetComments(${TERITORI_FEED_ID}, ${parentId}, ${offset}, ${limit})`,
+    `postViewsToJSON(GetChildrenPosts("${parentId}", ${offset}, ${limit}, "${tags}", "${callerAddress}"))`,
   );
-
-  const posts: PostResultWithCreatedAt[] = [];
-
-  const gnoPosts = extractGnoJSONString(output);
-  for (const gnoPost of gnoPosts) {
-    const post = decodeGnoPost(selectedNetwork.id, gnoPost);
-    const [, creatorAddress] = parseNetworkObjectId(post.authorId);
-
-    const chainReactions = post.reactions;
-    const postReactions: Reaction[] = chainReactions.map((reaction) => ({
-      icon: reaction.icon,
-      count: reaction.count,
-      ownState: false, // FIXME: find a way to get the user's reaction state from on-chain post
-    }));
-
-    posts.push({
-      identifier: post.localIdentifier,
-      parent_post_identifier: post.parentPostIdentifier,
-      category: post.category,
-      metadata: post.metadata,
-      reactions: postReactions,
-      user_reactions: [],
-      post_by: creatorAddress,
-      deleted: post.isDeleted,
-      sub_post_length: post.subPostLength,
-      tip_amount: "" + post.tipAmount,
-      created_at: post.createdAt,
-    });
-  }
-
+  const raw = extractGnoJSONResponse(output);
+  const postViews = postViewsFromJson(raw);
   return {
-    list: posts.sort((p1, p2) => p2.created_at - p1.created_at) as PostResult[],
+    list: postViews.map((postView) =>
+      postViewToPost(postView, selectedNetwork.id),
+    ),
   };
 };
 
 const useFetchCommentsRaw = ({ parentId, totalCount, enabled }: ConfigType) => {
-  // request
+  const selectedWallet = useSelectedWallet();
+  const [parentNetwork, localIdentifier] = parseNetworkObjectId(parentId);
+
   const data = useInfiniteQuery<FetchCommentResponse>(
     ["FetchComment", parentId],
-    async ({ pageParam }) => {
-      const [parentNetwork, localIdentifier] = parseNetworkObjectId(parentId);
+    async ({ pageParam = 0 }) => {
       let comments: FetchCommentResponse;
       if (parentNetwork?.kind === NetworkKind.Gno) {
-        comments = await fetchGnoComments(parentNetwork, localIdentifier);
-      } else {
+        comments = await fetchGnoComments(
+          parentNetwork,
+          localIdentifier,
+          selectedWallet?.address,
+          pageParam,
+        );
+      }
+      // Other networks (e.g., Cosmos)
+      else {
         comments = await fetchTeritoriComments(
           parentNetwork?.id || "",
           pageParam,
@@ -120,12 +105,18 @@ const useFetchCommentsRaw = ({ parentId, totalCount, enabled }: ConfigType) => {
     },
     {
       getNextPageParam: (_, pages) => {
-        const postsLength = combineFetchCommentPages(pages).length;
+        if (parentNetwork?.kind === NetworkKind.Gno) {
+          if ((totalCount || 0) >= gnoCommentsLimit) {
+            return pages.length;
+          }
+        } else {
+          const postsLength = combineFetchCommentPages(pages).length;
 
-        if ((totalCount || 0) > postsLength) {
-          return postsLength;
+          if ((totalCount || 0) > postsLength) {
+            return postsLength;
+          }
+          return null;
         }
-        return null;
       },
       staleTime: Infinity,
       refetchOnWindowFocus: false,
@@ -145,8 +136,7 @@ export const useFetchComments = (config: ConfigType) => {
     if (!rawData || !networkId) {
       return [];
     }
-    const combined = combineFetchCommentPages(rawData.pages);
-    return combined.map((rawPost) => postResultToPost(networkId, rawPost));
+    return combineFetchCommentPages(rawData.pages);
   }, [rawData, config.parentId]);
 
   return { data, ...other };

@@ -23,6 +23,7 @@
   "engineStrict": true,
   "dependencies": {
     "@axelar-network/axelarjs-sdk": "^0.13.6",
+    "@bufbuild/protobuf": "^2.6.0",
     "@chain-registry/types": "^0.17.1",
     "@chain-registry/utils": "1.18.0",
     "@cosmjs/amino": "0.32.2",
