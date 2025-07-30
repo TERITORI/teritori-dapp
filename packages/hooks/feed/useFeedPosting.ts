@@ -99,7 +99,7 @@ export const useFeedPosting = (
           const msg: GnoCreatePostMessage = {
             type: "gno.land/r/teritori/social_feeds.CreatePost",
             payload: {
-              feedId: network.socialFeedsFeedId || "",
+              feedId: network.globalFeedId || "",
               parentId: "0",
               category: category.toString(),
               metadata,
@@ -165,7 +165,7 @@ export const useFeedPosting = (
             pkg_path: network.socialFeedsPkgPath,
             func: "CreatePost",
             args: [
-              network.socialFeedsFeedId || "",
+              network.globalFeedId || "",
               parentPostLocalIdentifier || "0",
               msg.category.toString(),
               msg.metadata,

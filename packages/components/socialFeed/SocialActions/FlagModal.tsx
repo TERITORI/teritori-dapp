@@ -49,7 +49,7 @@ export const FlagModal: React.FC<FlagModalProps> = ({
       send: "",
       pkg_path: gnoNetwork.socialFeedsPkgPath,
       func: flagType === "hideForMe" ? "HidePostForMe" : "FlagPost",
-      args: [gnoNetwork.socialFeedsFeedId || "", postId],
+      args: [gnoNetwork.globalFeedId || "", postId],
     };
 
     try {

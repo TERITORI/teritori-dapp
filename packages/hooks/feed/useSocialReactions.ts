@@ -79,7 +79,7 @@ export const useSocialReactions = ({
       pkg_path: gnoNetwork.socialFeedsPkgPath,
       func: "ReactPost",
       args: [
-        gnoNetwork.socialFeedsFeedId || "",
+        gnoNetwork.globalFeedId || "",
         post.id.split("-")[1],
         emoji,
         "true",

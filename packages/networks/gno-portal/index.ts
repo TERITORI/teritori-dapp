@@ -30,7 +30,7 @@ export const gnoPortalNetwork: GnoNetworkInfo = {
   nameServiceDefaultImage:
     "ipfs://bafkreigqm3i4urywxohvpkbz5sgxosiogwn433ufmzz7eqldjxoi6xmwma",
   daoRegistryPkgPath: "gno.land/r/teritori/dao_registry",
-  socialFeedsFeedId: "1",
+  globalFeedId: "1",
   socialFeedsPkgPath: "gno.land/r/teritori/social_feeds",
   socialFeedsDAOPkgPath: "gno.land/r/teritori/social_feeds_dao",
   // modboardsPkgPath: "gno.land/r/teritori/modboards_v4",

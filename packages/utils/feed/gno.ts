@@ -106,6 +106,10 @@ const cleanMdContent = (content: string): string => {
 const metadataFromPostView = (postView: PostView): string => {
   const post = postView.post!;
   let metadata = {};
+  console.log(
+    "post.post.value.contentpost.post.value.content",
+    post.post.value.content,
+  );
   switch (post.post.case) {
     case "article":
       metadata = generateArticleMarkdownMetadata({

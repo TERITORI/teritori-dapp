@@ -83,7 +83,6 @@
     "@types/markdown-it-footnote": "^3.0.4",
     "@types/papaparse": "^5.3.14",
     "@types/pluralize": "^0.0.33",
-    "@yornaath/batshit": "^0.10.1",
     "assert": "^2.1.0",
     "axios": "^1.6.2",
     "bech32": "^2.0.0",

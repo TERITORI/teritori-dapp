@@ -8025,22 +8025,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yornaath/batshit-devtools@npm:^1.7.1":
-  version: 1.7.1
-  resolution: "@yornaath/batshit-devtools@npm:1.7.1"
-  checksum: 8258a0572c2d4064c44b217152e5c0d01b1d43835dc11cb200b0d8fe80019f88004a3931a4ce5b8b81a1836fedf17562d8029f7f1ca98d75a2bfd2936c794cd1
-  languageName: node
-  linkType: hard
-
-"@yornaath/batshit@npm:^0.10.1":
-  version: 0.10.1
-  resolution: "@yornaath/batshit@npm:0.10.1"
-  dependencies:
-    "@yornaath/batshit-devtools": ^1.7.1
-  checksum: e8e0ae7a237eaa0591354a7f3c3017cb7924d38540b43bebca6807ba5ac888ec7eb9f23002cfe84d992957735d57ef1983f0378de539afd3bf3940cef6146f29
-  languageName: node
-  linkType: hard
-
 "JSONStream@npm:^1.3.5":
   version: 1.3.5
   resolution: "JSONStream@npm:1.3.5"
@@ -21690,7 +21674,6 @@ __metadata:
     "@types/react-native-countdown-component": ^2.7.0
     "@types/sha.js": ^2.4.4
     "@types/uuid": ^9.0.0
-    "@yornaath/batshit": ^0.10.1
     assert: ^2.1.0
     axios: ^1.6.2
     babel-loader: ^8.2.5

@@ -4,10 +4,6 @@ import { StyleSheet, Image, ImageProps, View, PixelRatio } from "react-native";
 
 import { neutral33 } from "../utils/style/colors";
 
-import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
-import { gnoZenaoNetwork } from "@/networks/gno-zenao";
-import { gnoZenaoStagingNetwork } from "@/networks/gno-zenao-staging";
-
 /**
  * This only supports uri images since the proxy is only for external images
  * The width and height props are the source image dimensions, they should not be dynamic, otherwise it will overwelm the resizing proxy
@@ -28,7 +24,6 @@ export const OptimizedImage: React.FC<
     style,
     ...passthrough
   }) => {
-    const selectedNetworkId = useSelectedNetworkId();
     const [isError, setIsError] = React.useState(false);
     const [isFallbackError, setIsFallbackError] = React.useState(false);
     const shouldUseFallback = !baseSourceURI || isError;
@@ -63,12 +58,7 @@ export const OptimizedImage: React.FC<
             borderStyle: "solid",
             ...(flatStyle as any),
           }}
-          src={transformURI(
-            sourceURI,
-            sourceWidth,
-            sourceHeight,
-            selectedNetworkId,
-          )}
+          src={transformURI(sourceURI, sourceWidth, sourceHeight)}
         />
       );
     }
@@ -76,14 +66,7 @@ export const OptimizedImage: React.FC<
     // imported images are already a valid source object
     const source =
       (typeof sourceURI === "string"
-        ? {
-            uri: transformURI(
-              sourceURI,
-              sourceWidth,
-              sourceHeight,
-              selectedNetworkId,
-            ),
-          }
+        ? { uri: transformURI(sourceURI, sourceWidth, sourceHeight) }
         : sourceURI) || {};
 
     return (
@@ -107,7 +90,6 @@ const transformURI = (
   uri: string | undefined,
   width: number,
   height: number,
-  networkId: string,
 ) => {
   if (typeof uri !== "string" || !uri) {
     return "";
@@ -125,14 +107,8 @@ const transformURI = (
   } catch {}
 
   if (uri?.startsWith("ipfs://")) {
-    const ipfsGateway =
-      networkId === gnoZenaoNetwork.id ||
-      networkId === gnoZenaoStagingNetwork.id
-        ? "https://pinata.zenao.io"
-        : "https://teritori.mypinata.cloud";
-
     // XXX: allow passing a dev token
-    return `${ipfsGateway}/ipfs/${uri.substring("ipfs://".length)}?img-width=${Math.round(width)}&img-height=${Math.round(height)}&img-fit=contain`;
+    return `https://teritori.mypinata.cloud/ipfs/${uri.substring("ipfs://".length)}?img-width=${Math.round(width)}&img-height=${Math.round(height)}&img-fit=contain`;
   }
 
   return uri;

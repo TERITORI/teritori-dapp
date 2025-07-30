@@ -123,7 +123,7 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   gnowebURL: string;
   daoRegistryPkgPath?: string;
   modboardsPkgPath?: string;
-  socialFeedsFeedId?: string;
+  globalFeedId?: string;
   socialFeedsPkgPath?: string;
   socialFeedsDAOPkgPath?: string;
   votingGroupPkgPath?: string;

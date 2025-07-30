@@ -60,7 +60,7 @@ const fetchGnoFeed = async (
 
   const output = await provider.evaluateExpression(
     selectedNetwork.socialFeedsPkgPath || "",
-    `postViewsToJSON(GetFeedPosts("${selectedNetwork.socialFeedsFeedId}", ${offset}, ${limit}, "${tags}", "${callerAddress}"))`,
+    `postViewsToJSON(GetFeedPosts("${selectedNetwork.globalFeedId}", ${offset}, ${limit}, "${tags}", "${callerAddress}"))`,
   );
   const raw = extractGnoJSONResponse(output);
   const postViews = postViewsFromJson(raw);

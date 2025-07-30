@@ -1,5 +1,4 @@
 const { getDefaultConfig } = require("expo/metro-config");
-const path = require("path");
 module.exports = (() => {
   const config = getDefaultConfig(__dirname);
 
@@ -16,10 +15,6 @@ module.exports = (() => {
     extraNodeModules: {
       crypto: require.resolve("crypto-browserify"),
       stream: require.resolve("stream-browserify"),
-      "@bufbuild/protobuf/codegenv2": path.resolve(
-        __dirname,
-        "node_modules/@bufbuild/protobuf/dist/cjs/codegenv2/index.js",
-      ),
     },
   };
 

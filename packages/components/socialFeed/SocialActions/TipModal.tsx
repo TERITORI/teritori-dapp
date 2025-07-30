@@ -121,7 +121,7 @@ export const TipModal: React.FC<{
         pkg_path: selectedNetworkInfo.socialFeedsPkgPath,
         func: "TipPost",
         args: [
-          selectedNetworkInfo.socialFeedsFeedId || "",
+          selectedNetworkInfo.globalFeedId || "",
           parseNetworkObjectId(postId)[1],
         ],
       };
