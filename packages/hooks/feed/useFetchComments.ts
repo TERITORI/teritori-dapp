@@ -14,7 +14,6 @@ import { postResultToPost } from "@/utils/social-feed";
 
 export type FetchCommentResponse = {
   list: Post[];
-  totalCount: number | undefined;
 } | null;
 
 const combineFetchCommentPages = (pages: FetchCommentResponse[]) =>
@@ -57,7 +56,7 @@ const fetchGnoComments = async (
   callerAddress: string | undefined,
   pageParam: number,
 ): Promise<FetchCommentResponse> => {
-  if (!selectedNetwork.socialFeedsPkgPath) return { list: [], totalCount: 0 };
+  if (!selectedNetwork.socialFeedsPkgPath) return { list: [] };
   callerAddress = callerAddress || "";
 
   const limit = gnoCommentsLimit;
@@ -75,7 +74,6 @@ const fetchGnoComments = async (
     list: postViews.map((postView) =>
       postViewToPost(postView, selectedNetwork.id),
     ),
-    totalCount: postViews.length,
   };
 };
 
@@ -106,9 +104,9 @@ const useFetchCommentsRaw = ({ parentId, totalCount, enabled }: ConfigType) => {
       return comments;
     },
     {
-      getNextPageParam: (lastPage, pages) => {
+      getNextPageParam: (_, pages) => {
         if (parentNetwork?.kind === NetworkKind.Gno) {
-          if (lastPage?.totalCount && lastPage.totalCount >= gnoCommentsLimit) {
+          if ((totalCount || 0) >= gnoCommentsLimit) {
             return pages.length;
           }
         } else {
