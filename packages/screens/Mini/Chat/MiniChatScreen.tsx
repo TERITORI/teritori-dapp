@@ -34,6 +34,7 @@ import {
   selectGetStartedChecklist,
   selectIsForceChatInfoChecked,
   setIsForceChatInfoChecked,
+  selectContactInfo,
 } from "@/store/slices/message";
 import { RootState } from "@/store/store";
 import { RouteName, useAppNavigation } from "@/utils/navigation";
@@ -174,6 +175,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
     selectFilteredConversationList(state, activeConversationType, ""),
   );
   const isWeshConnected = useSelector(selectIsWeshConnected);
+  const contactInfo = useSelector(selectContactInfo);
   const isChatActivated = useSelector(selectIsChatActivated);
   const getStartedCheckList = useSelector(selectGetStartedChecklist);
   const isForceChatInfoChecked = useSelector(selectIsForceChatInfoChecked);
@@ -189,7 +191,7 @@ export const MiniChatScreen: MiniTabScreenFC<"MiniChats"> = ({
     dispatch(setIsForceChatInfoChecked(true));
   };
 
-  if (!isWeshConnected || !isChatActivated) {
+  if (!isWeshConnected || !isChatActivated || !contactInfo.shareLink) {
     return (
       <ScreenContainer
         headerChildren={<></>}
