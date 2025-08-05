@@ -3,6 +3,7 @@ import { z } from "zod";
 import { LocalFileData, RemoteFileData, ZodRemoteFileData } from "./files";
 import { Post } from "../../api/feed/v1/feed";
 import { PostResult } from "../../contracts-clients/teritori-social-feed/TeritoriSocialFeed.types";
+import { zodTryParseJSON } from "../sanitize";
 
 export type OnPressReplyType = (replyTo: ReplyToType) => void;
 
@@ -154,4 +155,22 @@ export type ReplyToType = {
   username: string;
   yOffsetValue?: number;
   parentId?: string;
+};
+
+export const parseSocialFeedMetadata = (
+  category: PostCategory,
+  metadata: string,
+) => {
+  switch (category) {
+    case PostCategory.Video:
+      return zodTryParseJSON(ZodSocialFeedVideoMetadata, metadata);
+    case PostCategory.Article:
+      return zodTryParseJSON(ZodSocialFeedArticleMetadata, metadata);
+    case PostCategory.MusicAudio:
+      return zodTryParseJSON(ZodSocialFeedTrackMetadata, metadata);
+    case PostCategory.Normal:
+      return zodTryParseJSON(ZodSocialFeedPostMetadata, metadata);
+    default:
+      return zodTryParseJSON(zodSocialFeedCommonMetadata, metadata);
+  }
 };
