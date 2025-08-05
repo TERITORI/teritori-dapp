@@ -1,69 +1,131 @@
 import { capitalize } from "lodash";
-import { useWindowDimensions, View } from "react-native";
+import React from "react";
+import { Linking, useWindowDimensions, View } from "react-native";
 
-import checkSVG from "../../../../assets/icons/check-white.svg";
 import teritoriCircleSVG from "../../../../assets/icons/tori-circle.svg";
 import CustomAppBar from "../components/AppBar/CustomAppBar";
 import CircularImgOrIcon from "../components/CircularImgOrIcon";
 import MiniTable from "../components/Table/MiniTable";
 import MiniTableRow from "../components/Table/MiniTableRow";
 
+import questionSVG from "@/assets/icons/question-gray.svg";
 import { BrandText } from "@/components/BrandText";
 import { SVG } from "@/components/SVG";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { UserAvatarWithFrame } from "@/components/images/AvatarWithFrame";
 import { SpacerColumn } from "@/components/spacer";
-import Clipboard from "@/modules/Clipboard";
+import { getTxInfo } from "@/components/tx/getTxInfo";
+import { useNSUserInfo } from "@/hooks/useNSUserInfo";
+import { useGetAssets } from "@/hooks/wallet/useGetAssets";
+import { useSelectedNativeWallet } from "@/hooks/wallet/useSelectedNativeWallet";
+import { getNetwork } from "@/networks";
+import { prettyPrice } from "@/utils/coins";
 import { ScreenFC } from "@/utils/navigation";
-import { blueDefault, neutralA3 } from "@/utils/style/colors";
-import { fontSemibold15 } from "@/utils/style/fonts";
+import { blueDefault, neutral77 } from "@/utils/style/colors";
+import { fontMedium15 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import { tinyAddress } from "@/utils/text";
 
-const transactionDetail = [
-  {
-    label: "date",
-    value: "Dec 1, 2023 00:00:01 AM",
+const resolveTxType = (
+  tx: {
+    type: string;
+    transactionId: string;
+    from: string;
+    to: string;
+    amount: {
+      denom: string;
+      amount: string;
+    };
   },
-  { label: "type", value: "Send" },
-  {
-    label: "status",
+  walletAddress: string | undefined,
+) => {
+  if (tx.type.toLowerCase().includes("send")) {
+    if (tx.to === walletAddress) {
+      return "Received";
+    } else {
+      return "Sent";
+    }
+  }
+  return capitalize(tx.type);
+};
+
+const formatTx = (
+  tx: {
+    type: string;
+    transactionId: string;
+    from: string;
+    to: string;
+    amount: {
+      denom: string;
+      amount: string;
+    };
+  },
+  walletAddress: string | undefined,
+) => {
+  const formattedTx = [];
+  if (tx.type.toLowerCase().includes("send")) {
+    if (tx.to === walletAddress) {
+      formattedTx.push({ label: "Type", value: "Received" });
+    } else {
+      formattedTx.push({ label: "Type", value: "Sent" });
+    }
+  }
+  if (tx.type.toLowerCase().includes("ibc")) {
+    formattedTx.push({ label: "type", value: "IBC" });
+  }
+  formattedTx.push({ label: "Sender", value: tinyAddress(tx.from, 18) });
+  formattedTx.push({ label: "To", value: tinyAddress(tx.to, 18) });
+  formattedTx.push({
+    label: "Amount",
+    value: `${prettyPrice("teritori", tx.amount.amount, tx.amount.denom)}`,
+  });
+  formattedTx.push({
+    label: "Status",
     value: "Success",
     icon: "link",
-    onPress: () => {},
-    valueColor: blueDefault,
-  },
-  {
-    label: "to",
-    value: "asdidjfdijf",
-    icon: "copy",
-    onPress: () =>
-      copyToClipboard(
-        JSON.stringify({
-          token: "asdidjfdijf",
-          type: "to",
-        }),
-      ),
-  },
-  {
-    label: "txId",
-    value: "nijijndfijdif",
-    icon: "copy",
-    onPress: () =>
-      copyToClipboard(
-        JSON.stringify({
-          token: "nijijndfijdif",
-          type: "txId",
-        }),
-      ),
-  },
-  { label: "fee", value: "0.000001 TORI" },
-];
+    onPress: async () => {
+      console.log(tx);
+      const url = "https://www.mintscan.io/teritori/tx/" + tx.transactionId;
+      const supported = await Linking.canOpenURL(url);
 
-const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
+      if (supported) {
+        await Linking.openURL(url);
+      }
+    },
+    valueColor: blueDefault,
+  });
+  return formattedTx;
+};
+
+export const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
   navigation,
   route,
 }) => {
-  const { type } = route.params;
+  const selectedWallet = useSelectedNativeWallet();
+
+  const { from, amount, to } = route.params;
   const { width: windowWidth } = useWindowDimensions();
+
+  const {
+    metadata: { image, tokenId },
+  } = useNSUserInfo(`tori-${to}`);
+
+  const assets = useGetAssets(
+    selectedWallet?.networkId,
+    selectedWallet?.address,
+  );
+  const transactionDetail = formatTx(route.params, selectedWallet?.address);
+
+  const selectedToken = assets.find((asset) => asset.denom === amount.denom);
+  const resolvedType = resolveTxType(route.params, selectedWallet?.address);
+
+  // let content;
+  // const { MessagePreview } = getTxInfo(
+  //   [message],
+  //   navigation,
+  //   getNetwork(networkId),
+  // );
+  // content = <MessagePreview />;
 
   return (
     <ScreenContainer
@@ -72,10 +134,7 @@ const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
           backEnabled
           left={
             <>
-              <BrandText>{capitalize(type)} </BrandText>
-              <BrandText style={[fontSemibold15, { color: neutralA3 }]}>
-                (to:naisdnfasdf)
-              </BrandText>
+              <BrandText>{capitalize(resolvedType)}</BrandText>
             </>
           }
           headerStyle={{ backgroundColor: "#000" }}
@@ -87,6 +146,7 @@ const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
       footerChildren={null}
       noScroll
     >
+      {/*{content}*/}
       <View
         style={{
           flex: 1,
@@ -95,11 +155,22 @@ const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
         }}
       >
         <SpacerColumn size={4} />
-        <CircularImgOrIcon
-          size={120}
-          icon={checkSVG}
-          backgroundColor={blueDefault}
-        />
+        {image ? (
+          <View style={{ alignItems: "center", justifyContent: "center" }}>
+            <UserAvatarWithFrame
+              userId={`tori-${resolvedType.toLowerCase().includes("received") ? from : to}`}
+              size="XXS"
+            />
+            <BrandText style={[fontMedium15, { color: neutral77 }]}>
+              {tokenId}
+            </BrandText>
+          </View>
+        ) : (
+          <CircularImgOrIcon
+            style={{ alignItems: "center", justifyContent: "center" }}
+            icon={selectedToken?.logo_URIs?.png || questionSVG}
+          />
+        )}
 
         <View style={{ width: "100%", paddingHorizontal: layout.spacing_x2 }}>
           <SpacerColumn size={3} />
@@ -107,7 +178,7 @@ const TransactionDetailScreen: ScreenFC<"MiniTransactionDetail"> = ({
             leftLabel={
               <SVG source={teritoriCircleSVG} width={28} height={28} />
             }
-            rightLabel="-2000 TORI"
+            rightLabel={`${resolvedType.toLowerCase().includes("received") ? "+" : "-"} ${prettyPrice("teritori", amount.amount, amount.denom)}`}
             style={{
               borderWidth: 2,
               borderColor: blueDefault,
@@ -128,10 +199,6 @@ export function capitalizeStr(str: string) {
   const firstLetter = str.slice(0, 1).toUpperCase();
   const lastLetter = str.slice(1);
   return firstLetter + lastLetter;
-}
-
-async function copyToClipboard(value: string) {
-  await Clipboard.setStringAsync(value);
 }
 
 export default TransactionDetailScreen;

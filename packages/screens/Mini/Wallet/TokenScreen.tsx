@@ -181,6 +181,7 @@ const LastTransactions = () => {
     networkId,
     selectedWallet?.address,
   );
+  console.log(transactions);
 
   return (
     <>
@@ -218,17 +219,24 @@ const LastTransactions = () => {
             }
 
             return (
-              <Fragment key={transaction.txHash}>
+              <Fragment key={transaction.txhash}>
                 {index !== 0 && <SpacerColumn size={2} />}
                 <TransactionItem
-                  key={transaction.txHash}
+                  key={transaction.txhash}
                   transaction={transaction}
-                  onPress={() =>
+                  onPress={() => {
+                    console.log(transaction);
                     navigation.navigate("MiniTransactionDetail", {
-                      transactionId: transaction.txHash,
+                      transactionId: transaction.txhash,
                       type: transaction.tx["@type"],
-                    })
-                  }
+                      from: transaction.tx.from_address,
+                      to: transaction.tx.to_address,
+                      amount: {
+                        denom: transaction.tx.amount[0].denom,
+                        amount: transaction.tx.amount[0].amount,
+                      },
+                    });
+                  }}
                   isLastItem={isLastItem}
                 />
               </Fragment>
