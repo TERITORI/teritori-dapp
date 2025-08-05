@@ -29,10 +29,12 @@ import { neutralA3, secondaryColor } from "@/utils/style/colors";
 import { fontMedium13, fontSemibold14 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 import { Conversation } from "@/utils/types/message";
+import { weshConfig } from "@/weshnet";
 import {
   getConversationAvatar,
   getConversationName,
 } from "@/weshnet/messageHelpers";
+import { stringFromBytes } from "@/weshnet/utils";
 
 export const ChatList = () => {
   const navigation = useAppNavigation();
@@ -40,7 +42,6 @@ export const ChatList = () => {
   const conversationList = useSelector((state: RootState) =>
     selectFilteredConversationList(state, activeConversationType, ""),
   );
-
   const [searchInput, setSearchInput] = useState("");
 
   const searchResults = useMemo(() => {
@@ -77,7 +78,20 @@ export const ChatList = () => {
         />
         <SpacerColumn size={3} />
         <FlatList
-          data={searchResults}
+          data={searchResults.filter((result) => {
+            if (
+              result?.type === "group" &&
+              result.members?.find(
+                (member) =>
+                  member?.id ===
+                    stringFromBytes(weshConfig?.config?.accountPk) &&
+                  !!member?.hasLeft,
+              ) // Hiding conversation from member who left the group
+            ) {
+              return false;
+            }
+            return true;
+          })}
           renderItem={({ item }) => {
             return (
               <>
