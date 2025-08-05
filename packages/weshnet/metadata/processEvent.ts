@@ -188,7 +188,6 @@ export const processMetadata = async (data: GroupMetadataEvent) => {
         parsedData.payload = AccountGroupJoined.decode(data.metadata.payload);
 
         const groupPk = stringFromBytes(parsedData.payload.group.publicKey);
-        console.log("group-join");
         const selectedGroup = conversationList.filter(
           (singleConv) => singleConv.id === groupPk,
         )[0];
