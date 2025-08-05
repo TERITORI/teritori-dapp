@@ -1,0 +1,27 @@
+query GetValidationRequests(
+  $StartBlock: Int!
+  $realmPath: String!
+) {
+transactions(
+    filter: { 
+        events: {type:"verification_requested", pkg_path: $realmPath},
+        from_block_height: $StartBlock 
+    }
+){
+        success
+        block_height
+        response {
+            events {
+                ... on GnoEvent {
+                    type
+                    pkg_path
+                    func
+                    attrs {
+                        key
+                        value
+                    }
+                }
+            }
+        }
+    }
+}
