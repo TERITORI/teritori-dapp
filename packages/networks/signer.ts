@@ -10,6 +10,10 @@ import {
   keplrChainInfoFromNetworkInfo,
   mustGetCosmosNetwork,
 } from "@/networks/index";
+// eslint-disable-next-line no-restricted-imports
+import { selectWalletById } from "@/store/slices/wallets";
+// eslint-disable-next-line no-restricted-imports
+import { store } from "@/store/store";
 import { convertKeplrSigner, getKeplr } from "@/utils/keplr";
 import { getNativeWallet } from "@/utils/wallet/getNativeWallet";
 
@@ -76,7 +80,18 @@ export const getKeplrSigningCosmWasmClient = async (
     throw new Error("gas price not found");
   }
   if (Platform.OS !== "web") {
-    const wallet = await getNativeWallet(network.addressPrefix, 1); // todo make multi wallet
+    const selectedWalletId = store.getState().wallets.selectedWalletId;
+    const selectedNativeWallet = selectWalletById(
+      store.getState(),
+      selectedWalletId,
+    );
+    if (!selectedNativeWallet) {
+      throw new Error("no selected native wallet");
+    }
+    const wallet = await getNativeWallet(
+      network.addressPrefix,
+      selectedNativeWallet.index,
+    );
 
     return SigningCosmWasmClient.connectWithSigner(
       network.rpcEndpoint,

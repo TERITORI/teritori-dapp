@@ -52,7 +52,6 @@ const walletsSlice = createSlice({
     removeWalletById: storeWalletsAdapter.removeOne,
     resetAllWallets: storeWalletsAdapter.removeAll,
     setSelectedNativeWalletIndex: (state, action: PayloadAction<number>) => {
-      // Add new reducer function
       state.selectedWalletId = action.payload;
     },
   },
