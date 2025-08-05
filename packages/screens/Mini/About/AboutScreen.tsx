@@ -1,6 +1,6 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useState } from "react";
-import { FlatList, SafeAreaView, View } from "react-native";
+import { Dimensions, FlatList, SafeAreaView, View } from "react-native";
 
 import externalLinkSVG from "../../../../assets/icons/external-grey.svg";
 import teritoriSVG from "../../../../assets/icons/teritori-white.svg";
@@ -59,7 +59,7 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
 
   const isMobile = useIsMobile();
   const seasonVideoHeight = isMobile ? 214 : 293;
-  const seasonVideoWidth = isMobile ? 400 : 516;
+  const seasonVideoWidth = isMobile ? Dimensions.get("window").width : 516;
 
   const [url, setUrl] = useState("");
 
@@ -75,13 +75,14 @@ export default function AboutScreen({ navigation }: AboutScreenProps) {
               marginLeft: 15,
               backgroundColor: "#000",
               paddingVertical: 8,
+              marginTop: layout.spacing_x1_5,
             }}
           >
             <SVG source={BackSVG} height={28} width={28} />
           </CustomPressable>
           <EmbeddedWeb
             uri={url}
-            width={seasonVideoWidth - 2}
+            width={seasonVideoWidth}
             height={seasonVideoHeight}
           />
         </SafeAreaView>

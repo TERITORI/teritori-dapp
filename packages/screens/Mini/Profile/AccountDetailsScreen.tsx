@@ -104,41 +104,42 @@ export const AccountDetailsScreen: ScreenFC<"MiniAccountDetails"> = ({
       </View>
 
       <ShowWalletQR selectedWallet={wallet} />
-
-      <View
-        style={{
-          backgroundColor: azureBlue20,
-          paddingHorizontal: layout.spacing_x2,
-          paddingVertical: layout.spacing_x2,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          borderRadius: layout.borderRadius,
-        }}
-      >
-        <BrandText style={[fontSemibold14, { color: azureBlue }]}>
-          View on Explorer
-        </BrandText>
-        <CustomPressable
-          onPress={() => {
-            if (wallet) {
-              Linking.openURL(
-                accountExplorerLink(wallet.networkId, wallet.address),
-              );
-            }
+      <View style={{ padding: layout.spacing_x2 }}>
+        <View
+          style={{
+            backgroundColor: azureBlue20,
+            paddingHorizontal: layout.spacing_x2,
+            paddingVertical: layout.spacing_x2,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            borderRadius: layout.borderRadius,
           }}
         >
-          <SVG source={openSVG} height={22} width={22} />
-        </CustomPressable>
+          <BrandText style={[fontSemibold14, { color: azureBlue }]}>
+            View on Explorer
+          </BrandText>
+          <CustomPressable
+            onPress={() => {
+              if (wallet) {
+                Linking.openURL(
+                  accountExplorerLink(wallet.networkId, wallet.address),
+                );
+              }
+            }}
+          >
+            <SVG source={openSVG} height={22} width={22} />
+          </CustomPressable>
+        </View>
+        <CustomButton
+          title="Delete"
+          onPress={onResetPress}
+          type="danger"
+          style={{
+            marginTop: layout.spacing_x1_5,
+          }}
+        />
       </View>
-      <CustomButton
-        title="Delete"
-        onPress={onResetPress}
-        type="danger"
-        style={{
-          marginTop: layout.spacing_x1_5,
-        }}
-      />
     </BlurScreenContainer>
   );
 };
