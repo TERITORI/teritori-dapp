@@ -73,6 +73,14 @@ for (const net of allNetworks) {
       }
     }
   }
+  // check staking currency
+  if (net.kind === NetworkKind.Cosmos) {
+    if (!net.currencies.find((c) => c.denom === net.stakeCurrency)) {
+      throw new Error(
+        `staking currency '${net.stakeCurrency}' of network '${net.id}' is not a currency of this network`,
+      );
+    }
+  }
 
   // check features
   const features: { [key: string]: boolean } = {};
