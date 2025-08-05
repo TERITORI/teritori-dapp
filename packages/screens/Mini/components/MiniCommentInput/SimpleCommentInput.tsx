@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ViewStyle, TextInput } from "react-native";
+import { View, ViewStyle, TextInput, useWindowDimensions } from "react-native";
 
 import penSVG from "../../../../../assets/icons/pen.svg";
 
@@ -23,6 +23,7 @@ export const SimpleCommentInput = ({
   onFocus,
   style,
 }: Props) => {
+  const { width: windowWidth } = useWindowDimensions();
   return (
     <CustomPressable onPress={onFocus}>
       <View
@@ -60,6 +61,8 @@ export const SimpleCommentInput = ({
               {
                 height: 30,
                 color: secondaryColor,
+                width: windowWidth - 150,
+                alignSelf: "center",
               },
             ]}
             onPressOut={onFocus}
