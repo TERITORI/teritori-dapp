@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
 import { Post } from "@/api/feed/v1/feed";
+import defaultThumbnailImage from "@/assets/default-images/default-track-thumbnail.png";
 import { BrandText } from "@/components/BrandText";
 import { MediaPlayerBarRefined } from "@/components/mediaPlayer/MediaPlayerBarRefined";
 import { Separator } from "@/components/separators/Separator";
@@ -48,6 +49,9 @@ export const MusicMapPost: FC<{
         fileUrl: musicAudioNotePostMetadata.audioFile.url,
         duration: musicAudioNotePostMetadata.audioFile.audioMetadata?.duration,
         postId: post.id,
+        thumbnailURI:
+          musicAudioNotePostMetadata.audioFile.thumbnailFileData?.url ||
+          defaultThumbnailImage,
       }
     : musicPostMetadata?.files
       ? {
@@ -55,6 +59,9 @@ export const MusicMapPost: FC<{
           fileUrl: musicPostMetadata.files[0].url,
           duration: musicPostMetadata.files[0].audioMetadata?.duration,
           postId: post.id,
+          thumbnailURI:
+            musicPostMetadata.files[0].thumbnailFileData?.url ||
+            defaultThumbnailImage,
         }
       : undefined;
 

@@ -9,6 +9,7 @@ import { View } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
 import { Post } from "@/api/feed/v1/feed";
+import defaultThumbnailImage from "@/assets/default-images/default-track-thumbnail.png";
 import { BrandText } from "@/components/BrandText";
 import { MediaPlayerBarRefined } from "@/components/mediaPlayer/MediaPlayerBarRefined";
 import { Separator } from "@/components/separators/Separator";
@@ -69,6 +70,9 @@ export const VideoMapPost: FC<{
         duration: videoPostMetadata.videoFile.videoMetadata?.duration, // FIXME: Known issue: Always 0. So, for videos, duration is set by playbackStatus, so it's 0 on the timer since the video is not started once
         postId: post.id,
         isVideo: true,
+        thumbnailURI:
+          videoPostMetadata.videoFile.thumbnailFileData?.url ||
+          defaultThumbnailImage,
       }
     : videoNotePostMetadata?.files
       ? {
@@ -77,6 +81,9 @@ export const VideoMapPost: FC<{
           duration: videoNotePostMetadata.files[0].videoMetadata?.duration,
           postId: post.id,
           isVideo: true,
+          thumbnailURI:
+            videoNotePostMetadata.files[0].thumbnailFileData?.url ||
+            defaultThumbnailImage,
         }
       : undefined;
   const videoMetadata: SocialFeedVideoMetadata | undefined = videoPostMetadata

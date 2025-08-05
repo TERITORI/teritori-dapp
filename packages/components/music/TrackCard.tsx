@@ -59,6 +59,8 @@ export const TrackCard: React.FC<{
       fileUrl: track.audioFile.url,
       duration: track.audioFile.audioMetadata?.duration,
       postId: post.id,
+      thumbnailURI:
+        track.audioFile.thumbnailFileData?.url || defaultThumbnailImage,
     };
     await loadAndPlaySoundsQueue([mediaToPlay]);
   };

@@ -173,7 +173,8 @@ function ExpoAvVideo({
     }
   });
 
-  const thumbnailURI = videoMetadata.videoFile.thumbnailFileData?.url;
+  const thumbnailURI =
+    videoMetadata.videoFile.thumbnailFileData?.url || defaultThumbnailImage;
 
   const mediaToSet: Media = {
     id,
@@ -182,6 +183,7 @@ function ExpoAvVideo({
     // postId is used to difference videos from Social Feed
     postId,
     isVideo: true,
+    thumbnailURI,
   };
 
   const onPressPlayPause = async () => {
