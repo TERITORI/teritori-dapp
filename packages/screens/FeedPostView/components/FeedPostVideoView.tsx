@@ -60,7 +60,6 @@ import {
   ZodSocialFeedVideoMetadata,
 } from "@/utils/types/feed";
 
-const POST_VIDEO_MAX_WIDTH = 960;
 const INPUT_MIN_HEIGHT = 20;
 const INPUT_MAX_HEIGHT = 400;
 
@@ -265,7 +264,6 @@ export const FeedPostVideoView: FC<{
           <View
             style={{
               flex: 1,
-              maxWidth: POST_VIDEO_MAX_WIDTH,
             }}
           >
             <View
