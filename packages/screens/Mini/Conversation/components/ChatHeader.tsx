@@ -55,9 +55,11 @@ export const ChatHeader = ({ navigation, conversation }: HeaderProps) => {
     <View
       style={{
         flexDirection: "row",
-        height: MOBILE_HEADER_HEIGHT,
         alignItems: "center",
         justifyContent: "space-between",
+        height: MOBILE_HEADER_HEIGHT,
+        maxHeight: MOBILE_HEADER_HEIGHT,
+        marginTop: layout.spacing_x2,
       }}
     >
       <View
