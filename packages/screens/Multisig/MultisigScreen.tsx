@@ -23,7 +23,7 @@ import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { useMultisigAuthToken } from "@/hooks/multisig/useMultisigAuthToken";
 import { useUserMultisigs } from "@/hooks/multisig/useUserMultisigs";
-import { getUserId, NetworkKind } from "@/networks";
+import { getUserId } from "@/networks";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
 import { neutral33, neutral77, secondaryColor } from "@/utils/style/colors";
 import { fontRegular16, fontRegular28 } from "@/utils/style/fonts";
@@ -51,7 +51,6 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
       headerChildren={<ScreenTitle>Multisig Wallets</ScreenTitle>}
       isLarge
       onBackPress={() => navigation.navigate("Multisig")}
-      forceNetworkKind={NetworkKind.Cosmos}
     >
       <ScrollView>
         <View style={containerCStyle}>

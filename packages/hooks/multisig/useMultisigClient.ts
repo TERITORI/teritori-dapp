@@ -10,7 +10,7 @@ export const useMultisigClient = (networkId: string | undefined) => {
   const network = getNetwork(networkId);
   if (network?.testnet) {
     const rpc = new GrpcWebImpl(
-      process.env.MULTISIG_BACKEND_URL ||
+      process.env.EXPO_PUBLIC_MULTISIG_BACKEND_URL ||
         "https://multisig.testnet.teritori.com",
       {
         debug: false,
@@ -19,7 +19,7 @@ export const useMultisigClient = (networkId: string | undefined) => {
     return new MultisigServiceClientImpl(rpc);
   } else {
     const rpc = new GrpcWebImpl(
-      process.env.MULTISIG_BACKEND_URL ||
+      process.env.EXPO_PUBLIC_MULTISIG_BACKEND_URL ||
         "https://multisig.mainnet.teritori.com",
       {
         debug: false,

@@ -93,6 +93,7 @@ export interface Multisig {
   pubkeyJson: string;
   usersAddresses: string[];
   threshold: number;
+  chainType: string;
 }
 
 export interface Signature {
@@ -117,6 +118,7 @@ export interface Transaction {
   signatures: Signature[];
   multisigPubkeyJson: string;
   id: number;
+  chainType: string;
 }
 
 /** we use string here because browser storage poorly supports bytes */
@@ -142,6 +144,7 @@ export interface MultisigsRequest {
   startAfter: string;
   chainId: string;
   joinState: JoinState;
+  chainType: string;
 }
 
 export interface MultisigsResponse {
@@ -152,6 +155,7 @@ export interface MultisigInfoRequest {
   authToken: Token | undefined;
   multisigAddress: string;
   chainId: string;
+  chainType: string;
 }
 
 export interface MultisigInfoResponse {
@@ -167,6 +171,7 @@ export interface TransactionsRequest {
   chainId: string;
   types: string[];
   executionState: ExecutionState;
+  chainType: string;
 }
 
 export interface TransactionsResponse {
@@ -179,6 +184,7 @@ export interface CreateOrJoinMultisigRequest {
   authToken: Token | undefined;
   name: string;
   bech32Prefix: string;
+  chainType: string;
 }
 
 export interface CreateOrJoinMultisigResponse {
@@ -191,6 +197,7 @@ export interface LeaveMultisigRequest {
   multisigAddress: string;
   authToken: Token | undefined;
   chainId: string;
+  chainType: string;
 }
 
 export interface LeaveMultisigResponse {
@@ -205,6 +212,7 @@ export interface CreateTransactionRequest {
   msgs: Any[];
   feeJson: string;
   chainId: string;
+  chainType: string;
 }
 
 export interface CreateTransactionResponse {
@@ -234,6 +242,7 @@ export interface ClearSignaturesRequest {
   multisigChainId: string;
   multisigAddress: string;
   sequence: number;
+  chainType: string;
 }
 
 export interface ClearSignaturesResponse {
@@ -271,6 +280,7 @@ export interface TransactionsCountsRequest {
   /** if unspecified, return transactions for all multisigs of this user */
   multisigAddress: string;
   chainId: string;
+  chainType: string;
 }
 
 export interface TransactionsCount {
@@ -302,6 +312,7 @@ function createBaseMultisig(): Multisig {
     pubkeyJson: "",
     usersAddresses: [],
     threshold: 0,
+    chainType: "",
   };
 }
 
@@ -330,6 +341,9 @@ export const Multisig = {
     }
     if (message.threshold !== 0) {
       writer.uint32(72).uint32(message.threshold);
+    }
+    if (message.chainType !== "") {
+      writer.uint32(82).string(message.chainType);
     }
     return writer;
   },
@@ -397,6 +411,13 @@ export const Multisig = {
 
           message.threshold = reader.uint32();
           continue;
+        case 10:
+          if (tag !== 82) {
+            break;
+          }
+
+          message.chainType = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -418,6 +439,7 @@ export const Multisig = {
         ? object.usersAddresses.map((e: any) => globalThis.String(e))
         : [],
       threshold: isSet(object.threshold) ? globalThis.Number(object.threshold) : 0,
+      chainType: isSet(object.chainType) ? globalThis.String(object.chainType) : "",
     };
   },
 
@@ -447,6 +469,9 @@ export const Multisig = {
     if (message.threshold !== 0) {
       obj.threshold = Math.round(message.threshold);
     }
+    if (message.chainType !== "") {
+      obj.chainType = message.chainType;
+    }
     return obj;
   },
 
@@ -463,6 +488,7 @@ export const Multisig = {
     message.pubkeyJson = object.pubkeyJson ?? "";
     message.usersAddresses = object.usersAddresses?.map((e) => e) || [];
     message.threshold = object.threshold ?? 0;
+    message.chainType = object.chainType ?? "";
     return message;
   },
 };
@@ -573,6 +599,7 @@ function createBaseTransaction(): Transaction {
     signatures: [],
     multisigPubkeyJson: "",
     id: 0,
+    chainType: "",
   };
 }
 
@@ -622,6 +649,9 @@ export const Transaction = {
     }
     if (message.id !== 0) {
       writer.uint32(120).uint32(message.id);
+    }
+    if (message.chainType !== "") {
+      writer.uint32(130).string(message.chainType);
     }
     return writer;
   },
@@ -738,6 +768,13 @@ export const Transaction = {
 
           message.id = reader.uint32();
           continue;
+        case 16:
+          if (tag !== 130) {
+            break;
+          }
+
+          message.chainType = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -766,6 +803,7 @@ export const Transaction = {
         : [],
       multisigPubkeyJson: isSet(object.multisigPubkeyJson) ? globalThis.String(object.multisigPubkeyJson) : "",
       id: isSet(object.id) ? globalThis.Number(object.id) : 0,
+      chainType: isSet(object.chainType) ? globalThis.String(object.chainType) : "",
     };
   },
 
@@ -816,6 +854,9 @@ export const Transaction = {
     if (message.id !== 0) {
       obj.id = Math.round(message.id);
     }
+    if (message.chainType !== "") {
+      obj.chainType = message.chainType;
+    }
     return obj;
   },
 
@@ -839,6 +880,7 @@ export const Transaction = {
     message.signatures = object.signatures?.map((e) => Signature.fromPartial(e)) || [];
     message.multisigPubkeyJson = object.multisigPubkeyJson ?? "";
     message.id = object.id ?? 0;
+    message.chainType = object.chainType ?? "";
     return message;
   },
 };
@@ -1037,7 +1079,7 @@ export const Challenge = {
 };
 
 function createBaseMultisigsRequest(): MultisigsRequest {
-  return { authToken: undefined, limit: 0, startAfter: "", chainId: "", joinState: 0 };
+  return { authToken: undefined, limit: 0, startAfter: "", chainId: "", joinState: 0, chainType: "" };
 }
 
 export const MultisigsRequest = {
@@ -1056,6 +1098,9 @@ export const MultisigsRequest = {
     }
     if (message.joinState !== 0) {
       writer.uint32(40).int32(message.joinState);
+    }
+    if (message.chainType !== "") {
+      writer.uint32(50).string(message.chainType);
     }
     return writer;
   },
@@ -1102,6 +1147,13 @@ export const MultisigsRequest = {
 
           message.joinState = reader.int32() as any;
           continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.chainType = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1118,6 +1170,7 @@ export const MultisigsRequest = {
       startAfter: isSet(object.startAfter) ? globalThis.String(object.startAfter) : "",
       chainId: isSet(object.chainId) ? globalThis.String(object.chainId) : "",
       joinState: isSet(object.joinState) ? joinStateFromJSON(object.joinState) : 0,
+      chainType: isSet(object.chainType) ? globalThis.String(object.chainType) : "",
     };
   },
 
@@ -1138,6 +1191,9 @@ export const MultisigsRequest = {
     if (message.joinState !== 0) {
       obj.joinState = joinStateToJSON(message.joinState);
     }
+    if (message.chainType !== "") {
+      obj.chainType = message.chainType;
+    }
     return obj;
   },
 
@@ -1153,6 +1209,7 @@ export const MultisigsRequest = {
     message.startAfter = object.startAfter ?? "";
     message.chainId = object.chainId ?? "";
     message.joinState = object.joinState ?? 0;
+    message.chainType = object.chainType ?? "";
     return message;
   },
 };
@@ -1219,7 +1276,7 @@ export const MultisigsResponse = {
 };
 
 function createBaseMultisigInfoRequest(): MultisigInfoRequest {
-  return { authToken: undefined, multisigAddress: "", chainId: "" };
+  return { authToken: undefined, multisigAddress: "", chainId: "", chainType: "" };
 }
 
 export const MultisigInfoRequest = {
@@ -1232,6 +1289,9 @@ export const MultisigInfoRequest = {
     }
     if (message.chainId !== "") {
       writer.uint32(26).string(message.chainId);
+    }
+    if (message.chainType !== "") {
+      writer.uint32(34).string(message.chainType);
     }
     return writer;
   },
@@ -1264,6 +1324,13 @@ export const MultisigInfoRequest = {
 
           message.chainId = reader.string();
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.chainType = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1278,6 +1345,7 @@ export const MultisigInfoRequest = {
       authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined,
       multisigAddress: isSet(object.multisigAddress) ? globalThis.String(object.multisigAddress) : "",
       chainId: isSet(object.chainId) ? globalThis.String(object.chainId) : "",
+      chainType: isSet(object.chainType) ? globalThis.String(object.chainType) : "",
     };
   },
 
@@ -1292,6 +1360,9 @@ export const MultisigInfoRequest = {
     if (message.chainId !== "") {
       obj.chainId = message.chainId;
     }
+    if (message.chainType !== "") {
+      obj.chainType = message.chainType;
+    }
     return obj;
   },
 
@@ -1305,6 +1376,7 @@ export const MultisigInfoRequest = {
       : undefined;
     message.multisigAddress = object.multisigAddress ?? "";
     message.chainId = object.chainId ?? "";
+    message.chainType = object.chainType ?? "";
     return message;
   },
 };
@@ -1377,6 +1449,7 @@ function createBaseTransactionsRequest(): TransactionsRequest {
     chainId: "",
     types: [],
     executionState: 0,
+    chainType: "",
   };
 }
 
@@ -1402,6 +1475,9 @@ export const TransactionsRequest = {
     }
     if (message.executionState !== 0) {
       writer.uint32(56).int32(message.executionState);
+    }
+    if (message.chainType !== "") {
+      writer.uint32(66).string(message.chainType);
     }
     return writer;
   },
@@ -1462,6 +1538,13 @@ export const TransactionsRequest = {
 
           message.executionState = reader.int32() as any;
           continue;
+        case 8:
+          if (tag !== 66) {
+            break;
+          }
+
+          message.chainType = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1480,6 +1563,7 @@ export const TransactionsRequest = {
       chainId: isSet(object.chainId) ? globalThis.String(object.chainId) : "",
       types: globalThis.Array.isArray(object?.types) ? object.types.map((e: any) => globalThis.String(e)) : [],
       executionState: isSet(object.executionState) ? executionStateFromJSON(object.executionState) : 0,
+      chainType: isSet(object.chainType) ? globalThis.String(object.chainType) : "",
     };
   },
 
@@ -1506,6 +1590,9 @@ export const TransactionsRequest = {
     if (message.executionState !== 0) {
       obj.executionState = executionStateToJSON(message.executionState);
     }
+    if (message.chainType !== "") {
+      obj.chainType = message.chainType;
+    }
     return obj;
   },
 
@@ -1523,6 +1610,7 @@ export const TransactionsRequest = {
     message.chainId = object.chainId ?? "";
     message.types = object.types?.map((e) => e) || [];
     message.executionState = object.executionState ?? 0;
+    message.chainType = object.chainType ?? "";
     return message;
   },
 };
@@ -1589,7 +1677,7 @@ export const TransactionsResponse = {
 };
 
 function createBaseCreateOrJoinMultisigRequest(): CreateOrJoinMultisigRequest {
-  return { chainId: "", multisigPubkeyJson: "", authToken: undefined, name: "", bech32Prefix: "" };
+  return { chainId: "", multisigPubkeyJson: "", authToken: undefined, name: "", bech32Prefix: "", chainType: "" };
 }
 
 export const CreateOrJoinMultisigRequest = {
@@ -1608,6 +1696,9 @@ export const CreateOrJoinMultisigRequest = {
     }
     if (message.bech32Prefix !== "") {
       writer.uint32(42).string(message.bech32Prefix);
+    }
+    if (message.chainType !== "") {
+      writer.uint32(50).string(message.chainType);
     }
     return writer;
   },
@@ -1654,6 +1745,13 @@ export const CreateOrJoinMultisigRequest = {
 
           message.bech32Prefix = reader.string();
           continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.chainType = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1670,6 +1768,7 @@ export const CreateOrJoinMultisigRequest = {
       authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined,
       name: isSet(object.name) ? globalThis.String(object.name) : "",
       bech32Prefix: isSet(object.bech32Prefix) ? globalThis.String(object.bech32Prefix) : "",
+      chainType: isSet(object.chainType) ? globalThis.String(object.chainType) : "",
     };
   },
 
@@ -1690,6 +1789,9 @@ export const CreateOrJoinMultisigRequest = {
     if (message.bech32Prefix !== "") {
       obj.bech32Prefix = message.bech32Prefix;
     }
+    if (message.chainType !== "") {
+      obj.chainType = message.chainType;
+    }
     return obj;
   },
 
@@ -1705,6 +1807,7 @@ export const CreateOrJoinMultisigRequest = {
       : undefined;
     message.name = object.name ?? "";
     message.bech32Prefix = object.bech32Prefix ?? "";
+    message.chainType = object.chainType ?? "";
     return message;
   },
 };
@@ -1799,7 +1902,7 @@ export const CreateOrJoinMultisigResponse = {
 };
 
 function createBaseLeaveMultisigRequest(): LeaveMultisigRequest {
-  return { multisigAddress: "", authToken: undefined, chainId: "" };
+  return { multisigAddress: "", authToken: undefined, chainId: "", chainType: "" };
 }
 
 export const LeaveMultisigRequest = {
@@ -1812,6 +1915,9 @@ export const LeaveMultisigRequest = {
     }
     if (message.chainId !== "") {
       writer.uint32(26).string(message.chainId);
+    }
+    if (message.chainType !== "") {
+      writer.uint32(34).string(message.chainType);
     }
     return writer;
   },
@@ -1844,6 +1950,13 @@ export const LeaveMultisigRequest = {
 
           message.chainId = reader.string();
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.chainType = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1858,6 +1971,7 @@ export const LeaveMultisigRequest = {
       multisigAddress: isSet(object.multisigAddress) ? globalThis.String(object.multisigAddress) : "",
       authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined,
       chainId: isSet(object.chainId) ? globalThis.String(object.chainId) : "",
+      chainType: isSet(object.chainType) ? globalThis.String(object.chainType) : "",
     };
   },
 
@@ -1872,6 +1986,9 @@ export const LeaveMultisigRequest = {
     if (message.chainId !== "") {
       obj.chainId = message.chainId;
     }
+    if (message.chainType !== "") {
+      obj.chainType = message.chainType;
+    }
     return obj;
   },
 
@@ -1885,6 +2002,7 @@ export const LeaveMultisigRequest = {
       ? Token.fromPartial(object.authToken)
       : undefined;
     message.chainId = object.chainId ?? "";
+    message.chainType = object.chainType ?? "";
     return message;
   },
 };
@@ -1955,6 +2073,7 @@ function createBaseCreateTransactionRequest(): CreateTransactionRequest {
     msgs: [],
     feeJson: "",
     chainId: "",
+    chainType: "",
   };
 }
 
@@ -1980,6 +2099,9 @@ export const CreateTransactionRequest = {
     }
     if (message.chainId !== "") {
       writer.uint32(66).string(message.chainId);
+    }
+    if (message.chainType !== "") {
+      writer.uint32(74).string(message.chainType);
     }
     return writer;
   },
@@ -2040,6 +2162,13 @@ export const CreateTransactionRequest = {
 
           message.chainId = reader.string();
           continue;
+        case 9:
+          if (tag !== 74) {
+            break;
+          }
+
+          message.chainType = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2058,6 +2187,7 @@ export const CreateTransactionRequest = {
       msgs: globalThis.Array.isArray(object?.msgs) ? object.msgs.map((e: any) => Any.fromJSON(e)) : [],
       feeJson: isSet(object.feeJson) ? globalThis.String(object.feeJson) : "",
       chainId: isSet(object.chainId) ? globalThis.String(object.chainId) : "",
+      chainType: isSet(object.chainType) ? globalThis.String(object.chainType) : "",
     };
   },
 
@@ -2084,6 +2214,9 @@ export const CreateTransactionRequest = {
     if (message.chainId !== "") {
       obj.chainId = message.chainId;
     }
+    if (message.chainType !== "") {
+      obj.chainType = message.chainType;
+    }
     return obj;
   },
 
@@ -2101,6 +2234,7 @@ export const CreateTransactionRequest = {
     message.msgs = object.msgs?.map((e) => Any.fromPartial(e)) || [];
     message.feeJson = object.feeJson ?? "";
     message.chainId = object.chainId ?? "";
+    message.chainType = object.chainType ?? "";
     return message;
   },
 };
@@ -2432,7 +2566,7 @@ export const CompleteTransactionResponse = {
 };
 
 function createBaseClearSignaturesRequest(): ClearSignaturesRequest {
-  return { authToken: undefined, multisigChainId: "", multisigAddress: "", sequence: 0 };
+  return { authToken: undefined, multisigChainId: "", multisigAddress: "", sequence: 0, chainType: "" };
 }
 
 export const ClearSignaturesRequest = {
@@ -2448,6 +2582,9 @@ export const ClearSignaturesRequest = {
     }
     if (message.sequence !== 0) {
       writer.uint32(32).uint32(message.sequence);
+    }
+    if (message.chainType !== "") {
+      writer.uint32(42).string(message.chainType);
     }
     return writer;
   },
@@ -2487,6 +2624,13 @@ export const ClearSignaturesRequest = {
 
           message.sequence = reader.uint32();
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.chainType = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2502,6 +2646,7 @@ export const ClearSignaturesRequest = {
       multisigChainId: isSet(object.multisigChainId) ? globalThis.String(object.multisigChainId) : "",
       multisigAddress: isSet(object.multisigAddress) ? globalThis.String(object.multisigAddress) : "",
       sequence: isSet(object.sequence) ? globalThis.Number(object.sequence) : 0,
+      chainType: isSet(object.chainType) ? globalThis.String(object.chainType) : "",
     };
   },
 
@@ -2519,6 +2664,9 @@ export const ClearSignaturesRequest = {
     if (message.sequence !== 0) {
       obj.sequence = Math.round(message.sequence);
     }
+    if (message.chainType !== "") {
+      obj.chainType = message.chainType;
+    }
     return obj;
   },
 
@@ -2533,6 +2681,7 @@ export const ClearSignaturesRequest = {
     message.multisigChainId = object.multisigChainId ?? "";
     message.multisigAddress = object.multisigAddress ?? "";
     message.sequence = object.sequence ?? 0;
+    message.chainType = object.chainType ?? "";
     return message;
   },
 };
@@ -2922,7 +3071,7 @@ export const GetTokenResponse = {
 };
 
 function createBaseTransactionsCountsRequest(): TransactionsCountsRequest {
-  return { authToken: undefined, multisigAddress: "", chainId: "" };
+  return { authToken: undefined, multisigAddress: "", chainId: "", chainType: "" };
 }
 
 export const TransactionsCountsRequest = {
@@ -2935,6 +3084,9 @@ export const TransactionsCountsRequest = {
     }
     if (message.chainId !== "") {
       writer.uint32(26).string(message.chainId);
+    }
+    if (message.chainType !== "") {
+      writer.uint32(34).string(message.chainType);
     }
     return writer;
   },
@@ -2967,6 +3119,13 @@ export const TransactionsCountsRequest = {
 
           message.chainId = reader.string();
           continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.chainType = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2981,6 +3140,7 @@ export const TransactionsCountsRequest = {
       authToken: isSet(object.authToken) ? Token.fromJSON(object.authToken) : undefined,
       multisigAddress: isSet(object.multisigAddress) ? globalThis.String(object.multisigAddress) : "",
       chainId: isSet(object.chainId) ? globalThis.String(object.chainId) : "",
+      chainType: isSet(object.chainType) ? globalThis.String(object.chainType) : "",
     };
   },
 
@@ -2995,6 +3155,9 @@ export const TransactionsCountsRequest = {
     if (message.chainId !== "") {
       obj.chainId = message.chainId;
     }
+    if (message.chainType !== "") {
+      obj.chainType = message.chainType;
+    }
     return obj;
   },
 
@@ -3008,6 +3171,7 @@ export const TransactionsCountsRequest = {
       : undefined;
     message.multisigAddress = object.multisigAddress ?? "";
     message.chainId = object.chainId ?? "";
+    message.chainType = object.chainType ?? "";
     return message;
   },
 };

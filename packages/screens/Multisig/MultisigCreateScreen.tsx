@@ -1,4 +1,5 @@
 import { createMultisigThresholdPubkey } from "@cosmjs/amino";
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, View } from "react-native";
@@ -42,6 +43,7 @@ import {
   fontRegular28,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
+import {base64Encode} from "@bufbuild/protobuf/wire"
 
 type CreateMultisigWalletFormType = {
   addresses: { address: string }[];
@@ -53,6 +55,7 @@ type CreateMultisigWalletFormType = {
 const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
 
 export const MultisigCreateScreen = () => {
+  const lel = base64Encode(new Uint8Array())
   const selectedWallet = useSelectedWallet();
   const authToken = useMultisigAuthToken(selectedWallet?.userId);
   const { wrapWithFeedback } = useFeedbacks();
@@ -101,8 +104,11 @@ export const MultisigCreateScreen = () => {
       throw new Error("No network selected");
     }
 
-    if (selectedNetwork.kind !== NetworkKind.Cosmos) {
-      throw new Error("Only Cosmos networks are supported");
+    if (
+      selectedNetwork.kind !== NetworkKind.Cosmos &&
+      selectedNetwork.kind !== NetworkKind.Gno
+    ) {
+      throw new Error("Only Cosmos or Gno networks are supported");
     }
 
     const compressedPubkeys = addressIndexes.map(
@@ -119,11 +125,16 @@ export const MultisigCreateScreen = () => {
       parseInt(signatureRequired, 10),
     );
 
+    let addrPrefix = "g";
+    if (selectedNetwork.kind === NetworkKind.Cosmos) {
+      addrPrefix = selectedNetwork.addressPrefix;
+    }
+
     try {
       const res = await multisigClient.CreateOrJoinMultisig({
         authToken: { ...authToken, userAddress: "aeae" },
         chainId: selectedNetwork.chainId,
-        bech32Prefix: selectedNetwork.addressPrefix,
+        bech32Prefix: addrPrefix,
         multisigPubkeyJson: JSON.stringify(multisigPubkey),
         name,
       });
@@ -138,23 +149,21 @@ export const MultisigCreateScreen = () => {
     }
   };
 
-  const handleAddressChange = async (index: number, value: string) => {
+  const handleAddressChange = async (index: number, address: string) => {
     if (!selectedNetwork) {
       throw new Error("No network selected");
     }
-    if (selectedNetwork.kind !== NetworkKind.Cosmos) {
-      throw new Error("Only Cosmos networks are supported");
+    if (
+      selectedNetwork.kind !== NetworkKind.Cosmos &&
+      selectedNetwork.kind !== NetworkKind.Gno
+    ) {
+      throw new Error("Only Cosmos or Gno networks are supported");
     }
 
-    const resValAddress = validateAddress(value);
-
-    if (resValAddress !== true) return "Invalid address";
-
-    if (!value.includes(selectedNetwork.addressPrefix)) {
-      return `Only ${selectedNetwork.displayName} address is allowed`;
+    const valRes = validateAddress(address);
+    if (valRes !== true) {
+      return valRes;
     }
-
-    const address = value;
 
     if (addressIndexes.find((a, i) => a.address === address && i !== index))
       return "This address is already used in this form.";
@@ -163,15 +172,46 @@ export const MultisigCreateScreen = () => {
 
     try {
       setLoading(true);
-      const account = await getCosmosAccount(
-        getUserId(selectedNetwork?.id, address),
-      );
+      let compressedPubkey: string;
+      switch (selectedNetwork.kind) {
+        case NetworkKind.Cosmos: {
+          const account = await getCosmosAccount(
+            getUserId(selectedNetwork?.id, address),
+          );
 
-      if (!account?.pubkey) {
-        return "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig.";
+          if (!account?.pubkey) {
+            return "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig.";
+          }
+          compressedPubkey = account.pubkey.value;
+          break;
+        }
+        case NetworkKind.Gno: {
+          const client = new GnoJSONRPCProvider(selectedNetwork.endpoint);
+          try {
+            const account = await client.getAccount(address);
+            const pkval = account.BaseAccount.public_key?.value;
+            if (!pkval) {
+              return "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig.";
+            }
+            compressedPubkey = pkval;
+          } catch (err) {
+            if (
+              err instanceof Error &&
+              err.message.includes("account is not initialized")
+            ) {
+              return "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig.";
+            }
+            throw err;
+          }
+          break;
+        }
+        default: {
+          throw new Error(`should not happen`);
+        }
       }
+
       tempPubkeys[index].address = address;
-      tempPubkeys[index].compressedPubkey = account.pubkey.value;
+      tempPubkeys[index].compressedPubkey = compressedPubkey;
       setAddressIndexes(tempPubkeys);
     } catch {
       return "Failed to get Cosmos account";
@@ -189,7 +229,6 @@ export const MultisigCreateScreen = () => {
           : navigation.navigate("Multisig")
       }
       isLarge
-      forceNetworkKind={NetworkKind.Cosmos}
     >
       <ScrollView
         contentContainerStyle={{

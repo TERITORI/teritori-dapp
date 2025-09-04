@@ -10,8 +10,7 @@ export const validateAddress = (value: string) => {
   try {
     bech32.decode(value);
     return true;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (err) {
+  } catch {
     return "The address is invalid";
   }
 };

@@ -17,7 +17,7 @@ import { getNetwork } from "@/networks";
 
 export const mustGetNodeMultisigClient = (networkId: string | undefined) => {
   const network = getNetwork(networkId);
-  let endpoint = process.env.MULTISIG_BACKEND_URL;
+  let endpoint = process.env.EXPO_PUBLIC_MULTISIG_BACKEND_URL;
   if (!endpoint) {
     if (network?.testnet) {
       endpoint = "https://multisig.testnet.teritori.com";
