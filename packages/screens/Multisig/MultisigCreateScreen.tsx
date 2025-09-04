@@ -43,7 +43,6 @@ import {
   fontRegular28,
 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
-import {base64Encode} from "@bufbuild/protobuf/wire"
 
 type CreateMultisigWalletFormType = {
   addresses: { address: string }[];
@@ -55,7 +54,6 @@ type CreateMultisigWalletFormType = {
 const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
 
 export const MultisigCreateScreen = () => {
-  const lel = base64Encode(new Uint8Array())
   const selectedWallet = useSelectedWallet();
   const authToken = useMultisigAuthToken(selectedWallet?.userId);
   const { wrapWithFeedback } = useFeedbacks();
@@ -111,31 +109,57 @@ export const MultisigCreateScreen = () => {
       throw new Error("Only Cosmos or Gno networks are supported");
     }
 
-    const compressedPubkeys = addressIndexes.map(
-      (item) => item.compressedPubkey,
-    );
-    const pubkeys = compressedPubkeys.map((compressedPubkey) => {
-      return {
-        type: "tendermint/PubKeySecp256k1",
-        value: compressedPubkey,
-      };
-    });
-    const multisigPubkey = createMultisigThresholdPubkey(
-      pubkeys,
-      parseInt(signatureRequired, 10),
-    );
-
-    let addrPrefix = "g";
-    if (selectedNetwork.kind === NetworkKind.Cosmos) {
-      addrPrefix = selectedNetwork.addressPrefix;
+    let multisigPubkeyJson: string
+    let addrPrefix: string
+    switch (selectedNetwork.kind) {
+      case NetworkKind.Cosmos: {
+        const compressedPubkeys = addressIndexes.map(
+          (item) => item.compressedPubkey,
+        );
+        const pubkeys = compressedPubkeys.map((compressedPubkey) => {
+          return {
+            type: "tendermint/PubKeySecp256k1",
+            value: compressedPubkey,
+          };
+        });
+        const multisigPubkey = createMultisigThresholdPubkey(
+          pubkeys,
+          parseInt(signatureRequired, 10),
+        );
+          addrPrefix = selectedNetwork.addressPrefix;
+          multisigPubkeyJson = JSON.stringify(multisigPubkey)
+          break
+      }
+    case NetworkKind.Gno: {
+       const compressedPubkeys = addressIndexes.map(
+          (item) => item.compressedPubkey,
+        );
+      const mspk = {
+        "@type": "/tm.PubKeyMultisig",
+        "threshold": signatureRequired,
+        "pubkeys": compressedPubkeys.map((compressedPubkey) => {
+          return {
+            "@type": "/tm.PubKeySecp256k1",
+            value: compressedPubkey,
+          };
+        })
+      }
+      multisigPubkeyJson = JSON.stringify(mspk) 
+      addrPrefix = "g"
+      break
+    }
+    default: {
+      throw new Error("should not happen")
+    }
     }
 
     try {
       const res = await multisigClient.CreateOrJoinMultisig({
-        authToken: { ...authToken, userAddress: "aeae" },
+        chainType: selectedNetwork.kind.toLowerCase(),
+        authToken,
         chainId: selectedNetwork.chainId,
         bech32Prefix: addrPrefix,
-        multisigPubkeyJson: JSON.stringify(multisigPubkey),
+        multisigPubkeyJson,
         name,
       });
 

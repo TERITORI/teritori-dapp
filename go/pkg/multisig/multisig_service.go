@@ -130,6 +130,7 @@ func (s *multisigService) Multisigs(_ context.Context, req *multisigpb.Multisigs
 
 		for _, ms := range userMultisigs {
 			multisigs = append(multisigs, &multisigpb.Multisig{
+				ChainType: ms.MultisigChainType,
 				ChainId:   ms.MultisigChainID,
 				Address:   ms.MultisigAddress,
 				CreatedAt: encodeTime(ms.CreatedAt),
@@ -355,7 +356,7 @@ func (s *multisigService) CreateOrJoinMultisig(_ context.Context, req *multisigp
 
 	chainType := req.GetChainType()
 	if chainType == "" {
-		chainType = "cosmos"
+		return nil, fmt.Errorf("missing chain type")
 	}
 
 	if err := s.db.Transaction(func(tx *gorm.DB) error {
@@ -425,6 +426,7 @@ func (s *multisigService) CreateOrJoinMultisig(_ context.Context, req *multisigp
 				return fmt.Errorf("invalid pubkey type: %T", mspk)
 			}
 
+			multisigAddress = pk.Address().String()
 			threshold = uint32(mspk.K)
 			for _, pk := range mspk.PubKeys {
 				addresses = append(addresses, pk.Address().Bytes())
@@ -436,6 +438,7 @@ func (s *multisigService) CreateOrJoinMultisig(_ context.Context, req *multisigp
 		if err := tx.First(&multisig, "chain_type = ? AND chain_id = ? AND address = ?", chainType, chainID, multisigAddress).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				multisig = Multisig{
+					ChainType:    chainType,
 					ChainID:      chainID,
 					Address:      multisigAddress,
 					PubKeyJSON:   pubkeyJSON,

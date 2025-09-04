@@ -13,11 +13,8 @@ import { PrimaryButton } from "../buttons/PrimaryButton";
 import { multisigLogin } from "@/utils/multisig";
 
 export const LoginButton: FC<{ userId: string | undefined }> = ({ userId }) => {
-  console.log("userId", userId);
   const [network, userAddress] = parseUserId(userId);
-  console.log("network", network?.chainId, "userAddress", userAddress);
   const storeAuthToken = useMultisigAuthToken(userId);
-  console.log("storeAuthToken", storeAuthToken);
   const dispatch = useAppDispatch();
   const { wrapWithFeedback } = useFeedbacks();
   const client = useMultisigClient(network?.id);
