@@ -88,9 +88,10 @@ export const useMultisigTransactions = (
                 ...tx,
                 msgs,
                 fee: {
+                  // XXX: using cosmos's StdFee for now but could be improved
                   amount: [
                     {
-                      amount: tf.gas_fee.split("ugnot")[0].toString(), // XXX: don't hardcode that
+                      amount: tf.gas_fee.split("ugnot")[0].toString(), // TODO: properly parse coin
                       denom: "ugnot",
                     },
                   ],
