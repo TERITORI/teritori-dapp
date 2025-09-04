@@ -413,6 +413,7 @@ const JoinMultisigModal: React.FC<{
               throw new Error("Invalid multisig network");
             }
             await multisigClient.CreateOrJoinMultisig({
+              chainType: network?.kind.toLowerCase(),
               chainId: multisig.chainId,
               multisigPubkeyJson: multisig.pubkeyJson,
               authToken,

@@ -33,6 +33,7 @@ export const useMultisigTransactionsCounts = (
       }
       const [, multisigAddress] = parseUserId(multisigUserId);
       const counts = await multisigClient?.TransactionsCounts({
+        chainType: network?.kind.toLowerCase(),
         authToken,
         chainId: cosmosNetwork.chainId,
         multisigAddress,

@@ -109,8 +109,8 @@ export const MultisigCreateScreen = () => {
       throw new Error("Only Cosmos or Gno networks are supported");
     }
 
-    let multisigPubkeyJson: string
-    let addrPrefix: string
+    let multisigPubkeyJson: string;
+    let addrPrefix: string;
     switch (selectedNetwork.kind) {
       case NetworkKind.Cosmos: {
         const compressedPubkeys = addressIndexes.map(
@@ -126,31 +126,33 @@ export const MultisigCreateScreen = () => {
           pubkeys,
           parseInt(signatureRequired, 10),
         );
-          addrPrefix = selectedNetwork.addressPrefix;
-          multisigPubkeyJson = JSON.stringify(multisigPubkey)
-          break
+        addrPrefix = selectedNetwork.addressPrefix;
+        multisigPubkeyJson = JSON.stringify(multisigPubkey);
+        break;
       }
-    case NetworkKind.Gno: {
-       const compressedPubkeys = addressIndexes.map(
+
+      case NetworkKind.Gno: {
+        const compressedPubkeys = addressIndexes.map(
           (item) => item.compressedPubkey,
         );
-      const mspk = {
-        "@type": "/tm.PubKeyMultisig",
-        "threshold": signatureRequired,
-        "pubkeys": compressedPubkeys.map((compressedPubkey) => {
-          return {
-            "@type": "/tm.PubKeySecp256k1",
-            value: compressedPubkey,
-          };
-        })
+        const mspk = {
+          "@type": "/tm.PubKeyMultisig",
+          threshold: signatureRequired,
+          pubkeys: compressedPubkeys.map((compressedPubkey) => {
+            return {
+              "@type": "/tm.PubKeySecp256k1",
+              value: compressedPubkey,
+            };
+          }),
+        };
+        multisigPubkeyJson = JSON.stringify(mspk);
+        addrPrefix = "g";
+        break;
       }
-      multisigPubkeyJson = JSON.stringify(mspk) 
-      addrPrefix = "g"
-      break
-    }
-    default: {
-      throw new Error("should not happen")
-    }
+
+      default: {
+        throw new Error("should not happen");
+      }
     }
 
     try {

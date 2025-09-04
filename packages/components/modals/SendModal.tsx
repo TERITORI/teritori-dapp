@@ -1,5 +1,9 @@
 import { Decimal } from "@cosmjs/math";
 import { MsgSendEncodeObject } from "@cosmjs/stargate";
+import { GnoJSONRPCProvider, MsgSend } from "@gnolang/gno-js-client";
+import { TxFee } from "@gnolang/tm2-js-client";
+import { useQueryClient } from "@tanstack/react-query";
+import Long from "long";
 import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -30,6 +34,10 @@ import { SearchNSInputContainer } from "../inputs/SearchNSInputContainer";
 import { TextInputCustom } from "../inputs/TextInputCustom";
 import { SpacerColumn, SpacerRow } from "../spacer";
 
+import { useMultisigAuthToken } from "@/hooks/multisig/useMultisigAuthToken";
+import { useMultisigClient } from "@/hooks/multisig/useMultisigClient";
+import { multisigTransactionsQueryKey } from "@/hooks/multisig/useMultisigTransactions";
+import { multisigTransactionsCountsQueryKey } from "@/hooks/multisig/useMultisigTransactionsCounts";
 import { TransactionForm } from "@/utils/types/wallet";
 
 type SendModalProps = {
@@ -65,6 +73,9 @@ export const SendModal: React.FC<SendModalProps> = ({
   const [userNetwork, userAddress] = parseUserId(selectedUserId);
   const networkId = userNetwork?.id;
   const { balances } = useBalances(userNetwork?.id, userAddress);
+  const multisigAuthToken = useMultisigAuthToken(selectedWallet?.userId);
+  const multisigClient = useMultisigClient(networkId);
+  const queryClient = useQueryClient();
 
   const ModalHeader = useCallback(
     () => (
@@ -105,23 +116,76 @@ export const SendModal: React.FC<SendModalProps> = ({
       ).atomics;
 
       if (userNetwork?.kind === NetworkKind.Gno) {
-        const adena = (window as any).adena;
-        const res = await adena.DoContract({
-          messages: [
-            {
-              type: "/bank.MsgSend",
-              value: {
-                from_address: sender,
-                to_address: receiver,
-                amount: `${amount}ugnot`,
-              },
-            },
-          ],
-          gasFee: 1,
-          gasWanted: 50000,
-        });
-        if (res.status !== "success") {
-          throw new Error(res.message);
+        switch (userKind) {
+          case UserKind.Single: {
+            const adena = (window as any).adena;
+            const res = await adena.DoContract({
+              messages: [
+                {
+                  type: "/bank.MsgSend",
+                  value: {
+                    from_address: sender,
+                    to_address: receiver,
+                    amount: `${amount}ugnot`,
+                  },
+                },
+              ],
+              gasFee: 1,
+              gasWanted: 50000,
+            });
+            if (res.status !== "success") {
+              throw new Error(res.message);
+            }
+            break;
+          }
+
+          case UserKind.Multisig: {
+            const client = new GnoJSONRPCProvider(userNetwork.endpoint);
+
+            const account = await client.getAccount(userAddress);
+
+            // XXX: find good values
+            const fee = TxFee.create({
+              gas_wanted: Long.fromString("500000"),
+              gas_fee: "500ugnot",
+            });
+
+            const encodedMsg = MsgSend.encode({
+              from_address: sender,
+              to_address: receiver,
+              amount: `${amount}ugnot`,
+            }).finish();
+
+            await multisigClient.CreateTransaction({
+              chainType: userNetwork.kind.toLowerCase(),
+              authToken: multisigAuthToken,
+              multisigAddress: userAddress,
+              chainId: userNetwork.chainId,
+              feeJson: JSON.stringify(TxFee.toJSON(fee)),
+              msgs: [
+                {
+                  typeUrl: "/bank.MsgSend",
+                  value: encodedMsg,
+                },
+              ],
+              sequence: parseInt(account.BaseAccount.sequence, 10),
+              accountNumber: parseInt(account.BaseAccount.account_number, 10),
+            });
+            await queryClient.invalidateQueries([
+              ...multisigTransactionsQueryKey(networkId, userId),
+            ]);
+            await queryClient.invalidateQueries([
+              ...multisigTransactionsQueryKey(networkId, undefined),
+            ]);
+            await queryClient.invalidateQueries([
+              ...multisigTransactionsCountsQueryKey(networkId),
+            ]);
+            break;
+          }
+
+          default: {
+            throw new Error(`unexpected user kind ${userKind}`);
+          }
         }
       } else {
         const cosmosMsg: MsgSendEncodeObject = {
