@@ -22,11 +22,15 @@ export const useMultisigInfo = (id: string | undefined) => {
         return null;
       }
       const [network, multisigAddress] = parseUserId(id);
-      if (network?.kind !== NetworkKind.Cosmos) {
+      if (
+        network?.kind !== NetworkKind.Cosmos &&
+        network?.kind !== NetworkKind.Gno
+      ) {
         return null;
       }
       try {
         const { multisig } = await client.MultisigInfo({
+          chainType: network.kind.toLowerCase(),
           authToken,
           multisigAddress,
           chainId: network.chainId,
