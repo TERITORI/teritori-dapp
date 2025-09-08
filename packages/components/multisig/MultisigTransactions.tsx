@@ -55,7 +55,7 @@ export const MultisigTransactions: FC<{
         ...filteredTabValues(
           counts?.byType || [],
           ExecutionState.EXECUTION_STATE_UNSPECIFIED,
-          ["/cosmos.bank.v1beta1.MsgSend"],
+          ["/cosmos.bank.v1beta1.MsgSend", "/bank.MsgSend"],
         ),
       },
       stake: {

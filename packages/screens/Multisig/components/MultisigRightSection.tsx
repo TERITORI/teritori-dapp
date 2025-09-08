@@ -1,4 +1,5 @@
 import { Decimal } from "@cosmjs/math";
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useRoute } from "@react-navigation/native";
 import { useQueryClient } from "@tanstack/react-query";
 import { Buffer } from "buffer";
@@ -33,12 +34,14 @@ import { useBalances } from "@/hooks/useBalances";
 import { useRunOrProposeTransaction } from "@/hooks/useRunOrProposeTransaction";
 import {
   getCosmosNetworkByChainId,
+  getGnoNetworkByChainId,
   getNativeCurrency,
   getNonSigningStargateClient,
   getStakingCurrency,
   getUserId,
   keplrCurrencyFromNativeCurrencyInfo,
   NetworkFeature,
+  NetworkInfoBase,
   parseUserId,
   UserKind,
 } from "@/networks";
@@ -216,22 +219,50 @@ export const MultisigRightSection: React.FC = () => {
           fullWidth
           loader
           onPress={wrapWithFeedback(async () => {
-            const network = getCosmosNetworkByChainId(multisig.chainId);
-            if (!network) {
-              throw new Error("Invalid multisig network");
+            let network: NetworkInfoBase;
+            let sequence: number;
+            switch (multisig.chainType) {
+              case "cosmos": {
+                const cosmosNetwork = getCosmosNetworkByChainId(
+                  multisig.chainId,
+                );
+                if (!cosmosNetwork) {
+                  throw new Error("Invalid multisig network");
+                }
+                const stargateClient = await getNonSigningStargateClient(
+                  cosmosNetwork.id,
+                );
+                if (!stargateClient) {
+                  throw new Error("Invalid multisig network");
+                }
+                const account = await stargateClient.getAccount(
+                  multisig.address,
+                );
+                network = cosmosNetwork;
+                sequence = account?.sequence || 0;
+                break;
+              }
+              case "gno": {
+                const gnoNetwork = getGnoNetworkByChainId(multisig.chainId);
+                if (!gnoNetwork) {
+                  throw new Error("Invalid multisig network");
+                }
+                const client = new GnoJSONRPCProvider(gnoNetwork.endpoint);
+                const account = await client.getAccount(multisig.address);
+                sequence = parseInt(account.BaseAccount.sequence, 10);
+                network = gnoNetwork;
+                break;
+              }
+              default: {
+                throw new Error(`unknown chain type ${multisig.chainType}`);
+              }
             }
-            const stargateClient = await getNonSigningStargateClient(
-              network.id,
-            );
-            if (!stargateClient) {
-              throw new Error("Invalid multisig network");
-            }
-            const account = await stargateClient.getAccount(multisig.address);
             await multisigClient.ClearSignatures({
               authToken,
               multisigChainId: multisig.chainId,
+              chainType: multisig.chainType,
               multisigAddress: multisig.address,
-              sequence: account?.sequence || 0,
+              sequence,
             });
             await queryClient.invalidateQueries(
               multisigTransactionsQueryKey(

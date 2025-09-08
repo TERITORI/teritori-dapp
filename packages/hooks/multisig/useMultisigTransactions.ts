@@ -86,7 +86,14 @@ export const useMultisigTransactions = (
               const tf = TxFee.fromJSON(JSON.parse(tx.feeJson));
               const t: ParsedTransaction = {
                 ...tx,
-                msgs,
+                msgs: msgs.map((msg) => {
+                  const val = { ...msg };
+                  delete val["@type"];
+                  return {
+                    typeUrl: msg["@type"],
+                    value: val,
+                  };
+                }),
                 fee: {
                   // XXX: using cosmos's StdFee for now but could be improved
                   amount: [

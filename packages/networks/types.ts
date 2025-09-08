@@ -12,7 +12,7 @@ export enum NetworkKind {
   Starknet = "Starknet",
 }
 
-interface NetworkInfoBase {
+export interface NetworkInfoBase {
   id: string;
   displayName: string;
   kind: NetworkKind;

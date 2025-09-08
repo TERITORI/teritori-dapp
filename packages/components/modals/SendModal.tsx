@@ -97,11 +97,7 @@ export const SendModal: React.FC<SendModalProps> = ({
 
   const onPressSend = async (formData: TransactionForm) => {
     try {
-      const sender = selectedWallet?.address;
       const receiver = formData.toAddress;
-      if (!sender) {
-        throw new Error("no sender");
-      }
       //TODO: handle contacts
       if (!receiver) {
         throw new Error("no receiver");
@@ -116,8 +112,12 @@ export const SendModal: React.FC<SendModalProps> = ({
       ).atomics;
 
       if (userNetwork?.kind === NetworkKind.Gno) {
+        const sender = selectedWallet?.address;
         switch (userKind) {
           case UserKind.Single: {
+            if (!sender) {
+              throw new Error("no sender");
+            }
             const adena = (window as any).adena;
             const res = await adena.DoContract({
               messages: [
@@ -140,6 +140,10 @@ export const SendModal: React.FC<SendModalProps> = ({
           }
 
           case UserKind.Multisig: {
+            const sender = userAddress;
+            if (!sender) {
+              throw new Error("no sender");
+            }
             const client = new GnoJSONRPCProvider(userNetwork.endpoint);
 
             const account = await client.getAccount(userAddress);

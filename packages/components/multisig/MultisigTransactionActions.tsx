@@ -27,6 +27,7 @@ export const MultisigTransactionActions: React.FC<
   btnSquaresBackgroundColor,
   signatures,
   chainId,
+  chainType,
   multisigPubkeyJson,
   id,
   finalHash: txHash,
@@ -64,6 +65,7 @@ export const MultisigTransactionActions: React.FC<
   const onApprove = () =>
     approve({
       tx: {
+        chainType,
         chainId,
         multisigAddress,
         fee,
@@ -83,6 +85,8 @@ export const MultisigTransactionActions: React.FC<
         sequence,
         chainId,
         multisigAddress,
+        multisigPubkeyJson,
+        chainType,
       },
       currentSignatures: signatures,
       // FIXME: sanitize

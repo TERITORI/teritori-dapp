@@ -291,6 +291,15 @@ export const getCosmosNetworkByChainId = (chainId: string | undefined) => {
   });
 };
 
+export const getGnoNetworkByChainId = (chainId: string | undefined) => {
+  return allNetworks.find((n): n is GnoNetworkInfo => {
+    if (n.kind === NetworkKind.Gno && n.chainId === chainId) {
+      return true;
+    }
+    return false;
+  });
+};
+
 export const mustGetCosmosNetwork = (
   networkId: string | undefined,
 ): CosmosNetworkInfo => {

@@ -1,3 +1,5 @@
+import { encodeSecp256k1Pubkey, pubkeyToAddress } from "@cosmjs/amino";
+import { Secp256k1 } from "@cosmjs/crypto";
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { bech32 } from "bech32";
 import shajs from "sha.js";
@@ -149,6 +151,13 @@ export const derivePkgAddr = (pkgPath: string): string => {
     .digest()
     .subarray(0, 20);
   return bech32.encode("g", bech32.toWords(h));
+};
+
+export const addrFromPubkey = (pubkey: Uint8Array<ArrayBufferLike>): string => {
+  return pubkeyToAddress(
+    encodeSecp256k1Pubkey(Secp256k1.compressPubkey(pubkey)),
+    "g",
+  );
 };
 
 const extractGnoStringResponse = (res: string): string => {

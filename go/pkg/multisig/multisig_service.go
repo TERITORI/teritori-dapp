@@ -374,6 +374,11 @@ func (s *multisigService) CreateOrJoinMultisig(_ context.Context, req *multisigp
 			addresses [][]byte
 		)
 
+		_, userAddressBytes, err := bech32.DecodeAndConvert(userAddress)
+		if err != nil {
+			return errors.Wrap(err, "failed to decode user address, this should never happen")
+		}
+
 		// cosmos
 		switch chainType {
 		case "cosmos":
@@ -391,10 +396,6 @@ func (s *multisigService) CreateOrJoinMultisig(_ context.Context, req *multisigp
 				return errors.New("invalid threshold")
 			}
 
-			_, userAddressBytes, err := bech32.DecodeAndConvert(userAddress)
-			if err != nil {
-				return errors.Wrap(err, "failed to decode user address, this should never happen")
-			}
 			found := false
 			for _, pk := range multisigPubKeys {
 				pkType := pk.Type()
@@ -428,8 +429,16 @@ func (s *multisigService) CreateOrJoinMultisig(_ context.Context, req *multisigp
 
 			multisigAddress = pk.Address().String()
 			threshold = uint32(mspk.K)
+			found := false
 			for _, pk := range mspk.PubKeys {
-				addresses = append(addresses, pk.Address().Bytes())
+				memberAddressBytes := pk.Address().Bytes()
+				if bytes.Equal(memberAddressBytes, userAddressBytes) {
+					found = true
+				}
+				addresses = append(addresses, memberAddressBytes)
+			}
+			if !found {
+				return errors.New("user address is not a member of the multisig")
 			}
 		}
 
