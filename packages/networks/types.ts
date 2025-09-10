@@ -139,6 +139,7 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   faucetURL?: string;
   txIndexerURL?: string;
   cockpitNamespace?: string;
+  addressPrefix: string;
 };
 
 export type NetworkInfo =

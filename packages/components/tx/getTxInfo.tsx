@@ -581,6 +581,55 @@ export const getTxInfo = (
           },
         };
       }
+      case "/bank.MsgSend": {
+        const recipientAddress = msg.value.to_address as string;
+        const amountMatch = (msg.value.amount as string).match(/(\d+)\s*(.+)/);
+        const amount = amountMatch?.[1];
+        const denom = amountMatch?.[2];
+        return {
+          name: "Send",
+          small1: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>Sending to: </BrandText>
+              <Username
+                userId={getUserId(network?.id, recipientAddress)}
+                textStyle={opts.textStyle}
+              />
+            </View>
+          ),
+          small2: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>Will receive: </BrandText>
+              <BrandText style={opts.textStyle}>
+                {prettyPrice(network?.id, amount, denom)}
+              </BrandText>
+            </View>
+          ),
+          icon: walletWhiteSVG,
+          MessagePreview: () => {
+            return (
+              <View>
+                <BrandText style={brandTextNormalStyle}>
+                  Send{" "}
+                  <Text style={{ color: "white" }}>
+                    {prettyPrice(network?.id, amount, denom)}
+                  </Text>{" "}
+                  to{" "}
+                  <Username
+                    textStyle={[brandTextNormalStyle, { color: "white" }]}
+                    userId={getUserId(network?.id, recipientAddress)}
+                  />
+                </BrandText>
+                <SpacerColumn size={1} />
+                <BrandText style={brandTextNormalStyle}>
+                  Recipient address:{" "}
+                  <Text style={{ color: "white" }}>{recipientAddress}</Text>
+                </BrandText>
+              </View>
+            );
+          },
+        };
+      }
     }
   } catch (err) {
     console.error(err);

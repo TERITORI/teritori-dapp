@@ -30,11 +30,10 @@ import useSelectedWallet from "../useSelectedWallet";
 import { Signature } from "@/api/multisig/v1/multisig";
 import { useFeedbacks } from "@/context/FeedbacksProvider";
 import {
-  getCosmosNetworkByChainId,
-  getGnoNetworkByChainId,
+  getNetworkByChainId,
   getNonSigningStargateClient,
   getUserId,
-  NetworkInfoBase,
+  NetworkKind,
 } from "@/networks";
 import { addrFromPubkey } from "@/utils/gno";
 
@@ -67,9 +66,12 @@ export const useBroadcastTransaction = () => {
     }) => {
       try {
         let finalHash;
-        let finalNetwork: NetworkInfoBase;
-        switch (tx.chainType) {
-          case "cosmos": {
+        const network = getNetworkByChainId(tx.chainType, tx.chainId);
+        if (!network) {
+          throw new Error("Network not found");
+        }
+        switch (network.kind) {
+          case NetworkKind.Cosmos: {
             if (!pubkey) {
               throw new Error("Pubkey not found");
             }
@@ -87,10 +89,6 @@ export const useBroadcastTransaction = () => {
               ),
             );
 
-            const network = getCosmosNetworkByChainId(tx.chainId);
-            if (!network) {
-              throw new Error("Network not found");
-            }
             const broadcaster = await getNonSigningStargateClient(network?.id);
             const result = await broadcaster.broadcastTx(signedTx);
 
@@ -102,15 +100,9 @@ export const useBroadcastTransaction = () => {
               });
             }
             finalHash = result.transactionHash;
-            finalNetwork = network;
             break;
           }
-          case "gno": {
-            const network = getGnoNetworkByChainId(tx.chainId);
-            if (!network) {
-              throw new Error("Network not found");
-            }
-
+          case NetworkKind.Gno: {
             // eslint-disable-next-line no-restricted-syntax
             const mspk = JSON.parse(tx.multisigPubkeyJson);
 
@@ -187,7 +179,6 @@ export const useBroadcastTransaction = () => {
             );
 
             finalHash = res.hash;
-            finalNetwork = network;
             break;
           }
           default: {
@@ -210,15 +201,15 @@ export const useBroadcastTransaction = () => {
 
         await queryClient.invalidateQueries(
           multisigTransactionsQueryKey(
-            finalNetwork.id,
-            getUserId(finalNetwork.id, tx.multisigAddress),
+            network.id,
+            getUserId(network.id, tx.multisigAddress),
           ),
         );
         await queryClient.invalidateQueries(
-          multisigTransactionsQueryKey(finalNetwork.id, undefined),
+          multisigTransactionsQueryKey(network.id, undefined),
         );
         await queryClient.invalidateQueries(
-          multisigTransactionsCountsQueryKey(finalNetwork.id),
+          multisigTransactionsCountsQueryKey(network.id),
         );
 
         return finalHash;

@@ -300,6 +300,19 @@ export const getGnoNetworkByChainId = (chainId: string | undefined) => {
   });
 };
 
+export const getNetworkByChainId = (
+  chainType: string | undefined,
+  chainId: string | undefined,
+) => {
+  switch (chainType) {
+    case "cosmos":
+      return getCosmosNetworkByChainId(chainId);
+    case "gno":
+      return getGnoNetworkByChainId(chainId);
+  }
+  return undefined;
+};
+
 export const mustGetCosmosNetwork = (
   networkId: string | undefined,
 ): CosmosNetworkInfo => {

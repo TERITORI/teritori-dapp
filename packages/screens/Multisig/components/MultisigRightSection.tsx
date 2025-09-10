@@ -33,15 +33,14 @@ import { userMultisigsQueryKey } from "@/hooks/multisig/useUserMultisigs";
 import { useBalances } from "@/hooks/useBalances";
 import { useRunOrProposeTransaction } from "@/hooks/useRunOrProposeTransaction";
 import {
-  getCosmosNetworkByChainId,
-  getGnoNetworkByChainId,
   getNativeCurrency,
+  getNetworkByChainId,
   getNonSigningStargateClient,
   getStakingCurrency,
   getUserId,
   keplrCurrencyFromNativeCurrencyInfo,
   NetworkFeature,
-  NetworkInfoBase,
+  NetworkKind,
   parseUserId,
   UserKind,
 } from "@/networks";
@@ -219,18 +218,18 @@ export const MultisigRightSection: React.FC = () => {
           fullWidth
           loader
           onPress={wrapWithFeedback(async () => {
-            let network: NetworkInfoBase;
+            const network = getNetworkByChainId(
+              multisig.chainType,
+              multisig.chainId,
+            );
+            if (!network) {
+              throw new Error("Invalid multisig network");
+            }
             let sequence: number;
-            switch (multisig.chainType) {
-              case "cosmos": {
-                const cosmosNetwork = getCosmosNetworkByChainId(
-                  multisig.chainId,
-                );
-                if (!cosmosNetwork) {
-                  throw new Error("Invalid multisig network");
-                }
+            switch (network?.kind) {
+              case NetworkKind.Cosmos: {
                 const stargateClient = await getNonSigningStargateClient(
-                  cosmosNetwork.id,
+                  network.id,
                 );
                 if (!stargateClient) {
                   throw new Error("Invalid multisig network");
@@ -238,23 +237,19 @@ export const MultisigRightSection: React.FC = () => {
                 const account = await stargateClient.getAccount(
                   multisig.address,
                 );
-                network = cosmosNetwork;
                 sequence = account?.sequence || 0;
                 break;
               }
-              case "gno": {
-                const gnoNetwork = getGnoNetworkByChainId(multisig.chainId);
-                if (!gnoNetwork) {
-                  throw new Error("Invalid multisig network");
-                }
-                const client = new GnoJSONRPCProvider(gnoNetwork.endpoint);
+              case NetworkKind.Gno: {
+                const client = new GnoJSONRPCProvider(network.endpoint);
                 const account = await client.getAccount(multisig.address);
                 sequence = parseInt(account.BaseAccount.sequence, 10);
-                network = gnoNetwork;
                 break;
               }
               default: {
-                throw new Error(`unknown chain type ${multisig.chainType}`);
+                throw new Error(
+                  `Unknown network ${multisig.chainType}/${multisig.chainId}`,
+                );
               }
             }
             await multisigClient.ClearSignatures({
@@ -439,8 +434,11 @@ const JoinMultisigModal: React.FC<{
             if (!authToken) {
               throw new Error("Need an auth token");
             }
-            const cosmosNetwork = getCosmosNetworkByChainId(multisig.chainId);
-            if (!cosmosNetwork) {
+            const network = getNetworkByChainId(
+              multisig.chainType,
+              multisig.chainId,
+            );
+            if (!network) {
               throw new Error("Invalid multisig network");
             }
             await multisigClient.CreateOrJoinMultisig({
@@ -449,13 +447,13 @@ const JoinMultisigModal: React.FC<{
               multisigPubkeyJson: multisig.pubkeyJson,
               authToken,
               name,
-              bech32Prefix: cosmosNetwork.addressPrefix,
+              bech32Prefix: network?.addressPrefix,
             });
             await queryClient.invalidateQueries(
               multisigInfoQueryKey(multisigId),
             );
             await queryClient.invalidateQueries(
-              multisigTransactionsQueryKey(cosmosNetwork.id, undefined),
+              multisigTransactionsQueryKey(network?.id, undefined),
             );
             await queryClient.invalidateQueries(userMultisigsQueryKey(userId));
             onClose?.();

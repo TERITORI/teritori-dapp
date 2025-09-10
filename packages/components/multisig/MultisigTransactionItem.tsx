@@ -5,7 +5,7 @@ import { StyleSheet, View, ViewStyle } from "react-native";
 import { MultisigTransactionActions } from "./MultisigTransactionActions";
 import { MultisigTransactionModal } from "./MultisigTransactionModal";
 import { ParsedTransaction } from "../../hooks/multisig/useMultisigTransactions";
-import { getCosmosNetworkByChainId, getUserId } from "../../networks";
+import { getNetworkByChainId, getUserId } from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import {
   neutral17,
@@ -35,6 +35,7 @@ export const MultisigTransactionItem: React.FC<MultisigTransactionItemProps> = (
   props,
 ) => {
   const {
+    chainType,
     chainId,
     msgs,
     createdAt,
@@ -44,7 +45,7 @@ export const MultisigTransactionItem: React.FC<MultisigTransactionItemProps> = (
     signatures,
   } = props;
   const navigation = useAppNavigation();
-  const network = getCosmosNetworkByChainId(chainId);
+  const network = getNetworkByChainId(chainType, chainId);
   const creatorId = getUserId(network?.id, creatorAddress);
   const [isHovered, setHovered] = useState(false);
   const [isProposalModalVisible, setProposalModalVisible] = useState(false);

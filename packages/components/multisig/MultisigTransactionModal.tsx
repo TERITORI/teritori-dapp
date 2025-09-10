@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { View, ViewStyle } from "react-native";
 
 import { MultisigTransactionItemProps } from "./MultisigTransactionItem";
-import { getCosmosNetworkByChainId, getUserId } from "../../networks";
+import { getNetworkByChainId, getUserId } from "../../networks";
 import { fontSemibold14 } from "../../utils/style/fonts";
 import { modalMarginPadding } from "../../utils/style/modals";
 import { BrandText } from "../BrandText";
@@ -16,7 +16,10 @@ export const MultisigTransactionModal: FC<{
   onClose: () => void;
   transaction: MultisigTransactionItemProps;
 }> = ({ visible, onClose, transaction }) => {
-  const network = getCosmosNetworkByChainId(transaction.chainId);
+  const network = getNetworkByChainId(
+    transaction.chainType,
+    transaction.chainId,
+  );
   const creatorId = getUserId(network?.id, transaction.creatorAddress);
   return (
     <ModalBase
