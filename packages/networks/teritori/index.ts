@@ -38,6 +38,7 @@ export const teritoriNetwork: CosmosNetworkInfo = {
     NetworkFeature.NFTMarketplaceLeaderboard,
     NetworkFeature.CosmWasmNFTsBurner,
     NetworkFeature.CosmWasmRakki,
+    NetworkFeature.NativeStaking,
   ],
   featureObjects: [burnCapitalFeature, rakkiFeature],
   registryName: "teritori",

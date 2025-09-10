@@ -9,7 +9,7 @@ export const osmosisTestnetNetwork: NetworkInfo = {
   overrides: "cosmos-registry:osmosistestnet",
   displayName: "Osmosis Latest Testnet",
   icon: "osmosis.svg",
-  features: [NetworkFeature.Swap],
+  features: [NetworkFeature.Swap, NetworkFeature.NativeStaking],
   currencies: osmosisTestnetCurrencies,
   txExplorer: "https://testnet.mintscan.io/osmosis-testnet/txs/$hash",
   accountExplorer:

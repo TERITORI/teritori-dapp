@@ -74,6 +74,7 @@ export const teritoriTestnetNetwork: CosmosNetworkInfo = {
     NetworkFeature.NFTMarketplaceLeaderboard,
     NetworkFeature.CosmWasmNFTsBurner,
     NetworkFeature.CosmWasmRakki,
+    NetworkFeature.NativeStaking,
   ],
   featureObjects: [
     premiumFeedFeature,

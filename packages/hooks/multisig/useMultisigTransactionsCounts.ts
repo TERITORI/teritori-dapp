@@ -4,7 +4,7 @@ import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
 import useSelectedWallet from "../useSelectedWallet";
 
-import { getCosmosNetwork, parseUserId } from "@/networks";
+import { NetworkKind, parseUserId } from "@/networks";
 
 export const multisigTransactionsCountsQueryKey = (
   networkId: string | undefined,
@@ -27,15 +27,17 @@ export const useMultisigTransactionsCounts = (
       multisigClient,
     ],
     async () => {
-      const cosmosNetwork = getCosmosNetwork(network?.id);
-      if (!cosmosNetwork) {
+      if (
+        network?.kind !== NetworkKind.Cosmos &&
+        network?.kind !== NetworkKind.Gno
+      ) {
         return null;
       }
       const [, multisigAddress] = parseUserId(multisigUserId);
       const counts = await multisigClient?.TransactionsCounts({
         chainType: network?.kind.toLowerCase(),
         authToken,
-        chainId: cosmosNetwork.chainId,
+        chainId: network.chainId,
         multisigAddress,
       });
       return counts;

@@ -1,5 +1,5 @@
 import { cosmosHubThetaCurrencies } from "./currencies";
-import { NetworkInfo, NetworkKind } from "../types";
+import { NetworkFeature, NetworkInfo, NetworkKind } from "../types";
 
 export const cosmosThetaNetwork: NetworkInfo = {
   id: "cosmos-hub-theta",
@@ -7,7 +7,7 @@ export const cosmosThetaNetwork: NetworkInfo = {
   chainId: "theta-testnet-001",
   displayName: "Cosmos Hub Theta Testnet",
   icon: "cosmos-hub.svg",
-  features: [],
+  features: [NetworkFeature.NativeStaking],
   overrides: "cosmos-registry:cosmoshubtestnet",
   registryName: "cosmoshubtestnet",
   currencies: cosmosHubThetaCurrencies,

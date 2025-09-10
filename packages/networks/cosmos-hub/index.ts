@@ -1,5 +1,5 @@
 import { cosmosHubCurrencies } from "./currencies";
-import { NetworkKind, NetworkInfo } from "../types";
+import { NetworkKind, NetworkInfo, NetworkFeature } from "../types";
 
 export const cosmosNetwork: NetworkInfo = {
   id: "cosmos-hub",
@@ -7,7 +7,7 @@ export const cosmosNetwork: NetworkInfo = {
   chainId: "cosmoshub-4",
   displayName: "Cosmos Hub",
   icon: "cosmos-hub.svg",
-  features: [],
+  features: [NetworkFeature.NativeStaking],
   currencies: cosmosHubCurrencies,
   overrides: "cosmos-registry:cosmoshub",
   registryName: "cosmoshub",

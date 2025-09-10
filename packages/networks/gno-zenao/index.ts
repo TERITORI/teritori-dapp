@@ -40,6 +40,7 @@ export const gnoZenaoNetwork: GnoNetworkInfo = {
   txExplorer: "",
   accountExplorer: "",
   contractExplorer: "",
+  addressPrefix: "g",
 };
 
 const customGnoscanParams = (network: GnoNetworkInfo) => {

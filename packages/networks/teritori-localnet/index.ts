@@ -35,6 +35,7 @@ export const teritoriLocalnetNetwork: NetworkInfo = {
     NetworkFeature.CosmWasmNFTLaunchpad,
     NetworkFeature.RiotP2E,
     NetworkFeature.NFTMarketplaceLeaderboard,
+    NetworkFeature.NativeStaking,
   ],
   featureObjects: [cosmwasmNftLaunchpadFeature],
   currencies: teritoriLocalnetCurrencies,

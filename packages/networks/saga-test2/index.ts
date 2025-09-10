@@ -1,4 +1,4 @@
-import { CosmosNetworkInfo, NetworkKind } from "../types";
+import { CosmosNetworkInfo, NetworkFeature, NetworkKind } from "../types";
 
 export const sagaTest2: CosmosNetworkInfo = {
   id: "sagatestnet2",
@@ -18,7 +18,7 @@ export const sagaTest2: CosmosNetworkInfo = {
       variant: "cosmos",
     },
   ],
-  features: [],
+  features: [NetworkFeature.NativeStaking],
   featureObjects: [],
   idPrefix: "sagatestnet2",
   addressPrefix: "saga",
