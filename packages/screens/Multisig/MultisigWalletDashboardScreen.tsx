@@ -97,7 +97,6 @@ export const MultisigWalletDashboardScreen: ScreenFC<
 
       <View
         style={{
-          marginHorizontal: layout.contentSpacing,
           marginTop: layout.topContentSpacingWithHeading,
         }}
       >
