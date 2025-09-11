@@ -7,6 +7,7 @@ import { useNSMintPrice } from "./useNSMintPrice";
 import { useVaultNFTInfo } from "./useVaultNFTInfo";
 
 import {
+  getNameOrTokenIdByNetwork,
   getNativeCurrency,
   getNetwork,
   getNftId,
@@ -16,22 +17,6 @@ import {
 import { CoingeckoCoin } from "@/utils/coingecko";
 import { prettyPrice } from "@/utils/coins";
 import { NSAvailability } from "@/utils/types/tns";
-
-const getNameOrTokenIdByNetwork = (
-  network: NetworkInfo | undefined,
-  name: string,
-) => {
-  if (!name) return "";
-
-  switch (network?.kind) {
-    case NetworkKind.Cosmos:
-      return name + network?.nameServiceTLD;
-    case NetworkKind.Gno:
-      return name + ".gno";
-    default:
-      return name;
-  }
-};
 
 const getNftIdByNetwork = (
   network: NetworkInfo | undefined,
@@ -47,19 +32,19 @@ export const useNSAvailability = (
   name: string,
 ): NSAvailability => {
   const network = getNetwork(networkId);
-  const _tokenId = getNameOrTokenIdByNetwork(network, name);
-  const tokenId = useDebounce(_tokenId, 500);
+  const tokenId = getNameOrTokenIdByNetwork(network, name);
+  const debouncedTokenId = useDebounce(tokenId, 500);
 
   const { nsMintPrice, isLoading: isLoadingNSMintPrice } = useNSMintPrice(
     networkId,
-    tokenId,
+    debouncedTokenId,
   );
 
   const { nameAvailable, loading: isLoadingNameAvailability } =
-    useNSMintAvailability(networkId, tokenId);
+    useNSMintAvailability(networkId, debouncedTokenId);
 
   const { vaultNFTInfo, isLoading: isLoadingVaultNFTInfo } = useVaultNFTInfo(
-    getNftIdByNetwork(network, tokenId),
+    getNftIdByNetwork(network, debouncedTokenId),
   );
 
   const requestedPrices: CoingeckoCoin[] = [];

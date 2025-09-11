@@ -70,8 +70,6 @@ export const MultisigTransactions: FC<{
       },
     };
 
-    console.log("netififi", network);
-
     if (network?.features.includes(NetworkFeature.NativeStaking)) {
       infos.stake = {
         name: "Staking",

@@ -11,14 +11,10 @@ export const useVaultNFTInfo = (nftId: string | undefined) => {
   const { data, ...other } = useQuery(
     ["vaultNFTInfo", nftId],
     async () => {
-      console.log("getting nft info of ", nftId);
-
       const [nftNetwork, nftContractAddress, tokenId] = parseNftId(nftId);
       if (!nftNetwork || !nftContractAddress || !tokenId) {
         return null;
       }
-
-      console.log("parsed nft info", nftNetwork, nftContractAddress, tokenId);
 
       const network = getCosmosNetwork(nftNetwork.id);
       if (!network?.vaultContractAddress) {

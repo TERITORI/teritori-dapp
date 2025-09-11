@@ -43,7 +43,7 @@ const gnoGetNSNameInfo = async (
       addressOrName.slice(0, -".gno".length),
     );
 
-    if (!address) return;
+    if (!address) return null;
   }
 
   const profile = await gnoGetUserProfile(network, address);
@@ -160,8 +160,8 @@ const gnoGetAddressByUsername = async (
 
   try {
     const res = await provider.evaluateExpression(
-      network.nameServiceContractAddress,
-      `GetUserByName(${JSON.stringify(name)}).Address`,
+      "gno.land/r/sys/users",
+      `nameStore.Get(${JSON.stringify(name)}).Address`,
     );
     const address = extractGnoAddress(res);
     return address;
