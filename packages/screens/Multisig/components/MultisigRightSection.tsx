@@ -46,12 +46,7 @@ import {
   UserKind,
 } from "@/networks";
 import { AppRouteType, useAppNavigation } from "@/utils/navigation";
-import {
-  neutral33,
-  neutral55,
-  neutral77,
-  primaryColor,
-} from "@/utils/style/colors";
+import { neutral55, neutral77, primaryColor } from "@/utils/style/colors";
 import { fontRegular12, fontRegular13 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
@@ -296,8 +291,6 @@ export const MultisigRightSection: React.FC = () => {
 const containerCStyle: ViewStyle = {
   width: 300,
   height: "100%",
-  borderLeftWidth: 1,
-  borderColor: neutral33,
   padding: layout.spacing_x2_5,
 };
 

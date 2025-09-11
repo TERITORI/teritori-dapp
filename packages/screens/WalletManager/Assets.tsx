@@ -35,6 +35,8 @@ export const Assets: React.FC<{
   const [network, userAddress] = parseUserId(userId);
   const { balances } = useBalances(network?.id, userAddress);
 
+  console.log("balances", balances);
+
   if (!network) {
     return null;
   }

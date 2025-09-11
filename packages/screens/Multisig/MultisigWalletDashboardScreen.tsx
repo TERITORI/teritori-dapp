@@ -12,6 +12,7 @@ import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { MultisigTransactions } from "@/components/multisig/MultisigTransactions";
+import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { UserCard } from "@/components/user/UserCard";
 import { useMultisigInfo } from "@/hooks/multisig/useMultisigInfo";
@@ -51,9 +52,6 @@ export const MultisigWalletDashboardScreen: ScreenFC<
         style={{
           flexDirection: "row",
           flex: 1,
-          borderBottomWidth: 1,
-          borderColor: neutral33,
-          minHeight: 490,
         }}
         key={multisigUserId}
       >
@@ -95,11 +93,9 @@ export const MultisigWalletDashboardScreen: ScreenFC<
         <MultisigRightSection />
       </View>
 
-      <View
-        style={{
-          marginTop: layout.topContentSpacingWithHeading,
-        }}
-      >
+      <View>
+        <Separator color={neutral33} />
+        <SpacerColumn size={3} />
         <MultisigTransactions
           title="Transactions"
           userId={userId}

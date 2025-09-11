@@ -1,4 +1,5 @@
 import { Decimal } from "@cosmjs/math";
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
@@ -99,11 +100,11 @@ const getNetworkBalances = async (
     }
 
     case NetworkKind.Gno: {
-      const res = await (window as any).adena.GetAccount();
+      const client = new GnoJSONRPCProvider(network.endpoint);
+      const res = await client.getBalance(address);
       return [
         {
-          amount:
-            res?.data?.coins?.substring(0, res?.data?.coins?.length - 5) || "0",
+          amount: res.toString(),
           denom: "ugnot",
         },
       ];
