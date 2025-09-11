@@ -21,13 +21,23 @@ import { EmptyList } from "../EmptyList";
 import { SpacerColumn } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
 
+import { getNetwork, NetworkFeature } from "@/networks";
+import { TabDefinition } from "@/utils/types/tabs";
+
 const MIN_ITEMS_PER_PAGE = 50;
+
+interface TabInfo extends TabDefinition {
+  types: string[];
+  state: ExecutionState;
+}
 
 export const MultisigTransactions: FC<{
   title?: string;
   userId: string | undefined;
   multisigUserId?: string;
-}> = ({ title, userId, multisigUserId }) => {
+  networkId?: string;
+}> = ({ title, userId, multisigUserId, networkId }) => {
+  const network = getNetwork(networkId);
   const { height: windowHeight } = useWindowDimensions();
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("all");
 
@@ -36,8 +46,8 @@ export const MultisigTransactions: FC<{
     multisigUserId,
   );
 
-  const tabs = useMemo(
-    () => ({
+  const tabs = useMemo(() => {
+    const infos: Record<string, TabInfo> = {
       currentProposals: {
         name: "Current proposals",
         badgeCount: counts?.all?.pending || 0,
@@ -58,7 +68,12 @@ export const MultisigTransactions: FC<{
           ["/cosmos.bank.v1beta1.MsgSend", "/bank.MsgSend"],
         ),
       },
-      stake: {
+    };
+
+    console.log("netififi", network);
+
+    if (network?.features.includes(NetworkFeature.NativeStaking)) {
+      infos.stake = {
         name: "Staking",
         ...filteredTabValues(
           counts?.byType || [],
@@ -70,21 +85,23 @@ export const MultisigTransactions: FC<{
             "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
           ],
         ),
-      },
-      contracts: {
-        name: "Contracts",
-        ...filteredTabValues(
-          counts?.byType || [],
-          ExecutionState.EXECUTION_STATE_UNSPECIFIED,
-          [
-            "/cosmwasm.wasm.v1.MsgInstantiateContract",
-            "/cosmwasm.wasm.v1.MsgExecuteContract",
-          ],
-        ),
-      },
-    }),
-    [counts],
-  );
+      };
+    }
+
+    infos.contracts = {
+      name: "Contracts",
+      ...filteredTabValues(
+        counts?.byType || [],
+        ExecutionState.EXECUTION_STATE_UNSPECIFIED,
+        [
+          "/cosmwasm.wasm.v1.MsgInstantiateContract",
+          "/cosmwasm.wasm.v1.MsgExecuteContract",
+        ],
+      ),
+    };
+
+    return infos;
+  }, [counts, network]);
 
   const {
     data,

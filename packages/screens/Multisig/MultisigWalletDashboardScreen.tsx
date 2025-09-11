@@ -104,6 +104,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
           title="Transactions"
           userId={userId}
           multisigUserId={multisigUserId}
+          networkId={network?.id}
         />
       </View>
     </ScreenContainer>

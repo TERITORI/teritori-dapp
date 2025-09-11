@@ -168,6 +168,7 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
               <MultisigTransactions
                 title="Multisig Transactions Overview"
                 userId={selectedWallet?.userId}
+                networkId={selectedWallet?.networkId}
               />
             </View>
           )}

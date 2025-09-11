@@ -6,6 +6,7 @@ import { Buffer } from "buffer";
 import React, { useState } from "react";
 import { View, ViewStyle } from "react-native";
 
+import { GnoCallModalButton } from "./GnoCallModal";
 import ModalBase from "../../../components/modals/ModalBase";
 import useSelectedWallet from "../../../hooks/useSelectedWallet";
 import { TNSMintNameModal } from "../../TeritoriNameService/TNSMintNameScreen";
@@ -141,14 +142,20 @@ export const MultisigRightSection: React.FC = () => {
         </>,
       );
 
-      actions.push(
-        <PrimaryButton
-          size="M"
-          text="Delegate"
-          fullWidth
-          onPress={() => navigation.navigate("Staking", { multisigId: id })}
-        />,
-      );
+      if (network?.kind === NetworkKind.Gno) {
+        actions.push(<GnoCallModalButton networkId={network?.id} />);
+      }
+
+      if (network?.features.includes(NetworkFeature.NativeStaking)) {
+        actions.push(
+          <PrimaryButton
+            size="M"
+            text="Delegate"
+            fullWidth
+            onPress={() => navigation.navigate("Staking", { multisigId: id })}
+          />,
+        );
+      }
 
       if (network?.features.includes(NetworkFeature.NameService)) {
         actions.push(
