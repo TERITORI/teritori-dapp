@@ -551,19 +551,3 @@ export const contractExplorerLink = (
   }
   return network.contractExplorer.replace("$address", address);
 };
-
-export const getNameOrTokenIdByNetwork = (
-  network: NetworkInfo | undefined,
-  name: string,
-) => {
-  if (!name) return "";
-
-  switch (network?.kind) {
-    case NetworkKind.Cosmos:
-      return name + network?.nameServiceTLD;
-    case NetworkKind.Gno:
-      return name + ".gno";
-    default:
-      return name;
-  }
-};

@@ -18,7 +18,7 @@ const gnoGetMintPrice = async (network: GnoNetworkInfo, tokenId: string) => {
   const provider = new GnoJSONRPCProvider(network.endpoint);
   const rawResp = await provider.evaluateExpression(
     network.nameServiceContractAddress,
-    `registerPrice`,
+    `minFee`,
   );
 
   const price = extractGnoNumber(rawResp);

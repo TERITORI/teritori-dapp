@@ -7,8 +7,9 @@ import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { FindAName } from "@/components/teritoriNameService/FindAName";
 import { TNSCloseHandler } from "@/components/user/types";
 import { useTNS } from "@/context/TNSProvider";
-import { useNSAvailability } from "@/hooks/useNSAvailability";
+import { useNSMintAvailability } from "@/hooks/useNSMintAvailability";
 import { useSelectedNetworkId } from "@/hooks/useSelectedNetwork";
+import { getCosmosNetwork } from "@/networks";
 import { neutral00, neutral33 } from "@/utils/style/colors";
 
 interface TNSRegisterScreenProps {
@@ -22,12 +23,13 @@ export const TNSRegisterScreen: React.FC<TNSRegisterScreenProps> = ({
 
   const networkId = useSelectedNetworkId();
   const { name, setName } = useTNS();
-  const { availability } = useNSAvailability(networkId, name);
+  const network = getCosmosNetwork(networkId);
+  const tokenId = name + network?.nameServiceTLD || "";
+  const { nameAvailable, nameError, loading } = useNSMintAvailability(
+    networkId,
+    tokenId,
+  );
   const width = windowWidth < 457 ? windowWidth : 457;
-
-  const nameAvailable = availability !== "none";
-  const loading = availability === "loading";
-  const nameError = availability === "invalid";
 
   return (
     <GradientModalBase
