@@ -549,5 +549,8 @@ export const contractExplorerLink = (
   if (!network?.contractExplorer) {
     return "/";
   }
-  return network.contractExplorer.replace("$address", address);
+  return network.contractExplorer.replace(
+    "$address",
+    encodeURIComponent(address),
+  );
 };

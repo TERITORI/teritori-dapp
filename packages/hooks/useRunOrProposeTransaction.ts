@@ -1,7 +1,10 @@
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { isDeliverTxFailure, StdFee } from "@cosmjs/stargate";
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
+import { TxFee } from "@gnolang/tm2-js-client";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { Buffer } from "buffer";
+import Long from "long";
 import { useCallback } from "react";
 
 import { useDAOMakeProposal } from "./dao/useDAOMakeProposal";
@@ -14,13 +17,14 @@ import useSelectedWallet from "./useSelectedWallet";
 import { MultisigService, Token } from "@/api/multisig/v1/multisig";
 import { CosmosMsgForEmpty } from "@/contracts-clients/dao-core/DaoCore.types";
 import {
-  getCosmosNetwork,
   getStakingCurrency,
+  NetworkKind,
   parseUserId,
   UserKind,
 } from "@/networks";
 import { cosmosTypesRegistry } from "@/networks/cosmos-types";
 import { getKeplrSigningStargateClient } from "@/networks/signer";
+import { gnoEncodeAny } from "@/utils/gno";
 import { AppNavigationProp, useAppNavigation } from "@/utils/navigation";
 
 export const useRunOrProposeTransaction = (
@@ -107,10 +111,6 @@ const runOrProposeTransaction = async ({
   if (!network) {
     throw new Error("User's network not found");
   }
-  const cosmosNetwork = getCosmosNetwork(network.id);
-  if (!cosmosNetwork) {
-    throw new Error("User's network is not a Cosmos network");
-  }
   const stakingCurrency = getStakingCurrency(network.id);
   if (!stakingCurrency) {
     throw new Error("Staking currency not found");
@@ -136,43 +136,83 @@ const runOrProposeTransaction = async ({
       if (!senderAddress) {
         throw new Error("Sender address not found");
       }
-      const client = await getKeplrSigningStargateClient(network.id);
-      const gasEstimate = 1000000; // TODO: simulate if possible
-      const fee: StdFee = {
-        gas: gasEstimate.toFixed(0),
-        amount: [
-          {
-            amount: (gasEstimate * cosmosNetwork.gasPriceStep.average).toFixed(
-              0,
-            ),
-            denom: stakingCurrency.denom,
-          },
-        ],
-      };
-      const account = await client.getAccount(userAddress);
-      if (!account) {
-        throw new Error("Multisig account not found on chain");
+
+      switch (network.kind) {
+        case NetworkKind.Cosmos: {
+          const client = await getKeplrSigningStargateClient(network.id);
+          const gasEstimate = 1000000; // TODO: simulate if possible
+          const fee: StdFee = {
+            gas: gasEstimate.toFixed(0),
+            amount: [
+              {
+                amount: (gasEstimate * network.gasPriceStep.average).toFixed(0),
+                denom: stakingCurrency.denom,
+              },
+            ],
+          };
+          const account = await client.getAccount(userAddress);
+          if (!account) {
+            throw new Error("Multisig account not found on chain");
+          }
+
+          const encodedMsgs = msgs.map((m) =>
+            cosmosTypesRegistry.encodeAsAny(m),
+          );
+
+          await multisigClient.CreateTransaction({
+            chainType: "cosmos",
+            authToken: multisigAuthToken,
+            multisigAddress: userAddress,
+            chainId: network.chainId,
+            feeJson: JSON.stringify(fee),
+            msgs: encodedMsgs,
+            sequence: account.sequence,
+            accountNumber: account.accountNumber,
+          });
+          break;
+        }
+        case NetworkKind.Gno: {
+          const client = new GnoJSONRPCProvider(network.endpoint);
+          const gasEstimate = 10000000; // TODO: simulate if possible
+
+          const fee: TxFee = {
+            gas_wanted: Long.fromNumber(gasEstimate),
+            gas_fee: `${((gasEstimate / 1000) * 1.05).toFixed(0)}ugnot`, // XXX: fetch gas price from chain
+          };
+
+          const account = await client.getAccount(userAddress);
+          if (!account) {
+            throw new Error("Multisig account not found on chain");
+          }
+
+          const encodedMsgs = msgs.map((msg) =>
+            gnoEncodeAny(msg.typeUrl, msg.value),
+          );
+
+          await multisigClient.CreateTransaction({
+            chainType: "gno",
+            authToken: multisigAuthToken,
+            multisigAddress: userAddress,
+            chainId: network.chainId,
+            feeJson: JSON.stringify(TxFee.toJSON(fee)),
+            msgs: encodedMsgs,
+            sequence: parseInt(account.BaseAccount.sequence, 10),
+            accountNumber: parseInt(account.BaseAccount.account_number, 10),
+          });
+          break;
+        }
+        default: {
+          throw new Error(`Network kind ${network.kind} not supported`);
+        }
       }
-
-      const encodedMsgs = msgs.map((m) => cosmosTypesRegistry.encodeAsAny(m));
-
-      await multisigClient.CreateTransaction({
-        authToken: multisigAuthToken,
-        multisigAddress: userAddress,
-        chainId: cosmosNetwork.chainId,
-        feeJson: JSON.stringify(fee),
-        msgs: encodedMsgs,
-        sequence: account.sequence,
-        accountNumber: account.accountNumber,
-      });
       await queryClient.invalidateQueries([
-        ...multisigTransactionsQueryKey(cosmosNetwork.id, userId),
+        ...multisigTransactionsQueryKey(network.id, userId),
       ]);
       await queryClient.invalidateQueries([
-        ...multisigTransactionsQueryKey(cosmosNetwork.id, undefined),
+        ...multisigTransactionsQueryKey(network.id, undefined),
       ]);
       await queryClient.invalidateQueries([
-        ...multisigTransactionsCountsQueryKey(cosmosNetwork.id),
+        ...multisigTransactionsCountsQueryKey(network.id),
       ]);
       if (navigateToProposals && userId) {
         navigation.navigate("MultisigWalletDashboard", { id: userId });

@@ -96,6 +96,7 @@ export const MultisigTransactions: FC<{
         [
           "/cosmwasm.wasm.v1.MsgInstantiateContract",
           "/cosmwasm.wasm.v1.MsgExecuteContract",
+          "/vm.m_call",
         ],
       ),
     };
@@ -113,6 +114,8 @@ export const MultisigTransactions: FC<{
     tabs[selectedTab].types,
     tabs[selectedTab].state,
   );
+
+  console.log("txs", data);
 
   const list = useMemo(() => {
     if (data)

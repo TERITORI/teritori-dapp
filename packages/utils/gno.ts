@@ -1,6 +1,6 @@
 import { encodeSecp256k1Pubkey, pubkeyToAddress } from "@cosmjs/amino";
 import { Secp256k1 } from "@cosmjs/crypto";
-import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
+import { GnoJSONRPCProvider, MsgCall, MsgSend } from "@gnolang/gno-js-client";
 import { bech32 } from "bech32";
 import shajs from "sha.js";
 
@@ -176,4 +176,29 @@ export const extractGnoJSONResponse = (res: string): unknown => {
   const str = extractGnoStringResponse(res);
   // eslint-disable-next-line no-restricted-syntax
   return JSON.parse(str) as unknown;
+};
+
+// XXX: support all messages
+export const gnoEncodeAny = (
+  typeUrl: string,
+  value: unknown,
+): { typeUrl: string; value: Uint8Array<ArrayBufferLike> } => {
+  let encValue: Uint8Array<ArrayBufferLike>;
+  switch (typeUrl) {
+    case "/vm.m_call": {
+      encValue = MsgCall.encode(MsgCall.fromJSON(value)).finish();
+      break;
+    }
+    case "/bank.MsgSend": {
+      encValue = MsgSend.encode(MsgSend.fromJSON(value)).finish();
+      break;
+    }
+    default: {
+      throw new Error(`unknown msg type ${typeUrl}`);
+    }
+  }
+  return {
+    typeUrl,
+    value: encValue,
+  };
 };

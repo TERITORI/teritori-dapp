@@ -1,5 +1,5 @@
 import { StdSignDoc } from "@cosmjs/amino";
-import { MsgSend } from "@gnolang/gno-js-client";
+import { decodeTxMessages } from "@gnolang/gno-js-client";
 import { PubKeySecp256k1, Tx } from "@gnolang/tm2-js-client";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useQueryClient } from "@tanstack/react-query";
@@ -19,6 +19,7 @@ import { useFeedbacks } from "@/context/FeedbacksProvider";
 import { getUserId } from "@/networks";
 import { cosmosAminoTypes, cosmosTypesRegistry } from "@/networks/cosmos-types";
 import { getKeplrOnlyAminoSigner } from "@/networks/signer";
+import { gnoEncodeAny } from "@/utils/gno";
 
 export const useApproveTransaction = () => {
   const { setToastError } = useFeedbacks();
@@ -166,7 +167,7 @@ export const useApproveTransaction = () => {
             const canonTx = Tx.create({
               messages: tx.msgs.map((msg) => ({
                 type_url: msg.typeUrl,
-                value: MsgSend.encode(msg.value).finish(), // XXX: support other messages
+                value: gnoEncodeAny(msg.typeUrl, msg.value).value,
               })),
               fee: {
                 gas_fee: tx.fee.amount[0].amount + tx.fee.amount[0].denom,
@@ -208,6 +209,16 @@ export const useApproveTransaction = () => {
             signedTx.signatures = [];
 
             if (!isEqual(canonTx, signedTx)) {
+              console.error(
+                "canonTx",
+                canonTx,
+                decodeTxMessages(canonTx.messages),
+              );
+              console.error(
+                "signedTx",
+                signedTx,
+                decodeTxMessages(signedTx.messages),
+              );
               throw new Error(
                 "Tx modified by signer, you can't change the fee or memo in a multisig transaction!",
               );

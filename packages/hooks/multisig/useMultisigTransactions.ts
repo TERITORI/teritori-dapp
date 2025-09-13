@@ -74,6 +74,7 @@ export const useMultisigTransactions = (
         try {
           switch (tx.chainType) {
             case "gno": {
+              console.log("og msgs", tx.msgs);
               const msgs = decodeTxMessages(
                 tx.msgs.map((msg) => {
                   return {
@@ -82,6 +83,7 @@ export const useMultisigTransactions = (
                   };
                 }),
               );
+              console.log("decoded msgs", msgs);
               // eslint-disable-next-line no-restricted-syntax
               const tf = TxFee.fromJSON(JSON.parse(tx.feeJson));
               const t: ParsedTransaction = {

@@ -138,7 +138,9 @@ export const MultisigRightSection: React.FC = () => {
       );
 
       if (network?.kind === NetworkKind.Gno) {
-        actions.push(<GnoCallModalButton networkId={network?.id} />);
+        actions.push(
+          <GnoCallModalButton userId={id} userKind={UserKind.Multisig} />,
+        );
       }
 
       if (network?.features.includes(NetworkFeature.NativeStaking)) {
@@ -152,7 +154,10 @@ export const MultisigRightSection: React.FC = () => {
         );
       }
 
-      if (network?.features.includes(NetworkFeature.NameService)) {
+      if (
+        network?.kind !== NetworkKind.Gno &&
+        network?.features.includes(NetworkFeature.NameService)
+      ) {
         actions.push(
           <>
             <PrimaryButton
