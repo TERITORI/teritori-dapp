@@ -370,6 +370,7 @@ export const MultisigCreateScreen = () => {
                         required: true,
                         validate: (value) => handleAddressChange(index, value),
                       }}
+                      disabled={index === 0}
                       placeHolder="Account address"
                       iconSVG={walletInputSVG}
                     >

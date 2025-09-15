@@ -102,9 +102,9 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
             }
           />
         </View>
-        <SpacerColumn size={3} />
         {!!invitations?.length && (
           <>
+            <SpacerColumn size={3} />
             <View>
               <BrandText style={fontRegular28}>Invitations</BrandText>
               <SpacerColumn size={1.5} />
@@ -148,9 +148,9 @@ export const MultisigScreen: ScreenFC<"Multisig"> = () => {
                 }
               />
             </View>
-            <SpacerColumn size={3} />
           </>
         )}
+        <SpacerColumn size={6} />
       </>
     );
   }, [

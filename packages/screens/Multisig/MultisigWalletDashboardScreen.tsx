@@ -12,14 +12,12 @@ import { BrandText } from "@/components/BrandText";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { ScreenTitle } from "@/components/ScreenContainer/ScreenTitle";
 import { MultisigTransactions } from "@/components/multisig/MultisigTransactions";
-import { Separator } from "@/components/separators/Separator";
 import { SpacerColumn } from "@/components/spacer";
 import { UserCard } from "@/components/user/UserCard";
 import { useMultisigInfo } from "@/hooks/multisig/useMultisigInfo";
 import { getUserId, parseUserId } from "@/networks";
 import { validateAddress } from "@/utils/formRules";
 import { ScreenFC, useAppNavigation } from "@/utils/navigation";
-import { neutral33 } from "@/utils/style/colors";
 import { fontRegular28 } from "@/utils/style/fonts";
 import { layout } from "@/utils/style/layout";
 
@@ -88,7 +86,6 @@ export const MultisigWalletDashboardScreen: ScreenFC<
           </View>
           <MultisigRightSection />
         </View>
-        <Separator color={neutral33} />
         <SpacerColumn size={3} />
       </>
     );
