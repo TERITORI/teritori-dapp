@@ -2,6 +2,7 @@ import React, { FC, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  FlatListProps,
   View,
   useWindowDimensions,
 } from "react-native";
@@ -36,7 +37,8 @@ export const MultisigTransactions: FC<{
   userId: string | undefined;
   multisigUserId?: string;
   networkId?: string;
-}> = ({ title, userId, multisigUserId, networkId }) => {
+  Header?: FlatListProps<unknown>["ListHeaderComponent"];
+}> = ({ title, userId, multisigUserId, networkId, Header }) => {
   const network = getNetwork(networkId);
   const { height: windowHeight } = useWindowDimensions();
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("all");
@@ -126,42 +128,47 @@ export const MultisigTransactions: FC<{
     return [];
   }, [data]);
 
+  const ListHeaderComponent: React.FC = useMemo(() => {
+    const Res = () => (
+      <>
+        {typeof Header === "function" ? <Header /> : undefined}
+        <View>
+          {title && (
+            <>
+              <BrandText style={fontRegular28}>{title}</BrandText>
+              <SpacerColumn size={1.5} />
+            </>
+          )}
+
+          <Tabs
+            items={tabs}
+            onSelect={setSelectedTab}
+            selected={selectedTab}
+            tabContainerStyle={{ height: 64 }}
+          />
+        </View>
+      </>
+    );
+    return Res;
+  }, [Header, selectedTab, tabs, title]);
+
   return (
-    <>
-      <View>
-        {title && (
-          <>
-            <BrandText style={fontRegular28}>{title}</BrandText>
-            <SpacerColumn size={1.5} />
-          </>
-        )}
-
-        <Tabs
-          items={tabs}
-          onSelect={setSelectedTab}
-          selected={selectedTab}
-          tabContainerStyle={{ height: 64 }}
-        />
-      </View>
-
-      <FlatList
-        data={list}
-        renderItem={({ item }) => <MultisigTransactionItem {...item} />}
-        initialNumToRender={MIN_ITEMS_PER_PAGE}
-        keyExtractor={(item) => item.id.toString()}
-        onEndReached={() => fetchNextTransactionsPage()}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom: layout.contentSpacing,
-          flex: 1,
-        }}
-        ListEmptyComponent={
-          txLoading ? null : <EmptyList text="No proposals" />
-        }
-        ListFooterComponent={<ListFooter isTransactionsLoading={txLoading} />}
-        style={{ height: windowHeight - headerHeight - 70 }}
-      />
-    </>
+    <FlatList
+      data={list}
+      ListHeaderComponent={ListHeaderComponent}
+      renderItem={({ item }) => <MultisigTransactionItem {...item} />}
+      initialNumToRender={MIN_ITEMS_PER_PAGE}
+      keyExtractor={(item) => item.id.toString()}
+      onEndReached={() => fetchNextTransactionsPage()}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{
+        paddingBottom: layout.contentSpacing,
+        flex: 1,
+      }}
+      ListEmptyComponent={txLoading ? null : <EmptyList text="No proposals" />}
+      ListFooterComponent={<ListFooter isTransactionsLoading={txLoading} />}
+      style={{ height: windowHeight - headerHeight - 70 }}
+    />
   );
 };
 

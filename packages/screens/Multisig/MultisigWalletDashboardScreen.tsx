@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { StyleProp, View, ViewStyle } from "react-native";
 
@@ -41,68 +41,82 @@ export const MultisigWalletDashboardScreen: ScreenFC<
   const walletName = multisig?.name;
   const membersAddress = multisig?.usersAddresses;
 
+  const Header: React.FC = useMemo(() => {
+    return () => (
+      <>
+        <View
+          style={{
+            flexDirection: "row",
+            flex: 1,
+          }}
+          key={multisigUserId}
+        >
+          <View
+            style={{ flex: 1, paddingTop: layout.topContentSpacingWithHeading }}
+          >
+            <BrandText style={fontRegular28}>General information</BrandText>
+            <SpacerColumn size={2.5} />
+            <MultisigSection title="Multisig Address">
+              <MultisigFormInput<MultisigFormType>
+                control={control}
+                label=""
+                hideLabel
+                name="multisigAddress"
+                rules={{ required: true, validate: validateAddress }}
+                isCopiable
+                isDisabled
+                isOverrideDisabledBorder
+                defaultValue={multisigAddress}
+              />
+            </MultisigSection>
+
+            <MultisigSection
+              isCollapsable
+              title="Members"
+              tresholdCurrentCount={
+                multisig ? multisig?.threshold || 0 : undefined
+              }
+              tresholdMax={membersAddress ? membersAddress.length : undefined}
+              isLoading={isLoading}
+            >
+              <MultisigMembers multisigId={multisigUserId} />
+            </MultisigSection>
+
+            <MultisigSection title="Holdings & Assets" isCollapsable>
+              <Assets userId={multisigUserId} readOnly />
+            </MultisigSection>
+          </View>
+          <MultisigRightSection />
+        </View>
+        <Separator color={neutral33} />
+        <SpacerColumn size={3} />
+      </>
+    );
+  }, [
+    control,
+    isLoading,
+    membersAddress,
+    multisig,
+    multisigAddress,
+    multisigUserId,
+  ]);
+
   return (
     <ScreenContainer
       headerChildren={<ScreenTitle>Dashboard {walletName}</ScreenTitle>}
       isLarge
       onBackPress={() => navigation.navigate("Multisig")}
       forceNetworkId={network?.id}
+      noScroll
+      footerChildren={<></>}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          flex: 1,
-        }}
-        key={multisigUserId}
-      >
-        <View
-          style={{ flex: 1, paddingTop: layout.topContentSpacingWithHeading }}
-        >
-          <BrandText style={fontRegular28}>General information</BrandText>
-          <SpacerColumn size={2.5} />
-          <MultisigSection title="Multisig Address">
-            <MultisigFormInput<MultisigFormType>
-              control={control}
-              label=""
-              hideLabel
-              name="multisigAddress"
-              rules={{ required: true, validate: validateAddress }}
-              isCopiable
-              isDisabled
-              isOverrideDisabledBorder
-              defaultValue={multisigAddress}
-            />
-          </MultisigSection>
-
-          <MultisigSection
-            isCollapsable
-            title="Members"
-            tresholdCurrentCount={
-              multisig ? multisig?.threshold || 0 : undefined
-            }
-            tresholdMax={membersAddress ? membersAddress.length : undefined}
-            isLoading={isLoading}
-          >
-            <MultisigMembers multisigId={multisigUserId} />
-          </MultisigSection>
-
-          <MultisigSection title="Holdings & Assets" isCollapsable>
-            <Assets userId={multisigUserId} readOnly />
-          </MultisigSection>
-        </View>
-        <MultisigRightSection />
-      </View>
-
-      <View>
-        <Separator color={neutral33} />
-        <SpacerColumn size={3} />
-        <MultisigTransactions
-          title="Transactions"
-          userId={userId}
-          multisigUserId={multisigUserId}
-          networkId={network?.id}
-        />
-      </View>
+      <MultisigTransactions
+        title="Transactions"
+        Header={Header}
+        userId={userId}
+        multisigUserId={multisigUserId}
+        networkId={network?.id}
+      />
     </ScreenContainer>
   );
 };

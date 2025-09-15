@@ -8,7 +8,7 @@ import { DEFAULT_FORM_ERRORS } from "@/utils/errors";
 // validator should return false or string to trigger error
 export const validateAddress = (value: string) => {
   try {
-    bech32.decode(value);
+    bech32.decode(value, 200);
     return true;
   } catch {
     return "The address is invalid";

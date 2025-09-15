@@ -97,8 +97,6 @@ const containerCStyle: ViewStyle = {
   borderColor: neutral33,
   position: "relative",
   borderRadius: 12,
-  marginHorizontal: layout.spacing_x2,
-  marginVertical: layout.spacing_x2,
 };
 
 const smallContainerCStyle: ViewStyle = {
