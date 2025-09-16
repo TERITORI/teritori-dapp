@@ -1,4 +1,4 @@
-import { NetworkKind, NetworkInfo } from "../types";
+import { NetworkKind, NetworkInfo, NetworkFeature } from "../types";
 
 export const irisNetwork: NetworkInfo = {
   id: "cosmos-registry:irisnet",
@@ -18,7 +18,7 @@ export const irisNetwork: NetworkInfo = {
       color: "TODO",
     },
   ],
-  features: [],
+  features: [NetworkFeature.NativeStaking],
   featureObjects: [],
   overrides: "cosmos-registry:irisnet",
   registryName: "irisnet",

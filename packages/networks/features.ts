@@ -18,6 +18,7 @@ export enum NetworkFeature {
   NFTMarketplaceLeaderboard = "NFTMarketplaceLeaderboard",
   CosmWasmNFTsBurner = "CosmWasmNFTsBurner",
   CosmWasmRakki = "CosmWasmRakki",
+  NativeStaking = "NativeStaking",
 }
 
 // Marketplace

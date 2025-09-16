@@ -22,18 +22,24 @@ export const useUserMultisigs = (
   const { data, ...other } = useQuery(
     [...userMultisigsQueryKey(userId), joinState, authToken, multisigClient],
     async () => {
-      if (network?.kind !== NetworkKind.Cosmos) {
+      if (
+        network?.kind !== NetworkKind.Cosmos &&
+        network?.kind !== NetworkKind.Gno
+      ) {
         return [];
       }
       if (!authToken) {
         return [];
       }
-      const { multisigs } = await multisigClient.Multisigs({
+      const req = {
+        chainType: network.kind.toLowerCase(),
         limit: batchSize,
         authToken,
         joinState,
         chainId: network.chainId,
-      });
+      };
+      console.log("req", req);
+      const { multisigs } = await multisigClient.Multisigs(req);
       return multisigs;
     },
     { staleTime: Infinity },

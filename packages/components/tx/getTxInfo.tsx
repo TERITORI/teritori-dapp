@@ -17,18 +17,25 @@ import stakingWhiteSVG from "../../../assets/icons/staking_white.svg";
 import tnsWhiteSVG from "../../../assets/icons/tns-service_white.svg";
 import walletWhiteSVG from "../../../assets/icons/wallet_white.svg";
 import { Coin } from "../../api/teritori-chain/cosmos/base/v1beta1/coin";
-import { NetworkInfo, getUserId, NetworkKind } from "../../networks";
+import {
+  NetworkInfo,
+  getUserId,
+  NetworkKind,
+  contractExplorerLink,
+} from "../../networks";
 import { prettyPrice } from "../../utils/coins";
 import { AppNavigationProp } from "../../utils/navigation";
 import { neutral77 } from "../../utils/style/colors";
 import { fontSemibold14 } from "../../utils/style/fonts";
-import { tinyAddress } from "../../utils/text";
+import { capitalize, tinyAddress } from "../../utils/text";
 import { BrandText } from "../BrandText";
+import { Link } from "../Link";
 import { SocialMessageContent } from "../socialFeed/SocialCard/SocialMessageContent";
 import { SpacerColumn } from "../spacer";
 import { MediaPreview } from "../teritoriNameService/MediaPreview";
 import { Username } from "../user/Username";
 
+import { useGnoFunctionsSignatures } from "@/hooks/gno/useGnoFunctionsSignatures";
 import { cosmosTypesRegistry } from "@/networks/cosmos-types";
 
 // once we gather enough different messages here, we should try to establish meaningful abstractions and split this func
@@ -83,7 +90,7 @@ export const getTxInfo = (
     if (msg.stargate) {
       const obj = cosmosTypesRegistry.decode({
         typeUrl: msg.stargate.type_url,
-        value: Buffer.from(msg.stargate.value, "base64"),
+        value: new Uint8Array(Buffer.from(msg.stargate.value, "base64")),
       });
       msg = { typeUrl: msg.stargate.type_url, value: obj };
     } else if (msg.bank) {
@@ -98,7 +105,7 @@ export const getTxInfo = (
             contract: msg.wasm.execute.contract_addr,
             funds: msg.wasm.execute.funds,
             sender: "TODO",
-            msg: Buffer.from(msg.wasm.execute.msg, "base64"),
+            msg: new Uint8Array(Buffer.from(msg.wasm.execute.msg, "base64")),
           },
         };
         msg = execMsg;
@@ -541,7 +548,9 @@ export const getTxInfo = (
       }
       case "/teritori.mint.v1beta1.MsgBurnTokens": {
         const burnerAddress = msg.value.sender;
-        const amount = Coin.decode(Buffer.from(msg.value.amount[0], "utf-8"));
+        const amount = Coin.decode(
+          new Uint8Array(Buffer.from(msg.value.amount[0], "utf-8")),
+        );
         return {
           name: "Burn tokens",
           small1: (
@@ -576,6 +585,134 @@ export const getTxInfo = (
                     userId={getUserId(network?.id, burnerAddress)}
                   />
                 </BrandText>
+              </View>
+            );
+          },
+        };
+      }
+      case "/bank.MsgSend": {
+        const recipientAddress = msg.value.to_address as string;
+        const amountMatch = (msg.value.amount as string).match(/(\d+)\s*(.+)/);
+        const amount = amountMatch?.[1];
+        const denom = amountMatch?.[2];
+        return {
+          name: "Send",
+          small1: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>Sending to: </BrandText>
+              <Username
+                userId={getUserId(network?.id, recipientAddress)}
+                textStyle={opts.textStyle}
+              />
+            </View>
+          ),
+          small2: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>Will receive: </BrandText>
+              <BrandText style={opts.textStyle}>
+                {prettyPrice(network?.id, amount, denom)}
+              </BrandText>
+            </View>
+          ),
+          icon: walletWhiteSVG,
+          MessagePreview: () => {
+            return (
+              <View>
+                <BrandText style={brandTextNormalStyle}>
+                  Send{" "}
+                  <Text style={{ color: "white" }}>
+                    {prettyPrice(network?.id, amount, denom)}
+                  </Text>{" "}
+                  to{" "}
+                  <Username
+                    textStyle={[brandTextNormalStyle, { color: "white" }]}
+                    userId={getUserId(network?.id, recipientAddress)}
+                  />
+                </BrandText>
+                <SpacerColumn size={1} />
+                <BrandText style={brandTextNormalStyle}>
+                  Recipient address:{" "}
+                  <Text style={{ color: "white" }}>{recipientAddress}</Text>
+                </BrandText>
+              </View>
+            );
+          },
+        };
+      }
+      case "/vm.m_call": {
+        const contractAddress = msg.value.pkg_path;
+        const method = msg.value.func;
+        const amountMatch = (msg.value.send as string).match(/(\d+)\s*(.+)/);
+        const amount = amountMatch?.[1];
+        const denom = amountMatch?.[2];
+        return {
+          name: "Call",
+          small1: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>Contract: </BrandText>
+              <Pressable
+                onPress={() => {
+                  // TODO: show tns info using reusable component
+                  const id = getUserId(network?.id, contractAddress);
+                  navigation.navigate("UserPublicProfile", { id });
+                }}
+              >
+                <BrandText style={opts.textStyle}>
+                  {tinyAddress(contractAddress, 10)}
+                </BrandText>
+              </Pressable>
+            </View>
+          ),
+          small2: (
+            <View style={rowCenterCStyle}>
+              <BrandText style={brandTextNormalStyle}>Method: </BrandText>
+              <BrandText style={opts.textStyle}>{method}</BrandText>
+            </View>
+          ),
+          icon: multisigWhiteSVG,
+          MessagePreview: () => {
+            const { data: fnSigs } = useGnoFunctionsSignatures(
+              network?.id,
+              msg.value.pkg_path,
+            );
+            const fnSig = fnSigs?.find((sig) => sig.FuncName === method);
+            return (
+              <View>
+                <BrandText>Call</BrandText>
+                <SpacerColumn size={2.5} />
+                <BrandText style={brandTextNormalStyle}>
+                  Contract address:{" "}
+                  <Link
+                    to={contractExplorerLink(network?.id, msg.value.pkg_path)}
+                  >
+                    <Text style={{ color: "white" }}>{contractAddress}</Text>
+                  </Link>
+                </BrandText>
+                <SpacerColumn size={1} />
+                <BrandText style={brandTextNormalStyle}>
+                  Method: <Text style={{ color: "white" }}>{method}</Text>
+                </BrandText>
+                {msg.value.send && (
+                  <>
+                    <SpacerColumn size={1} />
+                    <BrandText style={brandTextNormalStyle}>
+                      Send:{" "}
+                      <Text style={{ color: "white" }}>
+                        {prettyPrice(network?.id, amount, denom)}
+                      </Text>
+                    </BrandText>
+                  </>
+                )}
+                <SpacerColumn size={1} />
+                {(msg.value.args as string[]).map((arg, idx) => {
+                  const argSig = fnSig?.Params[idx + 1];
+                  const argName = capitalize(argSig?.Name || "arg" + idx);
+                  return (
+                    <BrandText style={brandTextNormalStyle}>
+                      {argName}: <Text style={{ color: "white" }}>{arg}</Text>
+                    </BrandText>
+                  );
+                })}
               </View>
             );
           },

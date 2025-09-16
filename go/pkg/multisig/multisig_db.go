@@ -9,17 +9,19 @@ import (
 )
 
 type UserMultisig struct {
-	MultisigChainID string `gorm:"primaryKey"`
-	UserAddress     string `gorm:"primaryKey"`
-	MultisigAddress string `gorm:"primaryKey"`
-	Multisig        Multisig
-	CreatedAt       time.Time `gorm:"index"`
-	UpdatedAt       time.Time
-	Joined          bool `gorm:"index"`
-	Name            string
+	MultisigChainType string `gorm:"primaryKey,default:cosmos"`
+	MultisigChainID   string `gorm:"primaryKey"`
+	UserAddress       string `gorm:"primaryKey"`
+	MultisigAddress   string `gorm:"primaryKey"`
+	Multisig          Multisig
+	CreatedAt         time.Time `gorm:"index"`
+	UpdatedAt         time.Time
+	Joined            bool `gorm:"index"`
+	Name              string
 }
 
 type Multisig struct {
+	ChainType    string `gorm:"primaryKey,default:cosmos"`
 	ChainID      string `gorm:"primaryKey"`
 	Address      string `gorm:"primaryKey"`
 	CreatedAt    time.Time
@@ -30,20 +32,21 @@ type Multisig struct {
 }
 
 type Transaction struct {
-	ID              uint `gorm:"primaryKey"` // TODO: replace with proto-hash
-	MsgsJSON        datatypes.JSON
-	FeeJSON         string
-	MultisigChainID string
-	MultisigAddress string
-	Multisig        Multisig
-	AccountNumber   uint32    // TODO: check if need ensure unique, can we have two multisig with same address but different account number, maybe it needs to have a combined unique index with sequence
-	Sequence        uint32    // TODO: ensure unique for multisig
-	FinalHash       *string   `gorm:"uniqueIndex"`
-	CreatedAt       time.Time `gorm:"index"`
-	UpdatedAt       time.Time
-	CreatorAddress  string
-	Signatures      []Signature
-	Type            string `gorm:"index"`
+	ID                uint `gorm:"primaryKey"` // TODO: replace with proto-hash
+	MsgsJSON          datatypes.JSON
+	FeeJSON           string
+	MultisigChainType string `gorm:"default:cosmos"`
+	MultisigChainID   string
+	MultisigAddress   string
+	Multisig          Multisig
+	AccountNumber     uint32    // TODO: check if need ensure unique, can we have two multisig with same address but different account number, maybe it needs to have a combined unique index with sequence
+	Sequence          uint32    // TODO: ensure unique for multisig
+	FinalHash         *string   `gorm:"uniqueIndex"`
+	CreatedAt         time.Time `gorm:"index"`
+	UpdatedAt         time.Time
+	CreatorAddress    string
+	Signatures        []Signature
+	Type              string `gorm:"index"`
 }
 
 type Signature struct {
@@ -55,7 +58,7 @@ type Signature struct {
 	UserAddress   string `gorm:"primaryKey"`
 }
 
-func transactionsQuery(db *gorm.DB, userAddress string, chainId string, multisigAddress string, executionState multisigpb.ExecutionState, types []string) *gorm.DB {
+func transactionsQuery(db *gorm.DB, userAddress string, chainType string, chainId string, multisigAddress string, executionState multisigpb.ExecutionState, types []string) *gorm.DB {
 	// we can't use .Joins(...) on signatures because it does not expect a slice
 	query := db.Model(&Transaction{}).
 		Joins("Multisig").
@@ -66,6 +69,10 @@ func transactionsQuery(db *gorm.DB, userAddress string, chainId string, multisig
 
 	if chainId != "" {
 		query = query.Where("transactions.multisig_chain_id = ?", chainId)
+	}
+
+	if chainType != "" {
+		query = query.Where("transactions.multisig_chain_type = ?", chainType)
 	}
 
 	if multisigAddress == "" {

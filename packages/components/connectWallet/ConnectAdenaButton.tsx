@@ -31,12 +31,23 @@ export const ConnectAdenaButton: React.FC<{
       }
 
       dispatch(setIsAdenaConnected(false));
-      const establishResult = await adena.AddEstablish("Teritori dApp");
-      if (establishResult.status === "failure") {
-        throw Error(establishResult.message);
+      try {
+        const establishResult = await adena.AddEstablish("Teritori dApp");
+        if (establishResult.status === "failure") {
+          throw Error(establishResult.message);
+        }
+        console.log("established", establishResult);
+      } catch (err) {
+        if (
+          !(err instanceof Error) ||
+          !err.message.includes(
+            "The account is already connected to this website",
+          )
+        ) {
+          throw err;
+        }
       }
 
-      console.log("established", establishResult);
       dispatch(setIsAdenaConnected(true));
 
       const account = await adena.GetAccount();

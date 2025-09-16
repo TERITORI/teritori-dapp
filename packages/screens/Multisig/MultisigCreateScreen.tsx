@@ -1,4 +1,11 @@
-import { createMultisigThresholdPubkey } from "@cosmjs/amino";
+import {
+  createMultisigThresholdPubkey,
+  pubkeyToAddress,
+  Secp256k1Pubkey,
+} from "@cosmjs/amino";
+import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
+import { Any, PubKeySecp256k1 } from "@gnolang/tm2-js-client";
+import { bech32 } from "bech32";
 import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, View } from "react-native";
@@ -50,7 +57,11 @@ type CreateMultisigWalletFormType = {
   name: string;
 };
 
-const emptyPubKeyGroup = () => ({ address: "", compressedPubkey: "" });
+const emptyPubKeyGroup = () => ({
+  address: "",
+  compressedPubkey: "",
+  kind: "",
+});
 
 export const MultisigCreateScreen = () => {
   const selectedWallet = useSelectedWallet();
@@ -101,30 +112,66 @@ export const MultisigCreateScreen = () => {
       throw new Error("No network selected");
     }
 
-    if (selectedNetwork.kind !== NetworkKind.Cosmos) {
-      throw new Error("Only Cosmos networks are supported");
+    if (
+      selectedNetwork.kind !== NetworkKind.Cosmos &&
+      selectedNetwork.kind !== NetworkKind.Gno
+    ) {
+      throw new Error("Only Cosmos or Gno networks are supported");
     }
 
-    const compressedPubkeys = addressIndexes.map(
-      (item) => item.compressedPubkey,
-    );
-    const pubkeys = compressedPubkeys.map((compressedPubkey) => {
-      return {
-        type: "tendermint/PubKeySecp256k1",
-        value: compressedPubkey,
-      };
-    });
-    const multisigPubkey = createMultisigThresholdPubkey(
-      pubkeys,
-      parseInt(signatureRequired, 10),
-    );
+    let multisigPubkeyJson: string;
+    let addrPrefix: string;
+    switch (selectedNetwork.kind) {
+      case NetworkKind.Cosmos: {
+        const compressedPubkeys = addressIndexes.map(
+          (item) => item.compressedPubkey,
+        );
+        const pubkeys = compressedPubkeys.map((compressedPubkey) => {
+          return {
+            type: "tendermint/PubKeySecp256k1",
+            value: compressedPubkey,
+          };
+        });
+        const multisigPubkey = createMultisigThresholdPubkey(
+          pubkeys,
+          parseInt(signatureRequired, 10),
+        );
+        addrPrefix = selectedNetwork.addressPrefix;
+        multisigPubkeyJson = JSON.stringify(multisigPubkey);
+        break;
+      }
+
+      case NetworkKind.Gno: {
+        const compressedPubkeys = addressIndexes.map(
+          (item) => item.compressedPubkey,
+        );
+        const mspk = {
+          "@type": "/tm.PubKeyMultisig",
+          threshold: signatureRequired,
+          pubkeys: compressedPubkeys.map((compressedPubkey) => {
+            return {
+              "@type": "/tm.PubKeySecp256k1",
+              value: compressedPubkey,
+            };
+          }),
+        };
+        multisigPubkeyJson = JSON.stringify(mspk);
+        addrPrefix = "g";
+        break;
+      }
+
+      default: {
+        throw new Error("should not happen");
+      }
+    }
 
     try {
       const res = await multisigClient.CreateOrJoinMultisig({
-        authToken: { ...authToken, userAddress: "aeae" },
+        chainType: selectedNetwork.kind.toLowerCase(),
+        authToken,
         chainId: selectedNetwork.chainId,
-        bech32Prefix: selectedNetwork.addressPrefix,
-        multisigPubkeyJson: JSON.stringify(multisigPubkey),
+        bech32Prefix: addrPrefix,
+        multisigPubkeyJson,
         name,
       });
 
@@ -138,40 +185,114 @@ export const MultisigCreateScreen = () => {
     }
   };
 
-  const handleAddressChange = async (index: number, value: string) => {
+  const handleAddressChange = async (index: number, address: string) => {
     if (!selectedNetwork) {
       throw new Error("No network selected");
     }
-    if (selectedNetwork.kind !== NetworkKind.Cosmos) {
-      throw new Error("Only Cosmos networks are supported");
+    if (
+      selectedNetwork.kind !== NetworkKind.Cosmos &&
+      selectedNetwork.kind !== NetworkKind.Gno
+    ) {
+      throw new Error("Only Cosmos or Gno networks are supported");
     }
 
-    const resValAddress = validateAddress(value);
-
-    if (resValAddress !== true) return "Invalid address";
-
-    if (!value.includes(selectedNetwork.addressPrefix)) {
-      return `Only ${selectedNetwork.displayName} address is allowed`;
+    const valRes = validateAddress(address);
+    if (valRes !== true) {
+      return valRes;
     }
 
-    const address = value;
-
-    if (addressIndexes.find((a, i) => a.address === address && i !== index))
-      return "This address is already used in this form.";
+    const dcd = bech32.decode(address, 200);
+    const prefix = dcd.prefix;
+    const addrBz = bech32.fromWords(dcd.words);
 
     const tempPubkeys = [...addressIndexes];
 
     try {
       setLoading(true);
-      const account = await getCosmosAccount(
-        getUserId(selectedNetwork?.id, address),
-      );
+      let compressedPubkey: string;
+      let kind: string;
+      switch (selectedNetwork.kind) {
+        case NetworkKind.Cosmos: {
+          if (
+            addressIndexes.find((a, i) => a.address === address && i !== index)
+          ) {
+            return "This address is already used in this form.";
+          }
 
-      if (!account?.pubkey) {
-        return "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig.";
+          const account = await getCosmosAccount(
+            getUserId(selectedNetwork?.id, address),
+          );
+
+          if (!account?.pubkey) {
+            return "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig.";
+          }
+          compressedPubkey = account.pubkey.value;
+          kind = "address";
+          break;
+        }
+        case NetworkKind.Gno: {
+          switch (prefix) {
+            case "g": {
+              const client = new GnoJSONRPCProvider(selectedNetwork.endpoint);
+              try {
+                const account = await client.getAccount(address);
+                const pkval = account.BaseAccount.public_key?.value;
+                if (!pkval) {
+                  return "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig.";
+                }
+                compressedPubkey = pkval;
+              } catch (err) {
+                if (
+                  err instanceof Error &&
+                  err.message.includes("account is not initialized")
+                ) {
+                  return "Account has no public key on chain, this address will need to send a transaction before it can be added to a multisig.";
+                }
+                throw err;
+              }
+              kind = "address";
+              break;
+            }
+            case "gpub": {
+              try {
+                const pkany = Any.decode(new Uint8Array(addrBz));
+                if (pkany.type_url !== "/tm.PubKeySecp256k1") {
+                  return `Invalid pubkey type ${JSON.stringify(pkany.type_url)}`;
+                }
+                const pk = PubKeySecp256k1.decode(pkany.value);
+                compressedPubkey = Buffer.from(pk.key).toString("base64");
+                const cosmosPk: Secp256k1Pubkey = {
+                  type: "tendermint/PubKeySecp256k1",
+                  value: compressedPubkey,
+                };
+                address = pubkeyToAddress(cosmosPk, "g");
+                if (
+                  addressIndexes.find(
+                    (a, i) => a.address === address && i !== index,
+                  )
+                ) {
+                  return "This address is already used in this form.";
+                }
+                kind = "pubkey";
+              } catch (err) {
+                return `Failed to decode pubkey: ${err}`;
+              }
+              break;
+            }
+            default: {
+              return `Unexpected Bech32 prefix ${JSON.stringify(prefix)}`;
+            }
+          }
+          break;
+        }
+        default: {
+          throw new Error(`should not happen`);
+        }
       }
+
       tempPubkeys[index].address = address;
-      tempPubkeys[index].compressedPubkey = account.pubkey.value;
+      tempPubkeys[index].kind = kind;
+      tempPubkeys[index].compressedPubkey = compressedPubkey;
       setAddressIndexes(tempPubkeys);
     } catch {
       return "Failed to get Cosmos account";
@@ -189,7 +310,6 @@ export const MultisigCreateScreen = () => {
           : navigation.navigate("Multisig")
       }
       isLarge
-      forceNetworkKind={NetworkKind.Cosmos}
     >
       <ScrollView
         contentContainerStyle={{
@@ -197,16 +317,15 @@ export const MultisigCreateScreen = () => {
         }}
       >
         <View style={{ height: "100%", maxWidth: 793 }}>
-          <BrandText style={fontRegular28}>Create a Legacy Multisig</BrandText>
+          <BrandText style={fontRegular28}>Create a Multisig</BrandText>
           <SpacerColumn size={2.5} />
           <MultisigSection
             title="What is a Multisignature Wallet?"
             containerStyle={{ maxWidth: 487 }}
           >
             <BrandText style={[fontRegular13, { color: neutralA3 }]}>
-              This wallet adress is owned managed by at least 2 different
-              addresses and require signatures from co-owners to execute a
-              transaction.
+              This wallet adress is managed by at least 2 different addresses
+              and require signatures from co-owners to execute a transaction.
             </BrandText>
           </MultisigSection>
           <SpacerColumn size={3} />
@@ -222,56 +341,63 @@ export const MultisigCreateScreen = () => {
           />
           <SpacerColumn size={3} />
 
-          {addressIndexes.map((_, index) => (
-            <>
-              <View key={index.toString()}>
-                <SearchNSInputContainer
-                  searchText={watch(`addresses.${index}.address`)}
-                  onPressName={(userId) => {
-                    const [, address] = parseUserId(userId);
-                    if (!address) {
-                      return;
-                    }
-                    setValue(`addresses.${index}.address`, address);
-                  }}
-                >
-                  <TextInputCustom<CreateMultisigWalletFormType>
-                    defaultValue={index === 0 ? selectedWallet?.address : ""}
-                    control={control}
-                    name={`addresses.${index}.address`}
-                    variant="labelOutside"
-                    noBrokenCorners
-                    label={"Address #" + (index + 1)}
-                    rules={{
-                      required: true,
-                      validate: (value) => handleAddressChange(index, value),
+          {addressIndexes.map((val, index) => {
+            let label = "Address #" + (index + 1);
+            if (val.kind === "pubkey") {
+              label += ": " + val.address;
+            }
+            return (
+              <>
+                <View key={index.toString()}>
+                  <SearchNSInputContainer
+                    searchText={watch(`addresses.${index}.address`)}
+                    onPressName={(userId) => {
+                      const [, address] = parseUserId(userId);
+                      if (!address) {
+                        return;
+                      }
+                      setValue(`addresses.${index}.address`, address);
                     }}
-                    placeHolder="Account address"
-                    iconSVG={walletInputSVG}
                   >
-                    {addressIndexes.length > 2 && (
-                      <Pressable
-                        style={{
-                          height: 32,
-                          width: 32,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: 10,
-                          backgroundColor: trashBackground,
-                          position: "absolute",
-                          right: 0,
-                        }}
-                        onPress={() => removeAddressField(index)}
-                      >
-                        <SVG source={trashSVG} width={12} height={12} />
-                      </Pressable>
-                    )}
-                  </TextInputCustom>
-                </SearchNSInputContainer>
-              </View>
-              <SpacerColumn size={2.5} />
-            </>
-          ))}
+                    <TextInputCustom<CreateMultisigWalletFormType>
+                      defaultValue={index === 0 ? selectedWallet?.address : ""}
+                      control={control}
+                      name={`addresses.${index}.address`}
+                      variant="labelOutside"
+                      noBrokenCorners
+                      label={label}
+                      rules={{
+                        required: true,
+                        validate: (value) => handleAddressChange(index, value),
+                      }}
+                      disabled={index === 0}
+                      placeHolder="Account address"
+                      iconSVG={walletInputSVG}
+                    >
+                      {addressIndexes.length > 2 && (
+                        <Pressable
+                          style={{
+                            height: 32,
+                            width: 32,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: 10,
+                            backgroundColor: trashBackground,
+                            position: "absolute",
+                            right: 0,
+                          }}
+                          onPress={() => removeAddressField(index)}
+                        >
+                          <SVG source={trashSVG} width={12} height={12} />
+                        </Pressable>
+                      )}
+                    </TextInputCustom>
+                  </SearchNSInputContainer>
+                </View>
+                <SpacerColumn size={2.5} />
+              </>
+            );
+          })}
           <View style={{ flexDirection: "row" }}>
             <SecondaryButton
               size="M"

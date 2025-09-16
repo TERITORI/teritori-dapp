@@ -6,12 +6,18 @@ import (
 	"crypto/ed25519"
 	srand "crypto/rand"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/pkg/multisigpb"
 	"github.com/cosmos/cosmos-sdk/codec/legacy"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
+	gnoamino "github.com/gnolang/gno/tm2/pkg/amino"
+	gnocrypto "github.com/gnolang/gno/tm2/pkg/crypto"
+	_ "github.com/gnolang/gno/tm2/pkg/crypto/ed25519"
+	gnomultisig "github.com/gnolang/gno/tm2/pkg/crypto/multisig"
+	_ "github.com/gnolang/gno/tm2/pkg/crypto/secp256k1"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/types/known/anypb"
@@ -99,6 +105,9 @@ func (s *multisigService) Multisigs(_ context.Context, req *multisigpb.Multisigs
 		if req.ChainId != "" {
 			query = query.Where("multisig_chain_id = ?", req.ChainId)
 		}
+		if req.ChainType != "" {
+			query = query.Where("multisig_chain_type = ?", req.ChainType)
+		}
 		if req.GetJoinState() != multisigpb.JoinState_JOIN_STATE_UNSPECIFIED {
 			query = query.Where("joined = ?", req.GetJoinState() == multisigpb.JoinState_JOIN_STATE_IN)
 		}
@@ -121,6 +130,7 @@ func (s *multisigService) Multisigs(_ context.Context, req *multisigpb.Multisigs
 
 		for _, ms := range userMultisigs {
 			multisigs = append(multisigs, &multisigpb.Multisig{
+				ChainType: ms.MultisigChainType,
 				ChainId:   ms.MultisigChainID,
 				Address:   ms.MultisigAddress,
 				CreatedAt: encodeTime(ms.CreatedAt),
@@ -143,8 +153,10 @@ func (s *multisigService) MultisigInfo(_ context.Context, req *multisigpb.Multis
 		return nil, errors.Wrap(err, "failed to authenticate")
 	}
 
+	chainType := req.GetChainType()
+
 	var userMultisig UserMultisig
-	if err := s.db.First(&userMultisig, "multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", req.GetChainId(), userAddress, req.GetMultisigAddress()).Error; err != nil {
+	if err := s.db.First(&userMultisig, "multisig_chain_type = ? AND multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", chainType, req.GetChainId(), userAddress, req.GetMultisigAddress()).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("not found")
 		}
@@ -152,7 +164,7 @@ func (s *multisigService) MultisigInfo(_ context.Context, req *multisigpb.Multis
 	}
 
 	var multisig Multisig
-	if err := s.db.Preload("Users").First(&multisig, "chain_id = ? AND address = ?", req.GetChainId(), req.GetMultisigAddress()).Error; err != nil {
+	if err := s.db.Preload("Users").First(&multisig, "chain_type = ? AND chain_id = ? AND address = ?", chainType, req.GetChainId(), req.GetMultisigAddress()).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("multisig not found, this should never happen")
 		}
@@ -178,6 +190,7 @@ func (s *multisigService) MultisigInfo(_ context.Context, req *multisigpb.Multis
 
 	return &multisigpb.MultisigInfoResponse{
 		Multisig: &multisigpb.Multisig{
+			ChainType:      multisig.ChainType,
 			ChainId:        multisig.ChainID,
 			Address:        multisig.Address,
 			CreatedAt:      encodeTime(multisig.CreatedAt),
@@ -197,7 +210,7 @@ func (s *multisigService) Transactions(_ context.Context, req *multisigpb.Transa
 	}
 
 	// we can't use .Joins( on signature because it does not expect a slice
-	query := transactionsQuery(s.db, userAddress, req.ChainId, req.MultisigAddress, req.ExecutionState, req.Types)
+	query := transactionsQuery(s.db, userAddress, req.ChainType, req.ChainId, req.MultisigAddress, req.ExecutionState, req.Types)
 
 	// handle cursor
 	startAfterString := req.GetStartAfter()
@@ -251,6 +264,7 @@ func (s *multisigService) Transactions(_ context.Context, req *multisigpb.Transa
 		}
 
 		transactions[i] = &multisigpb.Transaction{
+			ChainType:          tx.MultisigChainType,
 			ChainId:            tx.MultisigChainID,
 			MultisigAddress:    tx.MultisigAddress,
 			AccountNumber:      tx.AccountNumber,
@@ -297,7 +311,7 @@ func (s *multisigService) TransactionsCounts(_ context.Context, req *multisigpb.
 	}
 
 	var countsByType []TransactionsCount
-	query := transactionsQuery(s.db, userAddress, req.ChainId, req.MultisigAddress, multisigpb.ExecutionState_EXECUTION_STATE_UNSPECIFIED, nil)
+	query := transactionsQuery(s.db, userAddress, req.ChainType, req.ChainId, req.MultisigAddress, multisigpb.ExecutionState_EXECUTION_STATE_UNSPECIFIED, nil)
 	if err := query.
 		Select("count(type) as Count, type as Type, final_hash IS NOT NULL as Executed").
 		Group("Type, Executed").
@@ -340,6 +354,11 @@ func (s *multisigService) CreateOrJoinMultisig(_ context.Context, req *multisigp
 	var created, joined bool
 	multisigAddress := ""
 
+	chainType := req.GetChainType()
+	if chainType == "" {
+		return nil, fmt.Errorf("missing chain type")
+	}
+
 	if err := s.db.Transaction(func(tx *gorm.DB) error {
 		userAddress, err := s.authenticate(tx, req.GetAuthToken())
 		if err != nil {
@@ -350,69 +369,110 @@ func (s *multisigService) CreateOrJoinMultisig(_ context.Context, req *multisigp
 		chainID := req.GetChainId()
 		pubkeyJSON := req.GetMultisigPubkeyJson()
 
-		var ms multisig.LegacyAminoPubKey
-		if err := legacy.Cdc.UnmarshalJSON([]byte(pubkeyJSON), &ms); err != nil {
-			return errors.Wrap(err, "failed to unmarshal multisig pubkey json")
-		}
-		multisigAddress, err = bech32.ConvertAndEncode(req.GetBech32Prefix(), ms.Address())
-		if err != nil {
-			return errors.Wrap(err, "failed to encode multisig address")
-		}
-
-		multisigPubKeys := ms.GetPubKeys()
-		if int(ms.Threshold) > len(multisigPubKeys) || ms.Threshold == 0 {
-			return errors.New("invalid threshold")
-		}
+		var (
+			threshold uint32
+			addresses [][]byte
+		)
 
 		_, userAddressBytes, err := bech32.DecodeAndConvert(userAddress)
 		if err != nil {
 			return errors.Wrap(err, "failed to decode user address, this should never happen")
 		}
-		found := false
-		for _, pk := range multisigPubKeys {
-			pkType := pk.Type()
-			if pkType != "secp256k1" {
-				return errors.New("invalid member pubkey type '" + pkType + "'")
+
+		// cosmos
+		switch chainType {
+		case "cosmos":
+			var ms multisig.LegacyAminoPubKey
+			if err := legacy.Cdc.UnmarshalJSON([]byte(pubkeyJSON), &ms); err != nil {
+				return errors.Wrap(err, "failed to unmarshal multisig pubkey json")
 			}
-			memberAddressBytes := pk.Address().Bytes()
-			if bytes.Equal(memberAddressBytes, userAddressBytes) {
-				found = true
+			multisigAddress, err = bech32.ConvertAndEncode(req.GetBech32Prefix(), ms.Address())
+			if err != nil {
+				return errors.Wrap(err, "failed to encode multisig address")
 			}
-		}
-		if !found {
-			return errors.New("user address is not a member of the multisig")
+
+			multisigPubKeys := ms.GetPubKeys()
+			if int(ms.Threshold) > len(multisigPubKeys) || ms.Threshold == 0 {
+				return errors.New("invalid threshold")
+			}
+
+			found := false
+			for _, pk := range multisigPubKeys {
+				pkType := pk.Type()
+				if pkType != "secp256k1" {
+					return errors.New("invalid member pubkey type '" + pkType + "'")
+				}
+				memberAddressBytes := pk.Address().Bytes()
+				if bytes.Equal(memberAddressBytes, userAddressBytes) {
+					found = true
+				}
+			}
+			if !found {
+				return errors.New("user address is not a member of the multisig")
+			}
+
+			threshold = ms.Threshold
+			for _, pk := range multisigPubKeys {
+				addresses = append(addresses, pk.Address().Bytes())
+			}
+
+		case "gno":
+			var pk gnocrypto.PubKey
+			err := gnoamino.UnmarshalJSON([]byte(pubkeyJSON), &pk)
+			if err != nil {
+				return fmt.Errorf("unmarshal pubkey: %w", err)
+			}
+			mspk, ok := pk.(gnomultisig.PubKeyMultisigThreshold)
+			if !ok {
+				return fmt.Errorf("invalid pubkey type: %T", mspk)
+			}
+
+			multisigAddress = pk.Address().String()
+			threshold = uint32(mspk.K)
+			found := false
+			for _, pk := range mspk.PubKeys {
+				memberAddressBytes := pk.Address().Bytes()
+				if bytes.Equal(memberAddressBytes, userAddressBytes) {
+					found = true
+				}
+				addresses = append(addresses, memberAddressBytes)
+			}
+			if !found {
+				return errors.New("user address is not a member of the multisig")
+			}
 		}
 
 		now := timeNow().UTC()
 		var multisig Multisig
-		if err := tx.First(&multisig, "chain_id = ? AND address = ?", chainID, multisigAddress).Error; err != nil {
+		if err := tx.First(&multisig, "chain_type = ? AND chain_id = ? AND address = ?", chainType, chainID, multisigAddress).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				multisig = Multisig{
+					ChainType:    chainType,
 					ChainID:      chainID,
 					Address:      multisigAddress,
 					PubKeyJSON:   pubkeyJSON,
 					CreatedAt:    now,
-					Threshold:    ms.Threshold,
-					MembersCount: uint32(len(multisigPubKeys)),
+					Threshold:    threshold,
+					MembersCount: uint32(len(addresses)),
 				}
 				if err := tx.Save(&multisig).Error; err != nil {
 					return errors.Wrap(err, "failed to save multisig")
 				}
-				for _, pk := range multisigPubKeys {
-					addrBytes := pk.Address().Bytes()
+				for _, addrBytes := range addresses {
 					userAddress, err := bech32.ConvertAndEncode(universalBech32Prefix, addrBytes)
 					if err != nil {
 						return errors.Wrap(err, "failed to encode user address")
 					}
 					var userMultisig UserMultisig
-					if err := tx.First(&userMultisig, "multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", chainID, userAddress, multisigAddress).Error; err != nil {
+					if err := tx.First(&userMultisig, "multisig_chain_type = ? AND multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", chainType, chainID, userAddress, multisigAddress).Error; err != nil {
 						if errors.Is(err, gorm.ErrRecordNotFound) {
 							userMultisig = UserMultisig{
-								MultisigChainID: chainID,
-								UserAddress:     userAddress,
-								MultisigAddress: multisigAddress,
-								CreatedAt:       now,
-								Joined:          false,
+								MultisigChainType: chainType,
+								MultisigChainID:   chainID,
+								UserAddress:       userAddress,
+								MultisigAddress:   multisigAddress,
+								CreatedAt:         now,
+								Joined:            false,
 							}
 							if err := tx.Save(&userMultisig).Error; err != nil {
 								return errors.Wrap(err, "failed to save user multisig")
@@ -429,15 +489,16 @@ func (s *multisigService) CreateOrJoinMultisig(_ context.Context, req *multisigp
 		}
 
 		var userMultisig UserMultisig
-		if err := tx.First(&userMultisig, "multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", chainID, userAddress, multisigAddress).Error; err != nil {
+		if err := tx.First(&userMultisig, "multisig_chain_type = ? AND multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", chainType, chainID, userAddress, multisigAddress).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				userMultisig = UserMultisig{
-					MultisigChainID: chainID,
-					UserAddress:     userAddress,
-					MultisigAddress: multisigAddress,
-					CreatedAt:       now,
-					Joined:          true,
-					Name:            name,
+					MultisigChainType: chainType,
+					MultisigChainID:   chainID,
+					UserAddress:       userAddress,
+					MultisigAddress:   multisigAddress,
+					CreatedAt:         now,
+					Joined:            true,
+					Name:              name,
 				}
 				if err := tx.Save(&userMultisig).Error; err != nil {
 					return errors.Wrap(err, "failed to save user multisig")
@@ -479,9 +540,10 @@ func (s *multisigService) LeaveMultisig(_ context.Context, req *multisigpb.Leave
 	if err := s.db.Transaction(func(tx *gorm.DB) error {
 		chainID := req.GetChainId()
 		multisigAddress := req.GetMultisigAddress()
+		chainType := req.GetChainType()
 
 		var userMultisig UserMultisig
-		if err := tx.First(userMultisig, "multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", chainID, userAddress, multisigAddress).Error; err != nil {
+		if err := tx.First(userMultisig, "multisig_chain_type = ? AND multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", chainType, chainID, userAddress, multisigAddress).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return errors.New("user is not a member of the multisig")
 			}
@@ -490,7 +552,7 @@ func (s *multisigService) LeaveMultisig(_ context.Context, req *multisigpb.Leave
 
 		if userMultisig.Joined {
 			if err := tx.Model(&UserMultisig{}).
-				Where("multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", chainID, userAddress, multisigAddress).
+				Where("multisig_chain_type = ? AND multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", chainType, chainID, userAddress, multisigAddress).
 				UpdateColumn("joined", false).
 				Error; err != nil {
 				return errors.Wrap(err, "failed to update user multisig")
@@ -521,7 +583,7 @@ func (s *multisigService) CreateTransaction(_ context.Context, req *multisigpb.C
 	}
 
 	if err := s.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.First(&UserMultisig{}, "multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", req.ChainId, userAddress, req.MultisigAddress).Error; err != nil {
+		if err := tx.First(&UserMultisig{}, "multisig_chain_type = ? AND multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", req.ChainType, req.ChainId, userAddress, req.MultisigAddress).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return errors.New("user is not a member of the multisig")
 			}
@@ -542,14 +604,15 @@ func (s *multisigService) CreateTransaction(_ context.Context, req *multisigpb.C
 		}
 
 		if err := tx.Create(&Transaction{
-			MultisigChainID: req.GetChainId(),
-			MultisigAddress: req.GetMultisigAddress(),
-			AccountNumber:   req.GetAccountNumber(),
-			Sequence:        req.GetSequence(),
-			MsgsJSON:        datatypes.JSON(j),
-			FeeJSON:         req.GetFeeJson(),
-			CreatorAddress:  userAddress,
-			Type:            kind,
+			MultisigChainID:   req.GetChainId(),
+			MultisigAddress:   req.GetMultisigAddress(),
+			MultisigChainType: req.GetChainType(),
+			AccountNumber:     req.GetAccountNumber(),
+			Sequence:          req.GetSequence(),
+			MsgsJSON:          datatypes.JSON(j),
+			FeeJSON:           req.GetFeeJson(),
+			CreatorAddress:    userAddress,
+			Type:              kind,
 		}).Error; err != nil {
 			return errors.Wrap(err, "failed to create transaction")
 		}
@@ -576,7 +639,7 @@ func (s *multisigService) SignTransaction(_ context.Context, req *multisigpb.Sig
 			return errors.Wrap(err, "failed to find transaction")
 		}
 
-		if err := tx.First(&UserMultisig{}, "multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", transaction.MultisigChainID, userAddress, transaction.MultisigAddress).Error; err != nil {
+		if err := tx.First(&UserMultisig{}, "multisig_chain_type = ? AND multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", transaction.MultisigChainType, transaction.MultisigChainID, userAddress, transaction.MultisigAddress).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return errors.New("user is not a member of the multisig")
 			}
@@ -616,7 +679,7 @@ func (s *multisigService) CompleteTransaction(_ context.Context, req *multisigpb
 		}
 
 		var userMultisig UserMultisig
-		if err := tx.First(&userMultisig, "multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", transaction.MultisigChainID, userAddress, transaction.MultisigAddress).Error; err != nil {
+		if err := tx.First(&userMultisig, "multisig_chain_type = ? AND multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", transaction.MultisigChainType, transaction.MultisigChainID, userAddress, transaction.MultisigAddress).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return errors.New("user is not a member of the multisig")
 			}
@@ -636,12 +699,13 @@ func (s *multisigService) CompleteTransaction(_ context.Context, req *multisigpb
           AND t.final_hash IS NULL
           AND t.multisig_address = ?
           AND t.multisig_chain_id = ?
+		  AND t.multisig_chain_type = ?
       )
-    `, userMultisig.MultisigAddress, userMultisig.MultisigChainID).Error; err != nil {
+    `, userMultisig.MultisigAddress, userMultisig.MultisigChainID, userMultisig.MultisigChainType).Error; err != nil {
 			return errors.Wrap(err, "failed to delete signatures")
 		}
 
-		if err := tx.Model(&Transaction{}).Where("final_hash IS NULL AND multisig_address = ? AND multisig_chain_id = ?", userMultisig.MultisigAddress, userMultisig.MultisigChainID).UpdateColumn("sequence", transaction.Sequence+1).Error; err != nil {
+		if err := tx.Model(&Transaction{}).Where("final_hash IS NULL AND multisig_address = ? AND multisig_chain_id = ? AND multisig_chain_type = ?", userMultisig.MultisigAddress, userMultisig.MultisigChainID, userMultisig.MultisigChainType).UpdateColumn("sequence", transaction.Sequence+1).Error; err != nil {
 			return errors.Wrap(err, "failed to update sequence")
 		}
 
@@ -659,6 +723,10 @@ func (s *multisigService) ClearSignatures(_ context.Context, req *multisigpb.Cle
 		return nil, errors.Wrap(err, "failed to authenticate")
 	}
 
+	chainType := req.GetChainType()
+	if chainType == "" {
+		return nil, errors.New("multisig chain type is required")
+	}
 	multisigChainID := req.GetMultisigChainId()
 	if multisigChainID == "" {
 		return nil, errors.New("multisig chain id is required")
@@ -671,7 +739,7 @@ func (s *multisigService) ClearSignatures(_ context.Context, req *multisigpb.Cle
 
 	if err := s.db.Transaction(func(tx *gorm.DB) error {
 		var userMultisig UserMultisig
-		if err := tx.First(&userMultisig, "multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", multisigChainID, userAddress, multisigAddress).Error; err != nil {
+		if err := tx.First(&userMultisig, "multisig_chain_type = ? AND multisig_chain_id = ? AND user_address = ? AND multisig_address = ?", chainType, multisigChainID, userAddress, multisigAddress).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return errors.New("user is not a member of the multisig")
 			}
@@ -687,8 +755,9 @@ func (s *multisigService) ClearSignatures(_ context.Context, req *multisigpb.Cle
           AND t.final_hash IS NULL
           AND t.multisig_address = ?
           AND t.multisig_chain_id = ?
+		  AND t.multisig_chain_type = ?
       )
-    `, userMultisig.MultisigAddress, userMultisig.MultisigChainID).Error; err != nil {
+    `, userMultisig.MultisigAddress, userMultisig.MultisigChainID, userMultisig.MultisigChainType).Error; err != nil {
 			return errors.Wrap(err, "failed to delete signatures")
 		}
 

@@ -1,12 +1,14 @@
 import { EncodeObject } from "@cosmjs/proto-signing";
 import { StdFee } from "@cosmjs/stargate";
+import { decodeTxMessages } from "@gnolang/gno-js-client";
+import { TxFee } from "@gnolang/tm2-js-client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { useMultisigAuthToken } from "./useMultisigAuthToken";
 import { useMultisigClient } from "./useMultisigClient";
 
 import { ExecutionState, Transaction } from "@/api/multisig/v1/multisig";
-import { getCosmosNetwork, parseUserId } from "@/networks";
+import { NetworkKind, parseUserId } from "@/networks";
 import { cosmosTypesRegistry } from "@/networks/cosmos-types";
 
 const batchSize = 16;
@@ -43,15 +45,19 @@ export const useMultisigTransactions = (
       authToken,
     ],
     async ({ pageParam }) => {
-      const chainId = getCosmosNetwork(network?.id)?.chainId;
-
-      if (!chainId || !authToken) {
+      if (
+        network?.kind !== NetworkKind.Gno &&
+        network?.kind !== NetworkKind.Cosmos
+      ) {
         return { data: [], next: null };
       }
+
+      const chainId = network?.chainId;
 
       const [, multisigAddress] = parseUserId(multisigUserId);
 
       const req = {
+        chainType: network?.kind.toLowerCase(),
         authToken,
         chainId,
         multisigAddress: multisigAddress || undefined,
@@ -66,19 +72,65 @@ export const useMultisigTransactions = (
       const parsedTxs: ParsedTransaction[] = [];
       for (const tx of txs) {
         try {
-          const msgs: EncodeObject[] = tx.msgs.map((m) => ({
-            typeUrl: m.typeUrl,
-            value: cosmosTypesRegistry.decode(m),
-          }));
-          const t: ParsedTransaction = {
-            ...tx,
-            msgs,
-            // FIXME: sanitize
-            // eslint-disable-next-line no-restricted-syntax
-            fee: JSON.parse(tx.feeJson),
-            createdAt: new Date(tx.createdAt),
-          };
-          parsedTxs.push(t);
+          switch (tx.chainType) {
+            case "gno": {
+              console.log("og msgs", tx.msgs);
+              const msgs = decodeTxMessages(
+                tx.msgs.map((msg) => {
+                  return {
+                    type_url: msg.typeUrl,
+                    value: msg.value,
+                  };
+                }),
+              );
+              console.log("decoded msgs", msgs);
+              // eslint-disable-next-line no-restricted-syntax
+              const tf = TxFee.fromJSON(JSON.parse(tx.feeJson));
+              const t: ParsedTransaction = {
+                ...tx,
+                msgs: msgs.map((msg) => {
+                  const val = { ...msg };
+                  delete val["@type"];
+                  return {
+                    typeUrl: msg["@type"],
+                    value: val,
+                  };
+                }),
+                fee: {
+                  // XXX: using cosmos's StdFee for now but could be improved
+                  amount: [
+                    {
+                      amount: tf.gas_fee.split("ugnot")[0].toString(), // TODO: properly parse coin
+                      denom: "ugnot",
+                    },
+                  ],
+                  gas: tf.gas_wanted.toString(),
+                },
+                createdAt: new Date(tx.createdAt),
+              };
+              parsedTxs.push(t);
+              break;
+            }
+            case "cosmos": {
+              const msgs: EncodeObject[] = tx.msgs.map((m) => ({
+                typeUrl: m.typeUrl,
+                value: cosmosTypesRegistry.decode(m),
+              }));
+              const t: ParsedTransaction = {
+                ...tx,
+                msgs,
+                // FIXME: sanitize
+                // eslint-disable-next-line no-restricted-syntax
+                fee: JSON.parse(tx.feeJson),
+                createdAt: new Date(tx.createdAt),
+              };
+              parsedTxs.push(t);
+              break;
+            }
+            default: {
+              throw new Error(`unknown chain type ${tx.chainType}`);
+            }
+          }
         } catch {
           continue;
         }

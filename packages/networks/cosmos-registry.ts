@@ -1,7 +1,12 @@
 import { chains, assets } from "chain-registry";
 
 import { IBCCurrencyInfo } from "./ibc";
-import { CosmosNetworkInfo, NativeCurrencyInfo, NetworkKind } from "./types";
+import {
+  CosmosNetworkInfo,
+  NativeCurrencyInfo,
+  NetworkFeature,
+  NetworkKind,
+} from "./types";
 
 const banList = [
   "permtestnet",
@@ -66,7 +71,7 @@ export const networksFromCosmosRegistry = (): CosmosNetworkInfo[] => {
             };
             return nativeCurrency;
           }),
-        features: [],
+        features: [NetworkFeature.NativeStaking],
         featureObjects: [],
         idPrefix: chain.chain_name,
         addressPrefix: chain.bech32_prefix,

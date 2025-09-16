@@ -61,4 +61,5 @@ export const gnoDevNetwork: GnoNetworkInfo = {
     "ipfs://bafkreigqm3i4urywxohvpkbz5sgxosiogwn433ufmzz7eqldjxoi6xmwma",
   gnowebURL: "http://127.0.0.1:8888",
   txIndexerURL: "http://127.0.0.1:8546",
+  addressPrefix: "g",
 };

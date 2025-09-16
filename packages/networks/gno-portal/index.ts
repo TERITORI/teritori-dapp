@@ -44,4 +44,5 @@ export const gnoPortalNetwork: GnoNetworkInfo = {
   toriPkgPath: "gno.land/r/teritori/tori",
   profilePkgPath: "gno.land/r/demo/profile",
   txIndexerURL: "https://indexer.portal-loop.gno.testnet.teritori.com",
+  addressPrefix: "g",
 };

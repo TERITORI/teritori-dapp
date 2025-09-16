@@ -291,6 +291,28 @@ export const getCosmosNetworkByChainId = (chainId: string | undefined) => {
   });
 };
 
+export const getGnoNetworkByChainId = (chainId: string | undefined) => {
+  return allNetworks.find((n): n is GnoNetworkInfo => {
+    if (n.kind === NetworkKind.Gno && n.chainId === chainId) {
+      return true;
+    }
+    return false;
+  });
+};
+
+export const getNetworkByChainId = (
+  chainType: string | undefined,
+  chainId: string | undefined,
+) => {
+  switch (chainType) {
+    case "cosmos":
+      return getCosmosNetworkByChainId(chainId);
+    case "gno":
+      return getGnoNetworkByChainId(chainId);
+  }
+  return undefined;
+};
+
 export const mustGetCosmosNetwork = (
   networkId: string | undefined,
 ): CosmosNetworkInfo => {
@@ -527,5 +549,8 @@ export const contractExplorerLink = (
   if (!network?.contractExplorer) {
     return "/";
   }
-  return network.contractExplorer.replace("$address", address);
+  return network.contractExplorer.replace(
+    "$address",
+    encodeURIComponent(address),
+  );
 };

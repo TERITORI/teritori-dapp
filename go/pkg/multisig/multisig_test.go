@@ -8,6 +8,9 @@ import (
 	"time"
 
 	"github.com/TERITORI/teritori-dapp/go/pkg/multisigpb"
+	"github.com/gnolang/gno/tm2/pkg/amino"
+	"github.com/gnolang/gno/tm2/pkg/crypto"
+	"github.com/gnolang/gno/tm2/pkg/crypto/multisig"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/proto"
 )
@@ -131,4 +134,34 @@ func TestToken(t *testing.T) {
 
 	err = validateToken(publicKey, token)
 	require.ErrorContains(t, err, "expired")
+}
+
+func TestMarshalGnoPubkey(t *testing.T) {
+	// sanity test
+	pksStrs := []string{
+		"gpub1pgfj7ard9eg82cjtv4u4xetrwqer2dntxyfzxz3pqg9pgsxmp93u54zk5pd6wmnyt7g6v52vxyctav9hwqm8u02cndl3586qeu6",
+		"gpub1pgfj7ard9eg82cjtv4u4xetrwqer2dntxyfzxz3pq0wmasqx932pdhlkzx7vn40qay2jxscv5n38ypyfalrsyr4acxq4u0t9u65",
+	}
+	pks := []crypto.PubKey{}
+	for _, pkStr := range pksStrs {
+		pk, err := crypto.PubKeyFromBech32(pkStr)
+		require.NoError(t, err)
+		pks = append(pks, pk)
+	}
+	mspk := multisig.NewPubKeyMultisigThreshold(1, pks)
+	bz, err := amino.MarshalJSONAny(mspk)
+	require.NoError(t, err)
+
+	require.Equal(t, "{\"@type\":\"/tm.PubKeyMultisig\",\"threshold\":\"1\",\"pubkeys\":[{\"@type\":\"/tm.PubKeySecp256k1\",\"value\":\"AgoUQNsJY8pUVqBbp25kX5GmUUwxML6wt3A2fj1Ym38a\"},{\"@type\":\"/tm.PubKeySecp256k1\",\"value\":\"A92+wAYsVBbf9hG8ydXg6RUjQwyk4nIEie/HAg69wYFe\"}]}", string(bz))
+
+	var pk crypto.PubKey
+	err = amino.UnmarshalJSON(bz, &pk)
+	require.NoError(t, err)
+	switch tpk := pk.(type) {
+	case multisig.PubKeyMultisigThreshold:
+		require.Equal(t, uint(1), tpk.K)
+		require.Equal(t, pks, tpk.PubKeys)
+	default:
+		t.Fatalf("invalid pk type after unmarshal: %T", tpk)
+	}
 }

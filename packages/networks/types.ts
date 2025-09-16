@@ -12,7 +12,7 @@ export enum NetworkKind {
   Starknet = "Starknet",
 }
 
-interface NetworkInfoBase {
+export interface NetworkInfoBase {
   id: string;
   displayName: string;
   kind: NetworkKind;
@@ -139,6 +139,7 @@ export type GnoNetworkInfo = NetworkInfoBase & {
   faucetURL?: string;
   txIndexerURL?: string;
   cockpitNamespace?: string;
+  addressPrefix: string;
 };
 
 export type NetworkInfo =

@@ -6,7 +6,7 @@ export const polygonNetwork: EthereumNetworkInfo = {
   kind: NetworkKind.Ethereum,
   displayName: "Polygon Mainnet",
   icon: "polygon.svg",
-  features: [NetworkFeature.RiotP2E],
+  features: [NetworkFeature.RiotP2E, NetworkFeature.NativeStaking],
   currencies: polygonCurrencies,
   idPrefix: "polygon",
   endpoint: "https://polygon-rpc.com",

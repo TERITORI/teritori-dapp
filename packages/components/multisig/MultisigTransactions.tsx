@@ -2,6 +2,7 @@ import React, { FC, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  FlatListProps,
   View,
   useWindowDimensions,
 } from "react-native";
@@ -9,6 +10,7 @@ import {
 import { MultisigTransactionItem } from "./MultisigTransactionItem";
 import {
   ExecutionState,
+  JoinState,
   TransactionsCount,
 } from "../../api/multisig/v1/multisig";
 import { useMultisigTransactions } from "../../hooks/multisig/useMultisigTransactions";
@@ -21,13 +23,26 @@ import { EmptyList } from "../EmptyList";
 import { SpacerColumn } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
 
+import { useUserMultisigs } from "@/hooks/multisig/useUserMultisigs";
+import { getNetwork, NetworkFeature } from "@/networks";
+import { TabDefinition } from "@/utils/types/tabs";
+
 const MIN_ITEMS_PER_PAGE = 50;
+
+interface TabInfo extends TabDefinition {
+  types: string[];
+  state: ExecutionState;
+}
 
 export const MultisigTransactions: FC<{
   title?: string;
   userId: string | undefined;
   multisigUserId?: string;
-}> = ({ title, userId, multisigUserId }) => {
+  networkId?: string;
+  Header?: FlatListProps<unknown>["ListHeaderComponent"];
+  showCreator?: boolean;
+}> = ({ title, userId, multisigUserId, networkId, Header, showCreator }) => {
+  const network = getNetwork(networkId);
   const { height: windowHeight } = useWindowDimensions();
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("all");
 
@@ -36,8 +51,10 @@ export const MultisigTransactions: FC<{
     multisigUserId,
   );
 
-  const tabs = useMemo(
-    () => ({
+  const { multisigs } = useUserMultisigs(userId, JoinState.JOIN_STATE_IN);
+
+  const tabs = useMemo(() => {
+    const infos: Record<string, TabInfo> = {
       currentProposals: {
         name: "Current proposals",
         badgeCount: counts?.all?.pending || 0,
@@ -55,10 +72,15 @@ export const MultisigTransactions: FC<{
         ...filteredTabValues(
           counts?.byType || [],
           ExecutionState.EXECUTION_STATE_UNSPECIFIED,
-          ["/cosmos.bank.v1beta1.MsgSend"],
+          ["/cosmos.bank.v1beta1.MsgSend", "/bank.MsgSend"],
         ),
       },
-      stake: {
+    };
+
+    console.log("netififi", network);
+
+    if (network?.features.includes(NetworkFeature.NativeStaking)) {
+      infos.stake = {
         name: "Staking",
         ...filteredTabValues(
           counts?.byType || [],
@@ -70,21 +92,24 @@ export const MultisigTransactions: FC<{
             "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
           ],
         ),
-      },
-      contracts: {
-        name: "Contracts",
-        ...filteredTabValues(
-          counts?.byType || [],
-          ExecutionState.EXECUTION_STATE_UNSPECIFIED,
-          [
-            "/cosmwasm.wasm.v1.MsgInstantiateContract",
-            "/cosmwasm.wasm.v1.MsgExecuteContract",
-          ],
-        ),
-      },
-    }),
-    [counts],
-  );
+      };
+    }
+
+    infos.contracts = {
+      name: "Contracts",
+      ...filteredTabValues(
+        counts?.byType || [],
+        ExecutionState.EXECUTION_STATE_UNSPECIFIED,
+        [
+          "/cosmwasm.wasm.v1.MsgInstantiateContract",
+          "/cosmwasm.wasm.v1.MsgExecuteContract",
+          "/vm.m_call",
+        ],
+      ),
+    };
+
+    return infos;
+  }, [counts, network]);
 
   const {
     data,
@@ -106,42 +131,55 @@ export const MultisigTransactions: FC<{
     return [];
   }, [data]);
 
+  const ListHeaderComponent: React.FC = useMemo(() => {
+    const Res = () => (
+      <>
+        {typeof Header === "function" ? <Header /> : undefined}
+        <View>
+          {title && (
+            <>
+              <BrandText style={fontRegular28}>{title}</BrandText>
+              <SpacerColumn size={1.5} />
+            </>
+          )}
+
+          <Tabs
+            items={tabs}
+            onSelect={setSelectedTab}
+            selected={selectedTab}
+            tabContainerStyle={{ height: 64 }}
+          />
+        </View>
+      </>
+    );
+    return Res;
+  }, [Header, selectedTab, tabs, title]);
+
   return (
-    <>
-      <View>
-        {title && (
-          <>
-            <BrandText style={fontRegular28}>{title}</BrandText>
-            <SpacerColumn size={1.5} />
-          </>
-        )}
-
-        <Tabs
-          items={tabs}
-          onSelect={setSelectedTab}
-          selected={selectedTab}
-          tabContainerStyle={{ height: 64 }}
-        />
-      </View>
-
-      <FlatList
-        data={list}
-        renderItem={({ item }) => <MultisigTransactionItem {...item} />}
-        initialNumToRender={MIN_ITEMS_PER_PAGE}
-        keyExtractor={(item) => item.id.toString()}
-        onEndReached={() => fetchNextTransactionsPage()}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom: layout.contentSpacing,
-          flex: 1,
-        }}
-        ListEmptyComponent={
-          txLoading ? null : <EmptyList text="No proposals" />
+    <FlatList
+      data={list}
+      ListHeaderComponent={ListHeaderComponent}
+      renderItem={({ item }) => {
+        let name;
+        if (!showCreator) {
+          name = multisigs.find(
+            (msig) => msig.address === item.multisigAddress,
+          )?.name;
         }
-        ListFooterComponent={<ListFooter isTransactionsLoading={txLoading} />}
-        style={{ height: windowHeight - headerHeight - 70 }}
-      />
-    </>
+        return <MultisigTransactionItem multisigName={name} {...item} />;
+      }}
+      initialNumToRender={MIN_ITEMS_PER_PAGE}
+      keyExtractor={(item) => item.id.toString()}
+      onEndReached={() => fetchNextTransactionsPage()}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{
+        paddingBottom: layout.contentSpacing,
+        flex: 1,
+      }}
+      ListEmptyComponent={txLoading ? null : <EmptyList text="No proposals" />}
+      ListFooterComponent={<ListFooter isTransactionsLoading={txLoading} />}
+      style={{ height: windowHeight - headerHeight - 70 }}
+    />
   );
 };
 

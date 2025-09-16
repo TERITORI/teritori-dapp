@@ -1,0 +1,8 @@
+diff --git a/wire/index.js b/wire/index.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..f3675c96d787204d17fde2d55bd2505932aa33d6
+--- /dev/null
++++ b/wire/index.js
+@@ -0,0 +1 @@
++export * from "../dist/cjs/wire/index.js";
+\ No newline at end of file
