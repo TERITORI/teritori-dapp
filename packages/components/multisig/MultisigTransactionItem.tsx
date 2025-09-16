@@ -17,6 +17,7 @@ import {
 import { fontSemibold13, fontSemibold14 } from "../../utils/style/fonts";
 import { layout } from "../../utils/style/layout";
 import { BrandText } from "../BrandText";
+import { OmniLink } from "../OmniLink";
 import { SVG } from "../SVG";
 import { CustomPressable } from "../buttons/CustomPressable";
 import { Separator } from "../separators/Separator";
@@ -29,6 +30,7 @@ import { useAppNavigation } from "@/hooks/navigation/useAppNavigation";
 export interface MultisigTransactionItemProps extends ParsedTransaction {
   btnSquaresBackgroundColor?: string;
   shouldRetch?: () => void;
+  multisigName?: string;
 }
 
 export const MultisigTransactionItem: React.FC<MultisigTransactionItemProps> = (
@@ -43,6 +45,8 @@ export const MultisigTransactionItem: React.FC<MultisigTransactionItemProps> = (
     creatorAddress,
     threshold,
     signatures,
+    multisigName,
+    multisigAddress,
   } = props;
   const navigation = useAppNavigation();
   const network = getNetworkByChainId(chainType, chainId);
@@ -104,12 +108,38 @@ export const MultisigTransactionItem: React.FC<MultisigTransactionItemProps> = (
         <View style={sectionCStyle}>
           {txInfo}
           <View style={rowCenterCStyle}>
-            <BrandText style={brandTextSmallCStyle}>Created by:</BrandText>
-            <SpacerRow size={0.5} />
-            <Username
-              userId={creatorId}
-              textStyle={[brandTextSmallCStyle, { color: undefined }]}
-            />
+            {multisigName ? (
+              <>
+                <BrandText style={brandTextSmallCStyle}>Multisig:</BrandText>
+                <SpacerRow size={0.5} />
+                <OmniLink
+                  to={{
+                    screen: "MultisigWalletDashboard",
+                    params: {
+                      id: getUserId(
+                        getNetworkByChainId(chainType, chainId)?.id,
+                        multisigAddress,
+                      ),
+                    },
+                  }}
+                >
+                  <BrandText
+                    style={[brandTextNormalCStyle, { color: "white" }]}
+                  >
+                    {multisigName}
+                  </BrandText>
+                </OmniLink>
+              </>
+            ) : (
+              <>
+                <BrandText style={brandTextSmallCStyle}>Created by:</BrandText>
+                <SpacerRow size={0.5} />
+                <Username
+                  userId={creatorId}
+                  textStyle={[brandTextSmallCStyle, { color: undefined }]}
+                />
+              </>
+            )}
           </View>
         </View>
 

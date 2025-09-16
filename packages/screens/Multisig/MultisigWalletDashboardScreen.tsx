@@ -113,6 +113,7 @@ export const MultisigWalletDashboardScreen: ScreenFC<
         userId={userId}
         multisigUserId={multisigUserId}
         networkId={network?.id}
+        showCreator
       />
     </ScreenContainer>
   );

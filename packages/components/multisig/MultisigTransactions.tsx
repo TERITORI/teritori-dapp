@@ -10,6 +10,7 @@ import {
 import { MultisigTransactionItem } from "./MultisigTransactionItem";
 import {
   ExecutionState,
+  JoinState,
   TransactionsCount,
 } from "../../api/multisig/v1/multisig";
 import { useMultisigTransactions } from "../../hooks/multisig/useMultisigTransactions";
@@ -22,6 +23,7 @@ import { EmptyList } from "../EmptyList";
 import { SpacerColumn } from "../spacer";
 import { Tabs } from "../tabs/Tabs";
 
+import { useUserMultisigs } from "@/hooks/multisig/useUserMultisigs";
 import { getNetwork, NetworkFeature } from "@/networks";
 import { TabDefinition } from "@/utils/types/tabs";
 
@@ -38,7 +40,8 @@ export const MultisigTransactions: FC<{
   multisigUserId?: string;
   networkId?: string;
   Header?: FlatListProps<unknown>["ListHeaderComponent"];
-}> = ({ title, userId, multisigUserId, networkId, Header }) => {
+  showCreator?: boolean;
+}> = ({ title, userId, multisigUserId, networkId, Header, showCreator }) => {
   const network = getNetwork(networkId);
   const { height: windowHeight } = useWindowDimensions();
   const [selectedTab, setSelectedTab] = useState<keyof typeof tabs>("all");
@@ -47,6 +50,8 @@ export const MultisigTransactions: FC<{
     userId,
     multisigUserId,
   );
+
+  const { multisigs } = useUserMultisigs(userId, JoinState.JOIN_STATE_IN);
 
   const tabs = useMemo(() => {
     const infos: Record<string, TabInfo> = {
@@ -117,8 +122,6 @@ export const MultisigTransactions: FC<{
     tabs[selectedTab].state,
   );
 
-  console.log("txs", data);
-
   const list = useMemo(() => {
     if (data)
       return data.pages.reduce(
@@ -156,7 +159,15 @@ export const MultisigTransactions: FC<{
     <FlatList
       data={list}
       ListHeaderComponent={ListHeaderComponent}
-      renderItem={({ item }) => <MultisigTransactionItem {...item} />}
+      renderItem={({ item }) => {
+        let name;
+        if (!showCreator) {
+          name = multisigs.find(
+            (msig) => msig.address === item.multisigAddress,
+          )?.name;
+        }
+        return <MultisigTransactionItem multisigName={name} {...item} />;
+      }}
       initialNumToRender={MIN_ITEMS_PER_PAGE}
       keyExtractor={(item) => item.id.toString()}
       onEndReached={() => fetchNextTransactionsPage()}
